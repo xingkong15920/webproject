@@ -30,7 +30,7 @@
 				overflow: visible;
 				padding: 0;
 			}
-			.layui-form-select .layui-input{
+			.layui-table .layui-form-select .layui-input{
 				height: 28px;
 				border: none;
 			}
@@ -86,15 +86,15 @@
 		</script>
 		<script type="text/html" id="selectBar_lx">
 			<select name="type">
-				<option value="0">普通商户</option>
-				<option value="1">补贴商户</option>
+				<option value="0" {{d.merchantstype==0 ? 'selected' : ''}}>普通商户</option>
+				<option value="1" {{d.merchantstype==1 ? 'selected' : ''}}>补贴商户</option>
 			</select>
 		</script>
 		<script type="text/html" id="selectBar_rz">
 			<select name="cardVoucherName">
-				<option value="1">未认证</option>
-				<option value="2">待审核</option>
-				<option value="3">已认证</option>
+				<option value="1" {{d.audittype==1 ? 'selected' : ''}}>未认证</option>
+				<option value="2" {{d.audittype==2 ? 'selected' : ''}}>待审核</option>
+				<option value="3" {{d.audittype==3 ? 'selected' : ''}}>已认证</option>
 			</select>
 		</script>
 		<script type="text/html" id="toolbar">
@@ -115,23 +115,6 @@
 					return
 				}
 				for(var i = 0; i < res.length; i++) {
-					if(res[i].merchantstype == 0) {
-						res[i].merchantstypea = '普通商户'
-					} else if(res[i].merchantstype == 1) {
-						res[i].merchantstypea = '补贴商户'
-					}
-					if(res[i].type == 0) {
-						res[i].typea = '禁用'
-					} else if(res[i].type == 1) {
-						res[i].typea = '启用'
-					}
-					if(res[i].audittype == 1) {
-						res[i].audittypea = '未审核'
-					} else if(res[i].audittype == 2) {
-						res[i].audittypea = '审核中'
-					} else if(res[i].audittype == 3) {
-						res[i].audittypea = '已审核'
-					}
 				}
 				return res
 			}
