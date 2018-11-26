@@ -35,10 +35,21 @@
 
 	<body id="iosiframe">
 		<div class="x-body">
-			<div class="layui-form-item">
-				<div class="layui-form-mid x-red">注：费率为千分位，例如：千分之三则填0.003</div>
+			<div class="layui-form">
+				<div class="layui-form-item">
+					<div class="layui-form-mid x-red">注：费率为千分位，例如：千分之三则填0.003</div>
+				</div>
+				<table class="layui-hide" id="members" lay-filter="members"></table>
+				<div class="layui-form-item layui-layout-admin">
+					<div class="layui-input-block">
+						<div class="layui-footer" style="left: 0;text-align: center;">
+							<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+							<button class="layui-btn layui-btn-primary">取消</button>
+						</div>
+						<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+					</div>
+				</div>
 			</div>
-			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="toolbar_cb">
 			<div class="layui-input-inline">
@@ -227,6 +238,32 @@
 							});
 						});
 					}
+				});
+
+				/*---------- 监听提交 ----------*/
+				form.on('submit(add)', function(data, index) {
+					var addData = JSON.stringify(data.field)
+					console.log(addData)
+					// 发送请求
+					$.ajax({
+						type: "post",
+						url: serverUrl + "memberCard/addMemberCard",
+						async: true,
+						dataType: "json",
+						contentType: "application/json",
+						data: addData,
+						success: function(data) {
+							if(data.code == "0") {
+								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+								parent.layer.close(index); //再执行关闭
+								parent.layer.msg(data.msg);
+								parent.layui.table.reload('vip_cardList');
+							} else if(data.code == "1") {
+								layer.msg("添加会员卡失败");
+							}
+						}
+					});
+					return false;
 				});
 			});
 
