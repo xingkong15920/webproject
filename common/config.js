@@ -26,6 +26,7 @@ var CmsConfig = {
         Mechanism: {
             //---系统设置
             //基本设置
+            getInstitutionRegisterInfo:"Institution/getInstitutionRegisterInfo"
             //邮件设置
             //短信设置
             //修改密码
