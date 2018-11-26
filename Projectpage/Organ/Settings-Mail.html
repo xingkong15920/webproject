@@ -32,47 +32,47 @@
 		</div>
 		<div class="x-body">
 			<div class="layui-row">
-				<form class="layui-form" lay-filter="basic">
+				<form class="layui-form" lay-filter="basic" autocomplete="off">
 					<div class="layui-form-item">
 						<label class="layui-form-label">smtp服务器</label>
 						<div class="layui-input-block">
-							<input type="text" name="sitename" class="layui-input">
+							<input type="text" name="sitename" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">smtp端口</label>
 						<div class="layui-input-block">
-							<input type="text" name="domain" lay-verify="url" class="layui-input">
+							<input type="text" name="domain" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">smtp用户名</label>
 						<div class="layui-input-block" style="width: 180px;">
-							<input type="text" name="email" lay-verify="email" class="layui-input">
+							<input type="text" name="email" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">smtp密码</label>
 						<div class="layui-input-inline" style="width: 180px;">
-							<input type="text" name="servicetel" lay-verify="number" class="layui-input">
+							<input type="text" name="servicetel" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">发件人Email</label>
 						<div class="layui-input-inline" style="width: 180px;">
-							<input type="text" name="serviceqq" lay-verify="number" class="layui-input">
+							<input type="text" name="serviceqq" lay-verify="email" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">发件人姓名</label>
 						<div class="layui-input-block" style="width: 360px;">
-							<input type="text" name="totalUrl" class="layui-input">
+							<input type="text" name="totalUrl" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">测试收件箱</label>
 						<div class="layui-input-inline" style="width: 360px;">
-							<input type="text" name="totalUrl" class="layui-input">
+							<input type="text" name="totalUrl" lay-verify="email" class="layui-input">
 						</div>
 						<div class="layui-form-mid">
 							<button class="layui-btn layui-btn-xs">测试发送</button>
@@ -116,8 +116,14 @@
 					"merchantca": true,
 				})
 
-				//普通图片上传
-				
+				//自定义验证规则
+				form.verify({
+					title: function(value) {
+						if(!value.length) {
+							return '不能为空！';
+						}
+					}
+				});
 
 				//监听指定开关
 				form.on('switch(switchTest)', function(data) {
@@ -131,16 +137,15 @@
 					})
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.Mechanism,
-						{
-						'shopNumber':1000181007300324376,
-						'tabletableNumber':'ZT635DD6',
-						'paymentType':'2'
+						CmsConfig.Mechanism, {
+							'shopNumber': 1000181007300324376,
+							'tabletableNumber': 'ZT635DD6',
+							'paymentType': '2'
 						},
-						function(data){
+						function(data) {
 							console.log(data)
 						},
-						function(data){
+						function(data) {
 							console.log('222')
 						}
 					)
