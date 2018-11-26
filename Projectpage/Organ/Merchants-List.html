@@ -22,6 +22,18 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
+			.laytable-cell-1-0-3{
+				overflow: visible;
+				padding: 0;
+			}
+			.laytable-cell-1-0-6{
+				overflow: visible;
+				padding: 0;
+			}
+			.layui-form-select .layui-input{
+				height: 28px;
+				border: none;
+			}
 		</style>
 	</head>
 
@@ -70,7 +82,20 @@
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="开|关" {{d.type == 1 ? 'checked' : ''}}>
+			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="开|关" {{d.type==1 ? 'checked' : ''}}>
+		</script>
+		<script type="text/html" id="selectBar_lx">
+			<select name="type">
+				<option value="0">普通商户</option>
+				<option value="1">补贴商户</option>
+			</select>
+		</script>
+		<script type="text/html" id="selectBar_rz">
+			<select name="cardVoucherName">
+				<option value="1">未认证</option>
+				<option value="2">待审核</option>
+				<option value="3">已认证</option>
+			</select>
 		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">登录</a>
@@ -149,7 +174,7 @@
 							title: '商户名'
 						}, {
 							align: 'center',
-							field: 'merchantstypea',
+							toolbar: '#selectBar_lx',
 							width: 100,
 							title: '商户类型',
 							sort: true
@@ -165,7 +190,7 @@
 							title: '状态',
 						}, {
 							align: 'center',
-							field: 'audittypea',
+							toolbar: '#selectBar_rz',
 							width: 100,
 							title: '认证',
 							sort: true
