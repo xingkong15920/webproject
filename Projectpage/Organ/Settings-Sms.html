@@ -36,25 +36,25 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">短信通道</label>
 						<div class="layui-input-inline">
-							<input type="text" name="email" lay-verify="url" class="layui-input">
+							<input type="text" name="email" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">阿里云App Key</label>
 						<div class="layui-input-inline">
-							<input type="text" name="servicetel" lay-verify="appkey" class="layui-input">
+							<input type="text" name="servicetel" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">阿里云App Secret</label>
 						<div class="layui-input-inline">
-							<input type="text" name="serviceqq" lay-verify="apps" class="layui-input">
+							<input type="text" name="serviceqq" lay-verify="title" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">短信签名</label>
 						<div class="layui-input-inline">
-							<input type="text" name="totalUrl" class="layui-input" lay-verify='sign'>
+							<input type="text" name="totalUrl" class="layui-input" lay-verify='title'>
 						</div>
 					</div>
 					<div class="layui-form-item layui-form-text">
@@ -107,7 +107,13 @@
 					"title": "",
 					"merchantca": true,
 				})
-
+				form.verify({
+					title: function(value) {
+						if(!value.length) {
+							return '不能为空！';
+						}
+					}
+				});	
 				//普通图片上传
 				var uploadInst = upload.render({
 					elem: '#test1',

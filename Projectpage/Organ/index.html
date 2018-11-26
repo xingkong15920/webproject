@@ -308,13 +308,35 @@
 		<!-- 右侧主体结束 -->
 		<!-- 中部结束 -->
 		<!-- 底部开始 -->
+		 <script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script type="text/javascript">
 			 
 			$(function(){
 				$('#logout').click(function(){
 					console.log('退出')
-					sessionStorage.clear();
-					window.location.href = 'login.html' 
+					CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Login.login,
+                        'ajaData',
+                        function(data){
+                            if(data.respCode == '1000'){
+                               layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
+                                    title: ''
+                                })
+                                sessionStorage.clear();
+                                setTimeout(function(){
+                                   window.location.href = 'login.html' 
+                                },300)
+                                
+                            }else{
+                                
+                            }
+                        },
+                        function(data){
+                            console.log('222')
+                        }
+                    )
 				})
 			})
 		</script>
