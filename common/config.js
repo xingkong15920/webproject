@@ -2,9 +2,9 @@
 var Edition = 'prd';
 var server;
 if(Edition == 'prd'){
-	server  = 'http://192.168.1.107:5006/shanhe-organization/'
+	server  = 'http://192.168.1.107:5006/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.116:8080/shanhe-organization/'
+	server  = 'http://192.168.1.116:8080/shanhe-mechanism/'
 }
 
 var CmsConfig = {
@@ -21,14 +21,22 @@ var CmsConfig = {
             createCode: "login/createCode",
             // 登录
             login: "login/loginJG",
+            exitLogin:"login/exitLogin"
         },
         //机构后台接口
         Mechanism: {
             //---系统设置
             //基本设置
-            getInstitutionRegisterInfo:"Institution/getInstitutionRegisterInfo"
+            getInstitutionRegisterInfo:"Institution/getInstitutionRegisterInfo",
+            updateInstitutionRegisterInfo:"Institution/updateInstitutionRegisterInfo",
             //邮件设置
+            getInstitutionMailboxSetting:"InstitutionMailboxSetting/getInstitutionMailboxSetting",
+            updateInstitutionMailboxSetting:"InstitutionMailboxSetting/updateInstitutionMailboxSetting",
+            insertInstitutionMailboxSetting:"InstitutionMailboxSetting/insertInstitutionMailboxSetting",
             //短信设置
+            getInstitutionSMSSetting:"InstitutionSMSSetting/getInstitutionSMSSetting",
+            updateSMSSetting:"InstitutionSMSSetting/updateSMSSetting",
+            insertSMSS:"InstitutionSMSSetting/insertSMSS"
             //修改密码
 
             //管理员管理列表
