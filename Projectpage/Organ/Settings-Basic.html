@@ -127,7 +127,7 @@
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">商户认证</label>
 						<div class="layui-input-block">
-							<input type="checkbox" name="merchantCA" lay-filter="switchTest" lay-skin="switch" lay-text="开启|关闭">
+							<input type="checkbox" name="merchantCa" lay-filter="switchTest" lay-skin="switch" lay-text="开启|关闭" id="merchantCa" >
 						</div>
 					</div>
 					<div class="layui-form-item layui-form-text">
@@ -171,6 +171,9 @@
 			console.log(userNumber)
 			var code1;
 			var jgData;
+			var merchantca = false;
+			var type;
+			
 			CmsUtility.postAjaxCall(
 				//系统设置
 				CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo,
@@ -180,7 +183,16 @@
 				function(data){
 					console.log(data)
 					if(data.code == 1000){
-						jgData = data.data[0]
+						if(data.data.length > 0){
+							jgData = data.data[0]
+							merchantca = jgData.merchantCa == 0 ? true:false
+							jgData.merchantca = merchantca
+							console.log(jgData.merchantca)
+							type = 0
+						}else{
+							type = 1
+						}
+						
 					}else{
 						alert(data.msg)
 					}
@@ -197,38 +209,43 @@
 					table = layui.table,
 					form = layui.form,
 					laytpl = layui.laytpl;
+					console.log(merchantca)
+					if(type == 0){
+						//表单初始赋值
+						form.val('basic', {
+							//网站名称
+							"websiteName":jgData.websiteName || '' ,
+							//网站域名
+							"websiteRealmName": jgData.websiteRealmName || '' ,
+							//联系邮箱
+							"contactMailbox": jgData.contactMailbox || '' ,
+							//客服电话
+							"customServiceTell": jgData.customServiceTell || '' ,
+							//客服QQ
+							"customServiceQQ": jgData.customServiceQQ || '' ,
+							//机构路径
+							"institutionRoute":jgData.institutionRoute|| '',
+							//代理商路径
+							"agentRoute":jgData.agentRoute|| '',
+							//商户路径,
+							"merchantRoute":jgData.merchantRoute|| '',
+							//公司版权
+							"companyCopyright":jgData.companyCopyright|| '',
+							//机构logo图
 
-				//表单初始赋值
-				form.val('basic', {
-					//网站名称
-					"websiteName":jgData.websiteName || '' ,
-					//网站域名
-					"websiteRealmName": jgData.websiteRealmName || '' ,
-					//联系邮箱
-					"contactMailbox": jgData.contactMailbox || '' ,
-					//客服电话
-					"customServiceTell": jgData.customServiceTell || '' ,
-					//客服QQ
-					"customServiceQQ": jgData.customServiceQQ || '' ,
-					//机构路径
-					"institutionRoute":jgData.institutionRoute|| '',
-					//代理商路径
-					"agentRoute":jgData.agentRoute|| '',
-					//商户路径,
-					"merchantRoute":jgData.merchantRoute|| '',
-					//公司版权
-					"companyCopyright":jgData.companyCopyright|| '',
-					//机构logo图
-
-					//商户认证
-					"merchantCA":jgData.merchantCa == 0 ? 'true':'false',
-					//网站统计代码
-					"websiteStatisticsCode":jgData.websiteStatisticsCode|| '',
-					//验证次数限制
-					"verificationlimit":jgData.verificationlimit|| '',
-					//验证冻结时间
-					"verifyingFreezingTime":jgData.verifyingFreezingTime|| '',
-				})
+							//商户认证
+							 "merchantCa":merchantca,
+							//网站统计代码
+							"websiteStatisticsCode":jgData.websiteStatisticsCode|| '',
+							//验证次数限制
+							"verificationlimit":jgData.verificationlimit|| '',
+							//验证冻结时间
+							"verifyingFreezingTime":jgData.verifyingFreezingTime|| '',
+						})
+						
+						//$('#merchantCa').checked = jgData.merchantca
+					}
+					
  				form.verify({
                     htmlname:function(value){
                         if($('#htmlname').val() == ''){
@@ -298,44 +315,35 @@
 						});
 					}
 				});
-				var merchantca = true;
+				
 				//监听指定开关
 				form.on('switch(switchTest)', function(data) {
 					layer.tips('商户认证：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					if(this.checked){
-						merchantca = true
-					}else{
-						merchantca = false;
-					}
-					console.log(merchantca)
+					merchantca = this.checked
 				});
 
 				//监听提交
 				form.on('submit(add)', function(data) {
 					console.log(data)
 					var data = data.field;
-					if(data.merchantca){
-						data.merchantCa = '0'
+					if(merchantca == true){
+						data.merchantCa = 0
 					}else{
-						data.merchantCa = '1'
+						data.merchantCa = 1
 					}
 					console.log(data)
 					data.institutionNumber = userNumber
 					console.log(CmsConfig.addressUrl.Mechanism.updateInstitutionRegisterInfo)
-					
 					CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.updateInstitutionRegisterInfo,
 						data,
 						function(data){
 							if(data.code == 1000){
-								layer.alert(JSON.stringify('保存成功'), {
-                                    title: ''
-                                })
+								layer.msg('保存成功')
+								
 							}else{
-								layer.alert(JSON.stringify('提交失败'), {
-                                    title: data.msg
-                                })
+								layer.msg(data.msg)
 							}
 						},
 						function(data){

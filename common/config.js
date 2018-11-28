@@ -36,11 +36,15 @@ var CmsConfig = {
             //短信设置
             getInstitutionSMSSetting:"InstitutionSMSSetting/getInstitutionSMSSetting",
             updateSMSSetting:"InstitutionSMSSetting/updateSMSSetting",
-            insertSMSS:"InstitutionSMSSetting/insertSMSS"
+            insertSMSS:"InstitutionSMSSetting/insertSMSS",
             //修改密码
-
+            updatePassword:"login/updatePassword",
             //管理员管理列表
+            getInstitutionStaff:"InstitutionStaff/getInstitutionStaff",
             //添加管理员
+            insertInstitutionStaff:"InstitutionStaff/insertInstitutionStaff",
+            insterRiskSetUp:"InstitutionRiskSetUp/insterRiskSetUp",
+            updateRiskSetUp:"InstitutionRiskSetUp/updateRiskSetUp",
             //修改管理员密码
             //删除管理员
 
@@ -60,6 +64,7 @@ var CmsConfig = {
             */
             //添加商户
             //风控设置
+            getRiskSetUp:"InstitutionRiskSetUp/getRiskSetUp",
             //登录记录
             //商户操作日志，列表
 

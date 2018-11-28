@@ -60,7 +60,7 @@
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">短信设置</label>
 						<div class="layui-input-inline">
-							<input type="checkbox" name="merchantca" lay-filter="switchTest" lay-skin="switch" lay-text="开启|关闭">
+							<input type="checkbox" name="merchantCa" lay-filter="switchTest" lay-skin="switch" lay-text="开启|关闭">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -89,7 +89,7 @@
 			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			var jgData;
 			var type;
-			var isTrue;
+			var merchantCa = false;
 			CmsUtility.postAjaxCall(
 				//系统设置
 				CmsConfig.addressUrl.Mechanism.getInstitutionSMSSetting,
@@ -103,6 +103,9 @@
 						if(data.data.length > 0){
 							type = 1
 							jgData = data.data[0]
+							merchantCa = jgData.deletionFlag == 0 ? true:false;
+							jgData.merchantCa = merchantCa
+
 						}else{
 							type = 0
 						}
@@ -116,6 +119,7 @@
 					console.log('222')
 				}
 			)
+
 			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 				layui.$.support.cors = true; //允许ajax跨域
 				var $ = layui.jquery,
@@ -132,7 +136,7 @@
 						"alicloudAppkey": jgData.alicloudAppkey,
 						"alicloudAppsecret": jgData.alicloudAppsecret,
 						"smsScratch": jgData.smsScratch,
-						"merchantca": jgData.deletionFlag == 0 ? 'true':'false',
+						"merchantCa":jgData.merchantCa,
 					})
 				}
 				
@@ -173,17 +177,17 @@
 				//监听指定开关
 				form.on('switch(switchTest)', function(data) {
 					layer.tips('短信设置：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					merchantCa = this.checked
 				});
 
 				//监听提交
 				form.on('submit(add)', function(data) {
 					
-					console.log(data.field)
 					var data = data.field;
-					if(data.merchantca){
-						data.deletionFlag = '0'
+					if(merchantCa == true){
+						data.deletionFlag = 0
 					}else{
-						data.deletionFlag = '1'
+						data.deletionFlag = 1
 					}
 					data.institutionNumber = userNumber
 					if(type == 1){
@@ -193,20 +197,16 @@
 						data.ban = '0'	
 						serverSub = CmsConfig.addressUrl.Mechanism.insertSMSS
 					}
-					
 					CmsUtility.postAjaxCall(
 						//系统设置
 						serverSub,
 						data,
 						function(data){
 							if(data.code == 1000){
-								layer.alert(JSON.stringify('保存成功'), {
-                                    title: ''
-                                })
+								layer.msg('保存成功')
+                                //form.render()
 							}else{
-								layer.alert(JSON.stringify(data.msg), {
-                                    title: '提交失败'
-                                })
+								layer.msg(data.msg)
 							}
 						},
 						function(data){
