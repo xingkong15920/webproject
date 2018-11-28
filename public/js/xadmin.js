@@ -166,6 +166,15 @@ $(function() {
 		$(this).hide();
 	});
 
+	//取消关闭弹窗
+	var index = parent.layer.getFrameIndex(window.name);
+	$('#quxiao').click(function() {
+
+		setTimeout(function() {
+			parent.layer.close(index)
+		}, 16);
+	})
+
 })
 
 /*弹出层*/
