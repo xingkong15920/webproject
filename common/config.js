@@ -1,10 +1,10 @@
 //prd  线上		cs 测试  
-var Edition = 'prd';
+var Edition = 'fh';
 var server;
-if(Edition == 'prd'){
+if(Edition == 'qty'){
 	server  = 'http://192.168.1.107:5006/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.116:8080/shanhe-mechanism/'
+	server  = 'http://192.168.1.190:5006/fenghao-test/'
 }
 
 var CmsConfig = {
@@ -103,12 +103,16 @@ var CmsConfig = {
 
 
             //--广告管理
-            //广告列表
+            insertInstitutionAdvertisement:"InstitutionAdvertisement/insertInstitutionAdvertisement",
+                        //广告列表"
+            getInstitutionAdvertisementList:"InstitutionAdvertisement/getInstitutionAdvertisementList",
             //广告列表操作：
             //状态的开/关
+            updateInstitutionAdvertisementState:"InstitutionAdvertisement/updateInstitutionAdvertisementState",
             //编辑接口
+            updateInstitutionAdvertisement:"InstitutionAdvertisement/updateInstitutionAdvertisement",
             //删除接口
-
+            delInstitutionAdvertisementState:"InstitutionAdvertisement/delInstitutionAdvertisementState",
 
             //--财务分析
             //查询当日统计
