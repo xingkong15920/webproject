@@ -1,12 +1,18 @@
 //prd  线上		cs 测试  
-var Edition = 'fh';
+var Edition = 'qty';
 var server;
 if(Edition == 'qty'){
-	server  = 'http://192.168.1.107:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.104:5006/shanhe-mechanism/'
 }else{
 	server  = 'http://192.168.1.190:5006/fenghao-test/'
 }
-
+/* 
+接口前缀解释
+get 获取
+update 更新
+insert  插入
+del  删除
+*/
 var CmsConfig = {
 
     ServiceUrl: {
@@ -21,13 +27,16 @@ var CmsConfig = {
             createCode: "login/createCode",
             // 登录
             login: "login/loginJG",
+            //退出
             exitLogin:"login/exitLogin"
         },
         //机构后台接口
         Mechanism: {
             //---系统设置
             //基本设置
+            //获取
             getInstitutionRegisterInfo:"Institution/getInstitutionRegisterInfo",
+            //更新
             updateInstitutionRegisterInfo:"Institution/updateInstitutionRegisterInfo",
             //邮件设置
             getInstitutionMailboxSetting:"InstitutionMailboxSetting/getInstitutionMailboxSetting",
@@ -104,7 +113,7 @@ var CmsConfig = {
 
             //--广告管理
             insertInstitutionAdvertisement:"InstitutionAdvertisement/insertInstitutionAdvertisement",
-                        //广告列表"
+             //广告列表"
             getInstitutionAdvertisementList:"InstitutionAdvertisement/getInstitutionAdvertisementList",
             //广告列表操作：
             //状态的开/关
