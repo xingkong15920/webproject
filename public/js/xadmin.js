@@ -166,14 +166,14 @@ $(function() {
 		$(this).hide();
 	});
 
-	//取消关闭弹窗
-	var index = parent.layer.getFrameIndex(window.name);
-	$('#quxiao').click(function() {
+	// //取消关闭弹窗
+	// var index = parent.layer.getFrameIndex(window.name);
+	// $('#quxiao').click(function() {
 
-		setTimeout(function() {
-			parent.layer.close(index)
-		}, 16);
-	})
+	// 	setTimeout(function() {
+	// 		parent.layer.close(index)
+	// 	}, 16);
+	// })
 
 })
 

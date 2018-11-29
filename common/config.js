@@ -92,6 +92,7 @@ var CmsConfig = {
             //资金变动列表接口
 
             //--全部订单
+            getTransactionReceiptList:"TransactionReceipt/getTransactionReceiptList",
             //全部订单查询
             //列表操作接口：查看、同步
             //成功订单、未支付订单、异常订单同上

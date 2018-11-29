@@ -22,7 +22,7 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
-			.laytable-cell-1-0-3{
+			.laytable-cell-1-0-4{
 				overflow: visible;
 				padding: 0;
 			}
@@ -82,19 +82,19 @@
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="开|关" {{d.type==1 ? 'checked' : ''}}>
+			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="开|关" {{d.type==1 ? 'checked' : ''}} value="{{d.merchants}}">
 		</script>
 		<script type="text/html" id="selectBar_lx">
-			<select name="type">
+			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchants}}" >
 				<option value="0" {{d.merchantstype==0 ? 'selected' : ''}}>普通商户</option>
 				<option value="1" {{d.merchantstype==1 ? 'selected' : ''}}>补贴商户</option>
 			</select>
 		</script>
 		<script type="text/html" id="selectBar_rz">
-			<select name="cardVoucherName">
-				<option value="1" {{d.audittype==1 ? 'selected' : ''}}>未认证</option>
-				<option value="2" {{d.audittype==2 ? 'selected' : ''}}>待审核</option>
-				<option value="3" {{d.audittype==3 ? 'selected' : ''}}>已认证</option>
+			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchants}}" >
+				<option value="0" {{d.audittype==0 ? 'selected' : ''}}>未认证</option>
+				<option value="1" {{d.audittype==1 ? 'selected' : ''}}>待审核</option>
+				<option value="2" {{d.audittype==2 ? 'selected' : ''}}>已认证</option>
 			</select>
 		</script>
 		<script type="text/html" id="toolbar">
@@ -108,6 +108,8 @@
 			<a class="layui-btn layui-btn-xs" id="secretkey" lay-event="secretkey">秘钥</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			function changeRes(res) {
 				var res = res
@@ -119,7 +121,7 @@
 				return res
 			}
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -195,7 +197,93 @@
 						console.log(res)
 					}
 				});
-
+				
+				//监听状态操作
+				form.on('switch(consumptionPreferences)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					console.log(this.checked)
+					console.log(data)
+					return
+					var tjData = new Object();
+					tjData.institutionNumber = userNumber;
+					tjData.number = data.value;
+					tjData.state = this.checked?'0':'1';
+					// CmsUtility.postAjaxCall(
+					// 	//系统设置
+					// 	CmsConfig.addressUrl.Mechanism.updateInstitutionAdvertisementState,
+					// 	tjData,
+					// 	function(data){
+					// 		if(data.code == 1000){
+								 
+					// 			parent.layer.msg('更改成功')
+								
+					// 		}else{
+					// 			layer.msg(data.msg)
+								
+					// 		}
+					// 	},
+					// 	function(data){
+					// 		console.log('222')
+					// 	}
+					// )
+				});
+				//监听状态操作
+				form.on('select(shopSel)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					console.log(data.elem.getAttribute("shopNumber"))
+					console.log(data)
+					return
+					var tjData = new Object();
+					tjData.institutionNumber = userNumber;
+					tjData.number = data.value;
+					tjData.state = this.checked?'0':'1';
+					// CmsUtility.postAjaxCall(
+					// 	//系统设置
+					// 	CmsConfig.addressUrl.Mechanism.updateInstitutionAdvertisementState,
+					// 	tjData,
+					// 	function(data){
+					// 		if(data.code == 1000){
+								 
+					// 			parent.layer.msg('更改成功')
+								
+					// 		}else{
+					// 			layer.msg(data.msg)
+								
+					// 		}
+					// 	},
+					// 	function(data){
+					// 		console.log('222')
+					// 	}
+					// )
+				});
+				form.on('select(cardVoucherName)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					console.log(data.elem.getAttribute("shopNumber"))
+					console.log(data)
+					return
+					var tjData = new Object();
+					tjData.institutionNumber = userNumber;
+					tjData.number = data.value;
+					tjData.state = this.checked?'0':'1';
+					// CmsUtility.postAjaxCall(
+					// 	//系统设置
+					// 	CmsConfig.addressUrl.Mechanism.updateInstitutionAdvertisementState,
+					// 	tjData,
+					// 	function(data){
+					// 		if(data.code == 1000){
+								 
+					// 			parent.layer.msg('更改成功')
+								
+					// 		}else{
+					// 			layer.msg(data.msg)
+								
+					// 		}
+					// 	},
+					// 	function(data){
+					// 		console.log('222')
+					// 	}
+					// )
+				});
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
