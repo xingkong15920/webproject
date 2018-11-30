@@ -40,15 +40,6 @@
 					<div class="layui-form-mid x-red">注：费率为千分位，例如：千分之三则填0.003</div>
 				</div>
 				<table class="layui-hide" id="members" lay-filter="members"></table>
-				<div class="layui-form-item layui-layout-admin">
-					<div class="layui-input-block">
-						<div class="layui-footer" style="left: 0;text-align: center;">
-							<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
-							<a class="layui-btn layui-btn-primary" id="quxiao">取消</a>
-						</div>
-						<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
-					</div>
-				</div>
 			</div>
 		</div>
 		<script type="text/html" id="toolbar_cb">
@@ -67,12 +58,6 @@
 			</div>
 		</script>
 		<script>
-			var index = parent.layer.getFrameIndex(window.name);
-			$('#quxiao').click(function() {
-				setTimeout(function() {
-					parent.layer.close(index)
-				}, 16);
-			})
 			function changeRes(res) {
 				var res = res
 				if(res.length == 0) {
@@ -109,7 +94,7 @@
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					url: './json/vip-card1.json',
 					elem: '#members',
-					height: 'full-160',
+					height: 'full-120',
 					id: 'vip_cardList',
 					parseData: function(res) { //res 即为原始返回的数据
 						return {
@@ -135,15 +120,15 @@
 						}, {
 							align: 'center',
 							title: '运营费率',
-							toolbar: '#toolbar_yy',
-							minWidth: 100
-
+							field: 'experience',
+							minWidth: 100,
+							edit: 'edit_yy'
 						}, {
 							align: 'center',
 							title: '提现费率',
-							toolbar: '#toolbar_tx',
-							minWidth: 100
-
+							field: 'wealth',
+							minWidth: 100,
+							edit: 'edit_tx'
 						}]
 					],
 					page: false,
@@ -168,86 +153,35 @@
 					}
 				});
 
-				//监听工具条
-				table.on('tool(members)', function(obj) {
-					var data = obj.data;
-					if(obj.event === 'edit') { //编辑
-						layer.open({
-							type: 2,
-							title: '编辑',
-							shade: 0.5,
-							area: ['400px', '300px'],
-							maxmin: false,
-							resize: false,
-							content: ['Membersadd.html'],
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
-							}
-						});
-					} else if(obj.event === 'logout') { //注销
-						var zhuxiaoData = {
-							card: data.card,
-							cardType: 5
-						}
-						layer.confirm('真的删除此会员卡么', {
-							icon: 3,
-							title: '提示'
-						}, function(index) {
-							// 发送请求
-							$.ajax({
-								type: "post",
-								url: serverUrl + "memberCard/updateAssociatorCard",
-								async: true,
-								dataType: "json",
-								contentType: "application/json",
-								data: JSON.stringify(zhuxiaoData),
-								success: function(data) {
-									if(data.code == 0) {
-										layer.close(index);
-										layer.msg("会员卡已注销");
-										// 刷新页面
-										var curr = $("#curr").val();
-										layui.table.reload('vip_cardList', {
-											page: {
-												curr: curr
-											}
-										});
-									} else if(data.code == 1) {
-										layer.msg("会员卡注销失败");
-									}
-								}
-							});
-						});
-					}
-				});
-				
-				/*---------- 监听提交 ----------*/
-				form.on('submit(add)', function(data, index) {
-					var addData = JSON.stringify(data.field)
-					console.log(addData)
-					// 发送请求
+				//监听单元格编辑
+				table.on('edit(members)', function(obj) {
+					var value = obj.value, //得到修改后的值
+						data = obj.data, //得到所在行所有键值
+						field = obj.field; //得到字段
+					layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
 					$.ajax({
 						type: "post",
-						url: serverUrl + "memberCard/addMemberCard",
+						url: serverUrl + "memberCard/updateAssociatorCard",
 						async: true,
 						dataType: "json",
 						contentType: "application/json",
-						data: addData,
+						data: JSON.stringify(zhuxiaoData),
 						success: function(data) {
-							if(data.code == "0") {
-								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-								parent.layer.close(index); //再执行关闭
-								parent.layer.msg(data.msg);
-								parent.layui.table.reload('vip_cardList');
-							} else if(data.code == "1") {
-								layer.msg("添加会员卡失败");
+							if(data.code == 0) {
+								layer.close(index);
+								layer.msg("会员卡已注销");
+								// 刷新页面
+								var curr = $("#curr").val();
+								layui.table.reload('vip_cardList', {
+									page: {
+										curr: curr
+									}
+								});
+							} else if(data.code == 1) {
+								layer.msg("会员卡注销失败");
 							}
 						}
 					});
-					return false;
 				});
 			});
 
