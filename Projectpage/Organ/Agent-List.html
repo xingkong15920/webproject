@@ -39,19 +39,19 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="商户号或用户名" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="couponName" placeholder="用户名" autocomplete="off" class="layui-input">
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<input type="text" name="couponName" id="couponName" placeholder="上级代理号或用户名" autocomplete="off" class="layui-input">
-					</div>
-					<div class="layui-input-inline">
+					</div> -->
+					<!-- <div class="layui-input-inline">
 						<select name="cardVoucherName" id="cardVoucherName">
 							<option value="">认证</option>
 							<option value="1">未认证</option>
 							<option value="2">待审核</option>
 							<option value="3">已认证</option>
 						</select>
-					</div>
+					</div> -->
 					<div class="layui-input-inline">
 						<select name="type" id="type">
 							<option value="">商户类型</option>
@@ -76,9 +76,11 @@
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -87,10 +89,23 @@
 				//方法级渲染  
 				table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: './json/vip-card.json',
+					//url: './json/vip-card.json',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getAgentRegisterlist + '?institutionNumber=' + userNumber ,
+					where:{
+
+					},
 					elem: '#members',
 					height: 'full-210',
 					id: 'vip_cardList',
+					response: { 
+					//res 即为原始返回的数据
+							"statusCode":"1000", //解析接口状态
+							
+					},
+					// request: {
+					//     pageName: ' ' //页码的参数名称，默认：page
+					//     ,limitName: ' ' //每页数据量的参数名，默认：limit
+					//   },
 					//					parseData: function(res) { //res 即为原始返回的数据
 					//						return {
 					//							"code": res.code, //解析接口状态
@@ -105,18 +120,18 @@
 							type: 'checkbox'
 						}, {
 							align: 'center',
-							field: 'id',
+							field: 'agentNumber',
 							width: 150,
 							title: '代理编号',
 							sort: true
 						}, {
 							align: 'center',
-							field: 'username',
+							field: 'userName',
 							width: 150,
 							title: '用户名'
 						}, {
 							align: 'center',
-							field: 'sex',
+							field: 'agentType',
 							width: 150,
 							title: '代理类型',
 							sort: true
@@ -127,7 +142,7 @@
 							title: '上级代理'
 						}, {
 							align: 'center',
-							field: 'sign',
+							field: 'deletionFlag',
 							width: 150,
 							title: '状态',
 						}, {
@@ -138,13 +153,13 @@
 							sort: true
 						}, {
 							align: 'center',
-							field: 'experience',
+							field: 'insertTime',
 							width: 150,
 							title: '注册时间',
 							sort: true
 						}, {
 							align: 'center',
-							field: 'experience',
+							field: 'loginTime',
 							width: 150,
 							title: '最后登录时间',
 							sort: true
@@ -174,11 +189,11 @@
 							area: ['650px', '90%'],
 							maxmin: false,
 							resize: false,
-							content: ['Merchants-List-rate.html'],
+							content: ['Agent-List-rate.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								//var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
+								// 向子页面的全局函数child传w参
 								//iframe.subPage(data, userNumber)
 							}
 						});
@@ -190,12 +205,12 @@
 							area: ['460px', '350px'],
 							maxmin: false,
 							resize: false,
-							content: ['Merchants-List-pass.html'],
+							content: ['Agent-List-pass.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'edit') { //编辑商户
@@ -209,9 +224,9 @@
 							content: ['Agent-List-edit.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'logout') { //注销
