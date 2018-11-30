@@ -79,7 +79,10 @@ var CmsConfig = {
 
 
             //--代理设置
+            getAgentRegisterlist:"AgentRegister/getAgentRegisterlist",
+            updateAgentRegister:"AgentRegister/updateAgentRegister",
             /*代理列表
+            
             操作接口：
             登录(登录方法？)
             费率查询与修改
@@ -88,7 +91,11 @@ var CmsConfig = {
             删除代理接口
             
             */
+            //修改费率
+            updateAgentRate:"AgentRegister/updateAgentRate",
+            updateAgentRegister:"AgentRegister/updateAgentRegister",
             //添加代理接口
+            insertAgentRegister:"AgentRegister/insertAgentRegister",
             //资金变动列表接口
 
             //--全部订单
