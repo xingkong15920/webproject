@@ -55,8 +55,9 @@ var CmsConfig = {
             insterRiskSetUp:"InstitutionRiskSetUp/insterRiskSetUp",
             updateRiskSetUp:"InstitutionRiskSetUp/updateRiskSetUp",
             //修改管理员密码
+            updateInstitutionStaff:"InstitutionStaff/updateInstitutionStaff",
             //删除管理员
-
+            
             //--商户管理
             //商户列表
             /* 操作接口：

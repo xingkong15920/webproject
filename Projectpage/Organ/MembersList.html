@@ -113,19 +113,19 @@
 							type: 'checkbox'
 						}, {
 							align: 'center',
-							field: 'id',
+							field: 'staffNumber',
 							title: 'ID',
 							sort: true,
 							width: 250
 						}, {
 							align: 'center',
-							field: 'administrator',
+							field: 'staffName',
 							title: '管理员',
 							sort: true,
 							width: 250
 						}, {
 							align: 'center',
-							field: 'addtime',
+							field: 'insertTime',
 							title: '添加时间',
 							sort: true,
 							width: 300
@@ -167,34 +167,35 @@
 							card: data.card,
 							cardType: 5
 						}
-						layer.confirm('真的删除此会员卡么', {
+						layer.confirm('真的删除此管理员么', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
 							// 发送请求
-							$.ajax({
-								type: "post",
-								url: serverUrl + "memberCard/updateAssociatorCard",
-								async: true,
-								dataType: "json",
-								contentType: "application/json",
-								data: JSON.stringify(zhuxiaoData),
-								success: function(data) {
-									if(data.code == 0) {
-										layer.close(index);
-										layer.msg("会员卡已注销");
-										// 刷新页面
-										var curr = $("#curr").val();
-										layui.table.reload('vip_cardList', {
-											page: {
-												curr: curr
-											}
-										});
-									} else if(data.code == 1) {
-										layer.msg("会员卡注销失败");
+							console.log(data)
+							var tData = new Object()
+							tData.institutionNumber = userNumber
+							tData.staffNumber = data.staffNumber
+							tData.deletionFlag = '1'
+							console.log(tData)
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Mechanism.updateInstitutionStaff,
+								tData,
+								function(data){
+									if(data.code == 1000){
+										
+										parent.layer.msg('删除成功')
+										location.reload()
+									}else{
+										layer.msg(data.msg)
+										
 									}
+								},
+								function(data){
+									console.log('222')
 								}
-							});
+							)
 						});
 					}
 				});
