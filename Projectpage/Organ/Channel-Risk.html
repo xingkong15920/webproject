@@ -38,9 +38,11 @@
 		<div class="x-body">
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -49,10 +51,15 @@
 				//方法级渲染  
 				table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: './json/vip-card.json',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getSubaccountRiskManagementList + '?institutionNumber=' + userNumber ,
 					elem: '#members',
 					height: 'full-100',
 					id: 'vip_cardList',
+					response: { 
+					//res 即为原始返回的数据
+							"statusCode":"1000", //解析接口状态
+							
+					},
 					//					parseData: function(res) { //res 即为原始返回的数据
 					//						return {
 					//							"code": res.code, //解析接口状态
@@ -67,24 +74,24 @@
 							type: 'checkbox'
 						}, {
 							align: 'center',
-							field: 'id',
+							field: 'paymentChannelName',
 							width: 300,
 							title: '通道名称/子账号',
 							sort: true
 						}, {
 							align: 'center',
-							field: 'experience',
+							field: 'transactionTime',
 							width: 200,
 							title: '交易时间'
 						}, {
 							align: 'center',
-							field: 'sex',
+							field: 'dayTransactionCountMoney',
 							width: 200,
 							title: '今天交易金额/可交易金额',
 							sort: true
 						}, {
 							align: 'center',
-							field: 'city',
+							field: 'transactionTime',
 							title: '上线情况'
 						}]
 					],

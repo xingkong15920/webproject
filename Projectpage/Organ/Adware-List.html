@@ -52,6 +52,10 @@
         <script src="../../common/utility.js"></script>
 		<script>
 			function changeRes(data){
+				var data = data.data
+				if(data == null){
+					return
+				}
 				for(var i = 0; i < data.length;i++){
 					if(data[i].launchChannel == 0){
 						data[i].launchChannel1 = "全部"
@@ -91,6 +95,7 @@
 					parseData:function(res){
 						return{
 							"code":res.code,
+							"count":res.count,
 						 "data": changeRes(res.data)
 						}
 					},
@@ -143,6 +148,9 @@
 					done: function(res, curr, count) {
 						
 						console.log(res)
+						if(res.data == null){
+							layer.msg(res.msg)
+						}
 
 					}
 				});

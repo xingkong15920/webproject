@@ -69,6 +69,9 @@
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
+		<script type="text/html" id="switchBar">
+			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.deletionFlag==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
+		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">登录</a>
 			<a class="layui-btn layui-btn-xs" id="rate" lay-event="rate">费率</a>
@@ -163,7 +166,13 @@
 							width: 150,
 							title: '最后登录时间',
 							sort: true
-						}, {
+						} ,
+						// {
+						// 	align: 'center',
+						// 	toolbar: '#switchBar',
+						// 	width: 100,
+						// 	title: '状态',},
+						 {
 							align: 'center',
 							title: '操作',
 							toolbar: '#toolbar',
@@ -175,7 +184,35 @@
 						console.log(res)
 					}
 				});
-
+				//监听状态操作
+				form.on('switch(consumptionPreferences)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					console.log(this.checked)
+					console.log(data)
+					return
+					var tjData = new Object();
+					tjData.institutionNumber = userNumber;
+					tjData.number = data.value;
+					tjData.state = this.checked?'0':'1';
+					// CmsUtility.postAjaxCall(
+					// 	//系统设置
+					// 	CmsConfig.addressUrl.Mechanism.updateInstitutionAdvertisementState,
+					// 	tjData,
+					// 	function(data){
+					// 		if(data.code == 1000){
+								 
+					// 			parent.layer.msg('更改成功')
+								
+					// 		}else{
+					// 			layer.msg(data.msg)
+								
+					// 		}
+					// 	},
+					// 	function(data){
+					// 		console.log('222')
+					// 	}
+					// )
+				});
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
@@ -234,34 +271,36 @@
 							card: data.card,
 							cardType: 5
 						}
-						layer.confirm('真的删除此会员卡么', {
+						layer.confirm('真的删除此代理商么', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
 							// 发送请求
-							$.ajax({
-								type: "post",
-								url: serverUrl + "memberCard/updateAssociatorCard",
-								async: true,
-								dataType: "json",
-								contentType: "application/json",
-								data: JSON.stringify(zhuxiaoData),
-								success: function(data) {
-									if(data.code == 0) {
-										layer.close(index);
-										layer.msg("会员卡已注销");
-										// 刷新页面
-										var curr = $("#curr").val();
-										layui.table.reload('vip_cardList', {
-											page: {
-												curr: curr
-											}
-										});
-									} else if(data.code == 1) {
-										layer.msg("会员卡注销失败");
+							console.log(data)
+							var addData = new Object()
+							addData.institutionNumber = userNumber
+							addData.deletionFlag = '1'
+							addData.agentNumber = data.agentNumber
+
+							console.log(addData)
+							// 发送请求
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Mechanism.updateAgentRegister,
+								addData,
+								function(data){
+									if(data.code == 1000){
+										
+										layer.msg('删除成功')
+										location.reload()
+									}else{
+										layer.msg(data.msg)
 									}
+								},
+								function(data){
+									console.log('222')
 								}
-							});
+							)
 						});
 					}
 				});

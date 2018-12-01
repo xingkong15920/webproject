@@ -39,22 +39,22 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="商户名称" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="系统订单号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="batch" placeholder="系统订单号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="下游订单号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="orderNumber" placeholder="下游订单号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="newTime" placeholder="创建时间" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="startTime" placeholder="创建时间" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="successTime" placeholder="成功时间" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="endTime" placeholder="成功时间" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<select name="cardVoucherName" id="cardVoucherName">
+						<select name="cardVoucherName" id="transactionPassageway">
 							<option value="">支付产品</option>
 							<option value="0">支付宝</option>
 							<option value="1">微信</option>
@@ -68,18 +68,14 @@
 						</select>
 					</div>
 					<div class="layui-input-inline">
-						<select name="cardVoucherName" id="cardVoucherName">
-							<option value="">通道子商户</option>
-							<option value="0">豆果</option>
-							<option value="1">闪盒</option>
-						</select>
+						<input type="text" name="couponName" id="subaccountNumber" placeholder="通道子商户" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<select name="type" id="type">
-							<option value="0">订单状态</option>
-							<option value="1">未处理</option>
-							<option value="2">成功-未返还</option>
-							<option value="3">成功-已返回</option>
+						<select name="type" id="orderState">
+							<option value="">订单状态</option>
+							<option value="1">交易成功</option>
+							<option value="2">已结算</option>
+							<option value="-1">已退款</option>
 						</select>
 					</div>
 					<div class="layui-input-inline coupons_screen">
@@ -96,6 +92,21 @@
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			function changeRes(data){
+				for(var i = 0; i < data.length;i++){
+					if(data[i].orderState == 1){
+						data[i].orderState1 = "交易成功"
+					}
+					if(data[i].orderState == 2){
+						data[i].orderState1 = "已结算"
+					}
+					if(data[i].orderState == -1){
+						data[i].orderState1 = "已退款"
+					}
+					
+				}
+				return data
+			}
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
@@ -107,8 +118,11 @@
 				table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					//url: './json/vip-card.json',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=123' ,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=111' ,
 					// + userNumber ,
+					where:{
+						
+					}
 					elem: '#members',
 					height: 'full-210',
 					id: 'vip_cardList',
@@ -117,16 +131,24 @@
 							"statusCode":"1000", //解析接口状态
 							
 					},	
+					parseData:function(res){
+						return{
+							"count":res.data.count,
+							"code":res.code,
+						 	"data": changeRes(res.data.transactionReceiptResultBeanList)
+						}
+					},
 					cols: [
 						[{
 							align: 'center',
 							type: 'checkbox'
 						}, {
 							align: 'center',
-							field: 'id',
+							field: 'batchordernumber',
 							width: 300,
 							title: '商户编号/支付通道',
 							templet:function(data){
+								console.log(data)
 								return data.merchantNumber + '/' + data.transactionPassageway
 							}
 						}, {
@@ -135,7 +157,7 @@
 							width: 300,
 							title: '系统订单号/下游订单号',
 							templet:function(data){
-								return data.batch + '/' + data.paymentOrderNumber
+								return data.batch + '/' + data.orderNumber
 							}
 						}, {
 							align: 'center',
@@ -149,19 +171,19 @@
 							title: '手续费'
 						}, {
 							align: 'center',
-							field: 'sign',
+							field: 'shishoujine',
 							width: 80,
 							title: '实收金额',
-							templet:function(data){
-								return data.transactionAmount - data.shopPoundage
-							}
+							// templet:function(data){
+							// 	return data.transactionAmount - data.shopPoundage
+							// }
 						}, {
 							align: 'center',
 							field: 'experience',
 							width: 150,
 							title: '提交时间/成功时间',
 							templet:function(data){
-								return data.orderTime.split('T')[0]+ ' '+data.orderTime.split('T')[1].split('.')[0] + '/' + data.insertTime.split('T')[0]+ ' '+data.insertTime.split('T')[1].split('.')[0]
+								return data.orderTime + '/' + data.transactionTime
 							}
 						}, {
 							align: 'center',
@@ -175,7 +197,7 @@
 							title: '订单描述',
 						}, {
 							align: 'center',
-							field: 'orderState',
+							field: 'orderState1',
 							width: 80,
 							title: '状态',
 						}, {
