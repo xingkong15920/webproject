@@ -34,8 +34,7 @@
 				iframe.attr("scrolling", "yes") //安卓设备设置为yes
 				iframe.height(dh)
 			}
-			var userNumber = '00115603209193'
-			var serverUrl = 'http://192.168.1.190:5002/'
+			var serverUrl = 'http://192.168.1.120:5007/'
 		</script>
 	</head>
 
@@ -142,5 +141,35 @@
 		<div class="page-content-bg"></div>
 		<!-- 右侧主体结束 -->
 	</body>
+	<script src="../../common/config.js"></script>
+	<script src="../../common/utility.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('#logout').click(function() {
+				console.log('退出')
+				CmsUtility.postAjaxCall(
+					//系统设置
+					CmsConfig.addressUrl.Login.exitLogin,
+					'ajaData',
+					function(data) {
+						if(data.respCode == '1000') {
+							layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
+								title: ''
+							})
+							sessionStorage.clear();
+							setTimeout(function() {
+								window.location.href = 'login.html'
+							}, 300)
 
+						} else {
+
+						}
+					},
+					function(data) {
+						console.log('222')
+					}
+				)
+			})
+		})
+	</script>
 </html>
