@@ -64,6 +64,7 @@
 			$('#quxiao').click(function(){
 				
 				setTimeout(function(){parent.layer.close(index)},16); 
+
 			})
 			var serverUrl = 'http://192.168.1.190:5002/'
 			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
@@ -138,8 +139,12 @@
 						function(data){
 							if(data.code == 1000){
 								
-								parent.layer.close(index)
-								parent.layer.msg('添加成功')
+								setTimeout(function(){
+									parent.layer.close(index)
+									parent.document.location.reload()
+									parent.layer.msg('添加成功')
+								},16); 
+								
 							}else{
 								layer.msg(data.msg)
 							}

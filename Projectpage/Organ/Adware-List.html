@@ -52,10 +52,12 @@
         <script src="../../common/utility.js"></script>
 		<script>
 			function changeRes(data){
-				var data = data.data
 				if(data == null){
 					return
 				}
+				var data = data.institutionAdvertisementList
+				console.log(data)
+				
 				for(var i = 0; i < data.length;i++){
 					if(data[i].launchChannel == 0){
 						data[i].launchChannel1 = "全部"
@@ -148,8 +150,14 @@
 					done: function(res, curr, count) {
 						
 						console.log(res)
-						if(res.data == null){
+						if(res.code == 5000){
 							layer.msg(res.msg)
+						}
+						if(!!res.data){
+
+							layer.msg('查询成功')
+						}else{
+							layer.msg('未查询到广告数据')
 						}
 
 					}

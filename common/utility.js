@@ -1,3 +1,5 @@
+
+
 var CmsUtility = (function() {
 
     /**
@@ -292,7 +294,65 @@ var CmsUtility = (function() {
     }
 
    
+    //选择省
+    function choosePro() {
+        var pro = provice
+        console.log(pro)
+        var str = '<option value="">请选择省</option>'
+        
+        for(var i = 0 ; i < pro.length;i++){
+            str += '<option value="'+pro[i].name +'">'+ pro[i].name+'</option>'
+        }
+        $('#provice').html(str)
+    }
+    function chooseCity(data){
+        console.log(data)
+        var pro = provice
+        var city;
+        for(var i = 0 ; i < pro.length;i++){
+            if(data == pro[i].name){
+                city = pro[i].city
+            }
+        }
+        console.log(city)
+        var str = '<option value="">请选择市</option>'
+        
+        for(var i = 0 ; i < city.length;i++){
+            str += '<option value="'+city[i].name +'">'+ city[i].name+'</option>'
+        }
+        console.log(str)
+        $('#city').html(str)
+    }
+    function chooseArea(data){
+        console.log(data)
+        var pro = provice
+        var pro1 = $('#provice').val()
+        var cityL;
+        var city = data
+        var area; 
+        console.log(pro)
+        for(var i = 0 ; i < pro.length;i++){
 
+            if(pro1 == pro[i].name){
+                console.log(pro[i].city)
+               cityL = pro[i].city
+            }
+        }
+        console.log(cityL)
+        for(var j = 0;j<cityL.length;j++){
+            if(city == cityL[j].name){
+               area = cityL[j].districtAndCounty
+            }
+        }
+        console.log(area)
+        var str = '<option value="">请选择县/区</option>'
+        
+        for(var i = 0 ; i < area.length;i++){
+            str += '<option value="'+area[i] +'">'+ area[i]+'</option>'
+        }
+        console.log(str)
+        $('#area').html(str)
+    }
     return {
         postAjaxCall: postAjaxCall,
         getArrFromJson: getArrFromJson,
@@ -313,6 +373,9 @@ var CmsUtility = (function() {
         getOSSShortUrl: getOSSShortUrl,
         uploadImage: uploadImage,
         uploadVideo: uploadVideo,
-        replace:replace
+        replace:replace,
+        choosePro:choosePro,
+        chooseCity:chooseCity,
+        chooseArea:chooseArea
     }
 })();

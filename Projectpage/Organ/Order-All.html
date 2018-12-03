@@ -54,14 +54,14 @@
 						<input type="text" name="couponName" id="endTime" placeholder="成功时间" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<select name="cardVoucherName" id="transactionPassageway">
+						<select name="cardVoucherName" id="oneTransactionType">
 							<option value="">支付产品</option>
 							<option value="0">支付宝</option>
 							<option value="1">微信</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
-						<select name="type" id="type">
+						<select name="type" id="transactionPassageway">
 							<option value="">支付通道</option>
 							<option value="0">富友</option>
 							<option value="1">新大陆</option>
@@ -79,7 +79,7 @@
 						</select>
 					</div>
 					<div class="layui-input-inline coupons_screen">
-						<button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
 					</div>
 				</div>
 			</div>
@@ -93,6 +93,9 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			function changeRes(data){
+				if(data == null){
+					return
+				}
 				for(var i = 0; i < data.length;i++){
 					if(data[i].orderState == 1){
 						data[i].orderState1 = "交易成功"
@@ -113,110 +116,135 @@
 				var laydate = layui.laydate,
 					table = layui.table,
 					form = layui.form;
-
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					//url: './json/vip-card.json',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=111' ,
-					// + userNumber ,
-					where:{
-						
-					}
-					elem: '#members',
-					height: 'full-210',
-					id: 'vip_cardList',
-					response: { 
-					//res 即为原始返回的数据
-							"statusCode":"1000", //解析接口状态
-							
-					},	
-					parseData:function(res){
-						return{
-							"count":res.data.count,
-							"code":res.code,
-						 	"data": changeRes(res.data.transactionReceiptResultBeanList)
+				function tableRender(){
+					//方法级渲染  
+					table.render({
+						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+						//url: './json/vip-card.json',
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=111' ,
+						// + userNumber ,
+						where:{
+							"merchantName":$('#merchantName').val(),
+							"startTime":$('#startTime').val(),
+							"endTime":$('#endTime').val(),
+							"batch":$('#batch').val(),
+							"orderNumber":$('#orderNumber').val(),
+							"oneTransactionType":$('#oneTransactionType').val(),
+							"transactionPassageway":$('#transactionPassageway').val(),
+							"subaccountNumber":$('#subaccountNumber').val(),
+							"orderState":$('#orderState').val(),
+						},
+						elem: '#members',
+						height: 'full-210',
+						id: 'vip_cardList',
+						response: { 
+						//res 即为原始返回的数据
+								"statusCode":"1000", //解析接口状态
+								
+						},	
+						parseData:function(res){
+							return{
+								"count":res.data.count,
+								"code":res.code,
+								"msg":res.msg,
+							 	"data": changeRes(res.data.transactionReceiptResultBeanList)
+							}
+						},
+						cols: [
+							[{
+								align: 'center',
+								type: 'checkbox'
+							}, {
+								align: 'center',
+								field: 'batchordernumber',
+								width: 300,
+								title: '商户编号/支付通道',
+								templet:function(data){
+									console.log(data)
+									return data.merchantNumber + '/' + data.transactionPassageway
+								}
+							}, {
+								align: 'center',
+								field: 'username',
+								width: 300,
+								title: '系统订单号/下游订单号',
+								templet:function(data){
+									return data.batch + '/' + data.orderNumber
+								}
+							}, {
+								align: 'center',
+								field: 'transactionAmount',
+								width: 80,
+								title: '交易金额',
+							}, {
+								align: 'center',
+								field: 'shopPoundage',
+								width: 80,
+								title: '手续费'
+							}, {
+								align: 'center',
+								field: 'shishoujine',
+								width: 80,
+								title: '实收金额',
+								// templet:function(data){
+								// 	return data.transactionAmount - data.shopPoundage
+								// }
+							}, {
+								align: 'center',
+								field: 'experience',
+								width: 150,
+								title: '提交时间/成功时间',
+								templet:function(data){
+									return data.orderTime + '/' + data.transactionTime
+								}
+							}, {
+								align: 'center',
+								field: 'subaccountNumber',
+								width: 100,
+								title: '通道商户号',
+							}, {
+								align: 'center',
+								field: 'errorDescribe',
+								width: 150,
+								title: '订单描述',
+							}, {
+								align: 'center',
+								field: 'orderState1',
+								width: 80,
+								title: '状态',
+							}, {
+								align: 'center',
+								title: '操作',
+								toolbar: '#toolbar',
+								minWidth: 250
+							}]
+						],
+						page: true,
+						done: function(res, curr, count) {
+							console.log(res)
+							if(res.data == null){
+								console.log(res)
+								if(!!res.msg){
+									layer.msg(res.msg)
+								}else{
+									layer.msg('无数据')
+								}
+								
+							}else{
+								layer.msg(res.msg)
+							}
 						}
-					},
-					cols: [
-						[{
-							align: 'center',
-							type: 'checkbox'
-						}, {
-							align: 'center',
-							field: 'batchordernumber',
-							width: 300,
-							title: '商户编号/支付通道',
-							templet:function(data){
-								console.log(data)
-								return data.merchantNumber + '/' + data.transactionPassageway
-							}
-						}, {
-							align: 'center',
-							field: 'username',
-							width: 300,
-							title: '系统订单号/下游订单号',
-							templet:function(data){
-								return data.batch + '/' + data.orderNumber
-							}
-						}, {
-							align: 'center',
-							field: 'transactionAmount',
-							width: 80,
-							title: '交易金额',
-						}, {
-							align: 'center',
-							field: 'shopPoundage',
-							width: 80,
-							title: '手续费'
-						}, {
-							align: 'center',
-							field: 'shishoujine',
-							width: 80,
-							title: '实收金额',
-							// templet:function(data){
-							// 	return data.transactionAmount - data.shopPoundage
-							// }
-						}, {
-							align: 'center',
-							field: 'experience',
-							width: 150,
-							title: '提交时间/成功时间',
-							templet:function(data){
-								return data.orderTime + '/' + data.transactionTime
-							}
-						}, {
-							align: 'center',
-							field: 'subaccountNumber',
-							width: 100,
-							title: '通道商户号',
-						}, {
-							align: 'center',
-							field: 'errorDescribe',
-							width: 150,
-							title: '订单描述',
-						}, {
-							align: 'center',
-							field: 'orderState1',
-							width: 80,
-							title: '状态',
-						}, {
-							align: 'center',
-							title: '操作',
-							toolbar: '#toolbar',
-							minWidth: 250
-						}]
-					],
-					page: true,
-					done: function(res, curr, count) {
-						console.log(res)
-					}
-				});
-				laydate.render({
-					elem:"#newTime"
+					});
+				}
+				tableRender()
+				$('#search').click(function(){
+					tableRender()
 				})
 				laydate.render({
-					elem:"#successTime"
+					elem:"#startTime"
+				})
+				laydate.render({
+					elem:"#endTime"
 				})
 				//监听工具条
 				table.on('tool(members)', function(obj) {

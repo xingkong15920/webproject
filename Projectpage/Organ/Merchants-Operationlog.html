@@ -61,6 +61,30 @@
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			function changeRes(res){
+				console.log(res)
+				if(res == null){
+					return
+				}
+				for(var i = 0;i<res.length;i++){
+					if(res[i].operationType == 0){
+						res[i].operationType1 = '查看'
+					}
+					if(res[i].operationType == 1){
+						res[i].operationType1 = '新增'
+					}
+					if(res[i].operationType == 2){
+						res[i].operationType1 = '修改'
+					}
+					if(res[i].operationType == 3){
+						res[i].operationType1 = '删除'
+					}
+					if(res[i].operationType == 4){
+						res[i].operationType1 = '导出'
+					}
+				}
+				return res
+			}
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
@@ -68,7 +92,6 @@
 					table = layui.table,
 					form = layui.form;
 
-				
 				//方法级渲染  
 				function tableRender(){
 					table.render({
@@ -86,12 +109,13 @@
 							"statusCode":"1000", //解析接口状态
 							
 					},
-						// parseData: function(res) { //res 即为原始返回的数据
-						// 	return {
-						// 		"code": res.code, //解析接口状态
-						// 		"data": changeRes(res), //解析数据列表
-						// 	};
-						// },
+					parseData: function(res) { //res 即为原始返回的数据
+						return {
+							"code": res.code, //解析接口状态
+							"data": changeRes(res.data), //解析数据列表
+							"msg":res.msg
+						};
+					},
 					cols: [
 						[{
 							title: 'ID',
@@ -114,7 +138,7 @@
 							title: '操作节点'
 						}, {
 							align: 'center',
-							field: 'operationType',
+							field: 'operationType1',
 							width: 200,
 							title: '类型',
 						}, {
@@ -133,7 +157,7 @@
 					],
 					page: true,
 					done: function(res, curr, count) {
-						console.log(res)
+						
 						if(res.data == null){
 							console.log(res)
 							if(!!res.msg){
@@ -142,6 +166,8 @@
 								layer.msg('无数据')
 							}
 							
+						}else{
+							layer.msg(res.msg)
 						}
 					}
 				});

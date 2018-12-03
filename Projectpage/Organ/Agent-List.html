@@ -39,7 +39,7 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="用户名" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="userName" placeholder="用户名" autocomplete="off" class="layui-input">
 					</div>
 					<!-- <div class="layui-input-inline">
 						<input type="text" name="couponName" id="couponName" placeholder="上级代理号或用户名" autocomplete="off" class="layui-input">
@@ -53,14 +53,15 @@
 						</select>
 					</div> -->
 					<div class="layui-input-inline">
-						<select name="type" id="type">
-							<option value="">商户类型</option>
-							<option value="0">普通商户</option>
-							<option value="1">补贴商户</option>
+						<select name="type" id="agentType">
+							<option value="">代理商类型</option>
+							<option value="0">普通代理商</option>
+							<option value="1">中级代理商</option>
+							<option value="2">高级代理商</option>
 						</select>
 					</div>
 					<div class="layui-input-inline coupons_screen">
-						<button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
 					</div>
 				</div>
 			</div>
@@ -82,6 +83,23 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			function changeRes(res){
+				if(res == null){
+					return
+				}
+				for(var i = 0 ; i < res.length;i++){
+					if(res[i].agentType == 0){
+						res[i].agentType1 = '普通代理商'
+					}
+					if(res[i].agentType == 1){
+						res[i].agentType1 = '中级代理商'
+					}
+					if(res[i].agentType == 2){
+						res[i].agentType1 = '高级代理商'
+					}
+				}				
+				return res
+			}
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
@@ -90,12 +108,14 @@
 					form = layui.form;
 
 				//方法级渲染  
-				table.render({
+				function tableRender(){
+					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					//url: './json/vip-card.json',
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getAgentRegisterlist + '?institutionNumber=' + userNumber ,
 					where:{
-						
+						"userName":$('#userName').val(),
+						"agentType":$('#agentType').val()
 					},
 					elem: '#members',
 					height: 'full-210',
@@ -109,14 +129,14 @@
 					//     pageName: ' ' //页码的参数名称，默认：page
 					//     ,limitName: ' ' //每页数据量的参数名，默认：limit
 					//   },
-					//					parseData: function(res) { //res 即为原始返回的数据
-					//						return {
-					//							"code": res.code, //解析接口状态
-					//							"msg": res.msg, //解析提示文本
-					//							"count": res.count, //解析数据长度
-					//							"data": changeRes(res.result,res.count), //解析数据列表
-					//						};
-					//					},
+					parseData: function(res) { //res 即为原始返回的数据
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							//"count": res.count, //解析数据长度
+							"data": changeRes(res.data), //解析数据列表
+						};
+					},
 					cols: [
 						[{
 							align: 'center',
@@ -134,7 +154,7 @@
 							title: '用户名'
 						}, {
 							align: 'center',
-							field: 'agentType',
+							field: 'agentType1',
 							width: 150,
 							title: '代理类型',
 							sort: true
@@ -181,9 +201,25 @@
 					],
 					page: true,
 					done: function(res, curr, count) {
-						console.log(res)
+						
+						if(res.data == null){
+							console.log(res)
+							if(!!res.msg){
+								layer.msg(res.msg)
+							}else{
+								layer.msg('无数据')
+							}
+							
+						}else{
+							layer.msg(res.msg)
+						}
 					}
 				});
+				}
+				tableRender()
+				$('#search').click(function(){
+					tableRender()
+				})
 				//监听状态操作
 				form.on('switch(consumptionPreferences)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)

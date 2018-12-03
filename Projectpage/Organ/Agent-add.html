@@ -13,17 +13,7 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript" src="../../public/js/data.js"></script>
-		<script type="text/javascript" src="../../public/js/province.js"></script>
-		<script type="text/javascript">
-			var defaults = {
-				s1: 'provid',
-				s2: 'cityid',
-				s3: 'areaid',
-				v1: null,
-				v2: null,
-				v3: null
-			};
-		</script>
+		
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 		<!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -122,19 +112,19 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">商户所在地</label>
 						<div class="layui-input-inline">
-							<select name="Province" id="provid" lay-filter="provid">
+							<select name="provice" id="provice" lay-filter="provice">
 								<option value="">请选择省</option>
 								<option value="河北省">河北省</option>
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="City" id="cityid" lay-filter="cityid">
+							<select name="city" id="city" lay-filter="city">
 								<option value="">请选择市</option>
 								<option value="石家庄市">石家庄市</option>
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="Area" id="areaid" lay-filter="areaid">
+							<select name="area" id="area">
 								<option value="">请选择县/区</option>
 								<option value="长安区">长安区</option>
 							</select>
@@ -162,6 +152,8 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			CmsUtility.choosePro();
+			
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function() {
 				setTimeout(function() {
@@ -179,7 +171,18 @@
 					admin = layui.admin,
 					element = layui.element,
 					layer = layui.layer;
+					form.on('select(provice)', function(data){
 
+					    CmsUtility.chooseCity(data.value)
+					    form.render()
+
+					})
+					form.on('select(city)', function(data){
+
+					    CmsUtility.chooseArea(data.value)
+					    form.render()
+
+					})
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
 					title: function(value) {
