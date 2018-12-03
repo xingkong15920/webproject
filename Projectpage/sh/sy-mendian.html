@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title></title>
@@ -11,21 +12,7 @@
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-		<script type="text/javascript">
-			$(function() {
-				$.ajax({
-					type: 'POST',
-					async: true,
-					url: ".hongsou/getProvince",
-					success: function(data) {
-						for(var i = 0; i < data.length; i++) {
-							$("#province").append("<option value='" + data[i].ProvinceID + "'>" + data[i].ProvinceName + "</option>");
-						}
-						form.render();
-					}
-				});
-			})
-		</script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
 	</head>
 
 	<body>
@@ -45,20 +32,25 @@
 					<input class="layui-input" type="text" name="shopName" id="shopName" placeholder="门店名称" autocomplete="off">
 				</div>
 				<div class="layui-input-inline">
-					<select id="province" name="province">
-						<option value="" class="layui-anim layui-anim-upbit">请选择市</option>
+					<select name="provice" id="provice" lay-filter="provice">
+						<option value="">请选择省</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<select id="city" name="city">
-						<option value="">请选择区</option>
+					<select name="city" id="city" lay-filter="city">
+						<option value="">请选择市</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<select name="area" id="area">
+						<option value="">请选择县/区</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
 					<select name="shopStatus" id="shopStatus">
 						<option value="">状态</option>
-						<option value="1">正常</option>
-						<option value="2">禁用</option>
+						<option value="0">正常</option>
+						<option value="1">禁用</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -70,68 +62,76 @@
 			</xblock>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
-		<script>
-			$("#province").change(function() {
-				$("#city").empty();
-				var pid = $("#province").val()
-				$.ajax({
-					type: 'POST',
-					async: true,
-					url: ".hongsou/getCity",
-					data: {
-						"provinceId": pid
-					},
-					success: function(data) {
-						for(var i = 0; i < data.length; i++) {
-							$("#city").append("<option value='" + data[i].CityID + "'>" + data[i].CityName + "</option>");
-						}
-						form.render();
-					}
-				});
-			});
-		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
-			{{# if(d.zhuangtai == 0){ }}
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="disable">禁用</a>
-			{{# } }} {{# if(d.zhuangtai == 1){ }}
-			<a class="layui-btn layui-btn-xs" lay-event="open">开启</a>
-			{{# } }}
 		</script>
-		<script type="text/html" id="takeout">
-			<input type="checkbox" <c:if test="${1 eq merchantsPermissions}">disabled="disabled"</c:if> name="{{d.takeoutPermissions}}" value="{{d.switchE}}" title="{{d.bianhao}}" lay-skin="switch" lay-text="开|关" lay-filter="takeoutSwitch" {{ d.switchE==0 ? 'checked' : '' }}>
-		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
+			CmsUtility.choosePro();
+			var serverUrl = window.parent.serverUrl
+			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
 			layui.use('table', function() {
 				var table = layui.table,
 					form = layui.form;
+
+				//省市区三联
+				form.on('select(provice)', function(data) {
+					CmsUtility.chooseCity(data.value)
+					form.render()
+				})
+				form.on('select(city)', function(data) {
+					CmsUtility.chooseArea(data.value)
+					form.render()
+				})
+
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_shop',
-					url: '.shop/getShopList',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' + userNumber,
 					method: "post",
 					height: 'full-195',
 					page: true,
 					id: 'shoplist',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if(res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.result,
+						}
+					},
 					cols: [
 						[{
-							field: 'ShopName',
+							field: 'shopName',
 							title: '门店名称',
 							sort: true
 						}, {
-							field: 'inserttime',
+							field: 'insertTime',
 							title: '创建时间',
 							sort: true
 						}, {
-							field: 'zhuangtaizhong',
+							field: 'enable',
 							title: '状态'
 						}, {
 							field: 'operation',
 							title: '操作',
 							toolbar: "#tool"
 						}]
-					]
+					],
+					done: function(res, curr, count) {
+						if(res.data == null) {
+							layer.msg(res.msg)
+						} else {
+							
+						}
+					}
 				});
 
 				//监听开关操作
@@ -209,8 +209,9 @@
 						reload: function() {
 							// 获取上面查询框的值
 							var shopName = $('#shopName');
-							var Province = $('#province');
-							var City = $('#city');
+							var province = $('#province');
+							var city = $('#city');
+							var area = $('#area');
 							var shopStatus = $('#shopStatus');
 							//执行重载
 							table.reload('shoplist', {
@@ -219,9 +220,10 @@
 								},
 								where: {
 									shopName: shopName.val(),
-									Province: Province.val(),
-									City: City.val(),
-									shopStatus: shopStatus.val()
+									province: province.val(),
+									city: city.val(),
+									area: area.val(),
+									enable: shopStatus.val()
 								}
 							});
 						}
@@ -322,7 +324,7 @@
 						});
 					}
 				});
-				$('.searchTable .layui-btn').on('click', function() {
+				$('.layui-form .layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});
