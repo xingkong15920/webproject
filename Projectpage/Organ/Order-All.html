@@ -143,6 +143,9 @@
 								
 						},	
 						parseData:function(res){
+							if(res.code != 1000 || res.data == null){
+								return
+							}
 							return{
 								"count":res.data.count,
 								"code":res.code,
@@ -222,6 +225,7 @@
 						page: true,
 						done: function(res, curr, count) {
 							console.log(res)
+
 							if(res.data == null){
 								console.log(res)
 								if(!!res.msg){
