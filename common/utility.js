@@ -296,9 +296,7 @@ var CmsUtility = (function() {
    
     //选择省
     function choosePro(data) {
-        console.log(data)
         var pro = provice
-        console.log(pro)
         var str = '<option value="">请选择省</option>'
         
         for(var i = 0 ; i < pro.length;i++){
@@ -310,11 +308,13 @@ var CmsUtility = (function() {
             
         }
         $('#provice').html(str)
-
-        $('#provice').val(data)
     }
     function chooseCity(data,data1){
-        console.log(data)
+         if(!data){
+            $('#city').html('<option value="">请选择市</option>')
+            $('#area').html('<option value="">请选择县/区</option>')
+            return
+        }
         var pro = provice
         var city;
         for(var i = 0 ; i < pro.length;i++){
@@ -322,7 +322,6 @@ var CmsUtility = (function() {
                 city = pro[i].city
             }
         }
-        console.log(city)
         var str = '<option value="">请选择市</option>'
         
         for(var i = 0 ; i < city.length;i++){
@@ -333,18 +332,19 @@ var CmsUtility = (function() {
             }
             
         }
-        console.log(str)
         $('#city').html(str)
         $('#area').html('<option value="">请选择县/区</option>')
     }
     function chooseArea(data,data1){
-        console.log(data)
+        if(!data){
+            $('#area').html('<option value="">请选择县/区</option>')
+            return
+        }
         var pro = provice
         var pro1 = $('#provice').val()
         var cityL;
         var city = data
         var area; 
-        console.log(pro)
         for(var i = 0 ; i < pro.length;i++){
 
             if(pro1 == pro[i].name){
@@ -352,13 +352,11 @@ var CmsUtility = (function() {
                cityL = pro[i].city
             }
         }
-        console.log(cityL)
         for(var j = 0;j<cityL.length;j++){
             if(city == cityL[j].name){
                area = cityL[j].districtAndCounty
             }
         }
-        console.log(area)
         var str = '<option value="">请选择县/区</option>'
         
         for(var k = 0 ; k < area.length;k++){
@@ -369,7 +367,6 @@ var CmsUtility = (function() {
             }
             
         }
-        console.log(str)
         $('#area').html(str)
     }
     return {
