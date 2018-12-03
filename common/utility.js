@@ -295,17 +295,25 @@ var CmsUtility = (function() {
 
    
     //选择省
-    function choosePro() {
+    function choosePro(data) {
+        console.log(data)
         var pro = provice
         console.log(pro)
         var str = '<option value="">请选择省</option>'
         
         for(var i = 0 ; i < pro.length;i++){
-            str += '<option value="'+pro[i].name +'">'+ pro[i].name+'</option>'
+            if(data == pro[i].name){
+                str += '<option value="'+pro[i].name +'" selected="">'+ pro[i].name+'</option>'
+            }else{
+                str += '<option value="'+pro[i].name +'">'+ pro[i].name+'</option>'
+            }
+            
         }
         $('#provice').html(str)
+
+        $('#provice').val(data)
     }
-    function chooseCity(data){
+    function chooseCity(data,data1){
         console.log(data)
         var pro = provice
         var city;
@@ -318,12 +326,18 @@ var CmsUtility = (function() {
         var str = '<option value="">请选择市</option>'
         
         for(var i = 0 ; i < city.length;i++){
-            str += '<option value="'+city[i].name +'">'+ city[i].name+'</option>'
+            if(data1 == city[i].name){
+                str += '<option value="'+city[i].name +'" selected="">'+ city[i].name+'</option>'
+            }else{
+                str += '<option value="'+city[i].name +'">'+ city[i].name+'</option>'
+            }
+            
         }
         console.log(str)
         $('#city').html(str)
+        $('#area').html('<option value="">请选择县/区</option>')
     }
-    function chooseArea(data){
+    function chooseArea(data,data1){
         console.log(data)
         var pro = provice
         var pro1 = $('#provice').val()
@@ -347,8 +361,13 @@ var CmsUtility = (function() {
         console.log(area)
         var str = '<option value="">请选择县/区</option>'
         
-        for(var i = 0 ; i < area.length;i++){
-            str += '<option value="'+area[i] +'">'+ area[i]+'</option>'
+        for(var k = 0 ; k < area.length;k++){
+            if(data1 == area[k]){
+                str += '<option value="'+area[k] +'" selected="">'+ area[k]+'</option>'
+            }else{
+                str += '<option value="'+area[k] +'">'+ area[k]+'</option>'
+            }
+            
         }
         console.log(str)
         $('#area').html(str)

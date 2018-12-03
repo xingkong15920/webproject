@@ -13,6 +13,7 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 		<!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -111,35 +112,21 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">所在区域</label>
 						<div class="layui-input-inline">
-							<select name="province" lay-verify="title">
-								<option value="">请选择省</option>
-								<option value="河北省">河北省</option>
-								<option value="浙江省" selected="">浙江省</option>
-								<option value="江西省">江西省</option>
-								<option value="福建省">福建省</option>
+							<select name="provice" id="provice" lay-filter="provice" lay-verify="title">
+								
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="city" lay-verify="title"> 
-								<option value="">请选择市</option>
-								<option value="石家庄市">石家庄市</option>
-								<option value="杭州">杭州</option>
-								<option value="宁波" disabled="">宁波</option>
-								<option value="温州">温州</option>
-								<option value="温州">台州</option>
-								<option value="温州">绍兴</option>
+							<select name="city" id="city" lay-filter="city" lay-verify="title"> 
+								
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="area" lay-verify="title">
-								<option value="">请选择县/区</option>
-								<option value="长安区">长安区</option>
-								<option value="西湖区">西湖区</option>
-								<option value="余杭区">余杭区</option>
-								<option value="拱墅区">临安市</option>
+							<select name="area"  id="area" lay-filter="area"  lay-verify="title">
+								
 							</select>
 						</div>
-						<div class="layui-form-mid layui-word-aux">此处只是演示联动排版，并未做联动交互</div>
+						<!-- <div class="layui-form-mid layui-word-aux">此处只是演示联动排版，并未做联动交互</div> -->
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">详细地址</label>
@@ -163,6 +150,7 @@
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			CmsUtility.choosePro();
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function(){
 				
@@ -190,10 +178,26 @@
 						"agentName":jgData.agentName,
 						"userName":jgData.userName,
 						"registerCell":jgData.registerCell,
-						"province":jgData.province,
+						"provice":jgData.province,
 						"city":jgData.city,
 						"area":jgData.area,
 						"address":jgData.address,
+					})
+					CmsUtility.choosePro(jgData.province);
+					CmsUtility.chooseCity(jgData.province,jgData.city)
+					CmsUtility.chooseArea(jgData.city,jgData.area)
+					form.render()
+					form.on('select(provice)', function(data){
+
+					    CmsUtility.chooseCity(data.value)
+					    form.render()
+
+					})
+					form.on('select(city)', function(data){
+
+					    CmsUtility.chooseArea(data.value)
+					    form.render()
+
 					})
 				/*---------- 自定义验证规则 ----------*/
 					form.verify({
