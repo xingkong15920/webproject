@@ -59,9 +59,9 @@
 					<div class="layui-input-inline">
 						<select name="cardVoucherName" id="cardVoucherName">
 							<option value="">认证</option>
-							<option value="1">未认证</option>
-							<option value="2">待审核</option>
-							<option value="3">已认证</option>
+							<option value="0">未审核</option>
+							<option value="1">审核中</option>
+							<option value="2">已审核</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -92,9 +92,9 @@
 		</script>
 		<script type="text/html" id="selectBar_rz">
 			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchants}}" >
-				<option value="0" {{d.audittype==0 ? 'selected' : ''}}>未认证</option>
-				<option value="1" {{d.audittype==1 ? 'selected' : ''}}>待审核</option>
-				<option value="2" {{d.audittype==2 ? 'selected' : ''}}>已认证</option>
+				<option value="0" {{d.audittype==0 ? 'selected' : ''}}>未审核</option>
+				<option value="1" {{d.audittype==1 ? 'selected' : ''}}>审核中</option>
+				<option value="2" {{d.audittype==2 ? 'selected' : ''}}>已审核</option>
 			</select>
 		</script>
 		<script type="text/html" id="toolbar">
@@ -111,6 +111,7 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			//return false;
 			function changeRes(res) {
 				var res = res
 				if(res.length == 0) {
@@ -121,7 +122,7 @@
 				return res
 			}
 			var serverUrl = window.parent.serverUrl
-			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,

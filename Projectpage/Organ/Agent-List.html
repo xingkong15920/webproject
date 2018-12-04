@@ -101,7 +101,7 @@
 				return res
 			}
 			var serverUrl = window.parent.serverUrl
-			var userNumber = JSON.parse(sessionStorage.getItem('user')).Number;
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -165,8 +165,8 @@
 							title: '上级代理'
 						}, {
 							align: 'center',
-							field: 'deletionFlag',
-							width: 150,
+							toolbar: '#switchBar',
+							width: 100,
 							title: '状态',
 						}, {
 							align: 'center',
@@ -186,13 +186,7 @@
 							width: 150,
 							title: '最后登录时间',
 							sort: true
-						} ,
-						// {
-						// 	align: 'center',
-						// 	toolbar: '#switchBar',
-						// 	width: 100,
-						// 	title: '状态',},
-						 {
+						} ,{
 							align: 'center',
 							title: '操作',
 							toolbar: '#toolbar',
@@ -203,7 +197,6 @@
 					done: function(res, curr, count) {
 						
 						if(res.data == null){
-							console.log(res)
 							if(!!res.msg){
 								layer.msg(res.msg)
 							}else{
@@ -223,8 +216,6 @@
 				//监听状态操作
 				form.on('switch(consumptionPreferences)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					console.log(this.checked)
-					console.log(data)
 					return
 					var tjData = new Object();
 					tjData.institutionNumber = userNumber;
