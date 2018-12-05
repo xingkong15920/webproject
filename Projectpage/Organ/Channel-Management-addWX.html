@@ -33,43 +33,43 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">公众号APPID</label>
 						<div class="layui-input-block">
-							<input type="text" name="publicappID" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="publicappID">
+							<input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="publicappID">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">公众号密钥</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="miyao" autocomplete="off" placeholder="公众号密钥" lay-verify="miyao" rows="3"></textarea>
+							<textarea class="layui-textarea" name="paymentSecretkey" autocomplete="off" placeholder="公众号密钥" lay-verify="paymentSecretkey" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">小程序APPID</label>
 						<div class="layui-input-block">
-							<input type="text" name="miniappID" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="appID">
+							<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">微信服务商ID</label>
 						<div class="layui-input-block">
-							<input type="text" name="fuwushangID" autocomplete="off" placeholder="微信服务商ID" class="layui-input" lay-verify="fuwushangID">
+							<input type="text" name="facilitatorId" autocomplete="off" placeholder="微信服务商ID" class="layui-input" lay-verify="facilitatorId">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">微信支付key</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="paykey" autocomplete="off" placeholder="微信支付key" lay-verify="paykey" rows="3"></textarea>
+							<textarea class="layui-textarea" name="wechatKey" autocomplete="off" placeholder="微信支付key" lay-verify="wechatKey" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">回调地址</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="huidiao" autocomplete="off" placeholder="回调地址" rows="3"></textarea>
+							<textarea class="layui-textarea" name="tokenUrl" autocomplete="off" placeholder="回调地址" rows="3" lay-verify="tokenUrl"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">支付网关</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="wangguan" autocomplete="off" placeholder="支付网关" rows="3"></textarea>
+							<textarea class="layui-textarea" name="wechatPaymentGateway" autocomplete="off" placeholder="支付网关" rows="3" lay-verity="wechatPaymentGateway"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -89,7 +89,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">通道状态</label>
 						<div class="layui-input-block">
-							<input type="checkbox" name="GFwxswitch" lay-skin="switch" lay-filter="GFwxswitch" lay-text="开|关">
+							<input type="checkbox" name="wechatDisable" lay-skin="switch" lay-filter="GFwxswitch" lay-text="开|关">
 						</div>
 					</div>
 
@@ -117,7 +117,7 @@
 				return res
 			}
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 			layui.use(['laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
@@ -128,60 +128,47 @@
 					element = layui.element,
 					layer = layui.layer;
 
-				//退款证书
-				upload.render({
-					elem: '#tuikuanchoose',
-					url: '/upload/',
-					accept: 'file',
-					auto: false,
-					bindAction: '#tuikuanupload',
-					done: function(res) {
-						console.log(res)
-					}
-				});
-				//域名校验文件
-				upload.render({
-					elem: '#yumingchoose',
-					url: '/upload/',
-					accept: 'file',
-					auto: false,
-					bindAction: '#yumingupload',
-					done: function(res) {
-						console.log(res)
-					}
-				});
-
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
-					publicappID: function(value) {
+					wechatAppid: function(value) {
 						if(value.length == "") {
-							return '公众号APPID不能为空！';
+							return '公众号AppID不能为空！';
 						}
 					},
-					miyao: function(value) {
+					smallroutineAppid: function(value) {
 						if(value.length == "") {
-							return '公众号密钥不能为空！';
+							return '微信小程序AppID不能为空！';
 						}
 					},
-					appID: function(value) {
+					paymentSecretkey: function(value) {
 						if(value.length == "") {
-							return '小程序APPID不能为空！';
+							return '微信支付秘钥不能为空！';
 						}
 					},
-					fuwushangID: function(value) {
+					facilitatorId: function(value) {
 						if(value.length == "") {
 							return '微信服务商ID不能为空！';
 						}
 					},
-					paykey: function(value) {
+					wechatKey: function(value) {
 						if(value.length == "") {
 							return '微信支付key不能为空！';
+						}
+					},
+					tokenUrl: function(value) {
+						if(value.length == "") {
+							return '微信回到地址不能为空！';
+						}
+					},
+					wechatPaymentGateway: function(value) {
+						if(value.length == "") {
+							return '微信退款证书不能为空';
 						}
 					}
 				});
 
-				form.on('switch(GFwxswitch)', function(data) { //计次开关
-					layer.tips('微信官方通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+				form.on('switch(GF_zfbswitch)', function(data) { //计次开关
+					layer.tips('支付宝官方通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					if(data.elem.checked == true) {
 						data.elem.value = "0"
 						console.log(data.elem.value)
@@ -193,31 +180,35 @@
 
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
-					if(!data.field.GFwxswitch) { //消费优惠开关
-						data.field.GFwxswitch = '1'
+					if(!data.field.GFzfbswitch) { //消费优惠开关
+						data.field.GFzfbswitch = '1'
 					}
 					layer.alert(JSON.stringify(data.field))
-					var addData = JSON.stringify(data.field)
-
+					var addData = data.field
+					addData.paymentChannel = 'Alipay'
+					addData.alipayDisable = addData.GFzfbswitch
 					// 发送请求
-					$.ajax({
-						type: "post",
-						url: serverUrl + "memberCard/addMemberCard",
-						async: true,
-						dataType: "json",
-						contentType: "application/json",
-						data: addData,
-						success: function(data) {
-							if(data.code == "0") {
-								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-								parent.layer.close(index); //再执行关闭
-								parent.layer.msg(data.msg);
-								parent.layui.table.reload('vip_cardList');
-							} else if(data.code == "1") {
-								layer.msg("添加会员卡失败");
-							}
-						}
-					});
+					console.log(addData)
+					CmsUtility.postAjaxCall(
+                        //系统设置
+                       CmsConfig.addressUrl.Mechanism.insertGFOfficial,
+                        addData,
+                        function(data){
+                            if(data.code == '1000'){
+                               layer.msg('添加成功')
+                                sessionStorage.setItem("organUser",JSON.stringify(data.data));
+                                setTimeout(function(){
+                                   window.location.href = 'index.html' 
+                                },300)
+                                
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        },
+                        function(data){
+                            console.log('222')
+                        }
+                    )
 					return false;
 				});
 

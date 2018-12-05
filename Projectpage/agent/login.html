@@ -14,6 +14,7 @@
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
 		<link rel="stylesheet" href="../../public/css/style_Forgot.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
         <script type="text/javascript" src="../../public/js/data.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
@@ -70,17 +71,36 @@
        <script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
         <script type="text/javascript">
-        	
         var code1 = ''
         var cname = ''
         var cip = ''
         var code
-		$.getScript('http://pv.sohu.com/cityjson?ie=utf-8',function(){
-				   console.log(returnCitySN)
-				   cname = returnCitySN.cname
-				   cip = returnCitySN.cip
-				   console.log(cname,cip)
-			});
+        $.getScript('http://pv.sohu.com/cityjson?ie=utf-8',function(){
+                   console.log(returnCitySN)
+                   
+                   cip = returnCitySN.cip
+                   console.log(cname,cip)
+            });
+
+           
+            //获取用户所在城市信息
+            function showCityInfo() {
+                //实例化城市查询类
+                var citysearch = new AMap.CitySearch();
+                //自动获取用户IP，返回当前城市
+                citysearch.getLocalCity(function(status, result) {
+                    console.log(status,result)
+                    if (status === 'complete' && result.info === 'OK') {
+                        if (result && result.city && result.bounds) {
+                            cname = result.province + result.city
+                            
+                        }
+                    } else {
+                        
+                    }
+                });
+            }
+            showCityInfo();
 
          
         $(function() {

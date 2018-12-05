@@ -31,51 +31,51 @@
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="tongdao">
 					<div class="layui-form-item">
-						<label class="layui-form-label">应用appid</label>
+						<label class="layui-form-label">支付宝AppID</label>
 						<div class="layui-input-block">
-							<input type="text" name="appid" autocomplete="off" placeholder="应用appid" class="layui-input" lay-verify="appid">
+							<input type="text" name="alipayAppid" autocomplete="off" placeholder="应用appid" class="layui-input" lay-verify="alipayAppid">
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">合作伙伴pid</label>
+						<label class="layui-form-label">支付宝PID</label>
 						<div class="layui-input-block">
-							<input type="text" name="pid" autocomplete="off" placeholder="合作伙伴pid" class="layui-input" lay-verify="pid">
+							<input type="text" name="alipayPid" autocomplete="off" placeholder="合作伙伴pid" class="layui-input" lay-verify="alipayPid">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">RSA私钥</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="rsasi" autocomplete="off" placeholder="RSA私钥" lay-verify="rsasi" rows="3"></textarea>
+							<textarea class="layui-textarea" name="privateKey" autocomplete="off" placeholder="RSA私钥" lay-verify="privateKey" rows="3" ></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">RSA公钥</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="rsagong" autocomplete="off" placeholder="RSA公钥" lay-verify="rsagong" rows="3"></textarea>
+							<textarea class="layui-textarea" name="publicKey" autocomplete="off" placeholder="RSA公钥" lay-verify="publicKey" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">应用公钥</label>
+						<label class="layui-form-label">支付宝应用公钥</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="yingyong" autocomplete="off" placeholder="应用公钥" lay-verify="yingyong" rows="3"></textarea>
+							<textarea class="layui-textarea" name="alipayPublicKey" autocomplete="off" placeholder="应用公钥" lay-verify="alipayPublicKey" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">回调地址</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="huidiao" autocomplete="off" placeholder="回调地址" rows="3"></textarea>
+							<textarea class="layui-textarea" name="notifyUrl" autocomplete="off" placeholder="回调地址" rows="3" lay-verify="notifyUrl"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">支付网关</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="wangguan" autocomplete="off" placeholder="支付网关" rows="3"></textarea>
+							<textarea class="layui-textarea" name="alipayPaymentGateway" autocomplete="off" placeholder="支付网关" rows="3" lay-verify="alipayPaymentGateway"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">通道状态</label>
 						<div class="layui-input-block">
-							<input type="checkbox" name="GFzfbswitch" lay-skin="switch" lay-filter="GF_zfbswitch" lay-text="开|关">
+							<input type="checkbox" name="alipayDisable" lay-skin="switch" lay-filter="GF_zfbswitch" lay-text="开|关">
 						</div>
 					</div>
 
@@ -91,6 +91,8 @@
 				</form>
 			</div>
 		</div>
+		 <script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			function changeRes(res) {
 				var res = res
@@ -103,7 +105,7 @@
 				return res
 			}
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 			layui.use(['laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
@@ -116,31 +118,41 @@
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
-					appid: function(value) {
+					alipayAppid: function(value) {
 						if(value.length == "") {
-							return '应用appid不能为空！';
+							return '支付宝APPID不能为空！';
 						}
 					},
-					pid: function(value) {
+					alipayPid: function(value) {
 						if(value.length == "") {
-							return '合作伙伴pid不能为空！';
+							return '支付宝PID不能为空！';
 						}
 					},
-					rsasi: function(value) {
+					privateKey: function(value) {
 						if(value.length == "") {
 							return 'RSA私钥不能为空！';
 						}
 					},
-					rsagong: function(value) {
+					publicKey: function(value) {
 						if(value.length == "") {
 							return 'RSA公钥不能为空！';
 						}
 					},
-					yingyong: function(value) {
+					alipayPublicKey: function(value) {
 						if(value.length == "") {
 							return '应用公钥不能为空！';
 						}
-					}
+					},
+					notifyUrl	: function(value) {
+						if(value.length == "") {
+							return '支付宝回调地址不能为空！';
+						}
+					},
+					alipayPaymentGateway: function(value) {
+						if(value.length == "") {
+							return '支付宝支付网关不能为空';
+						}
+					},
 				});
 
 				form.on('switch(GF_zfbswitch)', function(data) { //计次开关
@@ -160,27 +172,31 @@
 						data.field.GFzfbswitch = '1'
 					}
 					layer.alert(JSON.stringify(data.field))
-					var addData = JSON.stringify(data.field)
-
+					var addData = data.field
+					addData.paymentChannel = 'Alipay'
+					addData.alipayDisable = addData.GFzfbswitch
 					// 发送请求
-					$.ajax({
-						type: "post",
-						url: serverUrl + "memberCard/addMemberCard",
-						async: true,
-						dataType: "json",
-						contentType: "application/json",
-						data: addData,
-						success: function(data) {
-							if(data.code == "0") {
-								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-								parent.layer.close(index); //再执行关闭
-								parent.layer.msg(data.msg);
-								parent.layui.table.reload('vip_cardList');
-							} else if(data.code == "1") {
-								layer.msg("添加会员卡失败");
-							}
-						}
-					});
+					console.log(addData)
+					CmsUtility.postAjaxCall(
+                        //系统设置
+                       CmsConfig.addressUrl.Mechanism.insertGFOfficial,
+                        addData,
+                        function(data){
+                            if(data.code == '1000'){
+                               layer.msg('添加成功')
+                                sessionStorage.setItem("organUser",JSON.stringify(data.data));
+                                setTimeout(function(){
+                                   window.location.href = 'index.html' 
+                                },300)
+                                
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        },
+                        function(data){
+                            console.log('222')
+                        }
+                    )
 					return false;
 				});
 

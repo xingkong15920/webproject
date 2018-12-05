@@ -71,12 +71,19 @@
 					<!--隐藏-->
 					<!--基本信息-->
 					<blockquote class="layui-elem-quote">基本信息</blockquote>
+					
 					<div class="layui-form-item">
 						<label class="layui-form-label">商户类型</label>
 						<div class="layui-input-inline widthauto">
 							<input type="radio" name="merchantType" value="0" title="个人" lay-filter="cardvalid" checked="">
 							<input type="radio" name="merchantType" value="1" title="个体" lay-filter="cardvalid">
 							<input type="radio" name="merchantType" value="2" title="企业" lay-filter="cardvalid">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">商户名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -88,7 +95,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">营业执照有效期</label>
 						<div class="layui-input-block">
-							<input type="text" name="businessLicenseTime" lay-verify="title" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input">
+							<input type="text" name="businessLicenseTime" lay-verify="title" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseTime">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -106,16 +113,16 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">法人身份证有效期</label>
 						<div class="layui-input-block">
-							<input type="text" name="shenfenzhengyouxiaoqi" lay-verify="title" autocomplete="off" placeholder="请选择法人身份证有效期" class="layui-input">
+							<input type="text" name="juridicalpersonIdTime" lay-verify="title" autocomplete="off" placeholder="请选择法人身份证有效期" class="layui-input" id="juridicalpersonIdTime">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">注册电话</label>
 						<div class="layui-input-block">
-							<input type="text" name="registerCell" lay-verify="title" autocomplete="off" placeholder="请输入联系电话,将作为登录用户名使用" class="layui-input">
+							<input type="text" name="registerCell" lay-verify="number" autocomplete="off" placeholder="请输入联系电话,将作为登录用户名使用" class="layui-input">
 						</div>
 					</div>
-					<div class="layui-form-item">
+					<!-- <div class="layui-form-item">
 						<label class="layui-form-label">请输入密码</label>
 						<div class="layui-input-block">
 							<input type="text" name="passWord" lay-verify="pass" autocomplete="off" placeholder="请输入密码" class="layui-input" id="passWord">
@@ -126,7 +133,7 @@
 						<div class="layui-input-block">
 							<input type="text" name="" lay-verify="repassWord" autocomplete="off" placeholder="请确认密码" class="layui-input" id="repassWord">
 						</div>
-					</div>
+					</div> -->
 					<div class="layui-form-item">
 						<label class="layui-form-label">经营范围</label>
 						<div class="layui-input-inline">
@@ -356,6 +363,14 @@
 					element = layui.element,
 					layer = layui.layer;
 				var tableSelect = layui.tableSelect;
+				
+				laydate.render({
+				    elem: '#businessLicenseTime' //指定元素
+				  });
+				laydate.render({
+				    elem: '#juridicalpersonIdTime' //指定元素
+				  });
+				
 				form.on('select(provice)', function(data){
 
 					    CmsUtility.chooseCity(data.value)
@@ -428,9 +443,9 @@
 				});
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
-					layer.alert(JSON.stringify(data.field), {
-						title: '最终的提交信息'
-					})
+					// layer.alert(JSON.stringify(data.field), {
+					// 	title: '最终的提交信息'
+					// })
 					var addData = data.field
 					addData.institutionNumber = userNumber
 					console.log(addData)
