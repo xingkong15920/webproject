@@ -47,16 +47,11 @@
 			</xblock>
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
 		</div>
-		<script type="text/javascript">
-			$("#baobiao").click(function() {
-				var shopName = $('#shopName').val(); //门店名称
-				var startTime = $("#startTime").val();
-				var endTime = $("#endTime").val();
-				window.location.href = "${pageContext.request.contextPath }/Bill/getmendianReport?shopName=" + encodeURI(encodeURI(shopName)) + "&startTime=" + startTime + "&endTime=" + endTime;
-			})
-		</script>
-
+		<script src="../../common/config.js"></script>
+		<script src="../../common/utility.js"></script>
 		<script>
+			var serverUrl = window.parent.serverUrl
+			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var startDate = new Date();
 			var endDate = new Date();
 			var nowTime = new Date().valueOf();
@@ -81,10 +76,23 @@
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_bill',
-					url: '${pageContext.request.contextPath }/Bill/getBillmendianList',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShopBill + '?merchantNumber=' + userNumber,
 					method: "post",
 					page: true,
 					id: 'billlist',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if(res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.result,
+						}
+					},
 					cols: [
 						[{
 							field: 'shopname',
