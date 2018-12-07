@@ -33,55 +33,55 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">微信APPID</label>
 						<div class="layui-input-block">
-							<input type="text" name="wxappid" autocomplete="off" placeholder="微信APPID" class="layui-input" lay-verify="wxappid">
+							<input type="text" name="wechatAppid" autocomplete="off" placeholder="微信APPID" class="layui-input" lay-verify="wxappid">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">小程序APPID</label>
 						<div class="layui-input-block">
-							<input type="text" name="miniappid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="miniappid">
+							<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="miniappid">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">商户私钥</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="siyao" autocomplete="off" placeholder="商户私钥" lay-verify="siyao" rows="3"></textarea>
+							<textarea class="layui-textarea" name="insPrivateKey" autocomplete="off" placeholder="商户私钥" lay-verify="siyao" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">商户公钥</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="gongyao" autocomplete="off" placeholder="商户公钥" lay-verify="gongyao" rows="3"></textarea>
+							<textarea class="layui-textarea" name="insPublicKey" autocomplete="off" placeholder="商户公钥" lay-verify="gongyao" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">富友公钥</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="fygongyao" autocomplete="off" placeholder="富友公钥" lay-verify="fygongyao" rows="3"></textarea>
+							<textarea class="layui-textarea" name="publicKey" autocomplete="off" placeholder="富友公钥" lay-verify="fygongyao" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">机构号</label>
 						<div class="layui-input-block">
-							<input type="text" name="jigouhao" autocomplete="off" placeholder="机构号" class="layui-input" lay-verify="jigouhao">
+							<input type="text" name="paymentInstitutionNo" autocomplete="off" placeholder="机构号" class="layui-input" lay-verify="jigouhao">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">回调地址</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="huidiao" autocomplete="off" placeholder="回调地址" rows="3"></textarea>
+							<textarea class="layui-textarea" name="notifyUrl" autocomplete="off" placeholder="回调地址" rows="3" lay-verify="huidiaodizhi"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">支付网关</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="wangguan" autocomplete="off" placeholder="支付网关" rows="3"></textarea>
+							<textarea class="layui-textarea" name="paymentGateway" autocomplete="off" placeholder="支付网关" rows="3" lay-verify="zhifuwangguan"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">通道状态</label>
 						<div class="layui-input-block">
-							<input type="checkbox" name="fyswitch" lay-skin="switch" lay-filter="fyswitch" lay-text="开|关">
+							<input type="checkbox" name="disable" lay-skin="switch" lay-filter="fyswitch" lay-text="开|关">
 						</div>
 					</div>
 
@@ -97,6 +97,8 @@
 				</form>
 			</div>
 		</div>
+		 <script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			function changeRes(res) {
 				var res = res
@@ -109,7 +111,8 @@
 				return res
 			}
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
+			var merchantCa = false;
 			layui.use(['laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
@@ -174,47 +177,58 @@
 						if(value.length == "") {
 							return '机构号不能为空！';
 						}
+					},
+					huidiaodizhi: function(value) {
+						if(value.length == "") {
+							return '回调地址不能为空';
+						}
+					},
+					zhifuwangguan: function(value) {
+						if(value.length == "") {
+							return '支付网关不能为空';
+						}
 					}
 				});
 
 				form.on('switch(fyswitch)', function(data) { //计次开关
 					layer.tips('富友通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					if(data.elem.checked == true) {
-						data.elem.value = "0"
-						console.log(data.elem.value)
-					} else if(data.elem.checked == false) {
-						data.elem.value = "1"
-						console.log(data.elem.value)
-					}
+					merchantCa = this.checked
 				});
 				
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
-					if(!data.field.fyswitch) { //消费优惠开关
-						data.field.fyswitch = '1'
+					
+					var addData = data.field
+					addData.paymentChannel = 'fuyou'
+					if(merchantCa == false){
+						addData.alipayDisable = 1
+					}else{
+						addData.alipayDisable = 0
 					}
-					layer.alert(JSON.stringify(data.field))
-					var addData = JSON.stringify(data.field)
-
+					addData.institutionNumber = userNumber;
 					// 发送请求
-					$.ajax({
-						type: "post",
-						url: serverUrl + "memberCard/addMemberCard",
-						async: true,
-						dataType: "json",
-						contentType: "application/json",
-						data: addData,
-						success: function(data) {
-							if(data.code == "0") {
-								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-								parent.layer.close(index); //再执行关闭
-								parent.layer.msg(data.msg);
-								parent.layui.table.reload('vip_cardList');
-							} else if(data.code == "1") {
-								layer.msg("添加会员卡失败");
-							}
-						}
-					});
+					console.log(addData)
+					CmsUtility.postAjaxCall(
+                        //系统设置
+                       CmsConfig.addressUrl.Mechanism.insertGFOfficial,
+                        addData,
+                        function(data){
+                            if(data.code == '1000'){
+                               layer.msg('添加成功')
+                               setTimeout(function(){
+                               		x_admin_close()
+                               		parent.location.reload()
+                               	},2000)
+                                
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        },
+                        function(data){
+                            console.log('222')
+                        }
+                    )
+					return false;
 					return false;
 				});
 

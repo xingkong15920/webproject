@@ -104,8 +104,10 @@
 				}
 				return res
 			}
+			var index = parent.layer.getFrameIndex(window.name);
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
+			var merchantCa = false;
 			layui.use(['laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
@@ -157,24 +159,24 @@
 
 				form.on('switch(GF_zfbswitch)', function(data) { //计次开关
 					layer.tips('支付宝官方通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					if(data.elem.checked == true) {
-						data.elem.value = "0"
-						console.log(data.elem.value)
-					} else if(data.elem.checked == false) {
-						data.elem.value = "1"
-						console.log(data.elem.value)
-					}
+					merchantCa = this.checked
 				});
 
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
-					if(!data.field.GFzfbswitch) { //消费优惠开关
-						data.field.GFzfbswitch = '1'
-					}
-					layer.alert(JSON.stringify(data.field))
+					// if(!data.field.GFzfbswitch) { //消费优惠开关
+					// 	data.field.GFzfbswitch = '1'
+					// }
+					
 					var addData = data.field
+					console.log(merchantCa)
+					if(merchantCa == false){
+						addData.alipayDisable = 1
+					}else{
+						addData.alipayDisable = 0
+					}
+					addData.institutionNumber = userNumber;
 					addData.paymentChannel = 'Alipay'
-					addData.alipayDisable = addData.GFzfbswitch
 					// 发送请求
 					console.log(addData)
 					CmsUtility.postAjaxCall(
@@ -183,11 +185,13 @@
                         addData,
                         function(data){
                             if(data.code == '1000'){
-                               layer.msg('添加成功')
-                                sessionStorage.setItem("organUser",JSON.stringify(data.data));
-                                setTimeout(function(){
-                                   window.location.href = 'index.html' 
-                                },300)
+                            	
+                               	parent.layer.msg('添加成功')
+                               	setTimeout(function(){
+                               		x_admin_close()
+                               		parent.location.reload()
+                               	},2000)
+                               
                                 
                             }else{
                                 layer.msg(data.msg)

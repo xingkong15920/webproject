@@ -32,14 +32,19 @@
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
+		<script type="text/html" id="switchBar">
+			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="switch" lay-text="启用|停用" {{d.disable==0 ? 'checked' : ''}} value="{{d.subaccountNumber}}">
+		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="riskctrl">风控</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -48,44 +53,47 @@
 				//方法级渲染  
 				table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: './json/vip-card.json',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionSub + '?institutionNumber=' + userNumber ,
+					where:{
+						"paymentChannel":'WeChat'
+					},
 					elem: '#members',
 					height: 'full-120',
 					id: 'vip_cardList',
-					//					parseData: function(res) { //res 即为原始返回的数据
-					//						return {
-					//							"code": res.code, //解析接口状态
-					//							"msg": res.msg, //解析提示文本
-					//							"count": res.count, //解析数据长度
-					//							"data": changeRes(res.result,res.count), //解析数据列表
-					//						};
-					//					},
+					response: { 
+					//res 即为原始返回的数据
+							"statusCode":"1000", //解析接口状态
+							
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.count, //解析数据长度
+							"data": res.data.institutionSubaccountlist, //解析数据列表
+						};
+					},
 					cols: [
 						[{
 							align: 'center',
-							field: 'id',
-							width: 150,
-							title: '编号'
+							field: 'merchantNumber',
+							width: 250,
+							title: '商户编号'
 						}, {
 							align: 'center',
-							field: 'username',
-							width: 150,
-							title: '账户名称'
+							field: 'subaccountNumber',
+							width: 250,
+							title: '子商户编号'
 						}, {
 							align: 'center',
-							field: 'sex',
+							toolbar: '#switchBar',
 							width: 150,
-							title: '账户状态'
-						}, {
-							align: 'center',
-							field: 'sex',
-							width: 300,
-							title: '成本费率模式'
-						}, {
+							title: '状态'
+						},  {
 							align: 'center',
 							title: '操作',
 							toolbar: '#toolbar',
-							minWidth: 200
+							minWidth: 400
 						}]
 					],
 					page: true,
@@ -95,8 +103,38 @@
 				});
 				
 				//监听性别操作
-				form.on('switch(toolbar_switch)', function(data) {
-					layer.tips('自助核销：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+				form.on('switch(switch)', function(data) {
+					// layer.tips('自助核销：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object()
+						
+					tjData.institutionNumber = userNumber
+					tjData.paymentChannel = 'WeChat'
+					tjData.subaccountNumber = data.value
+					tjData.disable = this.checked?0:1
+
+					console.log(tjData)
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.updateInstitutionSub,
+						tjData,
+						function(data){
+							if(data.code == 1000){
+								 
+								layer.msg('更改状态成功')
+								setTimeout(function(){
+									layer.close(index)
+									location.reload()
+								},500);
+								
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 				});
 
 				//监听工具条
@@ -113,9 +151,9 @@
 							content: ['Channel-childaccount-edit.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'riskctrl') { //风控
@@ -129,9 +167,9 @@
 							content: ['Channel-childaccount-riskctrl.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'logout') { //注销
@@ -139,34 +177,41 @@
 							card: data.card,
 							cardType: 5
 						}
-						layer.confirm('真的删除此会员卡么', {
+						layer.confirm('真的删除此子账号么', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
 							// 发送请求
-							$.ajax({
-								type: "post",
-								url: serverUrl + "memberCard/updateAssociatorCard",
-								async: true,
-								dataType: "json",
-								contentType: "application/json",
-								data: JSON.stringify(zhuxiaoData),
-								success: function(data) {
-									if(data.code == 0) {
-										layer.close(index);
-										layer.msg("会员卡已注销");
-										// 刷新页面
-										var curr = $("#curr").val();
-										layui.table.reload('vip_cardList', {
-											page: {
-												curr: curr
-											}
-										});
-									} else if(data.code == 1) {
-										layer.msg("会员卡注销失败");
+							console.log(data,index)
+							var tjData = new Object()
+						
+							tjData.institutionNumber = userNumber
+							tjData.paymentChannel = 'WeChat'
+							tjData.subaccountNumber = data.subaccountNumber
+							tjData.deletionFlag = 1
+							console.log(tjData)
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Mechanism.updateInstitutionSub,
+								tjData,
+								function(data){
+									if(data.code == 1000){
+										 
+										layer.msg('删除成功')
+										setTimeout(function(){
+											layer.close(index)
+											location.reload()
+										},500);
+										
+									}else{
+										layer.msg(data.msg)
+										
 									}
+								},
+								function(data){
+									console.log('222')
 								}
-							});
+							)
 						});
 					}
 				});

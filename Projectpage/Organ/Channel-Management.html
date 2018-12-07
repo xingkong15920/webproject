@@ -36,7 +36,7 @@
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
 		</div>
 		<div class="x-body">
-			<div class="layui-row">
+			<!-- <div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="couponName" placeholder="商户号或用户名" autocomplete="off" class="layui-input">
@@ -63,7 +63,7 @@
 						<button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<xblock>
 				<button class="layui-btn" onclick="x_admin_show('通道配置(官方-支付宝)','./Channel-Management-addZFB.html','600')"><i class="layui-icon"></i>官方-支付宝</button>
 				<button class="layui-btn" onclick="x_admin_show('通道配置(官方-微信)','./Channel-Management-addWX.html','600')"><i class="layui-icon"></i>官方-微信</button>
@@ -72,7 +72,7 @@
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="toolbar_switch">
-			<input type="checkbox" name="switch" value="{{d.type}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.type==0 ? 'checked' : '' }}>
+			<input type="checkbox" name="switch" value="{{d.paymentChannel}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="启用|禁用" {{ d.disable==0 ? 'checked' : '' }}>
 		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="childaccount" lay-event="childaccount">子账号</a>
@@ -81,9 +81,11 @@
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			var serverUrl = window.parent.serverUrl
-			var userNumber = window.parent.userNumber
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -92,32 +94,33 @@
 				//方法级渲染  
 				table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: './json/vip-card.json',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + userNumber ,
+					
 					elem: '#members',
 					height: 'full-210',
 					id: 'vip_cardList',
-					//					parseData: function(res) { //res 即为原始返回的数据
-					//						return {
-					//							"code": res.code, //解析接口状态
-					//							"msg": res.msg, //解析提示文本
-					//							"count": res.count, //解析数据长度
-					//							"data": changeRes(res.result,res.count), //解析数据列表
-					//						};
-					//					},
+					response: { 
+					//res 即为原始返回的数据
+							"statusCode":"1000", //解析接口状态
+							
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.count, //解析数据长度
+							"data": res.data.PaymentChannellist, //解析数据列表
+						};
+					},
 					cols: [
 						[{
 							align: 'center',
-							field: 'id',
-							width: 200,
-							title: '编号'
-						}, {
-							align: 'center',
-							field: 'username',
+							field: 'paymentchannelname',
 							width: 350,
 							title: '中文名称'
 						}, {
 							align: 'center',
-							field: 'sex',
+							field: 'paymentChannel',
 							width: 350,
 							title: '英文名称'
 						}, {
@@ -140,7 +143,35 @@
 				
 				//监听性别操作
 				form.on('switch(toolbar_switch)', function(data) {
-					layer.tips('通道状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					// layer.tips('通道状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					console.log(data)
+					var addData = new Object()
+					addData.institutionNumber = userNumber
+					addData.paymentChannel = data.value
+					addData.disable = this.checked?0:1
+
+					console.log(addData)
+					// 发送请求
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.updateType,
+						addData,
+						function(data){
+							if(data.code == 1000){
+								
+								layer.msg('状态更改成功')
+								
+								setTimeout(function(){
+									location.reload()
+								},500)
+							}else{
+								layer.msg(data.msg)
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 				});
 
 				//监听工具条
@@ -173,9 +204,9 @@
 							content: ['Channel-Management-riskctrl.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'productcontrol') { //产品管理
@@ -189,9 +220,9 @@
 							content: ['Channel-productcontrol.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'edit') { //编辑
@@ -205,9 +236,9 @@
 							content: ['Channel-Management-edit.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'logout') { //注销
@@ -215,34 +246,39 @@
 							card: data.card,
 							cardType: 5
 						}
-						layer.confirm('真的删除此会员卡么', {
+						layer.confirm('真的删除此通道么', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
 							// 发送请求
-							$.ajax({
-								type: "post",
-								url: serverUrl + "memberCard/updateAssociatorCard",
-								async: true,
-								dataType: "json",
-								contentType: "application/json",
-								data: JSON.stringify(zhuxiaoData),
-								success: function(data) {
-									if(data.code == 0) {
-										layer.close(index);
-										layer.msg("会员卡已注销");
-										// 刷新页面
-										var curr = $("#curr").val();
-										layui.table.reload('vip_cardList', {
-											page: {
-												curr: curr
-											}
-										});
-									} else if(data.code == 1) {
-										layer.msg("会员卡注销失败");
+							console.log(data)
+							var addData = new Object()
+							addData.institutionNumber = userNumber
+							addData.paymentChannel = data.paymentChannel
+							addData.deletionFlag = '1'
+
+							console.log(addData)
+							// 发送请求
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Mechanism.updateType,
+								addData,
+								function(data){
+									if(data.code == 1000){
+										
+										layer.msg('删除成功')
+										
+										setTimeout(function(){
+											location.reload()
+										},500)
+									}else{
+										layer.msg(data.msg)
 									}
+								},
+								function(data){
+									console.log('222')
 								}
-							});
+							)
 						});
 					}
 				});

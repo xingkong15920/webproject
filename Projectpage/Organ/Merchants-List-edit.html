@@ -356,7 +356,7 @@
 
 					//表单初始赋值
 					form.val('cardAdd', {
-						"merchantType": jgData.merchantType,
+						"merchantType": jgData.merchantType.toString(),
 						"merchantName":jgData.merchantName,
 						"businessLicenseNo":jgData.businessLicenseNo,
 						"businessLicenseTime":jgData.businessLicenseTime,
@@ -454,38 +454,40 @@
 					});
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add)', function(data, index) {
-						layer.alert(JSON.stringify(data.field), {
-							title: '最终的提交信息'
-						})
-						return false;
 
-						var addData = JSON.stringify(data.field)
 
+						
 						// 发送请求
-						$.ajax({
-							type: "post",
-							url: serverUrl + "memberCard/addMemberCard",
-							async: true,
-							dataType: "json",
-							contentType: "application/json",
-							data: addData,
-							success: function(data) {
-								if(data.code == "0") {
-									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-									parent.layer.close(index); //再执行关闭
-									parent.layer.msg(data.msg);
-									parent.layui.table.reload('vip_cardList');
-								} else if(data.code == "1") {
-									layer.msg("添加会员卡失败");
+						var addData = data.field
+						addData.institutionNumber = userNumber
+						addData.merchantNumber = jgData.merchantNumber
+						console.log(addData)
+						// 发送请求
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Mechanism.updateMerchantInfo,
+							addData,
+							function(data){
+								if(data.code == 1000){
+									setTimeout(function(){parent.layer.close(index)},16); 
+									parent.layer.msg('新增成功')
+									parent.location.reload()
+									
+								}else{
+									layer.msg(data.msg)
 								}
+							},
+							function(data){
+								console.log('222')
 							}
-						});
+						)
 						return false;
+							return false;
+						});
+
 					});
 
-				});
-
-			}
+				}
 			
 		</script>
 	</body>
