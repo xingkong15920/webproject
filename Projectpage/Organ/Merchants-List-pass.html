@@ -56,26 +56,29 @@
 				
 				setTimeout(function(){parent.layer.close(index)},16); 
 			})
-			var serverUrl = 'http://192.168.1.190:5002/'
-			var userNumber = window.parent.userNumber
-			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
-				layui.$.support.cors = true; //允许ajax跨域
-				var $ = layui.jquery,
-					upload = layui.upload,
-					laydate = layui.laydate,
-					table = layui.table,
-					form = layui.form,
-					laytpl = layui.laytpl;
+			function subPage(data,data1){
+				var serverUrl = 'http://192.168.1.190:5002/'
+				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
+				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+					layui.$.support.cors = true; //允许ajax跨域
+					var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						laytpl = layui.laytpl;
 
-				//监听提交
-				form.on('submit(add)', function(data) {
-					layer.alert(JSON.stringify(data.field), {
-						title: '最终的提交信息'
-					})
-					return false;
+					//监听提交
+					form.on('submit(add)', function(data) {
+						layer.alert(JSON.stringify(data.field), {
+							title: '最终的提交信息'
+						})
+						return false;
+					});
+
 				});
-
-			});
+			}
+			
 		</script>
 	</body>
 
