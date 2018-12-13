@@ -31,6 +31,18 @@
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="tongdao">
 					<div class="layui-form-item">
+						<label class="layui-form-label">中文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="wechatName" autocomplete="off" placeholder="请输入通道中文名称" class="layui-input" lay-verify="wechatName">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">英文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="wechatSpell" autocomplete="off" placeholder="请输入通道英文名称,建议英文首字母" class="layui-input" lay-verify="wechatSpell">
+						</div>
+					</div>
+					<div class="layui-form-item">
 						<label class="layui-form-label">公众号APPID</label>
 						<div class="layui-input-block">
 							<input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid">
@@ -133,6 +145,16 @@
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
+					wechatName: function(value) {
+						if(value.length == "") {
+							return '支付通道不能为空！';
+						}
+					},
+					wechatSpell: function(value) {
+						if(value.length == "") {
+							return '支付宝英文名称不能为空！';
+						}
+					},
 					wechatAppid: function(value) {
 						if(value.length == "") {
 							return '公众号AppID不能为空！';
@@ -170,8 +192,8 @@
 					},
 				});
 
-				form.on('switch(GF_zfbswitch)', function(data) { //计次开关
-					layer.tips('支付宝官方通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+				form.on('switch(GFwxswitch)', function(data) { //计次开关
+					// layer.tips('支付宝官方通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					merchantCa = this.checked
 				});
 
@@ -179,21 +201,23 @@
 				form.on('submit(add)', function(data, index) {
 
 					
-					layer.alert(JSON.stringify(data.field))
+					// layer.alert(JSON.stringify(data.field))
 					var addData = data.field
-					addData.paymentChannel = 'WeChat'
+					
 					if(merchantCa == false){
-						addData.alipayDisable = 1
+						addData.wechatDisable = 1
 					}else{
-						addData.alipayDisable = 0
+						addData.wechatDisable = 0
 					}
 					addData.institutionNumber = userNumber;
+					addData.refundCertificate = '退款证书';
+					addData.domainValidation = '验证文件';
+					addData.paymentType = 1;
 					// 发送请求
 					console.log(addData)
-					return false
 					CmsUtility.postAjaxCall(
                         //系统设置
-                       CmsConfig.addressUrl.Mechanism.insertGFOfficial,
+                       CmsConfig.addressUrl.Mechanism.insertWXOfficial,
                         addData,
                         function(data){
                             if(data.code == '1000'){
@@ -201,7 +225,7 @@
                                setTimeout(function(){
                                		x_admin_close()
                                		parent.location.reload()
-                               	},2000)
+                               	},500)
                                 
                             }else{
                                 layer.msg(data.msg)

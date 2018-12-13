@@ -31,6 +31,18 @@
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="tongdao">
 					<div class="layui-form-item">
+						<label class="layui-form-label">中文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="alipayName" autocomplete="off" placeholder="请输入通道中文名称" class="layui-input" lay-verify="alipayName">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">英文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="alipaySpell" autocomplete="off" placeholder="请输入通道英文名称,建议英文首字母" class="layui-input" lay-verify="alipaySpell">
+						</div>
+					</div>
+					<div class="layui-form-item">
 						<label class="layui-form-label">支付宝AppID</label>
 						<div class="layui-input-block">
 							<input type="text" name="alipayAppid" autocomplete="off" placeholder="应用appid" class="layui-input" lay-verify="alipayAppid">
@@ -120,6 +132,16 @@
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
+					alipayName: function(value) {
+						if(value.length == "") {
+							return '支付通道不能为空！';
+						}
+					},
+					alipaySpell: function(value) {
+						if(value.length == "") {
+							return '支付宝英文名称不能为空！';
+						}
+					},
 					alipayAppid: function(value) {
 						if(value.length == "") {
 							return '支付宝APPID不能为空！';
@@ -176,12 +198,12 @@
 						addData.alipayDisable = 0
 					}
 					addData.institutionNumber = userNumber;
-					addData.paymentChannel = 'Alipay'
+					addData.paymentType = 0;
 					// 发送请求
 					console.log(addData)
 					CmsUtility.postAjaxCall(
                         //系统设置
-                       CmsConfig.addressUrl.Mechanism.insertGFOfficial,
+                       CmsConfig.addressUrl.Mechanism.insertZFBOfficial,
                         addData,
                         function(data){
                             if(data.code == '1000'){
@@ -190,7 +212,7 @@
                                	setTimeout(function(){
                                		x_admin_close()
                                		parent.location.reload()
-                               	},2000)
+                               	},500)
                                
                                 
                             }else{

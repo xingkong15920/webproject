@@ -121,15 +121,24 @@
 						cols: [
 							[{
 								align: 'center',
-								title: '费率类型',
+								title: '支付方式',
 								field: 'rateType',
-								width: 150
+								width: 150,
+								templet:function(data){
+									return data.paymentTypeName + '/' + data.rateType
+								}
 							}, {
 								align: 'center',
-								title: '费率',
+								title: '运营费率',
 								field: 'rate',
 								minWidth: 100,
 								edit: 'edit_yy'
+							}, {
+								align: 'center',
+								title: '提现费率',
+								field: 'presentationRate',
+								minWidth: 100,
+								edit: 'toolbar_tx'
 							}]
 						],
 						page: false,
@@ -159,7 +168,7 @@
 						console.log(obj)
 						var addData = new Object()
 						addData.id = obj.data.id
-						addData.rate = obj.value
+						addData[obj.field] = obj.value
 						addData.merchantNumber = obj.data.merchantNumber
 						console.log(addData)
 						// layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);

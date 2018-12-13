@@ -31,6 +31,18 @@
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="tongdao">
 					<div class="layui-form-item">
+						<label class="layui-form-label">中文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="paymentName" autocomplete="off" placeholder="请输入通道中文名称" class="layui-input" lay-verify="paymentName">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">英文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="paymentSpell" autocomplete="off" placeholder="请输入通道英文名称,建议英文首字母" class="layui-input" lay-verify="paymentSpell">
+						</div>
+					</div>
+					<div class="layui-form-item">
 						<label class="layui-form-label">微信APPID</label>
 						<div class="layui-input-block">
 							<input type="text" name="wechatAppid" autocomplete="off" placeholder="微信APPID" class="layui-input" lay-verify="wxappid">
@@ -148,6 +160,21 @@
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
+					paymentName: function(value) {
+						if(value.length == "") {
+							return '支付通道不能为空！';
+						}
+					},
+					paymentSpell: function(value) {
+						if(value.length == "") {
+							return '支付宝英文名称不能为空！';
+						}
+					},
+					title:function(value){
+						if(value.length == ""){
+							return '不能为空！'
+						}
+					},
 					wxappid: function(value) {
 						if(value.length == "") {
 							return '微信APPID不能为空！';
@@ -199,7 +226,7 @@
 				form.on('submit(add)', function(data, index) {
 					
 					var addData = data.field
-					addData.paymentChannel = 'fuyou'
+					addData.paymentType = 2
 					if(merchantCa == false){
 						addData.disable = 1
 					}else{
@@ -218,7 +245,7 @@
                                setTimeout(function(){
                                		x_admin_close()
                                		parent.location.reload()
-                               	},2000)
+                               	},500)
                                 
                             }else{
                                 layer.msg(data.msg)

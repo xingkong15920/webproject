@@ -48,7 +48,7 @@
 				console.log(jgData)
 				var serverUrl = window.parent.serverUrl
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
-				var channel = jgData.paymentChannel
+				var channel = jgData.id
 				layui.use(['laydate', 'table', 'form'], function() {
 					var laydate = layui.laydate,
 						table = layui.table,
@@ -59,7 +59,7 @@
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionSub + '?institutionNumber=' + userNumber ,
 						where:{
-							"paymentChannel":jgData.paymentChannel
+							"paymentChannel":jgData.id
 						},
 						elem: '#members',
 						height: 'full-120',
@@ -115,7 +115,7 @@
 						var tjData = new Object()
 							
 						tjData.institutionNumber = userNumber
-						tjData.paymentChannel = jgData.paymentChannel
+						tjData.paymentChannel = channel
 						tjData.subaccountNumber = data.value
 						tjData.disable = this.checked?0:1
 
@@ -146,7 +146,7 @@
 					//新增子账号
 					
 					$('#addChild').click(function(){
-						x_admin_show('添加子帐号','./Channel-childaccount-add.html?channel='+jgData.paymentChannel,'600')
+						x_admin_show('添加子帐号','./Channel-childaccount-add.html?channel='+jgData.id,'600')
 					})
 					//监听工具条
 					table.on('tool(members)', function(obj) {
@@ -200,7 +200,7 @@
 								var tjData = new Object()
 							
 								tjData.institutionNumber = userNumber
-								tjData.paymentChannel = jgData.paymentChannel
+								tjData.paymentChannel = channel
 								tjData.subaccountNumber = data.subaccountNumber
 								tjData.deletionFlag = 1
 								console.log(tjData)
