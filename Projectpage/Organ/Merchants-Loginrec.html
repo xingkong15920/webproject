@@ -68,11 +68,11 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			function changeRes(res) {
-				if(res.data == null){
+				if(res == null){
 					return
 					layer.msg(res.data)
 				}
-				var res = res.data
+				var res = res.merchantLoginLoglist
 				for(var i = 0 ;i < res.length;i++){
 					if(res[i].merchantTypeName == 0){
 						res[i].merchantTypeName1 = '普通管理员'
@@ -119,8 +119,9 @@
 					parseData: function(res) { //res 即为原始返回的数据
 						return {
 							"code": res.code, //解析接口状态
-							"data": changeRes(res), //解析数据列表
-							"msg":res.msg
+							"count":res.data.count,
+							"data": changeRes(res.data), //解析数据列表
+							//"msg":res.msg
 						};
 					},
 					cols: [

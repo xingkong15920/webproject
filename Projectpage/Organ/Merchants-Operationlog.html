@@ -66,6 +66,7 @@
 				if(res == null){
 					return
 				}
+				var res = res.merchantOperationLogMapperlist
 				for(var i = 0;i<res.length;i++){
 					if(res[i].operationType == 0){
 						res[i].operationType1 = '查看'
@@ -110,10 +111,14 @@
 							
 					},
 					parseData: function(res) { //res 即为原始返回的数据
+						if(res.data == null){
+							return
+						}
 						return {
 							"code": res.code, //解析接口状态
 							"data": changeRes(res.data), //解析数据列表
-							"msg":res.msg
+							"msg":res.msg,
+							"count":res.data.count
 						};
 					},
 					cols: [
@@ -160,13 +165,13 @@
 						
 						if(res.data == null){
 							if(!!res.msg){
-								layer.msg(res.msg)
+								//layer.msg(res.msg)
 							}else{
 								layer.msg('无数据')
 							}
 							
 						}else{
-							layer.msg(res.msg)
+							//layer.msg(res.msg)
 						}
 					}
 				});

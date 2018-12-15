@@ -36,7 +36,16 @@
     .layui-form-select dl {
         text-align: left;
     }
-
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        appearance: none; 
+        margin: 0; 
+    }
+    /* 火狐 */
+    input{
+        -moz-appearance:textfield;
+    }
     .operationList th:nth-child(1) {
         width: 50px;
     }
@@ -69,12 +78,18 @@
         padding-right: 10px;
         box-sizing: border-box;
     }
+    .blo{
+        display: block;
+    }
+    .non{
+        display: none;
+    }
     </style>
 </head>
 
 <body id="iosiframe">
     <div class="x-body">
-        <div class="layui-form">
+        <div class="layui-form " lay-filter="form1">
             <table class="layui-hide" id="members" lay-filter="members"></table>
             <div class="layui-form-item layui-layout-admin">
                 <div class="layui-input-block">
@@ -89,31 +104,31 @@
     </div>
      <script type="text/html" id="switchName">
         <div class="layui-table-cell" > 
-            {{d.Payment_Type_Name}}
+            {{d.paymentTypeName}}
         </div>
     </script>
     <script type="text/html" id="switchBar">
-        <input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="开|关" {{d.Interface_Switch==0 ? 'checked' : ''}} value="{{d.Payment_Type_ID}}">
+        <input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="开|关" {{d.interfaceSwitch==0 ? 'checked' : ''}} value="{{d.paymentTypeID}}">
 	</script>
     <script type="text/html" id="toolbar">
         <div class="layui-input-inline" style="width: 100px;margin-bottom: 10px;">
-				<input type="radio" name="operation{{d.Payment_Type_ID}}" data_pid="{{d.Payment_Type_ID}}"  {{d.Wheel_Search==0 ? 'checked' : ''}}  value="0" title="单独" lay-filter="operation" checked="">
+				<input type="radio" name="operation{{d.paymentTypeID}}" data_pid="{{d.paymentTypeID}}"  {{d.wheelSearch==0 ? 'checked' : ''}}  value="0" title="单独" lay-filter="operation" checked="">
 			</div>
 			<div class="layui-input-inline" style="width: 100px;margin-bottom: 10px;">
-				<input type="radio" name="operation{{d.Payment_Type_ID}}" data_pid="{{d.Payment_Type_ID}}"   {{d.Wheel_Search==1 ? 'checked' : ''}}  value="1" title="轮询" lay-filter="operation">
+				<input type="radio" name="operation{{d.paymentTypeID}}" data_pid="{{d.paymentTypeID}}"   {{d.wheelSearch==1 ? 'checked' : ''}}  value="1" title="轮询" lay-filter="operation">
 			</div>
-			<div class="layui-input-block operation_select" id="operation_select{{d.Payment_Type_ID}}" style="margin-left: 0;">
-				<select name="quiz{{d.Payment_Type_ID}}">
+			<div class="layui-input-block operation_select {{d.wheelSearch==0 ? 'blo' : 'non'}}" id="operation_select{{d.paymentTypeID}}" style="margin-left: 0;">
+				<select name="quiz{{d.paymentTypeID}}" id="only{{d.paymentTypeID}}" value="{{d.date[0].paymentChannel}}">
 					
                      {{#  layui.each(d.channel, function(index, item){ }}
                  
-                       <option value={{item.id}}>{{item.paymentchannelname}}</option>
+                       <option value={{item.paymentChannel}} {{d.date!= null && d.date[0].paymentChannel == item.paymentChannel ? 'selected':''}}>{{item.paymentName}}</option>
                 
                     {{#  }); }}
 				</select>
                 
 			</div>
-			<div class="layui-input-block operation_table" id="operation_table{{d.Payment_Type_ID}}" style="margin-left: 0;display: none;">
+			<div class="layui-input-block operation_table {{d.wheelSearch==1 ? 'blo' : 'non'}}" id="operation_table{{d.paymentTypeID}}" style="margin-left: 0;"  >
 				<table class="layui-table" lay-skin="line" id="tableeee" style=""  lay-filter="tableeee">
 					<thead>
 						<tr>
@@ -123,15 +138,15 @@
 							<th>权重(1-9)</th>
 						</tr>
 					</thead>
-					<tbody class="lunxun{{d.Payment_Type_ID}}">
+					<tbody class="lunxun{{d.paymentTypeID}}">
                         {{#  layui.each(d.channel, function(index, item){ }}
                           <tr>
                             <td>
-                                <input type="checkbox" name="text" lay-skin="primary" {{item.sType==0 ? 'checked' : ''}} data-id="{{item.id}}" data-Ename="{{item.paymentChannel}}" data-Cname="{{item.paymentchannelname}}" data-sWeight="{{item.sWeight}}" data-Pid="{{d.Payment_Type_ID}}"  class="lunxun"  lay-filter="members1111">
+                                <input type="checkbox" name="text" lay-skin="primary" {{item.sType==0 ? 'checked' : ''}} data-id="{{item.paymentChannel}}"  data-Cname="{{item.paymentName}}" data-sWeight="{{item.weight}}" data-Pid="{{d.paymentTypeID}}"  class="lunxun"  lay-filter="members1111">
                             </td>
                             <td>{{ item.paymentChannel }}</td>
-                            <td>{{ item.paymentchannelname }}：</td>
-                            <td><input type="number" min="0" max="9" name="" class="layui-input" onkeyup="changeV(this)" value="{{ item.sWeight  }}"></td>
+                            <td>{{ item.paymentName }}：</td>
+                            <td><input type="number" min="0" max="9" name="" class="layui-input" onkeyup="changeV(this)" value="{{ item.weight  }}"></td>
                           </tr>
                         {{#  }); }}
 						
@@ -150,13 +165,13 @@
                 setTimeout(function(){parent.layer.close(index)},16); 
             })
             function changeV(data){
-                if(data.value >= 0 && data.value <= 9){
+                if(data.value > 0 && data.value <= 9){
                     console.log($(data).parent().parent().find("td input[name='text']"))
                     $(data).parent().parent().find("td input[name='text']").attr('data-sWeight',data.value)
                     console.log($(data).parent().parent().find("td input[name='text']").attr('data-sWeight'))
                 }else{
                     data.value = data.value.substring(0,1)
-                    alert('只能输入0-9的数字')
+                    alert('只能输入1-9的数字')
 
                 }
             }
@@ -169,37 +184,49 @@
                 for(var j = 0 ; j < data1.length;j++){
                     var newO = Object()
                     newO.id = data1[j].id
-                    newO.paymentchannelname = data1[j].paymentchannelname
-                    newO.paymentChannel = data1[j].paymentChannel
-                    newO.sWeight = 0
+                    newO.paymentName = data1[j].paymentchannelname
+                    newO.paymentChannel = data1[j].id
+                    newO.weight = '0'
                     tdList.push(newO)
                 }
                 for(var i = 0 ; i < data.length;i++){
-                    var arrr = new Array()
-                    // if(data[i].Payment_Channel == ''){
-
-                    // }else if(data[i].Payment_Channel.indexOf('|') >= 0){
-                    //     var channel = data[i].Payment_Channel.split('|')
-                    //     for(var j = 0 ; j < channel.length;j++){
-                    //         var aobj = new Object()
-                    //         aobj.sCode = channel[j].split(':')[0]
-                    //         aobj.sName = channel[j].split(':')[1]
-                    //         aobj.sWeight = channel[j].split(':')[2]
-                    //         aobj.sType = channel[j].split(':')[2] == 0?1:0 
-                    //         arrr.push(aobj)
-                    //     }
-                    // }else if(data[i].Payment_Channel.indexOf('|') < 0){
-                    //     var aobj = new Object()
-                    //     aobj.sCode = data[i].Payment_Channel.split(':')[0]
-                    //     aobj.sName = data[i].Payment_Channel.split(':')[1]
-                    //     aobj.sWeight = data[i].Payment_Channel.split(':')[2]
-                    //     aobj.sType = data[i].Payment_Channel.split(':')[2] == 0?1:0 
-                    //     arrr.push(aobj)
-                    // }
-                   data[i].channel = tdList
+                    var tdList = []
+                    for(var j = 0 ; j < data1.length;j++){
+                        var newO = Object()
+                        newO.id = data1[j].id
+                        newO.paymentName = data1[j].paymentchannelname
+                        newO.paymentChannel = data1[j].id
+                        newO.weight = '0'
+                        tdList.push(newO)
+                    }
+                    data[i].channel = tdList
+                    var dl = data[i].date
+                    for(var m = 0 ; m < data[i].channel.length;m++){
+                        for(var n = 0; n < dl.length;n++){
+                            if(data[i].channel[m].paymentChannel == dl[n].paymentChannel){
+                                data[i].channel[m].weight = dl[n].weight
+                                // if(dl[n].weight != 0){
+                                //     data[i].channel[m].sType = '0'
+                                // }
+                                data[i].channel[m].sType = '0'
+                                break
+                            }
+                        }
+                    }
+                }
+                for(var b = 0; b < data.length;b++){
+                    data[b].channel.sort(compare('weight'))
                 }
                 console.log(data)
                 return data
+                table.render()
+            }
+            function compare(property) {
+                return function(a, b) {
+                    var value1 = a[property];
+                    var value2 = b[property];
+                    return value2 - value1;
+                }
             }
         function  subPage(data, data1){
             var serverUrl = window.parent.serverUrl
@@ -241,6 +268,9 @@
                 table.render({
                     //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
                     url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantTD + '?merchantNumber=' + jgData.merchantNumber ,
+                    where:{
+                        "institutionNumber":userNumber
+                    },
                     elem: '#members',
                     id: 'vip_cardList',
                     response: { 
@@ -259,7 +289,7 @@
                     cols: [
                         [{
                             align: 'center',
-                            field: 'Payment_Type_Name',
+                            field: 'paymentTypeName',
                             title: '支付方式',
                             width: 200,
                             toolbar:'#switchName'
@@ -280,8 +310,12 @@
                     done: function(res, curr, count) {
                         addData = res.data
                         console.log(addData)
-                    }
+                    
+                        
+                     }
                 });
+
+                
                 console.log($('.lunxun'))
                 form.on('checkbox(members1111)', function(data){
                     if(data.elem.checked){
@@ -320,17 +354,19 @@
                         form.render();
                     }
                     for(var i = 0;i < addData.length;i++){
-                        if(addData[i].Payment_Type_ID == did){
-                            addData[i].Wheel_Search = obj.value
+                        if(addData[i].paymentTypeID == did){
+                            console.log(obj.value)
+                            addData[i].wheelSearch = obj.value
                         }
                     }
+                    table.render()
                     console.log(addData)
                 });
                 form.on('switch(consumptionPreferences)', function(obj) { //
                     var aa = obj.value;
                     for(var i = 0;i < addData.length;i++){
-                        if(addData[i].Payment_Type_ID == aa){
-                            addData[i].Interface_Switch = this.checked?0:1
+                        if(addData[i].paymentTypeID == aa){
+                            addData[i].interfaceSwitch = this.checked?0:1
                         }
                     }
                     console.log(addData)
@@ -354,26 +390,56 @@
                     });
                     console.log(arr)
                     console.log(addData)
-                    return
-                    data.institutionNumber = userNumber
-                    console.log(data)
-                    if(!data.state){
-                        data.state = 1
-                    }else {
-                        data.state = 0
+                    for(var g = 0 ; g < addData.length;g++){
+                        var arL = new Array()
+                        if(addData[g].wheelSearch == 1){
+                            for(var h = 0; h < arr.length;h++){
+                                if(addData[g].paymentTypeID == arr[h].Pid){
+                                    var arJ = new Object()
+                                    arJ.paymentChannel = arr[h].id
+                                    arJ.paymentName = arr[h].Cname
+                                    arJ.weight = arr[h].sWeight
+                                    arL.push(arJ)
+                                }
+                            }
+                            addData[g].date = arL
+                        }else if(addData[g].wheelSearch == 0){
+                            var strd = 'only' + addData[g].paymentTypeID
+                            var only = document.getElementById(strd)
+                            console.log(only.value)
+                            var sss = new Array()
+                            for(var hh = 0; hh < tdData.length;hh++){
+                                if(only.value == tdData[hh].id){
+                                    var arJ = new Object()
+                                    arJ.paymentChannel = tdData[hh].id
+                                    arJ.paymentName = tdData[hh].paymentchannelname
+                                    arJ.weight = '1'
+                                    sss.push(arJ)
+                                    
+                                }
+                            }
+                            addData[g].date = sss
+                        }
+
                     }
-                    data.address = 'http://www.baidu.com'
-                    
-                    // if()
+                    console.log(addData)
+                    var adddData = new Object()
+                    adddData.data = addData
+                    adddData.merchantName = jgData.merchantNumber
+                    adddData.institutionNumber = userNumber
+                    console.log(adddData)
                     CmsUtility.postAjaxCall(
                         //系统设置
-                        CmsConfig.addressUrl.Mechanism.insertInstitutionAdvertisement,
-                        data,
+                        CmsConfig.addressUrl.Mechanism.updateMpType,
+                        JSON.stringify(adddData),
                         function(data){
+                            console.log(data)
                             if(data.code == 1000){
-                                setTimeout(function(){parent.layer.close(index)},16); 
+                                setTimeout(function(){
+                                    $('#quxiao').click()
+                                },16); 
                                 parent.layer.msg('保存成功')
-                                parent.location.reload()
+                                // parent.location.reload()
                             }else{
                                 layer.msg(data.msg)
                                 

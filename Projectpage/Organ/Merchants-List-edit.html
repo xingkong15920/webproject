@@ -88,7 +88,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">营业执照号</label>
 						<div class="layui-input-block">
-							<input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入营业执照号" class="layui-input">
+							<input type="text" name="businessLicenseNo" lay-verify="title" autocomplete="off" placeholder="请输入营业执照号" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -155,12 +155,13 @@
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="city" id="city" lay-filter="city">
+							<select name="city" id="city" lay-filter="city" lay-verify="title">
 								<option value="">请选择市</option>
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="area" id="area" lay-filter="area">
+							<select name="area" id="area" lay-filter="area" lay-verify="title">
+">
 								<option value="">请选择县/区</option>
 							</select>
 						</div>
@@ -201,7 +202,7 @@
 						<label class="layui-form-label">费率</label>
 						<div class="layui-input-inline">
 							<select name="rate" id="">
-								<option value="">认证</option>
+								<option value="">费率</option>
 								<option value="0.006">0.6%</option>
 								<option value="0.005">0.5%</option>
 								<option value="0.0038">0.38%</option>
@@ -359,10 +360,10 @@
 						"merchantType": jgData.merchantType.toString(),
 						"merchantName":jgData.merchantName,
 						"businessLicenseNo":jgData.businessLicenseNo,
-						"businessLicenseTime":jgData.businessLicenseTime,
+						"businessLicenseTime":jgData.businessLicenseTime.split(' ')[0],
 						"juridicalpersonName":jgData.juridicalpersonName,
 						"juridicalpersonId":jgData.juridicalpersonId,
-						"juridicalpersonIdTime":jgData.juridicalpersonIdTime,
+						"juridicalpersonIdTime":jgData.juridicalpersonIdTime.split(' ')[0],
 						"registerCell":jgData.registerCell,
 						"oneOperate":jgData.oneOperate,
 						"twoOperate":jgData.twoOperate,
@@ -469,9 +470,10 @@
 							addData,
 							function(data){
 								if(data.code == 1000){
-									setTimeout(function(){parent.layer.close(index)},16); 
-									parent.layer.msg('新增成功')
-									parent.location.reload()
+									setTimeout(function(){
+										$('#quxiao').click()
+									},16); 
+									parent.layer.msg('编辑成功')
 									
 								}else{
 									layer.msg(data.msg)

@@ -81,87 +81,90 @@
 					form = layui.form;
 
 				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					// url: './json/vip-card.json',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionAdvertisementList + '?institutionNumber=' + userNumber ,
-					elem: '#members',
-					height: 'full-150',
-					id: 'vip_cardList',
-					async:true,
-					response: { 
-					//res 即为原始返回的数据
-							"statusCode":"1000", //解析接口状态
+				function tableRender(){
+					table.render({
+						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+						// url: './json/vip-card.json',
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionAdvertisementList + '?institutionNumber=' + userNumber ,
+						elem: '#members',
+						height: 'full-150',
+						id: 'vip_cardList',
+						async:true,
+						response: { 
+						//res 即为原始返回的数据
+								"statusCode":"1000", //解析接口状态
+								
+						},
+						parseData:function(res){
+							return{
+								"code":res.code,
+								"count":res.count,
+							 "data": changeRes(res.data)
+							}
+						},
+						cols: [
+							[{
+								align: 'center',
+								type: 'checkbox'
+							}, {
+								align: 'center',
+								field: 'number',
+								width: 200,
+								title: '编号',
+								sort: true
+							}, {
+								align: 'center',
+								field: 'name',
+								width: 250,
+								title: '广告名称'
+							}, {
+								align: 'center',
+								field: 'startTime',
+								width: 200,
+								title: '开始时间'
+							}, {
+								align: 'center',
+								field: 'endTime',
+								width: 200,
+								title: '到期时间'
+							}, {
+								align: 'center',
+								toolbar:'#toolbar_switch',
+								width: 100,
+								title: '状态',
+								sort: true
+							}, {
+								align: 'center',
+								field: 'launchChannel1',
+								width: 200,
+								title: '投放渠道',
+								sort: true
+							}, {
+								align: 'center',
+								toolbar:"#toolbar",
+								minWidth: 200,
+								title: '操作',
+								sort: true
+							}]
+						],
+						page: true,
+						done: function(res, curr, count) {
 							
-					},
-					parseData:function(res){
-						return{
-							"code":res.code,
-							"count":res.count,
-						 "data": changeRes(res.data)
-						}
-					},
-					cols: [
-						[{
-							align: 'center',
-							type: 'checkbox'
-						}, {
-							align: 'center',
-							field: 'number',
-							width: 200,
-							title: '编号',
-							sort: true
-						}, {
-							align: 'center',
-							field: 'name',
-							width: 250,
-							title: '广告名称'
-						}, {
-							align: 'center',
-							field: 'startTime',
-							width: 200,
-							title: '开始时间'
-						}, {
-							align: 'center',
-							field: 'endTime',
-							width: 200,
-							title: '到期时间'
-						}, {
-							align: 'center',
-							toolbar:'#toolbar_switch',
-							width: 100,
-							title: '状态',
-							sort: true
-						}, {
-							align: 'center',
-							field: 'launchChannel1',
-							width: 200,
-							title: '投放渠道',
-							sort: true
-						}, {
-							align: 'center',
-							toolbar:"#toolbar",
-							minWidth: 200,
-							title: '操作',
-							sort: true
-						}]
-					],
-					page: true,
-					done: function(res, curr, count) {
-						
-						console.log(res)
-						if(res.code == 5000){
-							layer.msg(res.msg)
-						}
-						if(!!res.data){
+							console.log(res)
+							if(res.code == 5000){
+								layer.msg(res.msg)
+							}
+							if(!!res.data){
 
-							layer.msg('查询成功')
-						}else{
-							layer.msg('未查询到广告数据')
-						}
+								//layer.msg('查询成功')
+							}else{
+								layer.msg('未查询到广告数据')
+							}
 
-					}
-				});
+						}
+					});
+				}
+				tableRender()
 				
 				//监听性别操作
 				form.on('switch(toolbar_switch)', function(data) {
@@ -203,6 +206,9 @@
 							maxmin: false,
 							resize: false,
 							content: ['Adware-edit.html'],
+							end:function(){
+								tableRender()
+							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -232,7 +238,7 @@
 									if(data.code == 1000){
 										
 										parent.layer.msg('删除成功')
-										location.reload()
+										tableRender()
 									}else{
 										layer.msg(data.msg)
 										

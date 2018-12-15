@@ -82,47 +82,47 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">代理名称</label>
 						<div class="layui-input-block">
-							<input type="text" name="agentName" lay-verify="title" autocomplete="off" placeholder="请输入代理名称" class="layui-input" value="代理名称">
+							<input type="text" name="agentName" lay-verify="title" autocomplete="off" placeholder="请输入代理名称" class="layui-input" value="">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">用户名</label>
 						<div class="layui-input-block">
-							<input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="用户名">
+							<input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">联系电话</label>
 						<div class="layui-input-block">
-							<input type="text" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="请输入联系电话" class="layui-input" value="1823020">
+							<input type="text" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="请输入联系电话" class="layui-input" value="">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">密码</label>
 						<div class="layui-input-block">
-							<input type="text" name="passWord" lay-verify="title" autocomplete="off" placeholder="请输入密码" class="layui-input" >
+							<input type="text" name="passWord" lay-verify="title" autocomplete="off" placeholder="请输入密码" class="layui-input" id="pass">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">确认密码</label>
 						<div class="layui-input-block">
-							<input type="text" name="rePass_Word" lay-verify="repassword" autocomplete="off" placeholder="请确认密码" class="layui-input">
+							<input type="text" name="rePass_Word" lay-verify="repassword" autocomplete="off" placeholder="请确认密码" class="layui-input" id="repass">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">商户所在地</label>
 						<div class="layui-input-inline">
-							<select name="provice" id="provice" lay-filter="provice">
+							<select name="province" id="provice" lay-filter="provice" lay-verify="title">
 								
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="city" id="city" lay-filter="city">
+							<select name="city" id="city" lay-filter="city" lay-verify="title">
 								
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="area" id="area">
+							<select name="area" id="area" lay-verify="title">
 								
 							</select>
 						</div>
@@ -130,7 +130,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">详细地址</label>
 						<div class="layui-input-block">
-							<input type="text" name="Address" lay-verify="title" autocomplete="off" placeholder="请输入详细地址" class="layui-input" value="详细地址">
+							<input type="text" name="Address" lay-verify="title" autocomplete="off" placeholder="请输入详细地址" class="layui-input" value="">
 						</div>
 					</div>
 
@@ -188,6 +188,11 @@
 						}
 					},
 					pass: [/(.+){6,12}$/, '密码必须6到12位'],
+					repassword:function(value){
+						if($('#pass').val() != $('#repass').val()){
+							return '输入密码必须一致'
+						}
+					},
 					content: function(value) {
 						layedit.sync(editIndex);
 					}
@@ -211,9 +216,10 @@
 						addData,
 						function(data){
 							if(data.code == 1000){
-								setTimeout(function(){parent.layer.close(index)},16); 
+								setTimeout(function(){
+									$('#quxiao').click()
+								},16); 
 								parent.layer.msg('新增成功')
-								parent.location.reload()
 								
 							}else{
 								layer.msg(data.msg)

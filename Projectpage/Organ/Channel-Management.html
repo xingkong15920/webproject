@@ -65,9 +65,9 @@
 				</div>
 			</div> -->
 			<xblock>
-				<button class="layui-btn" onclick="x_admin_show('通道配置(官方-支付宝)','./Channel-Management-addZFB.html','600')"><i class="layui-icon"></i>官方-支付宝</button>
-				<button class="layui-btn" onclick="x_admin_show('通道配置(官方-微信)','./Channel-Management-addWX.html','600')"><i class="layui-icon"></i>官方-微信</button>
-				<button class="layui-btn" onclick="x_admin_show('通道配置(富友)','./Channel-Management-addFY.html','600')"><i class="layui-icon"></i>富友</button>
+				<button class="layui-btn" id="zfb"><i class="layui-icon"></i>官方-支付宝</button>
+				<button class="layui-btn" id="wx"><i class="layui-icon"></i>官方-微信</button>
+				<button class="layui-btn" id="fy"><i class="layui-icon"></i>富友</button>
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
@@ -91,62 +91,125 @@
 					table = layui.table,
 					form = layui.form;
 
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + userNumber ,
-					
-					elem: '#members',
-					height: 'full-210',
-					id: 'vip_cardList',
-					response: { 
-					//res 即为原始返回的数据
-							"statusCode":"1000", //解析接口状态
-							
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						if(res.data == null){
-							return
+				//方法级渲染 
+				function tableRender(){
+					table.render({
+						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + userNumber ,
+						
+						elem: '#members',
+						height: 'full-210',
+						id: 'vip_cardList',
+						response: { 
+						//res 即为原始返回的数据
+								"statusCode":"1000", //解析接口状态
+								
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							if(res.data == null){
+								return
+							}
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.data.count, //解析数据长度
+								"data": res.data.PaymentChannellist, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								align: 'center',
+								field: 'paymentchannelname',
+								width: 350,
+								title: '中文名称'
+							}, {
+								align: 'center',
+								field: 'paymentChannel',
+								width: 350,
+								title: '英文名称'
+							}, {
+								align: 'center',
+								toolbar: '#toolbar_switch',
+								width: 100,
+								title: '通道状态'
+							}, {
+								align: 'center',
+								title: '操作',
+								minWidth: 250,
+								toolbar: '#toolbar'
+							}]
+						],
+						page: true,
+						done: function(res, curr, count) {
+							console.log(res)
+							if(res.code != '1000'){
+								lay.msg(res.msg)
+							}
 						}
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.data.count, //解析数据长度
-							"data": res.data.PaymentChannellist, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							align: 'center',
-							field: 'paymentchannelname',
-							width: 350,
-							title: '中文名称'
-						}, {
-							align: 'center',
-							field: 'paymentChannel',
-							width: 350,
-							title: '英文名称'
-						}, {
-							align: 'center',
-							toolbar: '#toolbar_switch',
-							width: 100,
-							title: '通道状态'
-						}, {
-							align: 'center',
-							title: '操作',
-							minWidth: 250,
-							toolbar: '#toolbar'
-						}]
-					],
-					page: true,
-					done: function(res, curr, count) {
-						console.log(res)
-						if(res.code != '1000'){
-							lay.msg(res.msg)
+					});
+				} 
+				tableRender()
+			
+				$('#zfb').click(function(){
+					layer.open({
+						type: 2,
+						title: '通道配置(官方-支付宝)',
+						shade: 0.5,
+						area: ['600px', '90%'],
+						maxmin: false,
+						resize: false,
+						content: ['Channel-Management-addZFB.html'],
+						end:function(){
+							tableRender()
+						},
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传参
+							//iframe.subPage(data, userNumber)
 						}
-					}
-				});
-				
+					});
+				})
+				$('#wx').click(function(){
+					layer.open({
+						type: 2,
+						title: '通道配置(官方-微信)',
+						shade: 0.5,
+						area: ['600px', '90%'],
+						maxmin: false,
+						resize: false,
+						content: ['Channel-Management-addWX.html'],
+						end:function(){
+							tableRender()
+						},
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传参
+							//iframe.subPage(data, userNumber)
+						}
+					});
+				})
+				$('#fy').click(function(){
+					layer.open({
+						type: 2,
+						title: '通道配置(官方-支付宝)',
+						shade: 0.5,
+						area: ['600px', '90%'],
+						maxmin: false,
+						resize: false,
+						content: ['Channel-Management-addFY.html'],
+						end:function(){
+							tableRender()
+						},
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传参
+							//iframe.subPage(data, userNumber)
+						}
+					});
+				})
 				//监听性别操作
 				form.on('switch(toolbar_switch)', function(data) {
 					// layer.tips('通道状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)
@@ -191,6 +254,9 @@
 							maxmin: false,
 							resize: false,
 							content: ['Channel-childaccount.html'],
+							end:function(){
+								tableRender()
+							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -207,6 +273,9 @@
 							maxmin: false,
 							resize: false,
 							content: ['Channel-Management-riskctrl.html'],
+							end:function(){
+								tableRender()
+							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -223,6 +292,9 @@
 							maxmin: false,
 							resize: false,
 							content: ['Channel-productcontrol.html'],
+							end:function(){
+								tableRender()
+							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -239,6 +311,9 @@
 							maxmin: false,
 							resize: false,
 							content: ['Channel-Management-edit.html'],
+							end:function(){
+								tableRender()
+							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -273,9 +348,7 @@
 										
 										layer.msg('删除成功')
 										
-										setTimeout(function(){
-											location.reload()
-										},500)
+										tableRender()
 									}else{
 										layer.msg(data.msg)
 									}

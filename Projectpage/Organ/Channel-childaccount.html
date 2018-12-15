@@ -55,59 +55,62 @@
 						form = layui.form;
 
 					//方法级渲染  
-					table.render({
-						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionSub + '?institutionNumber=' + userNumber ,
-						where:{
-							"paymentChannel":jgData.id
-						},
-						elem: '#members',
-						height: 'full-120',
-						id: 'vip_cardList',
-						response: { 
-						//res 即为原始返回的数据
-								"statusCode":"1000", //解析接口状态
-								
-						},
-						parseData: function(res) { //res 即为原始返回的数据
-							if(res.data == null){
-								return
+					function tableRender(){
+						table.render({
+							//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionSub + '?institutionNumber=' + userNumber ,
+							where:{
+								"paymentChannel":jgData.id
+							},
+							elem: '#members',
+							height: 'full-120',
+							id: 'vip_cardList',
+							response: { 
+							//res 即为原始返回的数据
+									"statusCode":"1000", //解析接口状态
+									
+							},
+							parseData: function(res) { //res 即为原始返回的数据
+								if(res.data == null){
+									return
+								}
+								return {
+									"code": res.code, //解析接口状态
+									"msg": res.msg, //解析提示文本
+									"count": res.data.count, //解析数据长度
+									"data": res.data.institutionSubaccountlist, //解析数据列表
+								};
+							},
+							cols: [
+								[{
+									align: 'center',
+									field: 'merchantNumber',
+									width: 250,
+									title: '商户编号'
+								}, {
+									align: 'center',
+									field: 'subaccountNumber',
+									width: 250,
+									title: '子商户编号'
+								}, {
+									align: 'center',
+									toolbar: '#switchBar',
+									width: 150,
+									title: '状态'
+								},  {
+									align: 'center',
+									title: '操作',
+									toolbar: '#toolbar',
+									minWidth: 400
+								}]
+							],
+							page: true,
+							done: function(res, curr, count) {
+								console.log(res)
 							}
-							return {
-								"code": res.code, //解析接口状态
-								"msg": res.msg, //解析提示文本
-								"count": res.data.count, //解析数据长度
-								"data": res.data.institutionSubaccountlist, //解析数据列表
-							};
-						},
-						cols: [
-							[{
-								align: 'center',
-								field: 'merchantNumber',
-								width: 250,
-								title: '商户编号'
-							}, {
-								align: 'center',
-								field: 'subaccountNumber',
-								width: 250,
-								title: '子商户编号'
-							}, {
-								align: 'center',
-								toolbar: '#switchBar',
-								width: 150,
-								title: '状态'
-							},  {
-								align: 'center',
-								title: '操作',
-								toolbar: '#toolbar',
-								minWidth: 400
-							}]
-						],
-						page: true,
-						done: function(res, curr, count) {
-							console.log(res)
-						}
-					});
+						});
+					}
+					tableRender()
 					
 					//监听性别操作
 					form.on('switch(switch)', function(data) {
@@ -128,10 +131,7 @@
 								if(data.code == 1000){
 									 
 									layer.msg('更改状态成功')
-									setTimeout(function(){
-										layer.close(index)
-										location.reload()
-									},500);
+									
 									
 								}else{
 									layer.msg(data.msg)
@@ -146,7 +146,25 @@
 					//新增子账号
 					
 					$('#addChild').click(function(){
-						x_admin_show('添加子帐号','./Channel-childaccount-add.html?channel='+jgData.id,'600')
+						layer.open({
+							type: 2,
+							title: '添加子帐号',
+							shade: 0.5,
+							area: ['600px', '90%'],
+							maxmin: false,
+							resize: false,
+							content: ['Channel-childaccount-add.html?channel='+jgData.id],
+							end:function(){
+								tableRender()
+							},
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								// data.channel = channel
+								// iframe.subPage(data, userNumber)
+							}
+						});
 					})
 					//监听工具条
 					table.on('tool(members)', function(obj) {
@@ -161,6 +179,9 @@
 								maxmin: false,
 								resize: false,
 								content: ['Channel-childaccount-edit.html'],
+								end:function(){
+									tableRender()
+								},
 								success: function(layero, index) {
 									// 获取子页面的iframe
 									var iframe = window['layui-layer-iframe' + index];
@@ -178,6 +199,9 @@
 								maxmin: false,
 								resize: false,
 								content: ['Channel-childaccount-riskctrl.html'],
+								end:function(){
+									tableRender()
+								},
 								success: function(layero, index) {
 									// 获取子页面的iframe
 									var iframe = window['layui-layer-iframe' + index];
@@ -213,8 +237,7 @@
 											 
 											layer.msg('删除成功')
 											setTimeout(function(){
-												layer.close(index)
-												location.reload()
+												tableRender()
 											},500);
 											
 										}else{

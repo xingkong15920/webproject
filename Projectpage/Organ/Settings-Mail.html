@@ -72,10 +72,10 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">测试收件箱</label>
 						<div class="layui-input-inline" style="width: 360px;">
-							<input type="text" name="" lay-verify="" class="layui-input">
+							<input type="text" name="" lay-verify="" class="layui-input" id="email1" >
 						</div>
 						<div class="layui-form-mid">
-							<button class="layui-btn layui-btn-xs">测试发送</button>
+							<span class="layui-btn" id="send">测试发送</span>
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -120,7 +120,36 @@
 					console.log('222')
 				}
 			)
-			
+			var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+			$('#send').click(function(){
+				if($('#email1').val() == ''){
+					layer.msg('邮件地址不得为空')
+					return
+				}
+				if(!myreg.test($('#email1').val())){
+					layer.msg('邮件地址格式不正确')
+					return
+				}
+				CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.send,
+						{
+							"mail":$('#email1').val()
+						},
+						function(data){
+							if(data.code == 1000){
+								layer.msg('发送成功')
+								
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+			})
 			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 				layui.$.support.cors = true; //允许ajax跨域
 				var $ = layui.jquery,

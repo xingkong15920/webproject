@@ -4,7 +4,7 @@ var server;
 if(Edition == 'qty'){
 	server  = 'http://192.168.1.104:5006/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.190:5006/fenghao-test/'
+	server  = 'http://192.168.1.190:5006/shanhe-mechanism/'
 }
 /* 
 接口前缀解释
@@ -42,6 +42,7 @@ var CmsConfig = {
             getInstitutionMailboxSetting:"InstitutionMailboxSetting/getInstitutionMailboxSetting",
             updateInstitutionMailboxSetting:"InstitutionMailboxSetting/updateInstitutionMailboxSetting",
             insertInstitutionMailboxSetting:"InstitutionMailboxSetting/insertInstitutionMailboxSetting",
+            send:"mail/send",
             //短信设置
             getInstitutionSMSSetting:"InstitutionSMSSetting/getInstitutionSMSSetting",
             updateSMSSetting:"InstitutionSMSSetting/updateSMSSetting",
@@ -60,24 +61,46 @@ var CmsConfig = {
             
             //--商户管理
             //商户列表
-            /* 操作接口：
+            getMerchantInfoList:"MerchantInfo/getMerchantInfoList",
+            //状态的更改三合一接口
+            updateMerchantStatus:"MerchantInfo/updateMerchantStatus",
+            // 操作接口：
             //登录（登录标识）
             //支付通道设置
+             //获取商户通道
+            getMerchantTD:"MerchantInfo/getMerchantTD",
+            //获取机构通道
+            getShopOfficial:"MerchantInfo/getOfficial",
+            //更新通道信息
+            updateMpType:"MerchantInfo/updateMpType",
             //子账户列表
+            getMerchantBA:"MerchantInfo/getMerchantBA",
+            //操作
+            operationSub:"MerchantInfo/operationSub",
+            //添加子账户
+            insertInstitutionSub:"InstitutionSubaccount/insertInstitutionSub",
             //风控设置
             //费率设置
+            getMerchantRate:"MerchantInfo/getMerchantRate",
+            //费率修改
+            updateMerchantRate:"MerchantInfo/updateMerchantRate",
             //密码设置
             //编辑商户信息
+            updateMerchantInfo:"MerchantInfo/updateMerchantInfo",
             //商户秘钥
+            //编辑商户秘钥
+            updateMerchantKeys:"MerchantInfo/updateMerchantKeys",
             //删除商户
 
-            */
             //添加商户
+            insertMerchantRegisterInfo:"MerchantRegister/insertMerchantRegisterInfo",
+            
             //风控设置
             getRiskSetUp:"InstitutionRiskSetUp/getRiskSetUp",
             //登录记录
+            getMerchantLoginLog:'MerchantLoginLog/getMerchantLoginLog',
             //商户操作日志，列表
-
+            getMerchantOperationLog:"MerchantOperationLog/getMerchantOperationLog",
 
             //--代理设置
             getAgentRegisterlist:"AgentRegister/getAgentRegisterlist",
@@ -108,18 +131,56 @@ var CmsConfig = {
 
             //--通道管理
             //风控实况列表接口
+            getSubaccountRiskManagementList:"subaccountRiskManagement/getSubaccountRiskManagementList",
             //通道管理列表查询
-            /*操作：通道状态的改变接口
-            子账号接口
-            风控编辑接口
-            产品接口
-            编辑接口
-            删除接口
+            //操作：通道状态的改变接口
+            //编辑通道风控
+            updateRisk:"InstitutionOfficial/updateRisk",
+            //子账号接口
+            //查询子商户
+            getInstitutionSub:"InstitutionSubaccount/getInstitutionSub",
+            //添加子账户
+           insertInstitutionSub:"InstitutionSubaccount/insertInstitutionSub",
+           //编辑子账号
+           updateInstitutionSub:"InstitutionSubaccount/updateInstitutionSub",
+            //子账号风控编辑接口
+            updateInstitutionSubRisk:"InstitutionSubaccount/updateInstitutionSubRisk",
 
-            */
+            //获取子账户风控
+            getgetSubacSrk:"InstitutionSubaccount/getgetSubacSrk",
+            //产品接口
+            getRate:"InstitutionOfficial/getRate",
+            //修改产品
+            updateRate:"InstitutionOfficial/updateRate",
+            //获取通道详细信息(wechat,alipay)
+            getGFOfficial:"InstitutionOfficial/getGFOfficial",
+            //编辑接口(wechat,alipay)
+            updateGFInstitutionOfficial:"InstitutionOfficial/updateGFInstitutionOfficial",
+            //查询第三方通道
+            getThirdpartyOfficial:"InstitutionOfficial/getThirdpartyOfficial",
+            //编辑第三方通道
+            updateThirdpartyOfficial:"InstitutionOfficial/updateThirdpartyOfficial",
+            //删除接口
+            updateType:"InstitutionOfficial/updateType",
+
+            
             //通道配置接口
-
-
+            //通道列表
+            getOfficial:"InstitutionOfficial/getOfficial",
+            //添加官方通道(微信)
+            insertWXOfficial:"/InstitutionOfficial/insertWXOfficial",
+            //查询官方通道(微信)
+            getWXOfficial:"InstitutionOfficial/getWXOfficial",
+            //更新支付宝
+            updateWeChat:"InstitutionOfficial/updateWeChat",
+            //添加官方通道(支付宝)
+            insertZFBOfficial:"InstitutionOfficial/insertZFBOfficial",
+            //查询官方通道(支付宝)
+            getZFBOfficial:"InstitutionOfficial/getZFBOfficial",
+            //更新支付宝通道
+            updateAlipay:"InstitutionOfficial/updateAlipay",
+            //添加第三方通道
+            insertThirdpartyTD:"InstitutionOfficial/insertThirdpartyTD",
             //--广告管理
             insertInstitutionAdvertisement:"InstitutionAdvertisement/insertInstitutionAdvertisement",
              //广告列表"

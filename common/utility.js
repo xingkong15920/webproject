@@ -27,7 +27,7 @@ var CmsUtility = (function() {
             async: isAsync,
             dataType: dataType,
             // headers:{
-            //     'Access-Control-Allow-Origin': '*'
+            //     contentType:"application/json"
             // },
             beforeSend: function() {
                 
