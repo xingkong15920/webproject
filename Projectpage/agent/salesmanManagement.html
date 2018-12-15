@@ -17,8 +17,8 @@
 	<body>
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
-				<a href="">业务</a>
-				<a><cite>业务员</cite></a>
+				<a href="">首页</a>
+				<a><cite>销售管理</cite></a>
 			</span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
@@ -36,27 +36,17 @@
 				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
 			</div>
 			<xblock class="layui-row">
-				<button class="layui-btn" onclick="x_admin_show('添加业务员','SalesmanAdd.html',600,400)"><i class="layui-icon"></i>添加</button>
-				<button class="layui-btn layui-btn_1" data-type="getCheckData"><i class="layui-icon"></i>更换代理商</button>
+				<button class="layui-btn" onclick="x_admin_show('添加销售','SalesmanAdd.html',500,420)"><i class="layui-icon"></i>添加</button>
 			</xblock>
-
 			<table class="layui-hide" id="LAY_table_Salesman" lay-filter="Salesman"></table>
 		</div>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="resetPwd">修改密码</a>
-			{{# if(d.SalesType == 0){ }}
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="disable">已禁用</a>
-			{{# } }} {{# if(d.SalesType == 1){ }}
-			<a class="layui-btn layui-btn-xs" lay-event="open">已开启</a>
-			{{# } }}
 			<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detele">删除</a>
 		</script>
-		<script type="text/html" id="chetool">
-			<div class="layui-table-cell laytable-cell-1-0 laytable-cell-checkbox">
-				<input type="checkbox" name="layTableCheckbox" lay-skin="primary" value="">
-				<div class="layui-unselect layui-form-checkbox" lay-skin="primary"><i class="layui-icon"></i></div>
-			</div>
+		<script type="text/html" id="toolbar_switch">
+			<input type="checkbox" name="switch" value="{{d.type}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="启用|禁用" {{ d.feilvlx==1 ? 'checked' : '' }}>
 		</script>
 		<script>
 			layui.use('table', function() {
@@ -66,41 +56,40 @@
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_Salesman',
-					url: '.salesmanManagement/getSalesmanList',
-					method: "post",
+					url: '../../public/json/vip-card.json',
+					//method: "post",
 					height: 'full-195',
 					page: true,
 					id: 'salesmanList',
 					cols: [
 						[{
-							type: 'checkbox',
-							Width: 48
+							type: 'numbers'
 						}, {
 							field: 'SalesNumber',
 							title: '编号',
-							align: 'center'
+							align: 'center',
+							width: 200
 						}, {
 							field: 'Name',
 							align: 'center',
-							title: '姓名'
-						}, {
-							field: 'dealerName',
-							align: 'center',
-							title: '所属经销商'
+							title: '姓名',
+							width: 200
 						}, {
 							field: 'Cell',
 							align: 'center',
-							title: '手机号'
+							title: '手机号',
+							width: 200
 						}, {
 							field: 'SalesTypeC',
 							align: 'center',
-							title: '状态'
+							title: '状态',
+							toolbar: "#toolbar_switch",
+							width: 100
 						}, {
 							field: 'operation',
-							align: 'center',
 							title: '操作',
 							toolbar: "#tool",
-							width: '25%'
+							minWidth: 300
 						}]
 					]
 				});
@@ -124,86 +113,6 @@
 								}
 							});
 						},
-						getCheckData: function() {
-							$.ajax({
-								type: "post",
-								url: ".dealers/getdealerList",
-								async: true,
-								success: function(data) {
-									//拼接销售列表
-									var html = '<div class="layui-inline"><label class="layui-form-label">搜索选择框</label><div class="layui-input-inline"><select id="SaleList" lay-verify="required" lay-ignore><option value="">请选择代理商</option>';
-									if(data.length > 0) {
-										for(var j = 0; j < data.length; j++) {
-											html += '<option value="' + data[j].OperatorNumber + '">' + data[j].OperatorName + '/' + data[j].Tell + '</option>'
-										}
-									}
-									html += '</select></div></div>';
-
-									layer.open({
-										type: 1,
-										title: '更换代理商',
-										area: ['720px', '500px'], //宽高
-										content: html,
-										btn: ['确认', '取消'],
-										yes: function(layero) {
-											var dealerNumber = $("#SaleList option:selected").val();
-											if(dealerNumber == '') {
-												layer.msg('请选择代理商');
-											} else {
-												var checkStatus = table.checkStatus('salesmanList');
-												var data = checkStatus.data;
-												if(data.length == '0') {
-													layer.msg('请选择你要替换的代理商', {
-														icon: 5
-													});
-													return;
-												}
-												// 弹出是否要删除门店
-												layer.confirm('确定要更换吗?', function(index) {
-													var checkStatus = table.checkStatus('salesmanList');
-													var udata = checkStatus.data;
-													var Total = 0;
-													var checkedstr = '';
-													if(udata.length > 0) {
-														for(var i = 0; i < udata.length; i++) {
-															if(checkedstr == '') {
-																checkedstr = udata[i].SalesNumber;
-															} else {
-																checkedstr += '|' + udata[i].SalesNumber;
-															}
-														}
-													}
-
-													$.ajax({
-														type: "post",
-														url: ".DealersMerchant/putReplacedealer",
-														async: true,
-														data: {
-															checkedstr: checkedstr,
-															olddealerNumber: udata[0].olddealerNumber,
-															newdealerNumber: dealerNumber
-														},
-														success: function(data) {
-															if(data.result == "success") {
-																layer.close(index);
-																// 刷新页面
-																window.location.href = window.location.href
-															} else {
-																layer.close(index);
-																layer.msg(data.msg);
-															}
-														}
-													});
-												})
-											}
-										},
-										btn2: function() {
-											layer.closeAll();
-										}
-									});
-								}
-							});
-						}
 					};
 
 				//监听工具条
@@ -325,7 +234,7 @@
 					}
 				});
 
-				$('.layui-row .layui-btn_1').on('click', function() {
+				$('.layui-row .layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});

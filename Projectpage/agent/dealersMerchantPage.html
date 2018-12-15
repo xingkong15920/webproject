@@ -51,6 +51,7 @@
 			<a class="layui-btn layui-btn-xs" lay-event="feilvset">费率</a>
 			<a class="layui-btn layui-btn-xs" lay-event="codecard">码牌</a>
 			<a class="layui-btn layui-btn-xs" lay-event="horn">云喇叭</a>
+			<a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script type="text/html" id="toolbar_switch">
@@ -116,7 +117,7 @@
 							field: 'operation',
 							title: '操作',
 							toolbar: "#tool",
-							minWidth: 400
+							minWidth: 450
 						}]
 					],
 					done: function(res, curr, count) {
@@ -158,7 +159,7 @@
 							type: 2,
 							title: '账单统计',
 							area: ['90%', '90%'], //宽高
-							content: '',
+							content: 'Merchants-list-tradeCount.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];
 								iframe.subPageClerkpass(data, userNumber, serverUrl)
@@ -181,8 +182,8 @@
 						layer.open({
 							type: 2,
 							title: '重置密码',
-							area: ['460px', '250px'], //宽高
-							content: '',
+							area: ['460px', '350px'], //宽高
+							content: 'Merchants-List-pass.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];
 								iframe.subPageClerkpass(data, userNumber, serverUrl)
@@ -194,10 +195,10 @@
 							type: 2,
 							title: '费率',
 							area: ['90%', '90%'], //宽高
-							content: '',
+							content: 'Channel-productcontrol.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];
-								iframe.subPageClerkpass(data, userNumber, serverUrl)
+								iframe.subPageClerkpass(data)
 							}
 						});
 					} else if(obj.event == 'codecard') {
@@ -205,8 +206,8 @@
 						layer.open({
 							type: 2,
 							title: '码牌管理',
-							area: ['90%', '90%'], //宽高
-							content: '',
+							area: ['450px', '70%'], //宽高
+							content: 'MP-configuration.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];
 								iframe.subPageClerkpass(data, userNumber, serverUrl)
@@ -217,8 +218,20 @@
 						layer.open({
 							type: 2,
 							title: '云喇叭管理',
-							area: ['90%', '90%'], //宽高
+							area: ['450px', '70%'], //宽高
 							content: 'YLB-configuration.html',
+							success: function(layero, index) {
+								var iframe = window['layui-layer-iframe' + index];
+								iframe.subPageClerkpass(data, userNumber, serverUrl)
+							}
+						});
+					} else if(obj.event == 'secretkey') {
+						// 秘钥
+						layer.open({
+							type: 2,
+							title: '秘钥',
+							area: ['400px', '270px'], //宽高
+							content: 'Merchants-List-secretkey.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];
 								iframe.subPageClerkpass(data, userNumber, serverUrl)
