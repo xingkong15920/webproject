@@ -62,7 +62,7 @@
                     </div>
                     <hr class="hr15">
                 </div>
-                <input class="layui-btn" value="登录" lay-submit lay-filter="login" style="width:100%;" type="" id="sub" type="button">
+                <input class="layui-btn" value="登录" lay-submit lay-filter="login" style="width:100%;line-height:16px"  id="sub" type="button"  maxlength="0">
                 <hr class="hr20">
                 <a href="" class="Forgot_p"><< 忘记密码 >></a>
             </form>
@@ -147,22 +147,21 @@
                      console.log(ajaData)
                      CmsUtility.postAjaxCall(
                         //系统设置
-                        CmsConfig.addressUrl.Login.login,
+                        CmsConfig.addressUrl.Login.AgloginInfo,
                         ajaData,
                         function(data){
                             if(data.code == '1000'){
                                // layer.alert(JSON.stringify('登录成功'), {
                                //      title: ''
                                //  })
-                                sessionStorage.setItem("agentUser", data.data);
+                                sessionStorage.setItem("agentUser", JSON.stringify(data.data));
+                                layer.msg('登录成功')
                                 setTimeout(function(){
                                    window.location.href = 'index.html' 
-                                },300)
+                                },500)
                                 
                             }else{
-                                layer.alert(JSON.stringify(data.msg), {
-                                    title: '登录失败'
-                                })
+                                layer.msg(data.msg)
                             }
                         },
                         function(data){

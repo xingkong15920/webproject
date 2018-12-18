@@ -25,16 +25,16 @@
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
 					<input id="merchantName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
 				</div>
-				<div class="layui-input-inline text">
+				<!-- <div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
 					<input id="merchantName" type="text" name="userName" placeholder="代理商名称" autocomplete="off" class="layui-input">
-				</div>
+				</div> -->
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input id="merchantName" type="text" name="userName" placeholder="业务员" autocomplete="off" class="layui-input">
+					<input id="saleName" type="text" name="userName" placeholder="销售人员" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline">
-					<select id="state" name="state">
+					<select id="merchantStatus" name="state">
 						<option value="">状态</option>
 						<option value="0">正常</option>
 						<option value="1">禁用</option>
@@ -57,73 +57,89 @@
 		<script type="text/html" id="toolbar_switch">
 			<input type="checkbox" name="switch" value="{{d.type}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.feilvlx==1 ? 'checked' : '' }}>
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			// 			// 选择日期插件  
 			layui.use(['form', 'table', 'laytpl'], function() {
 				var table = layui.table,
 					form = layui.form,
-					laytpl = layui.laytpl;
-
+					laytpl = layui.laytpl,
+					$ = layui.jquery;
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 				//方法级渲染
-				table.render({
-					elem: '#LAY_table_merchant',
-					url: '../../public/json/vip-card1.json',
-					height: 'full-140',
-					//method: "post",
-					page: true,
-					id: 'merchantlist',
-					cols: [
-						[{
-							field: 'CompanyName',
-							title: '商户编号',
-							align: 'center',
-							width: 120
-						}, {
-							field: 'CompanyName',
-							title: '商户名称',
-							align: 'center',
-							width: 200
-						}, {
-							field: 'NAME',
-							title: '所属销售',
-							align: 'center',
-							width: 120
-						}, {
-							field: 'Cell',
-							title: '管理员电话',
-							align: 'center',
-							width: 120
-						}, {
-							field: 'zhifuName',
-							title: '支付通道',
-							align: 'center',
-							width: 120
-						}, {
-							field: 'CreateTime',
-							title: '创建时间',
-							align: 'center',
-							width: 120
-						}, {
-							field: 'ylbNumber',
-							title: '云喇叭',
-							align: 'center',
-							width: 120
-						}, {
-							toolbar: '#toolbar_switch',
-							title: '状态',
-							align: 'center',
-							width: 80
-						}, {
-							field: 'operation',
-							title: '操作',
-							toolbar: "#tool",
-							minWidth: 450
-						}]
-					],
-					done: function(res, curr, count) {
-						console.log(res)
-					}
-				});
+				console.log($('#merchantName').val())
+				function tableRender(){
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
+						where:{
+							"merchantName":$('#merchantName').val(),
+							"saleName":$('#saleName').val(),
+							"merchantStatus":$('#merchantStatus').val(),
+						},
+						elem: '#LAY_table_merchant',
+						height: 'full-140',
+						//method: "post",
+						page: true,
+						id: 'merchantlist',
+						response: { 
+						//res 即为原始返回的数据
+								"statusCode":"1000", //解析接口状态
+								
+						},
+						parseData: function(res) {
+						 //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.data.count, //解析数据长度
+								"data": res.data.agentmerchants, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								field: 'merchantNumber',
+								title: '商户编号',
+								align: 'center',
+								width: 200
+							}, {
+								field: 'merchantName',
+								title: '商户名称',
+								align: 'center',
+								width: 200
+							}, {
+								field: 'agentLevel',
+								title: '所属经销商',
+								align: 'center',
+								width: 200
+							} ,{
+								field: 'ylbNumber',
+								title: '类型',
+								align: 'center',
+								width: 120
+							}, {
+								field: 'insertTime',
+								title: '创建时间',
+								align: 'center',
+								width: 120
+							}, {
+								toolbar: '#toolbar_switch',
+								title: '状态',
+								align: 'center',
+								width: 80
+							}, {
+								field: 'operation',
+								title: '操作',
+								toolbar: "#tool",
+								minWidth: 450
+							}]
+						],
+						done: function(res, curr, count) {
+							console.log(res)
+						}
+					});
+				}
+				tableRender()
 
 				// 根據條件重载表格
 				var $ = layui.$,
