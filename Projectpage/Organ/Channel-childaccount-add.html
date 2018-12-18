@@ -17,6 +17,11 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style type="text/css">
+    	.layui-input-inline{
+    		width: 380px !important; 
+    	}
+    </style>
 	</head>
 
 	<body id="iosiframe">
@@ -24,9 +29,9 @@
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="cardAdd">
 					<div class="layui-form-item" id="type1">
-						<label class="layui-form-label">商户号</label>
+						<label class="layui-form-label">商户名称</label>
 						<div class="layui-input-inline" style="position:relative;left:0;bottom:0">
-							<input type="text" name="merchantNumber" autocomplete="off" placeholder="商户号" class="layui-input" lay-verify="merchantNumber" id="search">
+							<input type="text" name="merchantNumber" autocomplete="off" placeholder="请搜索商户名称" class="layui-input" lay-verify="merchantNumber" id="search" onblur="bl()">
 							<div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto" id="searchBox" >
 								<!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
 								<div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
@@ -127,8 +132,16 @@
 			var disable = false
 			function clickS(e){
 					$('#search').val(e.getAttribute('data-id'))
+					console.log(e)
+					$('#search').attr('shopNumber',e.getAttribute('data-name'))
 					document.getElementById('searchBox').innerHTML = ''
 				}
+			function bl(){
+				setTimeout(function(){
+					document.getElementById('searchBox').innerHTML = ''
+				},500)
+				//$('#searchBox').hide()
+			}
 			layui.use(['laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
@@ -142,6 +155,7 @@
 				
 				$("#search").bind('input propertychange',function(){
 				    console.log(this.value)
+				    $('#search').removeAttr('shopNumber')
 				    document.getElementById('searchBox').innerHTML = ''
 				    CmsUtility.postAjaxCall(
 						//系统设置
@@ -154,7 +168,7 @@
 							if(data.code == 1000){
 								 var str = ''
 								 for(var i =0;i<data.data.length;i++){
-								 	str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].merchantNumber+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+ data.data[i].merchantNumber+'</div>'
+								 	str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].merchantName+'" data-name="'+ data.data[i].merchantNumber+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+'['+ data.data[i].merchantNumber +']'+ data.data[i].merchantName+'</div>'
 								 }
 								 document.getElementById('searchBox').innerHTML = str
 								// layer.msg('保存成功')
@@ -216,9 +230,11 @@
 				}else if(type != 1){
 					form.verify({
 						merchantNumber: function(value) {
-							if(value.length == "") {
-								return '商户编号不得为空';
+							console.log($('#search').attr('shopNumber'))
+							if(value.length == "" ||  $('#search').attr('shopNumber') == undefined) {
+								return '请搜索并选择商户'
 							}
+
 						},
 						subaccountNumber: function(value) {
 							if(value.length == "") {
@@ -270,16 +286,24 @@
 				
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
+					// if(type != 1){
+					// 	if(!!document.getElementById('search').getAttribute('shopNumber'))
+					// 	layer.msg('请搜索商户名称')
+					// 	document.getElementById('search').onfocus()
+					// 	return false
+					// }
 					var tjData = data.field;
 					tjData.riskMode = riskMode==true?0:1
 					tjData.disable = disable==true?0:1
 					tjData.institutionNumber = userNumber
 					if(type == 1){
 						tjData.merchantNumber = merchantNumber
+					}else{
+						tjData.merchantNumber = document.getElementById('search').getAttribute('shopNumber')
 					}
 					tjData.paymentChannel = channel
 					
-					console.log(tjData)
+					
 					CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.insertInstitutionSub,

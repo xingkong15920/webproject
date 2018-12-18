@@ -66,10 +66,10 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">测试接收手机</label>
 						<div class="layui-input-inline">
-							<input type="text" name="" class="layui-input">
+							<input type="text" name="" class="layui-input" id="sms">
 						</div>
-						<div class="layui-form-mid">
-							<button class="layui-btn layui-btn-xs">测试发送</button>
+						<div class="" style="float: left;display: block;line-height: 20px;margin-right: 10px;">
+							<span class="layui-btn" id="send">测试发送</span>
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -90,6 +90,36 @@
 			var jgData;
 			var type;
 			var merchantCa = false;
+			var myreg = /^1[34578]\d{9}$/;
+			$('#send').click(function(){
+				if($('#sms').val() == ''){
+					layer.msg('手机号码不得为空')
+					return
+				}
+				if(!myreg.test($('#sms').val())){
+					layer.msg('手机号码格式不正确')
+					return
+				}
+				CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.Phone,
+						{
+							"Phone":$('#sms').val()
+						},
+						function(data){
+							if(data.code == 1000){
+								layer.msg('发送成功')
+								
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+				})
 			CmsUtility.postAjaxCall(
 				//系统设置
 				CmsConfig.addressUrl.Mechanism.getInstitutionSMSSetting,

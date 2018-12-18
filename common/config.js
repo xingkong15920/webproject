@@ -47,6 +47,8 @@ var CmsConfig = {
             getInstitutionSMSSetting:"InstitutionSMSSetting/getInstitutionSMSSetting",
             updateSMSSetting:"InstitutionSMSSetting/updateSMSSetting",
             insertSMSS:"InstitutionSMSSetting/insertSMSS",
+            //验证短信
+            Phone:"Verify/Phone",
             //修改密码
             updatePassword:"login/updatePassword",
             //管理员管理列表

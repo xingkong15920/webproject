@@ -17,6 +17,11 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style type="text/css">
+    	.layui-input-inline{
+    		width: 380px !important; 
+    	}
+    </style>
 	</head>
 
 	<body id="iosiframe">
@@ -24,9 +29,10 @@
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="cardAdd">
 					<div class="layui-form-item">
-						<label class="layui-form-label">商户号</label>
-						<div class="layui-input-inline">
-							<input type="text" name="merchantNumber" autocomplete="off" placeholder="商户号" class="layui-input" lay-verify="merchantNumber">
+						<label class="layui-form-label">商户名称</label>
+						<div class="layui-input-inline"  style="margin-bottom:15px">
+							<input type="text" name="merchantNumber" autocomplete="off" placeholder="请搜索并选择商户" class="layui-input" lay-verify="merchantNumber"  id="search" onblur="bl()">
+							<div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto" id="searchBox" >
 						</div>
 					</div>
 					<!-- <div class="layui-form-item">
@@ -96,6 +102,18 @@
 				
 				setTimeout(function(){parent.layer.close(index)},16); 
 			})
+			function clickS(e){
+					$('#search').val(e.getAttribute('data-id'))
+					console.log(e)
+					$('#search').attr('shopNumber',e.getAttribute('data-name'))
+					document.getElementById('searchBox').innerHTML = ''
+				}
+			function bl(){
+				setTimeout(function(){
+					document.getElementById('searchBox').innerHTML = ''
+				},500)
+				//$('#searchBox').hide()
+			}
 			function subPage(data,data1){
 				console.log(data,data1)
 				var jgData = data
@@ -111,8 +129,59 @@
 						element = layui.element,
 						layer = layui.layer;
 					var tableSelect = layui.tableSelect;
-
+					$("#search").bind('input propertychange',function(){
+				    console.log(this.value)
+				    $('#search').removeAttr('shopNumber')
+				    document.getElementById('searchBox').innerHTML = ''
+				    CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
+						{
+							"merchantNumber":this.value
+						},
+						function(data){
+							console.log(this.value)
+							if(data.code == 1000){
+								 var str = ''
+								 for(var i =0;i<data.data.length;i++){
+								 	str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].merchantName+'" data-name="'+ data.data[i].merchantNumber+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+'['+ data.data[i].merchantNumber +']'+ data.data[i].merchantName+'</div>'
+								 }
+								 document.getElementById('searchBox').innerHTML = str
+								// layer.msg('保存成功')
+								// setTimeout(function(){
+								// 	x_admin_close()
+								// },500);
+								
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+				})
 					//表单初始赋值
+					var shopName
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
+						{
+							"merchantNumber":jgData.merchantNumber
+						},
+						function(data){
+							if(data.code == 1000){
+								console.log(data)
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 					form.val('cardAdd', {
 						"merchantNumber": jgData.merchantNumber,
 						"subaccountNumber":jgData.subaccountNumber,
@@ -122,7 +191,6 @@
 						"appsecret":jgData.aPPSECRET,
 						"terminalNumber":jgData.terminalNumber,
 					})
-
 					form.on('switch(riskMode)', function(data) { //消费优惠开关
 					// layer.tips('继承状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 						riskMode = this.checked
@@ -138,9 +206,10 @@
 						/*---------- 自定义验证规则 ----------*/
 					form.verify({
 						merchantNumber: function(value) {
-							if(value.length == "") {
-								return '对应商户编号不能为空！';
+							if(value.length == "" ||  $('#search').attr('shopNumber') == undefined) {
+								return '请搜索并选择商户'
 							}
+
 						},
 						subaccountNumber: function(value) {
 							if(value.length == "") {
@@ -182,6 +251,7 @@
 						tjData.institutionNumber = userNumber
 						tjData.paymentChannel = jgData.channel
 						tjData.subaccountNumber = jgData.subaccountNumber
+						tjData.merchantNumber = $('#search').attr('shopNumber')
 						tjData.deletionFlag = 0
 						console.log(tjData)
 						CmsUtility.postAjaxCall(

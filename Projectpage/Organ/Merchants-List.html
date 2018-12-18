@@ -94,7 +94,7 @@
 		</script>
 		<script type="text/html" id="selectBar_rz">
 			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchantNumber}}" >
-				<!--<option value="0" {{d.auditStatus==0 ? 'selected' : ''}}>未审核</option>-->
+				<option value="0" {{d.auditStatus==0 ? 'selected' : ''}}>未审核</option>
 				<option value="1" {{d.auditStatus==1 ? 'selected' : ''}}>审核中</option>
 				<option value="2" {{d.auditStatus==2 ? 'selected' : ''}}>已审核</option>
 			</select>
@@ -313,9 +313,6 @@
 							maxmin: false,
 							resize: false,
 							content: ['Merchants-List-channel.html'],
-							end:function(){
-								tableRender()
-							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -332,9 +329,6 @@
 							maxmin: false,
 							resize: false,
 							content: ['Merchants-List-childaccount.html'],
-							end:function(){
-								tableRender()
-							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -351,14 +345,11 @@
 							maxmin: false,
 							resize: false,
 							content: ['Merchants-List-riskctrl.html'],
-							end:function(){
-								tableRender()
-							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
-								//var iframe = window['layui-layer-iframe' + index];
+								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								//iframe.subPage(data, userNumber)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'rate') { //费率
@@ -370,9 +361,6 @@
 							maxmin: false,
 							resize: false,
 							content: ['Merchants-List-rate.html'],
-							end:function(){
-								tableRender()
-							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -389,9 +377,6 @@
 							maxmin: false,
 							resize: false,
 							content: ['Merchants-List-pass.html'],
-							end:function(){
-								tableRender()
-							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -408,9 +393,6 @@
 							maxmin: false,
 							resize: false,
 							content: ['Merchants-List-edit.html'],
-							end:function(){
-								tableRender()
-							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];

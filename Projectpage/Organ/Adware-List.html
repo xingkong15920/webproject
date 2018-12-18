@@ -36,7 +36,7 @@
 		</div>
 		<div class="x-body">
 			<xblock>
-				<button class="layui-btn" onclick="x_admin_show('添加广告','./Adware-add.html')"><i class="layui-icon"></i>添加广告</button>
+				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加广告</button>
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
@@ -98,7 +98,7 @@
 						parseData:function(res){
 							return{
 								"code":res.code,
-								"count":res.count,
+								"count":res.data.count,
 							 "data": changeRes(res.data)
 							}
 						},
@@ -193,7 +193,23 @@
 						}
 					)
 				});
-
+				$('#addA').click(function(){
+					layer.open({
+						type: 2,
+						title: '添加广告',
+						shade: 0.5,
+						area: [$(window).width() * 0.9+'px', '90%'],
+						maxmin: false,
+						resize: false,
+						content: ['Adware-add.html'],
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传w参
+							
+						}
+					});
+				})
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
@@ -206,9 +222,6 @@
 							maxmin: false,
 							resize: false,
 							content: ['Adware-edit.html'],
-							end:function(){
-								tableRender()
-							},
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -238,6 +251,7 @@
 									if(data.code == 1000){
 										
 										parent.layer.msg('删除成功')
+										layer.close(index)
 										tableRender()
 									}else{
 										layer.msg(data.msg)
