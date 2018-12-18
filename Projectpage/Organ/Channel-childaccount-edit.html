@@ -168,11 +168,13 @@
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
 						{
-							"merchantNumber":jgData.merchantNumber
+							"id":jgData.merchantNumber
+
 						},
 						function(data){
 							if(data.code == 1000){
-								console.log(data)
+								shopName = data.data[0].merchantName
+								$('#search').attr('shopNumber',jgData.merchantNumber)
 							}else{
 								layer.msg(data.msg)
 								
@@ -183,7 +185,7 @@
 						}
 					)
 					form.val('cardAdd', {
-						"merchantNumber": jgData.merchantNumber,
+						"merchantNumber": shopName,
 						"subaccountNumber":jgData.subaccountNumber,
 						"subaccountKey":jgData.subaccountKey,
 						"wechatAppid":jgData.weChatAPPID,
@@ -264,7 +266,8 @@
 									layer.msg('保存成功')
 									setTimeout(function(){
 										$('#quxiao').click()
-									},500);
+									},16);
+									parent.layui.table.reload('vip_cardList')
 									
 								}else{
 									layer.msg(data.msg)
