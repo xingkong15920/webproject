@@ -80,6 +80,8 @@ var CmsConfig = {
             //添加子账户
             insertInstitutionSub:"InstitutionSubaccount/insertInstitutionSub",
             //风控设置
+            getMerRiskSetUp:"MerchantInfo/getMerRiskSetUp",
+            updateMerRiskSetUp:"MerchantInfo/updateMerRiskSetUp",
             //费率设置
             getMerchantRate:"MerchantInfo/getMerchantRate",
             //费率修改
@@ -141,6 +143,8 @@ var CmsConfig = {
             getInstitutionSub:"InstitutionSubaccount/getInstitutionSub",
             //添加子账户
            insertInstitutionSub:"InstitutionSubaccount/insertInstitutionSub",
+           //模糊查询
+           getMerchantNumberlist:"InstitutionSubaccount/getMerchantNumberlist",
            //编辑子账号
            updateInstitutionSub:"InstitutionSubaccount/updateInstitutionSub",
             //子账号风控编辑接口
