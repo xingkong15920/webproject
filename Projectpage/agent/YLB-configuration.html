@@ -44,6 +44,10 @@
 							title: '序号'
 						}, {
 							field: 'UnitType',
+							title: '绑定店铺',
+							width: 200
+						}, {
+							field: 'UnitType',
 							title: '云喇叭编号',
 							width: 245
 						}, {
@@ -154,12 +158,17 @@
 							});
 						},
 						addMP: function() {
-							layer.prompt({
-								title: '添加云喇叭'
-							}, function(val, index) {
-								layer.msg('得到了' + val);
-								layer.close(index);
-								layui.table.reload('YLBlist');
+							layer.open({
+								type: 2,
+								title: '添加云喇叭',
+								area: ['385px', '250px'],
+								content: 'YLB-configurationAdd.html',
+								success: function(layero, index) {
+									// 获取子页面的iframe
+									var iframe = window['layui-layer-iframe' + index];
+									// 向子页面的全局函数child传参
+									iframe.subPage(data, userNumber, serverUrl)
+								}
 							});
 						}
 					};
