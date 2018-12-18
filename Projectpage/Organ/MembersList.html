@@ -15,23 +15,22 @@
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 		<!--[if lt IE 9]>
-      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+			<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+			<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
 		<style type="text/css">
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
 		</style>
-		<script src="http://g.alicdn.com/thx/brix-deps/nuysoft@Mock/1.0.1-beta3/dist/mock.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 
 	<body id="iosiframe">
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
-		        <a href="">首页</a>
-		        <a><cite>管理员管理</cite></a>
-		      </span>
+				<a href="">首页</a>
+				<a><cite>管理员管理</cite></a>
+			</span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
 		</div>
@@ -75,11 +74,9 @@
 			// 		} else if(res[i].useTimePeriod == 1) {
 			// 			res[i].useTimePeriod = res[i].startTime + ' ~ ' + res[i].endTime
 			// 		}
-
 			// 	}
 			// 	return res
 			// }
-
 			var serverUrl = window.parent.serverUrl
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
@@ -90,15 +87,14 @@
 				function tableRender() {
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionStaff + '?institutionNumber=' + userNumber ,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionStaff + '?institutionNumber=' + userNumber,
 						// url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/guanliyuan',
 						elem: '#members',
 						height: 'full-210',
 						id: 'vip_cardList',
-						response: { 
-						//res 即为原始返回的数据
-								"statusCode":"1000", //解析接口状态
-								
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
 						},
 						parseData: function(res) { //res 即为原始返回的数据
 							return {
@@ -143,13 +139,11 @@
 					});
 				}
 				tableRender()
-				
 
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					console.log(obj)
 					var data = obj.data;
-
 					if(obj.event === 'edit') { //编辑
 						layer.open({
 							type: 2,
@@ -186,17 +180,15 @@
 								//系统设置
 								CmsConfig.addressUrl.Mechanism.updateInstitutionStaff,
 								tData,
-								function(data){
-									if(data.code == 1000){
-										
+								function(data) {
+									if(data.code == 1000) {
 										layer.msg('删除成功')
 										layui.table.reload('vip_cardList')
-									}else{
+									} else {
 										layer.msg(data.msg)
-										
 									}
 								},
-								function(data){
+								function(data) {
 									console.log('222')
 								}
 							)
