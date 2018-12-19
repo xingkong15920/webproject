@@ -48,15 +48,47 @@
 		<script type="text/html" id="toolbar_switch">
 			<input type="checkbox" name="switch" value="{{d.type}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="启用|禁用" {{ d.feilvlx==1 ? 'checked' : '' }}>
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
-			layui.use('table', function() {
+			layui.use(['table', 'table', 'laytpl'], function() {
 
-				var table = layui.table;
+				var table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl,
+					$ = layui.jquery;
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 
 				//方法级渲染
 				table.render({
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
+						where:{
+							"merchantName":"",
+							"saleName":"",
+							"merchantStatus":"",
+							"agentLevel":agentLevel
+						},
+						elem: '#LAY_table_merchant',
+						height: 'full-140',
+						//method: "post",
+						page: true,
+						id: 'merchantlist',
+						response: { 
+						//res 即为原始返回的数据
+								"statusCode":"1000", //解析接口状态
+								
+						},
+						parseData: function(res) {
+						 //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.data.count, //解析数据长度
+								"data": res.data.agentmerchants, //解析数据列表
+							};
+						},
 					elem: '#LAY_table_Salesman',
-					url: '../../public/json/vip-card.json',
 					//method: "post",
 					height: 'full-195',
 					page: true,

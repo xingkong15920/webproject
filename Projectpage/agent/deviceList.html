@@ -56,6 +56,8 @@
 			<a class="layui-btn layui-btn-xs" lay-event="UNcode">解绑二维码</a>
 			{{# } }}
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			//列表
 			layui.use(['table', 'layer'], function() {
@@ -63,11 +65,37 @@
 				$ = layui.jquery;
 				var layer = layui.layer;
 				var table = layui.table;
-
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				table.render({
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
+						where:{
+							"merchantName":"",
+							"saleName":"",
+							"merchantStatus":"",
+							"agentLevel":agentLevel
+						},
+						elem: '#LAY_table_merchant',
+						height: 'full-140',
+						//method: "post",
+						page: true,
+						id: 'merchantlist',
+						response: { 
+						//res 即为原始返回的数据
+								"statusCode":"1000", //解析接口状态
+								
+						},
+						parseData: function(res) {
+						 //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.data.count, //解析数据长度
+								"data": res.data.agentmerchants, //解析数据列表
+							};
+						},
 					elem: '#table1',
-					url: '../../public/json/vip-card.json',
 					page: true,
 					height: 'full-240',
 					//method: "post",

@@ -50,18 +50,60 @@
 			{{# } }}
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
-
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
+			function changeS(data){
+				var data = data
+				for(var i = 0 ; i < data.length; i++){
+					if(data[i].merchantType == 0){
+						data[i].merchantType1 = '个人'
+					}
+					if(data[i].merchantType == 1){
+						data[i].merchantType1 = '个体'
+					}
+					if(data[i].merchantType == 2){
+						data[i].merchantType1 = '企业'
+					}
+				}
+				return data
+			}
 			layui.use(['table','form'], function() {
 
 				var table = layui.table,
 					form = layui.form;
-
+					$ = layui.jquery;
+					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				table.render({
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
+						where:{
+							"merchantName":"",
+							"saleName":"",
+							"merchantStatus":"",
+							"agentLevel":agentLevel
+						},
+						elem: '#LAY_table_merchant',
+						height: 'full-140',
+						//method: "post",
+						page: true,
+						id: 'merchantlist',
+						response: { 
+						//res 即为原始返回的数据
+								"statusCode":"1000", //解析接口状态
+								
+						},
+						parseData: function(res) {
+						 //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.data.count, //解析数据长度
+								"data": changeS(res.data.agentmerchants), //解析数据列表
+							};
+						},
 					elem: '#LAY_table_Salesman',
-					url: '../../public/json/vip-card.json',
-					//method: "post",
 					height: 'full-200',
 					page: true,
 					id: 'salesmanList',

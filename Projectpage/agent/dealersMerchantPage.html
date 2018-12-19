@@ -25,13 +25,13 @@
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
 					<input id="merchantName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
 				</div>
-				<!-- <div class="layui-input-inline text">
-					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input id="merchantName" type="text" name="userName" placeholder="代理商名称" autocomplete="off" class="layui-input">
-				</div> -->
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input id="saleName" type="text" name="userName" placeholder="销售人员" autocomplete="off" class="layui-input">
+					<input id="merchantName" type="text" name="userName" placeholder="代理名称" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-input-inline text">
+					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+					<input id="saleName" type="text" name="userName" placeholder="销售名称" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline">
 					<select id="merchantStatus" name="state">
@@ -60,6 +60,21 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			function changeS(data){
+				var data = data
+				for(var i = 0 ; i < data.length; i++){
+					if(data[i].merchantType == 0){
+						data[i].merchantType1 = '个人'
+					}
+					if(data[i].merchantType == 1){
+						data[i].merchantType1 = '个体'
+					}
+					if(data[i].merchantType == 2){
+						data[i].merchantType1 = '企业'
+					}
+				}
+				return data
+			}
 			// 			// 选择日期插件  
 			layui.use(['form', 'table', 'laytpl'], function() {
 				var table = layui.table,
@@ -67,6 +82,7 @@
 					laytpl = layui.laytpl,
 					$ = layui.jquery;
 				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				console.log($('#merchantName').val())
 				function tableRender(){
@@ -76,6 +92,7 @@
 							"merchantName":$('#merchantName').val(),
 							"saleName":$('#saleName').val(),
 							"merchantStatus":$('#merchantStatus').val(),
+							"agentLevel":agentLevel
 						},
 						elem: '#LAY_table_merchant',
 						height: 'full-140',
@@ -93,7 +110,7 @@
 								"code": res.code, //解析接口状态
 								"msg": res.msg, //解析提示文本
 								"count": res.data.count, //解析数据长度
-								"data": res.data.agentmerchants, //解析数据列表
+								"data": changeS(res.data.agentmerchants), //解析数据列表
 							};
 						},
 						cols: [
@@ -109,11 +126,14 @@
 								width: 200
 							}, {
 								field: 'agentLevel',
-								title: '所属经销商',
+								title: '所属代理(代理/销售)',
 								align: 'center',
-								width: 200
-							} ,{
-								field: 'ylbNumber',
+								width: 250,
+								templet:function(data){
+									return data.agentName + '/' + data.saleName
+								}
+							},{
+								field: 'merchantType1',
 								title: '类型',
 								align: 'center',
 								width: 120
@@ -121,7 +141,7 @@
 								field: 'insertTime',
 								title: '创建时间',
 								align: 'center',
-								width: 120
+								width: 200
 							}, {
 								toolbar: '#toolbar_switch',
 								title: '状态',
@@ -262,12 +282,12 @@
 								async: true,
 								data: mydata,
 								success: function(data) {
-									if(data.code == 0000) {
+									if(data.code == 1000) {
 										layer.close(index);
 										layer.alert('禁用成功 ', {
 											icon: 6
 										});
-									} else if(data.code == 0001) {
+									} else{
 										layer.msg(data.desc);
 									}
 								}
