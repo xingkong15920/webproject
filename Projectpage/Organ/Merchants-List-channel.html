@@ -118,11 +118,12 @@
 				<input type="radio" name="operation{{d.paymentTypeID}}" data_pid="{{d.paymentTypeID}}"   {{d.wheelSearch==1 ? 'checked' : ''}}  value="1" title="轮询" lay-filter="operation">
 			</div>
 			<div class="layui-input-block operation_select {{d.wheelSearch==0 ? 'blo' : 'non'}}" id="operation_select{{d.paymentTypeID}}" style="margin-left: 0;">
-				<select name="quiz{{d.paymentTypeID}}" id="only{{d.paymentTypeID}}" value="{{d.date[0].paymentChannel}}">
-					
+				<select name="quiz{{d.paymentTypeID}}" id="only{{d.paymentTypeID}}"
+                value="{{d.dataS}}" >
+					<option value="">没有通道</option>
                      {{#  layui.each(d.channel, function(index, item){ }}
                  
-                       <option value={{item.paymentChannel}} {{d.date!= null && d.date[0].paymentChannel == item.paymentChannel ? 'selected':''}}>{{item.paymentName}}</option>
+                       <option value={{item.paymentChannel}} {{d.dataS == item.paymentChannel ? 'selected':''}}>{{item.paymentName}}</option>
                 
                     {{#  }); }}
 				</select>
@@ -145,7 +146,7 @@
                                 <input type="checkbox" name="text" lay-skin="primary" {{item.sType==0 ? 'checked' : ''}} data-id="{{item.paymentChannel}}"  data-Cname="{{item.paymentName}}" data-sWeight="{{item.weight}}" data-Pid="{{d.paymentTypeID}}"  class="lunxun"  lay-filter="members1111">
                             </td>
                             <td>{{ item.paymentChannel }}</td>
-                            <td>{{ item.paymentName }}：</td>
+                            <td>{{ item.paymentName }}</td>
                             <td><input type="number" min="0" max="9" name="" class="layui-input" onkeyup="changeV(this)" value="{{ item.weight  }}"></td>
                           </tr>
                         {{#  }); }}
@@ -177,18 +178,10 @@
             }
             function changeRes(data,data1){
                 console.log(data1)
-                if(data == null){
+                if(data == null || data1 == null){
                     return
                 }
-                var tdList = []
-                for(var j = 0 ; j < data1.length;j++){
-                    var newO = Object()
-                    newO.id = data1[j].id
-                    newO.paymentName = data1[j].paymentchannelname
-                    newO.paymentChannel = data1[j].id
-                    newO.weight = '0'
-                    tdList.push(newO)
-                }
+                
                 for(var i = 0 ; i < data.length;i++){
                     var tdList = []
                     for(var j = 0 ; j < data1.length;j++){
@@ -213,7 +206,15 @@
                             }
                         }
                     }
+                    var dataS
+                    if(data[i].date.length >0){
+                        dataS = data[i].date[0].paymentChannel
+                    }else{
+                        dataS = ''
+                    }
+                    data[i].dataS = dataS
                 }
+                console.log(data)
                 for(var b = 0; b < data.length;b++){
                     data[b].channel.sort(compare('weight'))
                 }
@@ -279,6 +280,9 @@
                             
                     },
                     parseData: function(res) { //res 即为原始返回的数据
+                        if(res.data == null){
+                            return 
+                        }
                      return {
                          "code": res.code, //解析接口状态
                          "msg": res.msg, //解析提示文本

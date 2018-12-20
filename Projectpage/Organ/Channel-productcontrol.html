@@ -246,15 +246,17 @@
 					form.on('submit(add)', function(data, index) {
 						console.log(tjData)
 						// 发送请求
+						var adddData = new Object()
+						adddData.data = tjData
 						CmsUtility.postAjaxCall(
 							//系统设置
 							CmsConfig.addressUrl.Mechanism.updateRate,
-							tjData,
+							JSON.stringify(adddData),
 							function(data){
 								if(data.code == 1000){
 									$('#quxiao').click()
-									parent.layer.msg('更改成功')
-									parent.location.reload()
+									parent.layer.msg('保存成功')
+	                               	parent.layui.table.reload('vip_cardList')
 									
 									
 								}else{

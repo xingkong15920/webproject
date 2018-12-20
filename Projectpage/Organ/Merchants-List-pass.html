@@ -31,13 +31,13 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">新密码</label>
 						<div class="layui-input-inline">
-							<input type="password" name="servicetel" lay-verify="number" class="layui-input">
+							<input type="password" name="" lay-verify="pass" class="layui-input" id="passWord">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">确认密码</label>
 						<div class="layui-input-inline">
-							<input type="password" name="serviceqq" lay-verify="number" class="layui-input">
+							<input type="password" name="passWord" lay-verify="repass" class="layui-input" id="repassWord">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -50,6 +50,8 @@
 				</form>
 			</div>
 		</div>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function(){
@@ -57,6 +59,7 @@
 				setTimeout(function(){parent.layer.close(index)},16); 
 			})
 			function subPage(data,data1){
+				var jgData = data
 				var serverUrl = 'http://192.168.1.190:5002/'
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
@@ -67,12 +70,44 @@
 						table = layui.table,
 						form = layui.form,
 						laytpl = layui.laytpl;
-
+						form.verify({
+							pass: [/^[0-9A-Za-z]{6,12}$/, '密码必须6到12位'],
+							repass: function(value) {
+								if($('#passWord').val() != $('#repassWord').val()) {
+									return '两次密码不一致';
+								}
+							}
+						});
 					//监听提交
 					form.on('submit(add)', function(data) {
 						layer.alert(JSON.stringify(data.field), {
 							title: '最终的提交信息'
 						})
+						var addData = data.field
+						addData.institutionNumber = userNumber
+						addData.merchantNumber = jgData.merchantNumber
+						console.log(addData)
+						// 发送请求
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Mechanism.updateMerchantInfo,
+							addData,
+							function(data){
+								if(data.code == 1000){
+									setTimeout(function(){
+										$('#quxiao').click()
+									},16); 
+									parent.layer.msg('修改成功')
+									parent.layui.table.reload('vip_cardList')
+									
+								}else{
+									layer.msg(data.msg)
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
 						return false;
 					});
 

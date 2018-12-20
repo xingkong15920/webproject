@@ -56,6 +56,7 @@
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+
 			// <input type="input" data-id="id" style="height:30px" placeholder="请输入子商户名字" class="layui-input" name="choose{{d.id}}" oninput="input1(this)"  onblur="addC(this)">
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function(){
@@ -82,6 +83,7 @@
 						admin = layui.admin,
 						element = layui.element,
 						layer = layui.layer;
+						
 
 					//方法级渲染 
 					function tableRender(){
@@ -187,6 +189,8 @@
 					})
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add1)', function(data, index) {
+						
+
 						var arr = new Array();
 	                    $("input:checkbox[name='child']").each(function(i){
 	                        var arrrr = new Object()
@@ -211,6 +215,7 @@
 	                    var adddData = new Object()
 	                    adddData.data= addData
 	                    console.log(adddData)
+	                    var index = layer.load(2, {shade: [0.4, '#393D49']})
 						CmsUtility.postAjaxCall(
                         //系统设置
 	                        CmsConfig.addressUrl.Mechanism.operationSub,
@@ -231,7 +236,9 @@
 	                        },
 	                        function(data){
 	                            console.log('222')
-	                        }
+	                        },
+	                        'post',
+	                        'true'
 	                    )
 						return false;
 					});
