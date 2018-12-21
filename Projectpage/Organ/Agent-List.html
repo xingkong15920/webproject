@@ -132,6 +132,9 @@
 					//     ,limitName: ' ' //每页数据量的参数名，默认：limit
 					//   },
 					parseData: function(res) { //res 即为原始返回的数据
+						if(res.data == null){
+							return
+						}
 						return {
 							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
@@ -148,7 +151,6 @@
 							field: 'agentNumber',
 							width: 150,
 							title: '代理编号',
-							sort: true
 						}, {
 							align: 'center',
 							field: 'userName',
@@ -159,10 +161,9 @@
 							field: 'agentType1',
 							width: 150,
 							title: '代理类型',
-							sort: true
 						}, {
 							align: 'center',
-							field: 'city',
+							field: 'agentName',
 							width: 150,
 							title: '上级代理'
 						}, {
@@ -173,21 +174,32 @@
 						}, {
 							align: 'center',
 							field: 'experience',
-							width: 150,
+							width: 80,
 							title: '账号总额',
-							sort: true
+							templet:function(data){
+								return 0
+							}
 						}, {
 							align: 'center',
 							field: 'insertTime',
-							width: 150,
+							width: 230,
 							title: '注册时间',
-							sort: true
+							templet:function(data){
+								return data.insertTime.split('.')[0]
+							}
 						}, {
 							align: 'center',
 							field: 'loginTime',
-							width: 150,
+							width: 250,
 							title: '最后登录时间',
-							sort: true
+							templet:function(data){
+								if(data.loginTime){
+									return data.loginTime.split('.')[0].split('T')[0] + ' ' + data.loginTime.split('.')[0].split('T')[1]
+								}else{
+									return "--"
+								}
+								
+							}
 						} ,{
 							align: 'center',
 							title: '操作',
@@ -277,7 +289,7 @@
 							type: 2,
 							title: '设置费率',
 							shade: 0.5,
-							area: ['650px', '90%'],
+							area: ['60%', '90%'],
 							maxmin: false,
 							resize: false,
 							content: ['Agent-List-rate.html'],

@@ -29,6 +29,9 @@
 			.layui-table-box{
 				border-bottom: 1px solid #e6e6e6;
 			}
+			.layui-inline{
+				display: inline-block !important;
+			}
 		</style>
 	</head>
 
@@ -36,28 +39,65 @@
 		<div class="x-body">
 			<form class="layui-form" lay-filter="cardAdd">
 					<div class="layui-form-item">
-						<label class="layui-form-label"></label>
 						<div class="layui-form-mid x-red">注：费率为千分位，例如：千分之三则填0.003</div>
 					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">费率</label>
-						<div class="layui-input-inline">
-							<input type="text" name="rate" lay-verify="title" class="layui-input" id="mima1">
+					<table class="layui-hide" id="members" lay-filter="members"></table>
+					<!-- <div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">费率类型</label>
+							<div class="layui-input-inline">
+								<input type="text" name="rate1" lay-verify="title" class="layui-input" id="mima1">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">费率</label>
+							<div class="layui-input-inline">
+								<input type="text" name="rate2" lay-verify="title" class="layui-input" id="mima2">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">提成比例</label>
+							<div class="layui-input-inline">
+								<input type="text" name="rate3" lay-verify="title" class="layui-input" id="mima3">
+							</div>
 						</div>
 					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">联系邮箱</label>
+							<div class="layui-input-inline">
+								<input type="text" name="contactMailbox" lay-verify="email" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">客服电话</label>
+							<div class="layui-input-inline">
+								<input type="text" name="customServiceTell" lay-verify="number" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">网站客服QQ</label>
+							<div class="layui-input-inline">
+								<input type="text" name="customServiceQq" lay-verify="number" class="layui-input">
+							</div>
+						</div>
+					</div> -->
 					<!-- <div class="layui-form-item">
 						<label class="layui-form-label">抽成比率</label>
 						<div class="layui-input-inline">
 							<input type="text" name="proportion" lay-verify="title" class="layui-input"  id="mima2">
 						</div>
 					</div> -->
-					<div class="layui-form-item">
-						<label class="layui-form-label"></label>
-						<div class="layui-input-inline">
+					<div class="layui-form-item layui-layout-admin">
+					<div class="layui-input-block">
+						<div class="layui-footer" style="left: 0;text-align: center;">
 							<button class="layui-btn" lay-submit="add" lay-filter="add">立即提交</button>
-							<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+							<a class="layui-btn layui-btn-primary" id="quxiao">关闭</a>
 						</div>
+						
 					</div>
+				</div>
+					
 				</form>
 		</div>
 		<script src="../../common/config.js"></script>
@@ -85,17 +125,65 @@
 					layer = layui.layer;
 					var tableSelect = layui.tableSelect;
 				//表单初始赋值
-					form.val('cardAdd', {
-						"rate": jgData.rate,
-						"proportion":jgData.proportion,
-					})
+					function tableRender(){
+						table.render({
+							//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantRate + '?merchantNumber=' + jgData.merchantNumber ,
+							elem: '#members',
+							height: 'full-220',
+							id: 'vip_cardList',
+							response: { 
+							//res 即为原始返回的数据
+									"statusCode":"1000", //解析接口状态
+									
+							},
+							parseData: function(res) { //res 即为原始返回的数据
+								if(res.data == null){
+									layer.msg(res.msg)
+									return
+								}
+								return {
+									"code": res.code, //解析接口状态
+									"msg": res.msg, //解析提示文本
+									"count": res.count, //解析数据长度
+									"data": res.data, //解析数据列表
+								};
+							},
+							cols: [
+								[{
+									align: 'center',
+									title: '费率类型',
+									field: 'rateType',
+									width: 200,
+									
+								}, {
+									align: 'center',
+									title: '费率',
+									field: 'rate',
+									minWidth: 150,
+									edit: 'edit_yy'
+								}, {
+									align: 'center',
+									title: '提成比例',
+									field: 'presentationRate',
+									minWidth: 150,
+									edit: 'toolbar_tx'
+								}]
+							],
+							page: false,
+							done: function(res, curr, count) {
+							
+							}
+						});
+					}
+					tableRender()
 				/*---------- 自定义验证规则 ----------*/
 					form.verify({
-						title:function(value){
-							if(value.length==0){
-								return '不能为空'
-							}
-						},
+						// title:function(value){
+						// 	if(value.length==0){
+						// 		return '不能为空'
+						// 	}
+						// },
 					});
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {

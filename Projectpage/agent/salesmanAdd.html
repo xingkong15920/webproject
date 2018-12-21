@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="./css/font.css">
 		<link rel="stylesheet" href="./css/xadmin.css">
 		<link rel="stylesheet" href="./css/style.css">
-		<script type="text/javascript" src="./js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 		<script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="./js/xadmin.js"></script>
 	</head>
@@ -19,7 +19,7 @@
 	<body>
 		<div class="x-body">
 			<div class="layui-row">
-				<form class="layui-form layui-col-md6">
+				<div class="layui-form layui-col-md6">
 					<div class="grid-demo">
 						<!--基本资料-->
 						<blockquote class="layui-elem-quote"><i class="iconfont icon-wode"></i>账号添加</blockquote>
@@ -27,28 +27,33 @@
 						<div class="layui-form-item">
 							<label for="name" class="layui-form-label">姓名</label>
 							<div class="layui-input-inline">
-								<input type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input">
+								<input type="text" id="name" name="saleName"   autocomplete="off" class="layui-input"  lay-verify="title">
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label for="phone" class="layui-form-label">手机号</label>
 							<div class="layui-input-inline">
-								<input type="text" id="phone" name="phone" required="" lay-verify="phone" autocomplete="off" class="layui-input">
+								<input type="text" id="phone" name="registerCell"  lay-verify="phone" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label for="password" class="layui-form-label">密码</label>
 							<div class="layui-input-inline">
-								<input type="password" id="password" name="password" required="" lay-verify="required" autocomplete="off" class="layui-input">
+								<input type="password" id="passWord" name=""  lay-verify="pass" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label for="password" class="layui-form-label">重复密码</label>
+							<div class="layui-input-inline">
+								<input type="password" id="repassWord" name="passWord" required="" lay-verify="repass" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">费率</label>
 							<div class="layui-input-inline">
-								<select name="rate" id="">
+								<select name="proportion" id="" lay-verify="title">
 									<option value="">费率</option>
 									<option value="0.006">0.6%</option>
-									<option value="0.005">0.5%</option>
 									<option value="0.0038">0.38%</option>
 								</select>
 							</div>
@@ -65,60 +70,71 @@
 						<div class="layui-form-item layui-layout-admin">
 							<div class="layui-input-block">
 								<div class="layui-footer" style="left: 0;text-align: center;">
-									<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+									<button class="layui-btn" lay-submit="add" lay-filter="add">立即提交</button>
 									<a class="layui-btn layui-btn-primary" onclick="x_admin_close()">取消</a>
 								</div>
 								<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
 							</div>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
-
+		<script src="../../common/config.js"></script>
+		<script src="../../common/utility.js"></script>
 		<script>
-			layui.use(['form', 'layer'], function() {
-				$ = layui.jquery;
-				var form = layui.form,
-					layer = layui.layer;
-
+			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+				 //允许ajax跨域
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl;
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//监听提交
+				form.verify({
+					title: function(value) {
+						if(!value.length) {
+							return '不能为空！';
+						}
+					},
+					pass: [/^[0-9A-Za-z]{6,12}$/, '密码必须6到12位'],
+					repass: function(value) {
+						if($('#passWord').val() != $('#repassWord').val()) {
+							return '两次密码不一致';
+						}
+					}
+				});
 				form.on('submit(add)', function(data) {
 
 					//发异步，把数据提交给后台
-					$.ajax({
-						type: "post",
-						url: ".salesmanManagement/addSalesman",
-						async: true,
-						data: data.field,
-						success: function(data) {
-
-							if(data.code == 0000) {
-								layer.alert("添加成功", {
-									icon: 6
-								}, function() {
-									// 刷新父页面
-									window.parent.location.reload();
-									// 获得frame索引
-									var index = parent.layer.getFrameIndex(window.name);
-									//关闭当前frame
-									parent.layer.close(index);
-								});
-
-							} else {
-								layer.msg(data.desc, {
-									icon: 6
-								}, function() {
-									// 刷新父页面
-									window.parent.location.reload();
-									// 获得frame索引
-									var index = parent.layer.getFrameIndex(window.name);
-									//关闭当前frame
-									parent.layer.close(index);
-								});
+					console.log(data)
+					var addData = data.field
+					addData.agentNumber = userNumber
+					console.log(addData)
+					// 发送请求
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Agent.saleInsert,
+						addData,
+						function(data){
+							if(data.code == 1000){
+								setTimeout(function(){
+									$('#quxiao').click()
+								},16); 
+								parent.layer.msg('修改成功')
+								parent.layui.table.reload('vip_cardList')
+								
+							}else{
+								layer.msg(data.msg)
 							}
+						},
+						function(data){
+							console.log('222')
 						}
-					});
+					)
 					return false;
 				});
 

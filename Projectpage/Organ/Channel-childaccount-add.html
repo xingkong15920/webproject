@@ -41,41 +41,53 @@
 							</div>
 						</div>
 					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">子商户号</label>
-						<div class="layui-input-inline">
-							<input type="text" name="subaccountNumber" autocomplete="off" placeholder="子商户号" class="layui-input" lay-verify="subaccountNumber">
+					<div id="noali">
+						<div class="layui-form-item">
+							<label class="layui-form-label">子商户号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="subaccountNumber" autocomplete="off" placeholder="子商户号" class="layui-input" lay-verify="subaccountNumber">
+							</div>
 						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">商户秘钥</label>
+							<div class="layui-input-inline">
+								<input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">公众号APPID</label>
+							<div class="layui-input-inline">
+								<input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">小程序APPID</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">APPSECRET</label>
+							<div class="layui-input-inline">
+								<input type="text" name="appsecret" autocomplete="off" placeholder="APPSECRET" class="layui-input" lay-verify="appsecret">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">终端号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
+							</div>
+						</div>
+
 					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">商户秘钥</label>
-						<div class="layui-input-inline">
-							<input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
+					<div id="ali">
+						<div class="layui-form-item">
+							<label class="layui-form-label">请扫码获取授权</label>
+							<div class="layui-input-inline">
+								<div id="qrcode"></div>
+							</div>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">公众号APPID</label>
-						<div class="layui-input-inline">
-							<input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">小程序APPID</label>
-						<div class="layui-input-inline">
-							<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">APPSECRET</label>
-						<div class="layui-input-inline">
-							<input type="text" name="appsecret" autocomplete="off" placeholder="APPSECRET" class="layui-input" lay-verify="appsecret">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">终端号</label>
-						<div class="layui-input-inline">
-							<input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
-						</div>
+						
 					</div>
 					<!-- <div class="layui-form-item">
 						<label class="layui-form-label">成本费率模式</label>
@@ -103,7 +115,7 @@
 							</div>
 						</div>
 					</div>
-
+	
 					<div class="layui-form-item layui-layout-admin">
 						<div class="layui-input-block">
 							<div class="layui-footer" style="left: 0;text-align: center;">
@@ -118,11 +130,34 @@
 		</div>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
+        <script src="../../public/js/qrcode.min.js"></script>
 		<script>
 			var channel = CmsUtility.getQueryString('channel')
+			var payment = CmsUtility.getQueryString('payment')
 			var type = CmsUtility.getQueryString('type')
 			var merchantNumber = CmsUtility.getQueryString('merchantNumber')
-			
+			new QRCode(document.getElementById('qrcode'), 'https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=2017070507654347&redirect_uri=http%3A%2F%2Fapi.hongxiaosou.cn%2Fshht%2FCon%2FaliPay&shopID=180308165207885');
+
+				// // 设置参数方式
+				// var qrcode = new QRCode('qrcode', {
+				//   text: 'your content',
+				//   width: 380,
+				//   height: 380,
+				//   colorDark : '#000000',
+				//   colorLight : '#ffffff',
+				//   correctLevel : QRCode.CorrectLevel.H
+				// });
+
+				// 使用 API
+				// qrcode.clear();
+				// qrcode.makeCode('new content');
+			if(payment == 0){
+				$('#noali').hide()
+				$('#ali').show()
+			}else{
+				$('#noali').show()
+				$('#ali').hide()
+			}
 			if(type ==1){
 				$('#type1').hide()
 			}
@@ -311,7 +346,7 @@
 						function(data){
 							if(data.code == 1000){
 								 
-								layer.msg('保存成功')
+								parent.layer.msg('保存成功')
 								setTimeout(function(){
 									x_admin_close()
 									parent.layui.table.reload('vip_cardList')
