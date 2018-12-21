@@ -63,11 +63,15 @@
 				//方法级渲染
 				table.render({
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
+						// where:{
+						// 	"registerCell":"",
+						// 	"saleName":"",
+						// },
 						where:{
 							"merchantName":"",
 							"saleName":"",
 							"merchantStatus":"",
-							"agentLevel":agentLevel
+							"agentLevel":""
 						},
 						elem: '#LAY_table_merchant',
 						height: 'full-140',
@@ -157,8 +161,13 @@
 							type: 2,
 							title: '业务员修改',
 							area: ['50%', '50%'], //宽高
-							content: '.salesmanManagement/getEditSalesmanPage?salesmanNumber=' + salesmanNumber,
-							end: function() {}
+							content: 'salesmanEdit.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(data, userNumber)
+							}
 						});
 					} else if(obj.event == 'resetPwd') {
 
@@ -167,8 +176,13 @@
 							type: 2,
 							title: '密码修改',
 							area: ['500px', '270px'], //宽高
-							content: '.salesmanManagement/getEditSalesmanPwdPage?salesmanNumber=' + salesmanNumber,
-							end: function() {}
+							content: 'salesmanPwdEdit.html',
+							success:function(layero, index){
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(data, userNumber)
+							}
 						});
 					} else if(obj.event == 'open') {
 

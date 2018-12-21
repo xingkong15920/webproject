@@ -123,7 +123,7 @@
 					<option value="">没有通道</option>
                      {{#  layui.each(d.channel, function(index, item){ }}
                  
-                       <option value={{item.paymentChannel}} {{d.dataS == item.paymentChannel ? 'selected':''}}>{{item.paymentName}}</option>
+                       <option value={{item.paymentChannel}} {{d.dataS == item.paymentChannel ? 'selected':''}}>{{item.paymentName}}/{{item.paymentChannel}}</option>
                 
                     {{#  }); }}
 				</select>
@@ -183,16 +183,20 @@
                 }
                 
                 for(var i = 0 ; i < data.length;i++){
-                    var tdList = []
                     for(var j = 0 ; j < data1.length;j++){
-                        var newO = Object()
-                        newO.id = data1[j].id
-                        newO.paymentName = data1[j].paymentchannelname
-                        newO.paymentChannel = data1[j].id
-                        newO.weight = '0'
-                        tdList.push(newO)
+                        if(data[i].paymentTypeID == data1[j].paymentTypeID){
+                            for(var n = 0; n<data1[j].date.length;n++){
+                                data1[j].date[n].weight = '0'
+                            }
+                           data[i].channel  = data1[j].date
+                        }
+                        // var newO = Object()
+                        // newO.id = data1[j].id
+                        // newO.paymentName = data1[j].paymentchannelname
+                        // newO.paymentChannel = data1[j].id
+                        // newO.weight = '0'
+                        
                     }
-                    data[i].channel = tdList
                     var dl = data[i].date
                     for(var m = 0 ; m < data[i].channel.length;m++){
                         for(var n = 0; n < dl.length;n++){
@@ -203,6 +207,8 @@
                                 // }
                                 data[i].channel[m].sType = '0'
                                 break
+                            }else{
+
                             }
                         }
                     }
@@ -240,10 +246,9 @@
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.getShopOfficial,
                 {
-                  "institutionNumber" :userNumber 
+                  "merchantNumber" :jgData.merchantNumber 
                 },
                 function(data){
-                    console.log(data)
                     if(data.code == 1000){
                         console.log(data)
                         // layer.msg('删除成功')
@@ -313,7 +318,7 @@
                     page: false,
                     done: function(res, curr, count) {
                         addData = res.data
-                        console.log(addData)
+                        //console.log(addData)
                     
                         
                      }

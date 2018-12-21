@@ -1,5 +1,3 @@
-
-
 var CmsUtility = (function() {
 
     /**

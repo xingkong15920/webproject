@@ -29,10 +29,10 @@
 		<div class="layui-row" style="margin-left:30px;margin-top:15px">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="shopNumber" placeholder="商户编号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="merchantNumber" placeholder="商户编号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="childNumber" placeholder="子商户编号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="subaccountNumber" placeholder="子商户编号" autocomplete="off" class="layui-input">
 					</div>
 					
 					
@@ -41,7 +41,7 @@
 					</div>
 				</div>
 			</div>
-		<div class="x-body">
+		<div class="x-body" >
 			<xblock>
 				<button class="layui-btn"  id="addChild"><i class="layui-icon"></i>添加子帐号</button>
 			</xblock>
@@ -76,6 +76,8 @@
 							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionSub + '?institutionNumber=' + userNumber ,
 							where:{
 								"paymentChannel":jgData.id,
+								"merchantNumber":$('#merchantNumber').val(),
+								"subaccountNumber":$('#subaccountNumber').val()
 
 							},
 							elem: '#members',
@@ -127,7 +129,9 @@
 						});
 					}
 					tableRender()
-					
+					$('#search').click(function(){
+						tableRender()
+					})
 					//监听性别操作
 					form.on('switch(switch)', function(data) {
 						// layer.tips('自助核销：' + (this.checked ? '已开启' : '已关闭'), data.othis)
