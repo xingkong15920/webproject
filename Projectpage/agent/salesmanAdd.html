@@ -92,7 +92,9 @@
 					form = layui.form,
 					laytpl = layui.laytpl;
 				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+				
 				//监听提交
 				form.verify({
 					title: function(value) {
@@ -113,6 +115,7 @@
 					console.log(data)
 					var addData = data.field
 					addData.agentNumber = userNumber
+					addData.institutionNumber = insNumber
 					console.log(addData)
 					// 发送请求
 					CmsUtility.postAjaxCall(
