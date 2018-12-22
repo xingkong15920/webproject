@@ -62,13 +62,13 @@
         var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
         
         table.render({
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber,
-            where: {
-                "merchantName": "",
-                "saleName": "",
-                "merchantStatus": "",
-                "agentLevel": agentLevel
-            },
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgentWithdrawCash + '?agentNumber=123456',
+            // where: {
+            //     "merchantName": "",
+            //     "saleName": "",
+            //     "merchantStatus": "",
+            //     "agentLevel": agentLevel
+            // },
             elem: '#LAY_table_merchant',
             height: 'full-140',
             //method: "post",
@@ -123,32 +123,58 @@
     });
 
     // 经销商的余额
-    var accountBalance = '3000';
-
+    var accountBalance = '';
+    CmsUtility.postAjaxCall(
+                        //系统设置
+        CmsConfig.addressUrl.Agent.getAgentBalance,
+        {
+            "agentNumber":'123456'
+        },
+        function(data){
+            if(data.code == 1000){
+               accountBalance = data.data.data.agentBalance
+            }else{
+                layer.msg(data.msg)
+            }
+        },
+        function(data){
+            console.log('222')
+        }
+    )
     function txsq(obj, id) {
         //询问框
         layer.confirm('当前余额：' + accountBalance + '元<br>' + '确认要提现？', {
             btn: ['确定', '取消'] //按钮
         }, function() {
             // ajax提交至
-            $.ajax({
-                type: "post",
-                url: ".Withdrawal/withdrawalApplication",
-                async: true,
-                success: function(data) {
-                    if (data.code == 0000) {
-                        layer.alert("提现申请成功", {
-                            icon: 6
-                        });
-
-                    } else {
-                        layer.alert(data.desc, {
-                            icon: 6
-                        });
+            if(accountBalance <= 100000){
+                layer.msg('余额不足，无法体现')
+                return
+            }else{
+                CmsUtility.postAjaxCall(
+                        //系统设置
+                CmsConfig.addressUrl.Agent.insertAgentWithdrawCash,
+                {
+                    "agentNumber":'123456',
+                    "withdrawCashAmount":accountBalance
+                },
+                function(data){
+                    if(data.code == 1000){
+                        layer.msg('保存成功')
+                        layui.table.reload('merchantlist')
+                    }else{
+                        layer.msg(data.msg)
                     }
+                },
+                function(data){
+                    console.log('222')
                 }
-            });
-        }, function() {});
+            )
+            }
+             
+        }, function() {
+            console.log('11111')
+        });
     }
     </script>
 </body>
