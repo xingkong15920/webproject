@@ -48,7 +48,7 @@
 			</div>
 			<ul class="layui-nav right" lay-filter="">
 				<li class="layui-nav-item">
-					<a href="javascript:;">13081058624</a>
+					<a href="javascript:;" id="userName"></a>
 					<dl class="layui-nav-child">
 						<dd>
 							<a href="javascript:;" id="logout">退出</a>
@@ -75,12 +75,6 @@
 							<cite>门店管理</cite>
 						</a>
 					</li>
-					<!--<li class="layui-nav-item">
-						<a lay-href="deviceList.html">
-							<i class="iconfont">&#xe6a7;</i>
-							<cite>设备管理</cite>
-						</a>
-					</li>-->
 					<li class="layui-nav-item">
 						<a lay-href="advertlist.html">
 							<i class="icon icon icon-guanggao-"></i>
@@ -102,7 +96,7 @@
 							</li>
 							<li>
 								<a lay-href="sy-liushuishanghu.html">
-							<i class="icon icon icon-shanghupingtai"></i>
+									<i class="icon icon icon-shanghupingtai"></i>
 									<cite>商户账单</cite>
 								</a>
 							</li>
@@ -137,26 +131,27 @@
 	<script src="../../common/config.js"></script>
 	<script src="../../common/utility.js"></script>
 	<script type="text/javascript">
+		$('#userName').html(JSON.parse(sessionStorage.getItem("userSh")).phone)
+		console.log(JSON.parse(sessionStorage.getItem("userSh")).login)
 		$(function() {
 			$('#logout').click(function() {
 				console.log('退出')
 				CmsUtility.postAjaxCall(
 					//系统设置
-					CmsConfig.addressUrl.Login.exitLogin,
-					'ajaData',
+					CmsConfig.addressUrl.Login.exitLogin, {
+						"Number": sessionStorage.getItem("userSh").Number
+					},
 					function(data) {
-						if(data.respCode == '1000') {
-							layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
-								title: ''
-							})
+						if(data.code == '1000') {
+							// layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
+							// 	title: ''
+							// })
+							layer.msg('退出成功，即将跳转登录页')
 							sessionStorage.clear();
 							setTimeout(function() {
 								window.location.href = 'login.html'
 							}, 300)
-
-						} else {
-
-						}
+						} else {}
 					},
 					function(data) {
 						console.log('222')
