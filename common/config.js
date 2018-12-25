@@ -1,4 +1,4 @@
-//prd  线上		cs 测试  
+//prd  线上		cs 测试   渠通宇104
 var Edition = 'qty';
 var server;
 if(Edition == 'qty'){
@@ -27,6 +27,8 @@ var CmsConfig = {
             createCode: "login/createCode",
             // 登录
             login: "login/loginJG",
+            //代理商登录
+            AgloginInfo:"login/AgloginInfo",
             //退出
             exitLogin:"login/exitLogin"
         },
@@ -119,9 +121,10 @@ var CmsConfig = {
             删除代理接口
             
             */
+            //获取费率
+            getAgentRate:"AgentRegister/getAgentRate",
             //修改费率
             updateAgentRate:"AgentRegister/updateAgentRate",
-            updateAgentRegister:"AgentRegister/updateAgentRegister",
             //添加代理接口
             insertAgentRegister:"AgentRegister/insertAgentRegister",
             //资金变动列表接口
@@ -198,7 +201,10 @@ var CmsConfig = {
             updateInstitutionAdvertisement:"InstitutionAdvertisement/updateInstitutionAdvertisement",
             //删除接口
             delInstitutionAdvertisementState:"InstitutionAdvertisement/delInstitutionAdvertisementState",
-
+            //代理商结算审核
+            getException:"Withdrawal/getException",
+            //查看代理商结算账单
+            GetSettlement:"Withdrawal/GetSettlement",
             //--财务分析
             //查询当日统计
             //商户订单金额TOP10列表
@@ -213,13 +219,82 @@ var CmsConfig = {
             //根据父级查询子级支付统计
 
         },
-        //收银后台
-        Coller: {
-        	
+        //代理商后台
+        Agent: {
+            //商户
+        	//查询商户信息
+            getMerchantlist:"AgMerchant/getMerchantlist",
+            //查询店铺
+            getShoplist:"AgEquipment/getShoplist",
+            //查询云喇叭和码牌
+            getEquipmentlist:"AgEquipment/getEquipmentlist",
+
+            
+
+
+            //销售
+            //查询销售列表
+            getSaleInfo:"saleManagement/getSaleInfo",
+            //添加销售
+            saleInsert:"saleManagement/insert",
+            //销售编辑
+            updateSale:"saleManagement/updateSale",
+
+            //代理
+            insertAgent:"AgManagement/insertAgent",
+
+            //提现
+            //查询提现账户
+            getBackCard:"Withdrawal/getBackCard",
+            //添加提现账户
+            insertBankCard:"Withdrawal/insertBankCard",
+            //查询提现记录
+            getAgentWithdrawCash:"Withdrawal/getAgentWithdrawCash",
+            //添加提现记录
+            insertAgentWithdrawCash:"Withdrawal/insertAgentWithdrawCash",
+            //查询代理商余额
+            getAgentBalance:"Withdrawal/getAgentBalance",
+
+
+            //码牌
+            getEquipmentlist:"AgEquipment/getEquipmentlist",
         },
         //商户后台
-        Merchant:{
-  			
+        Merchant: {
+            //交易数据
+            getTransactionList: "transaction/getTransactionList",
+            //交易数据--门店列表
+            getShopNames: "transaction/getShopNames",
+            //门店管理
+            getShops: "store/getShops",
+            //门店管理--添加门店
+            addShop: "store/addShop",
+            //门店管理--修改店铺
+            modifyShop: "store/modifyShop",
+            //店员管理
+            getClerks: "clerk/getClerks",
+            //店员管理--添加店员
+            addClerk: "clerk/addClerk",
+            //店员管理--修改店员
+            modifyClerk: "clerk/modifyClerk",
+            //店员管理--设备管理
+            getEquipments:"equipment/getEquipments",
+            //广告管理
+            getadvertlist:"advert/getadvertlist",
+            //广告管理--添加
+            addAdvert:"advert/addAdvert",
+            //广告管理--修改
+            modifyAdvert:"advert/modifyAdvert",
+            //广告管理--删除
+            deleteAdvert:"advert/deleteAdvert",
+            //广告管理--状态
+            modifyAdvertState:"advert/modifyAdvertState",
+            //账单管理--门店账单
+            getShopBill: "bill/getShopBill",
+            //账单管理--商户账单
+            getMerchantBill: "bill/getMerchantBill",
+            //数据统计
+            getStatistics:"statistics/getStatistics",
         },
         //公共
         Public: {
