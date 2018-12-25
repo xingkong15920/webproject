@@ -72,7 +72,6 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			CmsUtility.choosePro();
-			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use('table', function() {
 				var table = layui.table,
@@ -146,6 +145,7 @@
 						}]
 					],
 					done: function(res, curr, count) {
+						console.log(res)
 						if(res.data == null) {
 							layer.msg(res.msg)
 						} else {
@@ -168,7 +168,7 @@
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber, serverUrl)
+								iframe.subPage(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'assistantlist') {
@@ -182,7 +182,7 @@
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPageclerk(data, userNumber, serverUrl)
+								iframe.subPageclerk(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'devicelist') {
@@ -196,7 +196,7 @@
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPagedevice(data, userNumber, serverUrl)
+								iframe.subPagedevice(data, userNumber)
 							}
 						});
 					} else if(obj.event === 'delete') {

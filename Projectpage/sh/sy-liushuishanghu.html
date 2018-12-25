@@ -42,16 +42,38 @@
 			</xblock>
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
 		</div>
-		<script type="text/javascript">
-			$("#baobiao").click(function() {
-				var shopName = $('#shopName').val(); //门店名称
-				var startTime = $("#startTime").val();
-				var endTime = $("#endTime").val();
-				window.location.href = "${pageContext.request.contextPath }/Bill/getmendianReport?shopName=" + encodeURI(encodeURI(shopName)) + "&startTime=" + startTime + "&endTime=" + endTime;
-			})
-		</script>
-
+		<script src="../../common/config.js"></script>
+		<script src="../../common/utility.js"></script>
 		<script>
+			function changeRes(data){
+				if(data == null){
+					return
+				}
+				for(var i = 0; i < data.length;i++){
+					if(!data[i].weChatOrderTotalMoney){
+						data[i].weChatOrderTotalMoneya = "-"
+					}else{
+						data[i].weChatOrderTotalMoneya = data[i].weChatOrderTotalMoney
+					}
+					if(!data[i].weChatTotalOrder){
+						data[i].weChatTotalOrdera = "-"
+					}else{
+						data[i].weChatTotalOrdera = data[i].weChatTotalOrder
+					}
+					if(!data[i].alipayOrderTotalMoney){
+						data[i].alipayOrderTotalMoneya = "-"
+					}else{
+						data[i].alipayOrderTotalMoneya = data[i].alipayOrderTotalMoney
+					}
+					if(!data[i].alipayTotalOrder){
+						data[i].alipayTotalOrdera = "-"
+					}else{
+						data[i].alipayTotalOrdera = data[i].alipayTotalOrder
+					}
+				}
+				return data
+			}
+			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var startDate = new Date();
 			var endDate = new Date();
 			var nowTime = new Date().valueOf();
@@ -75,45 +97,62 @@
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_bill',
-					url: '${pageContext.request.contextPath }/Bill/getBillmendianList',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getMerchantBill + '?merchantNumber=' + userNumber,
 					method: "post",
+					height:"full-200",
 					page: true,
 					id: 'billlist',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if(res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": changeRes(res.data.result),
+						}
+					},
 					cols: [
 						[{
-							field: 'shopname',
+							field: 'statementDate',
 							title: '账单日期',
 							align: 'center'
 						}, {
-							field: 'bishu',
+							field: 'totalOrder',
 							title: '总订单数',
 							align: 'center'
 						}, {
-							field: 'jiaoyijine',
+							field: 'orderTotalMoney',
 							title: '订单总额',
 							align: 'center'
 						}, {
-							field: 'Useryouhui',
+							field: 'poundage',
 							title: '手续费',
 							align: 'center'
 						}, {
-							field: 'Lijian',
+							field: 'alipayTotalOrdera',
 							title: '支付宝笔数',
 							align: 'center'
 						}, {
-							field: 'shishou',
+							field: 'alipayOrderTotalMoneya',
 							title: '支付宝金额',
 							align: 'center'
 						}, {
-							field: 'shopshouxufei',
+							field: 'weChatTotalOrdera',
 							title: '微信笔数',
 							align: 'center'
 						}, {
-							field: 'zhifubaoshouxufei',
+							field: 'weChatOrderTotalMoneya',
 							title: '微信金额',
 							align: 'center'
 						}]
-					]
+					],
+					done: function(res, curr, count) {
+						console.log(res)
+					}
 				});
 
 				// 根據條件重载表格
