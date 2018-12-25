@@ -80,7 +80,32 @@
 					parent.layer.close(index)
 				}, 16);
 			})
-
+			function uniq(array){
+			    var temp = []; //一个新的临时数组
+			    for(var i = 0; i < array.length; i++){
+			        if(temp.indexOf(array[i]) == -1){
+			            temp.push(array[i]);
+			        }
+			    }
+			    return temp;
+			}
+			function sort111(data){
+				var arr = new Array()
+				for(var i = 0 ; i < data.length;i++){
+					arr.push(data[i].paymentTypeName)
+				}
+				
+				var a = uniq(arr)
+				var newD = new Array()
+				for(var j =0 ; j < a.length;j++){
+					for(var m = 0 ; m < data.length;m++){
+						if(a[j] == data[m].paymentTypeName){
+							newD.push(data[m])
+						}
+					}
+				}
+				return newD
+			}
 			function subPage(data,data1){
 				var serverUrl = window.parent.serverUrl
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
@@ -112,7 +137,7 @@
 								"code": res.code, //解析接口状态
 								"msg": res.msg, //解析提示文本
 								"count": res.count, //解析数据长度
-								"data": res.data, //解析数据列表
+								"data": sort111(res.data), //解析数据列表
 							};
 						},
 						cols: [

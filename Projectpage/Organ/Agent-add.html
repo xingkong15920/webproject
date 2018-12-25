@@ -138,21 +138,28 @@
 						<div class="layui-inline" >
 							<label class="layui-form-label">T1费率</label>
 							<div class="layui-input-block" style="width:200px">
-								<input type="text" name="Address" lay-verify="title" autocomplete="off" placeholder="T1费率" class="layui-input" value="" >
+								<input type="text" name="T1Rate" lay-verify="title" autocomplete="off" placeholder="T1费率" class="layui-input" value="" >
 							</div>
 						</div>
 					<div class="layui-inline" >
 						<label class="layui-form-label">D1费率</label>
 						<div class="layui-input-block" style="width:200px">
-							<input type="text" name="Address" lay-verify="title" autocomplete="off" placeholder="T1费率" class="layui-input" value="" >
+							<input type="text" name="D1Rate" lay-verify="title" autocomplete="off" placeholder="T1费率" class="layui-input" value="" >
 						</div>
 					</div>
 					<div class="layui-inline">
 						<label class="layui-form-label">D0费率</label>
 						<div class="layui-input-block" style="width:200px">
-							<input type="text" name="Address" lay-verify="title" autocomplete="off" placeholder="T1费率" class="layui-input" value="" >
+							<input type="text" name="D0Rate" lay-verify="title" autocomplete="off" placeholder="T1费率" class="layui-input" value="" >
 						</div>
 					</div>
+					
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label"></label>
+						<div class="layui-input-block">
+							<span style="color:red">*注：费率为千分位，例如：千分之三则填0.003</span>
+						</div>
 					</div>
 					<div class="layui-form-item layui-layout-admin">
 						<div class="layui-input-block">
@@ -164,6 +171,7 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
 		<script src="../../common/config.js"></script>
@@ -230,6 +238,9 @@
 					addData.Deletion_Flag = '0'
 					console.log(addData)
 					// 发送请求
+					addData.D0Rate = 'D0' + '-' + addData.D0Rate
+					addData.T1Rate = 'T1' + '-' + addData.T1Rate
+					addData.D1Rate = 'D1' + '-' + addData.D1Rate
 					CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.insertAgentRegister,
