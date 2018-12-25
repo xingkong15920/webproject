@@ -28,11 +28,11 @@
 		<div class="x-body">
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="cardAdd">
-					<div class="layui-form-item" id="type1">
+					<div class="layui-form-item" id="type1" style="display:none">
 						<label class="layui-form-label">商户名称</label>
 						<div class="layui-input-inline" style="position:relative;left:0;bottom:0">
-							<input type="text" name="merchantNumber" autocomplete="off" placeholder="请搜索并选择商户" class="layui-input" lay-verify="merchantNumber" id="search" onblur="bl()">
-							<div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto" id="searchBox" >
+							<input type="text" name="merchantNumber" autocomplete="off" placeholder="请搜索并选择商户" class="layui-input" lay-verify="merchantNumber" id="search" onblur="bl()" onfocus="fc()">
+							<div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff" id="searchBox" >
 								<!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
 								<div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
 								<div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
@@ -41,7 +41,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="noali">
+					<div id="noali" style="display:none">
 						<div class="layui-form-item">
 							<label class="layui-form-label">子商户号</label>
 							<div class="layui-input-inline">
@@ -80,7 +80,7 @@
 						</div>
 
 					</div>
-					<div id="ali">
+					<div id="ali"  style="display:none">
 						<div class="layui-form-item">
 							<label class="layui-form-label">请扫码获取授权</label>
 							<div class="layui-input-inline">
@@ -160,7 +160,10 @@
 			}
 			if(type ==1){
 				$('#type1').hide()
+			}else{
+				$('#type1').show()
 			}
+			
 			var serverUrl = window.parent.serverUrl;
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 			var riskMode = false
@@ -169,15 +172,48 @@
 					$('#search').val(e.getAttribute('data-id'))
 					console.log(e)
 					$('#search').attr('shopNumber',e.getAttribute('data-name'))
-					document.getElementById('searchBox').innerHTML = ''
+					$('#searchBox').hide()
 				}
 			function bl(){
 				setTimeout(function(){
-					document.getElementById('searchBox').innerHTML = ''
-				},500)
+					$('#searchBox').hide()
+				},200)
 				//$('#searchBox').hide()
 			}
-			layui.use(['laydate', 'table', 'upload', 'form'], function() {
+			function fc(){
+					$('#searchBox').show()
+					CmsUtility.postAjaxCall(
+						//系统设置
+					CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
+					{
+						"merchantNumber":$('#search').val(),
+						"institutionNumber":userNumber
+					},
+					function(data){
+						console.log(this.value)
+						if(data.code == 1000){
+							 var str = ''
+							 for(var i =0;i<data.data.length;i++){
+							 	str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].merchantName+'" data-name="'+ data.data[i].merchantNumber+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+'['+ data.data[i].merchantNumber +']'+ data.data[i].merchantName+'</div>'
+							 }
+							 document.getElementById('searchBox').innerHTML = str
+							// layer.msg('保存成功')
+							// setTimeout(function(){
+							// 	x_admin_close()
+							// },500);
+							
+						}else{
+							layer.msg(data.msg)
+							
+						}
+					},
+					function(data){
+						console.log('222')
+					}
+				)
+				
+			}
+			layui.use(['flow','laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
 					laydate = layui.laydate,
@@ -186,6 +222,43 @@
 					admin = layui.admin,
 					element = layui.element,
 					layer = layui.layer;
+					var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。  
+       				var flow = layui.flow;  
+     //   				flow.load({
+     //   					elem: '#searchBox', 
+     //   					done:function(page,next){
+     //   						console.log(page,next)
+     //   						CmsUtility.postAjaxCall(
+					// 	//系统设置
+					// 	CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
+					// 	{
+					// 		"merchantNumber":'',
+					// 		"institutionNumber":''
+					// 	},
+					// 	function(data){
+					// 		console.log(this.value)
+					// 		if(data.code == 1000){
+					// 			 var str = ''
+					// 			 for(var i =0;i<data.data.length;i++){
+					// 			 	str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].merchantName+'" data-name="'+ data.data[i].merchantNumber+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+'['+ data.data[i].merchantNumber +']'+ data.data[i].merchantName+'</div>'
+					// 			 }
+					// 			 document.getElementById('searchBox').innerHTML = str
+					// 			// layer.msg('保存成功')
+					// 			// setTimeout(function(){
+					// 			// 	x_admin_close()
+					// 			// },500);
+								
+					// 		}else{
+					// 			layer.msg(data.msg)
+								
+					// 		}
+					// 	},
+					// 	function(data){
+					// 		console.log('222')
+					// 	}
+					// )
+     //   					}
+     //   				})
 				var tableSelect = layui.tableSelect;
 				
 				$("#search").bind('input propertychange',function(){
@@ -196,7 +269,8 @@
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
 						{
-							"merchantNumber":this.value
+							"merchantNumber":this.value,
+							"institutionNumber":userNumber
 						},
 						function(data){
 							console.log(this.value)

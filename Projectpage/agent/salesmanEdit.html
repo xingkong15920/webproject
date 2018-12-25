@@ -19,14 +19,14 @@
 	<body>
 		<div class="x-body">
 			<div class="layui-row">
-				<form class="layui-form layui-col-md6">
+				<form class="layui-form layui-col-md6" lay-filter="basic">
 					<div class="grid-demo">
 						<div class="layui-form-item">
 							<label for="name" class="layui-form-label">
 			                  	姓名
 			                </label>
 							<div class="layui-input-inline">
-								<input  type="text" id="name" name="name" required="" lay-verify="required" autocomplete="off" class="layui-input">
+								<input  type="text" id="saleName" name="saleName" required="" lay-verify="required" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -34,7 +34,7 @@
 			                  	手机号
 			                </label>
 							<div class="layui-input-inline">
-								<input  type="text" id="phone" name="phone" required="" lay-verify="phone" autocomplete="off" class="layui-input">
+								<input  type="text" id="phone" name="registerCell" required="" lay-verify="phone" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -60,55 +60,63 @@
 				</form>
 			</div>
 		</div>
-
+		<script src="../../common/config.js"></script>
+		<script src="../../common/utility.js"></script>
 		<script>
-			layui.use(['form', 'layer'], function() {
-				$ = layui.jquery;
-				var form = layui.form,
-					layer = layui.layer;
-
+			function subPage(data,data1){
+				console.log(data)
+				var jgData = data
+				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+				 //允许ajax跨域
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl;
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+				form.val('basic', {
+						"saleName": jgData.saleName,
+						"registerCell": jgData.registerCell,
+						"proportion": jgData.proportion,
+					})
 				//监听提交
 				form.on('submit(add)', function(data) {
+					console.log(jgData.saleNumber)
+					var addData = new Object()
+					
+					addData = data.field
+					addData.saleNumber = jgData.saleNumber
+					console.log(addData)
+					CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Agent.updateSale,
+                        addData,
+                        function(data) {
+                            if (data.code == 1000) {
+                                
+                                parent.layer.msg('编辑成功成功')
+                                x_admin_close()
+                            	parent.layui.table.reload('merchantlist')
+                                
+                            } else {
+                                layer.msg(data.msg)
 
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
 					//发异步，把数据提交给后台
-					$.ajax({
-						type: "post",
-						url: ".salesmanManagement/editSalesman",
-						async: true,
-						data: data.field,
-						success: function(data) {
-
-							if(data.code == 0000) {
-								layer.alert("修改成功", {
-									icon: 6
-								}, function() {
-									// 刷新父页面
-									window.parent.location.reload();
-									// 获得frame索引
-									var index = parent.layer.getFrameIndex(window.name);
-									//关闭当前frame
-									parent.layer.close(index);
-								});
-
-							} else {
-								layer.alert("修改失败,请刷新重新修改!", {
-									icon: 6
-								}, function() {
-									// 刷新父页面
-									window.parent.location.reload();
-									// 获得frame索引
-									var index = parent.layer.getFrameIndex(window.name);
-									//关闭当前frame
-									parent.layer.close(index);
-								});
-
-							}
-
-						}
-					});
+					
 					return false;
 				});
 			});
+			}
+			
 		</script>
 
 	</body>

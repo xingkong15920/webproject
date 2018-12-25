@@ -141,7 +141,8 @@
 						<div class="layui-inline" style="width:300px">
 							<label class="layui-form-label" style="width:170px">请选择默认进件通道</label>
 							<div class="layui-input-inline" style="width: 100px;">
-								<select>
+								<select name="paymentNo" lay-verify="paymentNo">
+									<option value="">请选择进件通道</option>
 									<option value="0">富友</option>
 									<option value="1">新大陆</option>
 									<option value="2">官方微信</option>
@@ -260,6 +261,7 @@
 						"verificationlimit": jgData.verificationlimit || '',
 						//验证冻结时间
 						"verifyingFreezingTime": jgData.verifyingFreezingTime || '',
+						"paymentNo":jgData.paymentNo
 					})
 					//$('#merchantCa').checked = jgData.merchantca
 				}
@@ -304,6 +306,11 @@
 							return '请输入超限冻结时间';
 						}
 					},
+					paymentNo:function(value){
+						if(value.length == '') {
+							return '请选择进件渠道';
+						}
+					}
 				});
 				//普通图片上传
 				var uploadInst = upload.render({

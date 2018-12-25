@@ -25,12 +25,12 @@
 			<div class="layui-row">
 				<form class="layui-form" lay-filter="secretkey">
 					<div class="layui-form-item">
-						<label class="layui-form-label" style="width: auto;">商户密钥</label>
+						<label class="layui-form-label" style="width: auto;">请输入手续费</label>
 						<div class="layui-input-inline">
-							<textarea id="keyy" name="secretkey" class="layui-textarea"></textarea>
+							<input type="text" name="websiteRealmName" lay-verify="url" class="layui-input">
 						</div>
 						<div class="layui-form-mid x-red">
-							<button class="layui-btn" lay-submit="" id="sub" 	>换一组秘钥</button>
+							<button class="layui-btn" lay-submit="" id="sub" 	>提交</button>
 						</div>
 					</div>
 				</form>
@@ -39,8 +39,9 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
-			function subPageClerkpass(data,data1){
+			function subPage(data,data1){
 				console.log(data)
+				var serverUrl = 'http://192.168.1.190:5002/'
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 				var jgData = data
 				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
@@ -57,6 +58,7 @@
 						"secretkey": jgData.keys
 					})
 					$('#sub').click(function(){
+						return
 						console.log(jgData)
 						var tjData = new Object();
 						tjData.number = jgData.merchantNumber;

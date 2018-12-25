@@ -84,8 +84,8 @@
                 return {
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本
-                    "count": res.data.count, //解析数据长度
-                    "data": res.data.agentmerchants, //解析数据列表
+                    //"count": res.data.count, //解析数据长度
+                    "data": res.data.data, //解析数据列表
                 };
             },
             elem: '#LAY_table_Withdrawal',
@@ -94,29 +94,41 @@
             height: 'full-200',
             cols: [
                 [{
-                    field: 'WithdrawalsDate',
+                    field: 'inserttime',
                     title: '时间',
                     align: 'center'
                 }, {
-                    field: 'jiaoyijine',
+                    field: 'withdrawCashAmount',
                     title: '金额',
                     align: 'center'
                 }, {
-                    field: 'CardNumber',
+                    field: 'bankCardNo',
                     title: '卡号',
                     align: 'center'
                 }, {
-                    field: 'Name',
+                    field: 'name',
                     title: '姓名',
                     align: 'center'
                 }, {
-                    field: 'CardName',
+                    field: 'openingBankBranch',
                     title: '开户行',
                     align: 'center'
                 }, {
                     field: 'WithdrawalsTypeC',
                     title: '状态',
-                    align: 'center'
+                    align: 'center',
+                    templet:function(data){
+                        if(data.orderType == 0){
+                            return '审核中'
+                        }
+                        if(data.orderType == 1){
+                            return '已审核'
+                        }
+                        if(data.orderType == 2){
+                            return '已拒绝'
+                        }
+
+                    }
                 }]
             ]
         });
@@ -128,7 +140,7 @@
                         //系统设置
         CmsConfig.addressUrl.Agent.getAgentBalance,
         {
-            "agentNumber":'123456'
+            "agentNumber":userNumber
         },
         function(data){
             if(data.code == 1000){
@@ -147,8 +159,8 @@
             btn: ['确定', '取消'] //按钮
         }, function() {
             // ajax提交至
-            if(accountBalance <= 100000){
-                layer.msg('余额不足，无法体现')
+            if(accountBalance <= 0){
+                layer.msg('余额不足，无法填现')
                 return
             }else{
                 CmsUtility.postAjaxCall(

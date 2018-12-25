@@ -24,17 +24,26 @@
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="unbind">解绑</a>
 		</script>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
-			layui.use(['form', 'layer', 'table'], function() {
-				$ = layui.jquery;
-				var form = layui.form,
-					layer = layui.layer;
-
-				var table = layui.table;
+			function subPageClerkpass(data,data1,data2){
+				console.log(data,data1,data2)
+				var jgData = data
+				layui.use(['table', 'table', 'laytpl'], function() {
+					var table = layui.table,
+						form = layui.form,
+						laytpl = layui.laytpl,
+						$ = layui.jquery;
+					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+					var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				table.render({
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getEquipmentlist + '?merchantNumber=' + jgData.merchantNumber,
+					where:{
+						"equipmentType":"1",
+					},
 					elem: '#LAY_table_product',
-					url: '../../public/json/vip-card.json',
 					//method: "post",
 					height: 'full-120',
 					id: 'YLBlist',
@@ -77,12 +86,12 @@
 								async: true,
 								data: mydata,
 								success: function(data) {
-									if(data.code == 0000) {
+									if(data.code == 1000) {
 										layer.close(index);
 										layer.alert('解绑成功 ', {
 											icon: 6
 										});
-									} else if(data.code == 0001) {
+									} else if(data.code == 5000) {
 										layer.msg(data.desc);
 									}
 								}
@@ -177,6 +186,7 @@
 					active[type] ? active[type].call(this) : '';
 				});
 			});
+				}
 		</script>
 	</body>
 
