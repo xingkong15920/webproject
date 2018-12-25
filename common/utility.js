@@ -296,7 +296,7 @@ var CmsUtility = (function() {
     function choosePro(data) {
         var pro = provice
         var str = '<option value="">请选择省</option>'
-        
+        console.log(provice)
         for(var i = 0 ; i < pro.length;i++){
             if(data == pro[i].name){
                 str += '<option value="'+pro[i].name +'" selected="">'+ pro[i].name+'</option>'
@@ -305,6 +305,7 @@ var CmsUtility = (function() {
             }
             
         }
+        console.log(str)
         $('#provice').html(str)
     }
     function chooseCity(data,data1){
@@ -367,6 +368,12 @@ var CmsUtility = (function() {
         }
         $('#area').html(str)
     }
+    function onkey13(fun){
+        document.onkeyup = function(e){
+            console.log(e)
+            fun()
+        }
+    }
     return {
         postAjaxCall: postAjaxCall,
         getArrFromJson: getArrFromJson,
@@ -390,6 +397,7 @@ var CmsUtility = (function() {
         replace:replace,
         choosePro:choosePro,
         chooseCity:chooseCity,
-        chooseArea:chooseArea
+        chooseArea:chooseArea,
+        onkey13:onkey13
     }
 })();

@@ -131,16 +131,18 @@
                         }
                     }
                 });
-                
-                form.on('submit(login)',function(data){
-					 console.log(data)
+                CmsUtility.onkey13(sub()
+                    )
+                function sub(){
+                   form.on('submit(login)',function(data){
+                     console.log(data)
                      if(data.field.verificationCode != code1){
                         layer.msg('验证码输入错误，请重新输入')
                        
                      }
                      var ajaData = new Object()
-                     ajaData.login = data.field.username;
-                     ajaData.loginPass = data.field.password;
+                     ajaData.login = $('#username').val();
+                     ajaData.loginPass = $('#password').val();
                      ajaData.IP = cip;
                      ajaData.address = cname;
                      ajaData.loginClass  = '0';
@@ -165,8 +167,10 @@
                             console.log('222')
                         }
                     )
-				    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-				});
+                    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                }); 
+                }
+                sub()
             });
         })
         //生成验证码

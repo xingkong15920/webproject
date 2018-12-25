@@ -30,7 +30,11 @@
 			.layui-table-box {
 				border-bottom: 1px solid #e6e6e6;
 			}
+			th{
+				cursor: pointer;
+			}
 		</style>
+
 	</head>
 
 	<body id="iosiframe">
@@ -74,6 +78,7 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			var tjData;
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function() {
 				setTimeout(function() {
@@ -106,11 +111,60 @@
 				}
 				return newD
 			}
+			function cost(data){
+				console.log(document.getElementsByTagName("td").length)
+					var td1 = document.getElementsByTagName("td")
+					for(var i = 0 ; i < td1.length;i++){
+						console.log('i')
+						if(td1[i].getAttribute('data-field') == 'costRate'){
+							//td1[i].childNodes()[0].innerHTML('222')
+							td1[i].childNodes[0].innerHTML = data
+							// console.log(td1[i].childNodes[0])
+						}
+					}
+					for(var j = 0;  j < tjData.length;j++){
+						tjData[j].costRate = data
+					}
+					
+			}
+			function operating(data){
+				console.log(document.getElementsByTagName("td").length)
+					var td1 = document.getElementsByTagName("td")
+					for(var i = 0 ; i < td1.length;i++){
+						console.log('i')
+						if(td1[i].getAttribute('data-field') == 'operatingRate'){
+							//td1[i].childNodes()[0].innerHTML('222')
+							td1[i].childNodes[0].innerHTML = data
+							// console.log(td1[i].childNodes[0])
+						}
+					}
+					for(var j = 0;  j < tjData.length;j++){
+						tjData[j].operatingRate = data
+					}
+					
+			}
+			
+			function cash(data){
+				console.log(document.getElementsByTagName("td").length)
+					var td1 = document.getElementsByTagName("td")
+					for(var i = 0 ; i < td1.length;i++){
+						console.log('i')
+						if(td1[i].getAttribute('data-field') == 'cashRate'){
+							//td1[i].childNodes()[0].innerHTML('222')
+							td1[i].childNodes[0].innerHTML = data
+							// console.log(td1[i].childNodes[0])
+						}
+					}
+					for(var j = 0;  j < tjData.length;j++){
+						tjData[j].cashRate = data
+					}
+					
+			}
 			function subPage(data,data1){
 				var serverUrl = window.parent.serverUrl
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
 				var jgData = data
-				var tjData;
+				
 				layui.use(['laytpl', 'laydate', 'table', 'form'], function() {
 					var laytpl = layui.laytpl,
 						laydate = layui.laydate,
@@ -159,21 +213,23 @@
 								width: 150
 							}, {
 								align: 'center',
-								title: '成本费率',
+								title: '成本费率(点击可选择费率)',
 								field:'costRate',
 								minWidth: 100,
-								edit:'costRate'
+								edit:'costRate',
+								sort:false,
 
 							}, {
 								align: 'center',
-								title: '运营费率',
+								title: '运营费率(点击可选择费率)',
 								field:'operatingRate',
+								id:'yunying',
 								minWidth: 100,
 								edit:'operatingRate'
 
 							}, {
 								align: 'center',
-								title: '提现费率',
+								title: '提现费率(点击可选择费率)',
 								field:'cashRate',
 								minWidth: 100,
 								edit:'cashRate'
@@ -187,9 +243,10 @@
 							layuiRowspan(['paymentTypeName'], 1);
 							layuiRowspan(['whichType'], 1); //支持数组
 							layuiRowspan("8", 1, true);
+
 						}
 					});
-
+					
 					//监听指定开关
 					form.on('switch(switchbar)', function(data) {
 						console.log(data)
@@ -232,38 +289,69 @@
 							}
 						}
 						console.log(tjData)
-					// var value = obj.value, //得到修改后的值
-					// 	data = obj.data, //得到所在行所有键值
-					// 	field = obj.field; //得到字段
-					// var addData = new Object()
-					// addData.id = obj.data.id
-					// addData[obj.field] = obj.value
-					// console.log(addData)
-					// // layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
-					// CmsUtility.postAjaxCall(
-					// 	//系统设置
-					// 	CmsConfig.addressUrl.Mechanism.updateRate,
-					// 	addData,
-					// 	function(data){
-					// 		if(data.code == 1000){
-								
-					// 			parent.layer.msg('更改成功')
-					// 			// setTimeout(function(){
-					// 			// 	parent.layer.close(index)
-					// 			// 	parent.location.reload()
-					// 			// },500); 
-								
-					// 		}else{
-					// 			layer.msg(data.msg)
-								
-					// 		}
-					// 	},
-					// 	function(data){
-					// 		console.log('222')
-					// 	}
-					// )	
+					
 				});
-
+					table.on('sort(costRate)', function(obj) {
+						console.log(obj)
+						return false
+					
+				});
+					console.log(document.getElementsByTagName('th'))
+					var th4 = document.getElementsByTagName('th')[3]
+					th4.onclick = function(){
+						layer.open({
+							type: 2,
+							title: '请选择成本费率',
+							shade: 0.5,
+							area: ['25%', '50%'],
+							maxmin: false,
+							resize: false,
+							content: ['Channel-rate-selcet.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(1)
+							}
+						});
+					}
+					
+					var th5 = document.getElementsByTagName('th')[4]
+					th5.onclick = function(){
+						layer.open({
+							type: 2,
+							title: '请选择运营费率',
+							shade: 0.5,
+							area: ['25%', '50%'],
+							maxmin: false,
+							resize: false,
+							content: ['Channel-rate-selcet.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(2)
+							}
+						});
+					}
+					var th6 = document.getElementsByTagName('th')[5]
+					th6.onclick = function(){
+						layer.open({
+							type: 2,
+							title: '请选择提现费率',
+							shade: 0.5,
+							area: ['25%', '50%'],
+							maxmin: false,
+							resize: false,
+							content: ['Channel-rate-selcet.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(3)
+							}
+						});
+					}
 					
 
 					/*---------- 监听提交 ----------*/

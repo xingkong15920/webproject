@@ -123,7 +123,7 @@
 					<option value="">没有通道</option>
                      {{#  layui.each(d.channel, function(index, item){ }}
                  
-                       <option value={{item.paymentChannel}} {{d.dataS == item.paymentChannel ? 'selected':''}}>{{item.paymentName}}/{{item.paymentChannel}}</option>
+                       <option value={{item.paymentChannel}} {{d.dataS == item.paymentChannel ? 'selected':''}} >{{item.paymentName}}/{{item.paymentChannel}}</option>
                 
                     {{#  }); }}
 				</select>
@@ -317,8 +317,9 @@
                     ],
                     page: false,
                     done: function(res, curr, count) {
+
                         addData = res.data
-                        //console.log(addData)
+                        console.log(addData)
                     
                         
                      }
@@ -415,15 +416,20 @@
                         }else if(addData[g].wheelSearch == 0){
                             var strd = 'only' + addData[g].paymentTypeID
                             var only = document.getElementById(strd)
-                            console.log(only.value)
                             var sss = new Array()
                             for(var hh = 0; hh < tdData.length;hh++){
-                                if(only.value == tdData[hh].id){
-                                    var arJ = new Object()
-                                    arJ.paymentChannel = tdData[hh].id
-                                    arJ.paymentName = tdData[hh].paymentchannelname
-                                    arJ.weight = '1'
-                                    sss.push(arJ)
+                                
+                                if(addData[g].paymentTypeID == tdData[hh].paymentTypeID){
+                                    for(var dd = 0 ; dd < tdData[hh].date.length;dd++){
+                                        if(only.value == tdData[hh].date[dd].paymentChannel ){
+                                            var arJ = new Object()
+                                            arJ.paymentChannel = tdData[hh].date[dd].paymentChannel
+                                            arJ.paymentName = tdData[hh].date[dd].paymentName
+                                            arJ.weight = '1'
+                                            sss.push(arJ)
+                                        }
+                                    }
+                                    
                                     
                                 }
                             }

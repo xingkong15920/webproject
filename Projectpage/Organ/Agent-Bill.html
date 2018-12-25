@@ -39,13 +39,13 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="userName" placeholder="名称" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="agentName" placeholder="名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="userName" placeholder="手机号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="registerCell" placeholder="手机号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="userName" placeholder="时间" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="insertTime" placeholder="时间" autocomplete="off" class="layui-input">
 					</div>
 					<!-- <div class="layui-input-inline">
 						<input type="text" name="couponName" id="couponName" placeholder="上级代理号或用户名" autocomplete="off" class="layui-input">
@@ -111,10 +111,11 @@
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					//url: './json/vip-card.json',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getAgentRegisterlist + '?institutionNumber=' + userNumber ,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.GetSettlement + '?institutionNumber=' + userNumber ,
 					where:{
-						"userName":$('#userName').val(),
-						"agentType":$('#agentType').val()
+						"agentName":$('#agentName').val(),
+						"registerCell":$('#registerCell').val(),
+						"DateTime":$('#insertTime').val(),
 					},
 					elem: '#members',
 					height: 'full-210',
@@ -182,7 +183,7 @@
 						
 						if(res.data == null){
 							if(!!res.msg){
-								layer.msg(res.msg)
+								//layer.msg(res.msg)
 							}else{
 								layer.msg('无数据')
 							}
