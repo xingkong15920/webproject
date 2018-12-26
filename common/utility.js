@@ -14,7 +14,7 @@ var CmsUtility = (function() {
     function postAjaxCall(subApiUrl, postData, succCallback, errorCallback, type, isAsync, dataType) {
         var type = type || "post";
         var dataType = dataType || "json";
-        var isAsync = isAsync || false;
+        var isAsync = isAsync || true;
         var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
        //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
         console.log(CmsConfig.ServiceUrl.ApiRootUrl)
@@ -293,20 +293,37 @@ var CmsUtility = (function() {
 
    
     //选择省
-    function choosePro(data) {
+    function choosePro(p) {
+        console.log(p)
+        var  p = p || ''
         var pro = provice
         var str = '<option value="">请选择省</option>'
-        console.log(provice)
-        for(var i = 0 ; i < pro.length;i++){
-            if(data == pro[i].name){
-                str += '<option value="'+pro[i].name +'" selected="">'+ pro[i].name+'</option>'
-            }else{
-                str += '<option value="'+pro[i].name +'">'+ pro[i].name+'</option>'
+        $.ajax({
+            type: 'post',
+            url:CmsConfig.ServiceUrl.ApiRootUrl +  CmsConfig.addressUrl.Public.getAddress, 
+            data: {
+                "provinceCode":'',
+                "cityCode":'',
+                "areaCode":''
+            },
+            async: 'false',
+            dataType: 'json',
+            // headers:{
+            //     contentType:"application/json"
+            // },
+           
+            success: function(data) {
+                for(var i = 0 ; i < data.data.length;i++){
+                    if(p == data.data[i].provinceCode){
+                        str += '<option value="'+data.data[i].provinceCode +'" selected="">'+ data.data[i].provinceName+'</option>'
+                    }else{
+                        str += '<option value="'+data.data[i].provinceCode +'">'+ data.data[i].provinceName+'</option>'
+                    }
+                }
+                $('#provice').html(str)
             }
-            
-        }
-        console.log(str)
-        $('#provice').html(str)
+        })
+        
     }
     function chooseCity(data,data1){
          if(!data){
@@ -314,65 +331,78 @@ var CmsUtility = (function() {
             $('#area').html('<option value="">请选择县/区</option>')
             return
         }
-        var pro = provice
-        var city;
-        for(var i = 0 ; i < pro.length;i++){
-            if(data == pro[i].name){
-                city = pro[i].city
-            }
-        }
         var str = '<option value="">请选择市</option>'
-        
-        for(var i = 0 ; i < city.length;i++){
-            if(data1 == city[i].name){
-                str += '<option value="'+city[i].name +'" selected="">'+ city[i].name+'</option>'
-            }else{
-                str += '<option value="'+city[i].name +'">'+ city[i].name+'</option>'
+        var data2 = data
+        var data1 = data1 || ''
+        $.ajax({
+            type: 'post',
+            url:CmsConfig.ServiceUrl.ApiRootUrl +  CmsConfig.addressUrl.Public.getAddress, 
+            data: {
+                "provinceCode":data2,
+                "cityCode":'',
+                "areaCode":''
+            },
+            async: 'false',
+            dataType: 'json',
+            // headers:{
+            //     contentType:"application/json"
+            // },
+           
+            success: function(data) {
+                 for(var i = 0 ; i < data.data.length;i++){
+                    if(data1 == data.data[i].cityCode){
+                        str += '<option value="'+data.data[i].cityCode +'" selected="">'+ data.data[i].cityName+'</option>'
+                    }else{
+                        str += '<option value="'+data.data[i].cityCode +'">'+ data.data[i].cityName+'</option>'
+                    }
+                    
+                }
+                 $('#city').html(str)
+                 $('#area').html('<option value="">请选择县/区</option>')
             }
-            
-        }
-        $('#city').html(str)
-        $('#area').html('<option value="">请选择县/区</option>')
+        })
+       
+        
+        
     }
     function chooseArea(data,data1){
+        console.log(data)
         if(!data){
             $('#area').html('<option value="">请选择县/区</option>')
             return
         }
-        var pro = provice
-        var pro1 = $('#provice').val()
-        var cityL;
-        var city = data
-        var area; 
-        for(var i = 0 ; i < pro.length;i++){
-
-            if(pro1 == pro[i].name){
-                console.log(pro[i].city)
-               cityL = pro[i].city
-            }
-        }
-        for(var j = 0;j<cityL.length;j++){
-            if(city == cityL[j].name){
-               area = cityL[j].districtAndCounty
-            }
-        }
-        var str = '<option value="">请选择县/区</option>'
         
-        for(var k = 0 ; k < area.length;k++){
-            if(data1 == area[k]){
-                str += '<option value="'+area[k] +'" selected="">'+ area[k]+'</option>'
-            }else{
-                str += '<option value="'+area[k] +'">'+ area[k]+'</option>'
+        var str = '<option value="">请选择县/区</option>'
+        var data2 = data
+        var data1 = data1 || ''
+        $.ajax({
+            type: 'post',
+            url:CmsConfig.ServiceUrl.ApiRootUrl +  CmsConfig.addressUrl.Public.getAddress, 
+            data: {
+                "provinceCode":'',
+                "cityCode":data2,
+                "areaCode":''
+            },
+            async: 'false',
+            dataType: 'json',
+            // headers:{
+            //     contentType:"application/json"
+            // },
+           
+            success: function(data) {
+                console.log(data)
+                for(var k = 0 ; k < data.data.length;k++){
+                    if(data1 == data.data[k].areaCode){
+                        str += '<option value="'+data.data[k].areaCode +'" selected="">'+ data.data[k].areaName+'</option>'
+                    }else{
+                        str += '<option value="'+data.data[k].areaCode +'">'+ data.data[k].areaName+'</option>'
+                    }
+                    
+                }
+                $('#area').html(str)
             }
-            
-        }
-        $('#area').html(str)
-    }
-    function onkey13(fun){
-        document.onkeyup = function(e){
-            console.log(e)
-            fun()
-        }
+        })
+        
     }
     return {
         postAjaxCall: postAjaxCall,
@@ -398,6 +428,5 @@ var CmsUtility = (function() {
         choosePro:choosePro,
         chooseCity:chooseCity,
         chooseArea:chooseArea,
-        onkey13:onkey13
     }
 })();

@@ -51,18 +51,18 @@
             type: 'datetime'
         });
     });
-
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+        var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
     layui.use(['table', 'table', 'laytpl', 'laydate'], function() {
         var table = layui.table,
             form = layui.form,
             laydate = layui.laydate,
             laytpl = layui.laytpl,
             $ = layui.jquery;
-        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
-        var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+        
         
         table.render({
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgentWithdrawCash + '?agentNumber=123456',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgentWithdrawCash + '?agentNumber='+userNumber,
             // where: {
             //     "merchantName": "",
             //     "saleName": "",
@@ -167,7 +167,7 @@
                         //系统设置
                 CmsConfig.addressUrl.Agent.insertAgentWithdrawCash,
                 {
-                    "agentNumber":'123456',
+                    "agentNumber":userNumber,
                     "withdrawCashAmount":accountBalance
                 },
                 function(data){

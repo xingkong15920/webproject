@@ -30,7 +30,7 @@ var CmsConfig = {
             //代理商登录
             AgloginInfo:"login/AgloginInfo",
             //退出
-            exitLogin:"login/exitLogin"
+            exitLogin:"login/exitLogin",
         },
         //机构后台接口
         Mechanism: {
@@ -298,7 +298,7 @@ var CmsConfig = {
         },
         //公共
         Public: {
-          
+          getAddress:"login/getAddress",
 
         },
         

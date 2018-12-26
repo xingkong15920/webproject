@@ -1,33 +1,33 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>豆果收银机构后台管理系统</title>
-		<meta name="renderer" content="webkit|ie-comp|ie-stand">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
-		<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-		<link rel="stylesheet" href="../../public/css/font.css">
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-        <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
-        <script type="text/javascript" src="../../public/js/data.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-        <style type="text/css">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>豆果收银机构后台管理系统</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style type="text/css">
     .codeT {
         font-size: 30px;
         line-height: 40px;
         text-align: center;
         width: 25px;
         display: inline-block;
-        -webkit-user-select:none;user-select:none; 
+        -webkit-user-select: none;
+        user-select: none;
     }
     </style>
-	</head>
+</head>
 
 <body>
 
@@ -36,10 +36,10 @@
             <div class="message" id="code1">收银机构后台登录</div>
             <div id="darkbannerwrap"></div>
             <!--
-        	
+            
         -->
             <form method="post" class="layui-form" action="${pageContext.request.contextPath }/login">
-                <input name="username" placeholder="用户名" type="text" lay-verify="username" class="layui-input" value="16630375315" id="username" >
+                <input name="username" placeholder="用户名" type="text" lay-verify="username" class="layui-input" value="16630375315" id="username">
                 <hr class="hr15">
                 <input name="password" lay-verify="password" placeholder="密码" type="password" class="layui-input" value="123456" id="password">
                 <hr class="hr15">
@@ -61,48 +61,47 @@
                     </div>
                     <hr class="hr15">
                 </div>
-                <input class="layui-btn" value="登录" lay-submit lay-filter="login" style="width:100%;line-height:16px" type="button" id="sub"   maxlength="0">
+                <input class="layui-btn" value="登录" lay-submit lay-filter="login" style="width:100%;line-height:16px" type="button" id="sub" maxlength="0">
                 <hr class="hr20">
                 <a href="" class="Forgot_p"><< 忘记密码 >></a>
             </form>
         </div>
-       
-       <script src="../../common/config.js"></script>
+        <script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
         <script type="text/javascript">
         var code1 = ''
         var cname = ''
         var cip = ''
         var code
-		$.getScript('http://pv.sohu.com/cityjson?ie=utf-8',function(){
-				   console.log(returnCitySN)
-				   
-				   cip = returnCitySN.cip
-				   console.log(cname,cip)
-			});
+        $.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
+            console.log(returnCitySN)
 
-           
-            //获取用户所在城市信息
-            function showCityInfo() {
-                //实例化城市查询类
-                var citysearch = new AMap.CitySearch();
-                //自动获取用户IP，返回当前城市
-                citysearch.getLocalCity(function(status, result) {
-                    console.log(status,result)
-                    if (status === 'complete' && result.info === 'OK') {
-                        if (result && result.city && result.bounds) {
-                            cname = result.province + result.city
-                            
-                        }
-                    } else {
-                        
+            cip = returnCitySN.cip
+            console.log(cname, cip)
+        });
+
+
+        //获取用户所在城市信息
+        function showCityInfo() {
+            //实例化城市查询类
+            var citysearch = new AMap.CitySearch();
+            //自动获取用户IP，返回当前城市
+            citysearch.getLocalCity(function(status, result) {
+                console.log(status, result)
+                if (status === 'complete' && result.info === 'OK') {
+                    if (result && result.city && result.bounds) {
+                        cname = result.province + result.city
+
                     }
-                });
-            }
-            showCityInfo();
+                } else {
+
+                }
+            });
+        }
+        showCityInfo();
         $(function() {
-        	
-        	
+
+
             layui.use('form', function() {
                 var form = layui.form;
 
@@ -112,89 +111,91 @@
                     });
                 }
                 form.verify({
-                    username:function(value){
-                        if($('#username').val() == ''){
+                    username: function(value) {
+                        if ($('#username').val() == '') {
                             return "请输入账号"
                         }
                     },
-                    password:function(value){
-                        if($('#password').val() == ''){
+                    password: function(value) {
+                        if ($('#password').val() == '') {
                             return "请输入密码"
                         }
                     },
                     required: function(value) {
-                        if($('#verificationCode').val() == '') {
+                        if ($('#verificationCode').val() == '') {
                             return '请输入验证码';
                         }
-                        if($('#verificationCode').val() != code1) {
+                        if ($('#verificationCode').val() != code1) {
                             return '验证码错误';
                         }
                     }
                 });
-                CmsUtility.onkey13(sub()
-                    )
-                function sub(){
-                   form.on('submit(login)',function(data){
-                     console.log(data)
-                     if(data.field.verificationCode != code1){
-                        layer.msg('验证码输入错误，请重新输入')
-                       
-                     }
-                     var ajaData = new Object()
-                     ajaData.login = $('#username').val();
-                     ajaData.loginPass = $('#password').val();
-                     ajaData.IP = cip;
-                     ajaData.address = cname;
-                     ajaData.loginClass  = '0';
-                     console.log(ajaData)
-                     CmsUtility.postAjaxCall(
-                        //系统设置
-                        CmsConfig.addressUrl.Login.login,
-                        ajaData,
-                        function(data){
-                            if(data.code == '1000'){
-                               layer.msg('登录成功')
-                                sessionStorage.setItem("organUser",JSON.stringify(data.data));
-                                setTimeout(function(){
-                                   window.location.href = 'index.html' 
-                                },300)
-                                
-                            }else{
-                                layer.msg(data.msg)
-                            }
-                        },
-                        function(data){
-                            console.log('222')
+               
+
+                    form.on('submit(login)', function(data) {
+                        console.log(data)
+                        if ($('#verificationCode').val() != code1) {
+                            layer.msg('验证码输入错误，请重新输入')
+
                         }
-                    )
-                    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-                }); 
-                }
-                sub()
+                        var ajaData = new Object()
+                        ajaData.login = $('#username').val();
+                        ajaData.loginPass = $('#password').val();
+                        ajaData.IP = cip;
+                        ajaData.address = cname;
+                        ajaData.loginClass = '0';
+                        console.log(ajaData)
+                        CmsUtility.postAjaxCall(
+                            //系统设置
+                            CmsConfig.addressUrl.Login.login,
+                            ajaData,
+                            function(data) {
+                                if (data.code == '1000') {
+                                    layer.msg('登录成功')
+                                    sessionStorage.setItem("organUser", JSON.stringify(data.data));
+                                    setTimeout(function() {
+                                        window.location.href = 'index.html'
+                                    }, 300)
+
+                                } else {
+                                    layer.msg(data.msg)
+                                }
+                            },
+                            function(data) {
+                                console.log('222')
+                            }
+                        )
+                        return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                    });
+                
+                
             });
         })
+        $("input").keydown(function(event){
+            if (event.keyCode == 13) {
+                document.getElementById("sub").click();
+            }
+        })
         //生成验证码
-        function createCode(){
-        	code1 = ''
-        	for(var i=0;i<4;i++){
-				code1+=Math.floor(Math.random()*10)
-			}
-			var codeL = code1.split('')
-			console.log($('.codeT')[0].innerHTML = 1)
-			$('.codeT')[0].innerHTML = 3
-			for(var j = 0 ; j < $('.codeT').length;j++){
-				$('.codeT')[j].innerHTML = codeL[j]
-			}
+        function createCode() {
+            code1 = ''
+            for (var i = 0; i < 4; i++) {
+                code1 += Math.floor(Math.random() * 10)
+            }
+            var codeL = code1.split('')
+            console.log($('.codeT')[0].innerHTML = 1)
+            $('.codeT')[0].innerHTML = 3
+            for (var j = 0; j < $('.codeT').length; j++) {
+                $('.codeT')[j].innerHTML = codeL[j]
+            }
         }
         createCode()
 
         $(function() {
             $("#codeImg").click(function() {
-              createCode()
+                createCode()
             });
         });
-        
-        
         </script>
     </body>
 

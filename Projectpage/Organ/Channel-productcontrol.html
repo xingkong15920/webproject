@@ -95,16 +95,30 @@
 			    return temp;
 			}
 			function sort111(data){
+				// var data = data.sort(function(a,b){
+				// 	console.log(a,b)
+				// 	return a.switch1 - b.switch1
+				// })
+				// console.log(data)
 				var arr = new Array()
 				for(var i = 0 ; i < data.length;i++){
-					arr.push(data[i].paymentTypeName)
+					var ad = new Object()
+					ad.name = data[i].paymentTypeName
+					ad.id = data[i].switch1
+					arr.push(ad)
 				}
-				
-				var a = uniq(arr).sort()
+				var a = arr.sort(function(a,b){
+					return a.id - b.id
+				})
+				var arrd = new Array()
+				for(var h =0;h<a.length;h++){
+					arrd.push(a[h].name)
+				}
+				var b = uniq(arrd)
 				var newD = new Array()
-				for(var j =0 ; j < a.length;j++){
+				for(var j =0 ; j < b.length;j++){
 					for(var m = 0 ; m < data.length;m++){
-						if(a[j] == data[m].paymentTypeName){
+						if(b[j] == data[m].paymentTypeName){
 							newD.push(data[m])
 						}
 					}
@@ -213,7 +227,7 @@
 								width: 150
 							}, {
 								align: 'center',
-								title: '成本费率(点击可选择费率)',
+								title: '成本费率(点击标题可选择费率)',
 								field:'costRate',
 								minWidth: 100,
 								edit:'costRate',
@@ -221,7 +235,7 @@
 
 							}, {
 								align: 'center',
-								title: '运营费率(点击可选择费率)',
+								title: '运营费率(点击标题可选择费率)',
 								field:'operatingRate',
 								id:'yunying',
 								minWidth: 100,
@@ -229,7 +243,7 @@
 
 							}, {
 								align: 'center',
-								title: '提现费率(点击可选择费率)',
+								title: '提现费率(点击标题可选择费率)',
 								field:'cashRate',
 								minWidth: 100,
 								edit:'cashRate'

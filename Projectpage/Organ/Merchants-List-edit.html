@@ -354,33 +354,112 @@
 						element = layui.element,
 						layer = layui.layer;
 					var tableSelect = layui.tableSelect;
+					CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Public.getAddress, {
+                    "provinceCode": '',
+                    "cityCode": '',
+                    "areaCode": ''
+                },
+                function(data) {
+                    var str = '<option value="">请选择省</option>'
+                    for (var i = 0; i < data.data.length; i++) {
+                        if (jgData.province == data.data[i].provinceCode) {
+                            str += '<option value="' + data.data[i].provinceCode + '" selected="">' + data.data[i].provinceName + '</option>'
+                        } else {
+                            str += '<option value="' + data.data[i].provinceCode + '">' + data.data[i].provinceName + '</option>'
+                        }
+                    }
+                    $('#provice').html(str)
+                    form.render()
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Public.getAddress, {
+                            "provinceCode": jgData.province,
+                            "cityCode": '',
+                            "areaCode": ''
+                        },
+                        function(data) {
+                            console.log(data)
+                            var str = '<option value="">请选择市</option>'
+                            for (var i = 0; i < data.data.length; i++) {
 
+                                if (jgData.city == data.data[i].cityCode) {
+                                    str += '<option value="' + data.data[i].cityCode + '" selected="">' + data.data[i].cityName + '</option>'
+                                } else {
+                                    str += '<option value="' + data.data[i].cityCode + '">' + data.data[i].cityName + '</option>'
+                                }
+
+                            }
+                            $('#city').html(str)
+                            $('#area').html('<option value="">请选择县/区</option>')
+                            form.render()
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Public.getAddress, {
+                                    "provinceCode": '',
+                                    "cityCode": jgData.city,
+                                    "areaCode": ''
+                                },
+                                function(data) {
+                                    console.log(data)
+                                    var str = '<option value="">请选择区县</option>'
+                                    for (var k = 0; k < data.data.length; k++) {
+                                        if (jgData.area == data.data[k].areaCode) {
+                                            str += '<option value="' + data.data[k].areaCode + '" selected="">' + data.data[k].areaName + '</option>'
+                                        } else {
+                                            str += '<option value="' + data.data[k].areaCode + '">' + data.data[k].areaName + '</option>'
+                                        }
+
+                                    }
+                                    $('#area').html(str)
+                                    form.val('cardAdd', {
+										"merchantType": jgData.merchantType.toString(),
+										"merchantName":jgData.merchantName,
+										"businessLicenseNo":jgData.businessLicenseNo,
+										"businessLicenseTime":jgData.businessLicenseTime,
+										"juridicalpersonName":jgData.juridicalpersonName,
+										"juridicalpersonId":jgData.juridicalpersonId,
+										"juridicalpersonIdTime":jgData.juridicalpersonIdTime,
+										"registerCell":jgData.registerCell,
+										"oneOperate":jgData.oneOperate,
+										"twoOperate":jgData.twoOperate,
+										"threeOperate":jgData.threeOperate,
+										"province":jgData.province,
+										"city":jgData.city,
+										"area":jgData.area,
+										"address":jgData.address,
+										"openingBank":jgData.openingBank,
+										"openingBankBranch":jgData.openingBankBranch,
+										"bankCardNo":jgData.bankCardNo,
+										"rateType":jgData.rateType,
+										"rate":jgData.rate,
+									})
+                                    form.render()
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        },
+                        function(data) {
+                            console.log('222')
+                        },
+                        'post',
+                        'false'
+                    )
+                },
+                function(data) {
+                    console.log('222')
+                },
+                'post',
+                'false'
+            )
 					//表单初始赋值
-					form.val('cardAdd', {
-						"merchantType": jgData.merchantType.toString(),
-						"merchantName":jgData.merchantName,
-						"businessLicenseNo":jgData.businessLicenseNo,
-						"businessLicenseTime":jgData.businessLicenseTime.split(' ')[0],
-						"juridicalpersonName":jgData.juridicalpersonName,
-						"juridicalpersonId":jgData.juridicalpersonId,
-						"juridicalpersonIdTime":jgData.juridicalpersonIdTime.split(' ')[0],
-						"registerCell":jgData.registerCell,
-						"oneOperate":jgData.oneOperate,
-						"twoOperate":jgData.twoOperate,
-						"threeOperate":jgData.threeOperate,
-						"province":jgData.province,
-						"city":jgData.city,
-						"area":jgData.area,
-						"address":jgData.address,
-						"openingBank":jgData.openingBank,
-						"openingBankBranch":jgData.openingBankBranch,
-						"bankCardNo":jgData.bankCardNo,
-						"rateType":jgData.rateType,
-						"rate":jgData.rate,
-					})
-					CmsUtility.choosePro(jgData.province);
-					CmsUtility.chooseCity(jgData.province,jgData.city)
-					CmsUtility.chooseArea(jgData.city,jgData.area)
+					
+					
 					form.render()
 					form.on('select(provice)', function(data){
 
