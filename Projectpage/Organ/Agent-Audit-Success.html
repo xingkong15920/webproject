@@ -27,10 +27,10 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label" style="width: auto;">请输入手续费</label>
 						<div class="layui-input-inline">
-							<input type="text" name="websiteRealmName" lay-verify="url" class="layui-input">
+							<input type="text" name="websiteRealmName" lay-verify="number|title" class="layui-input">
 						</div>
 						<div class="layui-form-mid x-red">
-							<button class="layui-btn" lay-submit="" id="sub" 	>提交</button>
+							<button class="layui-btn" lay-filter="add" lay-submit="add" id="sub" 	>提交</button>
 						</div>
 					</div>
 				</form>
@@ -41,7 +41,6 @@
 		<script>
 			function subPage(data,data1){
 				console.log(data)
-				var serverUrl = 'http://192.168.1.190:5002/'
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 				var jgData = data
 				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
@@ -54,24 +53,28 @@
 						laytpl = layui.laytpl;
 						
 					//表单初始赋值
-					form.val('secretkey', {
-						"secretkey": jgData.keys
-					})
-					$('#sub').click(function(){
-						return
+					form.verify({
+						title: function(value) {
+							if(value.length == 0) {
+								return '手续费不能为空！';
+							}
+						}
+					});
+					form.on('submit(add)', function(data) {
 						console.log(jgData)
 						var tjData = new Object();
-						tjData.number = jgData.merchantNumber;
-						tjData.institutionNumber = userNumber
+						tjData.orderNumber = jgData.orderNumber;
+						tjData.orderType = '1'
 						CmsUtility.postAjaxCall(
 							//系统设置
-							CmsConfig.addressUrl.Mechanism.updateMerchantKeys,
+							CmsConfig.addressUrl.Mechanism.updateExType,
 							tjData,
 							function(data){
 								if(data.code == 1000){
 									 
-									parent.layer.msg('更改成功')
-									$('#keyy').val(data.data.keyy)
+									parent.layer.msg('提交成功')
+									x_admin_close() 
+									parent.layui.table.reload('vip_cardList')
 								}else{
 									layer.msg(data.msg)
 									
@@ -83,6 +86,32 @@
 						)
 						return false
 					})
+					// $('#sub').click(function(){
+					// 	return false
+					// 	console.log(jgData)
+					// 	var tjData = new Object();
+					// 	tjData.orderNumber = jgData.orderNumber;
+					// 	tjData.orderType = '1'
+					// 	CmsUtility.postAjaxCall(
+					// 		//系统设置
+					// 		CmsConfig.addressUrl.Mechanism.updateExType,
+					// 		tjData,
+					// 		function(data){
+					// 			if(data.code == 1000){
+									 
+					// 				parent.layer.msg('提交成功')
+					// 				$('#keyy').val(data.data.keyy)
+					// 			}else{
+					// 				layer.msg(data.msg)
+									
+					// 			}
+					// 		},
+					// 		function(data){
+					// 			console.log('222')
+					// 		}
+					// 	)
+					// 	return false
+					// })
 
 					// //监听提交
 					// form.on('submit(add)', function(data) {

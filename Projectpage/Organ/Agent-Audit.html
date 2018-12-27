@@ -22,6 +22,15 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
+			.laytable-cell-1-0-6{
+				height: auto;
+			}
+			.noX{
+				display: none;
+			}
+			.layui-table-cell{
+				height: auto;
+			}
 		</style>
 	</head>
 
@@ -83,8 +92,8 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
 		</script>
 		<script type="text/html" id="toolbar">
-			<a class="layui-btn layui-btn-xs" id="rate" lay-event="success">通过</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger" id="pass" lay-event="fail">拒绝</a>
+			<a class="layui-btn layui-btn-xs {{d.orderType!=0 ? 'noX' : 'isX'}}" id="rate" lay-event="success">通过</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger  {{d.orderType!=0 ? 'noX' : 'isX'}}" id="pass" lay-event="fail"  >拒绝</a>
 			
 		</script>
 		<script src="../../common/config.js"></script>
@@ -148,53 +157,117 @@
 							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
 							"count": res.data.count, //解析数据长度
-							"data": res.data.agentRegisterlist, //解析数据列表
+							"data": res.data.getexamining, //解析数据列表
 						};
 					},
 					cols: [
 						[{
 							align: 'center',
-							field: 'agentNumber',
-							width: 100,
+							field: 'orderNumber',
+							width: 130,
 							title: '结算编号',
 						}, {
 							align: 'center',
-							field: 'userName',
-							width: 100,
+							field: 'agentName',
+							width: 170,
 							title: '代理名称'
 						}, {
 							align: 'center',
-							field: 'agentType1',
+							field: 'withdrawCashAmount',
 							width: 100,
 							title: '结算金额',
+							templet:function(data){
+								if(data.withdrawCashAmount){
+									return parseFloat(data.withdrawCashAmount).toFixed(2)
+								}else{
+									return '0'
+								}
+								
+							}
 						}, {
 							align: 'center',
 							field: 'agentName',
+							width: 80,
+							title: '手续费',
+							templet:function(data){
+								return 0
+							}
+						}, {
+							align: 'center',
+							field: 'withdrawCashAmount',
 							width: 100,
-							title: '手续费'
+							title: '到账金额',
+							templet:function(data){
+								if(data.withdrawCashAmount){
+									return parseFloat(data.withdrawCashAmount).toFixed(2)
+								}else{
+									return '0'
+								}
+								
+							}
 						}, {
 							align: 'center',
-							field: 'agentName',
-							width: 150,
-							title: '到账金额'
-						}, {
-							align: 'center',
-							field: 'agentName',
-							width: 300,
-							title: '开户名/银行卡号/银行名称/支行名称'
+							field: 'bankName',
+							width: 250,
+							title: '开户名/银行卡号/银行名称/支行名称',
+							templet:function(data){
+								var name,bankCardNo,openingBank,openingBankBranch
+								if(!data.name){
+									name = ''
+								}else{
+									name = data.name + '</br>'
+								}
+								if(!data.bankCardNo){
+									bankCardNo = ''
+								}else{
+									bankCardNo = data.bankCardNo + '</br>'
+								}
+								if(!data.openingBank){
+									openingBank = ''
+								}else{
+									openingBank = data.openingBank + '</br>'
+								}
+								if(!data.openingBankBranch){
+									openingBankBranch = ''
+								}else{
+									openingBankBranch = data.openingBankBranch + '</br>'
+								}
+								return name  + bankCardNo + openingBank+openingBankBranch
+							}
 						}, {
 							align: 'center',
 							field: 'agentName',
 							width: 250,
-							title: '申请时间/处理时间'
+							title: '申请时间/处理时间',
+							templet:function(data){
+								if(data.insertTime == null){
+									return ''
+								}else{
+									return data.insertTime + '</br>' + data.updateTime
+								}
+								
+							}
 						}, {
 							align: 'center',
-							toolbar: '#switchBar',
 							width: 100,
 							title: '状态',
+							templet:function(data){
+								if(data.orderType == null){
+									return ''
+								}
+								if(data.orderType == 0){
+									return '未处理'
+								}
+								if(data.orderType == 1){
+									return '已打款'
+								}
+								if(data.orderType == 2){
+									return '已驳回'
+								}
+							}
 						}, {
 							align: 'center',
-							field: 'agentBalance',
+							field: 'remarks',
 							width: 200,
 							title: '备注',
 							
@@ -202,7 +275,7 @@
 							align: 'center',
 							title: '操作',
 							toolbar: '#toolbar',
-							minWidth: 250
+							minWidth: 200
 						}]
 					],
 					page: true,

@@ -131,6 +131,8 @@ var CmsConfig = {
 
             //--全部订单
             getTransactionReceiptList:"TransactionReceipt/getTransactionReceiptList",
+            //获取机构下所有通道
+            getPassageList:"InstitutionOfficial/getPassageList",
             //全部订单查询
             //列表操作接口：查看、同步
             //成功订单、未支付订单、异常订单同上
@@ -201,10 +203,15 @@ var CmsConfig = {
             updateInstitutionAdvertisement:"InstitutionAdvertisement/updateInstitutionAdvertisement",
             //删除接口
             delInstitutionAdvertisementState:"InstitutionAdvertisement/delInstitutionAdvertisementState",
+            
+
+
             //代理商结算审核
             getException:"Withdrawal/getException",
             //查看代理商结算账单
             GetSettlement:"Withdrawal/GetSettlement",
+            //更新代理结算
+            updateExType:"Withdrawal/updateExType",
             //--财务分析
             //查询当日统计
             //商户订单金额TOP10列表

@@ -196,7 +196,17 @@
 			var jgData;
 			var merchantca = false;
 			var type;
-			CmsUtility.postAjaxCall(
+			
+			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+				layui.$.support.cors = true; //允许ajax跨域
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl;
+				console.log(merchantca)
+				CmsUtility.postAjaxCall(
 				//系统设置
 				CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
 					'institutionNumber': userNumber,
@@ -209,6 +219,36 @@
 							merchantca = jgData.merchantCa == 0 ? true : false
 							jgData.merchantca = merchantca
 							console.log(jgData.merchantca)
+							form.val('basic', {
+								//网站名称
+								"websiteName": jgData.websiteName || '',
+								//网站域名
+								"websiteRealmName": jgData.websiteRealmName || '',
+								//联系邮箱
+								"contactMailbox": jgData.contactMailbox || '',
+								//客服电话
+								"customServiceTell": jgData.customServiceTell || '',
+								//客服QQ
+								"customServiceQq": jgData.customServiceQq || '',
+								//机构路径
+								"institutionRoute": jgData.institutionRoute || '',
+								//代理商路径
+								"agentRoute": jgData.agentRoute || '',
+								//商户路径,
+								"merchantRoute": jgData.merchantRoute || '',
+								//公司版权
+								"companyCopyright": jgData.companyCopyright || '',
+								//机构logo图
+								//商户认证
+								"merchantCa": merchantca,
+								//网站统计代码
+								"websiteStatisticsCode": jgData.websiteStatisticsCode || '',
+								//验证次数限制
+								"verificationlimit": jgData.verificationlimit || '',
+								//验证冻结时间
+								"verifyingFreezingTime": jgData.verifyingFreezingTime || '',
+								"paymentNo":jgData.paymentNo
+							})
 							type = 0
 						} else {
 							type = 1
@@ -222,15 +262,6 @@
 					console.log('222')
 				}
 			)
-			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
-				layui.$.support.cors = true; //允许ajax跨域
-				var $ = layui.jquery,
-					upload = layui.upload,
-					laydate = layui.laydate,
-					table = layui.table,
-					form = layui.form,
-					laytpl = layui.laytpl;
-				console.log(merchantca)
 				if(type == 0) {
 					//表单初始赋值
 					form.val('basic', {

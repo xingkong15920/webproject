@@ -404,6 +404,22 @@ var CmsUtility = (function() {
         })
         
     }
+    function chooseOne(){
+        console.log(hangyeData3)
+        var str = '<option value="">一级类目</option>'
+        for(var i = 0 ; i < hangyeData3.length;i++){
+            str += '<option value="'+hangyeData3[i].value+'">'+hangyeData3[i].text+'</option>'
+        }
+        $('#chOne').html(str)
+    }
+    function chooseTwo(data){
+        console.log(hangyeData3)
+        var str = '<option value="">一级类目</option>'
+        for(var i = 0 ; i < hangyeData3.length;i++){
+            str += '<option value="'+hangyeData3[i].value+'">'+hangyeData3[i].text+'</option>'
+        }
+        $('#chOne').html(str)
+    }
     return {
         postAjaxCall: postAjaxCall,
         getArrFromJson: getArrFromJson,
@@ -428,5 +444,6 @@ var CmsUtility = (function() {
         choosePro:choosePro,
         chooseCity:chooseCity,
         chooseArea:chooseArea,
+        chooseOne:chooseOne
     }
 })();

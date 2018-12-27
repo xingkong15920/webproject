@@ -22,6 +22,12 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
+			.layui-table-cell{
+				height: auto;
+			}
+			.layui-input-inline{
+				margin-right: 20px;
+			}
 		</style>
 	</head>
 
@@ -39,51 +45,50 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="商户名称" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="系统订单号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="batch" placeholder="系统订单号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="下游订单号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="orderNumber" placeholder="下游订单号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="newTime" placeholder="创建时间" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="startTime" placeholder="创建时间" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="successTime" placeholder="成功时间" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="endTime" placeholder="成功时间" autocomplete="off" class="layui-input">
 					</div>
-					<div class="layui-input-inline">
-						<select name="cardVoucherName" id="cardVoucherName">
-							<option value="">支付产品</option>
-							<option value="1">支付宝</option>
-							<option value="2">微信</option>
-						</select>
-					</div>
-					<div class="layui-input-inline">
-						<select name="type" id="type">
-							<option value="">支付通道</option>
-							<option value="0">富友</option>
-							<option value="1">新大陆</option>
-						</select>
-					</div>
-					<div class="layui-input-inline">
-						<select name="cardVoucherName" id="cardVoucherName">
-							<option value="">通道子商户</option>
-							<option value="1">豆果</option>
-							<option value="2">闪盒</option>
-						</select>
-					</div>
-					<div class="layui-input-inline">
-						<select name="type" id="type">
-							<option value="">订单状态</option>
-							<option value="0">未处理</option>
-							<option value="1">成功-未返还</option>
-							<option value="2">成功-已返回</option>
-						</select>
-					</div>
+					
 					<div class="layui-input-inline coupons_screen">
-						<button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
+					</div>
+				</div>
+				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
+					<div class="layui-input-inline">
+						<select name="cardVoucherName" id="oneTransactionType">
+							<option value="">支付产品</option>
+							<option value="Alipay_Pay">支付宝</option>
+							<option value="WeChat_Pay">微信</option>
+						</select>
+					</div>
+					<div class="layui-input-inline">
+						<select name="type" id="transactionPassageway">
+							<!-- <option value="">支付通道</option>
+							<option value="0">富友</option>
+							<option value="1">新大陆</option> -->
+						</select>
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="couponName" id="subaccountNumber" placeholder="通道子商户" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-input-inline">
+						<select name="type" id="orderState">
+							<option value="">订单状态</option>
+							<option value="-1">未处理</option>
+							<option value="0">成功-未返还</option>
+							<option value="1">成功-已返还</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -91,11 +96,12 @@
 		</div>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="Toview" lay-event="Toview">查看</a>
-			<a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
+			
 		</script>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			//<a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
 			function changeRes(data){
 				if(data == null){
 					return
@@ -120,6 +126,26 @@
 				var laydate = layui.laydate,
 					table = layui.table,
 					form = layui.form;
+					CmsUtility.postAjaxCall(
+								//系统设置
+						CmsConfig.addressUrl.Mechanism.getPassageList,
+						{
+							"institutionNumber":userNumber
+						},
+						function(data){
+							console.log(data)
+							var str = '<option value="">支付通道</option>'
+							for(var i =0 ; i<data.data.length;i++){
+								str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
+							}
+							console.log(str)
+							$('#transactionPassageway').html(str)
+							form.render()
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 				function tableRender(){
 					//方法级渲染  
 					table.render({
@@ -160,23 +186,19 @@
 						cols: [
 							[{
 								align: 'center',
-								type: 'checkbox'
-							}, {
-								align: 'center',
 								field: 'batchordernumber',
-								width: 300,
+								width: 200,
 								title: '商户编号/支付通道',
 								templet:function(data){
-									console.log(data)
-									return data.merchantNumber + '/' + data.transactionPassageway
+									return data.merchantNumber + '</br>' + data.transactionPassageway
 								}
 							}, {
 								align: 'center',
 								field: 'username',
 								width: 300,
-								title: '系统订单号/下游订单号',
+								title: '第三方订单号/系统订单号/下游订单号',
 								templet:function(data){
-									return data.batch + '/' + data.orderNumber
+									return  data.paymentOrderNumber + '</br>' +   data.batch + '</br>' + data.orderNumber
 								}
 							}, {
 								align: 'center',
@@ -202,17 +224,17 @@
 								width: 150,
 								title: '提交时间/成功时间',
 								templet:function(data){
-									return data.orderTime + '/' + data.transactionTime
+									return data.orderTime + '</br>' + data.transactionTime
 								}
 							}, {
 								align: 'center',
 								field: 'subaccountNumber',
-								width: 100,
+								width: 140,
 								title: '通道商户号',
 							}, {
 								align: 'center',
 								field: 'errorDescribe',
-								width: 150,
+								width: 300,
 								title: '订单描述',
 							}, {
 								align: 'center',
@@ -223,7 +245,7 @@
 								align: 'center',
 								title: '操作',
 								toolbar: '#toolbar',
-								minWidth: 250
+								minWidth: 200
 							}]
 						],
 						page: true,
@@ -247,6 +269,12 @@
 				tableRender()
 				$('#search').click(function(){
 					tableRender()
+				})
+				laydate.render({
+					elem:"#startTime"
+				})
+				laydate.render({
+					elem:"#endTime"
 				})
 
 				//监听工具条

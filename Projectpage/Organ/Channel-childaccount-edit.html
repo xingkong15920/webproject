@@ -192,7 +192,8 @@
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
 						{
-							"merchantNumber":this.value
+							"merchantNumber":this.value,
+							"institutionNumber":userNumber
 						},
 						function(data){
 							console.log(this.value)
@@ -223,13 +224,24 @@
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
 						{
-							"id":jgData.merchantNumber
+							"id":jgData.merchantNumber,
+							"institutionNumber":userNumber
 
 						},
 						function(data){
 							if(data.code == 1000){
+								console.log(data)
 								shopName = data.data[0].merchantName
 								$('#search').attr('shopNumber',jgData.merchantNumber)
+								form.val('cardAdd', {
+									"merchantNumber": shopName,
+									"subaccountNumber":jgData.subaccountNumber,
+									"subaccountKey":jgData.subaccountKey,
+									"wechatAppid":jgData.weChatAPPID,
+									"smallroutineAppid":jgData.smallRoutineAPPID,
+									"appsecret":jgData.aPPSECRET,
+									"terminalNumber":jgData.terminalNumber,
+								})
 							}else{
 								layer.msg(data.msg)
 								
@@ -237,17 +249,11 @@
 						},
 						function(data){
 							console.log('222')
-						}
+						},
+						'post',
+						'false'
 					)
-					form.val('cardAdd', {
-						"merchantNumber": shopName,
-						"subaccountNumber":jgData.subaccountNumber,
-						"subaccountKey":jgData.subaccountKey,
-						"wechatAppid":jgData.weChatAPPID,
-						"smallroutineAppid":jgData.smallRoutineAPPID,
-						"appsecret":jgData.aPPSECRET,
-						"terminalNumber":jgData.terminalNumber,
-					})
+					
 					form.on('switch(riskMode)', function(data) { //消费优惠开关
 					// layer.tips('继承状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 						riskMode = this.checked
