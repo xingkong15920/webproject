@@ -112,7 +112,7 @@
 					if(res[i].agentType == 1){
 						res[i].agentType1 = '已打款'
 					}
-					if(res[i].agentType == 2){
+					if(res[i].agentType == -1){
 						res[i].agentType1 = '已驳回'
 					}
 				}				
@@ -124,7 +124,7 @@
 				var laydate = layui.laydate,
 					table = layui.table,
 					form = layui.form;
-
+					var index = layer.load(2, {shade: [0.4, '#393D49']})
 				//方法级渲染  
 				function tableRender(){
 					table.render({
@@ -174,7 +174,7 @@
 						}, {
 							align: 'center',
 							field: 'withdrawCashAmount',
-							width: 100,
+							width: 150,
 							title: '结算金额',
 							templet:function(data){
 								if(data.withdrawCashAmount){
@@ -195,7 +195,7 @@
 						}, {
 							align: 'center',
 							field: 'withdrawCashAmount',
-							width: 100,
+							width: 150,
 							title: '到账金额',
 							templet:function(data){
 								if(data.withdrawCashAmount){
@@ -208,7 +208,7 @@
 						}, {
 							align: 'center',
 							field: 'bankName',
-							width: 250,
+							width: 300,
 							title: '开户名/银行卡号/银行名称/支行名称',
 							templet:function(data){
 								var name,bankCardNo,openingBank,openingBankBranch
@@ -261,7 +261,7 @@
 								if(data.orderType == 1){
 									return '已打款'
 								}
-								if(data.orderType == 2){
+								if(data.orderType == -1){
 									return '已驳回'
 								}
 							}
@@ -275,12 +275,12 @@
 							align: 'center',
 							title: '操作',
 							toolbar: '#toolbar',
-							minWidth: 200
+							minWidth: 100
 						}]
 					],
 					page: true,
 					done: function(res, curr, count) {
-						
+						layer.closeAll()
 						if(res.data == null){
 							if(!!res.msg){
 								//layer.msg(res.msg)

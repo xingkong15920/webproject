@@ -31,6 +31,8 @@ var CmsConfig = {
             AgloginInfo:"login/AgloginInfo",
             //退出
             exitLogin:"login/exitLogin",
+            //自动登录
+            Automaticlist:"login/Automaticlist"
         },
         //机构后台接口
         Mechanism: {

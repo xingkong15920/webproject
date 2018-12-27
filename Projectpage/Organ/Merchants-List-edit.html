@@ -12,7 +12,7 @@
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<script type="text/javascript" src="../../public/js/hangye.js"></script>
 		
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 		<!--[if lt IE 9]>
@@ -124,26 +124,26 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">经营范围</label>
 						<div class="layui-input-inline">
-							<select name="oneOperate">
-								<option value="">一级类目</option>
+							<select name="oneOperate" id="chOne" lay-filter="chOne" lay-verify="title">
+								<!-- <option value="">一级类目</option>
 								<option value="1">互联网</option>
-								<option value="2">科技</option>
+								<option value="2">科技</option> -->
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="twoOperate">
-								<option value="">二级类目</option>
+							<select name="twoOperate"  id="chTwo" lay-filter="chTwo" lay-verify="title">
+								<!-- <option value="">二级类目</option>
 								<option value="1">信息科技</option>
 								<option value="2">生物</option>
-								<option value="3">信息科技</option>
+								<option value="3">信息科技</option> -->
 							</select>
 						</div>
 						<div class="layui-input-inline">
-							<select name="threeOperate">
-								<option value="">三级类目</option>
+							<select name="threeOperate"  id="chThr" lay-filter="chThr" lay-verify="title">
+								<!-- <option value="">三级类目</option>
 								<option value="1">开发</option>
 								<option value="2">前段</option>
-								<option value="3">Java</option>
+								<option value="3">Java</option> -->
 							</select>
 						</div>
 					</div>
@@ -334,6 +334,7 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			CmsUtility.choosePro();
+			CmsUtility.chooseOne()
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function(){
 				
@@ -342,6 +343,7 @@
 			function subPage(data,data1){
 				var jgData  = data
 				console.log(jgData)
+				console.log(hangyeData3)
 				var serverUrl = window.parent.serverUrl
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
@@ -354,6 +356,8 @@
 						element = layui.element,
 						layer = layui.layer;
 					var tableSelect = layui.tableSelect;
+					CmsUtility.chooseTwo(jgData.oneOperate)
+					CmsUtility.chooseThr(jgData.oneOperate,jgData.twoOperate)
 					CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Public.getAddress, {
@@ -402,7 +406,6 @@
                                     "areaCode": ''
                                 },
                                 function(data) {
-                                    console.log(data)
                                     var str = '<option value="">请选择区县</option>'
                                     for (var k = 0; k < data.data.length; k++) {
                                         if (jgData.area == data.data[k].areaCode) {
@@ -470,6 +473,18 @@
 					form.on('select(city)', function(data){
 
 					    CmsUtility.chooseArea(data.value)
+					    form.render()
+
+					})
+					form.on('select(chOne)', function(data){
+						console.log(data)
+					    CmsUtility.chooseTwo(data.value)
+					    form.render()
+
+					})
+					form.on('select(chTwo)', function(data){
+						console.log($('#chOne').val(),data.value)
+					    CmsUtility.chooseThr($('#chOne').val(),data.value)
 					    form.render()
 
 					})

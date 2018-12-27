@@ -413,12 +413,34 @@ var CmsUtility = (function() {
         $('#chOne').html(str)
     }
     function chooseTwo(data){
-        console.log(hangyeData3)
-        var str = '<option value="">一级类目</option>'
+        // console.log(hangyeData3)
+        var str = '<option value="">二级类目</option>'
         for(var i = 0 ; i < hangyeData3.length;i++){
-            str += '<option value="'+hangyeData3[i].value+'">'+hangyeData3[i].text+'</option>'
+            if(data == hangyeData3[i].value){
+                for(var j = 0 ; j < hangyeData3[i].children.length;j++){
+                    str += '<option value="'+hangyeData3[i].children[j].value+'">'+hangyeData3[i].children[j].text+'</option>'
+                }
+            }
         }
-        $('#chOne').html(str)
+        $('#chTwo').html(str)
+    }
+    function chooseThr(data,data1){
+        // console.log(hangyeData3)
+        var str = '<option value="">三级类目</option>'
+        for(var i = 0 ; i < hangyeData3.length;i++){
+            if(data == hangyeData3[i].value){
+                for(var j = 0 ; j < hangyeData3[i].children.length;j++){
+                    if(data1 == hangyeData3[i].children[j].value){
+                        for(var m = 0; m < hangyeData3[i].children[j].children.length;m++){
+                    str += '<option value="'+hangyeData3[i].children[j].children[m].value+'">'+hangyeData3[i].children[j].children[m].text+'</option>'
+
+                        }
+
+                    }
+                }
+            }
+        }
+        $('#chThr').html(str)
     }
     return {
         postAjaxCall: postAjaxCall,
@@ -444,6 +466,8 @@ var CmsUtility = (function() {
         choosePro:choosePro,
         chooseCity:chooseCity,
         chooseArea:chooseArea,
-        chooseOne:chooseOne
+        chooseOne:chooseOne,
+        chooseTwo:chooseTwo,
+        chooseThr:chooseThr
     }
 })();

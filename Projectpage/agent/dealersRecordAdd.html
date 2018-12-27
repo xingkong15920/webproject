@@ -22,6 +22,7 @@
 			width: 150px;
 		}
 	</style>
+
 	<body>
 		<div class="x-body">
 			<form class="layui-form">
@@ -49,19 +50,19 @@
 					<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>D0费率：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="dealersName" name="d0" lay-verify="required" class="layui-input">
+						<input type="text" id="dealersName" name="d0" lay-verify="number" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>T1费率：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="linkman" name="t1" lay-verify="required" class="layui-input">
+						<input type="text" id="linkman" name="t1" lay-verify="number" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>D1费率：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="phone" name="d1" required="" lay-verify="phone" autocomplete="off" class="layui-input">
+						<input type="text" id="phone" name="d1" required="" lay-verify="number" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				</div>
@@ -80,17 +81,17 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label" style="width:80px">商户所在地：</label>
 					<div class="layui-input-inline" style="width: 150px;">
-						<select name="province" id="provice" lay-filter="provice">
+						<select name="province" id="provice" lay-filter="provice" lay-verify="required">
 							
 						</select>
 					</div>
 					<div class="layui-input-inline" style="width: 150px;">
-						<select name="city" id="city" lay-filter="city">
+						<select name="city" id="city" lay-filter="city" lay-verify="required">
 							
 						</select>
 					</div>
 					<div class="layui-input-inline" style="width: 150px;">
-						<select name="area" id="area" lay-filter="area">
+						<select name="area" id="area" lay-filter="area" lay-verify="required">
 							
 						</select>
 					</div>
@@ -117,7 +118,6 @@
         <script src="../../common/utility.js"></script>
 		<script>
 			CmsUtility.choosePro();
-			console.log('adfs')
 			// 表单提交
 			layui.use(['laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
@@ -128,45 +128,59 @@
 					admin = layui.admin,
 					element = layui.element,
 					layer = layui.layer;
-				form.on('select(provice)', function(data){
+					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+					var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+					CmsUtility.choosePro();
+					setTimeout(function(){
+						form.render()
+					},100)
+					
+					form.on('select(provice)', function(data){
 
-				    CmsUtility.chooseCity(data.value)
-				    form.render()
+					    CmsUtility.chooseCity(data.value)
+					    setTimeout(function(){
+							form.render()
+						},100)
 
-				})
-				form.on('select(city)', function(data){
+					})
+					form.on('select(city)', function(data){
 
-				    CmsUtility.chooseArea(data.value)
-				    form.render()
+					    CmsUtility.chooseArea(data.value)
+					    setTimeout(function(){
+							form.render()
+						},100)
 
-				})
+					})
+				
 				//监听提交
 				form.on('submit(add)', function(data) {
-
-					//发异步，把数据提交给后台
-					//					$.ajax({
-					//						type: "post",
-					//						url: ".dealers/getDealersListAdd",
-					//						async: true,
-					//						data: data.field,
-					//						success: function(data) {
-					//							if(data.code == 0000) {
-					//								layer.alert("增加成功", {
-					//									icon: 6
-					//								}, function() {
-					//
-					//									// 刷新父页面
-					//									window.parent.location.reload();
-					//									// 获得frame索引
-					//									var index = parent.layer.getFrameIndex(window.name);
-					//									//关闭当前frame
-					//									parent.layer.close(index);
-					//								});
-					//							} else {
-					//								layer.msg(data.desc);
-					//							}
-					//						}
-					//					});
+					console.log(data)
+					var data = data.field
+					data.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+					data.agentType = 
+					data.agentNumber = 	userNumber
+					data.agentLevel = agentLevel
+					// if()
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.insertInstitutionAdvertisement,
+						data,
+						function(data){
+							if(data.code == 1000){
+								setTimeout(function(){
+									$('#quxiao').click()
+								},16); 
+								parent.layer.msg('保存成功')
+								parent.layui.table.reload('vip_cardList')
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 					return false;
 				});
 

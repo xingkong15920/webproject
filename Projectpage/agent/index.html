@@ -9,18 +9,77 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
 		<meta http-equiv="Cache-Control" content="no-siteapp" />
 
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
+		<script type="text/javascript" src="../../public/js/ip.js"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script src="../../common/config.js"></script>
+		<script src="../../common/utility.js"></script>
 		<script type="text/javascript">
-			if(!sessionStorage.getItem("agentUser")){
-				console.log(sessionStorage.getItem("agentUser"))
-				window.location.href = 'login.html' 
+			var number = CmsUtility.getQueryString('number')
+			var ins = CmsUtility.getQueryString('ins')
+			var cname = ''
+			var cip = ''
+			if(CmsUtility.getQueryString('number') != null){
+				$.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
+				console.log(returnCitySN)
+				cip = returnCitySN.cip
+			});
+			//获取用户所在城市信息
+			var citysearch = new AMap.CitySearch();
+				//自动获取用户IP，返回当前城市
+				citysearch.getLocalCity(function(status, result) {
+					console.log(status, result)
+					if(status === 'complete' && result.info === 'OK') {
+						if(result && result.city && result.bounds) {
+							cname = result.province + result.city
+							console.log(cip,cname)
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Login.AgloginInfo,
+								{
+									"loginClass":'1',
+									"number":number,
+									"institutionNumber":ins,
+									"address":cname,
+									"IP":cip
+								},
+								function(data) {
+									if(data.code == '1000') {
+										sessionStorage.setItem("agentUser", JSON.stringify(data.data));
+										$('#userName').html(JSON.parse(sessionStorage.getItem("agentUser")).login)
+										window.location.href = decodeURIComponent(window.location).split('?')[0]
+										// layer.msg('登录成功')
+										// setTimeout(function() {
+										// 	window.location.href = 'index.html'
+										// }, 500)
+									} else {
+										//layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+					} else {
+					}
+				})
+				// window.location.href = decodeURIComponent(window.location).split('?')[0]
+			}else{
+				if(!sessionStorage.getItem("agentUser")){
+					console.log(sessionStorage.getItem("agentUser"))
+					window.location.href = 'login.html' 
+				}
 			}
+			
+			
+			
 			var dw = $(window).width(),
 				dh = $(window).height(),
 				ifmbox = $(".layui-iframe"),
@@ -152,9 +211,9 @@
 		<!-- 右侧主体结束 -->
 		<!-- 中部结束 -->
 		<!-- 底部开始 -->
-		<script src="../../common/config.js"></script>
-		<script src="../../common/utility.js"></script>
+		
 		<script type="text/javascript">
+			console.log(JSON.parse(sessionStorage.getItem("agentUser")))
 			$('#userName').html(JSON.parse(sessionStorage.getItem("agentUser")).login)
 			$(function() {
 				$('#logout').click(function() {
