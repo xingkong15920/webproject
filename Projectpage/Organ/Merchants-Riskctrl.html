@@ -179,6 +179,7 @@ input[type="number"]{
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			var type;
 			var jgData;
+			
 			CmsUtility.postAjaxCall(
 				//系统设置
 				CmsConfig.addressUrl.Mechanism.getRiskSetUp,
@@ -213,6 +214,7 @@ input[type="number"]{
 					admin = layui.admin,
 					element = layui.element,
 					layer = layui.layer;
+					var index = layer.load(2, {shade: [0.7, '#393D49']})
 				var tableSelect = layui.tableSelect;
 
 				//表单初始赋值
@@ -265,6 +267,10 @@ input[type="number"]{
 						"unitTimeMoney":jgData.unitTimeMoney,
 						"riskSwitch":jgData.riskSwitch.toString(),
 					})
+					setTimeout(function(){
+						layer.closeAll()
+					},200)
+					
 				}
 				console.log(type)
 				var server;

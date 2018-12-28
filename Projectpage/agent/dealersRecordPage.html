@@ -27,11 +27,11 @@
 			<div class="layui-row layui-form x-so">
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input type="text" name="phone" id="phone" placeholder="手机号" autocomplete="off" class="layui-input">
+					<input type="text" name="phone" id="registerCell" placeholder="手机号" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input type="text" name="name" id="name" placeholder="姓名" autocomplete="off" class="layui-input">
+					<input type="text" name="name" id="userName" placeholder="姓名" autocomplete="off" class="layui-input">
 				</div>
 				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
 			</div>
@@ -42,10 +42,10 @@
 		</div>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			
+			{{# if(d.state == 0){ }}
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="disable">禁用</a>
-			{{# if(d.OperatorState == 0){ }}
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="disable">禁用</a>
-			{{# } }} {{# if(d.OperatorState == 1){ }}
+			{{# } }} {{# if(d.state == 1){ }}
 			<a class="layui-btn layui-btn-xs" lay-event="open">开启</a>
 			{{# } }}
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
@@ -77,12 +77,10 @@
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				table.render({
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgent + '?agentNumber=' + userNumber ,
 						where:{
-							"merchantName":"",
-							"saleName":"",
-							"merchantStatus":"",
-							"agentLevel":agentLevel
+							"userName":$('#userName').val(),
+							"registerCell":$('#registerCell').val(),
 						},
 						elem: '#LAY_table_merchant',
 						height: 'full-140',
@@ -100,7 +98,7 @@
 								"code": res.code, //解析接口状态
 								"msg": res.msg, //解析提示文本
 								"count": res.data.count, //解析数据长度
-								"data": changeS(res.data.agentmerchants), //解析数据列表
+								"data": res.data.list, //解析数据列表
 							};
 						},
 					elem: '#LAY_table_Salesman',
@@ -109,27 +107,27 @@
 					id: 'salesmanList',
 					cols: [
 						[{
-							field: 'OperatorName',
+							field: 'agentName',
 							title: '代理商名称',
 							align: 'center',
 							width: 200
 						}, {
-							field: 'OperatorC',
+							field: 'agentLevel',
 							title: '级别',
 							align: 'center',
 							width: 120
 						}, {
-							field: 'Name',
+							field: 'userName',
 							title: '联系人',
 							align: 'center',
 							width: 100
 						}, {
-							field: 'Tell',
+							field: 'registerCell',
 							title: '联系电话',
 							align: 'center',
 							width: 150
 						}, {
-							field: 'ProvinceCity',
+							field: 'address',
 							title: '区域',
 							align: 'center',
 							width: 300
@@ -137,12 +135,23 @@
 							field: 'OperatorStateC',
 							title: '状态',
 							align: 'center',
-							width: 100
+							width: 100,
+							templet:function(data){
+								if(data.state == 0){
+									return '启用'
+								}
+								if(data.state == 1){
+									return '禁用'
+								}
+							}
 						}, {
 							field: 'insertTime',
 							title: '添加时间',
 							align: 'center',
-							width: 150
+							width: 150,
+							templet:function(data){
+								return data.insertTime.split('.')[0].split('T')[0] + ' ' + data.insertTime.split('.')[0].split('T')[1]
+							}
 						}, {
 							field: 'operation',
 							title: '操作',
@@ -176,14 +185,19 @@
 				//监听工具条
 				table.on('tool(Salesman)', function(obj) {
 					var data = obj.data;
-					var operatorNumber = data.OperatorNumber;
 					if(obj.event == 'edit') {
 						// 修改经销商信息
 						layer.open({
 							type: 2,
 							title: '编辑',
-							area: ['700px', '460px'], //宽高
+							area: ['900px', '560px'], //宽高
 							content: 'dealersRecordEdit.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data)
+							}
 						});
 					} else if(obj.event == 'open') {
 						var myData = {

@@ -12,62 +12,81 @@
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+		.layui-form-label{
+			width: 80px;
+		}
+		.layui-form-item .layui-input-inline{
+			width: 150px;
+		}
+	</style>
 	</head>
 
 	<body>
 		<div class="x-body">
-			<form class="layui-form">
-				<div class="layui-form-item">
-					<label for="username" class="layui-form-label"><span class="x-red">* </span>经销商名称：</label>
+			<form class="layui-form" lay-filter="cardAdd">
+				<div class="layui-form-item" style="margin-top:20px;margin-bottom:20px">
+					<div class="layui-inline">
+					<label for="username" class="layui-form-label"><span class="x-red">* </span>代理商名称：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="dealersName" name="dealerName" lay-verify="required" class="layui-input">
+						<input type="text" id="dealersName" name="agentName" lay-verify="required" class="layui-input">
 					</div>
 				</div>
-				<div class="layui-form-item">
+				<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>联系人：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="linkman" name="linkman" lay-verify="required" class="layui-input">
+						<input type="text" id="linkman" name="userName" lay-verify="required" class="layui-input">
 					</div>
 				</div>
-				<div class="layui-form-item">
+				<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>联系电话：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="phone" name="phone" required="" lay-verify="phone" autocomplete="off" class="layui-input">
+						<input type="text" id="phone" name="registerCell" required="" lay-verify="phone" autocomplete="off" class="layui-input">
 					</div>
 				</div>
+				</div>
 				<div class="layui-form-item">
-					<label class="layui-form-label">商户所在地</label>
+					<div class="layui-inline">
+					<label for="username" class="layui-form-label"><span class="x-red">* </span>D0费率：</label>
+					<div class="layui-input-inline">
+						<input type="text" id="dealersName" name="D0Rate" lay-verify="number" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label for="username" class="layui-form-label"><span class="x-red">* </span>T1费率：</label>
+					<div class="layui-input-inline">
+						<input type="text" id="linkman" name="T1Rate" lay-verify="number" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label for="username" class="layui-form-label"><span class="x-red">* </span>D1费率：</label>
+					<div class="layui-input-inline">
+						<input type="text" id="phone" name="D1Rate" required="" lay-verify="number" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label" style="width:80px">商户所在地：</label>
 					<div class="layui-input-inline" style="width: 150px;">
-						<select name="province" id="provice" lay-filter="provice">
-							<option value="">请选择省</option>
+						<select name="province" id="provice" lay-filter="provice" lay-verify="required">
+							
 						</select>
 					</div>
 					<div class="layui-input-inline" style="width: 150px;">
-						<select name="city" id="city" lay-filter="city">
-							<option value="">请选择市</option>
+						<select name="city" id="city" lay-filter="city" lay-verify="required">
+							
 						</select>
 					</div>
 					<div class="layui-input-inline" style="width: 150px;">
-						<select name="area" id="area" lay-filter="area">
-							<option value="">请选择县/区</option>
+						<select name="area" id="area" lay-filter="area" lay-verify="required">
+							
 						</select>
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>详细地址：</label>
-					<div class="layui-input-inline">
-						<input type="text" id="address" name="address" required="" lay-verify="required" autocomplete="off" class="layui-input">
-					</div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">费率</label>
-					<div class="layui-input-inline">
-						<select name="rate" id="">
-							<option value="">费率</option>
-							<option value="0.006">0.6%</option>
-							<option value="0.005">0.5%</option>
-							<option value="0.0038">0.38%</option>
-						</select>
+					<div class="layui-input-inline" style="width:470px">
+						<input type="text" id="address" name="address" required="" lay-verify="required" placeholder="请输入详细地址" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-form-item layui-layout-admin">
@@ -81,44 +100,168 @@
 				</div>
 			</form>
 		</div>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			// 表单提交
-			layui.use(['form', 'layer'], function() {
-				$ = layui.jquery;
-				var form = layui.form,
+			function subPage(data){
+				console.log(data)
+				var jgData = data
+				// 表单提交
+			layui.use(['laydate', 'table', 'upload', 'form'], function() {
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					admin = layui.admin,
+					element = layui.element,
 					layer = layui.layer;
+					var T1,D1,D0
+					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+					var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+					var agentType = JSON.parse(sessionStorage.getItem('agentUser')).agentType;
+					for(var ii = 0 ; ii < jgData.rate.length;ii++){
+						if(jgData.rate[ii].rateType == 'T1'){
+							T1 = jgData.rate[ii].rate
+						}
+						if(jgData.rate[ii].rateType == 'D1'){
+							D1 = jgData.rate[ii].rate
+						}
+						if(jgData.rate[ii].rateType == 'D0'){
+							D0 = jgData.rate[ii].rate
+						}
+					}
+					CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Public.getAddress, {
+                    "provinceCode": '',
+                    "cityCode": '',
+                    "areaCode": ''
+                },
+                function(data) {
+                    var str = '<option value="">请选择省</option>'
+                    for (var i = 0; i < data.data.length; i++) {
+                        if (jgData.province == data.data[i].provinceCode) {
+                            str += '<option value="' + data.data[i].provinceCode + '" selected="">' + data.data[i].provinceName + '</option>'
+                        } else {
+                            str += '<option value="' + data.data[i].provinceCode + '">' + data.data[i].provinceName + '</option>'
+                        }
+                    }
+                    $('#provice').html(str)
+                    form.render()
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Public.getAddress, {
+                            "provinceCode": jgData.province,
+                            "cityCode": '',
+                            "areaCode": ''
+                        },
+                        function(data) {
+                            console.log(data)
+                            var str = '<option value="">请选择市</option>'
+                            for (var i = 0; i < data.data.length; i++) {
+
+                                if (jgData.city == data.data[i].cityCode) {
+                                    str += '<option value="' + data.data[i].cityCode + '" selected="">' + data.data[i].cityName + '</option>'
+                                } else {
+                                    str += '<option value="' + data.data[i].cityCode + '">' + data.data[i].cityName + '</option>'
+                                }
+
+                            }
+                            $('#city').html(str)
+                            $('#area').html('<option value="">请选择县/区</option>')
+                            form.render()
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Public.getAddress, {
+                                    "provinceCode": '',
+                                    "cityCode": jgData.city,
+                                    "areaCode": ''
+                                },
+                                function(data) {
+                                    console.log(data)
+                                    var str = '<option value="">请选择区县</option>'
+                                    for (var k = 0; k < data.data.length; k++) {
+                                        if (jgData.area == data.data[k].areaCode) {
+                                            str += '<option value="' + data.data[k].areaCode + '" selected="">' + data.data[k].areaName + '</option>'
+                                        } else {
+                                            str += '<option value="' + data.data[k].areaCode + '">' + data.data[k].areaName + '</option>'
+                                        }
+
+                                    }
+                                    $('#area').html(str)
+                                    console.log('dafds')
+                                    form.val('cardAdd', {
+						                "agentType": jgData.agentType.toString(),
+						                "agentName": jgData.agentName,
+						                "userName": jgData.userName,
+						                "registerCell": jgData.registerCell,
+						                "province": jgData.province,
+						                "city": jgData.city,
+						                "area": jgData.area,
+						                "address": jgData.address,
+						                "T1Rate": T1,
+						                "D1Rate": D1,
+						                "D0Rate": D0,
+						            })
+                                    form.render()
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        },
+                        function(data) {
+                            console.log('222')
+                        },
+                        'post',
+                        'false'
+                    )
+                },
+                function(data) {
+                    console.log('222')
+                },
+                'post',
+                'false'
+            )
 
 				//监听提交
 				form.on('submit(add)', function(data) {
 
-					//发异步，把数据提交给后台
-					//					$.ajax({
-					//						type: "post",
-					//						url: ".dealers/getDealersListAdd",
-					//						async: true,
-					//						data: data.field,
-					//						success: function(data) {
-					//							if(data.code == 0000) {
-					//								layer.alert("增加成功", {
-					//									icon: 6
-					//								}, function() {
-					//
-					//									// 刷新父页面
-					//									window.parent.location.reload();
-					//									// 获得frame索引
-					//									var index = parent.layer.getFrameIndex(window.name);
-					//									//关闭当前frame
-					//									parent.layer.close(index);
-					//								});
-					//							} else {
-					//								layer.msg(data.desc);
-					//							}
-					//						}
-					//					});
+					var data = data.field
+					data.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+					data.agentType = agentType
+					data.agentNumber = 	userNumber
+					data.agentLevel = agentLevel
+					// if()
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Agent.modifyAgent,
+						data,
+						function(data){
+							if(data.code == 1000){
+								x_admin_close()
+								parent.layer.msg('编辑成功')
+								parent.layui.table.reload('salesmanList')
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 					return false;
 				});
 
 			});
+			}
+			
+			
 		</script>
 	</body>
 

@@ -251,6 +251,10 @@ var CmsConfig = {
 
             //代理
             insertAgent:"AgManagement/insertAgent",
+            //查询列表
+            getAgent:"/AgManagement/getAgent",
+            //编辑代理
+            modifyAgent:"AgManagement/modifyAgent",
 
             //提现
             //查询提现账户

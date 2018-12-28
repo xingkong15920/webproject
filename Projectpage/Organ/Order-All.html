@@ -60,9 +60,7 @@
 						<input type="text" name="couponName" id="endTime" placeholder="成功时间" autocomplete="off" class="layui-input">
 					</div>
 					
-					<div class="layui-input-inline coupons_screen">
-						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
-					</div>
+					
 				</div>
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
@@ -89,6 +87,9 @@
 							<option value="0">成功-未返还</option>
 							<option value="1">成功-已返还</option>
 						</select>
+					</div>
+					<div class="layui-input-inline coupons_screen">
+						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
 					</div>
 				</div>
 				
@@ -134,7 +135,9 @@
 							"institutionNumber":userNumber
 						},
 						function(data){
-							console.log(data)
+							if(data.data == null){
+								return
+							}
 							var str = '<option value="">支付通道</option>'
 							for(var i =0 ; i<data.data.length;i++){
 								str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
@@ -256,7 +259,7 @@
 							if(res.data == null){
 								console.log(res)
 								if(!!res.msg){
-									layer.msg(res.msg)
+									//layer.msg(res.msg)
 								}else{
 									layer.msg('无数据')
 								}

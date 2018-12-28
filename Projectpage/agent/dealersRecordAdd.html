@@ -50,19 +50,19 @@
 					<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>D0费率：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="dealersName" name="d0" lay-verify="number" class="layui-input">
+						<input type="text" id="dealersName" name="D0Rate" lay-verify="number" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>T1费率：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="linkman" name="t1" lay-verify="number" class="layui-input">
+						<input type="text" id="linkman" name="T1Rate" lay-verify="number" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-inline">
 					<label for="username" class="layui-form-label"><span class="x-red">* </span>D1费率：</label>
 					<div class="layui-input-inline">
-						<input type="text" id="phone" name="d1" required="" lay-verify="number" autocomplete="off" class="layui-input">
+						<input type="text" id="phone" name="D1Rate" required="" lay-verify="number" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				</div>
@@ -130,6 +130,7 @@
 					layer = layui.layer;
 					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 					var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+					var agentType = JSON.parse(sessionStorage.getItem('agentUser')).agentType;
 					CmsUtility.choosePro();
 					setTimeout(function(){
 						form.render()
@@ -157,21 +158,19 @@
 					console.log(data)
 					var data = data.field
 					data.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
-					data.agentType = 
+					data.agentType = agentType
 					data.agentNumber = 	userNumber
 					data.agentLevel = agentLevel
 					// if()
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Mechanism.insertInstitutionAdvertisement,
+						CmsConfig.addressUrl.Agent.insertAgent,
 						data,
 						function(data){
 							if(data.code == 1000){
-								setTimeout(function(){
-									$('#quxiao').click()
-								},16); 
-								parent.layer.msg('保存成功')
-								parent.layui.table.reload('vip_cardList')
+								x_admin_close()
+								parent.layer.msg('创建成功')
+								parent.layui.table.reload('salesmanList')
 							}else{
 								layer.msg(data.msg)
 								

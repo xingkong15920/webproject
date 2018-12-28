@@ -147,6 +147,10 @@
 								
 						},
 						parseData: function(res) {
+							if(res.data == null){
+								layer.closeAll()
+								return
+							}
 						 //res 即为原始返回的数据
 							return {
 								"code": res.code, //解析接口状态
@@ -201,8 +205,11 @@
 						page: true,
 						done: function(res, curr, count) {
 							console.log(res)
+							if(res.code == 1000){
+								layer.closeAll()
+							}
 							form.render()
-							layer.closeAll()
+							
 						}
 					});
 
