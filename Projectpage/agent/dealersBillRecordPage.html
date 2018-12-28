@@ -14,9 +14,15 @@
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 
 		<style>
-			.layui-table-cell {
+			/* *{
+				font-size: 14px;
+			} */
+			/* .layui-table-cell {
 				height: auto;
 				line-height: initial;
+			} */
+			.layui-table-cell{
+				height: auto;
 			}
 		</style>
 	</head>
@@ -34,11 +40,11 @@
 			<div class="layui-form layui-row">
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input id="userName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
+					<input id="shopName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input id="orderId" type="text" name="orderId" placeholder="订单编号" autocomplete="off" class="layui-input">
+					<input id="orderNumber" type="text" name="orderId" placeholder="订单编号" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="创建时间" name="startTime" id="startTime">
@@ -47,30 +53,30 @@
 					<input type="text" class="layui-input" placeholder="成功时间" name="endTime" id="endTime">
 				</div>
 				<div class="layui-input-inline">
-					<select id="transactionType" name="transactionType">
+					<select id="oneTransactionType" name="transactionType">
 						<option value="">支付产品</option>
-						<option value="zhifubaopay">支付宝支付</option>
-						<option value="weixinpay">微信支付</option>
-						<option value="yinlianka">银行卡支付</option>
+						<option value="Alipay_Pay">支付宝支付</option>
+						<option value="WeChat_Pay">微信支付</option>
 					</select>
 				</div>
 				<div class="layui-input-inline liushuilist">
-					<select id="" name="">
+					<select id="orderState" name="">
 						<option value="">订单状态</option>
-						<option value="1">未处理</option>
-						<option value="2">成功-未返还</option>
-						<option value="3">成功-已返还</option>
+						<option value="0">未处理</option>
+						<option value="1">成功-未返还</option>
+						<option value="2">成功-已返还</option>
 					</select>
 				</div>
 				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
 			</div>
-			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
+			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill" style="font-size:14px"></table>
 		</div>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-			<a class="layui-btn layui-btn-xs" lay-event="instep">同步</a>
+			<a class="layui-btn layui-btn-xs" lay-event="instep" style="margin-left:0">同步</a>
 		</script>
-
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
 		<script>
 			var beginDate = new Date();
 			if(beginDate.getMonth() == 0) {
@@ -82,89 +88,118 @@
 			var endDate = new Date();
 
 			// 选择日期插件  
-			layui.use(['laydate', 'table'], function() {
-				var laydate = layui.laydate;
-				var table = layui.table;
+			layui.use(['table', 'laytpl','laydate'], function() {
+
+				var table = layui.table,
+					form = layui.form,
+					laydate =  layui.laydate
+					laytpl = layui.laytpl,
+					$ = layui.jquery;
 				laydate.render({
 					elem: '#startTime', //指定元素
 					type: 'datetime',
-					value: beginDate
 				});
 				laydate.render({
 					elem: '#endTime',
 					type: 'datetime',
-					value: endDate
 				});
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				table.render({
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectOrderList + '?agentNumber=AJ180709250221098' ,
+					where:{
+						"agentLevel":'A',
+						"orderNumber":$('#orderNumber').val(),
+						"shopName":$('#shopName').val(),
+						"startTime":$('#startTime').val(),
+						"endTime":$('#endTime').val(),
+						"oneTransactionType":$('#oneTransactionType').val(),
+						"orderState":$('#orderState').val(),
+					},
 					elem: '#LAY_table_bill',
-					url: '../../public/json/vip-card.json',
-					//					method: "post",
 					page: true,
 					height: 'full-200',
 					id: 'billlist',
-					//					response: {
-					//						"statusCode": "1000", //解析接口状态
-					//					},
-					//					parseData: function(res) {
-					//						if(res.data == null) {
-					//							return
-					//						}
-					//						return {
-					//							"code": res.code,
-					//							"count": res.data.count,
-					//							"data": res.data.result,
-					//						}
-					//					},
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if(res.data == null) {
+							return
+						}
+						return {
+							"msg":res.msg,
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.transactionReceiptShareProfitList,
+						}
+					},
 					cols: [
 						[{
-							title: '商户编号/支付银行/支付通道',
+							title: '商户编号/支付通道',
+							align:'center',
 							templet: function(data) {
-								return data.username + ' <br /> ' + data.city + ' <br /> ' + data.sign
+								return data.merchantNumber + ' <br /> ' + data.paymentChannelName
 							},
-							width: 190
+							width: 200
 						}, {
 							templet: function(data) {
 								return data.username + ' <br /> ' + data.city
 							},
 							title: '系统订单号/下游订单号',
-							width: 160
+							align:'center',
+							width: 300
 						}, {
-							field: 'ClerkName',
+							field: 'transactionAmount',
 							title: '交易金额',
 							align: 'center',
+
 							width: 100
 						}, {
-							field: 'jiaoyijine',
+							field: 'shopPoundage',
 							title: '手续费',
 							align: 'center',
 							width: 100
 						}, {
-							field: 'jiesuanjine',
+							field: 'settlementAmount',
 							title: '实收金额',
 							align: 'center',
 							width: 100
 						}, {
 							templet: function(data) {
-								return data.username + ' <br /> ' + data.city
+								return data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1] + '</br>' +  data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1]
 							},
 							title: '提交时间/成功时间',
-							width: 140
+							align:'center',
+							width: 200
 						}, {
-							field: 'TransactionType',
+							field: 'paymentChannelName',
 							title: '通道商户号',
 							align: 'center',
-							width: 100
+							width: 200
 						}, {
 							field: 'OrderIdTypeC',
 							title: '订单描述',
 							align: 'center',
+
 							width: 200
 						}, {
-							field: 'TransactionDate',
+							field: 'orderState',
 							title: '状态',
 							align: 'center',
-							width: 100
+							width: 100,
+							templet:function(data){
+								if(data.orderState == 0){
+									return '未处理'
+								}
+								if(data.orderState == 1){
+									return '成功-未返还'
+								}
+								if(data.orderState == 2){
+									return '成功-已返还'
+								}
+							}
 						}, {
 							field: 'operation',
 							title: '操作',

@@ -230,6 +230,9 @@ var CmsConfig = {
         },
         //代理商后台
         Agent: {
+            //订单管理
+            //查询订单
+            selectOrderList:"agOrderManngementController/selectOrderList",
             //商户
         	//查询商户信息
             getMerchantlist:"AgMerchant/getMerchantlist",
