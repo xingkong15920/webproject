@@ -242,7 +242,15 @@
             var tdData;
             var addData;
             console.log(jgData)
-            CmsUtility.postAjaxCall(
+            
+            layui.use(['laytpl', 'laydate', 'table', 'form'], function() {
+                var laytpl = layui.laytpl,
+                    laydate = layui.laydate,
+                    table = layui.table,
+                    form = layui.form;
+                    var index = layer.load(2, {shade: [0.4, '#393D49']})
+                //方法级渲染  
+                CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.getShopOfficial,
                 {
@@ -254,24 +262,7 @@
                         // layer.msg('删除成功')
                         // location.reload()
                         tdData = data.data
-                        console.log(tdData)
-                    }else{
-                        layer.msg(data.msg)
-                        
-                    }
-                },
-                function(data){
-                    console.log('222')
-                }
-            )
-            layui.use(['laytpl', 'laydate', 'table', 'form'], function() {
-                var laytpl = layui.laytpl,
-                    laydate = layui.laydate,
-                    table = layui.table,
-                    form = layui.form;
-
-                //方法级渲染  
-                table.render({
+                        table.render({
                     //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
                     url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantTD + '?merchantNumber=' + jgData.merchantNumber ,
                     where:{
@@ -320,10 +311,21 @@
 
                         addData = res.data
                         console.log(addData)
-                    
+                        layer.closeAll()
                         
                      }
                 });
+                        console.log(tdData)
+                    }else{
+                        layer.msg(data.msg)
+                        
+                    }
+                },
+                function(data){
+                    console.log('222')
+                },
+            )
+                
 
                 
                 console.log($('.lunxun'))

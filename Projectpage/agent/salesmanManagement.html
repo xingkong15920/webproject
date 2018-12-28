@@ -73,11 +73,11 @@
 						// 	"merchantStatus":"",
 						// 	"agentLevel":""
 						// },
-						elem: '#LAY_table_merchant',
-						height: 'full-140',
-						//method: "post",
-						page: true,
-						id: 'merchantlist',
+						elem: '#LAY_table_Salesman',
+					//method: "post",
+					height: 'full-195',
+					page: true,
+					id: 'salesmanList',
 						response: { 
 						//res 即为原始返回的数据
 								"statusCode":"1000", //解析接口状态
@@ -95,11 +95,7 @@
 								"data": res.data.saleRegisterInfoList, //解析数据列表
 							};
 						},
-					elem: '#LAY_table_Salesman',
-					//method: "post",
-					height: 'full-195',
-					page: true,
-					id: 'salesmanList',
+					
 					cols: [
 						[ {
 							field: 'saleNumber',
@@ -225,8 +221,7 @@
 						
 
 						layer.confirm('确定要删除么?', function(index) {
-							table.reload('merchantlist')
-							return
+							
 							// 发送请求,将本业务员进行删除
 							console.log(data)
 							var addData = new Object()
@@ -241,7 +236,7 @@
 		                            if (data.code == 1000) {
 		                                
 		                                layer.msg('删除成功')
-		                            	
+		                            	layui.table.reload('salesmanList')
 		                                
 		                            } else {
 		                                layer.msg(data.msg)
