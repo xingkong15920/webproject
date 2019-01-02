@@ -12,6 +12,14 @@
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+			.layui-table-cell {
+				height: auto;
+				white-space: normal;
+				word-wrap: break-word;
+				word-break: break-all;
+				}
+		</style>
 	</head>
 
 	<body>
@@ -25,15 +33,16 @@
 		</div>
 		<div class="x-body">
 			<div class="layui-row layui-form x-so">
+				
 				<div class="layui-input-inline">
-					<select name="status" id="status">
+					<input type="text" id="equipmentNumber" name="shopname" placeholder="编号" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-input-inline">
+					<select name="status" id="boundState">
 						<option value="">全部</option>
 						<option value="1">已绑定</option>
 						<option value="0">未绑定</option>
 					</select>
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" id="shopname" name="shopname" placeholder="店铺名称" autocomplete="off" class="layui-input">
 				</div>
 				<button class="layui-btn" lay-submit="" lay-filter="sreach" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
 			</div>
@@ -69,12 +78,10 @@
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				table.render({
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getCode + '?agentNumber=' + userNumber ,
 						where:{
-							"merchantName":"",
-							"saleName":"",
-							"merchantStatus":"",
-							"agentLevel":agentLevel
+							"equipmentNumber":$('#equipmentNumber').val(),
+							"boundState":$('#boundState').val(),
 						},
 						elem: '#LAY_table_merchant',
 						height: 'full-140',
@@ -88,11 +95,14 @@
 						},
 						parseData: function(res) {
 						 //res 即为原始返回的数据
+						 	if(res.data == null){
+						 		return
+						 	}
 							return {
 								"code": res.code, //解析接口状态
 								"msg": res.msg, //解析提示文本
 								"count": res.data.count, //解析数据长度
-								"data": res.data.agentmerchants, //解析数据列表
+								"data": res.data.aElist, //解析数据列表
 							};
 						},
 					elem: '#table1',
@@ -103,23 +113,21 @@
 					cols: [
 						[{
 							type: 'checkbox'
-						}, {
-							type: 'numbers',
-							title: '序号'
-						}, {
-							field: 'QRCode',
+						} ,{
+							field: 'equipmentNumber',
 							title: '二维码编号',
 							align: 'center'
 						}, {
-							field: 'QRAdress',
+							field: 'codeAddress',
 							title: '二维码链接',
-							align: 'center'
+							align: 'center',
+							width:300,
 						}, {
-							field: 'ShopName',
+							field: 'saleName',
 							title: '所属销售',
 							align: 'center'
 						}, {
-							field: 'Htype',
+							field: 'shopName',
 							title: '店铺名称',
 							align: 'center'
 						}, {
@@ -163,12 +171,33 @@
 						},
 						generateCode: function() {
 							layer.prompt({
-								title: '请输入要生成码牌的数量！'
+								title: '请输入要生成码牌的数量！(1-30)'
 							}, function(pass, index) {
 								console.log(pass,index)
-								layer.msg('得到了' + pass);
-								layer.close(index);
-								layui.table.reload('YLBlist');
+								CmsUtility.postAjaxCall(
+									//系统设置
+									CmsConfig.addressUrl.Agent.GenerateCode,
+									{
+										"institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+										"Number":pass,
+										"agentNumber":userNumber
+									},
+									function(data){
+										if(data.code == 1000){
+											console.log(data)
+											layer.msg('生成成功')
+											layer.closeAll()
+											layui.table.reload('merchantlist')
+										}else{
+											layer.msg(data.msg)
+											
+										}
+									},
+									function(data){
+										console.log('222')
+									}
+								)
+								// layui.table.reload('YLBlist');
 							});
 						},
 						getCheckDataall: function() {

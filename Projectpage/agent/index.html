@@ -216,11 +216,34 @@
 			$('#userName').html(JSON.parse(sessionStorage.getItem("agentUser")).login)
 			$(function() {
 				$('#logout').click(function() {
-					layer.msg('退出成功，即将跳转登录页')
-					sessionStorage.clear();
-					setTimeout(function() {
-						window.location.href = 'login.html'
-					}, 300)
+					var ajjData = new Object()
+					ajjData.institutionNumber = JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
+					ajjData.number = JSON.parse(sessionStorage.getItem("agentUser")).Number
+					console.log(ajjData)
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Login.exitLogin,
+						ajjData,
+						function(data) {
+							if(data.code == '1000') {
+								// layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
+								// 	title: ''
+								// })
+								layer.msg('退出成功，即将跳转登录页')
+								sessionStorage.clear();
+								setTimeout(function() {
+									window.location.href = 'login.html'
+								}, 300)
+
+							} else {
+
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+					
 				})
 			})
 			

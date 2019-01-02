@@ -273,7 +273,10 @@ var CmsConfig = {
 
 
             //码牌
-            getEquipmentlist:"AgEquipment/getEquipmentlist",
+            //查询码牌列表
+            getCode:"AgEquipment/getCode",
+            //生成二维码
+            GenerateCode:"AgEquipment/GenerateCode",
         },
         //商户后台
         Merchant: {
