@@ -67,7 +67,7 @@
 						<option value="2">成功-已返还</option>
 					</select>
 				</div>
-				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+				<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
 			</div>
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill" style="font-size:14px"></table>
 		</div>
@@ -106,110 +106,118 @@
 				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
-				table.render({
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectOrderList + '?agentNumber=AJ180709250221098' ,
-					where:{
-						"agentLevel":'A',
-						"orderNumber":$('#orderNumber').val(),
-						"shopName":$('#shopName').val(),
-						"startTime":$('#startTime').val(),
-						"endTime":$('#endTime').val(),
-						"oneTransactionType":$('#oneTransactionType').val(),
-						"orderState":$('#orderState').val(),
-					},
-					elem: '#LAY_table_bill',
-					page: true,
-					height: 'full-200',
-					id: 'billlist',
-					response: {
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) {
-						if(res.data == null) {
-							return
-						}
-						return {
-							"msg":res.msg,
-							"code": res.code,
-							"count": res.data.count,
-							"data": res.data.transactionReceiptShareProfitList,
-						}
-					},
-					cols: [
-						[{
-							title: '商户编号/支付通道',
-							align:'center',
-							templet: function(data) {
-								return data.merchantNumber + ' <br /> ' + data.paymentChannelName
-							},
-							width: 200
-						}, {
-							templet: function(data) {
-								return data.username + ' <br /> ' + data.city
-							},
-							title: '系统订单号/下游订单号',
-							align:'center',
-							width: 300
-						}, {
-							field: 'transactionAmount',
-							title: '交易金额',
-							align: 'center',
-
-							width: 100
-						}, {
-							field: 'shopPoundage',
-							title: '手续费',
-							align: 'center',
-							width: 100
-						}, {
-							field: 'settlementAmount',
-							title: '实收金额',
-							align: 'center',
-							width: 100
-						}, {
-							templet: function(data) {
-								return data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1] + '</br>' +  data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1]
-							},
-							title: '提交时间/成功时间',
-							align:'center',
-							width: 200
-						}, {
-							field: 'paymentChannelName',
-							title: '通道商户号',
-							align: 'center',
-							width: 200
-						}, {
-							field: 'OrderIdTypeC',
-							title: '订单描述',
-							align: 'center',
-
-							width: 200
-						}, {
-							field: 'orderState',
-							title: '状态',
-							align: 'center',
-							width: 100,
-							templet:function(data){
-								if(data.orderState == 0){
-									return '未处理'
-								}
-								if(data.orderState == 1){
-									return '成功-未返还'
-								}
-								if(data.orderState == 2){
-									return '成功-已返还'
-								}
+				function tableRender(){
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectOrderList + '?agentNumber=AJ180709250221098' ,
+						where:{
+							"agentLevel":'A',
+							"orderNumber":$('#orderNumber').val(),
+							"shopName":$('#shopName').val(),
+							"startTime":$('#startTime').val(),
+							"endTime":$('#endTime').val(),
+							"oneTransactionType":$('#oneTransactionType').val(),
+							"orderState":$('#orderState').val(),
+						},
+						elem: '#LAY_table_bill',
+						page: true,
+						height: 'full-200',
+						id: 'billlist',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if(res.data == null) {
+								return
 							}
-						}, {
-							field: 'operation',
-							title: '操作',
-							toolbar: "#tool",
-							align: 'center',
-							minWidth: 120
-						}]
-					]
-				});
+							return {
+								"msg":res.msg,
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.transactionReceiptShareProfitList,
+							}
+						},
+						cols: [
+							[{
+								title: '商户编号/支付通道',
+								align:'center',
+								templet: function(data) {
+									return data.merchantNumber + ' <br /> ' + data.transactionPayment
+								},
+								width: 200
+							}, {
+								templet: function(data) {
+									return data.batch + ' <br /> ' + data.orderNumber
+								},
+								title: '系统订单号/下游订单号',
+								align:'center',
+								width: 300
+							}, {
+								field: 'transactionAmount',
+								title: '交易金额',
+								align: 'center',
 
+								width: 100
+							}, {
+								field: 'shopPoundage',
+								title: '手续费',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'settlementAmount',
+								title: '实收金额',
+								align: 'center',
+								width: 100
+							}, {
+								templet: function(data) {
+									return data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1] + '</br>' +  data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1]
+								},
+								title: '提交时间/成功时间',
+								align:'center',
+								width: 200
+							}, {
+								field: 'subaccountNumber',
+								title: '通道商户号',
+								align: 'center',
+								width: 200
+							}, {
+								field: 'orderRemarks',
+								title: '订单描述',
+								align: 'center',
+
+								width: 200
+							}, {
+								field: 'orderState',
+								title: '状态',
+								align: 'center',
+								width: 100,
+								templet:function(data){
+									if(data.orderState == null || data.orderState == ''){
+										return ''
+									}
+									if(data.orderState == 0){
+										return '未处理'
+									}
+									if(data.orderState == 1){
+										return '成功-未返还'
+									}
+									if(data.orderState == 2){
+										return '成功-已返还'
+									}
+								}
+							}, {
+								field: 'operation',
+								title: '操作',
+								toolbar: "#tool",
+								align: 'center',
+								minWidth: 120
+							}]
+						]
+					});
+				}
+				tableRender()
+				$('#search').click(function(){
+					tableRender()
+				})
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {

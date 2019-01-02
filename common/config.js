@@ -2,7 +2,7 @@
 var Edition = 'qty';
 var server;
 if(Edition == 'qty'){
-	server  = 'http://192.168.1.104:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.106:5006/shanhe-mechanism/'
 }else{
 	server  = 'http://192.168.1.190:5006/shanhe-mechanism/'
 }

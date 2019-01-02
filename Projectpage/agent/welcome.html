@@ -48,6 +48,9 @@
 				font-size: 1.6rem;
 				font-weight: 600;
 			}
+			p{
+				font-size: 16px;
+			}
 		</style>
 	</head>
 
@@ -105,9 +108,21 @@
 			<div class="baobiao">
 				<div class="baobiao-col-1" style="padding-left: 0;">
 					<div class="baobiaoK">
-						<div class="baobiaolist">
-							<p class="baobiaolistitle">商户数</p>
-							<p class="baobiaolistct"><span id="shopnum">1</span> 个</p>
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							商户数
+						</div>
+						<div style="line-height:50px;font-size:16px">
+							500
+						</div>
+					</div>
+				</div>
+				<div class="baobiao-col-1" style="padding-right: 0;">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							佣金
+						</div>
+						<div style="line-height:50px;font-size:16px">
+							500元
 						</div>
 					</div>
 				</div>
@@ -115,18 +130,18 @@
 					<div class="baobiaoK">
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">交易笔数</p>
-							<p class="baobiaolistct"><span id="buss">1</span> 笔</p>
+							<p class="baobiaolistct" style="font-size:16px"><span id="buss">1</span> 笔</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="zbuss">1</span> 笔</p>
+								<p style="font-size:16px"><span id="zbuss">1</span> 笔</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="wbuss">1</span> 笔</p>
+								<p  style="font-size:16px"><span id="wbuss">1</span> 笔</p>
 							</div>
 						</div>
 					</div>
@@ -136,7 +151,7 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">商家收入（元）</span>
 							</p>
-							<p class="baobiaolistct"><span id="bussmoney">1</span> 元</p>
+							<p class="baobiaolistct"  style="font-size:16px"><span id="bussmoney">1</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
@@ -157,30 +172,23 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">商家退款（元）</span>
 							</p>
-							<p class="baobiaolistct"><span id="backmoney">1</span> 元</p>
+							<p class="baobiaolistct"  style="font-size:16px"><span id="backmoney">1</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="zbackmoney">1</span> 元</p>
+								<p  style="font-size:16px"><span id="zbackmoney">1</span> 元</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="wbackmoney">1</span> 元</p>
+								<p  style="font-size:16px"><span id="wbackmoney">1</span> 元</p>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="baobiao-col-1" style="padding-right: 0;">
-					<div class="baobiaoK">
-						<div class="baobiaolist">
-							<p class="baobiaolistitle">佣金</p>
-							<p class="baobiaolistct"><span id="brokerage">00</span> 元</p>
-						</div>
-					</div>
-				</div>
+				
 			</div>
 
 			<div class="layui-row layui-col-space30">
@@ -198,30 +206,63 @@
 				</div>
 			</div>
 		</div>
+		<script src="../../common/config.js"></script>
+    <script src="../../common/utility.js"></script>
 		<script>
-			layui.use('table', function() {
-
-				var table = layui.table;
+			var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+        var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+			layui.use(['table', 'table', 'laytpl', 'laydate'], function() {
+		        var table = layui.table,
+		            form = layui.form,
+		            laydate = layui.laydate,
+		            laytpl = layui.laytpl,
+		            $ = layui.jquery;
 
 				//方法级渲染(结算记录)
 				table.render({
 					elem: '#LAY_table_SettlementRecords',
-					url: '.homePage/getSalesmanList',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgentWithdrawCash + '?agentNumber='+userNumber,
 					method: "post",
 					height: 'full-270',
+					response: {
+		                //res 即为原始返回的数据
+		                "statusCode": "1000", //解析接口状态
+
+		            },
+		            parseData: function(res) {
+		                //res 即为原始返回的数据
+		                return {
+		                    "code": res.code, //解析接口状态
+		                    "msg": res.msg, //解析提示文本
+		                    //"count": res.data.count, //解析数据长度
+		                    "data": res.data.data, //解析数据列表
+		                };
+		            },
 					cols: [
 						[{
-							field: 'SettlementDate',
+							field: 'updatetime',
 							title: '日期',
 							align: 'center'
 						}, {
-							field: 'jiaoyijine',
+							field: 'withdrawCashAmount',
 							align: 'center',
 							title: '金额'
 						}, {
-							field: 'SettlementTypeC',
-							align: 'center',
-							title: '结算状态'
+							field: 'WithdrawalsTypeC',
+		                    title: '状态',
+		                    align: 'center',
+		                    templet:function(data){
+		                        if(data.orderType == 0){
+		                            return '审核中'
+		                        }
+		                        if(data.orderType == 1){
+		                            return '已审核'
+		                        }
+		                        if(data.orderType == -1){
+		                            return '已拒绝'
+		                        }
+
+		                    }
 						}]
 					]
 				});
@@ -229,28 +270,42 @@
 				//方法级渲染(提现记录)
 				table.render({
 					elem: '#LAY_table_WithdrawalRecord',
-					url: '.homePage/getWithdrawalList',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgentWithdrawCash + '?agentNumber='+userNumber,
 					method: "post",
 					height: 'full-270',
+					response: {
+		                //res 即为原始返回的数据
+		                "statusCode": "1000", //解析接口状态
+
+		            },
+		            parseData: function(res) {
+		                //res 即为原始返回的数据
+		                return {
+		                    "code": res.code, //解析接口状态
+		                    "msg": res.msg, //解析提示文本
+		                    //"count": res.data.count, //解析数据长度
+		                    "data": res.data.data, //解析数据列表
+		                };
+		            },
 					cols: [
 						[{
-							field: 'SalesNumber',
+							field: 'updatetime',
 							title: '日期',
 							align: 'center'
 						}, {
-							field: 'Name',
+							field: 'withdrawCashAmount',
 							align: 'center',
 							title: '金额'
 						}, {
-							field: 'Cell',
+							field: 'bankCardNo',
 							align: 'center',
 							title: '卡号'
 						}, {
-							field: 'SalesTypeC',
+							field: 'name',
 							align: 'center',
 							title: '姓名'
 						}, {
-							field: 'SalesTypeC',
+							field: 'openingBankBranch',
 							align: 'center',
 							title: '开户行'
 						}]
