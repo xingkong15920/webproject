@@ -27,16 +27,16 @@
 			<div class="layui-row layui-form x-so">
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input type="text" name="phone" id="phone" placeholder="手机号" autocomplete="off" class="layui-input">
+					<input type="text"  id="phone" placeholder="手机号" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input type="text" name="name" id="name" placeholder="姓名" autocomplete="off" class="layui-input">
+					<input type="text"  id="name" placeholder="姓名" autocomplete="off" class="layui-input">
 				</div>
-				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+				<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
 			</div>
 			<xblock class="layui-row">
-				<button class="layui-btn" onclick="x_admin_show('添加销售','SalesmanAdd.html',500,520)"><i class="layui-icon"></i>添加</button>
+				<button class="layui-btn" onclick="x_admin_show('添加销售','SalesmanAdd.html',500,520)"><i class="layui-icon"></i>添加销售</button>
 			</xblock>
 			<table class="layui-hide" id="LAY_table_Salesman" lay-filter="Salesman"></table>
 		</div>
@@ -61,72 +61,78 @@
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 
 				//方法级渲染
-				table.render({
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getSaleInfo + '?agentNumber=' + userNumber ,
-						where:{
-							"registerCell":$('#phone').val(),
-							"saleName":$('#name').val(),
-						},
-						// where:{
-						// 	"merchantName":"",
-						// 	"saleName":"",
-						// 	"merchantStatus":"",
-						// 	"agentLevel":""
-						// },
-						elem: '#LAY_table_Salesman',
-					//method: "post",
-					height: 'full-195',
-					page: true,
-					id: 'salesmanList',
-						response: { 
-						//res 即为原始返回的数据
-								"statusCode":"1000", //解析接口状态
-								
-						},
-						parseData: function(res) {
-							if(res.data == null){
-								return
-							}
-						 //res 即为原始返回的数据
-							return {
-								"code": res.code, //解析接口状态
-								"msg": res.msg, //解析提示文本
-								"count": res.data.count, //解析数据长度
-								"data": res.data.saleRegisterInfoList, //解析数据列表
-							};
-						},
-					
-					cols: [
-						[ {
-							field: 'saleNumber',
-							title: '编号',
-							align: 'center',
-							width: 300
-						}, {
-							field: 'saleName',
-							align: 'center',
-							title: '姓名',
-							width: 300
-						}, {
-							field: 'registerCell',
-							align: 'center',
-							title: '手机号',
-							width: 300
-						}, {
-							field: 'SalesTypeC',
-							align: 'center',
-							title: '状态',
-							toolbar: "#toolbar_switch",
-							width: 200
-						}, {
-							field: 'operation',
-							title: '操作',
-							align: 'center',
-							toolbar: "#tool",
-							minWidth: 300
-						}]
-					]
-				});
+				function tableRender(){
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getSaleInfo + '?agentNumber=' + userNumber ,
+							where:{
+								"registerCell":$('#phone').val(),
+								"saleName":$('#name').val(),
+							},
+							// where:{
+							// 	"merchantName":"",
+							// 	"saleName":"",
+							// 	"merchantStatus":"",
+							// 	"agentLevel":""
+							// },
+							elem: '#LAY_table_Salesman',
+						//method: "post",
+						height: 'full-195',
+						page: true,
+						id: 'salesmanList',
+							response: { 
+							//res 即为原始返回的数据
+									"statusCode":"1000", //解析接口状态
+									
+							},
+							parseData: function(res) {
+								if(res.data == null){
+									return
+								}
+							 //res 即为原始返回的数据
+								return {
+									"code": res.code, //解析接口状态
+									"msg": res.msg, //解析提示文本
+									"count": res.data.count, //解析数据长度
+									"data": res.data.saleRegisterInfoList, //解析数据列表
+								};
+							},
+						
+						cols: [
+							[ {
+								field: 'saleNumber',
+								title: '编号',
+								align: 'center',
+								width: 300
+							}, {
+								field: 'saleName',
+								align: 'center',
+								title: '姓名',
+								width: 300
+							}, {
+								field: 'registerCell',
+								align: 'center',
+								title: '手机号',
+								width: 300
+							}, {
+								field: 'SalesTypeC',
+								align: 'center',
+								title: '状态',
+								toolbar: "#toolbar_switch",
+								width: 200
+							}, {
+								field: 'operation',
+								title: '操作',
+								align: 'center',
+								toolbar: "#tool",
+								minWidth: 300
+							}]
+						]
+					})
+				}
+				tableRender()
+				$('#search').click(function(){
+					tableRender()
+				})
 				form.on('switch(toolbar_switch)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					console.log(data)

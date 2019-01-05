@@ -27,43 +27,43 @@
 					</tr>
 					<tr>
 						<td>收款用户</td>
-						<td><span id="city"></span></td>
+						<td><span id="clerkNumber"></span></td>
 					</tr>
 					<tr>
 						<td>商户姓名</td>
-						<td><span id="classify"></span></td>
+						<td><span id="merchantName"></span></td>
 					</tr>
 					<tr>
 						<td>商户订单号</td>
-						<td><span id=""></span></td>
+						<td><span id="batch"></span></td>
 					</tr>
 					<tr>
 						<td>交易金额</td>
-						<td><span id=""></span></td>
+						<td><span id="transactionAmount"></span></td>
 					</tr>
 					<tr>
 						<td>手续费</td>
-						<td><span id=""></span></td>
+						<td><span id="shopPoundage"></span></td>
 					</tr>
 					<tr>
 						<td>实收金额</td>
-						<td><span id=""></span></td>
+						<td><span id="settlementAmount"></span></td>
 					</tr>
 					<tr>
 						<td>提交时间</td>
-						<td><span id=""></span></td>
+						<td><span id="orderTime"></span></td>
 					</tr>
 					<tr>
 						<td>成功时间</td>
-						<td><span id=""></span></td>
+						<td><span id="transactionTime"></span></td>
 					</tr>
 					<tr>
 						<td>支付通道</td>
-						<td><span id=""></span></td>
+						<td><span id="paymentChannelName"></span></td>
 					</tr>
 					<tr>
 						<td>支付产品</td>
-						<td><span id=""></span></td>
+						<td><span id="oneTransactionType"></span></td>
 					</tr>
 					<tr>
 						<td>提交地址</td>
@@ -79,22 +79,50 @@
 					</tr>
 					<tr>
 						<td>状态</td>
-						<td><span id=""></span></td>
+						<td><span id="orderState"></span></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</body>
+	<script src="../../common/config.js"></script>
+    <script src="../../common/utility.js"></script>
 	<script type="text/javascript">
 		function subPagebill(data) {
-			console.log(data)
-			$('#sign').text(data.sign);
-			$('#city').text(data.city);
-			$('#classify').text(data.classify);
-			$('#transactionTime').text(data.transactionTime);
-			$('#shopName').text(data.shopName);
-			$('#clerkName').text(data.clerkName);
-			$('#onePaymentTypeName').text(data.onePaymentTypeName);
+			
+			var os;
+			if(orderState == 0){
+				os = '未处理'
+			}
+			if(orderState == 1){
+				os = '成功-未返还'
+			}
+			if(orderState == 2){
+				os = '成功-已返还'
+			}
+			if(!!data.orderTime){
+				var orderTime = data.orderTime.split('.')[0].split('T')[0] + ' ' + data.orderTime.split('.')[0].split('T')[1]
+			}else{
+				var orderTime = ''
+			}
+			if(!!data.transactionTime){
+				var transactionTime = data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1]
+			}else{
+				var transactionTime = ''
+			}
+			$('#merchantNumber').html(data.merchantNumber);
+			$('#clerkNumber').html(data.clerkNumber);
+			$('#merchantName').html(data.merchantName);
+			$('#batch').html(data.batch);
+			$('#transactionAmount').html(data.transactionAmount);
+			$('#shopPoundage').html(data.shopPoundage);
+			$('#settlementAmount').html(data.settlementAmount);
+			$('#orderTime').html(orderTime)
+			$('#transactionTime').html(transactionTime)
+			$('#paymentChannelName').html(data.paymentChannelName)
+			$('#oneTransactionType').html(data.oneTransactionType)
+			$('#orderState').html(os)
+
 		}
 	</script>
 

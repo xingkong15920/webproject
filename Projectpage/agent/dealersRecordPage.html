@@ -33,7 +33,7 @@
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
 					<input type="text" name="name" id="userName" placeholder="姓名" autocomplete="off" class="layui-input">
 				</div>
-				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+				<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
 			</div>
 			<xblock class="layui-row">
 				<button class="layui-btn" onclick="x_admin_show('添加代理商','dealersRecordAdd.html',900,560)"><i class="layui-icon"></i>添加代理商</button>
@@ -75,7 +75,8 @@
 					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
-				table.render({
+				function tableRender(){
+					table.render({
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgent + '?agentNumber=' + userNumber ,
 						where:{
 							"userName":$('#userName').val(),
@@ -93,6 +94,9 @@
 						},
 						parseData: function(res) {
 						 //res 即为原始返回的数据
+						 	if(res.data == null){
+						 		return
+						 	}
 							return {
 								"code": res.code, //解析接口状态
 								"msg": res.msg, //解析提示文本
@@ -152,8 +156,13 @@
 							minWidth: 200
 						}]
 					]
-				});
-
+				})
+				
+				}
+				tableRender()
+				$('#search').click(function(){
+					tableRender()
+				})
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {

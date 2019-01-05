@@ -48,22 +48,39 @@
 						//method: "post",
 						height: 'full-120',
 						id: 'YLBlist',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if(res.data == null) {
+								return
+							}
+							return {
+								"msg":res.msg,
+								"code": res.code,
+								//"count": res.data.count,
+								"data": res.data
+							}
+						},
 						cols: [
 							[{
 								type: 'numbers',
 								title: '序号'
 							}, {
-								field: 'UnitType',
+								field: 'shopName',
 								title: '绑定店铺',
+								align:"center",
 								width: 200
 							}, {
-								field: 'UnitType',
+								field: 'equipmentNumber',
 								title: '码牌编号',
+								align:"center",
 								width: 245
 							}, {
 								field: 'operation',
 								title: '操作',
 								toolbar: "#tool",
+								align:"center",
 								minWidth: 100
 							}]
 						]
@@ -171,7 +188,7 @@
 								layer.open({
 									type: 2,
 									title: '添加码牌',
-									area: ['385px', '250px'],
+									area: ['60%', '350px'],
 									content: 'MP-configurationAdd.html',
 									success: function(layero, index) {
 										// 获取子页面的iframe

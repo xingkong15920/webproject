@@ -52,7 +52,7 @@
 			<table class="layui-hide" id="table1" lay-filter="useruv"></table>
 			<xblock class="layui-row">
 				<button class="layui-btn layui-btn-xs" data-type="getCheckDataall"><i class="layui-icon">&#xe601;</i>批量下载二维码</button>
-				<button class="layui-btn layui-btn-xs" data-type="getCheckDatano"><i class="layui-icon">&#xe601;</i>批量下载二维码</button>
+				<!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatano"><i class="layui-icon">&#xe601;</i>批量下载二维码</button> -->
 				<!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatayes"><i class="layui-icon">&#xe601;</i>批量下载二维码（有背景）</button> -->
 				<button class="layui-btn layui-btn-xs" data-type="getAllCheckDataall"><i class="layui-icon">&#xe601;</i>下载未绑定二维码（全部）</button>
 				<input type="hidden" id="getAllcount" name="getAllcount">
@@ -76,6 +76,7 @@
 				var table = layui.table;
 				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+				var jData;
 				//方法级渲染
 				table.render({
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getCode + '?agentNumber=' + userNumber ,
@@ -83,15 +84,23 @@
 							"equipmentNumber":$('#equipmentNumber').val(),
 							"boundState":$('#boundState').val(),
 						},
-						elem: '#LAY_table_merchant',
-						height: 'full-140',
-						//method: "post",
-						page: true,
-						id: 'merchantlist',
+						
 						response: { 
 						//res 即为原始返回的数据
 								"statusCode":"1000", //解析接口状态
 								
+						},
+						parseData: function(res) {
+							if(res.data == null){
+								return
+							}
+						 //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.data.count, //解析数据长度
+								"data": res.data.saleRegisterInfoList, //解析数据列表
+							};
 						},
 						parseData: function(res) {
 						 //res 即为原始返回的数据
@@ -137,7 +146,15 @@
 						}, {
 							field: 'Status',
 							title: '状态',
-							align: 'center'
+							align: 'center',
+							templet:function(data){
+								if(data.boundState == 0){
+									return '未绑定'
+								}
+								if(data.boundState == 1){
+									return '已绑定'
+								}
+							}
 						}, {
 							title: '操作',
 							align: 'center',
@@ -148,6 +165,8 @@
 						//得到数据总量
 						console.log(count);
 						$("#getAllcount").val(res.nobandRows);
+						jData = res.data
+						console.log(jData)
 					}
 				})
 
@@ -186,8 +205,9 @@
 										if(data.code == 1000){
 											console.log(data)
 											layer.msg('生成成功')
+											
+											layui.table.reload('deviceInfo')
 											layer.closeAll()
-											layui.table.reload('merchantlist')
 										}else{
 											layer.msg(data.msg)
 											
@@ -200,24 +220,58 @@
 								// layui.table.reload('YLBlist');
 							});
 						},
+
+						//打包下载二维码！！！！！！
 						getCheckDataall: function() {
 							var b = table.checkStatus('deviceInfo').data;
-							var a1 = b.length;
-							var kuai = 350; //600 -> 800 小400+120
-							var kuai2 = 664;
-							var kuai3 = 180; //600->500 左移230
-							var kuai4 = 370; //570->950 下280
-							var url = '';
-							var code = '';
-							for(var i = 0; i < b.length; i++) {
-								if(url == '' && code == '') {
-									code += b[i].QRCode;
-								} else {
-									code += "|" + b[i].QRCode;
+							console.log(b)
+							if(b.length == 0){
+								console.log()
+								layer.confirm('确定要下载当前页的二维码?', {
+						            btn: ['确定', '取消'] //按钮
+							        }, function() {
+							        	console.log(jData)
+							        	var a1 = jData.length;
+										var kuai = 350; //600 -> 800 小400+120
+										var kuai2 = 664;
+										var kuai3 = 180; //600->500 左移230
+										var kuai4 = 370; //570->950 下280
+										var url = '';
+										var code = '';
+										for(var i = 0; i < jData.length; i++) {
+											if(code == '') {
+												code += jData[i].equipmentNumber;
+											} else {
+												code += "|" + jData[i].equipmentNumber;
+											}
+										}
+										var id = encodeURI(code);
+										console.log(id)
+										window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.todownmyziliao +"?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 220 + "&logo2=" + 780 + "&backtype=allback" + "&agNumber=" + JSON.parse(sessionStorage.getItem('agentUser')).Number;
+										layer.closeAll()
+
+							        }
+								)
+							}else{
+								var a1 = b.length;
+								var kuai = 350; //600 -> 800 小400+120
+								var kuai2 = 664;
+								var kuai3 = 180; //600->500 左移230
+								var kuai4 = 370; //570->950 下280
+								var url = '';
+								var code = '';
+								for(var i = 0; i < b.length; i++) {
+									if(code == '') {
+										code += b[i].equipmentNumber;
+									} else {
+										code += "|" + b[i].equipmentNumber;
+									}
 								}
+								var id = encodeURI(code);
+								console.log(id)
+								window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.todownmyziliao +"?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 220 + "&logo2=" + 780 + "&backtype=allback" + "&agNumber=" + JSON.parse(sessionStorage.getItem('agentUser')).Number;
 							}
-							var id = encodeURI(code);
-							window.location.href = ".todownmyziliao?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 200 + "&logo2=" + 780 + "&backtype=allback";
+							
 						},
 						getCheckDatano: function() {
 							var b = table.checkStatus('deviceInfo').data;
@@ -270,16 +324,40 @@
 
 				table.on('tool(useruv)', function(obj) {
 					var data = obj.data;
+					console.log(data)
 					var url = data.QRAdress;
 					var id = data.QRCode;
 					if(obj.event === 'eQRcode') {
-						window.location.href = ".setcode?qrcodeurl=" + url + "&qrcodeId=" + id;
+						window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.setcode + "?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber;
+						// setcode
+						// CmsUtility.postAjaxCall(
+						// 		//系统设置
+						// 	CmsConfig.addressUrl.Agent.setcode,
+						// 	{
+						// 		"qrcodeurl":data.codeAddress,
+						// 		"qrcodeId":data.equipmentNumber
+						// 	},
+						// 	function(data){
+						// 		if(data.code == 1000){
+									
+						// 			// layer.msg('更改成功')
+									
+						// 		}else{
+						// 			layer.msg(data.msg)
+									
+						// 		}
+						// 	},
+						// 	function(data){
+						// 		console.log('222')
+						// 	}
+						// )
 					} else if(obj.event === 'QRcode') {
 						var kuai = 350; //600 -> 800 小400+120
 						var kuai2 = 664;
 						var kuai3 = 180; //600->500 左移230
 						var kuai4 = 370; //570->950 下280
-						window.location.href = ".downservletImages?qrcodeurl=" + url + "&qrcodeId=" + id + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 560 + "&logo2=" + 250;
+						window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.downservletImages +"?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 515+ "&logo2=" + 260;
+						// window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.setcode + "?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber;
 					} else if(obj.event == 'UNcode') {
 						$.ajax({
 							type: "post",

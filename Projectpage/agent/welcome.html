@@ -102,8 +102,8 @@
 
 			<blockquote class="layui-elem-quote">
 				<span style="margin-right: 30px;">商户数据</span>
-				<button class="layui-btn layui-btn-xs">今天</button>
-				<button class="layui-btn layui-btn-xs">昨天</button>
+				<button class="layui-btn layui-btn-xs" id="now">今天</button>
+				<button class="layui-btn layui-btn-xs" id="yes">昨天</button>
 			</blockquote>
 			<div class="baobiao">
 				<div class="baobiao-col-1" style="padding-left: 0;">
@@ -313,6 +313,44 @@
 				});
 
 			});
+
+			var myDate = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2];
+			console.log(myDate)
+			function getShop(){
+				CmsUtility.postAjaxCall(
+							//系统设置
+					CmsConfig.addressUrl.Agent.selectMerchant,
+					{
+						"agentNumber":userNumber,
+						"agentLevel":agentLevel,
+						"startTime":myDate,
+						"endtime":myDate,
+					},
+					function(data){
+						if(data.code == 1000){
+							
+							console.log(data)
+						}else{
+							layer.msg(data.msg)
+							
+						}
+					},
+					function(data){
+						console.log('222')
+					}
+				)
+		}
+		getShop()
+		$('#now').click(function(){
+			var myDate = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2];
+			console.log(myDate)
+			getShop()
+		})
+		$('#yes').click(function(){
+			var myDate = new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString().split('/')[0] + '-' + new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString().split('/')[1] + '-' + new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString().split('/')[2];
+			console.log(myDate)
+			getShop()
+		})
 		</script>
 
 	</body>

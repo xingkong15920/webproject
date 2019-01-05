@@ -2,9 +2,9 @@
 var Edition = 'qty';
 var server;
 if(Edition == 'qty'){
-	server  = 'http://192.168.1.106:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.100:5006/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.190:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.100:5007/hongsou-merchant/'
 }
 /* 
 接口前缀解释
@@ -240,6 +240,8 @@ var CmsConfig = {
             getShoplist:"AgEquipment/getShoplist",
             //查询云喇叭和码牌
             getEquipmentlist:"AgEquipment/getEquipmentlist",
+            //绑定码牌
+           insertShopCode:"AgEquipment/insertShopCode",
 
             
 
@@ -277,6 +279,22 @@ var CmsConfig = {
             getCode:"AgEquipment/getCode",
             //生成二维码
             GenerateCode:"AgEquipment/GenerateCode",
+            //下载
+            setcode:"QRcode/setcode",
+            //带背景down
+            downservletImages:"QRcode/downservletImages",
+            //当前页
+            todownmyziliao:"QRcode/todownmyziliao",
+
+
+            //商户汇总
+            selectMerchant:"agTransactionstatisticsController/selectMerchant",
+            //门店汇总
+            selectShop:"agTransactionstatisticsController/selectShop",
+
+            //代理账单
+            selectAgentBillList:"agBill/selectAgentBillList",
+            selectDetailAgentBillList:"agBill/selectDetailAgentBillList",
         },
         //商户后台
         Merchant: {

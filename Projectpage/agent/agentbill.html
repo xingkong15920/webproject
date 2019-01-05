@@ -22,6 +22,12 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
+			.hi{
+				display: none;
+			}
+			.sh{
+				display: inline-block;
+			}
 		</style>
 	</head>
 
@@ -70,7 +76,7 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
 		</script>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-xs" lay-event="look">查看明细</a>
+			<a class="layui-btn layui-btn-xs {{agentLevel=='D'?'hi':'sh'}}" lay-event="look">查看明细</a>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
@@ -96,7 +102,8 @@
 			// }
 			var serverUrl = window.parent.serverUrl
 			//var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
-			var userNumber = '1000';
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+			var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -112,7 +119,7 @@
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					//url: './json/vip-card.json',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.GetSettlement + '?institutionNumber=' + userNumber ,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectAgentBillList + '?agentNumber=AJ181219251072922',
 					// where:{
 					// 	"agentName":$('#agentName').val(),
 					// 	"registerCell":$('#registerCell').val(),
@@ -138,35 +145,42 @@
 							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
 							"count": res.data.count, //解析数据长度
-							"data": res.data.settlements, //解析数据列表
+							"data": res.data.agentBillList, //解析数据列表
 						};
 					},
 					cols: [
 						[{
 							align: 'center',
-							field: 'agentBalance',
+							field: 'orederNumber',
 							width: 250,
 							title: '账单号',
 						}, {
 							align: 'center',
-							field: 'agentName',
+							field: 'importExportAmount',
 							width: 250,
 							title: '分润金额'
 						}, {
 							align: 'center',
-							field: 'registerCell',
+							field: 'earlyStageBalance',
 							width: 200,
 							title: '变动前金额',
 						}, {
 							align: 'center',
-							field: 'agentBalance',
+							field: 'endTermBalance',
 							width: 250,
 							title: '变动后金额',
 						}, {
 							align: 'center',
-							field: 'dateTime',
+							field: 'inserttime',
 							width: 250,
 							title: '变动时间',
+							templet:function(data){
+								if(data.inserttime){
+									return data.inserttime.split('.')[0].split('T')[0] + ' '+ data.inserttime.split('.')[0].split('T')[1] 
+								}else{
+									return ""
+								}
+							}
 						},{
 							align: 'center',
 							field: 'insertTime',

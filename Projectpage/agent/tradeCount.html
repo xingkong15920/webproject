@@ -14,19 +14,19 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript">
-			$(function() {
-				$.ajax({
-					type: 'POST',
-					async: true,
-					url: ".getqudao",
-					success: function(data) {
-						for(var i = 0; i < data.length; i++) {
-							$("#payment").append("<option value='" + data[i].Passageway + "'>" + data[i].PassagewayC + "</option>");
-						}
-						form.render();
-					}
-				});
-			})
+			// $(function() {
+			// 	$.ajax({
+			// 		type: 'POST',
+			// 		async: true,
+			// 		url: ".getqudao",
+			// 		success: function(data) {
+			// 			for(var i = 0; i < data.length; i++) {
+			// 				$("#payment").append("<option value='" + data[i].Passageway + "'>" + data[i].PassagewayC + "</option>");
+			// 			}
+			// 			form.render();
+			// 		}
+			// 	});
+			// })
 		</script>
 	</head>
 
@@ -42,10 +42,10 @@
 		<div class="x-body">
 			<div class="layui-row layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
+					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime1">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止时间" name="endTime" id="endTime">
+					<input type="text" class="layui-input" placeholder="截止时间" name="endTime" id="endTime1">
 				</div>
 				<div class="layui-input-inline">
 					<button class="layui-btn" lay-submit="" lay-filter="sreach" data-type="reload" title="搜索" id="btn"><i class="layui-icon">&#xe615;</i></button>
@@ -139,10 +139,10 @@
 			<br /><br /><br />
 			<div class="layui-row layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" name="shopname" id="shopname" placeholder="门店名称" autocomplete="off" class="layui-input">
+					<input type="text" name="shopname" id="shopName" placeholder="门店名称" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline">
-					<select name="payment" id="payment">
+					<select name="payment" id="transactionPayment">
 						<option value="">所属渠道</option>
 					</select>
 				</div>
@@ -159,61 +159,116 @@
 			<table class="layui-table" id="table1" lay-filter="useruv"></table>
 		</div>
 	</body>
-
+	<script src="../../common/config.js"></script>
+    <script src="../../common/utility.js"></script>
 	<script>
+		var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+		var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 		//列表
-		layui.use(['table', 'layer'], function() {
-
-			$ = layui.jquery;
-			var layer = layui.layer;
-			var table = layui.table;
+		layui.use(['form', 'table', 'laytpl'], function() {
+				var table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl,
+					$ = layui.jquery;
+				CmsUtility.postAjaxCall(
+								//系统设置
+						CmsConfig.addressUrl.Mechanism.getPassageList,
+						{
+							"institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+						},
+						function(data){
+							if(data.data == null){
+								return
+							}
+							var str = '<option value="">所属渠道</option>'
+							for(var i =0 ; i<data.data.length;i++){
+								str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
+							}
+							$('#transactionPayment').html(str)
+							form.render()
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 
 			//方法级渲染
-			table.render({
-				elem: '#table1',
-				url: '.getTradeList',
-				page: true,
-				limits: [10, 20],
-				method: "post",
-				id: 'tradeInfo',
-				cols: [
-					[{
-						field: 'ShopName',
-						title: '门店姓名'
-					}, {
-						field: 'UserName',
-						title: '商户名称',
-						align: 'center'
-					}, {
-						field: 'ShopTell',
-						title: '手机号码',
-						align: 'center'
-					}, {
-						field: 'AgentName',
-						title: '所属代理商',
-						align: 'center'
-					}, {
-						field: 'Share',
-						title: '佣金',
-						align: 'center'
-					}, {
-						field: 'TransactionNumber',
-						title: '交易笔数',
-						align: 'center'
-					}, {
-						field: 'TransactionMoney',
-						title: '商家收入',
-						align: 'center'
-					}, {
-						field: 'RefundMoney',
-						title: '商家退款',
-						align: 'center'
-					}, {
-						field: 'UserType',
-						title: '类型',
-						align: 'center'
-					}]
-				]
+			function tableRender(){
+				table.render({
+					elem: '#table1',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectShop + '?agentNumber=' + userNumber ,
+					where:{
+						"transactionPayment":$('#transactionPayment').val(),
+						"shopName":$('#shopName').val(),
+						"agentLevel":agentLevel,
+						"startTime":$('#startTime').val(),
+						"endTime":$('#endTime').val(),
+
+					},
+					page: true,
+					limits: [10, 20],
+					method: "post",
+					id: 'tradeInfo',
+					response: { 
+					//res 即为原始返回的数据
+							"statusCode":"1000", //解析接口状态
+							
+					},
+					parseData: function(res) {
+					 //res 即为原始返回的数据
+					 	if(res.data == null){
+					 		return
+					 	}
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.count, //解析数据长度
+							"data": res.data.data, //解析数据列表
+						};
+					},
+					cols: [
+						[{
+							field: 'shopName',
+							title: '门店姓名'
+						}, {
+							field: 'merchantName',
+							title: '商户名称',
+							align: 'center'
+						}, {
+							field: 'storePhone',
+							title: '手机号码',
+							align: 'center'
+						}, {
+							field: 'agentName',
+							title: '所属代理商',
+							align: 'center'
+						}, {
+							field: 'agentCountShareProfit',
+							title: '佣金',
+							align: 'center'
+						}, {
+							field: 'transactionCount',
+							title: '交易笔数',
+							align: 'center'
+						}, {
+							field: 'transactionAmount',
+							title: '商家收入',
+							align: 'center'
+						}, {
+							field: 'refundAmount',
+							title: '商家退款',
+							align: 'center'
+						}, {
+							field: 'merchantType',
+							title: '类型',
+							align: 'center'
+						}]
+					]
+				})
+			}
+			tableRender()
+			$('#search').click(function(){
+				tableRender()
 			})
 
 			// 根據條件重载表格
@@ -260,46 +315,46 @@
 			var laydate = layui.laydate;
 			laydate.render({
 				elem: '#startTime', //指定元素
-				type: 'datetime',
+				
 				value: beginDate
 			});
 			laydate.render({
 				elem: '#endTime',
-				type: 'datetime',
+				
 				value: endDate
 			});
 		});
 	</script>
 	<script type="text/javascript">
-		$("#btn").click(function() {
-			var shopname = $("#shopname").val();
-			var startTime = $("#startTime").val();
-			var endTime = $("#endTime").val();
-			var passway = $("#payment option:selected").val();
-			$.ajax({
-				type: 'POST',
-				async: true,
-				url: ".getShangData",
-				data: {
-					"startTime": startTime,
-					"endTime": endTime,
-					"ShopName": shopname,
-					"passway": passway
+		function getShop(){
+			var startTime = $("#startTime1").val();
+			var endTime = $("#endTime1").val();
+			CmsUtility.postAjaxCall(
+						//系统设置
+				CmsConfig.addressUrl.Agent.selectMerchant,
+				{
+					"agentNumber":userNumber,
+					"agentLevel":agentLevel,
+					"startTime":startTime,
+					"endtime":endTime,
 				},
-				success: function(data) {
-					$("#shopnum").text(data[0].ShopNumber);
-					$("#buss").text(data[0].TransactionNumber);
-					$("#zbuss").text(data[0].ZTransactionNumber);
-					$("#wbuss").text(data[0].WTransactionNumber);
-					$("#bussmoney").text(data[0].TransactionMoney);
-					$("#zbussmoney").text(data[0].ZTransactionMoney);
-					$("#wbussmoney").text(data[0].WTransactionMoney);
-					$("#backmoney").text(data[0].RefundMoney);
-					$("#zbackmoney").text(data[0].ZRefundMoney);
-					$("#wbackmoney").text(data[0].WRefundMoney);
-					$("#brokerage").text(data[0].Share);
+				function(data){
+					if(data.code == 1000){
+						
+						console.log(data)
+					}else{
+						layer.msg(data.msg)
+						
+					}
+				},
+				function(data){
+					console.log('222')
 				}
-			});
+			)
+		}
+		getShop()
+		$("#btn").click(function() {
+			
 		});
 	</script>
 
