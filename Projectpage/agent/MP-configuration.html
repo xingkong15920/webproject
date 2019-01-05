@@ -22,7 +22,7 @@
 			<table class="layui-table" id="LAY_table_product" lay-filter="product"></table>
 		</div>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-xs" lay-event="unbind">解绑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="unbind">解绑</a>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
@@ -97,24 +97,36 @@
 						}
 						if(obj.event === 'unbind') {
 							// 发送请求,解绑码牌
-							layer.confirm('真的要解绑么?', function(index) {
-								$.ajax({
-									type: "post",
-									url: ".DealersMerchant/disableMerchant",
-									async: true,
-									data: mydata,
-									success: function(data) {
-										if(data.code == 0000) {
-											layer.close(index);
-											layer.alert('解绑成功 ', {
-												icon: 6
-											});
-										} else if(data.code == 0001) {
-											layer.msg(data.desc);
-										}
+							layer.confirm('是否要解除绑定?', function(index) {
+							// 发送请求
+							console.log(data)
+							CmsUtility.postAjaxCall(
+							//系统设置
+								CmsConfig.addressUrl.Agent.updateShopCode,
+								{
+									"equipmentNumber":data.equipmentNumber,
+									"equipmentType":0
+								},
+								function(data){
+									if(data.code == 1000){
+										console.log(data)
+										setTimeout(function(){
+											layer.closeAll()
+											layui.table.reload('YLBlist')
+											layer.msg('解绑成功')
+											
+										},16); 
+										
+									}else{
+										layer.msg(data.msg)
 									}
-								});
-							});
+								},
+								function(data){
+									console.log('222')
+								}
+							)
+							
+						});
 						}
 						if(obj.event === 'unbind111') {
 							//发异步，把数据提交给后台

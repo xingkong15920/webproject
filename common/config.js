@@ -242,6 +242,10 @@ var CmsConfig = {
             getEquipmentlist:"AgEquipment/getEquipmentlist",
             //绑定码牌
            insertShopCode:"AgEquipment/insertShopCode",
+           //绑定云喇叭
+           insShopEquipment:"AgEquipment/insShopEquipment",
+           //解绑二维码
+           updateShopCode:"AgEquipment/updateShopCode",
 
             
 
@@ -285,6 +289,8 @@ var CmsConfig = {
             downservletImages:"QRcode/downservletImages",
             //当前页
             todownmyziliao:"QRcode/todownmyziliao",
+            //下载所有未绑定
+            todownziliao:"QRcode/todownziliao",
 
 
             //商户汇总
@@ -335,8 +341,10 @@ var CmsConfig = {
         },
         //公共
         Public: {
-          getAddress:"login/getAddress",
-
+            //省市区接口
+            getAddress:"login/getAddress",
+            //获取图片
+            addPic:"photo/addPic",
         },
         
        

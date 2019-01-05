@@ -44,7 +44,7 @@
 						<option value="0">未绑定</option>
 					</select>
 				</div>
-				<button class="layui-btn" lay-submit="" lay-filter="sreach" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+				<button class="layui-btn" lay-submit="" lay-filter="sreach" id="search" title="搜索"><i class="layui-icon">&#xe615;</i></button>
 			</div>
 			<xblock>
 				<button class="layui-btn" data-type="generateCode"><i class="layui-icon"></i>生成二维码</button>
@@ -61,8 +61,8 @@
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="eQRcode">单二维码</a>
 			<a class="layui-btn layui-btn-xs" lay-event="QRcode">带背景二维码</a>
-			{{# if(d.StatusC == 1){ }}
-			<a class="layui-btn layui-btn-xs" lay-event="UNcode">解绑二维码</a>
+			{{# if(d.boundState == 1){ }}
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="UNcode">解绑二维码</a>
 			{{# } }}
 		</script>
 		<script src="../../common/config.js"></script>
@@ -78,96 +78,102 @@
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				var jData;
 				//方法级渲染
-				table.render({
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getCode + '?agentNumber=' + userNumber ,
-						where:{
-							"equipmentNumber":$('#equipmentNumber').val(),
-							"boundState":$('#boundState').val(),
-						},
-						
-						response: { 
-						//res 即为原始返回的数据
-								"statusCode":"1000", //解析接口状态
-								
-						},
-						parseData: function(res) {
-							if(res.data == null){
-								return
-							}
-						 //res 即为原始返回的数据
-							return {
-								"code": res.code, //解析接口状态
-								"msg": res.msg, //解析提示文本
-								"count": res.data.count, //解析数据长度
-								"data": res.data.saleRegisterInfoList, //解析数据列表
-							};
-						},
-						parseData: function(res) {
-						 //res 即为原始返回的数据
-						 	if(res.data == null){
-						 		return
-						 	}
-							return {
-								"code": res.code, //解析接口状态
-								"msg": res.msg, //解析提示文本
-								"count": res.data.count, //解析数据长度
-								"data": res.data.aElist, //解析数据列表
-							};
-						},
-					elem: '#table1',
-					page: true,
-					height: 'full-240',
-					//method: "post",
-					id: 'deviceInfo',
-					cols: [
-						[{
-							type: 'checkbox'
-						} ,{
-							field: 'equipmentNumber',
-							title: '二维码编号',
-							align: 'center'
-						}, {
-							field: 'codeAddress',
-							title: '二维码链接',
-							align: 'center',
-							width:300,
-						}, {
-							field: 'saleName',
-							title: '所属销售',
-							align: 'center'
-						}, {
-							field: 'shopName',
-							title: '店铺名称',
-							align: 'center'
-						}, {
-							field: 'Htype',
-							title: '店铺类型',
-							align: 'center'
-						}, {
-							field: 'Status',
-							title: '状态',
-							align: 'center',
-							templet:function(data){
-								if(data.boundState == 0){
-									return '未绑定'
+				function tableRender(){
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getCode + '?agentNumber=' + userNumber ,
+							where:{
+								"equipmentNumber":$('#equipmentNumber').val(),
+								"boundState":$('#boundState').val(),
+							},
+							
+							response: { 
+							//res 即为原始返回的数据
+									"statusCode":"1000", //解析接口状态
+									
+							},
+							parseData: function(res) {
+								if(res.data == null){
+									return
 								}
-								if(data.boundState == 1){
-									return '已绑定'
+							 //res 即为原始返回的数据
+								return {
+									"code": res.code, //解析接口状态
+									"msg": res.msg, //解析提示文本
+									"count": res.data.count, //解析数据长度
+									"data": res.data.saleRegisterInfoList, //解析数据列表
+								};
+							},
+							parseData: function(res) {
+							 //res 即为原始返回的数据
+							 	if(res.data == null){
+							 		return
+							 	}
+								return {
+									"code": res.code, //解析接口状态
+									"msg": res.msg, //解析提示文本
+									"count": res.data.count, //解析数据长度
+									"data": res.data.aElist, //解析数据列表
+								};
+							},
+						elem: '#table1',
+						page: true,
+						height: 'full-240',
+						//method: "post",
+						id: 'deviceInfo',
+						cols: [
+							[{
+								type: 'checkbox'
+							} ,{
+								field: 'equipmentNumber',
+								title: '二维码编号',
+								align: 'center'
+							}, {
+								field: 'codeAddress',
+								title: '二维码链接',
+								align: 'center',
+								width:300,
+							}, {
+								field: 'saleName',
+								title: '所属销售',
+								align: 'center'
+							}, {
+								field: 'shopName',
+								title: '店铺名称',
+								align: 'center'
+							}, {
+								field: 'Htype',
+								title: '店铺类型',
+								align: 'center'
+							}, {
+								field: 'Status',
+								title: '状态',
+								align: 'center',
+								templet:function(data){
+									if(data.boundState == 0){
+										return '未绑定'
+									}
+									if(data.boundState == 1){
+										return '已绑定'
+									}
 								}
-							}
-						}, {
-							title: '操作',
-							align: 'center',
-							toolbar: "#tool"
-						}]
-					],
-					done: function(res, curr, count) {
-						//得到数据总量
-						console.log(count);
-						$("#getAllcount").val(res.nobandRows);
-						jData = res.data
-						console.log(jData)
-					}
+							}, {
+								title: '操作',
+								align: 'center',
+								toolbar: "#tool"
+							}]
+						],
+						done: function(res, curr, count) {
+							//得到数据总量
+							console.log(count);
+							$("#getAllcount").val(res.nobandRows);
+							jData = res.data
+							console.log(jData)
+						}
+					})
+				}
+				tableRender()
+				$('#search').click(function(){
+					tableRender()
 				})
 
 				// 根據條件重载表格
@@ -312,13 +318,26 @@
 							window.location.href = ".todownmyziliao?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 200 + "&logo2=" + 780 + "&backtype=yesback";
 						},
 						getAllCheckDataall: function() {
-							var shopName = $("#shopname").val();
-							var getAllcount = $("#getAllcount").val();
-							var kuai = 350; //600 -> 800 小400+120
-							var kuai2 = 664;
-							var kuai3 = 180; //600->500 左移230
-							var kuai4 = 370; //570->950 下280
-							window.location.href = ".todownziliao?kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 200 + "&logo2=" + 780 + "&backtype=allback" + "&status=0&Limit=" + getAllcount + "&shopName=" + encodeURI(encodeURI(shopName));
+							layer.confirm('确定要下载所有未绑定的二维码?', {
+						            btn: ['确定', '取消'] //按钮
+							        }, function() {
+							        	
+										var kuai = 350; //600 -> 800 小400+120
+										var kuai2 = 664;
+										var kuai3 = 180; //600->500 左移230
+										var kuai4 = 370; //570->950 下280
+										
+										window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.todownziliao +"?kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 220 + "&logo2=" + 780 + "&backtype=allback" + "&agNumber=" + JSON.parse(sessionStorage.getItem('agentUser')).Number;
+
+										layer.closeAll()
+							        })
+							// var shopName = $("#shopname").val();
+							// var getAllcount = $("#getAllcount").val();
+							// var kuai = 350; //600 -> 800 小400+120
+							// var kuai2 = 664;
+							// var kuai3 = 180; //600->500 左移230
+							// var kuai4 = 370; //570->950 下280
+							// window.location.href = ".todownziliao?kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 200 + "&logo2=" + 780 + "&backtype=allback" + "&status=0&Limit=" + getAllcount + "&shopName=" + encodeURI(encodeURI(shopName));
 						}
 					};
 
@@ -359,30 +378,36 @@
 						window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.downservletImages +"?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 515+ "&logo2=" + 260;
 						// window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.setcode + "?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber;
 					} else if(obj.event == 'UNcode') {
-						$.ajax({
-							type: "post",
-							url: ".Uncode",
-							async: true,
-							dataType: 'json', //服务器返回json格式数据
-							data: {
-								qrcodeId: id,
-							},
-							success: function(data) {
-								if(data.result == "success") {
-									layer.msg("操作成功", {
-										icon: 1,
-										time: 1000
-									}, function() {
-										window.location.reload();
-									});
-								} else {
-									layer.alert(data.msg, {
-										icon: 6
-									}, function() {
-										layer.close(index)
-									});
+						
+						layer.confirm('是否要解除绑定?', function(index) {
+							// 发送请求
+							console.log(data)
+							CmsUtility.postAjaxCall(
+							//系统设置
+								CmsConfig.addressUrl.Agent.updateShopCode,
+								{
+									"equipmentNumber":data.equipmentNumber,
+									"equipmentType":0
+								},
+								function(data){
+									if(data.code == 1000){
+										console.log(data)
+										setTimeout(function(){
+											layer.closeAll()
+											layui.table.reload('deviceInfo')
+											layer.msg('解绑成功')
+											
+										},16); 
+										
+									}else{
+										layer.msg(data.msg)
+									}
+								},
+								function(data){
+									console.log('222')
 								}
-							}
+							)
+							
 						});
 					} else if(obj.event == 'zhuangtaidisable') {
 						var mydata = {
@@ -392,28 +417,7 @@
 						// 禁用分类
 						layer.confirm('真的要启用吗?', function(index) {
 							// 发送请求
-							$.ajax({
-								type: "post",
-								url: ".saleStatus",
-								async: true,
-								data: mydata,
-								success: function(data) {
-									if(data.result == "success") {
-										layer.msg("操作成功", {
-											icon: 1,
-											time: 1000
-										}, function() {
-											window.location.reload();
-										});
-									} else {
-										layer.alert(data.msg, {
-											icon: 6
-										}, function() {
-											return
-										});
-									}
-								}
-							});
+							
 						});
 					}
 					if(obj.event == 'zhuangtaiopen') {
