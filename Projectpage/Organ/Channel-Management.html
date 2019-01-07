@@ -75,10 +75,12 @@
 			<input type="checkbox" name="switch" value="{{d.id}}" dataType="{{d.paymentChannelType}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="启用|禁用" {{ d.disable==0 ? 'checked' : '' }}>
 		</script>
 		<script type="text/html" id="toolbar">
+			<a class="layui-btn layui-btn-xs" id="intoRate" lay-event="intoRate">进件费率</a>
 			<a class="layui-btn layui-btn-xs" id="childaccount" lay-event="childaccount">子账号</a>
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="riskctrl">风控</a>
 			<a class="layui-btn layui-btn-xs" id="productcontrol" lay-event="productcontrol">产品</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
+
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
 		<script src="../../common/config.js"></script>
@@ -253,7 +255,23 @@
 								iframe.subPage(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'riskctrl') { //风控
+					} else if(obj.event === 'intoRate') { //产品管理
+						layer.open({
+							type: 2,
+							title: '进件费率',
+							shade: 0.5,
+							area: ['40%', '30%'],
+							maxmin: false,
+							resize: false,
+							content: ['Channel-intoRate.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data, userNumber)
+							}
+						});
+					}else if(obj.event === 'riskctrl') { //风控
 						layer.open({
 							type: 2,
 							title: '编辑风控',

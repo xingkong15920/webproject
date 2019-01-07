@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    	.place{
+    		display:block;margin-bottom:20px;color:red
+    	}
+    </style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-body">
+			<div class="layui-row">
+				<div  class="layui-form-item" id="imgBox" style="position:relative;left:0;top:0;width:722px;height:1036px;display:inline-block">
+					<img src="images/qrcode.png"  ondragstart="return false;" id="img1" style="position:absolute;left:0;top:0;border:1px solid black">
+					<img src="images/code.png" id="code"  ondragstart="return false;" style="width:315px;height:315px;position:absolute;left:208px;top:398px;border:1px solid black;cursor:pointer;background-color:white">
+					<img src="images/txt.png" id="txtBox"  ondragstart="return false;" style="position:absolute;left:208px;top:743px;border:1px solid black;cursor:pointer">
+				</div>
+				<div class="layui-form" lay-filter="basic" style="display:inline-block;vertical-align:top;margin-top:50px">
+					<div class="layui-form-item">
+						<div class="layui-inline place">
+							<label class="layui-form-label"></label>
+							<span>*注1:背景图片推荐尺寸为宽度722px,高度为1036px</span>
+						</div>
+						<div class="layui-inline place">
+							<label class="layui-form-label"></label>
+							<span>*注2:所有单位均以像素(px)为单位</span>
+						</div>
+						<div class="layui-inline place">
+							<label class="layui-form-label"></label>
+							<span>*注3:拖动二维码及编号右下角可以改变对应元素大小</span>
+						</div>
+						<div class="layui-inline place">
+							<label class="layui-form-label"></label>
+							<span>*注4:拖动二维码及编号中间位置可以改变对应元素位置</span>
+						</div>
+						<div class="layui-inline place">
+							<label class="layui-form-label"></label>
+							<span>*注5:在下方输入框输入尺寸可以直接调整图片大小及位置</span>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">二维码宽度(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" placeholder="二维码宽度" id="kuan" onblur="ob(this.value)">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">二维码高度(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" placeholder="二维码高度" id="gao" onblur="ob1(this.value)">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">二维码坐标(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" placeholder="二维码坐标X" id="ex" onblur="ob2(this.value)">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<!-- <label class="layui-form-label">smtp端口</label> -->
+							<div class="layui-input-inline">
+								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" placeholder="二维码坐标Y" id="ey" onblur="ob3(this.value)">
+							</div>
+						</div>
+						
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">编号宽度(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" id="kuan1" onblur="ob4(this.value)">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">编号高度(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" id="gao1" onblur="ob5(this.value)">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">编号坐标(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" id="ex1" onblur="ob6(this.value)">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<!-- <label class="layui-form-label">smtp端口</label> -->
+							<div class="layui-input-inline">
+								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" id="ey1" onblur="ob7(this.value)">
+							</div>
+						</div>
+
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label"></label>
+						<div class="layui-input-inline">
+							<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config.js"></script>
+        <script src="../../common/utility.js"></script>
+		<script>
+			var code = document.getElementById('code')
+			code.onmousedown = function(ev){
+	            var ev = ev||event;
+	 			
+	            var disX = ev.clientX - this.offsetLeft;
+	            var disY = ev.clientY - this.offsetTop;
+	            var dx = ev.clientX
+	            var dy = ev.clientY
+	            var x = $('#code').width()
+	            var y = $('#code').height()
+	            
+	            if(ev.clientX > $('#code').position().left + $('#code').width() -10 &&
+	                ev.clientY > $('#code').position().top + $('#code').height() -10  ){
+	                	document.onmousemove = function(ev){
+			 				console.log($('#code').position().left)
+			                var ev = ev||event;
+
+			                var l,t;
+			                l = x+ev.clientX - dx
+
+			                // if(ev.clientX - disX <= 100){
+			                // 	l = 100
+			                // }
+			                // if(ev.clientX - disX >= 700){
+			                // 	l = 700
+			                // }
+			                t = y+ev.clientY - dy
+
+			                // if(ev.clientY - disY <= 100){
+			                // 	t = 100
+			                // }
+			                // if(ev.clientY - disY >= 1000){
+			                // 	t = 1000
+			                // }
+			                 $('#kuan').val(l)
+			        		$('#gao').val(t)
+			                code.style.width = l + 'px';
+			                code.style.height = t + 'px';
+			                code.onmouseup = function(){
+	            	
+				                document.onmousemove = null;
+				            }
+			 
+			            }
+	                }else{
+	                	document.onmousemove = function(ev){
+			                var ev = ev||event;
+
+			                var l,t;
+			                l = ev.clientX - disX
+
+			                if(ev.clientX - disX <= 0){
+			                	l = 0
+			                }
+			                if(ev.clientX - disX >= $('#img1').width()-$('#code').width()){
+			                	l = $('#img1').width()-$('#code').width()
+			                }
+			                t = ev.clientY - disY
+
+			                if(ev.clientY - disY <= 0){
+			                	t = 0
+			                }
+			                if(ev.clientY - disY >= $('#img1').height()-$('#code').height()){
+			                	t = $('#img1').height()-$('#code').height()
+			                }
+			                 $('#ex').val(l)
+			        		$('#ey').val(t)
+			                code.style.left = l + 'px';
+			                code.style.top = t + 'px';
+			 				code.onmouseup = function(){
+	            	
+				                document.onmousemove = null;
+				            }
+			            }
+	                }
+	            
+	            
+	 
+	        }
+
+	        var txtBox = document.getElementById('txtBox')
+	        txtBox.onmousedown = function(ev){
+	            var ev = ev||event;
+	 			
+	            var disX = ev.clientX - this.offsetLeft;
+	            var disY = ev.clientY - this.offsetTop;
+	            var dx = ev.clientX
+	            var dy = ev.clientY
+	            var x = $('#txtBox').width()
+	            var y = $('#txtBox').height()
+	            if(ev.clientX > $('#txtBox').position().left + $('#txtBox').width() -10 &&
+	                ev.clientY > $('#txtBox').position().top + $('#txtBox').height() -10  ){
+	                	document.onmousemove = function(ev){
+			                var ev = ev||event;
+
+			                var l,t;
+			                l = x+ev.clientX - dx
+
+			                // if(ev.clientX - disX <= 100){
+			                // 	l = 100
+			                // }
+			                // if(ev.clientX - disX >= 700){
+			                // 	l = 700
+			                // }
+			                t = y+ev.clientY - dy
+
+			                // if(ev.clientY - disY <= 100){
+			                // 	t = 100
+			                // }
+			                // if(ev.clientY - disY >= 1000){
+			                // 	t = 1000
+			                // }
+			                 $('#kuan1').val(l)
+			        		$('#gao1').val(t)
+			                txtBox.style.width = l + 'px';
+			                txtBox.style.height = t + 'px';
+			                txtBox.onmouseup = function(){
+	            	
+				                document.onmousemove = null;
+				            }
+			 
+			            }
+	                }else{
+	                	document.onmousemove = function(ev){
+			 				
+			                var ev = ev||event;
+			                // if(ev.clientY > )
+			                var l,t;
+			                l = ev.clientX - disX
+
+			                if(ev.clientX - disX <= 0){
+			                	l = 0
+			                }
+			                if(ev.clientX - disX >= $('#img1').width()-$('#txtBox').width()){
+			                	l = $('#img1').width()-$('#txtBox').width()
+			                }
+			                t = ev.clientY - disY
+
+			                if(ev.clientY - disY <= 0){
+			                	t = 0
+			                }
+			                if(ev.clientY - disY >= $('#img1').height()-$('#txtBox').height()){
+			                	t = $('#img1').height()-$('#txtBox').height()
+			                }
+			                $('#ex1').val(l)
+			       			 $('#ey1').val(t)
+			                txtBox.style.left = l + 'px';
+			                txtBox.style.top = t + 'px';
+			                txtBox.onmouseup = function(){
+	            	
+				                document.onmousemove = null;
+				            }
+			 
+			            }
+	                }
+	            
+	            
+	 
+	        }
+	        $('#kuan').val('315')
+	        $('#gao').val('315')
+	        $('#ex').val('208')
+	        $('#ey').val('398')
+	        $('#kuan1').val('315')
+	        $('#gao1').val('34')
+	        $('#ex1').val('208')
+	        $('#ey1').val('743')
+	        
+	        function ob(data){
+	        	$('#code').width(data)
+	        }
+	        function ob1(data){
+	        	$('#code').height(data)
+	        }
+	        function ob2(data){
+	        	if(data >= $('#img1').width()-$('#code').width()){
+	        		data = $('#img1').width()-$('#code').width()
+	        	}
+	        	if(data <= 0){
+	        		data = 0
+	        	}
+	        	$('#code').css({
+	        		'left':data+'px'
+	        	})
+	        }
+	        function ob3(data){
+	        	if(data >= $('#img1').height()-$('#code').height()){
+	        		data = $('#img1').height()-$('#code').height()
+	        	}
+	        	if(data <= 0){
+	        		data = 0
+	        	}
+	        	$('#code').css({
+	        		'top':data+'px'
+	        	})
+	        }
+	        function ob4(data){
+	        	$('#txtBox').width(data)
+	        }
+	        function ob5(data){
+	        	$('#txtBox').height(data)
+	        }
+	        function ob6(data){
+	        	if(data >= $('#img1').width()-$('#txtBox').width()){
+	        		data = $('#img1').width()-$('#txtBox').width()
+	        	}
+	        	if(data <= 0){
+	        		data = 0
+	        	}
+	        	$('#txtBox').css({
+	        		'left':data+'px'
+	        	})
+	        }
+	        function ob7(data){
+	        	if(data >= $('#img1').height()-$('#txtBox').height()){
+	        		data = $('#img1').height()-$('#txtBox').height()
+	        	}
+	        	if(data <= 0){
+	        		data = 0
+	        	}
+	        	$('#txtBox').css({
+	        		'top':data+'px'
+	        	})
+	        }
+			function subPage(data,data1){
+				console.log(data)
+				if(data == 1){
+					$('#chengben').show()
+				}
+				if(data == 2){
+					$('#yunying').show()
+				}
+				if(data == 3){
+					$('#tixian').show()
+				}
+				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+				var jgData = data
+				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+					layui.$.support.cors = true; //允许ajax跨域
+					var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						laytpl = layui.laytpl;
+						
+					//表单初始赋值
+					form.val('secretkey', {
+						"secretkey": jgData.keys
+					})
+					$('#sub').click(function(){
+						console.log(data)
+						if(data == 1){
+							parent.cost($('#chengben1').val())
+							x_admin_close()
+						}else if(data == 2){
+							
+							parent.operating($('#yunying1').val())
+							x_admin_close()
+						}else if(data == 3){
+							
+							parent.cash($('#tixian1').val())
+							x_admin_close()
+						}
+						return
+						
+					})
+
+					// //监听提交
+					// form.on('submit(add)', function(data) {
+					// 	layer.alert(JSON.stringify(data.field), {
+					// 		title: '最终的提交信息'
+					// 	})
+					// 	return false;
+					// });
+
+				});
+			}
+			
+		</script>
+	</body>
+
+</html>
