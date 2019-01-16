@@ -442,6 +442,31 @@ var CmsUtility = (function() {
         }
         $('#chThr').html(str)
     }
+    function getOfficial1(userNumber){
+        CmsUtility.postAjaxCall(
+                //系统设置
+        CmsConfig.addressUrl.Mechanism.getOfficial,
+        {
+          "institutionNumber" :userNumber,
+          "page":"1",
+          "limit":"1000"
+        },
+        function(data){
+            if(data.code == 1000){
+                var str = ''
+                for(var i = 0;i<data.data.PaymentChannellist.length;i++){
+                    str += '<option value="'+data.data.PaymentChannellist[i].id+'">'+data.data.PaymentChannellist[i].paymentchannelname+'</option>'
+                }
+                $('#paymentNo').html(str)
+            }
+        },
+        function(data){
+
+        },
+        'post',
+        'false'
+       )
+    }
     return {
         postAjaxCall: postAjaxCall,
         getArrFromJson: getArrFromJson,
@@ -468,6 +493,7 @@ var CmsUtility = (function() {
         chooseArea:chooseArea,
         chooseOne:chooseOne,
         chooseTwo:chooseTwo,
-        chooseThr:chooseThr
+        chooseThr:chooseThr,
+        getOfficial1:getOfficial1
     }
 })();

@@ -38,7 +38,7 @@
 			<span class="layui-breadcrumb">
 		        <a href="">首页</a>
 		        <a href="">商户管理</a>
-		        <a><cite>商户管理</cite></a>
+		        <a><cite>待审核商户</cite></a>
 		      </span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
@@ -65,7 +65,7 @@
 							<option value="1">补贴商户</option>
 						</select>
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<select name="cardVoucherName" id="auditStatus">
 							<option value="">审核状态</option>
 							<option value="0">审核失败</option>
@@ -73,7 +73,7 @@
 							<option value="2">已审核</option>
 							
 						</select>
-					</div>
+					</div> -->
 					
 					<div class="layui-input-inline coupons_screen">
 						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
@@ -133,12 +133,6 @@
 					form = layui.form;
 					var index = layer.load(2, {shade: [0.4, '#393D49']})
 				//方法级渲染  
-				laydate.render({
-					elem:"#startTime"
-				})
-				laydate.render({
-					elem:"#endTime"
-				})
 				function tableRender(){
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
@@ -147,7 +141,7 @@
 						where:{
 							"agentName":$('#agentName').val(),
 							"merchantName":$('#merchantName').val(),
-							"auditStatus":$('#auditStatus').val(),
+							"auditStatus":1,
 							"merchantType":$('#merchantType').val(),
 							"startTime":$('#startTime').val(),
 							"endtime":$('#endtime').val(),
@@ -210,11 +204,6 @@
 								field: 'insertTime',
 								width: 150,
 								title: '注册时间',
-								templet:function(data){
-									if(data.insertTime){
-										return data.insertTime.split('.')[0]
-									}
-								}
 							}, {
 								align: 'center',
 								title: '操作',

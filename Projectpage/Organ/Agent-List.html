@@ -174,19 +174,46 @@
 						}, {
 							align: 'center',
 							field: 'agentBalance',
-							width: 80,
-							title: '账号总额',
+							width: 180,
+							title: '账号总额/冻结额度',
+							templet:function(data){
+								var agentBalance
+								if(data.agentBalance == undefined){
+									 agentBalance = '0'
+								}else{
+									agentBalance = data.agentBalance
+								}
+								var agentFrozenAmount
+								if(data.agentFrozenAmount == undefined){
+									 agentFrozenAmount = '0'
+								}else{
+									agentFrozenAmount = data.agentFrozenAmount
+								}
+								return agentBalance   + '/' + agentFrozenAmount
+							}
 							
 						}, {
 							align: 'center',
 							field: 'insertTime',
-							width: 230,
+							width: 150,
 							title: '注册时间',
+							templet:function(data){
+								if(data.insertTime){
+									return data.insertTime.split('.')[0]
+								}
+							}
 						}, {
 							align: 'center',
 							field: 'loginTime',
-							width: 250,
-							title: '最后登录时间'
+							width: 150,
+							title: '最后登录时间',
+							templet:function(data){
+								if(!!data.loginTime){
+									return data.loginTime.split('.')[0].split('T')[0] + ' ' +  data.loginTime.split('.')[0].split('T')[1] 
+								}else{
+									return ''
+								}
+							}
 							
 						} ,{
 							align: 'center',

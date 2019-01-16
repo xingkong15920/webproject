@@ -1,10 +1,10 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty';
+var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
 	server  = 'http://192.168.1.100:5006/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.100:5007/hongsou-merchant/'
+	server  = 'http://192.168.1.132:5006/shanhe-mechanism/'
 }
 /* 
 接口前缀解释
@@ -47,6 +47,10 @@ var CmsConfig = {
             updateInstitutionMailboxSetting:"InstitutionMailboxSetting/updateInstitutionMailboxSetting",
             insertInstitutionMailboxSetting:"InstitutionMailboxSetting/insertInstitutionMailboxSetting",
             send:"mail/send",
+            //极光设置查询
+            selectJGPush:"setPush/selectJGPush",
+            //极光推送
+            updateJGPush:"setPush/updateJGPush",
             //短信设置
             getInstitutionSMSSetting:"InstitutionSMSSetting/getInstitutionSMSSetting",
             updateSMSSetting:"InstitutionSMSSetting/updateSMSSetting",
@@ -129,8 +133,8 @@ var CmsConfig = {
             updateAgentRate:"AgentRegister/updateAgentRate",
             //添加代理接口
             insertAgentRegister:"AgentRegister/insertAgentRegister",
-            //资金变动列表接口
-
+            //代理账单
+            getAgentLocal:"AgentRegister/getAgentLocal",
             //--全部订单
             getTransactionReceiptList:"TransactionReceipt/getTransactionReceiptList",
             //获取机构下所有通道
@@ -158,13 +162,18 @@ var CmsConfig = {
            updateInstitutionSub:"InstitutionSubaccount/updateInstitutionSub",
             //子账号风控编辑接口
             updateInstitutionSubRisk:"InstitutionSubaccount/updateInstitutionSubRisk",
-
+            //查询进件费率
+            getChannelRate:"InstitutionOfficial/getChannelRate",
+            //设置进件费率
+            insertChannelRate:"InstitutionOfficial/insertChannelRate",
             //获取子账户风控
             getgetSubacSrk:"InstitutionSubaccount/getgetSubacSrk",
             //产品接口
             getRate:"InstitutionOfficial/getRate",
             //修改产品
             updateRate:"InstitutionOfficial/updateRate",
+            //插入通道产品集合
+            insertProduct:"InstitutionOfficial/insertProduct",
             //获取通道详细信息(wechat,alipay)
             getGFOfficial:"InstitutionOfficial/getGFOfficial",
             //编辑接口(wechat,alipay)

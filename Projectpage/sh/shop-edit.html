@@ -98,31 +98,112 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			function subPage(data, userNumber) {
-				var data = data,
+				var data1 = data,
 					userNumber = userNumber,
-					shopNumber = data.shopNumber;
-					console.log(data)
+					shopNumber = data1.shopNumber;
+					console.log(data1)
 
-				CmsUtility.choosePro();
+				
 				layui.use(['form', 'layer', 'upload'], function() {
 					var $ = layui.jquery,
 						upload = layui.upload;
 					var form = layui.form,
 						layer = layui.layer;
+					CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Public.getAddress, {
+                    "provinceCode": '',
+                    "cityCode": '',
+                    "areaCode": ''
+                },
+                function(data) {
+                    var str = '<option value="">请选择省</option>'
+                    for (var i = 0; i < data.data.length; i++) {
+                        if (data1.province == data.data[i].provinceCode) {
+                            str += '<option value="' + data.data[i].provinceCode + '" selected="">' + data.data[i].provinceName + '</option>'
+                        } else {
+                            str += '<option value="' + data.data[i].provinceCode + '">' + data.data[i].provinceName + '</option>'
+                        }
+                    }
+                    $('#provice').html(str)
+                    form.render()
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Public.getAddress, {
+                            "provinceCode": data1.Province,
+                            "cityCode": '',
+                            "areaCode": ''
+                        },
+                        function(data) {
+                            console.log(data)
+                            var str = '<option value="">请选择市</option>'
+                            for (var i = 0; i < data.data.length; i++) {
 
+                                if (data1.city == data.data[i].cityCode) {
+                                    str += '<option value="' + data.data[i].cityCode + '" selected="">' + data.data[i].cityName + '</option>'
+                                } else {
+                                    str += '<option value="' + data.data[i].cityCode + '">' + data.data[i].cityName + '</option>'
+                                }
+
+                            }
+                            $('#city').html(str)
+                            $('#area').html('<option value="">请选择县/区</option>')
+                            form.render()
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Public.getAddress, {
+                                    "provinceCode": '',
+                                    "cityCode": data1.city,
+                                    "areaCode": ''
+                                },
+                                function(data) {
+                                    console.log(data)
+                                    var str = '<option value="">请选择区县</option>'
+                                    for (var k = 0; k < data.data.length; k++) {
+                                        if (data1.area == data.data[k].areaCode) {
+                                            str += '<option value="' + data.data[k].areaCode + '" selected="">' + data.data[k].areaName + '</option>'
+                                        } else {
+                                            str += '<option value="' + data.data[k].areaCode + '">' + data.data[k].areaName + '</option>'
+                                        }
+
+                                    }
+                                    $('#area').html(str)
+                                   form.val('editShop', {
+										"shopName": data1.shopName,
+										"province": data1.Province,
+										"city": data1.city,
+										"area": data1.area,
+										"address": data1.address,
+										//"storePhone": data.storePhone,
+										"remark1": data1.remark1,
+									})
+                                    form.render()
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        },
+                        function(data) {
+                            console.log('222')
+                        },
+                        'post',
+                        'false'
+                    )
+                },
+                function(data) {
+                    console.log('222')
+                },
+                'post',
+                'false'
+            )
 					//表单初始赋值
-					form.val('editShop', {
-						"shopName": data.shopName,
-						"province": data.Province,
-						"city": data.city,
-						"area": data.area,
-						"address": data.address,
-						//"storePhone": data.storePhone,
-						"remark1": data.remark1,
-					})
-					CmsUtility.choosePro(data.Province);
-					CmsUtility.chooseCity(data.Province, data.city)
-					CmsUtility.chooseArea(data.city, data.area)
+					
+					CmsUtility.choosePro(data1.Province);
+					CmsUtility.chooseCity(data1.Province, data.city)
+					CmsUtility.chooseArea(data1.city, data.area)
 					form.render()
 
 					//省市区三联

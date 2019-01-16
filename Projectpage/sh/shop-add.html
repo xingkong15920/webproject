@@ -28,7 +28,7 @@
 	<body>
 		<div class="x-body">
 			<form class="layui-form">
-				<input type="hidden" id="picAddress" name="picAddress" autocomplete="off" class="layui-input">
+				<!-- <input type="hidden" id="picAddress" name="picAddress" autocomplete="off" class="layui-input"> -->
 				<div class="layui-form-item">
 					<label for="username" class="layui-form-label">
 						<span class="x-red">*</span> 门店名称
@@ -41,21 +41,24 @@
 					<label class="layui-form-label"><span class="x-red">*</span> 门店地址</label>
 					<div class="layui-input-inline">
 						<select name="province" id="provice" lay-filter="provice" lay-verify="provice">
-						</select>
+								
+							</select>
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label"></label>
 					<div class="layui-input-inline">
 						<select name="city" id="city" lay-filter="city" lay-verify="city">
-						</select>
+								
+							</select>
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label"></label>
 					<div class="layui-input-inline">
-						<select name="area" id="area" lay-filter="area" lay-verify="area">
-						</select>
+						<select name="area" id="area" lay-verify="area">
+								
+							</select>
 					</div>
 				</div>
 				<div class="layui-form-item">
@@ -105,17 +108,27 @@
 					upload = layui.upload;
 				var form = layui.form,
 					layer = layui.layer;
+					
+				CmsUtility.choosePro();
+				setTimeout(function(){
+					form.render()
+				},100)
+				
+				form.on('select(provice)', function(data){
 
-				//省市区三联
-				form.on('select(provice)', function(data) {
-					CmsUtility.chooseCity(data.value)
-					form.render()
+				    CmsUtility.chooseCity(data.value)
+				    setTimeout(function(){
+						form.render()
+					},100)
+
 				})
-				form.on('select(city)', function(data) {
-					CmsUtility.chooseArea(data.value)
-					form.render()
-				})
-				form.on('select(area)', function(data) {
+				form.on('select(city)', function(data){
+
+				    CmsUtility.chooseArea(data.value)
+				    setTimeout(function(){
+						form.render()
+					},100)
+
 				})
 				//自定义验证规则
 				form.verify({
@@ -155,9 +168,10 @@
 				form.on('submit(add)', function(data) {
 					var addData = data.field
 					// 发送请求
+					addData.merchantNumber = userNumber
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Merchant.addShop + '?merchantNumber=' + userNumber,
+						CmsConfig.addressUrl.Merchant.addShop,
 						addData,
 						function(data) {
 							if(data.code == 1000) {

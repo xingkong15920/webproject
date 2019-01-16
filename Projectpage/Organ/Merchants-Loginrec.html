@@ -42,6 +42,9 @@
 						<input type="text" name="" placeholder="用户编号" autocomplete="off" class="layui-input" id="merchantNumber">
 					</div>
 					<div class="layui-input-inline">
+						<input type="text" name="" placeholder="商户名称" autocomplete="off" class="layui-input" id="merchantName">
+					</div>
+					<div class="layui-input-inline">
 						<select name="" id="merchantTypeName">
 							<option value="">用户类型</option>
 							<option value="0">商户</option>
@@ -101,13 +104,15 @@
 				function tableRender(){
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantLoginLog ,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantLoginLog+ '?institutionNumber=' + userNumber  ,
 					where:{
-						"merchantNumber":$('#merchantNumber').val() || ' ',
-						"merchantTypeName":$('#merchantTypeName').val()|| '',
-						"insertTime":$('#insertTime').val()|| ''	,
-						"endTime":$('#endTime').val()|| '',
-						"ip":$('#ip').val()|| '',
+						
+						"merchantName":$('#merchantName').val() ,
+						"merchantNumber":$('#merchantNumber').val() ,
+						"merchantTypeName":$('#merchantTypeName').val(),
+						"insertTime":$('#insertTime').val()	,
+						"endTime":$('#endTime').val(),
+						"ip":$('#ip').val(),
 					},
 					elem: '#members',
 					height: 'full-210',
@@ -142,7 +147,11 @@
 							field: 'merchantNumber',
 							width: 200,
 							title: '用户编号',
-							sort: true
+						}, {
+							align: 'center',
+							field: 'merchantName',
+							width: 200,
+							title: '商户名称',
 						}, {
 							align: 'center',
 							field: 'insertTime',
@@ -158,7 +167,6 @@
 							field: 'ip',
 							minWidth: 200,
 							title: 'IP',
-							sort: true
 						}]
 					],
 					page: true,
@@ -167,7 +175,7 @@
 						if(res.data == null){
 							console.log(res)
 							if(!!res.msg){
-								layer.msg(res.msg)
+								//layer.msg(res.msg)
 							}else{
 								layer.msg('无数据')
 							}

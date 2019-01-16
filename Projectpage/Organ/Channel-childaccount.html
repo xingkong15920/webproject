@@ -51,6 +51,8 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="switch" lay-text="启用|停用" {{d.disable==0 ? 'checked' : ''}} value="{{d.subaccountNumber}}">
 		</script>
 		<script type="text/html" id="toolbar">
+			<a class="layui-btn layui-btn-xs" id="edit" lay-event="rate">费率</a>
+			<a class="layui-btn layui-btn-xs" id="edit" lay-event="report">报备</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="riskctrl">风控</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
@@ -105,6 +107,11 @@
 									field: 'merchantNumber',
 									width: 250,
 									title: '商户编号'
+								},{
+									align: 'center',
+									field: 'merchantNumber',
+									width: 250,
+									title: '商户名称'
 								}, {
 									align: 'center',
 									field: 'subaccountNumber',
@@ -205,6 +212,10 @@
 									iframe.subPage(data, userNumber)
 								}
 							});
+						}else if(obj.event === 'rate'){
+								layer.msg('rate')
+						}else if(obj.event === 'report'){
+								layer.msg('report')
 						} else if(obj.event === 'riskctrl') { //风控
 							layer.open({
 								type: 2,

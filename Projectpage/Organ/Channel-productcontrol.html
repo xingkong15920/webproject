@@ -178,7 +178,7 @@
 				var serverUrl = window.parent.serverUrl
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 				var jgData = data
-				
+				console.log(jgData)
 				layui.use(['laytpl', 'laydate', 'table', 'form'], function() {
 					var laytpl = layui.laytpl,
 						laydate = layui.laydate,
@@ -370,22 +370,59 @@
 						});
 					}
 					
+					
 
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add)', function(data, index) {
 						console.log(tjData)
 						// 发送请求
+						var strData = new Array;
 						var adddData = new Object()
 						adddData.data = tjData
+						console.log(tjData)
+						
+						for(var i = 0 ; i < tjData.length;i++){
+							strData.push(tjData[i].onePaymentTypeInt + ':' + tjData[i].twoPaymentTypeInt + ',' + tjData[i].switch1)
+						}
+						console.log(uniq(strData))
+						var aa = uniq(strData)
+						var strr = aa[0]
+						for( j = 1 ; j < aa.length;j++){
+							strr += '|' + aa[j]
+						}
+						var strrData = new Object()
+						strrData.productSwitch = strr;
+						strrData.type = jgData.paymentChannelType;
+						strrData.paymentChannel = jgData.id;
+						console.log(strr)
 						CmsUtility.postAjaxCall(
 							//系统设置
 							CmsConfig.addressUrl.Mechanism.updateRate,
 							JSON.stringify(adddData),
 							function(data){
 								if(data.code == 1000){
-									$('#quxiao').click()
-									parent.layer.msg('保存成功')
-	                               	parent.layui.table.reload('vip_cardList')
+									CmsUtility.postAjaxCall(
+										CmsConfig.addressUrl.Mechanism.insertProduct,
+										strrData,
+										function(data){
+											if(data.code == 1000){
+												$('#quxiao').click()
+												parent.layer.msg('保存成功')
+				                               	parent.layui.table.reload('vip_cardList')
+												
+												
+											}else{
+												layer.msg(data.msg)
+												
+											}
+										},
+										function(data){
+											console.log('222')
+										}
+									)	
+									// $('#quxiao').click()
+									// parent.layer.msg('保存成功')
+	        //                        	parent.layui.table.reload('vip_cardList')
 									
 									
 								}else{

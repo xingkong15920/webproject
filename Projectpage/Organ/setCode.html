@@ -29,9 +29,11 @@
 		<div class="x-body">
 			<div class="layui-row">
 				<div  class="layui-form-item" id="imgBox" style="position:relative;left:0;top:0;width:722px;height:1036px;display:inline-block">
-					<img src="images/qrcode.png"  ondragstart="return false;" id="img1" style="position:absolute;left:0;top:0;border:1px solid black">
-					<img src="images/code.png" id="code"  ondragstart="return false;" style="width:315px;height:315px;position:absolute;left:208px;top:398px;border:1px solid black;cursor:pointer;background-color:white">
+					<img src="images/qrcode.png"  ondragstart="return false;" id="img1" style="width:722px;height:1036px;position:absolute;left:0;top:0;border:1px solid black">
+					<img src="images/code.png" id="code"  ondragstart="return false;" style="width:300px;height:300px;position:absolute;left:208px;top:398px;border:1px solid black;cursor:pointer;background-color:white;padding:15px">
 					<img src="images/txt.png" id="txtBox"  ondragstart="return false;" style="position:absolute;left:208px;top:743px;border:1px solid black;cursor:pointer">
+					<div style="position:absolute;right:0;top:0;width:100px;height:30px;text-align:center;line-height:30px;background-color:white;border:1px solid black" class="layui-upload-img" id="test1">上传图片</div>
+					<p style="position:absolute;right:0;top:30px;text-align:center;line-height:30px;background-color:white;border:1px solid black;width:100px" id="demoText"></p>
 				</div>
 				<div class="layui-form" lay-filter="basic" style="display:inline-block;vertical-align:top;margin-top:50px">
 					<div class="layui-form-item">
@@ -55,30 +57,14 @@
 							<label class="layui-form-label"></label>
 							<span>*注5:在下方输入框输入尺寸可以直接调整图片大小及位置</span>
 						</div>
+						<div class="layui-inline place">
+							<label class="layui-form-label"></label>
+							<span>*注6:二维码只能是正方形</span>
+						</div>
 						<div class="layui-inline">
 							<label class="layui-form-label">二维码宽度(px)</label>
 							<div class="layui-input-inline">
 								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" placeholder="二维码宽度" id="kuan" onblur="ob(this.value)">
-							</div>
-						</div>
-						<div class="layui-inline">
-							<label class="layui-form-label">二维码高度(px)</label>
-							<div class="layui-input-inline">
-								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" placeholder="二维码高度" id="gao" onblur="ob1(this.value)">
-							</div>
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<div class="layui-inline">
-							<label class="layui-form-label">二维码坐标(px)</label>
-							<div class="layui-input-inline">
-								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" placeholder="二维码坐标X" id="ex" onblur="ob2(this.value)">
-							</div>
-						</div>
-						<div class="layui-inline">
-							<!-- <label class="layui-form-label">smtp端口</label> -->
-							<div class="layui-input-inline">
-								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" placeholder="二维码坐标Y" id="ey" onblur="ob3(this.value)">
 							</div>
 						</div>
 						
@@ -99,19 +85,36 @@
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-inline">
-							<label class="layui-form-label">编号坐标(px)</label>
+							<label class="layui-form-label">二维码坐标X(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" placeholder="二维码坐标X" id="ex" onblur="ob2(this.value)">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">二维码坐标Y(px)</label>
+							<div class="layui-input-inline">
+								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" placeholder="二维码坐标Y" id="ey" onblur="ob3(this.value)">
+							</div>
+						</div>
+						
+					</div>
+					
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">编号坐标X(px)</label>
 							<div class="layui-input-inline">
 								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" id="ex1" onblur="ob6(this.value)">
 							</div>
 						</div>
 						<div class="layui-inline">
-							<!-- <label class="layui-form-label">smtp端口</label> -->
+							<label class="layui-form-label">编号坐标Y(px)</label>
 							<div class="layui-input-inline">
 								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" id="ey1" onblur="ob7(this.value)">
 							</div>
 						</div>
 
 					</div>
+					
 					<div class="layui-form-item">
 						<label class="layui-form-label"></label>
 						<div class="layui-input-inline">
@@ -158,10 +161,15 @@
 			                // if(ev.clientY - disY >= 1000){
 			                // 	t = 1000
 			                // }
-			                 $('#kuan').val(l)
-			        		$('#gao').val(t)
-			                code.style.width = l + 'px';
-			                code.style.height = t + 'px';
+			                var hei = l > t?l:t;
+			    //             if(l>t){
+							// hei
+			    //              
+			    //             }
+			        		// $('#gao').val(t)
+			        		$('#kuan').val(hei)
+			                code.style.width = hei + 'px';
+			                code.style.height = hei + 'px';
 			                code.onmouseup = function(){
 	            	
 				                document.onmousemove = null;
@@ -284,7 +292,7 @@
 	 
 	        }
 	        $('#kuan').val('315')
-	        $('#gao').val('315')
+	        //$('#gao').val('315')
 	        $('#ex').val('208')
 	        $('#ey').val('398')
 	        $('#kuan1').val('315')
@@ -294,6 +302,7 @@
 	        
 	        function ob(data){
 	        	$('#code').width(data)
+	        	$('#code').height(data)
 	        }
 	        function ob1(data){
 	        	$('#code').height(data)
@@ -348,6 +357,42 @@
 	        		'top':data+'px'
 	        	})
 	        }
+	        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+	        	var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						laytpl = layui.laytpl;
+	        	var uploadInst = upload.render({
+						elem: '#test1',
+						url: CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Public.addPic,
+						before: function(obj) {
+							console.log(obj)
+							//预读本地文件示例，不支持ie8
+							obj.preview(function(index, file, result) {
+								$('#img1').attr('src', result); //图片链接（base64）
+							});
+						},
+						done: function(res) {
+							//如果上传失败
+							if(res.code != 1000) {
+								return layer.msg('上传失败');
+							}
+							//上传成功
+							console.log(res)
+						},
+						error: function() {
+							//演示失败状态，并实现重传
+							var demoText = $('#demoText');
+
+							demoText.html('<span style="color: #FF5722;width:100px;height:30px">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+							demoText.find('.demo-reload').on('click', function() {
+								uploadInst.upload();
+							});
+						}
+					});	
+	        })
 			function subPage(data,data1){
 				console.log(data)
 				if(data == 1){
@@ -369,7 +414,7 @@
 						table = layui.table,
 						form = layui.form,
 						laytpl = layui.laytpl;
-						
+					
 					//表单初始赋值
 					form.val('secretkey', {
 						"secretkey": jgData.keys

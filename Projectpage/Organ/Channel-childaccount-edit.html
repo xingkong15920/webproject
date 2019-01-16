@@ -49,9 +49,21 @@
 							</div>
 						</div>
 						<div class="layui-form-item">
+							<label class="layui-form-label">终端号</label>
+							<div class="layui-input-inline">
+								<input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
+							</div>
+						</div>
+						<div class="layui-form-item">
 							<label class="layui-form-label">公众号APPID</label>
 							<div class="layui-input-inline">
 								<input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">公众号APPSECRET</label>
+							<div class="layui-input-inline">
+								<input type="text" name="appsecret" autocomplete="off" placeholder="公众号APPSECRET" class="layui-input" lay-verify="appsecret">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -61,29 +73,20 @@
 							</div>
 						</div>
 						<div class="layui-form-item">
-							<label class="layui-form-label">APPSECRET</label>
+							<label class="layui-form-label">推荐关注APPID</label>
 							<div class="layui-input-inline">
-								<input type="text" name="appsecret" autocomplete="off" placeholder="APPSECRET" class="layui-input" lay-verify="appsecret">
+								<input type="text" name="suggestedAPPID" autocomplete="off" placeholder="推荐关注公众号APPID" class="layui-input" lay-verify="appsecret">
 							</div>
 						</div>
+						
 						<div class="layui-form-item">
 							<label class="layui-form-label">支付授权目录</label>
 							<div class="layui-input-inline">
 								<input type="text" name="paymentDirectory" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
 							</div>
 						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">推荐关注APPID</label>
-							<div class="layui-input-inline">
-								<input type="text" name="suggestedAPPID" autocomplete="off" placeholder="推荐关注公众号APPID" class="layui-input" lay-verify="appsecret">
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">终端号</label>
-							<div class="layui-input-inline">
-								<input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
-							</div>
-						</div>
+						
+						
 					</div>
 					<div id="ali" style="display:none">
 						<div class="layui-form-item">
@@ -186,6 +189,9 @@
 					$('#ali').hide()
 					$('#noali').show()
 				}
+				// if(jgData.payment == 2){
+    // 				$('#disanfang').show()
+				// }
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
 					var $ = layui.jquery,
 						upload = layui.upload,
@@ -254,7 +260,10 @@
 									"appsecret":jgData.aPPSECRET,
 									"terminalNumber":jgData.terminalNumber,
 									"paymentDirectory":jgData.paymentDirectory,
-									"suggestedAPPID":jgData.suggestedAPPID
+									"suggestedAPPID":jgData.suggestedAPPID,
+									"aliPayPublicKey":jgData.aliPayPublicKey,
+									"aliPublicKey":jgData.aliPublicKey,
+									"aliPrivateKey":jgData.aliPrivateKey
 								})
 							}else{
 								layer.msg(data.msg)
