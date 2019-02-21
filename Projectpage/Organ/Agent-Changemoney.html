@@ -114,7 +114,7 @@
 								"code": res.code, //解析接口状态
 								"msg": res.msg, //解析提示文本
 								"count": res.count, //解析数据长度
-								"data": changeRes(res.result,res.count), //解析数据列表
+								"data": res.data.agentLocal, //解析数据列表
 							};
 						},
 						cols: [
@@ -123,57 +123,66 @@
 								type: 'checkbox'
 							}, {
 								align: 'center',
-								field: 'id',
+								field: 'orederNumber',
 								width: 150,
 								title: '账单号',
 							}, {
 								align: 'center',
-								field: 'username',
+								field: 'agentName',
 								width: 200,
 								title: '代理名称'
 							}, {
 								align: 'center',
-								field: 'type',
+								field: 'typesAccountChanges',
 								width: 150,
 								title: '类型',
+								
+							}, {
+								align: 'center',
+								field: 'agentLevel',
+								width: 250,
+								title: '代理类型',
 								templet:function(data){
-									return '分润'
+									if(data.agentLevel == 0){
+										return '全国代理商'
+									}
+									if(data.agentLevel == 1){
+										return '省级代理商'
+									}
+									if(res[i].agentLevel == 2){
+										return  '市级代理商'
+									}
 								}
 							}, {
 								align: 'center',
-								field: 'city',
-								width: 250,
-								title: '代理名（级别）'
-							}, {
-								align: 'center',
-								field: 'sign',
+								field: 'earlyStageBalance',
 								width: 150,
 								title: '原金额',
 							}, {
 								align: 'center',
-								field: 'experience',
+								field: 'importExportAmount',
 								width: 150,
 								title: '变动金额',
 							}, {
 								align: 'center',
-								field: 'experience',
+								field: 'endTermBalance',
 								width: 150,
 								title: '变动后金额',
 							}, {
 								align: 'center',
-								field: 'experience',
+								field: 'inserttime',
 								width: 150,
 								title: '变动时间',
 							},{
 								align: 'center',
-								field: 'experience',
+								field: 'remarks',
 								width: 250,
 								title: '备注',
 							}]
 						],
 						page: true,
 						done: function(res, curr, count) {
-							console.log(res)
+							
 						}
 					});
 				} 

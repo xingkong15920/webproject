@@ -103,6 +103,17 @@
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			function fun_date(aa){
+		        var date1 = new Date(),
+		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
+		        var date2 = new Date(date1);
+		        date2.setDate(date1.getDate()+aa);
+		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
+		        return time2
+		    }
+		    console.log(fun_date(-6));//7天前
+		    $('#startTime').val(fun_date(-6))
+		     $('#endTime').val(fun_date(0))
 			function changeRes(data){
 				if(data == null){
 					return
@@ -165,7 +176,7 @@
 							"oneTransactionType":$('#oneTransactionType').val(),
 							"transactionPassageway":$('#transactionPassageway').val(),
 							"subaccountNumber":$('#subaccountNumber').val(),
-							"orderState":$('#orderState').val(),
+							"orderState":-1,
 						},
 						elem: '#members',
 						height: 'full-210',

@@ -71,20 +71,28 @@
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			CmsUtility.choosePro();
+			
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use('table', function() {
 				var table = layui.table,
 					form = layui.form;
-
+				CmsUtility.choosePro();	
+				setTimeout(function(){
+						form.render()
+					},100)
+				
 				//省市区三联
 				form.on('select(provice)', function(data) {
 					CmsUtility.chooseCity(data.value)
-					form.render()
+					setTimeout(function(){
+						form.render()
+					},100)
 				})
 				form.on('select(city)', function(data) {
 					CmsUtility.chooseArea(data.value)
-					form.render()
+					setTimeout(function(){
+						form.render()
+					},100)
 				})
 
 				//方法级渲染

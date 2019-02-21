@@ -27,14 +27,19 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label" style="width: auto;"></label>
 						<div class="layui-input-item">
-							<span style="color:red">*注：所有费率用 | 分割()</span>
+							<span style="color:red">*注：所有费率用 & 分割(如有费率编码，费率编码在前，费率在后，用|分割)</span>
+							<span style="color:red">*示例：M0136|0.35&M0196|0.25</span>
 						</div>
 						
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label" style="width: auto;">进件费率</label>
+						<label class="layui-form-label" style="width: auto;">D1进件费率</label>
 						<div class="layui-input-item">
 							<textarea id="keyy" name="secretkey" class="layui-textarea"></textarea>
+						</div>
+						<label class="layui-form-label" style="width: auto;">D0进件费率</label>
+						<div class="layui-input-item">
+							<textarea id="keyy1" name="secretkey1" class="layui-textarea"></textarea>
 						</div>
 						<div class="layui-form-mid x-red">
 							<button class="layui-btn" lay-submit="" id="sub" 	>提交</button>
@@ -76,7 +81,8 @@
 										layer.msg(data.msg)
 									}else{
 										form.val('secretkey', {
-											"secretkey": data.data[0].channelRate
+											"secretkey": data.data[0].channelRate,
+											"secretkey1": data.data[0].channelD1Rate
 										})
 									}
 									
@@ -100,6 +106,7 @@
 						tjData.institutionNumber = userNumber;
 						tjData.id = jgData.id;
 						tjData.channelRate = $('#keyy').val()
+						tjData.channelD1Rate = $('#keyy1').val()
 						CmsUtility.postAjaxCall(
 							//系统设置
 							CmsConfig.addressUrl.Mechanism.insertChannelRate,

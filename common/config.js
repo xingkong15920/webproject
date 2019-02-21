@@ -2,9 +2,9 @@
 var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
-	server  = 'http://192.168.1.100:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.116:5006/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.132:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
 }
 /* 
 接口前缀解释
@@ -190,7 +190,7 @@ var CmsConfig = {
             //通道列表
             getOfficial:"InstitutionOfficial/getOfficial",
             //添加官方通道(微信)
-            insertWXOfficial:"/InstitutionOfficial/insertWXOfficial",
+            insertWXOfficial:"InstitutionOfficial/insertWXOfficial",
             //查询官方通道(微信)
             getWXOfficial:"InstitutionOfficial/getWXOfficial",
             //更新支付宝
@@ -270,7 +270,7 @@ var CmsConfig = {
             //代理
             insertAgent:"AgManagement/insertAgent",
             //查询列表
-            getAgent:"/AgManagement/getAgent",
+            getAgent:"AgManagement/getAgent",
             //编辑代理
             modifyAgent:"AgManagement/modifyAgent",
 

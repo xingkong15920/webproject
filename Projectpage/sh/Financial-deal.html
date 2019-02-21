@@ -160,17 +160,17 @@
 			//var userNumber = '1000795634';
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
-			//获取商户下门店名称
-			CmsUtility.postAjaxCall(
-				CmsConfig.addressUrl.Merchant.getShopNames,
-				dataO,
-				function(data) {
-					var shopData = data.data
-					for(var i = 0; i < shopData.length; i++) {
-						$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
-					}
-				}
-			)
+			// //获取商户下门店名称
+			// CmsUtility.postAjaxCall(
+			// 	CmsConfig.addressUrl.Merchant.getShopNames,
+			// 	dataO,
+			// 	function(data) {
+			// 		var shopData = data.data
+			// 		for(var i = 0; i < shopData.length; i++) {
+			// 			$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+			// 		}
+			// 	}
+			// )
 			// 发送请求
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
@@ -194,7 +194,17 @@
 					"source":$('#source').val(),
 				}
 				reloadres();
-
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getShopNames,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for(var i = 0; i < shopData.length; i++) {
+							$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+						}
+						form.render()
+					}
+				)
 				function reloadres() {
 					CmsUtility.clearListArr(Statement_Date)
 					CmsUtility.clearListArr(orderTotalMoney)

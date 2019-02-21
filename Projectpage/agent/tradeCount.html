@@ -57,7 +57,7 @@
 						<div class="baobiaolist" style="line-height:52px;font-size:16px">
 							商户数
 						</div>
-						<div style="line-height:50px;font-size:16px">
+						<div style="line-height:50px;font-size:16px" id="shopCount">
 							500
 						</div>
 					</div>
@@ -67,7 +67,7 @@
 						<div class="baobiaolist" style="line-height:52px;font-size:16px">
 							佣金
 						</div>
-						<div style="line-height:50px;font-size:16px">
+						<div style="line-height:50px;font-size:16px" id="brokerage">
 							500元
 						</div>
 					</div>
@@ -76,18 +76,18 @@
 					<div class="baobiaoK">
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">交易笔数</p>
-							<p class="baobiaolistct"><span id="buss">1</span> 笔</p>
+							<p class="baobiaolistct"><span id="transactionNumber">1</span> 笔</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="zbuss">1</span> 单</p>
+								<p><span id="wTransactionNumber">1</span> 单</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="wbuss">1</span> 单</p>
+								<p><span id="zTransactionNumber">1</span> 单</p>
 							</div>
 						</div>
 					</div>
@@ -97,18 +97,18 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">商家收入（元）</span>
 							</p>
-							<p class="baobiaolistct"><span id="bussmoney">1</span> 元</p>
+							<p class="baobiaolistct"><span id="transactionMoney">1</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="zbussmoney">1</span> 元</p>
+								<p><span id="wTransactionMoney">1</span> 元</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="wbussmoney">1</span> 元</p>
+								<p><span id="zTransactionMoney">1</span> 元</p>
 							</div>
 						</div>
 					</div>
@@ -118,18 +118,18 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">商家退款（元）</span>
 							</p>
-							<p class="baobiaolistct"><span id="backmoney">1</span> 元</p>
+							<p class="baobiaolistct"><span id="refundMoney">1</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="zbackmoney">1</span> 元</p>
+								<p><span id="wRefundMoney">1</span> 元</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="wbackmoney">1</span> 元</p>
+								<p><span id="zRefundMoney">1</span> 元</p>
 							</div>
 						</div>
 					</div>
@@ -147,13 +147,13 @@
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
+					<input type="text" class="layui-input" placeholder="开始时间" name="" id="startTime">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止时间" name="endTime" id="endTime">
+					<input type="text" class="layui-input" placeholder="截止时间" name="" id="endTime">
 				</div>
 				<div class="layui-input-inline">
-					<button class="layui-btn" lay-submit="" lay-filter="sreach" data-type="reload" title="搜索" id="btn"><i class="layui-icon">&#xe615;</i></button>
+					<button class="layui-btn" lay-submit="" lay-filter="sreach"  title="搜索" id="btn1"><i class="layui-icon">&#xe615;</i></button>
 				</div>
 			</div>
 			<table class="layui-table" id="table1" lay-filter="useruv"></table>
@@ -215,6 +215,7 @@
 							
 					},
 					parseData: function(res) {
+						console.log(res)
 					 //res 即为原始返回的数据
 					 	if(res.data == null){
 					 		return
@@ -223,13 +224,14 @@
 							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
 							"count": res.data.count, //解析数据长度
-							"data": res.data.data, //解析数据列表
+							"data": res.data.agShopStatisticsResultList, //解析数据列表
 						};
 					},
 					cols: [
 						[{
 							field: 'shopName',
-							title: '门店姓名'
+							title: '门店姓名',
+							align: 'center'
 						}, {
 							field: 'merchantName',
 							title: '商户名称',
@@ -270,7 +272,10 @@
 			$('#search').click(function(){
 				tableRender()
 			})
-
+			$('#btn1').click(function(){
+				console.log('111')
+				tableRender()
+			})
 			// 根據條件重载表格
 			var $ = layui.$,
 				active = {
@@ -287,8 +292,6 @@
 							},
 							where: {
 								shopname: shopname,
-								starttime: startTime,
-								endtime: endTime,
 								passway: passway
 							}
 						});
@@ -310,18 +313,28 @@
 			beginDate.setMonth(beginDate.getMonth() - 1);
 		}
 		var endDate = new Date();
+
 		// 选择日期插件  
 		layui.use('laydate', function() {
 			var laydate = layui.laydate;
 			laydate.render({
 				elem: '#startTime', //指定元素
 				
-				value: beginDate
+				value: new Date()
 			});
 			laydate.render({
 				elem: '#endTime',
 				
 				value: endDate
+			});
+			laydate.render({
+				elem: '#startTime1', //指定元素
+				
+				
+			});
+			laydate.render({
+				elem: '#endTime1',
+				
 			});
 		});
 	</script>
@@ -340,8 +353,19 @@
 				},
 				function(data){
 					if(data.code == 1000){
-						
-						console.log(data)
+						console.log(data.data.agShopStatisticsResult.shopCount)
+						$('#shopCount').html(data.data.agShopStatisticsResult.shopCount)
+						$('#brokerage').html(data.data.agShopStatisticsResult.brokerage + '元')
+						$('#transactionNumber').html(data.data.agShopStatisticsResult.transactionNumber)
+						$('#wTransactionNumber').html(data.data.agShopStatisticsResult.wTransactionNumber)
+						$('#zTransactionNumber').html(data.data.agShopStatisticsResult.zTransactionNumber)
+						$('#transactionMoney').html(data.data.agShopStatisticsResult.transactionMoney)
+						$('#wTransactionMoney').html(data.data.agShopStatisticsResult.wTransactionMoney)
+
+						$('#zTransactionMoney').html(data.data.agShopStatisticsResult.zTransactionMoney)
+						$('#refundMoney').html(data.data.agShopStatisticsResult.refundMoney)
+						$('#wRefundMoney').html(data.data.agShopStatisticsResult.wRefundMoney)
+						$('#zRefundMoney').html(data.data.agShopStatisticsResult.zRefundMoney)
 					}else{
 						layer.msg(data.msg)
 						
@@ -354,7 +378,7 @@
 		}
 		getShop()
 		$("#btn").click(function() {
-			
+			getShop()
 		});
 	</script>
 

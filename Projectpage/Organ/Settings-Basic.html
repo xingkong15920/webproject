@@ -133,19 +133,31 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">商户审核</label>
-                        <div class="layui-input-inline">
-                            <input type="checkbox" name="merchantCa" lay-filter="switchTest" lay-skin="switch" lay-text="开启|关闭" id="merchantCa">
+                        <div class="layui-input-inline" style="width:100px">
+                            <input type="checkbox" name="merchantCa" lay-filter="switchTest" lay-skin="switch" lay-text="开启|关闭" id="merchantCa" >
                         </div>
                     </div>
-                    <div class="layui-inline" style="width:500px">
-                        <label class="layui-form-label" style="width:170px">请选择默认进件通道</label>
-                        <div class="layui-input-inline" style="width: 300px;">
-                            <select name="paymentNo" id="paymentNo" lay-verify="paymentNo">
+                    <div class="layui-inline" style="width:300px">
+                        <label class="layui-form-label" style="width:100px">请选择D1进件通道</label>
+                        <div class="layui-input-inline" style="width: 150px;">
+                            <select name="paymentNoD1" id="paymentNo" lay-verify="paymentNo">
                                 <!-- <option value="">请选择进件通道</option>
 									<option value="0">富友</option>
 									<option value="1">新大陆</option>
 									<option value="2">官方微信</option>
 									<option value="3">官方支付宝</option> -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="width:300px">
+                        <label class="layui-form-label" style="width:100px">请选择D0进件通道</label>
+                        <div class="layui-input-inline" style="width: 150px;">
+                            <select name="paymentNo" id="paymentNo1" lay-verify="paymentNo">
+                                <!-- <option value="">请选择进件通道</option>
+                                    <option value="0">富友</option>
+                                    <option value="1">新大陆</option>
+                                    <option value="2">官方微信</option>
+                                    <option value="3">官方支付宝</option> -->
                             </select>
                         </div>
                     </div>
@@ -194,7 +206,7 @@
         var jgData;
         var merchantca = false;
         var type;
-        var logoUrl;
+        var logoUrl = '';
 
         layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
             layui.$.support.cors = true; //允许ajax跨域
@@ -221,6 +233,7 @@
                                 str += '<option value="' + data.data.PaymentChannellist[i].id + '">' + data.data.PaymentChannellist[i].paymentchannelname + '</option>'
                             }
                             $('#paymentNo').html(str)
+                            $('#paymentNo1').html(str)
                             form.render() 
                         }
                         
@@ -267,7 +280,8 @@
                                             "verificationlimit": jgData.verificationlimit || '',
                                             //验证冻结时间
                                             "verifyingFreezingTime": jgData.verifyingFreezingTime || '',
-                                            "paymentNo": jgData.paymentNo
+                                            "paymentNo": jgData.paymentNo,
+                                            "paymentNoD1": jgData.paymentNoD1
                                         })
                                         type = 0
                                     } else {
@@ -367,15 +381,18 @@
                     }
                 },
                 paymentNo: function(value) {
-                    if (value.length == '') {
-                        return '请选择进件渠道';
-                    }
+                    // if (value.length == '') {
+                    //     return '请选择进件渠道';
+                    // }
                 }
             });
             //普通图片上传
             var uploadInst = upload.render({
                 elem: '#test1',
                 url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data:{
+                    "institutionNumber": userNumber, 
+                },
                 before: function(obj) {
                     console.log(obj)
                     //预读本地文件示例，不支持ie8
@@ -386,7 +403,17 @@
                 done: function(res) {
                     //如果上传失败
                     if (res.code != 1000) {
+                        var demoText = $('#demoText');
+                            demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                            demoText.find('.demo-reload').on('click', function() {
+                                uploadInst.upload();
+                            });
                         return layer.msg('上传失败');
+                        
+                    }else{
+                        logoUrl = res.data
+                        return layer.msg('上传成功');
+                        
                     }
                     //上传成功
                     console.log(res)
@@ -415,6 +442,11 @@
                     data.merchantCa = 1
                 }
                 console.log(data)
+                if(logoUrl == ''){
+                    layer.msg('请上传logo图片')
+                    return false
+                }
+                data.institutionLogo = logoUrl
                 data.institutionNumber = userNumber
                 CmsUtility.postAjaxCall(
                     //系统设置

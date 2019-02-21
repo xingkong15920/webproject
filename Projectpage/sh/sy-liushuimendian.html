@@ -82,21 +82,21 @@
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
 
-			//获取商户下门店名称
-			CmsUtility.postAjaxCall(
-				CmsConfig.addressUrl.Merchant.getShopNames,
-				dataO,
-				function(data) {
-					var shopData = data.data
-					for(var i = 0; i < shopData.length; i++) {
-						$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
-					}
-				}
-			)
-			layui.use(['table', 'laydate'], function() {
+			// //获取商户下门店名称
+			// CmsUtility.postAjaxCall(
+			// 	CmsConfig.addressUrl.Merchant.getShopNames,
+			// 	dataO,
+			// 	function(data) {
+			// 		var shopData = data.data
+			// 		for(var i = 0; i < shopData.length; i++) {
+			// 			$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+			// 		}
+			// 	}
+			// )
+			layui.use(['table', 'laydate','form'], function() {
 				var table = layui.table,
 					laydate = layui.laydate;
-
+					form = layui.form
 				//时间插件
 				laydate.render({
 					elem: '#startTime',
@@ -110,7 +110,17 @@
 					max: nowTime,
 					value: endDate
 				});
-
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getShopNames,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for(var i = 0; i < shopData.length; i++) {
+							$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+						}
+						form.render()
+					}
+				)
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_bill',

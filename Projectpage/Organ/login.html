@@ -24,17 +24,17 @@
 				<h2>Hello!</h2>
 				<h6>欢迎登陆豆果收银-机构管理平台</h6>
 			</div>
-			<form method="post" class="layui-form">
+			<div method="post" class="layui-form">
 				<div class="layui-form-item ">
 					<label class="layui-form-label"><i class="layui-icon layui-icon-username"></i></label>
 					<div class="layui-input-block">
-						<input name="username" placeholder="用户名" type="text" lay-verify="username" class="layui-input" autocomplete="off" value="15511382205" id="username">
+						<input name="username" placeholder="用户名" type="text" lay-verify="username" readonly="readonly" class="layui-input" autocomplete="off" value="13832352792" id="username" AUTOCOMPLETE="off">
 					</div>
 				</div>
 				<div class="layui-form-item ">
 					<label class="layui-form-label"><i class="layui-icon layui-icon-password"></i></label>
 					<div class="layui-input-block">
-						<input name="password" lay-verify="password" placeholder="密码" type="password" class="layui-input" autocomplete="off" value="123456" id="password">
+						<input name="password" readonly="readonly" lay-verify="password" placeholder="密码" type="password" class="layui-input" autocomplete="off" value="" id="password">
 					</div>
 				</div>
 				<div class="layui-form-item " style="margin-bottom: 10px;">
@@ -54,10 +54,16 @@
 				<a href="" class="Forgot_p">
 					<< 忘记密码>></a>
 				<span class="layui-btn" value="登录" lay-submit lay-filter="login" style="width:100%;" type="" id="sub">登录</span>
-			</form>
+			</div>
 			<script src="../../common/config.js"></script>
 			<script src="../../common/utility.js"></script>
 			<script type="text/javascript">
+				setTimeout(function removeReadonly(){
+		        var username=document.getElementById("username");
+		        var password=document.getElementById("password");
+		        username.removeAttribute("readonly");
+		        password.removeAttribute("readonly");
+		    },20);
 				$('.layui-input').each(function() {
 					$(this).focus(function() {
 						$(this).parent().parent().addClass("active"); /*禁用浏览器自带边框阴影*/
