@@ -239,6 +239,8 @@ var CmsConfig = {
         },
         //代理商后台
         Agent: {
+            //首页
+            selectAgOverview:"agTransactionstatisticsController/selectAgOverview",
             //订单管理
             //查询订单
             selectOrderList:"agOrderManngementController/selectOrderList",
