@@ -225,6 +225,9 @@
 					</div>
 				</form>
 				<form  id="FY" class="layui-form" action="" lay-filter="FY"  style="display: none;">
+					 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">微信参数</legend>
+                </fieldset>
 					<div class="layui-form-item">
                     <label class="layui-form-label">公众号APPID</label>
                     <div class="layui-input-block">
@@ -255,6 +258,9 @@
                         <input type="text" name="payDasd" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
                     </div>
                 </div>
+                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">支付宝参数</legend>
+                </fieldset>
                 <div id="disanfang">
                     <div class="layui-form-item">
                         <label class="layui-form-label">支付宝Appid</label>
@@ -281,6 +287,9 @@
                         </div>
                     </div>
                 </div>
+                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">富友参数</legend>
+                </fieldset>
                 <div class="layui-form-item">
                     <label class="layui-form-label">富友机构RSA私钥</label>
                     <div class="layui-input-block">
@@ -318,7 +327,27 @@
                         <input type="text" name="paymentInstitutionNo2" autocomplete="off" placeholder="二级机构号" class="layui-input" lay-verify="jigouhao">
                     </div>
                 </div>
-                
+                 <div class="layui-form-item">
+                    <label class="layui-form-label">富友进件秘钥</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" name="entryKey" autocomplete="off" placeholder="富友进件秘钥" lay-verify="entryKey" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">进件FTP账号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="entryFtpN" autocomplete="off" placeholder="进件FTP账号" class="layui-input" lay-verify="entryFtpN">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">进件FTP密码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="entryFtpP" autocomplete="off" placeholder="进件FTP密码" class="layui-input" lay-verify="entryFtpP">
+                    </div>
+                </div>
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">其他信息</legend>
+                </fieldset>
                 
                 <div class="layui-form-item">
                     <label class="layui-form-label">回调地址</label>
@@ -514,7 +543,10 @@
 											"aliPrivateKey":sjData.aliPrivateKey,
 											"aliPublicKey":sjData.aliPublicKey,
 											"wechatAppSecret":sjData.wechatAppSecret,
-											"prefixPayment":sjData.prefixPayment
+											"prefixPayment":sjData.prefixPayment,
+											"entryKey":sjData.entryKey,
+											"entryFtpN":sjData.entryFtpN,
+											"entryFtpP":sjData.entryFtpP
 										})
 										type = sjData.disable == 0?true:false
 	                            } else {
@@ -755,7 +787,27 @@
 							if(value.length == "") {
 								return '支付网关不能为空';
 							}
-						}
+						},
+						qianzhui: function(value) {
+			                if (value.length == "") {
+			                    return '支付前缀不能为空';
+			                }
+			            },
+			            entryKey: function(value) {
+			                if (value.length == "") {
+			                    return '富友进件秘钥不能为空';
+			                }
+			            },
+			            entryFtpN: function(value) {
+			                if (value.length == "") {
+			                    return '进件FTP账号不能为空';
+			                }
+			            },
+			            entryFtpP: function(value) {
+			                if (value.length == "") {
+			                    return '进件FTP密码不能为空';
+			                }
+			            },
 					});
 					form.on('submit(addfy)', function(data, index) {
 						var addData = data.field;
