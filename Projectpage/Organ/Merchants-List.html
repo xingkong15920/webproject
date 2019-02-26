@@ -95,7 +95,7 @@
 			</select>
 		</script>
 		<script type="text/html" id="selectBar_rz">
-			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchantNumber}}" >
+			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchantNumber}}" orderNumber="{{d.orderNumber}}" >
 				<option value="0" {{d.auditStatus==0 ? 'selected' : ''}}>未审核</option>
 				<option value="1" {{d.auditStatus==1 ? 'selected' : ''}}>审核中</option>
 				<option value="2" {{d.auditStatus==2 ? 'selected' : ''}}>已审核</option>
@@ -299,9 +299,11 @@
 				form.on('select(cardVoucherName)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					console.log(data.elem.getAttribute("shopNumber"))
+					console.log(data.elem.getAttribute("orderNumber"))
 					console.log(data)
 					var tjData = new Object();
 					tjData.merchantNumber = data.elem.getAttribute("shopNumber");
+					tjData.orderNumber = data.elem.getAttribute("orderNumber");
 					tjData.auditStatus = data.value
 					CmsUtility.postAjaxCall(
 						//系统设置
