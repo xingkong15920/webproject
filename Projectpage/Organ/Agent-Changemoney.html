@@ -42,10 +42,10 @@
 						<input type="text" name="agentName" id="agentName" placeholder="代理名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="" id="orederNumber" placeholder="账单号" autocomplete="off" class="layui-input">
+						<input type="text" name="" id="orederNumber" placeholder="账单号"  class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="" id="inserttime" placeholder="开始时间" autocomplete="off" class="layui-input">
+							<input type="text" name="" id="inserttime" placeholder="结束时间"  class="layui-input">
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="" id="updateTime" placeholder="结束时间" autocomplete="off" class="layui-input">
@@ -58,7 +58,7 @@
 						</select>
 					</div>
 					<div class="layui-input-inline coupons_screen">
-						<button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+						<button class="layui-btn" id="reload1" title="搜索"><i class="layui-icon">&#xe615;</i></button>
 					</div>
 				</div>
 			</div>
@@ -80,12 +80,13 @@
 				var laydate = layui.laydate,
 					table = layui.table,
 					form = layui.form;
+					
 					laydate.render({
-					elem:"#insertTime"
-				})
-				laydate.render({
-					elem:"#updateTime"
-				})
+						elem:"#inserttime"
+					})
+					laydate.render({
+						elem:"#updateTime"
+					})
 				//方法级渲染 
 				function tableRender(){
 					table.render({
@@ -187,7 +188,9 @@
 					});
 				} 
 				tableRender()
-
+				$('#reload1').click(function(){
+					tableRender()
+				})
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;

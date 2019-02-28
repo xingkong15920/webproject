@@ -68,6 +68,7 @@
 				<button class="layui-btn" id="zfb"><i class="layui-icon"></i>官方-支付宝</button>
 				<button class="layui-btn" id="wx"><i class="layui-icon"></i>官方-微信</button>
 				<button class="layui-btn" id="fy"><i class="layui-icon"></i>富友</button>
+				<button class="layui-btn" id="yrm"><i class="layui-icon"></i>易融码</button>
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
@@ -204,6 +205,24 @@
 						}
 					});
 				})
+				$('#yrm').click(function(){
+					layer.open({
+						type: 2,
+						title: '通道配置(易融码)',
+						shade: 0.5,
+						area: ['85%', '90%'],
+						maxmin: false,
+						resize: false,
+						content: ['Channel-Management-addYRM.html'],
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传参
+							//iframe.subPage(data, userNumber)
+						}
+					});
+				})
+				
 				//监听性别操作
 				form.on('switch(toolbar_switch)', function(data) {
 					// layer.tips('通道状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)
