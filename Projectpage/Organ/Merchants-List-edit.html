@@ -85,13 +85,13 @@
 							<input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
 						</div>
 					</div>
-					<div class="layui-form-item">
+					<div class="layui-form-item BLcn">
 						<label class="layui-form-label">营业执照号</label>
 						<div class="layui-input-block">
 							<input type="text" name="businessLicenseNo" lay-verify="title" autocomplete="off" placeholder="请输入营业执照号" class="layui-input">
 						</div>
 					</div>
-					<div class="layui-form-item">
+					<div class="layui-form-item BLcn">
 						<label class="layui-form-label">营业执照有效期</label>
 						<div class="layui-input-block">
 							<input type="text" name="businessLicenseTime" lay-verify="title" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseTime">
@@ -344,6 +344,17 @@
 				var jgData  = data
 				console.log(jgData)
 				console.log(hangyeData3)
+				switch (jgData.merchantType){
+					case "个人":
+						$('.BLcn').hide()
+						break;
+					case "个体":
+						$('.BLcn').show()
+						break;
+					case "企业":
+						$('.BLcn').show()
+						break;
+				}
 				var serverUrl = window.parent.serverUrl
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
@@ -547,10 +558,13 @@
 					form.on('radio(cardvalid)', function(data) { //设置会员卡的有效期
 						if(data.value == 0) {
 							$('#yyzz').hide()
+							$('.BLcn').hide()
 						} else if(data.value == 1) {
 							$('#yyzz').show()
+							$('.BLcn').show()
 						} else if(data.value == 2) {
 							$('#yyzz').show()
+							$('.BLcn').show()
 						}
 					});
 					/*---------- 监听提交 ----------*/
