@@ -371,6 +371,8 @@ var CmsConfig = {
             getAddress:"login/getAddress",
             //获取图片
             addPic:"photo/addPic",
+            //新的省市区接口
+            getAreajson:"merchantRegister/getAreajson"
         },
         
        
