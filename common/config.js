@@ -2,9 +2,9 @@
 var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
-	server  = 'http://192.168.1.116:5006/shanhe-mechanism/'
+	server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.113:5006/shanhe-mechanism/'
 }
 /* 
 接口前缀解释
@@ -36,6 +36,12 @@ var CmsConfig = {
         },
         //机构后台接口
         Mechanism: {
+            //首页
+            orderAbout:"institutionFirst/orderAbout",
+            orderAmountTop:"institutionFirst/orderAmountTop",
+            orderNumberTop:"institutionFirst/orderNumberTop",
+            orderSuccessTop:"institutionFirst/orderSuccessTop",
+            orderAmountList:"institutionFirst/orderAmountList",
             //---系统设置
             //基本设置
             //获取
@@ -46,7 +52,7 @@ var CmsConfig = {
             getInstitutionMailboxSetting:"InstitutionMailboxSetting/getInstitutionMailboxSetting",
             updateInstitutionMailboxSetting:"InstitutionMailboxSetting/updateInstitutionMailboxSetting",
             insertInstitutionMailboxSetting:"InstitutionMailboxSetting/insertInstitutionMailboxSetting",
-            send:"mail/send",
+            send:"InstitutionMailboxSetting/send",
             //极光设置查询
             selectJGPush:"setPush/selectJGPush",
             //极光推送
@@ -67,8 +73,11 @@ var CmsConfig = {
             updateRiskSetUp:"InstitutionRiskSetUp/updateRiskSetUp",
             //修改管理员密码
             updateInstitutionStaff:"InstitutionStaff/updateInstitutionStaff",
-            //删除管理员
-            
+            //删除管理员 
+            //插入第三方基本配置
+            insertTPConf:"InstitutionOfficial/insertTPConf",
+            //获取第三方基本配置：
+            getTPConf:"InstitutionOfficial/getTPConf",
             //--商户管理
             //商户列表
             getMerchantInfoList:"MerchantInfo/getMerchantInfoList",
@@ -182,6 +191,12 @@ var CmsConfig = {
             getThirdpartyOfficial:"InstitutionOfficial/getThirdpartyOfficial",
             //编辑第三方通道
             updateThirdpartyOfficial:"InstitutionOfficial/updateThirdpartyOfficial",
+            //插入易融码通道
+            insertYrmOfficial:'InstitutionOfficial/insertYrmOfficial',
+            //查询易融码通道
+            getYrmOfficial:"InstitutionOfficial/getYrmOfficial",
+            //更新易融码信息
+            updateYrmOfficial:"InstitutionOfficial/updateYrmOfficial",
             //删除接口
             updateType:"InstitutionOfficial/updateType",
 

@@ -8,11 +8,11 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-		<link rel="stylesheet" href="../../public/css/font.css">
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="http://static.hongxiaosou.com/public/css/font.css">
+		<link rel="stylesheet" href="http://static.hongxiaosou.com/public/css/xadmin.css">
 		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="http://static.hongxiaosou.com/public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="http://static.hongxiaosou.com/public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 		<!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -86,16 +86,16 @@
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.merchantStatus==0 ? 'checked' : ''}}  orderNumber="{{d.orderNumber}}" value="{{d.merchantNumber}}">
+			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.merchantStatus==0 ? 'checked' : ''}} value="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}">
 		</script>
 		<script type="text/html" id="selectBar_lx">
-			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}" >
+			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}" orderNumber="{{d.orderNumber}}" >
 				<option value="0" {{d.merchantType==0 ? 'selected' : ''}}>普通商户</option>
 				<option value="1" {{d.merchantType==1 ? 'selected' : ''}}>补贴商户</option>
 			</select>
 		</script>
 		<script type="text/html" id="selectBar_rz">
-			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchantNumber}}" orderNumber="{{d.orderNumber}}" >
+			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}">
 				<option value="0" {{d.auditStatus==0 ? 'selected' : ''}}>未审核</option>
 				<option value="1" {{d.auditStatus==1 ? 'selected' : ''}}>审核中</option>
 				<option value="2" {{d.auditStatus==2 ? 'selected' : ''}}>已审核</option>
@@ -112,8 +112,8 @@
 			<a class="layui-btn layui-btn-xs" id="secretkey" lay-event="secretkey">秘钥</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
-		<script src="../../common/config.js"></script>
-        <script src="../../common/utility.js"></script>
+		<script src="http://static.hongxiaosou.com/common/config.js"></script>
+        <script src="http://static.hongxiaosou.com/common/utility.js"></script>
 		<script>
 			//return false;
 			function changeRes(res) {
@@ -299,6 +299,7 @@
 				});
 				form.on('select(cardVoucherName)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					
 					console.log(data.elem.getAttribute("shopNumber"))
 					console.log(data.elem.getAttribute("orderNumber"))
 					console.log(data)
@@ -330,7 +331,7 @@
 					var data = obj.data;
 					console.log(data)
 					if(obj.event === 'loginTo') { //直接登录商户后台
-						window.open("../sh/index.html?number="+data.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber)
+						window.open("http://sh.hongxiaosou.com/index.html?number="+data.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber)
 					} else if(obj.event === 'channelSet') { //通道
 						layer.open({
 							type: 2,

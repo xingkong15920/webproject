@@ -100,32 +100,7 @@
 			var type;
 			var serverUrl = 'http://192.168.1.190:5002/'
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-			CmsUtility.postAjaxCall(
-				//系统设置
-				CmsConfig.addressUrl.Mechanism.getInstitutionMailboxSetting, {
-					'institutionNumber': userNumber,
-				},
-				function(data) {
-					if(data.data == null){
-						return
-					}
-					if(data.code == 1000) {
-						if(data.data.length > 0) {
-							jgData = data.data[0]
-							type = 1
-						} else {
-							type = 0
-						}
-					} else {
-						// layer.alert(JSON.stringify('查询失败'), {
-						//                       title: data.msg
-						//                   })
-					}
-				},
-				function(data) {
-					console.log('222')
-				}
-			)
+			
 			var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 			$('#send').click(function() {
 				if($('#email1').val() == '') {
@@ -138,8 +113,10 @@
 				}
 				CmsUtility.postAjaxCall(
 					//系统设置
-					CmsConfig.addressUrl.Mechanism.send, {
-						"mail": $('#email1').val()
+					CmsConfig.addressUrl.Mechanism.send, 
+					{
+						"mail": $('#email1').val(),
+						"institutionNumber":userNumber
 					},
 					function(data) {
 						if(data.code == 1000) {
@@ -163,16 +140,43 @@
 					laytpl = layui.laytpl;
 
 				//表单初始赋值
-				if(type == 1) {
-					form.val('basic', {
-						"smtpServer": jgData.smtpServer || "",
-						"smtpPort": jgData.smtpPort || "",
-						"smtpUser": jgData.smtpUser || "",
-						"smtpPassWord": jgData.smtpPassWord || "",
-						"addresserEmail": jgData.addresserEmail || "",
-						"addresserName": jgData.addresserName || "",
-					})
+				CmsUtility.postAjaxCall(
+				//系统设置
+				CmsConfig.addressUrl.Mechanism.getInstitutionMailboxSetting, {
+					'institutionNumber': userNumber,
+				},
+				function(data) {
+					console.log(data)
+					if(data.data == null){
+						return
+					}
+					if(data.code == 1000) {
+						if(data.data.length > 0) {
+							jgData = data.data[0]
+							type = 1
+							if(type == 1) {
+								form.val('basic', {
+									"smtpServer": jgData.smtpServer || "",
+									"smtpPort": jgData.smtpPort || "",
+									"smtpUser": jgData.smtpUser || "",
+									"smtpPassWord": jgData.smtpPassWord || "",
+									"addresserEmail": jgData.addresserEmail || "",
+									"addresserName": jgData.addresserName || "",
+								})
+							}
+						} else {
+							type = 0
+						}
+					} else {
+						// layer.alert(JSON.stringify('查询失败'), {
+						//                       title: data.msg
+						//                   })
+					}
+				},
+				function(data) {
+					console.log('222')
 				}
+			)
 				//自定义验证规则
 				form.verify({
 					title: function(value) {
