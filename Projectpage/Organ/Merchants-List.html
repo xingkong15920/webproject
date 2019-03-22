@@ -10,7 +10,7 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
@@ -89,7 +89,7 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.merchantStatus==0 ? 'checked' : ''}}  orderNumber="{{d.orderNumber}}" value="{{d.merchantNumber}}">
 		</script>
 		<script type="text/html" id="selectBar_lx">
-			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}" >
+			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}" >
 				<option value="0" {{d.merchantType==0 ? 'selected' : ''}}>普通商户</option>
 				<option value="1" {{d.merchantType==1 ? 'selected' : ''}}>补贴商户</option>
 			</select>
@@ -259,7 +259,7 @@
 							if(data.code == 1000){
 								 
 								parent.layer.msg('更改成功')
-								
+								layui.table.reload('vip_cardList')
 							}else{
 								layer.msg(data.msg)
 								
@@ -277,6 +277,7 @@
 					console.log(data)
 					var tjData = new Object();
 					tjData.merchantNumber = data.elem.getAttribute("shopNumber");
+					tjData.orderNumber = data.elem.getAttribute("orderNumber");
 					tjData.merchantType = data.value
 					CmsUtility.postAjaxCall(
 						//系统设置
@@ -286,7 +287,7 @@
 							if(data.code == 1000){
 								 
 								parent.layer.msg('更改成功')
-								
+								layui.table.reload('vip_cardList')
 							}else{
 								layer.msg(data.msg)
 								
@@ -314,7 +315,7 @@
 							if(data.code == 1000){
 								 
 								parent.layer.msg('更改成功')
-								
+								layui.table.reload('vip_cardList')
 							}else{
 								layer.msg(data.msg)
 								

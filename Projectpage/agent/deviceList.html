@@ -54,8 +54,8 @@
 				<button class="layui-btn layui-btn-xs" data-type="getCheckDataall"><i class="layui-icon">&#xe601;</i>批量下载二维码</button>
 				<!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatano"><i class="layui-icon">&#xe601;</i>批量下载二维码</button> -->
 				<!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatayes"><i class="layui-icon">&#xe601;</i>批量下载二维码（有背景）</button> -->
-				<button class="layui-btn layui-btn-xs" data-type="getAllCheckDataall"><i class="layui-icon">&#xe601;</i>下载未绑定二维码（全部）</button>
-				<input type="hidden" id="getAllcount" name="getAllcount">
+				<!-- <button class="layui-btn layui-btn-xs" data-type="getAllCheckDataall"><i class="layui-icon">&#xe601;</i>下载未绑定二维码（全部）</button>
+				<input type="hidden" id="getAllcount" name="getAllcount"> -->
 			</xblock>
 		</div>
 		<script type="text/html" id="tool">
@@ -76,6 +76,7 @@
 				var table = layui.table;
 				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+				var institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
 				var jData;
 				//方法级渲染
 				function tableRender(){
@@ -231,18 +232,19 @@
 						getCheckDataall: function() {
 							var b = table.checkStatus('deviceInfo').data;
 							console.log(b)
+
 							if(b.length == 0){
 								console.log()
-								layer.confirm('确定要下载当前页的二维码?', {
-						            btn: ['确定', '取消'] //按钮
-							        }, function() {
-							        	console.log(jData)
-							        	var a1 = jData.length;
-										var kuai = 350; //600 -> 800 小400+120
-										var kuai2 = 664;
-										var kuai3 = 180; //600->500 左移230
-										var kuai4 = 370; //570->950 下280
-										var url = '';
+								// layer.confirm('确定要下载当前页的二维码?', {
+						  //           btn: ['确定', '取消'] //按钮
+							 //        }, function() {
+							 //        	console.log(jData)
+							 //        	var a1 = jData.length;
+								// 		var kuai = 350; //600 -> 800 小400+120
+								// 		var kuai2 = 664;
+								// 		var kuai3 = 180; //600->500 左移230
+								// 		var kuai4 = 370; //570->950 下280
+								// 		var url = '';
 										var code = '';
 										for(var i = 0; i < jData.length; i++) {
 											if(code == '') {
@@ -251,13 +253,29 @@
 												code += "|" + jData[i].equipmentNumber;
 											}
 										}
-										var id = encodeURI(code);
+										var id = code;
 										console.log(id)
-										window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.todownmyziliao +"?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 220 + "&logo2=" + 780 + "&backtype=allback" + "&agNumber=" + JSON.parse(sessionStorage.getItem('agentUser')).Number;
-										layer.closeAll()
+								// 		window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.todownmyziliao +"?qrcodeId=" + id + "&institutionNumber=" + institutionNumber + "&mailBox=" + 1111;
+								// 		layer.closeAll()
 
-							        }
-								)
+										layer.open({
+											type: 2,
+											title: '生成码牌',
+											shade: 0.5,
+											area: [$(window).width() * 0.3 + 'px', '40%'],
+											maxmin: false,
+											resize: false,
+											content: ['downCode.html'],
+											success: function(layero, index) {
+												// 获取子页面的iframe
+												var iframe = window['layui-layer-iframe' + index];
+												iframe.subPage(id,institutionNumber)
+
+											}
+										});
+
+							 //        }
+								// )
 							}else{
 								var a1 = b.length;
 								var kuai = 350; //600 -> 800 小400+120
@@ -273,9 +291,23 @@
 										code += "|" + b[i].equipmentNumber;
 									}
 								}
-								var id = encodeURI(code);
+								var id = code;
 								console.log(id)
-								window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.todownmyziliao +"?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 220 + "&logo2=" + 780 + "&backtype=allback" + "&agNumber=" + JSON.parse(sessionStorage.getItem('agentUser')).Number;
+								layer.open({
+									type: 2,
+									title: '生成码牌',
+									shade: 0.5,
+									area: [$(window).width() * 0.3 + 'px', '40%'],
+									maxmin: false,
+									resize: false,
+									content: ['downCode.html'],
+									success: function(layero, index) {
+										// 获取子页面的iframe
+										var iframe = window['layui-layer-iframe' + index];
+										iframe.subPage(id,institutionNumber)
+
+									}
+								});
 							}
 							
 						},
@@ -375,7 +407,7 @@
 						var kuai2 = 664;
 						var kuai3 = 180; //600->500 左移230
 						var kuai4 = 370; //570->950 下280
-						window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.downservletImages +"?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 515+ "&logo2=" + 260;
+						window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.downservletImages +"?qrcodeId=" + data.equipmentNumber + '&institutionNumber=' + institutionNumber;
 						// window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.setcode + "?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber;
 					} else if(obj.event == 'UNcode') {
 						

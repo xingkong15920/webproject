@@ -10,7 +10,7 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
@@ -69,6 +69,7 @@
 				<button class="layui-btn" id="wx"><i class="layui-icon"></i>官方-微信</button>
 				<button class="layui-btn" id="fy"><i class="layui-icon"></i>富友</button>
 				<button class="layui-btn" id="yrm"><i class="layui-icon"></i>易融码</button>
+				<button class="layui-btn" id="xdl"><i class="layui-icon"></i>新大陆</button>
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
@@ -222,7 +223,23 @@
 						}
 					});
 				})
-				
+				$('#xdl').click(function(){
+					layer.open({
+						type: 2,
+						title: '通道配置(新大陆)',
+						shade: 0.5,
+						area: ['85%', '90%'],
+						maxmin: false,
+						resize: false,
+						content: ['Channel-Management-addXDL.html'],
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传参
+							//iframe.subPage(data, userNumber)
+						}
+					});
+				})
 				//监听性别操作
 				form.on('switch(toolbar_switch)', function(data) {
 					// layer.tips('通道状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)

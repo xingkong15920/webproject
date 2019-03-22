@@ -57,6 +57,10 @@ var CmsConfig = {
             selectJGPush:"setPush/selectJGPush",
             //极光推送
             updateJGPush:"setPush/updateJGPush",
+            //二维码查询
+            getInstitutionQrcade:"Institution/getInstitutionQrcade",
+            //二维码更新
+           updateInfoQrcade:"Institution/updateInfoQrcade",
             //短信设置
             getInstitutionSMSSetting:"InstitutionSMSSetting/getInstitutionSMSSetting",
             updateSMSSetting:"InstitutionSMSSetting/updateSMSSetting",
@@ -314,7 +318,9 @@ var CmsConfig = {
             //带背景down
             downservletImages:"QRcode/downservletImages",
             //当前页
-            todownmyziliao:"QRcode/todownmyziliao",
+            //todownmyziliao:"QRcode/todownmyziliao",
+            //批量
+            downloadBatchSize:"QRcode/downloadBatchSize",
             //下载所有未绑定
             todownziliao:"QRcode/todownziliao",
 

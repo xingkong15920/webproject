@@ -10,7 +10,7 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
@@ -86,16 +86,16 @@
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.merchantStatus==0 ? 'checked' : ''}} value="{{d.merchantNumber}}">
+			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.merchantStatus==0 ? 'checked' : ''}} value="{{d.merchantNumber}}"   orderNumber="{{d.orderNumber}}">
 		</script>
 		<script type="text/html" id="selectBar_lx">
-			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}" >
+			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}"  >
 				<option value="0" {{d.merchantType==0 ? 'selected' : ''}}>普通商户</option>
 				<option value="1" {{d.merchantType==1 ? 'selected' : ''}}>补贴商户</option>
 			</select>
 		</script>
 		<script type="text/html" id="selectBar_rz">
-			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchantNumber}}" >
+			<select name="cardVoucherName" lay-filter="cardVoucherName"  shopNumber="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}" >
 				<option value="0" {{d.auditStatus==0 ? 'selected' : ''}}>未审核</option>
 				<option value="1" {{d.auditStatus==1 ? 'selected' : ''}}>审核中</option>
 				<option value="2" {{d.auditStatus==2 ? 'selected' : ''}}>已审核</option>
@@ -238,6 +238,7 @@
 					console.log(data.elem.getAttribute("shopNumber"))
 					var tjData = new Object();
 					tjData.merchantNumber = data.value;
+					tjData.orderNumber = data.elem.getAttribute("orderNumber");
 					tjData.merchantStatus =this.checked?'0':'1';
 					CmsUtility.postAjaxCall(
 						//系统设置
@@ -265,6 +266,7 @@
 					console.log(data)
 					var tjData = new Object();
 					tjData.merchantNumber = data.elem.getAttribute("shopNumber");
+					tjData.orderNumber = data.elem.getAttribute("orderNumber");
 					tjData.merchantType = data.value
 					CmsUtility.postAjaxCall(
 						//系统设置
@@ -291,6 +293,7 @@
 					console.log(data)
 					var tjData = new Object();
 					tjData.merchantNumber = data.elem.getAttribute("shopNumber");
+					tjData.orderNumber = data.elem.getAttribute("orderNumber");
 					tjData.auditStatus = data.value
 					CmsUtility.postAjaxCall(
 						//系统设置

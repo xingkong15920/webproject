@@ -10,7 +10,7 @@
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
@@ -29,11 +29,13 @@
 		<div class="x-body">
 			<div class="layui-row">
 				<div  class="layui-form-item" id="imgBox" style="position:relative;left:0;top:0;width:722px;height:1036px;display:inline-block">
-					<img src="images/qrcode.png"  ondragstart="return false;" id="img1" style="width:722px;height:1036px;position:absolute;left:0;top:0;border:1px solid black">
-					<img src="images/code.png" id="code"  ondragstart="return false;" style="width:300px;height:300px;position:absolute;left:208px;top:398px;border:1px solid black;cursor:pointer;background-color:white;padding:15px">
-					<img src="images/txt.png" id="txtBox"  ondragstart="return false;" style="position:absolute;left:208px;top:743px;border:1px solid black;cursor:pointer">
-					<div style="position:absolute;right:0;top:0;width:100px;height:30px;text-align:center;line-height:30px;background-color:white;border:1px solid black" class="layui-upload-img" id="test1">上传图片</div>
-					<p style="position:absolute;right:0;top:30px;text-align:center;line-height:30px;background-color:white;border:1px solid black;width:100px" id="demoText"></p>
+					<img src=""  ondragstart="return false;" id="img1" style="width:722px;height:1036px;position:absolute;left:0;top:0;border:1px solid black">
+					<img src="images/code.png" id="code"  ondragstart="return false;" style="width:300px;height:300px;position:absolute;left:215px;top:413px;cursor:pointer;background-color:white;">
+					<div  id="txtBox"  ondragstart="return false;" style="position:absolute;left:206px;top:733px;cursor:pointer;font-size:40px;line-height:50px;font-weight:bold">
+						NO010011234567
+					</div>
+					<div style="position:absolute;right:-104px;top:0;width:100px;height:30px;text-align:center;line-height:30px;background-color:white;border:1px solid black" class="layui-upload-img" id="test1">上传图片</div>
+					<p style="position:absolute;right:-104px;top:30px;text-align:center;line-height:30px;background-color:white;width:100px" id="demoText"></p>
 				</div>
 				<div class="layui-form" lay-filter="basic" style="display:inline-block;vertical-align:top;margin-top:50px">
 					<div class="layui-form-item">
@@ -71,17 +73,12 @@
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-inline">
-							<label class="layui-form-label">编号宽度(px)</label>
+							<label class="layui-form-label">编号字体大小(px)</label>
 							<div class="layui-input-inline">
 								<input type="text" name="smtpServer" lay-verify="title" class="layui-input" id="kuan1" onblur="ob4(this.value)">
 							</div>
 						</div>
-						<div class="layui-inline">
-							<label class="layui-form-label">编号高度(px)</label>
-							<div class="layui-input-inline">
-								<input type="text" name="smtpPort" lay-verify="title" class="layui-input" id="gao1" onblur="ob5(this.value)">
-							</div>
-						</div>
+						
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-inline">
@@ -118,7 +115,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label"></label>
 						<div class="layui-input-inline">
-							<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+							<span class="layui-btn"  id="sub">立即提交</span>
 						</div>
 					</div>
 				</div>
@@ -127,6 +124,7 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			var imgUrl;
 			var code = document.getElementById('code')
 			code.onmousedown = function(ev){
 	            var ev = ev||event;
@@ -224,36 +222,36 @@
 	            var y = $('#txtBox').height()
 	            if(ev.clientX > $('#txtBox').position().left + $('#txtBox').width() -10 &&
 	                ev.clientY > $('#txtBox').position().top + $('#txtBox').height() -10  ){
-	                	document.onmousemove = function(ev){
-			                var ev = ev||event;
+	            //     	document.onmousemove = function(ev){
+			          //       var ev = ev||event;
 
-			                var l,t;
-			                l = x+ev.clientX - dx
+			          //       var l,t;
+			          //       l = x+ev.clientX - dx
 
-			                // if(ev.clientX - disX <= 100){
-			                // 	l = 100
-			                // }
-			                // if(ev.clientX - disX >= 700){
-			                // 	l = 700
-			                // }
-			                t = y+ev.clientY - dy
+			          //       // if(ev.clientX - disX <= 100){
+			          //       // 	l = 100
+			          //       // }
+			          //       // if(ev.clientX - disX >= 700){
+			          //       // 	l = 700
+			          //       // }
+			          //       t = y+ev.clientY - dy
 
-			                // if(ev.clientY - disY <= 100){
-			                // 	t = 100
-			                // }
-			                // if(ev.clientY - disY >= 1000){
-			                // 	t = 1000
-			                // }
-			                 $('#kuan1').val(l)
-			        		$('#gao1').val(t)
-			                txtBox.style.width = l + 'px';
-			                txtBox.style.height = t + 'px';
-			                txtBox.onmouseup = function(){
+			          //       // if(ev.clientY - disY <= 100){
+			          //       // 	t = 100
+			          //       // }
+			          //       // if(ev.clientY - disY >= 1000){
+			          //       // 	t = 1000
+			          //       // }
+			          //        $('#kuan1').val(l)
+			        		// $('#gao1').val(t)
+			          //       txtBox.style.width = l + 'px';
+			          //       txtBox.style.height = t + 'px';
+			          //       txtBox.onmouseup = function(){
 	            	
-				                document.onmousemove = null;
-				            }
+				         //        document.onmousemove = null;
+				         //    }
 			 
-			            }
+			          //   }
 	                }else{
 	                	document.onmousemove = function(ev){
 			 				
@@ -293,12 +291,11 @@
 	        }
 	        $('#kuan').val('315')
 	        //$('#gao').val('315')
-	        $('#ex').val('208')
-	        $('#ey').val('398')
-	        $('#kuan1').val('315')
-	        $('#gao1').val('34')
-	        $('#ex1').val('208')
-	        $('#ey1').val('743')
+	        $('#ex').val('215')
+	        $('#ey').val('413')
+	        $('#kuan1').val('40')
+	        $('#ex1').val('206')
+	        $('#ey1').val('733')
 	        
 	        function ob(data){
 	        	$('#code').width(data)
@@ -330,7 +327,10 @@
 	        	})
 	        }
 	        function ob4(data){
-	        	$('#txtBox').width(data)
+	        	console.log(data)
+	        	$('#txtBox').css('font-size',data+'px')
+	        	$('#txtBox').css('line-height',data+'px')
+	        	// $('#txtBox').width(data)
 	        }
 	        function ob5(data){
 	        	$('#txtBox').height(data)
@@ -357,6 +357,7 @@
 	        		'top':data+'px'
 	        	})
 	        }
+	        var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 	        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 	        	var $ = layui.jquery,
 						upload = layui.upload,
@@ -364,14 +365,19 @@
 						table = layui.table,
 						form = layui.form,
 						laytpl = layui.laytpl;
+						
 	        	var uploadInst = upload.render({
 						elem: '#test1',
 						url: CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Public.addPic,
+						data: {
+						  	"institutionNumber":userNumber
+						 },
 						before: function(obj) {
 							console.log(obj)
 							//预读本地文件示例，不支持ie8
 							obj.preview(function(index, file, result) {
 								$('#img1').attr('src', result); //图片链接（base64）
+								
 							});
 						},
 						done: function(res) {
@@ -381,6 +387,7 @@
 							}
 							//上传成功
 							console.log(res)
+							imgUrl = res.data
 						},
 						error: function() {
 							//演示失败状态，并实现重传
@@ -393,19 +400,8 @@
 						}
 					});	
 	        })
-			function subPage(data,data1){
-				console.log(data)
-				if(data == 1){
-					$('#chengben').show()
-				}
-				if(data == 2){
-					$('#yunying').show()
-				}
-				if(data == 3){
-					$('#tixian').show()
-				}
-				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-				var jgData = data
+			
+				
 				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 					layui.$.support.cors = true; //允许ajax跨域
 					var $ = layui.jquery,
@@ -414,25 +410,67 @@
 						table = layui.table,
 						form = layui.form,
 						laytpl = layui.laytpl;
-					
+					var daaaa = new Object()
+						daaaa.institutionNumber = userNumber
+						CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Mechanism.getInstitutionQrcade,
+								daaaa,
+								function(data){
+									var data = data.data
+									$('#ex').val(data.codex)
+									$('#ey').val(data.codey)
+									$('#kuan').val(data.codesize)
+									$('#ex1').val(data.numberx)
+									$('#ey1').val(data.numbery)
+									$('#kuan1').val(data.numbersize)
+									$('#img1').attr('src', data.qrcodeurl);
+									$('#code').width(data.codesize)
+	        						$('#code').height(data.codesize)
+	        						$('#txtBox').css('left',data.numberx)
+	        						$('#txtBox').css('top',data.numbery)
+	        						console.log(data.numbersize)
+						        	$('#txtBox').css('font-size',data.numbersize+'px')
+						        	$('#txtBox').css('line-height',data.numbersize+'px')
+								},
+								function(data){
+									console.log('222')
+								}
+							)
 					//表单初始赋值
-					form.val('secretkey', {
-						"secretkey": jgData.keys
-					})
+					// form.val('secretkey', {
+					// 	"secretkey": jgData.keys
+					// })
 					$('#sub').click(function(){
-						console.log(data)
-						if(data == 1){
-							parent.cost($('#chengben1').val())
-							x_admin_close()
-						}else if(data == 2){
-							
-							parent.operating($('#yunying1').val())
-							x_admin_close()
-						}else if(data == 3){
-							
-							parent.cash($('#tixian1').val())
-							x_admin_close()
-						}
+						console.log('132132')
+						var aData = new Object()
+
+				        //$('#gao').val('315')
+				       
+						aData.institutionNumber = userNumber
+						aData.qrcodeurl = imgUrl
+						aData.codex = $('#ex').val()
+						aData.codey = $('#ey').val()
+						aData.codesize = $('#kuan').val()
+						aData.numberx = $('#ex1').val()
+						aData.numbery = $('#ey1').val()
+						aData.numbersize = $('#kuan1').val()
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Mechanism.updateInfoQrcade,
+							aData,
+							function(data){
+								console.log(data)
+								if(data.code == 1000){
+									layer.msg('保存成功')
+								}else{
+									layer.msg(data.msg)
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
 						return
 						
 					})
@@ -446,7 +484,7 @@
 					// });
 
 				});
-			}
+			
 			
 		</script>
 	</body>

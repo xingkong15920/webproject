@@ -112,15 +112,15 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">所在区域</label>
                     <div class="layui-input-inline">
-                        <select name="province" id="provice" lay-filter="provice" lay-verify="title">
+                        <select name="province" id="provice" lay-filter="provice" lay-verify="title1">
                         </select>
                     </div>
                     <div class="layui-input-inline">
-                        <select name="city" id="city" lay-filter="city" lay-verify="title">
+                        <select name="city" id="city" lay-filter="city" lay-verify="title1">
                         </select>
                     </div>
                     <div class="layui-input-inline">
-                        <select name="area" id="area" lay-filter="area" lay-verify="title">
+                        <select name="area" id="area" lay-filter="area" lay-verify="title1">
                         </select>
                     </div>
                     <!-- <div class="layui-form-mid layui-word-aux">此处只是演示联动排版，并未做联动交互</div> -->
@@ -181,6 +181,9 @@
     function subPage(data, data1) {
         var jgData = data
         console.log(jgData)
+         var p = [],
+            c = [],
+            aa = []
         var serverUrl = window.parent.serverUrl
         var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
         var agentNumber = jgData.agentNumber
@@ -196,98 +199,203 @@
             var tableSelect = layui.tableSelect;
             CmsUtility.postAjaxCall(
                 //系统设置
-                CmsConfig.addressUrl.Public.getAddress, {
-                    "provinceCode": '',
-                    "cityCode": '',
-                    "areaCode": ''
-                },
+                CmsConfig.addressUrl.Public.getAreajson, {},
                 function(data) {
-                    var str = '<option value="">请选择省</option>'
-                    for (var i = 0; i < data.data.length; i++) {
-                        if (jgData.province == data.data[i].provinceCode) {
-                            str += '<option value="' + data.data[i].provinceCode + '" selected="">' + data.data[i].provinceName + '</option>'
-                        } else {
-                            str += '<option value="' + data.data[i].provinceCode + '">' + data.data[i].provinceName + '</option>'
-                        }
-                    }
-                    $('#provice').html(str)
-                    form.render()
-                    CmsUtility.postAjaxCall(
-                        //系统设置
-                        CmsConfig.addressUrl.Public.getAddress, {
-                            "provinceCode": jgData.province,
-                            "cityCode": '',
-                            "areaCode": ''
-                        },
-                        function(data) {
-                            console.log(data)
-                            var str = '<option value="">请选择市</option>'
-                            for (var i = 0; i < data.data.length; i++) {
-
-                                if (jgData.city == data.data[i].cityCode) {
-                                    str += '<option value="' + data.data[i].cityCode + '" selected="">' + data.data[i].cityName + '</option>'
-                                } else {
-                                    str += '<option value="' + data.data[i].cityCode + '">' + data.data[i].cityName + '</option>'
-                                }
-
+                    sessionStorage.setItem("address", data.data);
+                    address = JSON.parse(data.data)
+                    for (var i = 0; i < address.length; i++) {
+                        var a = new Object()
+                        a.provinceCode = address[i].value
+                        a.provinceName = address[i].text
+                        p.push(a)
+                        var b = new Object()
+                        b.provinceCode = address[i].value
+                        b.children = []
+                        for (var k = 0; k < address[i].children.length; k++) {
+                            var d = new Object()
+                            d.cityCode = address[i].children[k].value
+                            d.cityName = address[i].children[k].text
+                            b.children.push(d)
+                            var e = new Object()
+                            e.cityCode = address[i].children[k].value
+                            e.childeren = []
+                            for (var j = 0; j < address[i].children[k].children.length; j++) {
+                                var t = new Object()
+                                t.areaCode = address[i].children[k].children[j].value
+                                t.areaName = address[i].children[k].children[j].text
+                                e.childeren.push(t)
                             }
-                            $('#city').html(str)
-                            $('#area').html('<option value="">请选择县/区</option>')
-                            form.render()
-                            CmsUtility.postAjaxCall(
-                                //系统设置
-                                CmsConfig.addressUrl.Public.getAddress, {
-                                    "provinceCode": '',
-                                    "cityCode": jgData.city,
-                                    "areaCode": ''
-                                },
-                                function(data) {
-                                    console.log(data)
-                                    var str = '<option value="">请选择区县</option>'
-                                    for (var k = 0; k < data.data.length; k++) {
-                                        if (jgData.area == data.data[k].areaCode) {
-                                            str += '<option value="' + data.data[k].areaCode + '" selected="">' + data.data[k].areaName + '</option>'
-                                        } else {
-                                            str += '<option value="' + data.data[k].areaCode + '">' + data.data[k].areaName + '</option>'
-                                        }
+                            aa.push(e)
+                        }
+                        c.push(b)
 
+                    }
+                    if (jgData.province) {
+                        var str = '<option value="">请选择省</option>'
+                        for (var i1 = 0; i1 < p.length; i1++) {
+                            if (jgData.province == p[i1].provinceCode) {
+                                str += '<option value="' + p[i1].provinceCode + '" selected="">' + p[i1].provinceName + '</option>'
+                            } else {
+                                str += '<option value="' + p[i1].provinceCode + '">' + p[i1].provinceName + '</option>'
+                            }
+
+                        }
+                        $('#provice').html(str)
+                    }
+                    if (jgData.city) {
+                        var str1 = '<option value="">请选择市</option>'
+                        for (var i3 = 0; i3 < c.length; i3++) {
+
+                            if (jgData.province == c[i3].provinceCode) {
+
+                                for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+                                    if (jgData.city == c[i3].children[i2].cityCode) {
+                                        console.log(c[i3].children[i2])
+                                        str1 += '<option value="' + c[i3].children[i2].cityCode + '" selected="">' + c[i3].children[i2].cityName + '</option>'
+                                    } else {
+                                        str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
                                     }
-                                    $('#area').html(str)
-                                    form.val('cardAdd', {
-						                "agentType": jgData.agentType.toString(),
-						                "agentName": jgData.agentName,
-						                "userName": jgData.userName,
-						                "registerCell": jgData.registerCell,
-						                "province": jgData.province,
-						                "city": jgData.city,
-						                "area": jgData.area,
-						                "address": jgData.address,
-						                // "T1Rate": T1,
-						                "D1Rate": D1,
-						                "D0Rate": D0,
-						            })
-                                    form.render()
-                                },
-                                function(data) {
-                                    console.log('222')
-                                },
-                                'post',
-                                'false'
-                            )
-                        },
-                        function(data) {
-                            console.log('222')
-                        },
-                        'post',
-                        'false'
-                    )
+
+                                }
+                            }
+                        }
+                        $('#city').html(str1)
+                    }
+                    if (jgData.area) {
+                        var str2 = '<option value="">请选择县区</option>'
+                        for (var i4 = 0; i4 < aa.length; i4++) {
+
+                            if (jgData.city == aa[i4].cityCode) {
+
+                                for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+                                    if (jgData.area == aa[i4].childeren[i5].areaCode) {
+                                        console.log(aa[i4].childeren[i5])
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '" selected="">' + aa[i4].childeren[i5].areaName + '</option>'
+                                    } else {
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+                                    }
+
+                                }
+                            }
+                        }
+                        $('#area').html(str2)
+                    }
+
+                    form.val('cardAdd', {
+                        "agentType": jgData.agentType.toString(),
+                        "agentName": jgData.agentName,
+                        "userName": jgData.userName,
+                        "registerCell": jgData.registerCell,
+                        "province": jgData.province,
+                        "city": jgData.city,
+                        "area": jgData.area,
+                        "address": jgData.address,
+                        // "T1Rate": T1,
+                        "D1Rate": D1,
+                        "D0Rate": D0,
+                    })
+                    form.render()
                 },
                 function(data) {
-                    console.log('222')
+                    console.log(data)
                 },
-                'post',
-                'false'
             )
+            // CmsUtility.postAjaxCall(
+            //     //系统设置
+            //     CmsConfig.addressUrl.Public.getAddress, {
+            //         "provinceCode": '',
+            //         "cityCode": '',
+            //         "areaCode": ''
+            //     },
+            //     function(data) {
+            //         var str = '<option value="">请选择省</option>'
+            //         for (var i = 0; i < data.data.length; i++) {
+            //             if (jgData.province == data.data[i].provinceCode) {
+            //                 str += '<option value="' + data.data[i].provinceCode + '" selected="">' + data.data[i].provinceName + '</option>'
+            //             } else {
+            //                 str += '<option value="' + data.data[i].provinceCode + '">' + data.data[i].provinceName + '</option>'
+            //             }
+            //         }
+            //         $('#provice').html(str)
+            //         form.render()
+            //         CmsUtility.postAjaxCall(
+            //             //系统设置
+            //             CmsConfig.addressUrl.Public.getAddress, {
+            //                 "provinceCode": jgData.province,
+            //                 "cityCode": '',
+            //                 "areaCode": ''
+            //             },
+            //             function(data) {
+            //                 console.log(data)
+            //                 var str = '<option value="">请选择市</option>'
+            //                 for (var i = 0; i < data.data.length; i++) {
+
+            //                     if (jgData.city == data.data[i].cityCode) {
+            //                         str += '<option value="' + data.data[i].cityCode + '" selected="">' + data.data[i].cityName + '</option>'
+            //                     } else {
+            //                         str += '<option value="' + data.data[i].cityCode + '">' + data.data[i].cityName + '</option>'
+            //                     }
+
+            //                 }
+            //                 $('#city').html(str)
+            //                 $('#area').html('<option value="">请选择县/区</option>')
+            //                 form.render()
+            //                 CmsUtility.postAjaxCall(
+            //                     //系统设置
+            //                     CmsConfig.addressUrl.Public.getAddress, {
+            //                         "provinceCode": '',
+            //                         "cityCode": jgData.city,
+            //                         "areaCode": ''
+            //                     },
+            //                     function(data) {
+            //                         console.log(data)
+            //                         var str = '<option value="">请选择区县</option>'
+            //                         for (var k = 0; k < data.data.length; k++) {
+            //                             if (jgData.area == data.data[k].areaCode) {
+            //                                 str += '<option value="' + data.data[k].areaCode + '" selected="">' + data.data[k].areaName + '</option>'
+            //                             } else {
+            //                                 str += '<option value="' + data.data[k].areaCode + '">' + data.data[k].areaName + '</option>'
+            //                             }
+
+            //                         }
+            //                         $('#area').html(str)
+            //                         form.val('cardAdd', {
+						      //           "agentType": jgData.agentType.toString(),
+						      //           "agentName": jgData.agentName,
+						      //           "userName": jgData.userName,
+						      //           "registerCell": jgData.registerCell,
+						      //           "province": jgData.province,
+						      //           "city": jgData.city,
+						      //           "area": jgData.area,
+						      //           "address": jgData.address,
+						      //           // "T1Rate": T1,
+						      //           "D1Rate": D1,
+						      //           "D0Rate": D0,
+						      //       })
+            //                         form.render()
+            //                     },
+            //                     function(data) {
+            //                         console.log('222')
+            //                     },
+            //                     'post',
+            //                     'false'
+            //                 )
+            //             },
+            //             function(data) {
+            //                 console.log('222')
+            //             },
+            //             'post',
+            //             'false'
+            //         )
+            //     },
+            //     function(data) {
+            //         console.log('222')
+            //     },
+            //     'post',
+            //     'false'
+            // )
 
 
             //CmsUtility.chooseArea(jgData.area)
@@ -330,23 +438,48 @@
 
             form.on('select(provice)', function(data) {
 
-                CmsUtility.chooseCity(data.value)
-                setTimeout(function() {
-                    form.render()
-                }, 100)
+                var str1 = '<option value="">请选择市</option>'
+                for (var i3 = 0; i3 < c.length; i3++) {
+
+                    if (data.value == c[i3].provinceCode) {
+                      
+                        for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+                            
+                                str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+                           
+
+                        }
+                    }
+                }
+                $('#city').html(str1)
+                var str2 = '<option value="">请选择县区</option>'
+                $('#area').html(str2)
+                form.render()
 
             })
             form.on('select(city)', function(data) {
 
-                CmsUtility.chooseArea(data.value)
-                setTimeout(function() {
-                    form.render()
-                }, 100)
+                 var str2 = '<option value="">请选择县区</option>'
+                for (var i4 = 0; i4 < aa.length; i4++) {
+                    if (data.value == aa[i4].cityCode) {
+                        for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+                            
+                                str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+                          
+
+                        }
+                    }
+                }
+                $('#area').html(str2)
+                form.render()
 
             })
             /*---------- 自定义验证规则 ----------*/
             form.verify({
                 title: function(value) {
+                    console.log(value)
                     if (value.length == "") {
                         return '不能为空！';
                     }
