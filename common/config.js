@@ -117,9 +117,24 @@ var CmsConfig = {
             updateMerchantKeys:"MerchantInfo/updateMerchantKeys",
             //删除商户
 
+
+
+            //商户接口修改
+            //商户通过接口    
+            thirdPartyInfo:"submit/thirdPartyInfo",
+            //商户删除拒绝和修改
+            updateMerInfo:"MerInfo/updateMerInfo",
+
+
+
             //添加商户
             insertMerchantRegisterInfo:"MerchantRegister/insertMerchantRegisterInfo",
-            
+            //新版获取待审核商户
+            getMerOrderlist:"MerInfo/getMerOrderlist",
+            //获取商户信息
+            selectMerchantRegisterInfo:"merchantRegister/selectMerchantRegisterInfo",
+            //新本获取商户图片信息
+            getMerPhoto:"Sell/getMerPhoto",
             //风控设置
             getRiskSetUp:"InstitutionRiskSetUp/getRiskSetUp",
             //登录记录
@@ -146,6 +161,18 @@ var CmsConfig = {
             updateAgentRate:"AgentRegister/updateAgentRate",
             //添加代理接口
             insertAgentRegister:"AgentRegister/insertAgentRegister",
+
+
+
+            //代理下的码牌
+            //生成
+            setInfeoQRcode:"inQRcode/setInfeoQRcode",
+            //查询
+            getInQRcode:"inQRcode/getInQRcode",
+            //下载
+            downloadQRcode:"inQRcode/downloadQRcode",
+
+            
             //代理账单
             getAgentLocal:"AgentRegister/getAgentLocal",
             //--全部订单
@@ -378,7 +405,9 @@ var CmsConfig = {
             //获取图片
             addPic:"photo/addPic",
             //新的省市区接口
-            getAreajson:"merchantRegister/getAreajson"
+            getAreajson:"merchantRegister/getAreajson",
+            //根据机构号获取费率
+            getInfoRate:"login/getInfoRate"
         },
         
        

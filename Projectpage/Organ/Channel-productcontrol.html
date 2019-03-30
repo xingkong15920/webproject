@@ -186,83 +186,90 @@
 						form = layui.form;
 
 					//方法级渲染  
-					table.render({
-						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getRate + '?institutionNumber=' + userNumber ,
-						where:{
-							"id":jgData.id
-						},
-						elem: '#members',
-						height: 'full-120',
-						id: 'vip_cardList',
-						response: { 
-						//res 即为原始返回的数据
-								"statusCode":"1000", //解析接口状态
-								
-						},
-						parseData: function(res) { //res 即为原始返回的数据
-							return {
-								"code": res.code, //解析接口状态
-								"msg": res.msg, //解析提示文本
-								"count": res.count, //解析数据长度
-								"data": sort111(res.data), //解析数据列表
-							};
-						},
-						cols: [
-							[{
-								align: 'center',
-								field: 'paymentTypeName',
-								title: '支付产品',
-								width: 150
-							},{
-								align: 'center',
-								title: '状态',
-								toolbar: '#switchbar',
-								field:'whichType',
-								width: 100
-							},{
-								align: 'center',
-								title: '费率类型',
-								field: 'rateType',
-								width: 100
-							}, {
-								align: 'center',
-								title: '成本费率(点击标题可选择费率)(单位:%)',
-								field:'costRate',
-								width: 250,
-								minWidth: 100,
-								edit:'costRate',
-								sort:false,
+					function tableRender(){
+						table.render({
+							//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getRate + '?institutionNumber=' + userNumber ,
+							where:{
+								"id":jgData.id
+							},
+							elem: '#members',
+							height: 'full-250',
+							id: 'vip_cardList',
+							response: { 
+							//res 即为原始返回的数据
+									"statusCode":"1000", //解析接口状态
+									
+							},
+							parseData: function(res) { //res 即为原始返回的数据
+								return {
+									"code": res.code, //解析接口状态
+									"msg": res.msg, //解析提示文本
+									"count": res.count, //解析数据长度
+									"data": sort111(res.data), //解析数据列表
+								};
+							},
+							cols: [
+								[{
+									align: 'center',
+									field: 'paymentTypeName',
+									title: '支付产品',
+									width: 200
+								},{
+									align: 'center',
+									title: '状态',
+									toolbar: '#switchbar',
+									field:'whichType',
+									width: 150
+								},{
+									align: 'center',
+									title: '费率类型',
+									field: 'rateType',
+									width: 200
+								}, {
+									align: 'center',
+									title: '成本费率(点击标题可选择费率)(单位:%)',
+									field:'costRate',
+									width: 280,
+									minWidth: 100,
+									edit:'costRate',
+									sort:false,
 
-							}, {
-								align: 'center',
-								title: '运营费率(点击标题可选择费率)(单位:%)',
-								field:'operatingRate',
-								id:'yunying',
-								width: 250,
-								minWidth: 100,
-								edit:'operatingRate'
+								}
+								// , {
+								// 	align: 'center',
+								// 	title: '运营费率(点击标题可选择费率)(单位:%)',
+								// 	field:'operatingRate',
+								// 	id:'yunying',
+								// 	width: 250,
+								// 	minWidth: 100,
+								// 	edit:'operatingRate'
 
-							}, {
-								align: 'center',
-								title: '提现费率(点击标题可选择费率)(单位:%)',
-								field:'cashRate',
-								width: 250,
-								minWidth: 100,
-								edit:'cashRate'
+								// }
+								, {
+									align: 'center',
+									title: '提现费率(点击标题可选择费率)(单位:%)',
+									field:'cashRate',
+									width: 280,
+									minWidth: 100,
+									edit:'cashRate'
 
-							}]
-						],
-						page: false,
-						done: function(res, curr, count) {
-							tjData = res.data
-							layuiRowspan('province', 1);
-							layuiRowspan(['paymentTypeName'], 1);
-							layuiRowspan(['whichType'], 1); //支持数组
-							layuiRowspan("8", 1, true);
+								}]
+							],
+							page: false,
+							done: function(res, curr, count) {
+								tjData = res.data
+								layuiRowspan('province', 1);
+								layuiRowspan(['paymentTypeName'], 1);
+								layuiRowspan(['whichType'], 1); //支持数组
+								layuiRowspan("8", 1, true);
 
-						}
-					});
+							}
+						});
+
+
+					}
+					tableRender()
 					
 					//监听指定开关
 					form.on('switch(switchbar)', function(data) {
@@ -333,25 +340,25 @@
 						});
 					}
 					
-					var th5 = document.getElementsByTagName('th')[4]
-					th5.onclick = function(){
-						layer.open({
-							type: 2,
-							title: '请选择运营费率',
-							shade: 0.5,
-							area: ['400px', '50%'],
-							maxmin: false,
-							resize: false,
-							content: ['Channel-rate-selcet.html'],
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传w参
-								iframe.subPage(2)
-							}
-						});
-					}
-					var th6 = document.getElementsByTagName('th')[5]
+					// var th5 = document.getElementsByTagName('th')[4]
+					// th5.onclick = function(){
+					// 	layer.open({
+					// 		type: 2,
+					// 		title: '请选择运营费率',
+					// 		shade: 0.5,
+					// 		area: ['400px', '50%'],
+					// 		maxmin: false,
+					// 		resize: false,
+					// 		content: ['Channel-rate-selcet.html'],
+					// 		success: function(layero, index) {
+					// 			// 获取子页面的iframe
+					// 			var iframe = window['layui-layer-iframe' + index];
+					// 			// 向子页面的全局函数child传w参
+					// 			iframe.subPage(2)
+					// 		}
+					// 	});
+					// }
+					var th6 = document.getElementsByTagName('th')[4]
 					th6.onclick = function(){
 						layer.open({
 							type: 2,
@@ -382,7 +389,7 @@
 						console.log(tjData)
 						
 						for(var i = 0 ; i < tjData.length;i++){
-							strData.push(tjData[i].onePaymentTypeInt + ':' + tjData[i].twoPaymentTypeInt + ',' + tjData[i].switch1)
+							strData.push(tjData[i].onePaymentTypeInt  + ',' + tjData[i].switch1)
 						}
 						console.log(uniq(strData))
 						var aa = uniq(strData)

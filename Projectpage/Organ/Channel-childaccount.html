@@ -52,18 +52,23 @@
 		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="rate">费率</a>
-			<a class="layui-btn layui-btn-xs" id="edit" lay-event="report">报备</a>
+			<a class="layui-btn layui-btn-xs report" id="report" lay-event="report">报备</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="riskctrl">风控</a>
+			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="add">补全资料</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+
 			function subPage(data,data1){
 				var jgData = data
 				console.log(jgData)
+				var payChannelType = jgData.paymentChannelType
 				var serverUrl = window.parent.serverUrl
+				console.log($('.report'))
+				
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 				var channel = jgData.id
 				layui.use(['laydate', 'table', 'form'], function() {
@@ -105,7 +110,7 @@
 								[{
 									align: 'center',
 									field: 'merchantNumber',
-									width: 250,
+									width: 150,
 									title: '商户编号'
 								},{
 									align: 'center',
@@ -115,23 +120,39 @@
 								}, {
 									align: 'center',
 									field: 'subaccountNumber',
-									width: 250,
+									width: 200,
 									title: '子商户编号'
 								}, {
 									align: 'center',
+									field: 'subaccountNumber',
+									width: 250,
+									title: '费率'
+								}, {
+									align: 'center',
 									toolbar: '#switchBar',
-									width: 150,
+									width: 120,
 									title: '状态'
+								}, {
+									align: 'center',
+									field: 'subaccountNumber',
+									width: 180,
+									title: '添加时间'
 								},  {
 									align: 'center',
 									title: '操作',
 									toolbar: '#toolbar',
-									minWidth: 400
+									minWidth: 300
 								}]
 							],
 							page: true,
 							done: function(res, curr, count) {
 								console.log(res)
+								console.log($('.report'))
+								if(payChannelType == 2 || payChannelType == 4){
+									$('.report').show()
+								}else{
+									$('.report').hide()
+								}
 							}
 						});
 					}
@@ -215,8 +236,28 @@
 						}else if(obj.event === 'rate'){
 								layer.msg('rate')
 						}else if(obj.event === 'report'){
+
 								layer.msg('report')
 						} else if(obj.event === 'riskctrl') { //风控
+							layer.open({
+								type: 2,
+								title: '风控',
+								shade: 0.5,
+								area: ['600px', '90%'],
+								maxmin: false,
+								resize: false,
+								content: ['Channel-childaccount-riskctrl.html'],
+								success: function(layero, index) {
+									// 获取子页面的iframe
+									var iframe = window['layui-layer-iframe' + index];
+									// 向子页面的全局函数child传参
+									data.channel = channel
+									iframe.subPage(data, userNumber)
+								}
+							});
+						}else if(obj.event === 'add') { //补全资料
+							layer.msg('补全资料')
+							return
 							layer.open({
 								type: 2,
 								title: '风控',

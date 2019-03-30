@@ -87,7 +87,7 @@
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						// url: './json/vip-card.json',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionAdvertisementList + '?institutionNumber=' + userNumber,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInQRcode + '?institutionNumber=' + userNumber,
 						elem: '#members',
 						height: 'full-150',
 						id: 'vip_cardList',
@@ -104,35 +104,33 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": changeRes(res.data)
+								"data": res.data
 							}
 						},
 						cols: [
 							[{
-								type: 'checkbox'
-							}, {
 								align: 'center',
-								field: 'number',
+								field: 'batchNumber',
 								width: 250,
 								title: '批次号',
 							}, {
 								align: 'center',
-								field: 'name',
+								field: 'insertTime',
 								width: 200,
 								title: '生成日期'
 							}, {
 								align: 'center',
-								field: 'startTime',
+								field: 'sum',
 								width: 200,
 								title: '总数量'
 							}, {
 								align: 'center',
-								field: 'endTime',
+								field: 'IsBinding',
 								width: 200,
 								title: '已绑定数量'
 							}, {
 								align: 'center',
-								field: 'endTime',
+								field: 'notBinding',
 								width: 200,
 								title: '未绑定数量'
 							}, {
@@ -227,25 +225,32 @@
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
 					if(obj.event === 'down_All') { //编辑
+						console.log(data)
 						layer.prompt({
 							title: '请输入要下载的邮箱'
 						}, function(pass, index) {
 							// 发送请求
-							console.log(data)
-							return
+							var reg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+							if(!reg.test(pass)){
+								layer.msg('请输入正确的邮箱格式')
+								return 
+							}
+							var index = layer.load(2, { shade: [0.4, '#393D49'] })
+							console.log(pass,index)
 							var tData = new Object()
 							tData.institutionNumber = userNumber
-							tData.number = data.number
+							tData.batchNumber = data.batchNumber
+							tData.mailBox = pass
+							tData.type = 0
 							CmsUtility.postAjaxCall(
 								//系统设置
-								CmsConfig.addressUrl.Mechanism.delInstitutionAdvertisementState,
-								data,
+								CmsConfig.addressUrl.Mechanism.downloadQRcode,
+								tData,
 								function(data) {
 									if(data.code == 1000) {
-
-										parent.layer.msg('删除成功')
+										layer.closeAll()
+										parent.layer.msg('下载成功')
 										layer.close(index)
-										tableRender()
 									} else {
 										layer.msg(data.msg)
 
@@ -265,21 +270,23 @@
 							title: '请输入要下载的邮箱'
 						}, function(pass, index) {
 							// 发送请求
-							console.log(data)
+							var reg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+							var index = layer.load(2, { shade: [0.4, '#393D49'] })
+							console.log(pass,index)
 							var tData = new Object()
 							tData.institutionNumber = userNumber
-							tData.number = data.number
-							return
+							tData.batchNumber = data.batchNumber
+							tData.mailBox = pass
+							tData.type = 1
 							CmsUtility.postAjaxCall(
 								//系统设置
-								CmsConfig.addressUrl.Mechanism.delInstitutionAdvertisementState,
-								data,
+								CmsConfig.addressUrl.Mechanism.downloadQRcode,
+								tData,
 								function(data) {
 									if(data.code == 1000) {
-
-										parent.layer.msg('删除成功')
+										layer.closeAll()
+										parent.layer.msg('下载成功')
 										layer.close(index)
-										tableRender()
 									} else {
 										layer.msg(data.msg)
 

@@ -417,21 +417,29 @@
 								CmsConfig.addressUrl.Mechanism.getInstitutionQrcade,
 								daaaa,
 								function(data){
-									var data = data.data
-									$('#ex').val(data.codex)
-									$('#ey').val(data.codey)
-									$('#kuan').val(data.codesize)
-									$('#ex1').val(data.numberx)
-									$('#ey1').val(data.numbery)
-									$('#kuan1').val(data.numbersize)
-									$('#img1').attr('src', data.qrcodeurl);
-									$('#code').width(data.codesize)
-	        						$('#code').height(data.codesize)
-	        						$('#txtBox').css('left',data.numberx)
-	        						$('#txtBox').css('top',data.numbery)
-	        						console.log(data.numbersize)
-						        	$('#txtBox').css('font-size',data.numbersize+'px')
-						        	$('#txtBox').css('line-height',data.numbersize+'px')
+									if(data.code == 1000){
+										var data = data.data
+										$('#ex').val(data.codex)
+										$('#ey').val(data.codey)
+										$('#code').css('left', data.codex+'px');
+										$('#code').css('top', data.codey+'px');
+										$('#kuan').val(data.codesize)
+										$('#ex1').val(data.numberx)
+										$('#ey1').val(data.numbery)
+										$('#kuan1').val(data.numbersize)
+										$('#img1').attr('src', data.qrcodeurl);
+										$('#code').width(data.codesize)
+		        						$('#code').height(data.codesize)
+		        						$('#txtBox').css('left',data.numberx+'px')
+		        						$('#txtBox').css('top',data.numbery+'px')
+		        						console.log(data.numbersize)
+							        	$('#txtBox').css('font-size',data.numbersize+'px')
+							        	$('#txtBox').css('line-height',data.numbersize+'px')
+									}else{
+										layer.msg(data.msg+',请上传图片并设置参数')
+										$('#img1').attr('src', 'images/qrcode.png');
+									}
+									
 								},
 								function(data){
 									console.log('222')

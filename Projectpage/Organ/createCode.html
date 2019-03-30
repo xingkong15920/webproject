@@ -41,12 +41,12 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">请输入验证码</label>
                     <div class="layui-input-block">
-                        <input type="text" name="code" lay-verify="number" placeholder="请输入验证码" autocomplete="off" class="layui-input" style="width:50%;display:inline-block;vertical-align:top" id="code">
+                        <input type="text" name="code" lay-verify="code" placeholder="请输入验证码" autocomplete="off" class="layui-input" style="width:50%;display:inline-block;vertical-align:top" id="code">
                         <div class="layui-input" style="width:30%;display:inline-block;margin-left:10%" id="codeInfo"></div>
                     </div>
                 </div>
                 <div class="layui-input-block">
-			      <input type="button" class="layui-btn" lay-submit="" lay-filter="create" value="立即提交" id="sub">
+			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="立即提交" id="sub">
 			    </div>
             </form>
         </div>
@@ -72,13 +72,25 @@
             // $('#sub').click(function(){
             // 	console.log(code1)
             // })
+            form.verify({
+                // number:function(value){
+                //     if(value >5000){
+                //         return "一次生成最多5000条"
+                //     }
+                // },
+                code: function(value) {
+                    console.log(value)
+                    if (value != code1) {
+                        return '请输入正确的验证码';
+                    }
+                },
+            });
             // $('#sub').click(function() {
-            //     console.log(jgData)
+                
             //     var tjData = new Object();
             //     tjData.institutionNumber = userNumber;
-            //     tjData.id = jgData.id;
-            //     tjData.channelRate = $('#keyy').val()
-            //     tjData.channelD1Rate = $('#keyy1').val()
+                
+            //     tjData.number = $('#number').val()
             //     CmsUtility.postAjaxCall(
             //         //系统设置
             //         CmsConfig.addressUrl.Mechanism.insertChannelRate,
@@ -89,7 +101,7 @@
 
 
             //                 x_admin_close()
-            //                 parent.layer.msg('保存成功')
+            //                 parent.layer.msg('生成成功')
             //                 parent.layui.table.reload('vip_cardList')
 
 
@@ -107,12 +119,37 @@
 
             // //监听提交
             form.on('submit(create)', function(data) {
+            	
             	console.log(data.field)
-            	if(data.field.code != code1){
-            		layer.msg('验证码不正确，请输入正确的验证码')
-            		return false;
-            	}
-            	console.log(data.field)
+                // if(data.field.nuber)
+                var tjData = new Object();
+                tjData.institutionNumber = userNumber;
+                
+                tjData.number = data.field.number
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Mechanism.setInfeoQRcode,
+                    tjData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+
+
+                            x_admin_close()
+                            parent.layer.msg('生成成功')
+                            parent.layui.table.reload('vip_cardList')
+
+
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                return false
             });
 
         });
