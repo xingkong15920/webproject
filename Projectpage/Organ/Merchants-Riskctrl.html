@@ -48,7 +48,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">单笔最小金额</label>
                     <div class="layui-input-inline" style="width:225px">
-                        <input type="number" name="singlepenMinMoney" autocomplete="off" placeholder="单笔最小金额" class="layui-input" value="0" lay-verify="title">
+                        <input type="text" name="singlepenMinMoney" autocomplete="off" placeholder="单笔最小金额" class="layui-input" value="0" lay-verify="title">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -179,6 +179,23 @@
     var jgData;
 
 
+function toDecimal2(x) { 
+      var f = parseFloat(x); 
+      if (isNaN(f)) { 
+        return false; 
+      } 
+      var f = Math.round(x*100)/100; 
+      var s = f.toString(); 
+      var rs = s.indexOf('.'); 
+      if (rs < 0) { 
+        rs = s.length; 
+        s += '.'; 
+      } 
+      while (s.length <= rs + 2) { 
+        s += '0'; 
+      } 
+      return s; 
+    } 
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
         var $ = layui.jquery,
             upload = layui.upload,
@@ -284,6 +301,11 @@
             }
             addData.institutionNumber = userNumber
             console.log(addData)
+            addData.singlepenMinMoney = toDecimal2(addData.singlepenMinMoney)
+            addData.singlepenMaxMoney = toDecimal2(addData.singlepenMaxMoney)
+            addData.dateCountMoney = toDecimal2(addData.dateCountMoney)
+            addData.unitTimeMoney = toDecimal2(addData.unitTimeMoney)
+            
             CmsUtility.postAjaxCall(
                 //系统设置
                 server,

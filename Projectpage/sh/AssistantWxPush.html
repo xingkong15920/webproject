@@ -13,6 +13,7 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<script type="text/javascript" src="../../public/js/qrcode.js"></script>
 		<style type="text/css">
 			#qrcode {
 				height: 100%;
@@ -44,41 +45,46 @@
 	<body>
 		<div class="x-body">
 			<form class="layui-form">
-				<div class="layui-form-item">
+				<div class="layui-form-item" id="qrBox">
 					<div class="layui-input-inline">
-						<div id="qrcode">
-							<img id="qrimg" src="http://sh.51shanhe.com/sh_shht/qrcode/servletImage.do?qrcodeurl=http://api.51shanhe.com/oneCodeAgain/openId?clerkNumber=D180919111119460">
+						<div id="qrcode" style="width:256px;height:256px;margin:0 auto">
+							<div id="qrcode1" ></div>
 						</div>
-						<div class="qrtips">
+						<div class="qrtips" style="margin-top:15px">
 							开通后随时随地查看经营情况
 						</div>
 					</div>
 				</div>
-				<table class="layui-hide" id="table1" lay-filter="useruv"></table>
+				<div id="tabBox"><table class="layui-hide" id="table1" lay-filter="useruv"></table></div>
+				
 			</form>
 		</div>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-xs" lay-event="UntieWx">解绑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="UntieWx">解绑</a>
 		</script>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
 			function subPageClerkpush(data,userNumber) {
+				
 				var data = data,
 					userNumber = userNumber,
 					shopNumber = data.shopNumber;
 				var clerkNumber = data.clerkNumber;
 				console.log(clerkNumber)
+				
 				layui.use(['table', 'layer'], function() {
 					$ = layui.jquery;
 					var form = layui.form,
 						layer = layui.layer;
 
 					var table = layui.table;
+					var index = layer.load(2, { shade: [1, '#fff'] })
+					new QRCode(document.getElementById("qrcode1"), "http://user.51shanhe.com/oneCode/getCode.html?clerkNumber=" + clerkNumber);
 					//方法级渲染
 					table.render({
 						elem: '#table1',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=1001000001',
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'clerk/getClerkInfo' + '?clerkNumber='+clerkNumber,
 						page: false,
 						method: "post",
 						id: 'deviceInfo',
@@ -86,23 +92,36 @@
 							"statusCode": "1000", //解析接口状态
 						},
 						parseData: function(res) {
+
+							var resD = new Array()
+							resD.push(res.data)
+							if(res.data.openId == '未绑定'){
+								$('#tabBox').hide()
+								$('#qrBox').show()
+								layer.closeAll()
+								return
+							}else{
+								$('#tabBox').show()
+								$('#qrBox').hide()
+								layer.closeAll()
+							}
+
 							if(res.data == null) {
 								return
 							}
 							return {
 								"code": res.code,
-								"count": res.data.count,
-								"data": res.data.result,
+								"data": resD,
 							}
 						},
 						cols: [
 							[{
-								field: 'shopName',
+								field: 'nickName',
 								title: '昵称',
 								align: 'center',
 								width: 150
 							}, {
-								field: 'insertTime',
+								field: 'bindTime',
 								title: '绑定时间',
 								align: 'center',
 								width: 150
@@ -124,23 +143,21 @@
 								// 发送请求
 								$.ajax({
 									type: "post",
-									url: ".clerk/getpushStatus",
+									url: CmsConfig.ServiceUrl.ApiRootUrl + 'clerk/relievePushBind' + '?clerkNumber='+clerkNumber,
 									async: true,
-									data: mydata,
 									success: function(data) {
-										if(data.result == "success") {
+										console.log(data)
+										if(data.code == "1000") {
 											layer.msg("操作成功", {
 												icon: 1,
 												time: 1000
 											}, function() {
 												window.location.reload();
 											});
+											$('#tabBox').hide()
+											$('#qrBox').show()
 										} else {
-											layer.alert(data.msg, {
-												icon: 6
-											}, function() {
-												return
-											});
+											
 										}
 									}
 								});

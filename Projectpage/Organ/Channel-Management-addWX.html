@@ -30,18 +30,7 @@
 		<div class="x-body">
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="tongdao">
-					<div class="layui-form-item">
-						<label class="layui-form-label">中文名称</label>
-						<div class="layui-input-block">
-							<input type="text" name="wechatName" autocomplete="off" placeholder="请输入通道中文名称" class="layui-input" lay-verify="wechatName">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">英文名称</label>
-						<div class="layui-input-block">
-							<input type="text" name="wechatSpell" autocomplete="off" placeholder="请输入通道英文名称,建议英文首字母" class="layui-input" lay-verify="wechatSpell">
-						</div>
-					</div>
+					
 					<div class="layui-form-item">
 						<label class="layui-form-label">公众号APPID</label>
 						<div class="layui-input-block">
@@ -49,15 +38,9 @@
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">公众号密钥</label>
+						<label class="layui-form-label">公众号APPScrect</label>
 						<div class="layui-input-block">
-							<textarea class="layui-textarea" name="paymentSecretkey" autocomplete="off" placeholder="公众号密钥" lay-verify="paymentSecretkey" rows="3"></textarea>
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">小程序AppSecret</label>
-						<div class="layui-input-block">
-							<input type="text" name="miniAppSecret" autocomplete="off" placeholder="小程序AppSecret" class="layui-input" lay-verify="miniAppSecret">
+							<textarea class="layui-textarea" name="paymentSecretkey" autocomplete="off" placeholder="公众号APPScrect" lay-verify="paymentSecretkey" rows="3"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -66,6 +49,13 @@
 							<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid">
 						</div>
 					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">小程序AppSecret</label>
+						<div class="layui-input-block">
+							<input type="text" name="miniAppSecret" autocomplete="off" placeholder="小程序AppSecret" class="layui-input" lay-verify="miniAppSecret">
+						</div>
+					</div>
+					
 					<div class="layui-form-item">
 						<label class="layui-form-label">微信服务商ID</label>
 						<div class="layui-input-block">
@@ -80,25 +70,25 @@
 					</div>
 					<div class="layui-form-item">
 							<label class="layui-form-label">支付授权目录</label>
-							<div class="layui-input-inline">
+							<div class="layui-input-block">
 								<input type="text" name="payDasd" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">推荐关注APPID</label>
-							<div class="layui-input-inline">
+							<div class="layui-input-block">
 								<input type="text" name="recommendAppid" autocomplete="off" placeholder="推荐关注公众号APPID" class="layui-input" lay-verify="appsecret">
 							</div>
 						</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">回调地址</label>
-						<div class="layui-input-inline">
+						<div class="layui-input-block">
 							<textarea class="layui-textarea" name="tokenUrl" autocomplete="off" placeholder="回调地址" rows="3" lay-verify="tokenUrl"></textarea>
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">支付网关</label>
-						<div class="layui-input-inline">
+						<div class="layui-input-block">
 							<textarea class="layui-textarea" name="wechatPaymentGateway" autocomplete="off" placeholder="支付网关" rows="3" lay-verify="wechatPaymentGateway"></textarea>
 						</div>
 					</div>
@@ -122,7 +112,18 @@
 							<input type="checkbox" name="wechatDisable" lay-skin="switch" lay-filter="GFwxswitch" lay-text="开|关" checked>
 						</div>
 					</div>
-
+					<div class="layui-form-item">
+						<label class="layui-form-label">中文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="wechatName" autocomplete="off" placeholder="请输入通道中文名称" class="layui-input" lay-verify="wechatName">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">英文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="wechatSpell" autocomplete="off" placeholder="请输入通道英文名称,建议英文首字母" class="layui-input" lay-verify="wechatSpell">
+						</div>
+					</div>
 					<div class="layui-form-item layui-layout-admin">
 						<div class="layui-input-block">
 							<div class="layui-footer" style="left: 0;text-align: center;">
@@ -172,6 +173,10 @@
 						if(value.length == "") {
 							return '支付宝英文名称不能为空！';
 						}
+						var newReg = new RegExp('^[0-9a-zA-Z]+$')
+		                if(!newReg.test(value)){
+		                    return '通道英文名称只能为英文或数字'
+		                }
 					},
 					wechatAppid: function(value) {
 						if(value.length == "") {

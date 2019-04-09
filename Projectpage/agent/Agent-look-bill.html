@@ -84,10 +84,12 @@
 						table = layui.table,
 						form = layui.form;
 						laydate.render({
-						  elem: '#startTime' //指定元素
+						  elem: '#startTime', //指定元素
+						  value:data.inserttime.split('T')[0]
 						});
 						laydate.render({
-						  elem: '#endTime' //指定元素
+						  elem: '#endTime', //指定元素
+						  value:data.inserttime.split('T')[0]
 						});
 					//方法级渲染  
 					function tableRender(){
@@ -98,8 +100,8 @@
 						where:{
 							"agentName":$('#agentName').val(),
 							"agentLevel":agentLevel,
-							"startTime":$('#startTime').val(),
-							"endTime":$('#endTime').val(),
+							"startTime":$('#startTime').val() +' '+ '00:00:00',
+							"endTime":$('#endTime').val() +' '+ '23:59:59',
 						},
 						elem: '#members',
 						height: 'full-210',

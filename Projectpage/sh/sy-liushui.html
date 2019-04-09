@@ -13,9 +13,14 @@
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<link rel="stylesheet" href="../../public/css/style-baobiao.css">
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 	</head>
-
+	<style type="text/css">
+		.layui-table-cell{
+			height: auto;
+		}
+	</style>
 	<body>
 		<div class="x-nav">
 			<span class="layui-breadcrumb"> <a href="">流水</a> <a> <cite>交易数据明细</cite></a>
@@ -23,6 +28,50 @@
 			<a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);" title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
 		</div>
 		<div class="x-body">
+			<div  style="margin-bottom:30px" >
+				
+				<div class="baobiao-col-2" style="width:49%;display:inline-block">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">交易总笔数</p>
+							<p class="baobiaolistct" style="font-size:16px"><span id="totalOrder">0</span> 笔</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p style="font-size:16px"><span id="weChatTotalOrder">0</span> 笔</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p  style="font-size:16px"><span id="alipayTotalOrder">0</span> 笔</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="baobiao-col-2"  style="width:49%;display:inline-block">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">交易总金额（元）</span>
+							</p>
+							<p class="baobiaolistct"  style="font-size:16px"><span id="orderTotalMoney">0</span> 元</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="weChatOrderTotalMoney">0</span> 元</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="alipayOrderTotalMoney">0</span> 元</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="demoTable">
 				<div class="layui-form x-so">
 					<div class="layui-input-inline text">
@@ -55,8 +104,8 @@
 						<select name="orderStatus" id="orderStatus">
 							<option value="">请选择支付状态</option>
 							<option value="1">交易成功</option>
-							<option value="2">交易失败</option>
-							<option value="3">已退款</option>
+							<option value="4">全部退款</option>
+							<option value="5">部分退款</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -64,19 +113,12 @@
 					</div>
 				</div>
 			</div>
-			<xblock>
-				<button class="layui-btn" id="baobiao">
-					<i class="layui-icon"></i>报表
-				</button>
-				<span class="x-left" style="line-height:40px;margin-left: 20px;">
-					交易笔数：<span style="color: red" id="Ocount"> </span> &nbsp; 交易金额：
-				<span style="color: red" id="ACollect"> </span>&nbsp;
-				</span>
-			</xblock>
+			
+			
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
 		</div>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">同步</a>
 		</script>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
@@ -129,6 +171,30 @@
 						form.render()
 					}
 				)
+				CmsUtility.postAjaxCall(
+						//系统设置
+				CmsConfig.addressUrl.Merchant.getMerBatchInSum,
+				{
+					"merchantNumber": userNumber,
+				},
+				function(data){
+					console.log(data)
+					if(data.code == 1000){
+						$('#totalOrder').html(data.data[0].totalOrder)
+						$('#weChatTotalOrder').html(data.data[0].weChatTotalOrder)
+						$('#alipayTotalOrder').html(data.data[0].alipayTotalOrder)
+						$('#orderTotalMoney').html(data.data[0].orderTotalMoney)
+						$('#alipayOrderTotalMoney').html(data.data[0].alipayOrderTotalMoney)
+						$('#weChatOrderTotalMoney').html(data.data[0].weChatOrderTotalMoney)
+					}else{
+						layer.msg(data.msg)
+						
+					}
+				},
+				function(data){
+					console.log('222')
+				}
+			)
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_bill',
@@ -157,7 +223,7 @@
 							field: 'batch',
 							title: '订单号',
 							align: 'center',
-							width: 200
+							width: 230
 						}, {
 							field: 'shopName',
 							title: '门店',
@@ -167,55 +233,49 @@
 							field: 'clerkName',
 							title: '营业员',
 							align: 'center',
-							width: 100
+							width: 150
 						}, {
 							field: 'transactionAmount',
 							title: '应收款',
 							align: 'center',
-							width: 100
+							width: 120
 						}, {
 							field: 'shishoujine',
 							title: '实收款',
 							align: 'center',
-							width: 100
+							width: 120
 						}, {
 							field: 'shopPoundage',
 							title: '手续费',
 							align: 'center',
-							width: 100
+							width: 120
 						}, {
 							field: 'onePaymentTypeName',
 							title: '支付方式',
 							align: 'center',
-							width: 150,
+							width: 220,
 							templet: function(data) {
-								return data.onePaymentTypeName + data.twoPaymentTypeName
+								return data.onePaymentTypeName +'/'+ data.twoPaymentTypeName
 							}
 						}, {
 							field: 'orderState',
 							title: '订单状态',
 							align: 'center',
-							width: 150
+							width: 180
 						}, {
 							field: 'C',
 							title: '交易时间',
 							align: 'center',
-							width: 300,
+							width: 230,
 							templet: function(data) {
-								return data.orderTime + ' / ' + data.transactionTime
+								return data.orderTime + '</br>' + data.transactionTime
 							}
-						}, {
-							field: 'operation',
-							title: '操作',
-							toolbar: "#tool",
-							align: 'center',
-							minWidth: 150
 						}]
 					],
 					done: function(res, curr, count) {
 						console.log(res)
 						if(res.data == null) {
-							layer.msg(res.msg)
+							// layer.msg(res.msg)
 							$("#ACollect").text('0 元');
 							$("#Ocount").text('0 笔');
 						} else {
@@ -243,7 +303,7 @@
 								where: {
 									clerkName: Assistant.val(),
 									batch: orderCode.val(),
-									shopName: shopName.val(),
+									shopNumber: shopName.val(),
 									oneTransactionType: payment.val(),
 									startTime: startTime.val(),
 									endTime: endTime.val(),
@@ -258,18 +318,19 @@
 					var data = obj.data;
 					if(obj.event === 'detail') {
 						// 跳转流水详情页面
-						layer.open({
-							type: 2,
-							title: '流水详情',
-							area: ['400px', '450px'], //宽高
-							content: 'BillDetailsPage.html',
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPage(data)
-							}
-						});
+						layer.msg('已同步')
+						// layer.open({
+						// 	type: 2,
+						// 	title: '流水详情',
+						// 	area: ['400px', '450px'], //宽高
+						// 	content: 'BillDetailsPage.html',
+						// 	success: function(layero, index) {
+						// 		// 获取子页面的iframe
+						// 		var iframe = window['layui-layer-iframe' + index];
+						// 		// 向子页面的全局函数child传参
+						// 		iframe.subPage(data)
+						// 	}
+						// });
 					}
 				});
 

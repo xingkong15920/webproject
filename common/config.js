@@ -2,7 +2,8 @@
 var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
-	server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
+	// server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
+      server  = 'http://192.168.1.148:5006/shanhe-mechanism/'
 }else{
 	server  = 'http://192.168.1.113:5006/shanhe-mechanism/'
 }
@@ -32,7 +33,8 @@ var CmsConfig = {
             //退出
             exitLogin:"login/exitLogin",
             //自动登录
-            Automaticlist:"login/Automaticlist"
+            Automaticlist:"login/Automaticlist",
+
         },
         //机构后台接口
         Mechanism: {
@@ -117,7 +119,8 @@ var CmsConfig = {
             updateMerchantKeys:"MerchantInfo/updateMerchantKeys",
             //删除商户
 
-
+            //新版更新已入网商户信息
+            updateMerMsg:"MerInfo/updateMerMsg",
 
             //商户接口修改
             //商户通过接口    
@@ -135,6 +138,14 @@ var CmsConfig = {
             selectMerchantRegisterInfo:"merchantRegister/selectMerchantRegisterInfo",
             //新本获取商户图片信息
             getMerPhoto:"Sell/getMerPhoto",
+            //新版提交信息
+            insertMerchantRegisterInfo:"merchantRegister/insertMerchantRegisterInfo",
+            //提交图片 
+            updateMerPhotoInfo:"Sell/updateMerPhotoInfo",
+
+
+
+
             //风控设置
             getRiskSetUp:"InstitutionRiskSetUp/getRiskSetUp",
             //登录记录
@@ -164,6 +175,12 @@ var CmsConfig = {
 
 
 
+            //新版代理获取费率
+            getAgentRate:"AgentRegister/getAgentRate",
+
+
+
+
             //代理下的码牌
             //生成
             setInfeoQRcode:"inQRcode/setInfeoQRcode",
@@ -184,6 +201,16 @@ var CmsConfig = {
             //成功订单、未支付订单、异常订单同上
 
 
+
+            //新版获取退款订单
+            getRefundTrade:"TransactionReceipt/getRefundTrade",
+            //查询退款信息
+            getTransactionList:"TransactionReceipt/getTransactionList",
+
+
+
+
+            
             //--通道管理
             //风控实况列表接口
             getSubaccountRiskManagementList:"subaccountRiskManagement/getSubaccountRiskManagementList",
@@ -228,10 +255,24 @@ var CmsConfig = {
             getYrmOfficial:"InstitutionOfficial/getYrmOfficial",
             //更新易融码信息
             updateYrmOfficial:"InstitutionOfficial/updateYrmOfficial",
+            //插入新大陆通道
+            insertConfigureXdl:"Xdl/insertConfigureXdl",
+            //查询新大陆通道
+            getConfigureXdl:"Xdl/getConfigureXdl",
+            //更新新大陆通道
+            updateConfigureXdl:"Xdl/updateConfigureXdl",
             //删除接口
             updateType:"InstitutionOfficial/updateType",
 
-            
+            //新版子账号
+            //微信报备
+            weChatPut:"submit/weChatPut",
+
+
+
+
+
+
             //通道配置接口
             //通道列表
             getOfficial:"InstitutionOfficial/getOfficial",
@@ -281,6 +322,12 @@ var CmsConfig = {
             //接口交易统计
             //查询支付通道接口
             //根据父级查询子级支付统计
+            // 第三方应用设置
+
+            updateThirdParty:"ThirdParty/updateThirdParty",
+            //获取第三方应用
+            getThirdParty:"ThirdParty/getThirdParty",
+
 
         },
         //代理商后台
@@ -360,6 +407,11 @@ var CmsConfig = {
             //代理账单
             selectAgentBillList:"agBill/selectAgentBillList",
             selectDetailAgentBillList:"agBill/selectDetailAgentBillList",
+
+            //代理商商户统计
+            getMerBatchInfo:"agBill/getMerBatchInfo",
+            //代理商商户汇总
+            getMerBatchInfoCollect:"agBill/getMerBatchInfoCollect",
         },
         //商户后台
         Merchant: {
@@ -397,6 +449,8 @@ var CmsConfig = {
             getMerchantBill: "bill/getMerchantBill",
             //数据统计
             getStatistics:"statistics/getStatistics",
+            //获取商户总的交易汇总
+            getMerBatchInSum:"agBill/getMerBatchInSum",
         },
         //公共
         Public: {
@@ -407,7 +461,11 @@ var CmsConfig = {
             //新的省市区接口
             getAreajson:"merchantRegister/getAreajson",
             //根据机构号获取费率
-            getInfoRate:"login/getInfoRate"
+            getInfoRate:"login/getInfoRate",
+            //查询支行
+            selectBank:"merchantRegister/selectBank",
+            //根据域名获取机构
+            getSitePath:"login/getSitePath",
         },
         
        

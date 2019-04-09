@@ -105,7 +105,7 @@
                 }, {
                     field: 'withdrawCashAmount',
                     title: '金额',
-                    align: 'center'
+                    align: 'center',
                 }, {
                     field: 'bankCardNo',
                     title: '卡号',
@@ -134,6 +134,10 @@
                         }
 
                     }
+                }, {
+                    field: 'errorReason',
+                    title: '备注',
+                    align: 'center'
                 }]
             ]
         });
@@ -164,8 +168,8 @@
             btn: ['确定', '取消'] //按钮
         }, function() {
             // ajax提交至
-            if(accountBalance <= 0){
-                layer.msg('余额不足，无法提现')
+            if(accountBalance < 100){
+                layer.msg('提现金额小于100，无法提现')
                 return
             }else{
                 CmsUtility.postAjaxCall(
@@ -177,7 +181,7 @@
                 },
                 function(data){
                     if(data.code == 1000){
-                        layer.msg('保存成功')
+                        layer.msg('申请成功')
                         layui.table.reload('merchantlist')
                         CmsUtility.postAjaxCall(
                         //系统设置

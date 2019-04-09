@@ -22,6 +22,9 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
+			.hiide{
+				display: none;
+			}
 		</style>
 	</head>
 
@@ -52,7 +55,7 @@
 		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="rate">费率</a>
-			<a class="layui-btn layui-btn-xs report" id="report" lay-event="report">报备</a>
+			<a class="layui-btn layui-btn-xs report " id="report" lay-event="report">报备</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="riskctrl">风控</a>
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="add">补全资料</a>
@@ -68,7 +71,11 @@
 				var payChannelType = jgData.paymentChannelType
 				var serverUrl = window.parent.serverUrl
 				console.log($('.report'))
-				
+				if(jgData.paymentChannelType == 2 || jgData.paymentChannelType == 4){
+					$('.report').show()
+				}else{
+					$('.report').hide()
+				}
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 				var channel = jgData.id
 				layui.use(['laydate', 'table', 'form'], function() {
@@ -88,7 +95,7 @@
 
 							},
 							elem: '#members',
-							height: 'full-120',
+							height: 'full-220',
 							id: 'vip_cardList',
 							response: { 
 							//res 即为原始返回的数据
@@ -125,8 +132,13 @@
 								}, {
 									align: 'center',
 									field: 'subaccountNumber',
-									width: 250,
+									width: 150,
 									title: '费率'
+								}, {
+									align: 'center',
+									field: 'rateType',
+									width: 100,
+									title: '费率类型'
 								}, {
 									align: 'center',
 									toolbar: '#switchBar',
@@ -238,6 +250,24 @@
 						}else if(obj.event === 'report'){
 
 								layer.msg('report')
+								layer.open({
+									type: 2,
+									title: '微信报备',
+									shade: 0.5,
+									area: ['600px', '90%'],
+									maxmin: false,
+									resize: false,
+									content: ['Channel-report.html'],
+									success: function(layero, index) {
+										// 获取子页面的iframe
+										var iframe = window['layui-layer-iframe' + index];
+										// 向子页面的全局函数child传参
+										// data.channel = channel
+										data.paymentChannelType = jgData.paymentChannelType
+										data.paymentChannel = jgData.id
+										iframe.subPage(data, userNumber)
+									}
+								});
 						} else if(obj.event === 'riskctrl') { //风控
 							layer.open({
 								type: 2,

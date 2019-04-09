@@ -111,7 +111,15 @@
 						</div>
 
 					</div>
-					
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">支付域名</label>
+							<div class="layui-input-inline" style="width:525px">
+								<input type="text" name="payUrl" lay-verify="url" class="layui-input" id="payUrl" >
+							</div>
+						</div>
+
+					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label"></label>
 						<div class="layui-input-inline">
@@ -125,6 +133,7 @@
         <script src="../../common/utility.js"></script>
 		<script>
 			var imgUrl;
+			var imgTrue = false
 			var code = document.getElementById('code')
 			code.onmousedown = function(ev){
 	            var ev = ev||event;
@@ -388,6 +397,7 @@
 							//上传成功
 							console.log(res)
 							imgUrl = res.data
+							imgTrue = true
 						},
 						error: function() {
 							//演示失败状态，并实现重传
@@ -432,6 +442,9 @@
 		        						$('#code').height(data.codesize)
 		        						$('#txtBox').css('left',data.numberx+'px')
 		        						$('#txtBox').css('top',data.numbery+'px')
+		        						$('#payUrl').val(data.payUrl)
+		        						imgUrl = data.qrcodeurl
+		        						imgTrue = true
 		        						console.log(data.numbersize)
 							        	$('#txtBox').css('font-size',data.numbersize+'px')
 							        	$('#txtBox').css('line-height',data.numbersize+'px')
@@ -454,7 +467,16 @@
 						var aData = new Object()
 
 				        //$('#gao').val('315')
-				       
+				       	if($('#ex').val()=='' || 
+				       		$('#ey').val()=='' ||
+				       		$('#kuan').val()=='' ||
+				       		$('#ex1').val()=='' ||
+				       		$('#ey1').val()=='' ||
+				       		$('#kuan1').val()=='' ||
+				       		$('#payUrl').val()=='' || imgTrue == false){
+				       		alert('请补充信息')
+				       		return
+				       	}
 						aData.institutionNumber = userNumber
 						aData.qrcodeurl = imgUrl
 						aData.codex = $('#ex').val()
@@ -463,6 +485,7 @@
 						aData.numberx = $('#ex1').val()
 						aData.numbery = $('#ey1').val()
 						aData.numbersize = $('#kuan1').val()
+						aData.payUrl = $('#payUrl').val()
 						CmsUtility.postAjaxCall(
 							//系统设置
 							CmsConfig.addressUrl.Mechanism.updateInfoQrcade,

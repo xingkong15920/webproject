@@ -54,18 +54,18 @@
                     console.log(XMLHttpRequest.readyState);
                     // 错误信息   
                     console.log(textStatus);
-                    if(textStatus == 'timeout'){
-                        alert('接口访问超时，请稍后再试')
-                    }
-                    if(textStatus == 'error'){
-                        alert('接口访问错误，请稍后再试')
-                    }
-                    if(textStatus == 'abort'){
-                        alert('接口访问中止，请稍后再试')
-                    }
-                    if(textStatus == 'parsererror'){
-                        alert('接口访问解析错误，请稍后再试')
-                    }
+                    // if(textStatus == 'timeout'){
+                    //     alert('接口访问超时，请稍后再试')
+                    // }
+                    // if(textStatus == 'error'){
+                    //     alert('接口访问错误，请稍后再试')
+                    // }
+                    // if(textStatus == 'abort'){
+                    //     alert('接口访问中止，请稍后再试')
+                    // }
+                    // if(textStatus == 'parsererror'){
+                    //     alert('接口访问解析错误，请稍后再试')
+                    // }
             }
         });
     }

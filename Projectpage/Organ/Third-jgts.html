@@ -30,13 +30,13 @@
                 	<div class="layui-form-item">
                    		<label class="layui-form-label">DevKey</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="DevKey" autocomplete="off" placeholder="请输入DevKey" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="auroraDevKey" autocomplete="off" placeholder="请输入DevKey" class="layui-input" lay-verify="title">
                     	</div>
 	                </div>
 	                <div class="layui-form-item">
                    		<label class="layui-form-label">API_DevSecret</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="API_DevSecret" autocomplete="off" placeholder="请输入API_DevSecret" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="auroraAPIDevSecret" autocomplete="off" placeholder="请输入API_DevSecret" class="layui-input" lay-verify="title">
                     	</div>
 	                </div>
 					<div class="layui-form-item">
@@ -64,7 +64,7 @@
 					laytpl = layui.laytpl;
 				CmsUtility.postAjaxCall(
 						//系统设置
-					CmsConfig.addressUrl.Mechanism.selectJGPush,
+					CmsConfig.addressUrl.Mechanism.getThirdParty,
 					{
 						"institutionNumber":institutionNumber
 					},
@@ -73,10 +73,10 @@
 							if(data.data == null){
 								layer.msg(data.msg)
 							}else{
-							form.val('basic', {
-								"jgDevkey":data.data.jgDevKey,
-								"jgApiDevsecret":data.data.jgApiDevsecret
-							})
+								form.val('basic', {
+									"auroraDevKey":data.data.auroraDevKey,
+									"auroraAPIDevSecret":data.data.auroraAPIDevSecret
+								})
 
 							}
 							
@@ -118,7 +118,7 @@
 					console.log(data)
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Mechanism.updateJGPush,
+						CmsConfig.addressUrl.Mechanism.updateThirdParty,
 						data,
 						function(data){
 							if(data.code == 1000){

@@ -139,6 +139,19 @@
                 </div>
                 <blockquote class="layui-elem-quote">费率设置</blockquote>
                 <fieldset class="layui-elem-field layui-field-title">
+                    <legend>官方支付宝</legend>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">官方支付宝费率</label>
+                        <div class="layui-input-inline">
+                            <select name="aliRate" lay-filter="aihao">
+                                <option value="">请选择费率</option>
+                                <option value="0.0021">0.21%</option>
+                                <option value="0.0023">0.23%</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title">
                     <legend>官方微信</legend>
                     <div class="layui-form-item">
                         <label class="layui-form-label">官方微信费率</label>
@@ -151,19 +164,7 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset class="layui-elem-field layui-field-title">
-                    <legend>官方支付宝</legend>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">官方微信费率</label>
-                        <div class="layui-input-inline">
-                            <select name="aliRate" lay-filter="aihao">
-                                <option value="">请选择费率</option>
-                                <option value="0.0021">0.21%</option>
-                                <option value="0.0023">0.23%</option>
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
+                
                 <fieldset class="layui-elem-field layui-field-title">
                     <legend>富友通道</legend>
                     <div class="layui-form-item">
@@ -222,8 +223,8 @@
                             <div class="layui-input-inline">
                                 <select name="xdlRateD1" lay-filter="aihao">
                                     <option value="">请选择费率</option>
-                                    <option value="0.21%">0.21%</option>
-                                    <option value="0.23%">0.23%</option>
+                                    <option value="0.0021">0.21%</option>
+                                    <option value="0.0023">0.23%</option>
                                 </select>
                             </div>
                         </div>
@@ -232,8 +233,8 @@
                             <div class="layui-input-inline">
                                 <select name="xdlRateD0" lay-filter="aihao">
                                     <option value="">请选择费率</option>
-                                    <option value="0.21%">0.21%</option>
-                                    <option value="0.23%">0.23%</option>
+                                    <option value="0.0021">0.21%</option>
+                                    <option value="0.0023">0.23%</option>
                                 </select>
                             </div>
                         </div>
@@ -401,14 +402,14 @@
                         "area": jgData.area,
                         "address": jgData.address,
                         // "T1Rate": T1,
-                        "wechatRate":jgData.wechatRate,
-                        "aliRate":jgData.aliRate,
-                        "fuyouRateD1":jgData.fuyouRateD1,
-                        "fuyouRateD0":jgData.fuyouRateD0,
-                        "xdlRateD0":jgData.xdlRateD0,
-                        "xdlRateD1":jgData.xdlRateD1,
-                        "yrmRateD1":jgData.yrmRateD1,
-                        "yrmRateD0":jgData.yrmRateD0,
+                        // "wechatRate":jgData.wechatRate,
+                        // "aliRate":jgData.aliRate,
+                        // "fuyouRateD1":jgData.fuyouRateD1,
+                        // "fuyouRateD0":jgData.fuyouRateD0,
+                        // "xdlRateD0":jgData.xdlRateD0,
+                        // "xdlRateD1":jgData.xdlRateD1,
+                        // "yrmRateD1":jgData.yrmRateD1,
+                        // "yrmRateD0":jgData.yrmRateD0,
                     })
                     form.render()
                 },
@@ -416,23 +417,58 @@
                     console.log(data)
                 },
             )
-            
-            var Arr = jgData.Rate.split('|')
-            var nO = new Array()
-            var T1, D1, D0;
-            for (var i = 0; i < Arr.length; i++) {
-                if (Arr[i].split(':')[0] == 'T1') {
-                    T1 = Arr[i].split(':')[1]
+            var rateList = []
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.getAgentRate, 
+                {
+                    "agentNumber":jgData.agentNumber
+                },
+                function(data) {
+                    data.data.sort(compare('paymentChanneltype'))
+                    var rateData = data.data
+                    form.val('cardAdd', {
+                       
+                        // "T1Rate": T1,
+                        
+                        "aliRate":rateData[0].rate,
+                        "wecharRate":rateData[1].rate,
+                        "fuyouRateD1":rateData[2].rate,
+                        "fuyouRateD0":rateData[3].rate,
+                       
+                        "yrmRateD1":rateData[4].rate,
+                        "yrmRateD0":rateData[5].rate,
+                        "xdlRateD1":rateData[6].rate,
+                        "xdlRateD0":rateData[7].rate,
+                    })
+                    form.render()
+                },
+                function(data){
+
                 }
-                if (Arr[i].split(':')[0] == 'D1') {
-                    D1 = Arr[i].split(':')[1]
-                }
-                if (Arr[i].split(':')[0] == 'D0') {
-                    D0 = Arr[i].split(':')[1]
+            )
+            function compare(property){
+                return function(a,b){
+                    var value1 = a[property];
+                    var value2 = b[property];
+                    return value1 - value2;
                 }
             }
+            // var Arr = jgData.Rate.split('|')
+            // var nO = new Array()
+            // var T1, D1, D0;
+            // for (var i = 0; i < Arr.length; i++) {
+            //     if (Arr[i].split(':')[0] == 'T1') {
+            //         T1 = Arr[i].split(':')[1]
+            //     }
+            //     if (Arr[i].split(':')[0] == 'D1') {
+            //         D1 = Arr[i].split(':')[1]
+            //     }
+            //     if (Arr[i].split(':')[0] == 'D0') {
+            //         D0 = Arr[i].split(':')[1]
+            //     }
+            // }
             form.render()
-            console.log(nO)
 
             setTimeout(function() {
                 form.render()

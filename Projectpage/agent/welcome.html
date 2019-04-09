@@ -55,7 +55,10 @@
 	</head>
 
 	<body>
-		<div class="x-body">
+		<div class="x-body" id="levA1" style="display:none">
+			<blockquote class="layui-elem-quote">欢迎登陆代理商后台管理</blockquote>
+		</div>
+		<div class="x-body" id="levA" style="display:none">
 			<blockquote class="layui-elem-quote">概览数据</blockquote>
 			<div class="layui-row index-zs">
 				<div class="layui-col-md5">
@@ -151,18 +154,18 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">商家收入（元）</span>
 							</p>
-							<p class="baobiaolistct"  style="font-size:16px"><span id="transactionMoney">0</span> 元</p>
+							<p class="baobiaolistct"  style="font-size:16px"><span id="incomeMoney">0</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="wTransactionMoney">0</span> 元</p>
+								<p><span id="wIncomeMoney">0</span> 元</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="zTransactionMoney">0</span> 元</p>
+								<p><span id="zIncomeMoney">0</span> 元</p>
 							</div>
 						</div>
 					</div>
@@ -194,7 +197,7 @@
 			<div class="layui-row layui-col-space30">
 				<div class="layui-col-md5">
 					<fieldset class="layui-elem-field layui-field-title">
-						<legend>结算记录</legend>
+						<legend>账单列表</legend>
 					</fieldset>
 					<table class="layui-hide" id="LAY_table_SettlementRecords" lay-filter="Records"></table>
 				</div>
@@ -211,6 +214,13 @@
 		<script>
 			var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
         var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+        if(agentLevel != 'A'){
+        	$('#levA').hide()
+        	$('#levA1').show()
+        }else{
+        	$('#levA1').hide()
+        	$('#levA').show()
+        }
 			layui.use(['table', 'table', 'laytpl', 'laydate'], function() {
 		        var table = layui.table,
 		            form = layui.form,
@@ -346,16 +356,16 @@
 					function(data){
 						if(data.code == 1000){
 							
-							console.log(data)
+							
 							$('#shopCount').html(data.data.agShopStatisticsResult.shopCount)
 						$('#brokerage').html(data.data.agShopStatisticsResult.brokerage + '元')
 						$('#transactionNumber').html(data.data.agShopStatisticsResult.transactionNumber)
 						$('#wTransactionNumber').html(data.data.agShopStatisticsResult.wTransactionNumber)
 						$('#zTransactionNumber').html(data.data.agShopStatisticsResult.zTransactionNumber)
-						$('#transactionMoney').html(data.data.agShopStatisticsResult.transactionMoney)
-						$('#wTransactionMoney').html(data.data.agShopStatisticsResult.wTransactionMoney)
+						$('#incomeMoney').html(data.data.agShopStatisticsResult.incomeMoney)
+						$('#wIncomeMoney').html(data.data.agShopStatisticsResult.wIncomeMoney)
 
-						$('#zTransactionMoney').html(data.data.agShopStatisticsResult.zTransactionMoney)
+						$('#zIncomeMoney').html(data.data.agShopStatisticsResult.zIncomeMoney)
 						$('#refundMoney').html(data.data.agShopStatisticsResult.refundMoney)
 						$('#wRefundMoney').html(data.data.agShopStatisticsResult.wRefundMoney)
 						$('#zRefundMoney').html(data.data.agShopStatisticsResult.zRefundMoney)

@@ -56,6 +56,9 @@
 						<input type="text" name="couponName" id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
+						<input type="text" name="telNumber" id="telNumber" placeholder="商户手机号" autocomplete="off" class="layui-input" lay-verify="number">
+					</div>
+					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="agentName" placeholder="代理商名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
@@ -67,8 +70,8 @@
 					<div class="layui-input-inline">
 						<select name="type" id="merchantType">
 							<option value="">类型</option>
-							<option value="0">普通商户</option>
-							<option value="1">补贴商户</option>
+							<option value="1">普通商户</option>
+							<option value="0">补贴商户</option>
 						</select>
 					</div>
 					<!-- <div class="layui-input-inline">
@@ -152,7 +155,7 @@
 
                 },
                 'post',
-                'false',
+                'false'
             )
                             
 			var serverUrl = window.parent.serverUrl
@@ -175,7 +178,7 @@
 							"subsidy":$('#merchantType').val(),
 							"startTime":$('#startTime').val(),
 							"endtime":$('#endtime').val(),
-							
+							"photo":$('#telNumber').val(),
 						},
 						elem: '#members',
 						height: 'full-200',
@@ -211,6 +214,11 @@
 								title: '商户名称'
 							}, {
 								align: 'center',
+								field: 'registerCell',
+								width: 150,
+								title: '商户手机号'
+							}, {
+								align: 'center',
 								field: 'agentName',
 								width: 200,
 								title: '所属代理'
@@ -221,10 +229,10 @@
 								width: 130,
 								title: '类型',
 								templet:function(data){
-									if(data.subsidy == 0){
+									if(data.subsidy == 1){
 										return '普通商户'
 									}
-									if(data.subsidy == 1){
+									if(data.subsidy == 0){
 										return '补贴商户'
 									}
 								}
@@ -482,6 +490,7 @@
 					}else if(obj.event === 'success') { //秘钥secretkey
 						// layer.msg("通过")
 						console.log(data)
+						var index = layer.load(2, { shade: [0.4, '#393D49'] })
 						var tjData = new Object();
 							tjData.orderNumber = data.orderNumber;
 							tjData.paymentType = data.paymentType
@@ -492,7 +501,7 @@
 								tjData,
 								function(data){
 									if(data.code == 1000){
-										 
+										 layer.closeAll()
 										layer.msg('操作成功')
 										setTimeout(function(){
 											tableRender()
@@ -530,7 +539,9 @@
 								title: '请输入拒绝原因'
 							}, function(pass, index) {
 								console.log(pass,index)
+								var index = layer.load(2, { shade: [0.4, '#393D49'] })
 								var tjData = new Object();
+
 								tjData.orderNumber = data.orderNumber;
 								tjData.auditStatus = 0
 								tjData.msg = pass
@@ -540,7 +551,7 @@
 									tjData,
 									function(data){
 										if(data.code == 1000){
-											 
+											 layer.closeAll()
 											layer.msg('操作成功')
 											setTimeout(function(){
 												tableRender()
@@ -586,6 +597,7 @@
 							title: '提示'
 						}, function(index) {
 							// 发送请求
+							var index = layer.load(2, { shade: [0.4, '#393D49'] })
 							var tjData = new Object();
 								tjData.orderNumber = data.orderNumber;
 								tjData.auditStatus = -1
@@ -596,7 +608,7 @@
 									tjData,
 									function(data){
 										if(data.code == 1000){
-											 
+											 layer.closeAll()
 											layer.msg('操作成功')
 											setTimeout(function(){
 												tableRender()

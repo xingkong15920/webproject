@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
     <script type="text/javascript" src="../../public/js/hangye.js"></script>
     <script type="text/javascript" src="../../public/js/hangye1.js"></script>
+    <script type="text/javascript" src="../../public/js/yinhang.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -222,14 +223,22 @@
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">开户行</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="openingBank" lay-verify="title" autocomplete="off" placeholder="请选择开户行" class="layui-input" id="bankNumber">
+                    <div class="layui-input-block"   style="position:relative;left:0;bottom:0">
+                        <!-- <input type="text" name="openingBank" lay-verify="title" autocomplete="off" placeholder="请选择开户行" class="layui-input" id="bankNumber"> -->
+                        <select name="openingBank" lay-verify="title" lay-search=""  id="bankNumber">
+                          <!-- <option value="">请搜索选择开户行</option> -->
+                          
+                        </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">开户支行</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="openingBankBranch" lay-verify="title" autocomplete="off" placeholder="请选择开户支行" class="layui-input"  id="bankBranchNumber">
+                    <div class="layui-input-block" id="branchS">
+                        <!-- <input type="text" name="openingBankBranch" lay-verify="title" autocomplete="off" placeholder="请选择开户支行" class="layui-input"  id="bankBranchNumber"> -->
+                        <select name="openingBankBranch" lay-verify="title" lay-search="searchBranch"  id="bankBranchNumber" onfocus="getBranch(this.value)">
+                          <option value="">直接选择或搜索选择开户支行</option>
+                          
+                        </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -433,7 +442,7 @@
                 <div class="layui-form-item layui-layout-admin">
                     <div class="layui-input-block">
                         <div class="layui-footer" style="left: 0;text-align: center;">
-                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                           <!--  <button class="layui-btn" id="subaaa">立即提交</button> -->
                             <button class="layui-btn layui-btn-primary" id="quxiao">取消</button>
                         </div>
                         <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
@@ -445,6 +454,14 @@
     <script src="../../common/config.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
+        console.log(hangbie)
+        var pageNum = 1
+        var inputTrue = false
+        var hangStr = '<option value="">直接选择或搜索选择开户行</option>'
+        for(var gh = 0 ; gh < hangbie.length;gh++){
+            hangStr += '<option value="'+ hangbie[gh].value+'">'+hangbie[gh].text+'</option>'
+        }
+        $('#bankNumber').html(hangStr)
     CmsUtility.chooseOne()
     var index = parent.layer.getFrameIndex(window.name);
     $('#quxiao').click(function() {
@@ -452,6 +469,8 @@
         setTimeout(function() { parent.layer.close(index) }, 16);
     })
     var jgData
+    var jgImgData
+    var timer
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     console.log(shopData)
     var spStr = '<option value="">请选择</option>'
@@ -466,9 +485,9 @@
         rateId1 = [],
         rateId2 = []
     function imageShow(data) {
-        if (!!jgData[data]) {
+        if (!!jgImgData[data]) {
             $('#' + data + '1').show()
-            $('#' + data).attr('src', jgData[data])
+            $('#' + data).attr('src', jgImgData[data])
         } else {
             $('#' + data + '1').hide()
         }
@@ -484,6 +503,7 @@
             $('#paymentType3').show()
             $('#paymentType2').hide()   
         }
+        
         CmsUtility.postAjaxCall(
             //系统设置
             CmsConfig.addressUrl.Mechanism.selectMerchantRegisterInfo, {
@@ -552,6 +572,7 @@
                             admin = layui.admin,
                             element = layui.element,
                             layer = layui.layer;
+                            var index = layer.load(2, { shade: [0.4, '#393D49'] })
                         var tableSelect = layui.tableSelect;
                         CmsUtility.chooseTwo(jgData.oneOperate)
                         CmsUtility.chooseThr(jgData.oneOperate, jgData.twoOperate)
@@ -669,12 +690,17 @@
                                 }
                                 console.log(ssstr)
                                 $('#rate').html(ssstr)
+                                var zhiHang = '<option value="">请搜索选择开户支行</option>'
+                                zhiHang += '<option value="'+ bankData.openingBankBranchID +'">'+bankData.openingBankBranch+'</option>'
+                                $('#bankBranchNumber').html(zhiHang)
                                 form.render()
                                 form.val('cardAdd', {
                                     "merchantType": jgData.merchantType.toString(),
                                     "merchantName": jgData.merchantName,
                                     "businessLicenseNo": jgData.businessLicenseNo,
                                     "businessLicenseTime": jgData.businessLicenseTime,
+                                    "businessLicenseName":jgData.businessLicenseName,
+                                    "businessLicenseEndTime":jgData.businessLicenseEndTime,
                                     "juridicalpersonName": jgData.juridicalpersonName,
                                     "juridicalpersonId": jgData.juridicalpersonId,
                                     "juridicalpersonIdTime": jgData.juridicalpersonIdTime,
@@ -690,16 +716,16 @@
                                     // "city":jgData.city,
                                     // "area":jgData.area,
                                     "address": jgData.address,
-                                    "openingBank": bankData.openingBank,
-                                    "openingBankBranch": bankData.openingBankBranch,
+                                    "openingBank": bankData.openingBankID,
+                                    "openingBankBranch": bankData.openingBankBranchID,
                                     "bankCardNo": bankData.bankCardNo,
                                     "rateType": jgData.rateType,
                                     "rate": jgData.rate1,
                                     "mailbox": jgData.mailbox,
                                     "quaType": jgData.qualityClient,
                                 })
-                                $('#bankNumber').attr('data-id',bankData.openingBankID)
-                                $('#bankBranchNumber').attr('data-id',bankData.openingBankBranchID)
+                                // $('#bankNumber').attr('data-id',bankData.openingBankID)
+                                // $('#bankBranchNumber').attr('data-id',bankData.openingBankBranchID)
                                 if(jgData.qualityClient == 0){
                                     $('#rate3').hide()
                                 }else{
@@ -710,22 +736,40 @@
                                 }else{
                                      $('#rateType3').show()
                                 }
-                                imageShow('juridicalpersonIdPositive')
-                                imageShow('juridicalpersonIdReverseside')
-                                imageShow('businessLicense')
-                                imageShow('facePhoto')
-                                imageShow('doorheadPhoto')
-                                imageShow('bankCardPositive')
-                                imageShow('holdId')
-                                imageShow('openingPermit')
-                                imageShow('cashier')
-                                imageShow('placeBusiness')
-                                imageShow('rests')
                                 if (jgData.juridicalPersonIDType == 0) {
                                     $('#jurIsLong').hide()
                                 } else if (data.value == 1) {
                                     $('#jurIsLong').show()
                                 }
+                                CmsUtility.postAjaxCall(
+                                    //系统设置
+                                    CmsConfig.addressUrl.Mechanism.getMerPhoto, 
+                                    {
+                                        "orderNumber":jgData.orderNumber
+                                    },
+                                    function(data) {
+                                        console.log(data)
+                                        layer.closeAll()
+                                        jgImgData = data.data[0]
+                                        console.log(jgImgData.bankCardPositive)
+                                        imageShow('juridicalpersonIdPositive')
+                                        imageShow('juridicalpersonIdReverseside')
+                                        imageShow('businessLicense')
+                                        imageShow('facePhoto')
+                                        imageShow('doorheadPhoto')
+                                        imageShow('bankCardPositive')
+                                        imageShow('holdId')
+                                        imageShow('openingPermit')
+                                        imageShow('cashier')
+                                        imageShow('placeBusiness')
+                                        imageShow('rests')
+                                        
+                                    },
+                                    function(data){
+
+                                    }
+                                )
+                                
                                 form.render()
                             },
                             function(data) {
@@ -841,7 +885,51 @@
                             }
 
                         });
-
+                        $('#branchS').on('input change', 'input', function(data){//监听input的值的变化
+                            return
+                        	var value = this.value;
+                            if(inputTrue == false){
+                                this.value = ''
+                                inputTrue = true
+                            }
+                            
+                            clearTimeout(timer)
+                            timer = setTimeout(function(){
+                                console.log(132132)
+                                var obj = new Object();
+                                obj.bankCode= $('#bankNumber').val(),
+                                obj.bankName= value,
+                                obj.page= pageNum,
+                                obj.limit= 20,
+                                obj.paymentType= jgData.paymentType
+                                $.ajax({
+                                  type: 'POST',
+                                  url: CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Public.selectBank,
+                                  data:JSON.stringify(obj),
+                                  // Headers:{
+                                  //   "Content-Type":"application/json",
+                                  // },
+                                  contentType:"application/json",
+                                  success:function(res){
+                                    var branchData = res.data.selectBank
+                                    console.log(branchData)
+                                    var zhiHang = '<option value="">请搜索选择开户支行</option>'
+                                    for(var v = 0 ; v < branchData.length;v++){
+                                        zhiHang += '<option value="'+ branchData[v].lbnkNo +'">'+branchData[v].lbnkNm+'</option>'
+                                    }
+                                    
+                                    $('#bankBranchNumber').html(zhiHang)
+                                    //form.render()
+                                  },
+                                  beforeSend:function(){
+                                    
+                                  }
+                                });
+                            },500)
+                            
+                            
+                            
+                        });
                         /*---------- 监听开关 ----------*/
                         form.on('radio(cardvalid)', function(data) { //设置会员卡的有效期
                             if (data.value == 0) {
@@ -885,38 +973,89 @@
                             }
                         });
                         
-                        
+                        $('#subaaa').click(function(res){
+                            //创建异步对象  
+                            // var xhr = new XMLHttpRequest();
+                            // //设置请求的类型及url
+                            // //post请求一定要添加请求头才行不然会报错
+                            //  xhr.open('post', CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.insertMerchantRegisterInfo );
+                            // xhr.setRequestHeader("Content-type","application/json");
+                            
+                            // //发送请求
+                            // xhr.send(JSON.stringify(jgData));
+                            // xhr.onreadystatechange = function () {
+                            //     // 这步为判断服务器是否正确响应
+                            //   if (xhr.readyState == 4 && xhr.status == 200) {
+                            //     console.log(xhr.responseText);
+                            //   } 
+                            // };
+                            $.ajax({
+                              type: 'POST',
+                              url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.insertMerchantRegisterInfo,
+                              data: JSON.stringify(jgData),
+                              contentType:"application/json",
+                              success:function(res){
+                                console.log(res)
+                              },
+                              beforeSend:function(){
+                                
+                              }
+                            });
+                       
+                        })  
                         /*---------- 监听提交 ----------*/
                         form.on('submit(add)', function(data, index) {
 
 
 
                             // 发送请求
-                            var addData = data.field
-                            addData.institutionNumber = userNumber
-                            addData.merchantNumber = jgData.merchantNumber
-                            console.log(addData)
+                            console.log(jgData)
                             // 发送请求
-                            CmsUtility.postAjaxCall(
-                                //系统设置
-                                CmsConfig.addressUrl.Mechanism.updateMerchantInfo,
-                                addData,
-                                function(data) {
-                                    if (data.code == 1000) {
-                                        setTimeout(function() {
-                                            $('#quxiao').click()
-                                        }, 16);
-                                        parent.layer.msg('编辑成功')
-                                        parent.layui.table.reload('vip_cardList')
+                            // $.ajax({
+                            //     type:'POST',
+                            //     url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.insertMerchantRegisterInfo, 
+                            //     data: jgData,
+                            //     headers: {
+                            //         Accept: "application/json; charset=utf-8",
+                            //         "Content-Type": "application/json"
+                            //     },
+                            //     // dataType: 'json',
+                            //     success:function(res){
+                            //         console.log(res)
+                            //     },
+                                
+                            //     error:function(res){
+                            //         console.log(res)
+                            //     }
+                            // })
+                            
+                            // CmsUtility.postAjaxCall(
+                            //     //系统设置
+                            //     CmsConfig.addressUrl.Mechanism.insertMerchantRegisterInfo,
+                            //     jgData,
+                            //     function(data) {
+                            //         console.log(data)
+                            //         if (data.code == 1000) {
+                            //             CmsUtility.postAjaxCall(
+                            //             //系统设置
+                            //                 CmsConfig.addressUrl.Mechanism.updateMerPhotoInfo,
+                            //                 jgImgData,
+                            //                 function(data) {
+                            //                     console.log(data)
+                            //                 },
+                            //                 function(data){
 
-                                    } else {
-                                        layer.msg(data.msg)
-                                    }
-                                },
-                                function(data) {
-                                    console.log('222')
-                                }
-                            )
+                            //                 }
+                            //             )
+
+                            //         } else {
+                            //             layer.msg(data.msg)
+                            //         }
+                            //     },
+                            //     function(data) {
+                            //         console.log('222')
+                            //     }
+                            // )
                             return false;
                         });
 

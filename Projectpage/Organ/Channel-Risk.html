@@ -62,22 +62,18 @@
 					},
 					parseData: function(res) { //res 即为原始返回的数据
 						return {
-							//"code": res.code, //解析接口状态
+							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
-							//"count": res.count, //解析数据长度
-							//"data": changeRes(res.result,res.count), //解析数据列表
+							"count": res.data.count, //解析数据长度
+							"data": res.data.subaccountRiskManagementList, //解析数据列表
 						};
 					},
 					cols: [
 						[{
 							align: 'center',
-							type: 'checkbox'
-						}, {
-							align: 'center',
-							field: 'paymentChannelName',
+							field: 'merchantName',
 							width: 300,
-							title: '通道名称/子账号',
-							sort: true
+							title: '商户名称',
 						}, {
 							align: 'center',
 							field: 'transactionTime',
@@ -88,11 +84,10 @@
 							field: 'dayTransactionCountMoney',
 							width: 200,
 							title: '今天交易金额/可交易金额',
-							sort: true
 						}, {
 							align: 'center',
-							field: 'transactionTime',
-							title: '上线情况'
+							field: 'failureCause',
+							title: '描述'
 						}]
 					],
 					page: true,

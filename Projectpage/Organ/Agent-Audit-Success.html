@@ -27,7 +27,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label" style="width: auto;">请输入手续费</label>
 						<div class="layui-input-inline">
-							<input type="text" name="websiteRealmName" lay-verify="number|title" class="layui-input">
+							<input type="text" name="websiteRealmName" lay-verify="number|title" class="layui-input" id="num">
 						</div>
 						<div class="layui-form-mid x-red">
 							<button class="layui-btn" lay-filter="add" lay-submit="add" id="sub" 	>提交</button>
@@ -62,11 +62,16 @@
 					});
 					form.on('submit(add)', function(data) {
 						console.log(jgData)
+						if($('#num').val() > jgData.withdrawCashAmount){
+							layer.msg('手续费不能多于提现金额')
+							return false
+						}
 						var tjData = new Object();
 						tjData.orderNumber = jgData.orderNumber;
 						tjData.orderType = '1'
 						tjData.agentNumber = jgData.agentNumber; 
 						tjData.withdrawCashAmount = jgData.withdrawCashAmount
+						tjData.withdrawalCharge = $('#num').val()
 						CmsUtility.postAjaxCall(
 							//系统设置
 							CmsConfig.addressUrl.Mechanism.updateExType,

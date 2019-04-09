@@ -27,39 +27,31 @@
 
 <body id="iosiframe">
     <div class="x-body">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend style="font-weight: 500;">订单信息</legend>
-                </fieldset>
         <table class="layui-table" class="layui-form" lay-filter="cardAdd">
             <tbody>
-                
                 <tr>
                     <td>商户编号</td>
                     <td  id="merchantNumber"></td>
                 </tr>
+                <!-- <tr>
+                    <td>收款用户</td>
+                    <td id="shoukuanyonghu"></td>
+                </tr> -->
                 <tr>
                     <td>商户名称</td>
                     <td id="merchantName"></td>
                 </tr>
-                
+                 
+                <tr>
+                    <td>退款订单号</td>
+                    <td id="paymentOrderNumber"></td>
+                </tr>
                  <tr>
-                    <td>系统订单号</td>
+                    <td>上游订单号</td>
                     <td id="batch"></td>
                 </tr>
-                 <tr>
-                    <td>下游订单号</td>
-                    <td id="orderNumber"></td>
-                </tr>
                 <tr>
-                    <td>交易金额</td>
-                    <td id="transactionAmount"></td>
-                </tr>
-                <tr>
-                    <td>手续费</td>
-                    <td id="shopPoundage"></td>
-                </tr>
-                <tr>
-                    <td>实收金额</td>
+                    <td>退款金额</td>
                     <td id="shishou"></td>
                 </tr>
                 <tr>
@@ -69,10 +61,6 @@
                 <tr>
                     <td>成功时间</td>
                     <td id="insertTime"></td>
-                </tr>
-                <tr>
-                    <td>支付通道</td>
-                    <td id="transactionPassageway"></td>
                 </tr>
                 <tr>
                     <!-- 1+2 -->
@@ -85,62 +73,11 @@
                 </tr>
                 <tr>
                     <td>回调地址</td>
-                    <td id="fanhuandizhi"></td>
-                </tr>
-               
-                
-            </tbody>
-        </table>
-         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend style="font-weight: 500;">支付信息</legend>
-                </fieldset>
-        <table class="layui-table" class="layui-form" lay-filter="cardAdd">
-            <tbody>
-                <tr>
-                    <td>通道订单号</td>
-                    <td id="tongdaodingdanhao"></td>
-                </tr>
-                <tr>
-                    <td>交易通道</td>
-                    <td id="jiaoyitongdao"></td>
-                </tr>
-                <tr>
-                    <td>子商户号</td>
-                    <td id="subaccountNumber"></td>
-                </tr>
-                <tr>
-                    <td>APPID</td>
-                    <td id="APPID"></td>
-                </tr>
-                 <tr>
-                    <td>小程序APPID</td>
-                    <td id="miniAPPID"></td>
-                </tr>
-                 <tr>
-                    <td>订单类型</td>
-                    <td id="orderstate"></td>
-                </tr>
-                 <tr>
-                    <td>支付完成时间</td>
-                    <td id="payTime"></td>
-                </tr>
-                 <tr>
-                    <td>订单金额</td>
-                    <td id="orderMoney"></td>
-                </tr>
-                 <tr>
-                    <td>应付订单金额</td>
-                    <td id="yingfujine"></td>
+                    <td id="tongzhidizhi"></td>
                 </tr>
             </tbody>
         </table>
-         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend style="font-weight: 500;">退单信息</legend>
-        </fieldset>
-        <table class="layui-hide" id="table1" lay-filter="useruv"></table>
     </div>
-    <script src="../../common/config.js"></script>
-        <script src="../../common/utility.js"></script>
     <script>
     function subPage(data, data1) {
         console.log(data)
@@ -171,7 +108,7 @@
         //支付通道
         $("#transactionPassageway").html(jgData.transactionPassageway)
         //支付产品
-        $("#zhifuchanpin").html(jgData.onepaymentTypeName + '/' + jgData.twopaymentTypeName )
+        $("#zhifuchanpin").html(jgData.onepaymentTypeName)
         //提交地址
         //$("#tijiaodizhi").html('提交地址')
         //页面返还地址
@@ -179,74 +116,13 @@
         //服务器通知地址
         //$("#tongzhidizhi").html('通知地址')
         //状态
-        //支付信息
-        $("#tongdaodingdanhao").html(jgData.paymentOrderNumber)
-        $("#jiaoyitongdao").html(jgData.transactionPassageway)
-        $("#subaccountNumber").html(jgData.subaccountNumber)
-        $("#APPID").html(jgData.weChatAPPID)
-        $("#miniAPPID").html(jgData.smallRoutineAPPID)
-        $("#orderstate").html(jgData.orderState1)
-        $("#payTime").html(jgData.transactionTime)
-        $("#orderMoney").html(jgData.transactionAmount)
-        $("#yingfujine").html(jgData.transactionAmount)
+        $("#state").html(jgData.orderState1)
         //
         var index = parent.layer.getFrameIndex(window.name);
         $('#quxiao').click(function() {
 
             setTimeout(function() { parent.layer.close(index) }, 16);
         })
-        layui.use(['laydate', 'table', 'upload', 'form'], function() {
-        var $ = layui.jquery,
-            upload = layui.upload,
-            laydate = layui.laydate,
-            table = layui.table,
-            form = layui.form,
-            admin = layui.admin,
-            element = layui.element,
-            layer = layui.layer;
-        table.render({
-            elem: '#table1',
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionList + '?batch=' + jgData.batch,
-            page: false,
-            method: "post",
-            id: 'deviceInfo',
-            response: {
-                "statusCode": "1000", //解析接口状态
-            },
-            parseData: function(res) {
-
-                
-                if (res.data == null) {
-                    return
-                }
-                console.log(res)
-                return {
-                    "code": res.code,
-                    "data": res.data,
-                }
-            },
-            cols: [
-                [{
-                    field: 'refundOrderNumber',
-                    title: '退款订单号',
-                    align: 'center',
-                    width: 200
-                }, {
-                    field: 'refundAmount',
-                    title: '退款金额',
-                    align: 'center',
-                    width: 100
-                }, {
-                    title: '退款时间',
-                    align: 'center',
-                    field: 'refundTime',
-                }]
-            ]
-        })
-
-
-    })
-        
         return
         var serverUrl = window.parent.serverUrl
         var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
@@ -296,7 +172,8 @@
                 "state": jgData.processingState,
                 //
             })
-            
+
+
 
 
 

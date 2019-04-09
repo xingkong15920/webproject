@@ -1,190 +1,220 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title></title>
-		<meta name="renderer" content="webkit|ie-comp|ie-stand">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-		<meta http-equiv="Cache-Control" content="no-siteapp" />
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-	</head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+</head>
 
-	<body>
-		<div class="x-nav">
-			<span class="layui-breadcrumb"> <a href="">流水</a> <a> <cite>商户账单</cite></a>
+<body>
+    <div class="x-nav">
+        <span class="layui-breadcrumb"> <a href="">账单</a> <a> <cite>商户账单</cite></a>
 		</span>
-			<a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);" title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
-		</div>
-		<div class="x-body">
-			<div class="demoTable layui-form x-so">
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
-				</div>
-				<div class="layui-input-inline">
-					<button class="layui-btn" data-type="reload">
-						<i class="layui-icon">&#xe615;</i>
-					</button>
-				</div>
-			</div>
-			<xblock>
-				<button class="layui-btn" id="baobiao">
-					<i class="layui-icon"></i>报表
-				</button>
-			</xblock>
-			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
-		</div>
-		<script src="../../common/config.js"></script>
-		<script src="../../common/utility.js"></script>
-		<script>
-			function changeRes(data){
-				return
-				if(data == null){
-					return
-				}
-				for(var i = 0; i < data.length;i++){
-					if(!data[i].weChatOrderTotalMoney){
-						data[i].weChatOrderTotalMoneya = "-"
-					}else{
-						data[i].weChatOrderTotalMoneya = data[i].weChatOrderTotalMoney
-					}
-					if(!data[i].weChatTotalOrder){
-						data[i].weChatTotalOrdera = "-"
-					}else{
-						data[i].weChatTotalOrdera = data[i].weChatTotalOrder
-					}
-					if(!data[i].alipayOrderTotalMoney){
-						data[i].alipayOrderTotalMoneya = "-"
-					}else{
-						data[i].alipayOrderTotalMoneya = data[i].alipayOrderTotalMoney
-					}
-					if(!data[i].alipayTotalOrder){
-						data[i].alipayTotalOrdera = "-"
-					}else{
-						data[i].alipayTotalOrdera = data[i].alipayTotalOrder
-					}
-				}
-				return data
-			}
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var startDate = new Date();
-			var endDate = new Date();
-			var nowTime = new Date().valueOf();
-			layui.use(['table', 'laydate'], function() {
-				var table = layui.table,
-					laydate = layui.laydate;
-					
-				// 选择日期插件  
-				laydate.render({
-					elem: '#startTime',
-					type: 'date',
-					max: nowTime,
-					value: startDate
-				});
-				laydate.render({
-					elem: '#endTime',
-					type: 'date',
-					max: nowTime,
-					value: endDate
-				});
-				//方法级渲染
-				table.render({
-					elem: '#LAY_table_bill',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getMerchantBill + '?merchantNumber=' + userNumber,
-					method: "post",
-					height:"full-200",
-					page: true,
-					id: 'billlist',
-					response: {
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) {
-						if(res.data == null) {
-							return
-						}
-						return {
-							"code": res.code,
-							"count": res.data.count,
-							"data": changeRes(res.data.result),
-						}
-					},
-					cols: [
-						[{
-							field: 'statementDate',
-							title: '账单日期',
-							align: 'center'
-						}, {
-							field: 'totalOrder',
-							title: '总订单数',
-							align: 'center'
-						}, {
-							field: 'orderTotalMoney',
-							title: '订单总额',
-							align: 'center'
-						}, {
-							field: 'poundage',
-							title: '手续费',
-							align: 'center'
-						}, {
-							field: 'alipayTotalOrdera',
-							title: '支付宝笔数',
-							align: 'center'
-						}, {
-							field: 'alipayOrderTotalMoneya',
-							title: '支付宝金额',
-							align: 'center'
-						}, {
-							field: 'weChatTotalOrdera',
-							title: '微信笔数',
-							align: 'center'
-						}, {
-							field: 'weChatOrderTotalMoneya',
-							title: '微信金额',
-							align: 'center'
-						}]
-					],
-					done: function(res, curr, count) {
-						console.log(res)
-					}
-				});
+        <a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);" title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <div class="demoTable layui-form x-so">
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn" data-type="reload">
+                    <i class="layui-icon">&#xe615;</i>
+                </button>
+            </div>
+        </div>
+        <xblock>
+            <button class="layui-btn" id="baobiao">
+                <i class="layui-icon"></i>报表
+            </button>
+        </xblock>
+        <table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
+    </div>
+    <script src="../../common/config.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    function changeRes(data) {
+        return
+        if (data == null) {
+            return
+        }
+        if ( res.data == '查询数据为空') {
+	        return
+	    }
+        for (var i = 0; i < data.length; i++) {
+            if (!data[i].weChatOrderTotalMoney) {
+                data[i].weChatOrderTotalMoneya = "-"
+            } else {
+                data[i].weChatOrderTotalMoneya = data[i].weChatOrderTotalMoney
+            }
+            if (!data[i].weChatTotalOrder) {
+                data[i].weChatTotalOrdera = "-"
+            } else {
+                data[i].weChatTotalOrdera = data[i].weChatTotalOrder
+            }
+            if (!data[i].alipayOrderTotalMoney) {
+                data[i].alipayOrderTotalMoneya = "-"
+            } else {
+                data[i].alipayOrderTotalMoneya = data[i].alipayOrderTotalMoney
+            }
+            if (!data[i].alipayTotalOrder) {
+                data[i].alipayTotalOrdera = "-"
+            } else {
+                data[i].alipayTotalOrdera = data[i].alipayTotalOrder
+            }
+        }
+        return data
+    }
 
-				// 根據條件重载表格
-				var $ = layui.$,
-					active = {
-						reload: function() {
-							// 获取上面查询框的值
-							var shopName = $('#shopName');
-							var startTime = $('#startTime');
-							var endTime = $('#endTime');
+    function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+        return time2
+    }
+    var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+    var startDate = fun_date(-6);
+    var endDate = fun_date(0);
+    var nowTime = new Date().valueOf();
+    layui.use(['table', 'laydate'], function() {
+        var table = layui.table,
+            laydate = layui.laydate;
 
-							//执行重载
-							table.reload('billlist', {
-								page: {
-									curr: 1 //重新从第 1 页开始
-								},
-								where: {
-									startTime: startTime.val(),
-									endTime: endTime.val(),
-									shopName: shopName.val(),
-								}
-							});
-						}
-					};
+        // 选择日期插件  
+        laydate.render({
+            elem: '#startTime',
+            type: 'date',
+            value: startDate
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'date',
+            max: nowTime,
+            value: endDate
+        });
+        //方法级渲染
+        function tableRender() {
+            table.render({
+                elem: '#LAY_table_bill',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getMerchantBill + '?merchantNumber=' + userNumber,
+                where: {
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
+                },
+                method: "post",
+                height: "full-200",
+                page: true,
+                id: 'billlist',
+                response: {
+                    "statusCode": "1000", //解析接口状态
+                },
+                parseData: function(res) {
+                	
+                    if (res.data == null ) {
+                        return
+                    }
+                    if ( res.data == '查询数据为空') {
+                        return
+                    }
+                    console.log('123')
+                    for (var i = 0; i < res.data.result.length; i++) {
+                        if (res.data.result[i] == null) {
+                            res.data.result.splice(i, 1)
+                        }
+                    }
+                    return {
+                        "code": res.code,
+                        "count": res.data.count,
+                        "data": res.data.result,
+                    }
+                },
+                cols: [
+                    [{
+                        field: 'statementDate',
+                        title: '账单日期',
+                        align: 'center'
+                    }, {
+                        field: 'totalOrder',
+                        title: '交易笔数',
+                        align: 'center'
+                    }, {
+                        field: 'orderTotalMoney',
+                        title: '交易金额',
+                        align: 'center'
+                    }, {
+                        field: 'refundOrderTotalMoney',
+                        title: '退款金额',
+                        align: 'center'
+                    }, {
+                        field: 'poundage',
+                        title: '手续费',
+                        align: 'center'
+                    }, {
+                        field: 'subsidyNumber',
+                        title: '补贴笔数',
+                        align: 'center'
+                    }, {
+                        field: 'subsidyMoney',
+                        title: '补贴金额',
+                        align: 'center'
+                    }, {
+                        field: 'shishoujine',
+                        title: '实收金额',
+                        align: 'center'
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    console.log(res)
+                }
+            });
+        }
 
-				$('.demoTable .layui-btn').on('click', function() {
-					var type = $(this).data('type');
-					active[type] ? active[type].call(this) : '';
-				});
-			});
-		</script>
-	</body>
+        setTimeout(function(){
+        	tableRender()
+        },500)
+        // 根據條件重载表格
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    // 获取上面查询框的值
+                    var shopName = $('#shopName');
+                    var startTime = $('#startTime');
+                    var endTime = $('#endTime');
+
+                    //执行重载
+                    table.reload('billlist', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            startTime: startTime.val(),
+                            endTime: endTime.val(),
+                            shopName: shopName.val(),
+                        }
+                    });
+                }
+            };
+
+        $('.demoTable .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+    </script>
+</body>
 
 </html>

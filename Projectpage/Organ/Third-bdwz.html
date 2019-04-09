@@ -30,19 +30,19 @@
                 	<div class="layui-form-item">
                    		<label class="layui-form-label">AppID</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="AppID" autocomplete="off" placeholder="请输入AppID" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="baiduAppID" autocomplete="off" placeholder="请输入AppID" class="layui-input" lay-verify="title">
                     	</div>
 	                </div>
 	                <div class="layui-form-item">
                    		<label class="layui-form-label">API Key</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="API Key" autocomplete="off" placeholder="请输入API Key" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="baiduAPIKey" autocomplete="off" placeholder="请输入API Key" class="layui-input" lay-verify="title">
                     	</div>
 	                </div>
 	                <div class="layui-form-item">
                    		<label class="layui-form-label">Secret Key</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="Secret Key" autocomplete="off" placeholder="请输入Secret Key" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="baiduSecretKey" autocomplete="off" placeholder="请输入Secret Key" class="layui-input" lay-verify="title">
                     	</div>
 	                </div>
 					<div class="layui-form-item">
@@ -70,7 +70,7 @@
 					laytpl = layui.laytpl;
 				CmsUtility.postAjaxCall(
 						//系统设置
-					CmsConfig.addressUrl.Mechanism.selectJGPush,
+					CmsConfig.addressUrl.Mechanism.getThirdParty,
 					{
 						"institutionNumber":institutionNumber
 					},
@@ -80,8 +80,9 @@
 								layer.msg(data.msg)
 							}else{
 							form.val('basic', {
-								"jgDevkey":data.data.jgDevKey,
-								"jgApiDevsecret":data.data.jgApiDevsecret
+								"baiduAPIKey":data.data.baiduAPIKey,
+								"baiduAppID":data.data.baiduAppID,
+								"baiduSecretKey":data.data.baiduSecretKey,
 							})
 
 							}
@@ -124,7 +125,7 @@
 					console.log(data)
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Mechanism.updateJGPush,
+						CmsConfig.addressUrl.Mechanism.updateThirdParty,
 						data,
 						function(data){
 							if(data.code == 1000){

@@ -31,15 +31,9 @@
 			<div class="layui-row">
 				<form class="layui-form" action="" lay-filter="tongdao">
 					<div class="layui-form-item">
-						<label class="layui-form-label">中文名称</label>
+						<label class="layui-form-label">支付宝合作伙伴pid</label>
 						<div class="layui-input-block">
-							<input type="text" name="alipayName" autocomplete="off" placeholder="请输入通道中文名称" class="layui-input" lay-verify="alipayName">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">英文名称</label>
-						<div class="layui-input-block">
-							<input type="text" name="alipaySpell" autocomplete="off" placeholder="请输入通道英文名称,建议英文首字母" class="layui-input" lay-verify="alipaySpell">
+							<input type="text" name="alipayPid" autocomplete="off" placeholder="合作伙伴pid" class="layui-input" lay-verify="alipayPid">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -48,12 +42,7 @@
 							<input type="text" name="alipayAppid" autocomplete="off" placeholder="应用appid" class="layui-input" lay-verify="alipayAppid">
 						</div>
 					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">支付宝PID</label>
-						<div class="layui-input-block">
-							<input type="text" name="alipayPid" autocomplete="off" placeholder="合作伙伴pid" class="layui-input" lay-verify="alipayPid">
-						</div>
-					</div>
+					
 					<div class="layui-form-item">
 						<label class="layui-form-label">RSA私钥</label>
 						<div class="layui-input-block">
@@ -72,7 +61,7 @@
 							<textarea class="layui-textarea" name="alipayPublicKey" autocomplete="off" placeholder="应用公钥" lay-verify="alipayPublicKey" rows="3"></textarea>
 						</div>
 					</div>
-					<div class="layui-form-item">
+					<!-- <div class="layui-form-item">
 							<label class="layui-form-label">支付授权目录</label>
 							<div class="layui-input-inline">
 								<input type="text" name="payDasd" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
@@ -83,7 +72,7 @@
 							<div class="layui-input-inline">
 								<input type="text" name="recommendAppid" autocomplete="off" placeholder="推荐关注公众号APPID" class="layui-input" lay-verify="appsecret">
 							</div>
-						</div>
+						</div> -->
 					<div class="layui-form-item">
 						<label class="layui-form-label">回调地址</label>
 						<div class="layui-input-block">
@@ -102,7 +91,18 @@
 							<input type="checkbox" name="alipayDisable" lay-skin="switch" lay-filter="GF_zfbswitch" lay-text="开|关" checked>
 						</div>
 					</div>
-
+					<div class="layui-form-item">
+						<label class="layui-form-label">中文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="alipayName" autocomplete="off" placeholder="请输入通道中文名称" class="layui-input" lay-verify="alipayName">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">英文名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="alipaySpell" autocomplete="off" placeholder="请输入通道英文名称,建议英文首字母" class="layui-input" lay-verify="alipaySpell">
+						</div>
+					</div>
 					<div class="layui-form-item layui-layout-admin">
 						<div class="layui-input-block">
 							<div class="layui-footer" style="left: 0;text-align: center;">
@@ -153,6 +153,10 @@
 						if(value.length == "") {
 							return '支付宝英文名称不能为空！';
 						}
+						 var newReg = new RegExp('^[0-9a-zA-Z]+$')
+		                if(!newReg.test(value)){
+		                    return '英文名称只能为英文或数字'
+		                }
 					},
 					alipayAppid: function(value) {
 						if(value.length == "") {

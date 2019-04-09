@@ -45,7 +45,7 @@
 			<table class="layui-hide" id="LAY_table_merchant" lay-filter="merchant"></table>
 		</div>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-xs" lay-event="look">查看</a>
+			<a class="layui-btn layui-btn-xs" lay-event="look">账单统计</a>
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="resetpass">密码</a>
 			<a class="layui-btn layui-btn-xs" lay-event="feilvset">费率</a>
@@ -55,7 +55,7 @@
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script type="text/html" id="toolbar_switch">
-			<input type="checkbox" name="switch" value="{{d.type}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.feilvlx==1 ? 'checked' : '' }}>
+			<input type="checkbox" name="switch" value="{{d.type}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.merchantStatus==0 ? 'checked' : '' }}>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
@@ -81,8 +81,25 @@
 					form = layui.form,
 					laytpl = layui.laytpl,
 					$ = layui.jquery;
+					var index = layer.load(2, { shade: [0.4, '#393D49'] })
 				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+				CmsUtility.postAjaxCall(
+			                    //系统设置
+                CmsConfig.addressUrl.Public.getInfoRate,
+                {
+                    "institutionNumber": JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                },
+                function(data) {
+                    sessionStorage.setItem("rate", JSON.stringify(data.data));
+                    
+                },
+                function(data){
+
+                },
+                'post',
+                'false'
+            )
 				//方法级渲染
 				console.log($('#merchantName').val())
 				function tableRender(){
@@ -136,7 +153,7 @@
 									return data.agentName + '/' + data.saleName
 								}
 							},{
-								field: 'merchantType1',
+								field: 'merchantType',
 								title: '类型',
 								align: 'center',
 								width: 120
@@ -159,6 +176,7 @@
 						],
 						done: function(res, curr, count) {
 							console.log(res)
+							layer.closeAll()
 						}
 					});
 				}
@@ -200,7 +218,7 @@
 							type: 2,
 							title: '账单统计',
 							area: ['90%', '90%'], //宽高
-							content: 'tradeCount.html',
+							content: 'shopCount.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];
 								iframe.subPageClerkpass(data, userNumber)
@@ -235,7 +253,7 @@
 						layer.open({
 							type: 2,
 							title: '费率',
-							area: ['90%', '90%'], //宽高
+							area: ['70%', '90%'], //宽高
 							content: 'Merchants-List-rate.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];

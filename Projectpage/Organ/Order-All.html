@@ -98,11 +98,12 @@
 		</div>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="Toview" lay-event="Toview">查看</a>
-			<a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
+			
 		</script>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			// <a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
 			function fun_date(aa){
 		        var date1 = new Date(),
 		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
@@ -125,8 +126,20 @@
 					if(data[i].orderState == 2){
 						data[i].orderState1 = "已结算"
 					}
-					if(data[i].orderState == -1){
-						data[i].orderState1 = "已退款"
+					if(data[i].orderState == 3){
+						data[i].orderState1 = "失败"
+					}
+					if(data[i].orderState == 4){
+						data[i].orderState1 = "全部退款"
+					}
+					if(data[i].orderState == 5){
+						data[i].orderState1 = "部分退款"
+					}
+					if(data[i].orderState == 6){
+						data[i].orderState1 = "异常订单"
+					}
+					if(data[i].orderState == 7){
+						data[i].orderState1 = "退款中"
 					}
 					
 				}
@@ -165,7 +178,7 @@
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						//url: './json/vip-card.json',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=' + userNumber ,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getRefundTrade + '?institutionNumber=' + userNumber ,
 						// + userNumber ,
 						where:{
 							"merchantName":$('#merchantName').val(),
@@ -176,7 +189,6 @@
 							"oneTransactionType":$('#oneTransactionType').val(),
 							"transactionPassageway":$('#transactionPassageway').val(),
 							"subaccountNumber":$('#subaccountNumber').val(),
-							"orderState":-1,
 						},
 						elem: '#members',
 						height: 'full-210',
@@ -194,7 +206,7 @@
 								"count":res.data.count,
 								"code":res.code,
 								"msg":res.msg,
-							 	"data": changeRes(res.data.transactionReceiptResultBeanList)
+							 	"data": changeRes(res.data.refundTradeList)
 							}
 						},
 						cols: [
@@ -204,24 +216,22 @@
 								width: 200,
 								title: '商户编号/商户名称',
 								templet:function(data){
-									return data.merchantNumber + '</br>' + data.transactionPassageway
+									return data.merchantNumber + '</br>' + data.merchantName
 								}
 								//商户名称
 							}, {
 								align: 'center',
-								field: 'username',
+								field: 'orderNumber',
 								width: 150,
 								title: '交易订单号',
-								templet:function(data){
-									return  data.orderNumber
-								}
+								
 							}, {
 								align: 'center',
 								field: 'username',
 								width: 300,
 								title: '退款订单号/上游订单号',
 								templet:function(data){
-									return  data.paymentOrderNumber + '</br>' +   data.batch + '</br>' + data.orderNumber
+									return  data.batch + '</br>' +   data.paymentOrderNumber
 								}
 							}, {
 								align: 'center',
@@ -241,12 +251,19 @@
 								field: 'subaccountNumber',
 								width: 140,
 								title: '支付方式',
+								templet:function(data){
+									return data.onepaymentTypeName + '</br>' + data.twopaymentTypeName
+								}
 								//1级+2级
 							}, {
 								align: 'center',
-								field: 'errorDescribe',
+								field: 'orderRemarks',
 								width: 200,
 								title: '订单描述',
+							}, {
+								align: 'center',
+								field: 'orderState',
+								title: '状态',
 							}, {
 								align: 'center',
 								title: '操作',
@@ -291,10 +308,10 @@
 							type: 2,
 							title: '系统订单号：' + data.batch,
 							shade: 0.5,
-							area: ['600px', '500px'],
+							area: ['600px', '600px'],
 							maxmin: false,
 							resize: false,
-							content: ['Order-detail.html'],
+							content: ['order-fail-detail.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
