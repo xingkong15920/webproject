@@ -118,7 +118,8 @@
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
 		</div>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">同步</a>
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
+
 		</script>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
@@ -239,22 +240,22 @@
 							field: 'transactionAmount',
 							title: '应收款',
 							align: 'center',
-							width: 120
+							width: 100
 						}, {
 							field: 'shishoujine',
 							title: '实收款',
 							align: 'center',
-							width: 120
+							width: 100
 						}, {
 							field: 'shopPoundage',
 							title: '手续费',
 							align: 'center',
-							width: 120
+							width: 100
 						}, {
 							field: 'onePaymentTypeName',
 							title: '支付方式',
 							align: 'center',
-							width: 220,
+							width: 200,
 							templet: function(data) {
 								return data.onePaymentTypeName +'/'+ data.twoPaymentTypeName
 							}
@@ -262,15 +263,22 @@
 							field: 'orderState',
 							title: '订单状态',
 							align: 'center',
-							width: 180
+							width: 150
 						}, {
 							field: 'C',
 							title: '交易时间',
 							align: 'center',
-							width: 230,
+							width: 200,
 							templet: function(data) {
 								return data.orderTime + '</br>' + data.transactionTime
 							}
+						},{
+							field: 'operation',
+							title: '操作',
+							toolbar: "#tool",
+							align: 'center',
+							minWidth: 150
+
 						}]
 					],
 					done: function(res, curr, count) {
@@ -323,19 +331,18 @@
 					var data = obj.data;
 					if(obj.event === 'detail') {
 						// 跳转流水详情页面
-						layer.msg('已同步')
-						// layer.open({
-						// 	type: 2,
-						// 	title: '流水详情',
-						// 	area: ['400px', '450px'], //宽高
-						// 	content: 'BillDetailsPage.html',
-						// 	success: function(layero, index) {
-						// 		// 获取子页面的iframe
-						// 		var iframe = window['layui-layer-iframe' + index];
-						// 		// 向子页面的全局函数child传参
-						// 		iframe.subPage(data)
-						// 	}
-						// });
+						layer.open({
+							type: 2,
+							title: '订单详情',
+							area: ['40%', '80%'], //宽高
+							content: 'BillDetailsPage.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data)
+							}
+						});
 					}
 				});
 
