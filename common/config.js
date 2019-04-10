@@ -1,5 +1,5 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty1';
+var Edition = 'qty';
 var server;
 if(Edition == 'qty'){
 	// server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
@@ -385,6 +385,7 @@ var CmsConfig = {
             //码牌
             //查询码牌列表
             getCode:"AgEquipment/getCode",
+            getCodes:"AgEquipment/getCodes",
             //生成二维码
             GenerateCode:"AgEquipment/GenerateCode",
             //下载
