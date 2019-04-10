@@ -43,7 +43,7 @@
 						码牌编号: 
 					</label>
 					<div class="layui-input-inline layui-input-inline2">
-						<input type="text"  name="shebei" lay-verify="required2" class="layui-input" placeholder="请选择码牌" value=""  id="search1" onblur="bl1()" onfocus="fc1()" maxlength="0" autocomplete="off">
+						<input type="text"  name="shebei" lay-verify="required2" class="layui-input" placeholder="请选择码牌" value=""  id="search1" onblur="bl1()" onfocus="fc1()" autocomplete="off">
 						<div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto" id="searchBox1" >
 						</div>
 					</div>
@@ -225,6 +225,7 @@
 							{
 								"institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
 								"agentNumber":userNumber,
+								"equipmentNumber":$('#search1').val(),
 								"equipmentType":"0",
 								"boundState":"0",
 								"page":1,
@@ -234,7 +235,7 @@
 								console.log(this.value)
 								if(data.code == 1000){
 									if(data.data == null){
-										layer.msg('暂无未绑定码牌，请去码牌管理生成')
+										//layer.msg('没有搜索到您查找的码牌')
 									}
 									 var str = ''
 									 for(var i =0;i<data.data.aElist.length;i++){

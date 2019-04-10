@@ -28,6 +28,13 @@
 			// 	});
 			// })
 		</script>
+		<style type="text/css">
+			.clearfix:after{
+				display: block;
+				content: "";
+				clear: both;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -40,7 +47,7 @@
 				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
 		</div>
 		<div class="x-body">
-			<div class="layui-row layui-form x-so">
+			<!-- <div class="layui-row layui-form x-so">
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime1">
 				</div>
@@ -50,8 +57,9 @@
 				<div class="layui-input-inline">
 					<button class="layui-btn" lay-submit="" lay-filter=""  title="搜索" id="btn"><i class="layui-icon">&#xe615;</i></button>
 				</div>
-			</div>
-			<div class="baobiao">
+			</div> -->
+			
+			<div class="baobiao  clearfix" style="display:block">
 				<div class="baobiao-col-1" style="padding-left: 0;">
 					<div class="baobiaoK">
 						<div class="baobiaolist" style="line-height:52px;font-size:16px">
@@ -59,16 +67,6 @@
 						</div>
 						<div style="line-height:50px;font-size:16px" id="shopCount">
 							0
-						</div>
-					</div>
-				</div>
-				<div class="baobiao-col-1" style="padding-right: 0;">
-					<div class="baobiaoK">
-						<div class="baobiaolist" style="line-height:52px;font-size:16px">
-							佣金
-						</div>
-						<div style="line-height:50px;font-size:16px" id="brokerage">
-							0元
 						</div>
 					</div>
 				</div>
@@ -95,7 +93,7 @@
 				<div class="baobiao-col-2" >
 					<div class="baobiaoK">
 						<div class="baobiaolist">
-							<p class="baobiaolistitle">商家收入（元）</span>
+							<p class="baobiaolistitle">交易金额（元）</span>
 							</p>
 							<p class="baobiaolistct"><span id="incomeMoney">0</span> 元</p>
 						</div>
@@ -116,7 +114,64 @@
 				<div class="baobiao-col-2">
 					<div class="baobiaoK">
 						<div class="baobiaolist">
-							<p class="baobiaolistitle">商家退款（元）</span>
+							<p class="baobiaolistitle">退款金额（元）</span>
+							</p>
+							<p class="baobiaolistct"><span id="refundMoney">0</span> 元</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="wRefundMoney">0</span> 元</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="zRefundMoney">0</span> 元</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				
+			</div>
+			<div class="baobiao  clearfix">
+				<div class="baobiao-col-1" style="padding-left: 0;">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							佣金
+						</div>
+						<div style="line-height:50px;font-size:16px" id="brokerage">
+							0
+						</div>
+					</div>
+				</div>
+				
+				<div class="baobiao-col-2">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">手续费（元）</span>
+							</p>
+							<p class="baobiaolistct"><span id="refundMoney">0</span> 元</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="wRefundMoney">0</span> 元</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="zRefundMoney">0</span> 元</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="baobiao-col-2">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">实收金额（元）</span>
 							</p>
 							<p class="baobiaolistct"><span id="refundMoney">0</span> 元</p>
 						</div>
@@ -142,8 +197,8 @@
 					<input type="text" name="shopname" id="shopName" placeholder="商户名称" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline">
-					<select name="payment" id="transactionPayment">
-						<option value="">所属渠道</option>
+					<select name="payment" id="transactionPayment" lay-search="">
+						<option value="">所属代理</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -194,17 +249,21 @@
 					$ = layui.jquery;
 				CmsUtility.postAjaxCall(
 								//系统设置
-						CmsConfig.addressUrl.Mechanism.getPassageList,
+						CmsConfig.addressUrl.Agent.getAgent,
 						{
-							"institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+							'agentNumber':userNumber,
+							'userName':'',
+							'registerCell':'',
+							'page':1,
+							'limit':100
 						},
 						function(data){
 							if(data.data == null){
 								return
 							}
-							var str = '<option value="">所属渠道</option>'
-							for(var i =0 ; i<data.data.length;i++){
-								str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
+							var str = '<option value="">所属代理</option>'
+							for(var i =0 ; i<data.data.list.length;i++){
+								str += '<option value="'+ data.data.list[i].agentNumber+'">'+data.data.list[i].agentName+'</option>'
 							}
 							$('#transactionPayment').html(str)
 							form.render()
