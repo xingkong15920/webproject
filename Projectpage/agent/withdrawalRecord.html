@@ -81,6 +81,9 @@
             },
             parseData: function(res) {
                 //res 即为原始返回的数据
+                if(res.data == null){
+                    return
+                }
                 return {
                     "code": res.code, //解析接口状态
                     "msg": res.msg, //解析提示文本
@@ -164,11 +167,15 @@
     )
     function txsq(obj, id) {
         //询问框
-        layer.confirm('当前余额：' + accountBalance + '元<br>' + '确认要提现？', {
-            btn: ['确定', '取消'] //按钮
-        }, function() {
-            // ajax提交至
-            if(accountBalance < 100){
+        console.log(accountBalance)
+        layer.prompt({
+          formType: 0,
+          value: accountBalance,
+          title: '请输入提现金额',
+          area: ['800px', '350px'] //自定义文本域宽高
+        }, function(value, index, elem){
+          console.log(value,index,elem) //得到value
+          if(value < 100){
                 layer.msg('提现金额小于100，无法提现')
                 return
             }else{
@@ -177,7 +184,7 @@
                 CmsConfig.addressUrl.Agent.insertAgentWithdrawCash,
                 {
                     "agentNumber":userNumber,
-                    "withdrawCashAmount":accountBalance
+                    "withdrawCashAmount":value
                 },
                 function(data){
                     if(data.code == 1000){
@@ -209,10 +216,56 @@
                 }
             )
             }
-             
-        }, function() {
-            console.log('11111')
         });
+        // layer.confirm('当前余额：' + accountBalance + '元<br>' + '确认要提现？', {
+        //     btn: ['确定', '取消'] //按钮
+        // }, function() {
+        //     // ajax提交至
+            // if(accountBalance < 100){
+            //     layer.msg('提现金额小于100，无法提现')
+            //     return
+            // }else{
+            //     CmsUtility.postAjaxCall(
+            //             //系统设置
+            //     CmsConfig.addressUrl.Agent.insertAgentWithdrawCash,
+            //     {
+            //         "agentNumber":userNumber,
+            //         "withdrawCashAmount":accountBalance
+            //     },
+            //     function(data){
+            //         if(data.code == 1000){
+            //             layer.msg('申请成功')
+            //             layui.table.reload('merchantlist')
+            //             CmsUtility.postAjaxCall(
+            //             //系统设置
+            //             CmsConfig.addressUrl.Agent.getAgentBalance,
+            //             {
+            //                 "agentNumber":userNumber
+            //             },
+            //             function(data){
+            //                 if(data.code == 1000){
+            //                    accountBalance = data.data.data.agentBalance
+            //                 }else{
+            //                     layer.msg(data.msg)
+            //                 }
+            //             },
+            //             function(data){
+            //                 console.log('222')
+            //             }
+            //         )
+            //         }else{
+            //             layer.msg(data.msg)
+            //         }
+            //     },
+            //     function(data){
+            //         console.log('222')
+            //     }
+            // )
+            // }
+             
+        // }, function() {
+        //     console.log('11111')
+        // });
     }
     </script>
 </body>

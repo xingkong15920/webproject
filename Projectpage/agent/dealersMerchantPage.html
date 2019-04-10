@@ -27,7 +27,7 @@
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input id="merchantName" type="text" name="userName" placeholder="代理名称" autocomplete="off" class="layui-input">
+					<input id="agentName" type="text" name="userName1" placeholder="代理名称" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
@@ -52,10 +52,11 @@
 			<a class="layui-btn layui-btn-xs" lay-event="codecard">码牌</a>
 			<a class="layui-btn layui-btn-xs" lay-event="horn">云喇叭</a>
 			<a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
+			<a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script type="text/html" id="toolbar_switch">
-			<input type="checkbox" name="switch" value="{{d.type}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.merchantStatus==0 ? 'checked' : '' }}>
+			<input type="checkbox" name="switch" value="{{d.merchantStatus}}" lay-skin="switch" lay-filter="consumptionPreferences" data-mername="{{d.merchantNumber}}" lay-text="开|关" {{ d.merchantStatus==0 ? 'checked' : '' }}>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
@@ -109,6 +110,7 @@
 							"merchantName":$('#merchantName').val(),
 							"saleName":$('#saleName').val(),
 							"merchantStatus":$('#merchantStatus').val(),
+							"agentName":$('#agentName').val(),
 							"agentLevel":agentLevel
 						},
 						elem: '#LAY_table_merchant',
@@ -296,29 +298,77 @@
 								iframe.subPageClerkpass(data, userNumber)
 							}
 						});
+					} else if(obj.event == 'push') {
+						// 秘钥
+						layer.open({
+							type: 2,
+							title: '微信推送',
+							area: ['420px', '80%'], //宽高
+							content: 'AssistantwxPush.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageClerkpush(data, userNumber)
+							}
+						});
 					} else if(obj.event == 'delete') {
 						// 发送请求,将商户进行禁用
 						layer.confirm('真的要删除么?', function(index) {
-							$.ajax({
-								type: "post",
-								url: ".DealersMerchant/disableMerchant",
-								async: true,
-								data: mydata,
-								success: function(data) {
-									if(data.code == 1000) {
-										layer.close(index);
-										layer.alert('禁用成功 ', {
-											icon: 6
-										});
-									} else{
-										layer.msg(data.desc);
-									}
-								}
-							});
+							console.log(data)
+							console.log(index)
+							var tjData = new Object();
+					tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+					tjData.merchantNumber = data.merchantNumber;
+					tjData.deletionFlag = 1
+					console.log(tjData)
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.updateMerMsg,
+						tjData,
+						function(data){
+							if(data.code == 1000){
+								 
+								parent.layer.msg('删除成功')
+								layui.table.reload('merchantlist')
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
 						});
 					}
 				});
-
+				form.on('switch(consumptionPreferences)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+					tjData.merchantNumber = data.elem.dataset.mername;
+					tjData.merchantStatus =this.checked?'0':'1';
+					tjData.deletionFlag = 0
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.updateMerMsg,
+						tjData,
+						function(data){
+							if(data.code == 1000){
+								 
+								parent.layer.msg('更改成功')
+								layui.table.reload('merchantlist')
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+				});
 				$('.layui-row .layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';

@@ -34,7 +34,7 @@
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
 				<a href="">商户</a>
-				<a><cite>概览统计</cite></a>
+				<a><cite>账单统计</cite></a>
 			</span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
@@ -46,7 +46,7 @@
 						<div class="baobiaolist" style="line-height:52px;font-size:16px">
 							交易总金额
 						</div>
-						<div style="line-height:50px;font-size:16px" id="shopCount">
+						<div style="line-height:50px;font-size:16px" id="totalTransactionAmount">
 							0
 						</div>
 					</div>
@@ -56,7 +56,7 @@
 						<div class="baobiaolist" style="line-height:52px;font-size:16px">
 							手续费
 						</div>
-						<div style="line-height:50px;font-size:16px" id="brokerage">
+						<div style="line-height:50px;font-size:16px" id="poundage">
 							0元
 						</div>
 					</div>
@@ -66,7 +66,7 @@
 						<div class="baobiaolist" style="line-height:52px;font-size:16px">
 							补贴金额
 						</div>
-						<div style="line-height:50px;font-size:16px" id="brokerage">
+						<div style="line-height:50px;font-size:16px" id="subsidyMoney">
 							0元
 						</div>
 					</div>
@@ -76,7 +76,7 @@
 						<div class="baobiaolist" style="line-height:52px;font-size:16px">
 							实收金额
 						</div>
-						<div style="line-height:50px;font-size:16px" id="brokerage">
+						<div style="line-height:50px;font-size:16px" id="actualAmount">
 							0元
 						</div>
 					</div>
@@ -149,16 +149,10 @@
 						},
 						function(data){
 							console.log(data)
-							if(data.data[0].totalTransactionAmount){
-								$('#shopCount').html(data.data[0].totalTransactionAmount + '元')
-							}else{
-								$('#shopCount').html('0元')
-							}
-							if(data.data[0].actualAmount){
-								$('#brokerage').html(data.data[0].actualAmount + '元')
-							}else{
-								$('#brokerage').html('0元')
-							}
+							$('#actualAmount').html(data.data[0].actualAmount + '元')
+							$('#poundage').html(data.data[0].poundage + '元')
+							$('#subsidyMoney').html(data.data[0].subsidyMoney + '元')
+							$('#totalTransactionAmount').html(data.data[0].totalTransactionAmount + '元')
 							
 							// $('#brokerage1').html(data.data[0].actualAmount)
 							form.render()
@@ -219,10 +213,6 @@
 						}, {
 							field: 'transactionTime',
 							title: '成功时间',
-							align: 'center'
-						}, {
-							field: 'tdname',
-							title: '通道名称',
 							align: 'center'
 						}, {
 							field: 'orderState',

@@ -47,16 +47,29 @@
 					//method: "post",
 					height: 'full-120',
 					id: 'YLBlist',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if(res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							// "count": res.data,
+							"data": res.data,
+						}
+					},
 					cols: [
 						[{
 							type: 'numbers',
 							title: '序号'
 						}, {
-							field: 'UnitType',
+							field: 'shopName',
 							title: '绑定店铺',
 							width: 200
 						}, {
-							field: 'UnitType',
+							field: 'equipmentNumber',
 							title: '云喇叭编号',
 							width: 245
 						}, {

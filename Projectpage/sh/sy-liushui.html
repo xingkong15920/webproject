@@ -109,7 +109,7 @@
 						</select>
 					</div>
 					<div class="layui-input-inline">
-						<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+						<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
 					</div>
 				</div>
 			</div>
@@ -196,7 +196,8 @@
 				}
 			)
 				//方法级渲染
-				table.render({
+				function tableRender(){
+					table.render({
 					elem: '#LAY_table_bill',
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getTransactionList + '?merchantNumber=' + userNumber,
 					method: "post",
@@ -284,34 +285,38 @@
 						}
 					}
 				});
-
+				}
+				tableRender()
+				$('#search').click(function(){
+					tableRender()
+				})
 				// 根據條件重载表格
-				var $ = layui.$,
-					active = {
-						reload: function() {
-							// 获取上面查询框的值
-							var Assistant = $('#Assistant');
-							var orderCode = $('#orderCode');
-							var shopName = $('#shopName');
-							var payment = $('#payment');
-							var startTime = $('#startTime');
-							var endTime = $('#endTime');
-							var orderStatus = $('#orderStatus');
+				// var $ = layui.$,
+				// 	active = {
+				// 		reload: function() {
+				// 			// 获取上面查询框的值
+				// 			var Assistant = $('#Assistant');
+				// 			var orderCode = $('#orderCode');
+				// 			var shopName = $('#shopName');
+				// 			var payment = $('#payment');
+				// 			var startTime = $('#startTime');
+				// 			var endTime = $('#endTime');
+				// 			var orderStatus = $('#orderStatus');
 
-							//执行重载
-							table.reload('shoplist', {
-								where: {
-									clerkName: Assistant.val(),
-									batch: orderCode.val(),
-									shopNumber: shopName.val(),
-									oneTransactionType: payment.val(),
-									startTime: startTime.val(),
-									endTime: endTime.val(),
-									orderState: orderStatus.val(),
-								}
-							});
-						}
-					};
+				// 			//执行重载
+				// 			table.reload('shoplist', {
+				// 				where: {
+				// 					clerkName: Assistant.val(),
+				// 					batch: orderCode.val(),
+				// 					shopNumber: shopName.val(),
+				// 					oneTransactionType: payment.val(),
+				// 					startTime: startTime.val(),
+				// 					endTime: endTime.val(),
+				// 					orderState: orderStatus.val(),
+				// 				}
+				// 			});
+				// 		}
+				// 	};
 
 				//监听工具条
 				table.on('tool(bill)', function(obj) {

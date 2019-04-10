@@ -47,12 +47,8 @@
 			<form class="layui-form">
 				<div class="layui-form-item" id="qrBox">
 					<div class="layui-input-inline">
-						<div id="qrcode" style="width:256px;height:256px;margin:0 auto">
-							<div id="qrcode1" ></div>
-						</div>
-						<div class="qrtips" style="margin-top:15px" id="numbers">
-							编号：
-						</div>
+						<img style="width:100%" src="" id="codeImg">
+						
 					</div>
 				</div>
 				<div id="tabBox"><table class="layui-hide" id="table1" lay-filter="useruv"></table></div>
@@ -74,14 +70,30 @@
 				var clerkNumber = data.clerkNumber;
 				console.log(data)
 				console.log(clerkNumber)
-				$('#numbers').html('编号：NO' + data.equipmentLinkAddress.split('NO')[1])
+				// $('#numbers').html('编号：NO' + data.equipmentLinkAddress.split('NO')[1])
 				layui.use(['table', 'layer'], function() {
 					$ = layui.jquery;
 					var form = layui.form,
 						layer = layui.layer;
-
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'clerk/getClerkQrcode',
+						data:{
+							"clerkNumber":clerkNumber,
+							"merchantNumber":userNumber
+						},
+						async: true,
+						success: function(data) {
+							console.log(data)
+							if(data.code == "1000") {
+								$('#codeImg').attr('src',data.data)
+							} else {
+								layer.msg(data.msg)
+							}
+						}
+					});
 					var table = layui.table;
-					new QRCode(document.getElementById("qrcode1"),data.equipmentLinkAddress);
+					// new QRCode(document.getElementById("qrcode1"),data.equipmentLinkAddress);
 					//方法级渲染
 					// table.render({
 					// 	elem: '#table1',
