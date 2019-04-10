@@ -110,22 +110,26 @@
 					table = layui.table,
 					form = layui.form;
 					laydate.render({
-					  elem: '#startTime' //指定元素
+					  elem: '#startTime', //指定元素
+					value: new Date(new Date() - 1000 * 60 * 60 * 24 * 6)
 					});
 					laydate.render({
-					  elem: '#endTime' //指定元素
+					  elem: '#endTime' ,//指定元素
+					  value: new Date()
 					});
 				//方法级渲染  
 				function tableRender(){
+					var sTiem = $('#startTime').val() + ' 00:00:00'
+					var eTime = $('#endTime').val() + ' 23:59:59'
+					
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					//url: './json/vip-card.json',
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectAgentBillList + '?agentNumber=' + userNumber,
-					// where:{
-					// 	"agentName":$('#agentName').val(),
-					// 	"registerCell":$('#registerCell').val(),
-					// 	"DateTime":$('#insertTime').val(),
-					// },
+					where:{
+						"startTime":sTiem,
+						"endTime":eTime,
+					},
 					elem: '#members',
 					height: 'full-210',
 					id: 'vip_cardList',

@@ -101,19 +101,19 @@
 					function(data){
 						console.log(this.value)
 						if(data.code == 1000){
-							if(data.data.length == 0){
+							if(!data.data){
 								layer.msg('暂无门店,请登录商户平台添加门店')
+							}else{
+								 var str = ''
+								 for(var i =0;i<data.data.length;i++){
+									str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].ShopNumber+'" data-name="'+ data.data[i].shopName+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+ data.data[i].shopName+'</div>'
+								 }
+								 document.getElementById('searchBox').innerHTML = str
+								// layer.msg('保存成功')
+								// setTimeout(function(){
+								// 	x_admin_close()
+								// },500);
 							}
-							 var str = ''
-							 for(var i =0;i<data.data.length;i++){
-							 	str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].ShopNumber+'" data-name="'+ data.data[i].shopName+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+ data.data[i].shopName+'</div>'
-							 }
-							 document.getElementById('searchBox').innerHTML = str
-							// layer.msg('保存成功')
-							// setTimeout(function(){
-							// 	x_admin_close()
-							// },500);
-							
 						}else{
 							layer.msg(data.msg)
 							
@@ -129,8 +129,9 @@
 					$('#searchBox1').show()
 					CmsUtility.postAjaxCall(
 						//系统设置
-					CmsConfig.addressUrl.Agent.getCode,
+					CmsConfig.addressUrl.Agent.getCodes,
 					{
+						"institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
 						"agentNumber":userNumber,
 						"equipmentType":"0",
 						"boundState":"0",
@@ -220,8 +221,9 @@
 					    console.log(jgData)
 					    CmsUtility.postAjaxCall(
 						//系统设置
-							CmsConfig.addressUrl.Agent.getCode,
+							CmsConfig.addressUrl.Agent.getCodes,
 							{
+								"institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
 								"agentNumber":userNumber,
 								"equipmentType":"0",
 								"boundState":"0",
