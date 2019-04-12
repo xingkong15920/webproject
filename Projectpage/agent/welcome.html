@@ -231,7 +231,11 @@
 				//方法级渲染(结算记录)
 				table.render({
 					elem: '#LAY_table_SettlementRecords',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgentWithdrawCash + '?agentNumber='+userNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectAgentBillList + '?agentNumber='+userNumber,
+					where:{
+						"startTime":'',
+						"endTime":'',
+					},
 					method: "post",
 					height: 'full-270',
 					response: {
@@ -245,34 +249,29 @@
 		                    "code": res.code, //解析接口状态
 		                    "msg": res.msg, //解析提示文本
 		                    //"count": res.data.count, //解析数据长度
-		                    "data": res.data.data, //解析数据列表
+		                    "data": res.data.agentBillList, //解析数据列表
 		                };
 		            },
 					cols: [
 						[{
-							field: 'updatetime',
+							field: 'inserttime',
 							title: '日期',
-							align: 'center'
-						}, {
-							field: 'withdrawCashAmount',
 							align: 'center',
-							title: '金额'
+							templet:function(data){
+								if(data.inserttime){
+									return data.inserttime.split('.')[0].split('T')[0] + ' '+ data.inserttime.split('.')[0].split('T')[1] 
+								}else{
+									return ""
+								}
+							}
 						}, {
-							field: 'WithdrawalsTypeC',
-		                    title: '状态',
+							field: 'importExportAmount',
+							align: 'center',
+							title: '分润金额'
+						}, {
+							field: 'endTermBalance',
+		                    title: '变动后金额',
 		                    align: 'center',
-		                    templet:function(data){
-		                        if(data.orderType == 0){
-		                            return '审核中'
-		                        }
-		                        if(data.orderType == 1){
-		                            return '已审核'
-		                        }
-		                        if(data.orderType == -1){
-		                            return '已拒绝'
-		                        }
-
-		                    }
 						}]
 					]
 				});

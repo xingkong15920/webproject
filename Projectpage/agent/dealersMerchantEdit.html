@@ -247,7 +247,7 @@
                         <input type="text" name="bankCardNo" lay-verify="title" autocomplete="off" placeholder="请输入银行卡号" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item" id="rateType3">
+                <!-- <div class="layui-form-item" id="rateType3">
                     <label class="layui-form-label">结算标识</label>
                     <div class="layui-input-inline widthauto">
                         <input type="radio" name="rateType" value="D0" title="D+0 结算" lay-filter="settlement">
@@ -265,16 +265,16 @@
                     <label class="layui-form-label">费率</label>
                     <div class="layui-input-inline">
                         <select name="rate" id="rate" lay-filter="rate" lay-verify="title">
-                            <!-- <option value="">一级类目</option>
+                            <option value="">一级类目</option>
                                 <option value="1">互联网</option>
-                                <option value="2">科技</option> -->
+                                <option value="2">科技</option>
                         </select>
                     </div>
                     
-                </div>
+                </div> -->
                 
                 <!--认证信息-->
-                <!-- <blockquote class="layui-elem-quote">认证信息</blockquote>
+                <blockquote class="layui-elem-quote">认证信息</blockquote>
                 <style type="text/css">
                 .uploadimgbtn {
                     height: 150px;
@@ -442,12 +442,12 @@
                 <div class="layui-form-item layui-layout-admin">
                     <div class="layui-input-block">
                         <div class="layui-footer" style="left: 0;text-align: center;">
-                            <button class="layui-btn" id="subaaa">立即提交</button> 
+                           <!--  <button class="layui-btn" id="subaaa">立即提交</button> -->
                             <button class="layui-btn layui-btn-primary" id="quxiao">取消</button>
                         </div>
-                        
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
@@ -471,19 +471,14 @@
     var jgData
     var jgImgData
     var timer
-    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
     console.log(shopData)
     var spStr = '<option value="">请选择</option>'
     for (var h = 0; h < shopData.length; h++) {
         spStr += '<option value="' + shopData[h].id + '">' + shopData[h].name + '</option>'
     }
     $('#chOne1').html(spStr)
-    var rateD0 
-    var rateD1
-    var rate1 = [],
-        rate2 = [],
-        rateId1 = [],
-        rateId2 = []
+    
     function imageShow(data) {
         if (!!jgImgData[data]) {
             $('#' + data + '1').show()
@@ -494,7 +489,12 @@
     }
 
     function subPage(data, data1) {
-
+        var rateD0 
+        var rateD1
+        var rate1 = [],
+        rate2 = [],
+        rateId1 = [],
+        rateId2 = []
         var oData = data
         console.log(oData)
         if(oData.peymentType == 2){

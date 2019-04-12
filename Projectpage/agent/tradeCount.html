@@ -95,18 +95,18 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">交易金额（元）</span>
 							</p>
-							<p class="baobiaolistct"><span id="incomeMoney">0</span> 元</p>
+							<p class="baobiaolistct"><span id="transactionMoney">0</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="wIncomeMoney">0</span> 元</p>
+								<p><span id="wTransactionMoney">0</span> 元</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="zIncomeMoney">0</span> 元</p>
+								<p><span id="zTransactionMoney">0</span> 元</p>
 							</div>
 						</div>
 					</div>
@@ -152,18 +152,18 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">手续费（元）</span>
 							</p>
-							<p class="baobiaolistct"><span id="refundMoney">0</span> 元</p>
+							<p class="baobiaolistct"><span id="poundage">0</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="wRefundMoney">0</span> 元</p>
+								<p><span id="wpoundage">0</span> 元</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="zRefundMoney">0</span> 元</p>
+								<p><span id="zpoundage">0</span> 元</p>
 							</div>
 						</div>
 					</div>
@@ -173,18 +173,18 @@
 						<div class="baobiaolist">
 							<p class="baobiaolistitle">实收金额（元）</span>
 							</p>
-							<p class="baobiaolistct"><span id="refundMoney">0</span> 元</p>
+							<p class="baobiaolistct"><span id="incomeMoney">0</span> 元</p>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc dnsj">
 								<div></div>
-								<p><span id="wRefundMoney">0</span> 元</p>
+								<p><span id="wIncomeMoney">0</span> 元</p>
 							</div>
 						</div>
 						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
 							<div class="baobiaodc wmsj">
 								<div></div>
-								<p><span id="zRefundMoney">0</span> 元</p>
+								<p><span id="zIncomeMoney">0</span> 元</p>
 							</div>
 						</div>
 					</div>
@@ -249,9 +249,10 @@
 					$ = layui.jquery;
 				CmsUtility.postAjaxCall(
 								//系统设置
-						CmsConfig.addressUrl.Agent.getAgent,
+						'agOrderManngementController/getMyAgent',
 						{
 							'agentNumber':userNumber,
+							'agentLevel':agentLevel,
 							'userName':'',
 							'registerCell':'',
 							'page':1,
@@ -261,9 +262,9 @@
 							if(data.data == null){
 								return
 							}
-							var str = '<option value="">所属代理</option>'
-							for(var i =0 ; i<data.data.list.length;i++){
-								str += '<option value="'+ data.data.list[i].agentNumber+'">'+data.data.list[i].agentName+'</option>'
+							var str = '<option value="">请选择或搜索代理</option>'
+							for(var i =0 ; i<data.data.length;i++){
+								str += '<option value="'+ data.data[i].agentNumber+'">'+data.data[i].agentName+'</option>'
 							}
 							$('#transactionPayment').html(str)
 							form.render()
@@ -460,13 +461,19 @@
 							$('#transactionNumber').html(data.data.agShopStatisticsResult.transactionNumber)
 							$('#wTransactionNumber').html(data.data.agShopStatisticsResult.wTransactionNumber)
 							$('#zTransactionNumber').html(data.data.agShopStatisticsResult.zTransactionNumber)
-							$('#incomeMoney').html(data.data.agShopStatisticsResult.incomeMoney)
-							$('#wIncomeMoney').html(data.data.agShopStatisticsResult.wIncomeMoney)
+							$('#transactionMoney').html(data.data.agShopStatisticsResult.transactionMoney)
+							$('#wTransactionMoney').html(data.data.agShopStatisticsResult.wTransactionMoney)
 
-							$('#zIncomeMoney').html(data.data.agShopStatisticsResult.zIncomeMoney)
+							$('#zTransactionMoney').html(data.data.agShopStatisticsResult.zTransactionMoney)
 							$('#refundMoney').html(data.data.agShopStatisticsResult.refundMoney)
 							$('#wRefundMoney').html(data.data.agShopStatisticsResult.wRefundMoney)
 							$('#zRefundMoney').html(data.data.agShopStatisticsResult.zRefundMoney)
+							$('#poundage').html(data.data.agShopStatisticsResult.poundage)
+							$('#wpoundage').html(data.data.agShopStatisticsResult.wpoundage)
+							$('#zpoundage').html(data.data.agShopStatisticsResult.zpoundage)
+							$('#incomeMoney').html(data.data.agShopStatisticsResult.incomeMoney)
+							$('#wIncomeMoney').html(data.data.agShopStatisticsResult.wIncomeMoney)
+							$('#zIncomeMoney').html(data.data.agShopStatisticsResult.zIncomeMoney)
 						}else{
 							layer.msg(data.msg)
 							

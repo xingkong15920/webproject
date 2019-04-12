@@ -51,7 +51,8 @@
 			</xblock>
 			<table class="layui-hide" id="table1" lay-filter="useruv"></table>
 			<xblock class="layui-row">
-				<button class="layui-btn layui-btn-xs" data-type="getCheckDataall"><i class="layui-icon">&#xe601;</i>批量下载二维码</button>
+				<button class="layui-btn layui-btn-xs downCode" data-type="getCheckDataall"><i class="layui-icon ">&#xe601;</i>批量下载二维码</button>
+				<button class="layui-btn layui-btn-xs downCode" data-type="AllgetCheckDataall"><i class="layui-icon ">&#xe601;</i>全部链接下载</button>
 				<!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatano"><i class="layui-icon">&#xe601;</i>批量下载二维码</button> -->
 				<!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatayes"><i class="layui-icon">&#xe601;</i>批量下载二维码（有背景）</button> -->
 				<!-- <button class="layui-btn layui-btn-xs" data-type="getAllCheckDataall"><i class="layui-icon">&#xe601;</i>下载未绑定二维码（全部）</button>
@@ -92,21 +93,11 @@
 									"statusCode":"1000", //解析接口状态
 									
 							},
-							parseData: function(res) {
-								if(res.data == null){
-									return
-								}
-							 //res 即为原始返回的数据
-								return {
-									"code": res.code, //解析接口状态
-									"msg": res.msg, //解析提示文本
-									"count": res.data.count, //解析数据长度
-									"data": res.data.saleRegisterInfoList, //解析数据列表
-								};
-							},
+							
 							parseData: function(res) {
 							 //res 即为原始返回的数据
 							 	if(res.data == null){
+							 		$('.downCode').hide()
 							 		return
 							 	}
 								return {
@@ -129,21 +120,16 @@
 								title: '二维码编号',
 								align: 'center'
 							}, {
-								field: 'codeAddress',
-								title: '二维码链接',
-								align: 'center',
-								width:300,
-							}, {
 								field: 'saleName',
 								title: '所属销售',
 								align: 'center'
 							}, {
-								field: 'shopName',
-								title: '店铺名称',
+								field: 'merchantName',
+								title: '商户名称',
 								align: 'center'
 							}, {
-								field: 'Htype',
-								title: '店铺类型',
+								field: 'shopName',
+								title: '店铺名称',
 								align: 'center'
 							}, {
 								field: 'Status',
@@ -227,8 +213,28 @@
 								// layui.table.reload('YLBlist');
 							});
 						},
+						AllgetCheckDataall: function() {
+							var b = table.checkStatus('deviceInfo').data;
+							console.log(b)
 
-						//打包下载二维码！！！！！！
+							layer.open({
+								type: 2,
+								title: '下载码牌',
+								shade: 0.5,
+								area: [$(window).width() * 0.3 + 'px', '40%'],
+								maxmin: false,
+								resize: false,
+								content: ['downCode.html'],
+								success: function(layero, index) {
+									// 获取子页面的iframe
+									var iframe = window['layui-layer-iframe' + index];
+									iframe.subPage('',institutionNumber)
+
+								}
+							});
+							
+						},
+						//打包当前页下载二维码！！！！！！
 						getCheckDataall: function() {
 							var b = table.checkStatus('deviceInfo').data;
 							console.log(b)

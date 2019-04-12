@@ -28,7 +28,7 @@
         <script src="../../common/utility.js"></script>
 		<script>
 			function subPageClerkpass(data,data1,data2){
-				console.log(data,data1,data2)
+				console.log(data1,data2)
 				var jgData = data
 				layui.use(['table', 'table', 'laytpl'], function() {
 					var table = layui.table,
@@ -39,10 +39,8 @@
 					var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 				//方法级渲染
 				table.render({
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getEquipmentlist + '?merchantNumber=' + jgData.merchantNumber,
-					where:{
-						"equipmentType":"1",
-					},
+					url: CmsConfig.ServiceUrl.ApiRootUrl + 'AgEquipment/getShopYLB' + '?merchantNumber=' + jgData.merchantNumber,
+					
 					elem: '#LAY_table_product',
 					//method: "post",
 					height: 'full-120',
@@ -57,7 +55,7 @@
 						return {
 							"code": res.code,
 							// "count": res.data,
-							"data": res.data,
+							"data": res.data.shopYLBList,
 						}
 					},
 					cols: [
@@ -83,32 +81,34 @@
 
 				table.on('tool(product)', function(obj) {
 					var data = obj.data;
-					var mydata = {
-						UserNumber: data.UserNumber,
-						ShopNumber: data.ShopNumber,
-						SheBei: data.UnitId,
-						XingHao: data.UnitType,
-						Token: data.token
-					}
+					console.log(data)
 					if(obj.event === 'unbind') {
 						// 发送请求,解绑云喇叭
 						layer.confirm('真的要解绑么?', function(index) {
-							$.ajax({
-								type: "post",
-								url: ".DealersMerchant/disableMerchant",
-								async: true,
-								data: mydata,
-								success: function(data) {
-									if(data.code == 1000) {
-										layer.close(index);
-										layer.alert('解绑成功 ', {
-											icon: 6
-										});
-									} else if(data.code == 5000) {
-										layer.msg(data.desc);
+							var ajData =  new Object()
+							ajData.merchantNumber = jgData.merchantNumber
+							ajData.equipmentNumber = data.equipmentNumber
+							ajData.shopNumber = data.shopNumber
+							CmsUtility.postAjaxCall(
+						//系统设置
+								'AgEquipment/unbindShopYLB',
+								ajData,
+								function(data){
+									if(data.code == 1000){
+										console.log(data)
+										setTimeout(function(){
+											layui.table.reload('YLBlist')
+											layer.msg('解绑成功')
+										},16); 
+										
+									}else{
+										layer.msg(data.msg)
 									}
+								},
+								function(data){
+									console.log('222')
 								}
-							});
+							)
 						});
 					}
 					if(obj.event === 'unbind111') {

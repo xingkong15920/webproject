@@ -45,7 +45,7 @@
 			<table class="layui-hide" id="LAY_table_merchant" lay-filter="merchant"></table>
 		</div>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-xs" lay-event="look">账单统计</a>
+			<a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="resetpass">密码</a>
 			<a class="layui-btn layui-btn-xs" lay-event="feilvset">费率</a>
@@ -77,6 +77,22 @@
 				}
 				return data
 			}
+			CmsUtility.postAjaxCall(
+			                    //系统设置
+                CmsConfig.addressUrl.Public.getInfoRate,
+                {
+                    "institutionNumber": JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                },
+                function(data) {
+                    sessionStorage.setItem("rate", JSON.stringify(data.data));
+                    
+                },
+                function(data){
+
+                },
+                'post',
+                'false'
+            )
 			// 			// 选择日期插件  
 			layui.use(['form', 'table', 'laytpl'], function() {
 				var table = layui.table,
