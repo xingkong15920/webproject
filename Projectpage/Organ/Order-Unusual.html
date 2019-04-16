@@ -96,6 +96,16 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			//<a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
+			function fun_date(aa){
+		        var date1 = new Date(),
+		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
+		        var date2 = new Date(date1);
+		        date2.setDate(date1.getDate()+aa);
+		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
+		        return time2
+		    }
+		    console.log(fun_date(-6));//7天前
+		    
 			function changeRes(data){
 				if(data == null){
 					return
@@ -159,7 +169,7 @@
 							"oneTransactionType":$('#oneTransactionType').val(),
 							"transactionPassageway":$('#transactionPassageway').val(),
 							"subaccountNumber":$('#subaccountNumber').val(),
-							"orderState":3,
+							"orderState":6,
 						},
 						elem: '#members',
 						height: 'full-210',
@@ -249,7 +259,7 @@
 								title: '订单金额',
 							}, {
 								align: 'center',
-								field: 'orderRemarks',
+								field: 'errorDescribe',
 								width: 150,
 								title: '异常信息',
 							}, {
@@ -277,7 +287,7 @@
 						}
 					});
 				}
-				tableRender()
+				
 				$('#search').click(function(){
 					tableRender()
 				})
@@ -287,7 +297,9 @@
 				laydate.render({
 					elem:"#endTime"
 				})
-
+				$('#startTime').val(fun_date(-6))
+		     $('#endTime').val(fun_date(0))
+		     tableRender()
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;

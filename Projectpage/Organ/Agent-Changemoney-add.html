@@ -53,8 +53,8 @@
                     <div class="layui-input-block">
                         <select name="type" id="importExportIdentification" lay-verify="type">
                             <option value="">类型</option>
-                            <option value="-2">补贴</option>
-                            <option value="0">冻结</option>
+                            <option value="0">补贴</option>
+                            <option value="1">冻结</option>
                             <option value="2">解冻</option>
                         </select>
                     </div>
@@ -68,7 +68,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label"  style="width:55px">备注</label>
                     <div class="layui-input-block">
-                        <input type="text" name="number" lay-verify="" autocomplete="off" placeholder="请输入备注" class="layui-input" id="number">
+                        <input type="text" name="mark" lay-verify="" autocomplete="off" placeholder="请输入备注" class="layui-input" id="number">
                     </div>
                 </div>
                 <div class="layui-input-block">
@@ -108,7 +108,7 @@
                 "institutionNumber": userNumber,
                 "agName":$('#agName').val(),
                 "page":pageNum,
-                "limit":'20',
+                "limit":'100',
                 "agentType":''
             },
             function(data) {
@@ -181,7 +181,7 @@
                 "institutionNumber": userNumber,
                 "agName":$('#agName').val(),
                 "page":pageNum,
-                "limit":'20',
+                "limit":'100',
                 "agentType":''
             },
             function(data) {
@@ -246,12 +246,17 @@
             	console.log(data.field)
                 // if(data.field.nuber)
                 var tjData = new Object();
-                tjData.institutionNumber = userNumber;
+                console.log($('#agName').attr('agentNumber'))
+                tjData.agentNumber = $('#agName').attr('agentNumber')
+                tjData.billType = data.field.type
+                tjData.billAccount = data.field.number
+                tjData.remark = data.field.mark
                 
-                tjData.number = data.field.number
+                console.log(tjData)
+                
                 CmsUtility.postAjaxCall(
                     //系统设置
-                    CmsConfig.addressUrl.Mechanism.setInfeoQRcode,
+                    'AgentRegister/insertAgentLocal',
                     tjData,
                     function(data) {
                         if (data.code == 1000) {
@@ -259,7 +264,7 @@
 
 
                             x_admin_close()
-                            parent.layer.msg('生成成功')
+                            parent.layer.msg('提交成功')
                             parent.layui.table.reload('vip_cardList')
 
 

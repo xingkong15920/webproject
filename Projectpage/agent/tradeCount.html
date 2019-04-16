@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
 		<meta http-equiv="Cache-Control" content="no-siteapp" />
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<link rel="stylesheet" href="../../public/css/style-baobiao.css">
+		<link rel="stylesheet" href="../../public/css/style-baobiao1.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
@@ -325,7 +325,10 @@
 						}, {
 							field: 'transactionAmount',
 							title: '交易金额',
-							align: 'center'
+							align: 'center',
+							templet:function(data){
+								return data.transactionAmount.toFixed(2)
+							}
 						}, {
 							field: 'refundAmount',
 							title: '退款额',
@@ -339,7 +342,7 @@
 							title: '实收金额',
 							align: 'center',
 							templet:function(data){
-								return (data.transactionAmount - data.refundAmount).toFixed(2)
+								return (data.transactionAmount - data.shopPoundage - data.refundAmount).toFixed(2)
 							}
 						}, {
 							field: 'subsidyAmount',

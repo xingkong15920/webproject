@@ -39,7 +39,7 @@
                 	<div class="layui-form-item">
                    		<label class="layui-form-label">支付成功</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="wechatAppid" autocomplete="off" placeholder="请输入支付成功模板编号" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="serviceNotice" autocomplete="off" placeholder="请输入支付成功模板编号" class="layui-input" lay-verify="serviceNotice">
                     	</div>
 	                </div>
                 	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -48,19 +48,19 @@
                 	<div class="layui-form-item">
                    		<label class="layui-form-label">支付成功</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="wechatAppid" autocomplete="off" placeholder="请输入支付成功模板编号" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="paySuccess" autocomplete="off" placeholder="请输入支付成功模板编号" class="layui-input" lay-verify="paySuccess">
                     	</div>
 	                </div>
 	                <div class="layui-form-item">
                    		<label class="layui-form-label">退款成功</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="wechatAppid" autocomplete="off" placeholder="请输入退款成功模板编号" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="refundSuccess" autocomplete="off" placeholder="请输入退款成功模板编号" class="layui-input" lay-verify="refundSuccess">
                     	</div>
 	                </div>
 	                <div class="layui-form-item">
                    		<label class="layui-form-label">日统计</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="wechatAppid" autocomplete="off" placeholder="请输入日统计模板编号" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="dailyStatistics" autocomplete="off" placeholder="请输入日统计模板编号" class="layui-input" lay-verify="dailyStatistics">
                     	</div>
 	                </div>
 					<div class="layui-form-item">
@@ -98,8 +98,10 @@
 								layer.msg(data.msg)
 							}else{
 							form.val('basic', {
-								"jgDevkey":data.data.jgDevKey,
-								"jgApiDevsecret":data.data.jgApiDevsecret
+								"serviceNotice":data.data.serviceNotice,
+								"paySuccess":data.data.paySuccess,
+								"refundSuccess":data.data.refundSuccess,
+								"dailyStatistics":data.data.dailyStatistics,
 							})
 
 							}
@@ -113,17 +115,26 @@
 					}
 				)
 				form.verify({
-					title:function(value){
+					serviceNotice:function(value){
 						if(!value){
 							return "不得为空"
 						}
 					},
-					pass: [/^[0-9A-Za-z]{6,12}$/, '密码必须6到12位'],
-					repass: function(value) {
-						if($('#passWord').val() != $('#repassWord').val()) {
-							return '两次密码不一致';
+					paySuccess:function(value){
+						if(!value){
+							return "不得为空"
 						}
-					}
+					},
+					refundSuccess:function(value){
+						if(!value){
+							return "不得为空"
+						}
+					},
+					dailyStatistics:function(value){
+						if(!value){
+							return "不得为空"
+						}
+					},
 				});
 				//普通图片上传
 				

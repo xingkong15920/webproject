@@ -1,5 +1,5 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty';
+var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
 	// server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
@@ -328,7 +328,10 @@ var CmsConfig = {
             //获取第三方应用
             getThirdParty:"ThirdParty/getThirdParty",
 
-
+            //updata ,new 机构消息通知
+            operateInsMeNotice:'insMeNotice/operateInsMeNotice',
+            //查询富文本列表
+            getInsMeNotice:"insMeNotice/getInsMeNotice"
         },
         //代理商后台
         Agent: {
@@ -350,7 +353,6 @@ var CmsConfig = {
            insShopEquipment:"AgEquipment/insShopEquipment",
            //解绑二维码
            updateShopCode:"AgEquipment/updateShopCode",
-
             
 
 

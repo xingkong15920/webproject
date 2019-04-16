@@ -246,7 +246,25 @@
 								}
 							});
 						}else if(obj.event === 'rate'){
-								layer.msg('rate')
+								// layer.msg('rate')
+								layer.open({
+									type: 2,
+									title: '子账号费率',
+									shade: 0.5,
+									area: ['600px', '95%'],
+									maxmin: false,
+									resize: false,
+									content: ['Channel-childaccount-rate.html'],
+									success: function(layero, index) {
+										// 获取子页面的iframe
+										var iframe = window['layui-layer-iframe' + index];
+										// 向子页面的全局函数child传参
+										// data.channel = channel
+										data.paymentChannelType = jgData.paymentChannelType
+										data.paymentChannel = jgData.id
+										iframe.subPage(data, userNumber)
+									}
+								});
 						}else if(obj.event === 'report'){
 
 								layer.msg('report')
