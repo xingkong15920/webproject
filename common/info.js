@@ -9,4 +9,8 @@
 0全部1微信2支付宝
 代理商状态
 0启用1删除
+系统订单号	batch
+上游订单号	paymentOrderNumber
+交易订单号	orderNumber
+退款订单号	batch
 */

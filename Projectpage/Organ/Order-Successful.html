@@ -51,7 +51,7 @@
 						<input type="text" name="couponName" id="batch" placeholder="系统订单号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="orderNumber" placeholder="下游订单号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="orderNumber" placeholder="通道订单号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="startTime" placeholder="创建时间" autocomplete="off" class="layui-input">
@@ -125,8 +125,20 @@
 					if(data[i].orderState == 2){
 						data[i].orderState1 = "已结算"
 					}
-					if(data[i].orderState == -1){
-						data[i].orderState1 = "已退款"
+					if(data[i].orderState == 3){
+						data[i].orderState1 = "失败"
+					}
+					if(data[i].orderState == 4){
+						data[i].orderState1 = "全部退款"
+					}
+					if(data[i].orderState == 5){
+						data[i].orderState1 = "部分退款"
+					}
+					if(data[i].orderState == 6){
+						data[i].orderState1 = "异常订单"
+					}
+					if(data[i].orderState == 7){
+						data[i].orderState1 = "退款中"
 					}
 					
 				}
@@ -219,9 +231,9 @@
 								align: 'center',
 								field: 'username',
 								width: 300,
-								title: '系统订单号/下游订单号',
+								title: '系统订单号/通道订单号',
 								templet:function(data){
-									return   data.batch + '</br>' + data.orderNumber
+									return   data.batch + '</br>' + data.paymentOrderNumber
 								}
 							}, {
 								align: 'center',

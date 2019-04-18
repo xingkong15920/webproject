@@ -28,6 +28,9 @@
     .layui-textarea{
         height: min-height:80px;
     }
+    .xdl,.yrm,.fuyou,.guanfang{
+        display: none;
+    }
     </style>
 </head>
 
@@ -36,20 +39,20 @@
         <div class="layui-row">
             <form class="layui-form">
                 <div class="layui-form-item">
-                        <label class="layui-form-label" style="width: auto;">新大陆费率</label>
-                        <div class="layui-input-item">
+                        <label class="layui-form-label xdl" style="width: auto;">新大陆费率</label>
+                        <div class="layui-input-item xdl">
                             <textarea id="keyy" name="secretkey" class="layui-textarea" placeholder="示例：0.25|0.28|0.30|0.35|0.38|0.40|0.50|0.60"></textarea>
                         </div>
-                        <label class="layui-form-label" style="width: auto;">易融码费率</label>
-                        <div class="layui-input-item">
+                        <label class="layui-form-label yrm" style="width: auto;">易融码费率</label>
+                        <div class="layui-input-item yrm">
                             <textarea id="keyy1" name="secretkey1" class="layui-textarea" placeholder="示例：0.25|0.28|0.30|0.35|0.38|0.40|0.50|0.60"></textarea>
                         </div>
-                        <label class="layui-form-label" style="width: auto;">富友费率</label>
-                        <div class="layui-input-item">
+                        <label class="layui-form-label fuyou" style="width: auto;">富友费率</label>
+                        <div class="layui-input-item fuyou">
                             <textarea id="keyy1" name="secretkey1" class="layui-textarea" placeholder="示例：0.25,N888|0.28,N888|0.30,N888|0.35,N888|0.38,N888|0.40,N888"></textarea>
                         </div>
-                        <label class="layui-form-label" style="width: auto;">官方费率</label>
-                        <div class="layui-input-item">
+                        <label class="layui-form-label guanfang" style="width: auto;">官方费率</label>
+                        <div class="layui-input-item guanfang">
                             <textarea id="keyy1" name="secretkey1" class="layui-textarea" placeholder="示例：0.25|0.28|0.30|0.35|0.38|0.40|0.50|0.60"></textarea>
                         </div>
                         <div class="layui-form-mid x-red">
@@ -67,6 +70,22 @@
     function subPage(data,data1){
         var jgData = data
         console.log(jgData)
+        switch (jgData.paymentChannelType) {
+            case  2:
+            console.log('1312')
+                $('.fuyou').show()
+                break;
+             case  3:
+              console.log('1312')
+                $('.yrm').show()
+                break;
+             case  4:
+                $('.xdl').show()
+                break;
+            default:
+               $('.bufanng').show()
+                break;
+        }
         var serverUrl = 'http://192.168.1.190:5002/'
         var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
         layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
@@ -96,6 +115,7 @@
                     }
                 },
             });
+
             // $('#sub').click(function() {
                 
             //     var tjData = new Object();

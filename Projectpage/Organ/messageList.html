@@ -238,25 +238,29 @@
 							card: data.card,
 							cardType: 5
 						}
-						layer.confirm('真的删除此广告吗', {
+						layer.confirm('真的删除此消息吗', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
 							// 发送请求
 							console.log(data)
-							var tData = new Object()
-							tData.institutionNumber = userNumber
-							tData.number = data.number
+							var tjData = new Object
+							tjData.institutionNumber = userNumber
+							tjData.deletionFlag = 1
+							tjData.addPeople = data.addPeople
+							tjData.id = data.id
+							// if()
 							CmsUtility.postAjaxCall(
 								//系统设置
-								CmsConfig.addressUrl.Mechanism.delInstitutionAdvertisementState,
-								data,
+								'insMeNotice/operateInsMeNotice',
+								tjData,
 								function(data){
 									if(data.code == 1000){
-										
-										parent.layer.msg('删除成功')
-										layer.close(index)
-										tableRender()
+										// setTimeout(function(){
+										// 	$('#quxiao').click()
+										// },16); 
+										layer.msg('保存成功')
+										layui.table.reload('vip_cardList')
 									}else{
 										layer.msg(data.msg)
 										

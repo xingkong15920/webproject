@@ -130,6 +130,8 @@
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			function subPage(data,data1){
+				console.log(data,data1)
+				var jgData = data
 				layui.use(['laydate', 'table', 'upload', 'form','layedit'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
@@ -140,6 +142,26 @@
 					element = layui.element,
 					layer = layui.layer,
 					layedit = layui.layedit;
+					// CmsUtility.postAjaxCall(
+					// 	//系统设置
+					// 	CmsConfig.addressUrl.Mechanism.operateInsMeNotice,
+					// 	tjData,
+					// 	function(data){
+					// 		if(data.code == 1000){
+					// 			setTimeout(function(){
+					// 				$('#quxiao').click()
+					// 			},16); 
+					// 			parent.layer.msg('保存成功')
+					// 			parent.layui.table.reload('vip_cardList')
+					// 		}else{
+					// 			layer.msg(data.msg)
+								
+					// 		}
+					// 	},
+					// 	function(data){
+					// 		console.log('222')
+					// 	}
+					// )
 				// 	layedit.set({
 				// 	  uploadImage: {
 				// 	    url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic + '?institutionNumber=' + userNumber + '&type=content', //接口url,
@@ -256,7 +278,11 @@
 				   laydate.render({
 				    elem: '#time2' //指定元素
 				  });
-				
+				form.val('cardAdd', {
+                        "articleTitle": jgData.articleTitle,
+                        "messageContent": jgData.messageContent,
+                    })
+                    form.render()
 				
 
 				//监听指定开关
@@ -324,11 +350,12 @@
 					var tjData = data.field
 					tjData.institutionNumber = userNumber
 					tjData.deletionFlag = 0
-					tjData.addPeople = JSON.parse(sessionStorage.getItem('organUser')).login
+					tjData.addPeople = jgData.addPeople
+					tjData.id = jgData.id
 					// if()
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Mechanism.operateInsMeNotice,
+						'insMeNotice/operateInsMeNotice',
 						tjData,
 						function(data){
 							if(data.code == 1000){
