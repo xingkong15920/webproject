@@ -100,19 +100,30 @@
 				laydate.render({
 					elem:"#endTime"
 				})
+
 				
 				//方法级渲染  
 				function tableRender(){
+					if($('#insertTime').val().trim() == ''){
+						var st = ''
+					}else{
+						var st = $('#insertTime').val() +' '+ '00:00:00'
+					}
+					if($('#endTime').val().trim() == ''){
+						var et = ''
+					}else{
+						var et = $('#endTime').val() +' '+ '23:59:59'
+					}
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantLoginLog+ '?institutionNumber=' + userNumber  ,
 					where:{
 						
-						"merchantName":$('#merchantName').val() ,
-						"merchantTypeName":$('#merchantTypeName').val(),
-						"insertTime":$('#insertTime').val()	,
-						"endTime":$('#endTime').val(),
-						"ip":$('#ip').val(),
+						"merchantName":$('#merchantName').val().trim() ,
+						"merchantTypeName":$('#merchantTypeName').val().trim(),
+						"insertTime":st,
+						"endTime":et,
+						"ip":$('#ip').val().trim(),
 					},
 					elem: '#members',
 					height: 'full-210',

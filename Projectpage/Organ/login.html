@@ -99,19 +99,20 @@
 				}
 				showCityInfo();
 				$(function() {
-					var  reg = new RegExp('(?<=[^.]*[.]+).*?(?=[.]+)')
-					var loc = window.location.href
-					console.log(loc)
-					console.log(loc.match(reg))
+					
 					CmsUtility.postAjaxCall(
 								//系统设置
 						CmsConfig.addressUrl.Public.getSitePath,
 						{
-							"sitePath":'hongxiaosou',
+							"sitePath":'51shanhe',
 						},
 						function(data) {
 							console.log(data)
 							if(data.code == '1000') {
+								// if(!!data.data[0].websiteName){
+
+								// }
+								console.log(data.data[0].websiteName)
 								$('#wel').html('欢迎登陆'+ data.data[0].websiteName +'-机构管理平台')
 								$('#title').html(data.data[0].websiteName +'机构后台管理系统')
 								sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));

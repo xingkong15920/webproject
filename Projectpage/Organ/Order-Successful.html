@@ -70,16 +70,16 @@
 							<option value="WeChat_Pay">微信</option>
 						</select>
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<select name="type" id="transactionPassageway">
-							<!-- <option value="">支付通道</option>
+							<option value="">支付通道</option>
 							<option value="0">富友</option>
-							<option value="1">新大陆</option> -->
+							<option value="1">新大陆</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="subaccountNumber" placeholder="通道子商户" autocomplete="off" class="layui-input">
-					</div>
+					</div> -->
 					<!-- <div class="layui-input-inline">
 						<select name="type" id="orderState">
 							<option value="">订单状态</option>
@@ -111,8 +111,8 @@
 		        return time2
 		    }
 		    console.log(fun_date(-6));//7天前
-		    $('#startTime').val(fun_date(-6))
-		     $('#endTime').val(fun_date(0))
+		    $('#startTime').val(fun_date(-6) + ' ' +  '00:00:00')
+		     $('#endTime').val(fun_date(0)+' ' + '23:59:59')
 			// <a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
 			function changeRes(data){
 				if(data == null){
@@ -188,12 +188,12 @@
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber='+userNumber ,
 						// + userNumber ,
 						where:{
-							"merchantName":$('#merchantName').val(),
-							"startTime":$('#startTime').val(),
-							"endTime":$('#endTime').val(),
-							"batch":$('#batch').val(),
-							"orderNumber":$('#orderNumber').val(),
-							"oneTransactionType":$('#oneTransactionType').val(),
+							"merchantName":$('#merchantName').val().trim(),
+							"startTime":$('#startTime').val().trim(),
+							"endTime":$('#endTime').val().trim(),
+							"batch":$('#batch').val().trim(),
+							"orderNumber":$('#orderNumber').val().trim(),
+							"oneTransactionType":$('#oneTransactionType').val().trim(),
 							"transactionPassageway":$('#transactionPassageway').val(),
 							"subaccountNumber":$('#subaccountNumber').val(),
 							"orderState":1,
@@ -273,7 +273,7 @@
 							}, 
 							{
 								align: 'center',
-								field: 'errorDescribe',
+								field: 'orderRemarks',
 								width: 150,
 								title: '订单描述',
 							}, 
@@ -301,10 +301,12 @@
 					tableRender()
 				})
 				laydate.render({
-					elem:"#startTime"
+					elem:"#startTime",
+					type: 'datetime'
 				})
 				laydate.render({
-					elem:"#endTime"
+					elem:"#endTime",
+					type: 'datetime'
 				})
 				//监听工具条
 				table.on('tool(members)', function(obj) {

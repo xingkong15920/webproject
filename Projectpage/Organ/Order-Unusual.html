@@ -161,15 +161,16 @@
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=' + userNumber ,
 						// + userNumber ,
 						where:{
-							"merchantName":$('#merchantName').val(),
-							"startTime":$('#startTime').val(),
-							"endTime":$('#endTime').val(),
-							"batch":$('#batch').val(),
-							"orderNumber":$('#orderNumber').val(),
-							"oneTransactionType":$('#oneTransactionType').val(),
+							"merchantName":$('#merchantName').val().trim(),
+							"startTime":$('#startTime').val().trim(),
+							"endTime":$('#endTime').val().trim(),
+							"batch":$('#batch').val().trim(),
+							"orderNumber":$('#orderNumber').val().trim(),
+							"oneTransactionType":$('#oneTransactionType').val().trim(),
 							"transactionPassageway":$('#transactionPassageway').val(),
 							"subaccountNumber":$('#subaccountNumber').val(),
-							"orderState":6,
+
+							"orderState":3,
 						},
 						elem: '#members',
 						height: 'full-210',
@@ -292,13 +293,15 @@
 					tableRender()
 				})
 				laydate.render({
-					elem:"#startTime"
+					elem:"#startTime",
+					type: 'datetime'
 				})
 				laydate.render({
-					elem:"#endTime"
+					elem:"#endTime",
+					type: 'datetime'
 				})
-				$('#startTime').val(fun_date(-6))
-		     $('#endTime').val(fun_date(0))
+				$('#startTime').val(fun_date(-6) + ' ' +  '00:00:00')
+		     $('#endTime').val(fun_date(0)+' ' + '23:59:59')
 		     tableRender()
 				//监听工具条
 				table.on('tool(members)', function(obj) {

@@ -69,7 +69,13 @@
 							<option value="0">补贴商户</option>
 						</select>
 					</div>
-					
+					<div class="layui-input-inline">
+						<select name="type1" id="merchantEnble">
+							<option value="">商户状态</option>
+							<option value="0">启用</option>
+							<option value="1">禁用</option>
+						</select>
+					</div>
 					<div class="layui-input-inline coupons_screen">
 						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
 					</div>
@@ -121,7 +127,7 @@
 				}
 				return res
 			}
-
+			
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			CmsUtility.postAjaxCall(
@@ -158,12 +164,13 @@
 						// url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/shList',
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantInfoList + '?institutionNumber=' + userNumber ,
 						where:{
-							"agentName":$('#agentName').val(),
-							"merchantName":$('#merchantName').val(),
-							"subsidy":$('#merchantType').val(),
-							"startTime":$('#startTime').val(),
-							"endtime":$('#endTime').val(),
-							"photo":$('#telNumber').val(),
+							"agentName":$('#agentName').val().trim(),
+							"merchantName":$('#merchantName').val().trim(),
+							"subsidy":$('#merchantType').val().trim(),
+							"startTime":$('#startTime').val().trim(),
+							"endtime":$('#endTime').val().trim(),
+							"photo":$('#telNumber').val().trim(),
+							"merchantStatus":$('#merchantEnble').val().trim(),
 						},
 						elem: '#members',
 						height: 'full-200',
@@ -350,7 +357,31 @@
 					var data = obj.data;
 					console.log(data)
 					if(obj.event === 'loginTo') { //直接登录商户后台
-						window.open("../sh/index.html?number="+data.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber)
+						var shHref = ''
+						var aData = data
+						CmsUtility.postAjaxCall(
+								//系统设置
+							 CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
+                                'institutionNumber': userNumber,
+                            },
+							function(data){
+								if(data.code == 1000){
+									shHref = data.data[0].merchantRoute 
+									if(shHref==''){
+							layer.msg('未获取到商户路径')
+						}
+			var merHref = shHref + '/index.html?number='+aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
+						window.open(merHref)
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+						
 					} else if(obj.event === 'channelSet') { //通道
 						layer.open({
 							type: 2,

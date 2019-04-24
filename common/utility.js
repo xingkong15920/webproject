@@ -19,7 +19,9 @@
         var isAsync = isAsync || true;
         var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
        //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
-        console.log(CmsConfig.ServiceUrl.ApiRootUrl)
+        console.log(typeof postData)
+        postData = JSON.parse(JSON.stringify(postData).replace(/ /g,''))
+        console.log(postData)
         $.ajax({
             type: type,
             url: fullUrl, 

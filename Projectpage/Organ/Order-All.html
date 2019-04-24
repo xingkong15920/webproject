@@ -113,8 +113,8 @@
 		        return time2
 		    }
 		    console.log(fun_date(-6));//7天前
-		    $('#startTime').val(fun_date(-6))
-		     $('#endTime').val(fun_date(0))
+		    $('#startTime').val(fun_date(-6) + ' ' +  '00:00:00')
+		     $('#endTime').val(fun_date(0)+' ' + '23:59:59')
 			function changeRes(data){
 				if(data == null){
 					return
@@ -181,14 +181,15 @@
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getRefundTrade + '?institutionNumber=' + userNumber ,
 						// + userNumber ,
 						where:{
-							"merchantName":$('#merchantName').val(),
-							"startTime":$('#startTime').val(),
-							"endTime":$('#endTime').val(),
-							"batch":$('#batch').val(),
-							"orderNumber":$('#orderNumber').val(),
-							"oneTransactionType":$('#oneTransactionType').val(),
+							"merchantName":$('#merchantName').val().trim(),
+							"startTime":$('#startTime').val().trim(),
+							"endTime":$('#endTime').val().trim(),
+							"batch":$('#batch').val().trim(),
+							"orderNumber":$('#orderNumber').val().trim(),
+							"oneTransactionType":$('#oneTransactionType').val().trim(),
 							"transactionPassageway":$('#transactionPassageway').val(),
 							"subaccountNumber":$('#subaccountNumber').val(),
+
 						},
 						elem: '#members',
 						height: 'full-210',
@@ -235,7 +236,7 @@
 								}
 							}, {
 								align: 'center',
-								field: 'transactionAmount',
+								field: 'tuikuanjine',
 								width: 80,
 								title: '退单金额',
 							}, {
@@ -294,10 +295,12 @@
 					tableRender()
 				})
 				laydate.render({
-					elem:"#startTime"
+					elem:"#startTime",
+					type: 'datetime'
 				})
 				laydate.render({
-					elem:"#endTime"
+					elem:"#endTime",
+					type: 'datetime'
 				})
 				//监听工具条
 				table.on('tool(members)', function(obj) {

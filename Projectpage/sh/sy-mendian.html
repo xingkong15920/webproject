@@ -68,6 +68,7 @@
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="assistantlist">店员列表</a>
 			<a class="layui-btn layui-btn-xs" lay-event="devicelist">设备列表</a>
+			<a class="layui-btn layui-btn-xs" lay-event="wechatPush">微信推送(门店)</a>
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
@@ -197,6 +198,7 @@
 				//监听工具条
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
+
 					if(obj.event === 'edit') {
 						// 跳转编辑详情页面
 						layer.open({
@@ -211,7 +213,21 @@
 								iframe.subPage(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'assistantlist') {
+					} else if(obj.event === 'wechatPush') {
+						// 跳转编辑详情页面
+						layer.open({
+							type: 2,
+							title: '微信推送(门店)',
+							area: ['420px', '80%'], //宽高
+							content: 'AssistantwxPushmendian.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageClerkpush(data, userNumber)
+							}
+						});
+					}else if(obj.event === 'assistantlist') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
@@ -276,9 +292,6 @@
 						reload: function() {
 							// 获取上面查询框的值
 							var shopName = $('#shopName');
-							var province = $('#provice');
-							var city = $('#city');
-							var area = $('#area');
 							var shopStatus = $('#shopStatus');
 							//执行重载
 							table.reload('shoplist', {
@@ -286,11 +299,8 @@
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
-									shopName: shopName.val(),
-									province: province.val(),
-									city: city.val(),
-									area: area.val(),
-									enable: shopStatus.val()
+									shopName: shopName.val().trim(),
+									enable: shopStatus.val().trim()
 								}
 							});
 						}

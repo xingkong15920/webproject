@@ -40,12 +40,13 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">费率</label>
 							<div class="layui-input-inline">
-								<select name="proportion" id="" lay-verify="title">
+								<select name="proportion" id="rate" lay-verify="title">
 									<option value="">费率</option>
 									<option value="0.006">0.6%</option>
 									<option value="0.0038">0.38%</option>
 								</select>
 							</div>
+							<div class="layui-btn" id="addRate">添加费率</div>
 						</div>
 					</div>
 					<div class="layui-form-item layui-layout-admin">
@@ -63,6 +64,15 @@
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			var rateList = [0.25,0.28,0.30,0.35,0.38,0.40,0.45,0.50,0.55];
+			
+			function createRate(){
+				var str = '<option value="'+ rateList[0] +'">'+ rateList[0] + '%' +'</option>'
+				for(var i = 1;i<rateList.length;i++){
+					str += '<option value="'+ rateList[i].toFixed(2) +'">'+ rateList[i] + '%' +'</option>'
+				}
+				$('#rate').html(str)
+			}
 			function subPage(data,data1){
 				console.log(data)
 				var jgData = data
@@ -74,14 +84,42 @@
 					table = layui.table,
 					form = layui.form,
 					laytpl = layui.laytpl;
+					createRate()
+					form.render()
 				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 				var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
 				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+				if(rateList.indexOf(jgData.proportion) < 0){
+					rateList.unshift(parseFloat(jgData.proportion))
+					createRate()
+					form.render()
+				}
 				form.val('basic', {
 						"saleName": jgData.saleName,
 						"registerCell": jgData.registerCell,
 						"proportion": jgData.proportion,
 					})
+				$('#addRate').click(function(){
+					layer.prompt({
+			          formType: 0,
+			          value: '',
+			          title: '请输入您想要的费率',
+			          area: ['800px', '350px'] //自定义文本域宽高
+			        }, function(value, index, elem){
+			        	if(rateList.indexOf(parseFloat(value)) >= 0){
+			        		layer.closeAll()
+			        		layer.msg('您所添加的费率已经存在')
+
+			        		return
+			        	}
+			        	layer.closeAll()
+			          	rateList.unshift(parseFloat(value))
+			          	createRate()
+			          	form.render()
+			        	layer.msg('添加成功')
+			          	
+			        })&& $('.layui-layer-prompt').find('input').attr('placeholder','单位为百分比,如0.38%')
+				})
 				//监听提交
 				form.on('submit(add)', function(data) {
 					console.log(jgData.saleNumber)

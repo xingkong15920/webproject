@@ -112,10 +112,11 @@
 		</script>
 		<script type="text/html" id="toolbar">
 			
-			<a class="layui-btn layui-btn-xs  {{d.auditStatus==4 ? 'hiide' : ''}}" id="rate" lay-event="success">提交</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.auditStatus==4 ? 'hiide' : ''}} "  id="pass" lay-event="fail">拒绝</a>
-			<a class="layui-btn layui-btn-xs {{d.auditStatus==4 ? 'hiide' : ''}}" id="edit" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-danger layui-btn-xs {{d.auditStatus==4 ? 'hiide' : ''}}" id="logout" lay-event="logout">删除</a>
+			<a class="layui-btn layui-btn-xs  {{d.auditStatus==1 ? '' : 'hiide'}}" id="rate" lay-event="success">提交</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger  {{d.auditStatus!=0 ? 'hiide' : ''}}" id="rate" lay-event="failMessage">未通过原因</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.auditStatus==1 ? '' : 'hiide'}} "  id="pass" lay-event="fail">拒绝</a>
+			<a class="layui-btn layui-btn-xs {{d.auditStatus==1 ? '' : 'hiide'}}" id="edit" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs {{d.auditStatus==1 ? '' : 'hiide'}}" id="logout" lay-event="logout">删除</a>
 			<span class="{{d.auditStatus !=4 ? 'hiide' : ''}}">已提交</span>
 		</script>
 		<script src="../../common/config.js"></script>
@@ -178,13 +179,13 @@
 						// url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/shList',
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerOrderlist + '?institutionNumber=' + userNumber ,
 						where:{
-							"agentName":$('#agentName').val(),
-							"merchantName":$('#merchantName').val(),
+							"agentName":$('#agentName').val().trim(),
+							"merchantName":$('#merchantName').val().trim(),
 							"auditStatus":1,
-							"subsidy":$('#merchantType').val(),
-							"startTime":$('#startTime').val(),
-							"endtime":$('#endTime').val(),
-							"photo":$('#telNumber').val(),
+							"subsidy":$('#merchantType').val().trim(),
+							"startTime":$('#startTime').val().trim(),
+							"endtime":$('#endTime').val().trim(),
+							"photo":$('#telNumber').val().trim(),
 						},
 						elem: '#members',
 						height: 'full-200',
@@ -216,7 +217,7 @@
 							}, {
 								align: 'center',
 								field: 'merchantName',
-								width: 250,
+								width: 200,
 								title: '商户名称'
 							}, {
 								align: 'center',
@@ -226,7 +227,7 @@
 							}, {
 								align: 'center',
 								field: 'agentName',
-								width: 200,
+								width: 150,
 								title: '所属代理'
 							}, {
 								align: 'center',
@@ -247,11 +248,25 @@
 								width: 100,
 								title: '状态',
 								templet:function(data){
-									if(data.auditStatus == 4){
-										return '已提交'
-									}else{
-										return '未提交'
+									switch (data.auditStatus) {
+										case 0:
+											return '未通过'
+											break;
+										case 1:
+											return '审核中'
+											break;
+										
+										case 3:
+											return '未完成'
+											break;
+										case 4:
+											return '已提交'
+											break;
+										default:
+											return  ''
+											break;
 									}
+									
 								}
 							}
 							// , {
@@ -265,11 +280,16 @@
 								field: 'insertTime',
 								width: 150,
 								title: '注册时间',
+							},{
+								align: 'center',
+								field: 'msg',
+								width: 150,
+								title: '失败原因',
 							}, {
 								align: 'center',
 								title: '操作',
 								toolbar: '#toolbar',
-								minWidth: 400
+								minWidth: 200
 							}]
 						],
 						page: true,
@@ -477,7 +497,10 @@
 								iframe.subPage(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'secretkey') { //秘钥secretkey
+					} else if(obj.event === 'failMessage') { //秘钥secretkey
+						console.log(data)
+						layer.msg(data.msg)
+					}else if(obj.event === 'secretkey') { //秘钥secretkey
 						layer.open({
 							type: 2,
 							title: '秘钥',

@@ -143,7 +143,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">官方支付宝费率</label>
                         <div class="layui-input-inline">
-                            <select name="aliRate" lay-filter="aihao">
+                            <select name="aliRate" class="rateBox" lay-filter="aihao">
                                 <option value="">请选择费率</option>
                                 <option value="0.0021">0.21%</option>
                                 <option value="0.0023">0.23%</option>
@@ -156,7 +156,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">官方微信费率</label>
                         <div class="layui-input-inline">
-                            <select name="wecharRate" lay-filter="aihao">
+                            <select name="wecharRate"  class="rateBox" lay-filter="aihao">
                                 <option value="">请选择费率</option>
                                 <option value="0.0021">0.21%</option>
                                 <option value="0.0023">0.23%</option>
@@ -171,7 +171,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">D1费率(%)</label>
                             <div class="layui-input-inline">
-                                <select name="fuyouRateD1" lay-filter="aihao">
+                                <select name="fuyouRateD1"  class="rateBox" lay-filter="aihao">
                                     <option value="">请选择费率</option>
                                     <option value="0.0021">0.21%</option>
                                     <option value="0.0023">0.23%</option>
@@ -180,8 +180,8 @@
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">D0费率(%)</label>
-                            <div class="layui-input-inline">
-                                <select name="fuyouRateD0" lay-filter="aihao">
+                            <div class="layui-input-inline ">
+                                <select name="fuyouRateD0"  class="rateBox" lay-filter="aihao">
                                     <option value="">请选择费率</option>
                                     <option value="0.0021">0.21%</option>
                                     <option value="0.0023">0.23%</option>
@@ -196,7 +196,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">D1费率(%)</label>
                             <div class="layui-input-inline">
-                                <select name="yrmRateD1" lay-filter="aihao">
+                                <select name="yrmRateD1"  class="rateBox" lay-filter="aihao">
                                     <option value="">请选择费率</option>
                                     <option value="0.0021">0.21%</option>
                                     <option value="0.0023">0.23%</option>
@@ -206,7 +206,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">D0费率(%)</label>
                             <div class="layui-input-inline">
-                                <select name="yrmRateD0" lay-filter="aihao">
+                                <select name="yrmRateD0"  class="rateBox" lay-filter="aihao">
                                     <option value="">请选择费率</option>
                                     <option value="0.0021">0.21%</option>
                                     <option value="0.0023">0.23%</option>
@@ -221,7 +221,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">D1费率(%)</label>
                             <div class="layui-input-inline">
-                                <select name="xdlRateD1" lay-filter="aihao">
+                                <select name="xdlRateD1"  class="rateBox xdlD1" lay-filter="aihao">
                                     <option value="">请选择费率</option>
                                     <option value="0.0021">0.21%</option>
                                     <option value="0.0023">0.23%</option>
@@ -231,7 +231,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">D0费率(%)</label>
                             <div class="layui-input-inline">
-                                <select name="xdlRateD0" lay-filter="aihao">
+                                <select name="xdlRateD0"  class="rateBox xdlD0" lay-filter="aihao">
                                     <option value="">请选择费率</option>
                                     <option value="0.0021">0.21%</option>
                                     <option value="0.0023">0.23%</option>
@@ -290,6 +290,18 @@
     function subPage(data, data1) {
         var jgData = data
         console.log(jgData)
+        var rateList = ['0.20','0.21','0.22','0.23','0.24','0.25','0.26','0.27','0.28','0.30','0.35','0.38','0.40','0.50','0.60']
+       
+        console.log(rateList)
+        var strate = '<option value="">请选择费率</option>'
+        for(var r = 0 ; r < rateList.length;r++){
+            strate += '<option value="'  +rateList[r]/100  +'">'+ rateList[r]+'%</option>'
+        }
+
+        $('.rateBox').html(strate)
+        var st = strate
+        $('.xdlD1').html(st+= '<option value="0.00235">0.235%</option>')
+        $('.xdlD0').html(st+= '<option value="0.00255">0.255%</option>')
         var p = [],
             c = [],
             aa = []
@@ -427,20 +439,93 @@
                 function(data) {
                     data.data.sort(compare('paymentChanneltype'))
                     var rateData = data.data
-                    form.val('cardAdd', {
+                    console.log(rateData)
+                    for(var i = 0 ; i < data.data.length;i++){
+                        if(data.data[i].paymentChanneltype == 0){
+                            form.val('cardAdd', {
                        
-                        // "T1Rate": T1,
+                                // "T1Rate": T1,
+                                
+                                "aliRate":data.data[i].rate,
+                            })
+                        }
+                        if(data.data[i].paymentChanneltype == 1){
+                            form.val('cardAdd', {
+                       
+                                // "T1Rate": T1,
+                                
+                                "wecharRate":data.data[i].rate,
+                            })
+                        }
+                        if(data.data[i].paymentChanneltype == 2){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "fuyouRateD0":data.data[i].rate,
+                                })
+                            }else{
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "fuyouRateD1":data.data[i].rate,
+                                })
+                            }
+                            
+                        }
+                        if(data.data[i].paymentChanneltype == 3){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "yrmRateD0":data.data[i].rate,
+                                })
+                            }else{
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "yrmRateD1":data.data[i].rate,
+                                })
+                            }
+                            
+                        }
+                        if(data.data[i].paymentChanneltype == 4){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "xdlRateD0":data.data[i].rate,
+                                })
+                            }else{
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "xdlRateD1":data.data[i].rate,
+                                })
+                            }
+                            
+                        }
+                    }
+                    // form.val('cardAdd', {
+                       
+                    //     // "T1Rate": T1,
                         
-                        "aliRate":rateData[0].rate,
-                        "wecharRate":rateData[1].rate,
-                        "fuyouRateD1":rateData[2].rate,
-                        "fuyouRateD0":rateData[3].rate,
+                    //     "aliRate":rateData[0].rate || '',
+                    //     "wecharRate":rateData[1].rate || '',
+                    //     "fuyouRateD1":rateData[2].rate || '',
+                    //     "fuyouRateD0":rateData[3].rate || '',
                        
-                        "yrmRateD1":rateData[4].rate,
-                        "yrmRateD0":rateData[5].rate,
-                        "xdlRateD1":rateData[6].rate,
-                        "xdlRateD0":rateData[7].rate,
-                    })
+                    //     "yrmRateD1":rateData[4].rate || '',
+                    //     "yrmRateD0":rateData[5].rate || '',
+                    //     "xdlRateD1":rateData[6].rate || '',
+                    //     "xdlRateD0":rateData[7].rate || '',
+                    // })
                     form.render()
                 },
                 function(data){
@@ -529,7 +614,9 @@
             /*---------- 自定义验证规则 ----------*/
             form.verify({
                 title: function(value) {
-                    console.log(value)
+                    if(value == null){
+                     return '不能为空！';
+                }
                     if (value.length == "") {
                         return '不能为空！';
                     }

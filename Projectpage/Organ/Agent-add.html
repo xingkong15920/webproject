@@ -84,6 +84,19 @@
 						</div>
 					</div>
 					<div class="layui-form-item">
+                    <label class="layui-form-label">选择代理</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择代理，如不选，则为一级代理" class="layui-input" id="agName"   onblur="bl()" onfocus="fc()">
+                        <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
+                            <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div> -->
+                        </div>
+                    </div>
+                </div>
+					<div class="layui-form-item">
 						<label class="layui-form-label">代理名称</label>
 						<div class="layui-input-block">
 							<input type="text" name="agentName" lay-verify="title" autocomplete="off" placeholder="请输入代理名称" class="layui-input"
@@ -152,7 +165,7 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">官方支付宝费率</label>
 							<div class="layui-input-inline">
-								<select name="aliRate" lay-filter="aihao">
+								<select name="aliRate" class="rateBox"  lay-filter="aihao">
 									<option value="">请选择费率</option>
                                         <option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -165,7 +178,7 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">官方微信费率</label>
 							<div class="layui-input-inline">
-								<select name="wecharRate" lay-filter="aihao">
+								<select name="wecharRate" class="rateBox"  lay-filter="aihao">
 									<option value="">请选择费率</option>
                                         <option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -180,7 +193,7 @@
 							<div class="layui-inline">
 								<label class="layui-form-label">D1费率(%)</label>
 								<div class="layui-input-inline">
-									<select name="fuyouRateD1" lay-filter="aihao">
+									<select name="fuyouRateD1" class="rateBox"  lay-filter="aihao">
 										<option value="">请选择费率</option>
                                         <option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -190,7 +203,7 @@
 							<div class="layui-inline">
 								<label class="layui-form-label">D0费率(%)</label>
 								<div class="layui-input-inline">
-									<select name="fuyouRateD0" lay-filter="aihao">
+									<select name="fuyouRateD0" class="rateBox"  lay-filter="aihao">
 										<option value="">请选择费率</option>
                                         <option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -205,7 +218,7 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label">D1费率(%)</label>
                                 <div class="layui-input-inline">
-                                    <select name="yrmRateD1" lay-filter="aihao">
+                                    <select name="yrmRateD1" class="rateBox"  lay-filter="aihao">
                                         <option value="">请选择费率</option>
                                         <option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -215,7 +228,7 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label">D0费率(%)</label>
                                 <div class="layui-input-inline">
-                                    <select name="yrmRateD0" lay-filter="aihao">
+                                    <select name="yrmRateD0" class="rateBox"  lay-filter="aihao">
                                         <option value="">请选择费率</option>
                                         <option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -230,7 +243,7 @@
 							<div class="layui-inline">
 								<label class="layui-form-label">D1费率(%)</label>
 								<div class="layui-input-inline">
-									<select name="xdlRateD1" lay-filter="aihao">
+									<select name="xdlRateD1" class="rateBox xdlD1"  lay-filter="aihao">
 										<option value="">请选择费率</option>
                                         <option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -240,7 +253,7 @@
 							<div class="layui-inline">
 								<label class="layui-form-label">D0费率(%)</label>
 								<div class="layui-input-inline">
-									<select name="xdlRateD0" lay-filter="aihao">
+									<select name="xdlRateD0" class="rateBox xdlD0" lay-filter="aihao">
 										<option value="">请选择费率</option>
 										<option value="0.0021">0.21%</option>
                                         <option value="0.0023">0.23%</option>
@@ -295,6 +308,58 @@
             parent.layer.close(index)
         }, 16);
     })
+    function bl() {
+        setTimeout(function() {
+            $('#searchBox').hide()
+        }, 200)
+        //$('#searchBox').hide()
+    }
+    function clickS(e) {
+        $('#agName').val(e.getAttribute('data-name'))
+        $('#agName').attr('agentNumber', e.getAttribute('data-id'))
+        $('#searchBox').hide()
+    }
+    function fc() {
+        $('#searchBox').show()
+        console.log($('#agName').val())
+        pageNum =1
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'AgentRegister/getInsAglists', 
+            {
+                
+                "institutionNumber": userNumber,
+                "agName":$('#agName').val(),
+                "page":pageNum,
+                "limit":'100',
+                "agentType":''
+            },
+            function(data) {
+                console.log(this.value)
+                if (data.code == 1000) {
+
+                    var str = ''
+                    for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-level="'+agentRegisterlist[i].agentNumber +'" data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                    }
+                    document.getElementById('searchBox').innerHTML = str
+
+                    // layer.msg('保存成功')
+                    // setTimeout(function(){
+                    //  x_admin_close()
+                    // },500);
+
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }
+        )
+
+    }
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
@@ -310,6 +375,57 @@
         // setTimeout(function(){
         //  form.render()
         // },100)
+        var rateList = ['0.20','0.21','0.22','0.23','0.24','0.25','0.26','0.27','0.28','0.30','0.35','0.38','0.40','0.50','0.60']
+       
+        console.log(rateList)
+        var strate = '<option value="">请选择费率</option>'
+        for(var r = 0 ; r < rateList.length;r++){
+            strate += '<option value="'  +rateList[r]/100  +'">'+ rateList[r]+'%</option>'
+        }
+
+        $('.rateBox').html(strate)
+        var st = strate
+        $('.xdlD1').html(st+= '<option value="0.00235">0.235%</option>')
+        $('.xdlD0').html(st+= '<option value="0.00255">0.255%</option>')
+         $("#agName").bind('input propertychange', function() {
+            console.log(this.value)
+            $('#agName').removeAttr('agentNumber')
+            document.getElementById('searchBox').innerHTML = ''
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'AgentRegister/getInsAglists', 
+            {
+                
+                "institutionNumber": userNumber,
+                "agName":$('#agName').val(),
+                "page":pageNum,
+                "limit":'100',
+                "agentType":''
+            },
+            function(data) {
+                console.log(this.value)
+                if (data.code == 1000) {
+                    // if(data.data == null){
+                    //     layer.msg(data.msg)
+                    //     return
+                    //    }
+                    var str = ''
+                    for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-level="'+agentRegisterlist[i].agentNumber +'"  data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                    }
+                        document.getElementById('searchBox').innerHTML = str
+
+
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        })
         var p = [],
             c = [],
             aa = [],
@@ -436,6 +552,9 @@
         /*---------- 自定义验证规则 ----------*/
         form.verify({
             title: function(value) {
+            	if(value == null){
+            		 return '不能为空！';
+            	}
                 if (value.length == "") {
                     return '不能为空！';
                 }
@@ -458,6 +577,8 @@
             // layer.alert(JSON.stringify(data.field), {
             //  title: '最终的提交信息'
             // })
+            console.log($('#agName').attr('agentNumber'))
+            return 
             var index = layer.load(2, {shade: [0.4, '#393D49']})
             var addData = data.field
             addData.institutionNumber = userNumber

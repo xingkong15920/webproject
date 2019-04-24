@@ -191,7 +191,7 @@
 				</div>
 				<div class="layui-input-inline">
 					<select name="payment" id="transactionPayment" lay-search="">
-						<option value="">所属代理</option>
+						<option value="">所属服务商</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -273,8 +273,8 @@
 					elem: '#table1',
 					url: CmsConfig.ServiceUrl.ApiRootUrl + 'agOrderManngementController/merchantList' + '?agentNumber=' + userNumber ,
 					where:{
-						"transactionPayment":$('#transactionPayment').val(),
-						"shopName":$('#shopName').val(),
+						"transactionPayment":$('#transactionPayment').val().trim(),
+						"shopName":$('#shopName').val().trim(),
 						"agentLevel":agentLevel,
 						"startTime":$('#startTime').val(),
 						"endTime":$('#endTime').val(),
@@ -316,7 +316,7 @@
 							align: 'center'
 						}, {
 							field: 'agentName',
-							title: '所属代理商',
+							title: '所属服务商',
 							align: 'center'
 						}, {
 							field: 'transactionPayment',
@@ -369,10 +369,10 @@
 				active = {
 					reload: function() {
 						// 获取上面查询框的值
-						var shopname = $("#shopname").val();
-						var startTime = $("#startTime").val();
-						var endTime = $("#endTime").val();
-						var passway = $("#payment option:selected").val();
+						var shopname = $("#shopname").val().trim();
+						var startTime = $("#startTime").val().trim();
+						var endTime = $("#endTime").val().trim();
+						var passway = $("#payment option:selected").val().trim();
 						//执行重载
 						table.reload('tradeInfo', {
 							page: {

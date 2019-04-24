@@ -90,11 +90,8 @@
 		<script>
 			function subPageClerkpush(data,userNumber) {
 				console.log(data,userNumber)
-				var data = data,
-					userNumber = userNumber,
-					shopNumber = data.shopNumber;
-				var clerkNumber = data.clerkNumber;
-				console.log(userNumber)
+				
+				
 				
 				layui.use(['table', 'layer'], function() {
 					$ = layui.jquery;
@@ -103,14 +100,14 @@
 
 					var table = layui.table;
 					var index = layer.load(2, { shade: [1, '#fff'] })
-					new QRCode(document.getElementById("qrcode1"), "http://api.51shanhe.com/wechatPush/getCode1.html?clerkNumber=" + clerkNumber + '&type=2&merchantNumber='+userNumber + '&shopNumber='+ shopNumber);
+					new QRCode(document.getElementById("qrcode1"), "http://api.51shanhe.com/wechatPush/getCode1.html?clerkNumber=" + '' + '&type=0&merchantNumber='+data.merchantNumber + '&shopNumber='+ '');
 					//方法级渲染
 					var info;
 					var nObect = new Object()
-					nObect.clerkNumber = clerkNumber
-					nObect.merchantNumber = userNumber
-					nObect.shopNumber = shopNumber
-					nObect.bindType = 2
+					nObect.clerkNumber = ''
+					nObect.merchantNumber = data.merchantNumber
+					nObect.shopNumber = ''
+					nObect.bindType = 0
 					$.ajax({
 						type: "post",
 						url:'http://api.51shanhe.com/p-server/appServer/searchBind',
@@ -149,7 +146,7 @@
 								ub.clerkNumber = info.clerkNumber
 								ub.shopNumber = info.shopNumber
 								ub.merchantNumber = info.merchantNumber
-								ub.bindType = 2
+								ub.bindType = 0
 								$.ajax({
 									type: "post",
 									url: 'http://api.51shanhe.com/p-server/appServer/relievePushBind',

@@ -27,7 +27,7 @@
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input id="agentName" type="text" name="userName1" placeholder="代理名称" autocomplete="off" class="layui-input">
+					<input id="agentName" type="text" name="userName1" placeholder="服务商名称" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
@@ -51,8 +51,9 @@
 			<a class="layui-btn layui-btn-xs" lay-event="feilvset">费率</a>
 			<a class="layui-btn layui-btn-xs" lay-event="codecard">码牌</a>
 			<a class="layui-btn layui-btn-xs" lay-event="horn">云喇叭</a>
+			<a class="layui-btn layui-btn-xs" lay-event="push">微信推送(商户)</a>
 			<a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
-			
+			<a class="layui-btn layui-btn-xs" lay-event="recomId">推荐人ID</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script type="text/html" id="toolbar_switch">
@@ -124,10 +125,10 @@
 					table.render({
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber ,
 						where:{
-							"merchantName":$('#merchantName').val(),
-							"saleName":$('#saleName').val(),
+							"merchantName":$('#merchantName').val().trim(),
+							"saleName":$('#saleName').val().trim(),
 							"merchantStatus":$('#merchantStatus').val(),
-							"agentName":$('#agentName').val(),
+							"agentName":$('#agentName').val().trim(),
 							"agentLevel":agentLevel
 						},
 						elem: '#LAY_table_merchant',
@@ -165,7 +166,7 @@
 								width: 200
 							}, {
 								field: 'agentLevel',
-								title: '所属代理(代理/销售)',
+								title: '所属服务商(服务商/销售)',
 								align: 'center',
 								width: 250,
 								templet:function(data){
@@ -208,11 +209,11 @@
 					active = {
 						reload: function() {
 							// 获取上面查询框的值
-							var channel = $('#channel').val(); // 经销商标号
-							var merchantName = $('#merchantName').val(); // 商户名称
-							var state = $('#state').val();
-							var clerk = $('#clerk').val(); // 业务员编号
-							var ylbNumber = $("#ylbNumber").val();
+							var channel = $('#channel').val().trim(); // 经销商标号
+							var merchantName = $('#merchantName').val().trim(); // 商户名称
+							var state = $('#state').val().trim();
+							var clerk = $('#clerk').val().trim(); // 业务员编号
+							var ylbNumber = $("#ylbNumber").val().trim();
 
 							//执行重载
 							table.reload('merchantlist', {
@@ -315,13 +316,25 @@
 								iframe.subPageClerkpass(data, userNumber)
 							}
 						});
+					} else if(obj.event == 'recomId') {
+						// 秘钥
+						layer.open({
+							type: 2,
+							title: '秘钥',
+							area: ['400px', '270px'], //宽高
+							content: 'Merchants-List-recomId.html',
+							success: function(layero, index) {
+								var iframe = window['layui-layer-iframe' + index];
+								iframe.subPageClerkpass(data, userNumber)
+							}
+						});
 					} else if(obj.event == 'push') {
 						// 秘钥
 						layer.open({
 							type: 2,
-							title: '微信推送',
-							area: ['420px', '80%'], //宽高
-							content: 'AssistantwxPush.html',
+							title: '微信推送(商户)',
+							area: ['420px', '60%'], //宽高
+							content: 'AssistantwxPushsh.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];

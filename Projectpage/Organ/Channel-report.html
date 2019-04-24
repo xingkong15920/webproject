@@ -75,7 +75,32 @@
                 form = layui.form,
                 laytpl = layui.laytpl;
 
-            
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'submit/getweChatPut',
+                    {
+                        "institutionNumber":userNumber,
+                        "bbmerchantNumber":data.subaccountNumber,
+                        "paymentChannel":data.paymentChannel,
+                        "paymentType":data.paymentChannelType,
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+                            console.log(typeof data.data[0].appidConfigList)
+                            // var arrList = data.data[0].appidConfigList.split(',')
+                            // for(var i = 0 ; i < data.data[0].appidConfigList)
+                            
+
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
             //表单初始赋值
             // $('#sub').click(function(){
             //  console.log(code1)

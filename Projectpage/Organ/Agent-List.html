@@ -117,8 +117,8 @@
 					//url: './json/vip-card.json',
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getAgentRegisterlist + '?institutionNumber=' + userNumber ,
 					where:{
-						"agName":$('#userName').val(),
-						"agentType":$('#agentType').val()
+						"agName":$('#userName').val().trim(),
+						"agentType":$('#agentType').val().trim()
 					},
 					elem: '#members',
 					height: 'full-210',
@@ -302,7 +302,31 @@
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
 					if(obj.event === 'loginTo') { //直接登录商户后台
-						window.open("../agent/index.html?number=" + data.agentNumber + '&ins=' +userNumber)
+					var agHref = ''
+						var aData = data
+						CmsUtility.postAjaxCall(
+								//系统设置
+							 CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
+                                'institutionNumber': userNumber,
+                            },
+							function(data){
+								if(data.code == 1000){
+									agHref = data.data[0].agentRoute 
+									if(agHref==''){
+							layer.msg('未获取到服务商路径')
+						}
+			var merHref = agHref + '/index.html?number='+aData.agentNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
+						window.open(merHref)
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+						
 					} else if(obj.event === 'rate') { //费率
 						layer.open({
 							type: 2,
