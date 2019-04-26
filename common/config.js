@@ -1,9 +1,9 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty1';
+var Edition = 'qty';
 var server;
 if(Edition == 'qty'){
 	// server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
-      server  = 'http://192.168.1.148:5006/shanhe-mechanism/'
+      server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
 }else{
 	server  = 'http://192.168.1.113:5006/shanhe-mechanism/'
 }

@@ -317,6 +317,7 @@
     function clickS(e) {
         $('#agName').val(e.getAttribute('data-name'))
         $('#agName').attr('agentNumber', e.getAttribute('data-id'))
+        $('#agName').attr('agentType', e.getAttribute('data-level'))
         $('#searchBox').hide()
     }
     function fc() {
@@ -329,7 +330,7 @@
             {
                 
                 "institutionNumber": userNumber,
-                "agName":$('#agName').val(),
+                "agentName":$('#agName').val(),
                 "page":pageNum,
                 "limit":'100',
                 "agentType":''
@@ -340,7 +341,7 @@
 
                     var str = ''
                     for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
-                        str += '<div class="layui-btn layui-btn-primary" data-level="'+agentRegisterlist[i].agentNumber +'" data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                        str += '<div class="layui-btn layui-btn-primary" data-level="'+data.data.agentRegisterlist[i].agentLevel +'" data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
                     }
                     document.getElementById('searchBox').innerHTML = str
 
@@ -397,7 +398,7 @@
             {
                 
                 "institutionNumber": userNumber,
-                "agName":$('#agName').val(),
+                "agentName":$('#agName').val(),
                 "page":pageNum,
                 "limit":'100',
                 "agentType":''
@@ -411,7 +412,7 @@
                     //    }
                     var str = ''
                     for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
-                        str += '<div class="layui-btn layui-btn-primary" data-level="'+agentRegisterlist[i].agentNumber +'"  data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                        str += '<div class="layui-btn layui-btn-primary" data-level="'+data.data.agentRegisterlist[i].agentLevel +'"  data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
                     }
                         document.getElementById('searchBox').innerHTML = str
 
@@ -578,11 +579,13 @@
             //  title: '最终的提交信息'
             // })
             console.log($('#agName').attr('agentNumber'))
-            return 
+            
             var index = layer.load(2, {shade: [0.4, '#393D49']})
             var addData = data.field
             addData.institutionNumber = userNumber
             addData.Deletion_Flag = '0'
+            addData.pAgentNumber = $('#agName').attr('agentNumber')
+            addData.pAgentLevel = $('#agName').attr('agentType')
             console.log(addData)
             // 发送请求
             // addData.D0Rate = 'D0' + '-' + addData.D0Rate

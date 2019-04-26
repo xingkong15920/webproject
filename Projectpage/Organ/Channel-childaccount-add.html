@@ -91,7 +91,30 @@
                             <input type="text" name="paymentDirectory" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
                         </div>
                     </div>
-                    
+                    <div class="layui-form-item">
+                    <label class="layui-form-label">结算类型</label>
+                    <div class="layui-input-block">
+                      <input type="radio" name="rateType" value="D1" title="D1" checked="">
+                      <input type="radio" name="rateType" value="D0" title="D0">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关" checked>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao" onclick="x_admin_close()">关闭</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
                    
                 </div>
                 <div id="ali" style="display:none">
@@ -120,42 +143,27 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="layui-form-item">
-                    <label class="layui-form-label">结算类型</label>
-                    <div class="layui-input-block">
-                      <input type="radio" name="rateType" value="D1" title="D1" checked="">
-                      <input type="radio" name="rateType" value="D0" title="D0">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">状态</label>
-                    <div class="layui-input-inline">
-                        <div class="layui-input-inline">
-                            <input type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关" checked>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-form-item layui-layout-admin">
-                    <div class="layui-input-block">
-                        <div class="layui-footer" style="left: 0;text-align: center;">
-                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
-                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao" onclick="x_admin_close()">关闭</button>
-                        </div>
-                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
-                    </div>
-                </div>
+                
             </form>
         </div>
     </div>
     <script src="../../common/config.js"></script>
     <script src="../../common/utility.js"></script>
-    <script src="../../public/js/qrcode.min.js"></script>
+    <script src="../../public/js/qrcode.js"></script>
     <script>
     var channel = CmsUtility.getQueryString('channel')
     var payment = CmsUtility.getQueryString('payment')
     var type = CmsUtility.getQueryString('type')
+    var app = CmsUtility.getQueryString('app')
     var merchantNumber = CmsUtility.getQueryString('merchantNumber')
-    new QRCode(document.getElementById('qrcode'), 'https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=2017070507654347&redirect_uri=http%3A%2F%2Fapi.hongxiaosou.cn%2Fshht%2FCon%2FaliPay&shopID=180308165207885');
+    var qrcode = new QRCode('qrcode', { 
+      text: '', 
+      width: 256, 
+      height: 256, 
+      colorDark : '#000000', 
+      colorLight : '#ffffff', 
+      correctLevel : QRCode.CorrectLevel.H 
+    });
 
     // // 设置参数方式
     // var qrcode = new QRCode('qrcode', {
@@ -172,10 +180,10 @@
     // qrcode.makeCode('new content');
     if (payment == 0) {
         $('#noali').hide()
-        $('#ali').show()
+       
     } else {
         $('#noali').show()
-        $('#ali').hide()
+        
     }
     // if(payment == 2){
     // 	$('#disanfang').show()
@@ -196,6 +204,14 @@
         console.log(e)
         $('#search').attr('shopNumber', e.getAttribute('data-name'))
         $('#searchBox').hide()
+        if(payment == 0){
+            var jumphref = 'https://api.51shanhe.com/h5-pay/alioauth/oauth.html?institutionNumber=' + userNumber + '&merchantNumber='+e.getAttribute('data-name') + '&paymentChannel='+channel
+            qrcode.clear(); 
+            qrcode.makeCode('https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id='+app+'&redirect_uri=' + jumphref); 
+            
+           
+            $('#ali').show()
+        }
     }
 
     function bl() {
