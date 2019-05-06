@@ -62,13 +62,13 @@
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<select name="type" id="merchantType">
 							<option value="">类型</option>
 							<option value="1">普通商户</option>
-							<option value="0">补贴商户</option>
+							<option value="0">补贴商户1</option>
 						</select>
-					</div>
+					</div> -->
 					<div class="layui-input-inline">
 						<select name="type1" id="merchantEnble">
 							<option value="">商户状态</option>
@@ -92,7 +92,7 @@
 		<script type="text/html" id="selectBar_lx">
 			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}" >
 				<option value="1" {{d.subsidy==1 ? 'selected' : ''}}>普通商户</option>
-				<option value="0" {{d.subsidy==0 ? 'selected' : ''}}>补贴商户</option>
+				<option value="0" {{d.subsidy==0 ? 'selected' : ''}}>补贴商户1</option>
 			</select>
 		</script>
 		<script type="text/html" id="selectBar_rz">
@@ -166,7 +166,7 @@
 						where:{
 							"agentName":$('#agentName').val().trim(),
 							"merchantName":$('#merchantName').val().trim(),
-							"subsidy":$('#merchantType').val().trim(),
+							"subsidy":'',
 							"startTime":$('#startTime').val().trim(),
 							"endtime":$('#endTime').val().trim(),
 							"photo":$('#telNumber').val().trim(),
@@ -214,12 +214,14 @@
 								field: 'agentName',
 								width: 200,
 								title: '所属代理'
-							}, {
-								align: 'center',
-								toolbar: '#selectBar_lx',
-								width: 130,
-								title: '类型',
-							}, {
+							}
+							// , {
+							// 	align: 'center',
+							// 	toolbar: '#selectBar_lx',
+							// 	width: 130,
+							// 	title: '类型',
+							// }
+							, {
 								align: 'center',
 								toolbar: '#switchBar',
 								width: 100,

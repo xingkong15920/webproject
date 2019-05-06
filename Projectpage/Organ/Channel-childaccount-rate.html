@@ -19,17 +19,26 @@
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style type="text/css">
-    #codeInfo{
-    	line-height: 38px;
-    	font-size: 24px;
-    	text-align: center;
-    	letter-spacing:5px
+    #codeInfo {
+        line-height: 38px;
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 5px
     }
-    .layui-textarea{
+
+    .layui-textarea {
         height: min-height:80px;
     }
-    .xdl,.yrm,.fuyou,.guanfang{
+
+    .xdl,
+    .yrm,
+    .fuyou,
+    .guanfang {
         display: none;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 70%;
     }
     </style>
 </head>
@@ -37,57 +46,157 @@
 <body id="iosiframe">
     <div class="x-body">
         <div class="layui-row">
-            <form class="layui-form">
-                <div class="layui-form-item">
-                        <label class="layui-form-label xdl" style="width: auto;">新大陆费率</label>
-                        <div class="layui-input-item xdl">
-                            <textarea id="keyy" name="secretkey" class="layui-textarea" placeholder="示例：0.25|0.28|0.30|0.35|0.38|0.40|0.50|0.60"></textarea>
-                        </div>
-                        <label class="layui-form-label yrm" style="width: auto;">易融码费率</label>
-                        <div class="layui-input-item yrm">
-                            <textarea id="keyy1" name="secretkey1" class="layui-textarea" placeholder="示例：0.25|0.28|0.30|0.35|0.38|0.40|0.50|0.60"></textarea>
-                        </div>
-                        <label class="layui-form-label fuyou" style="width: auto;">富友费率</label>
-                        <div class="layui-input-item fuyou">
-                            <textarea id="keyy1" name="secretkey1" class="layui-textarea" placeholder="示例：0.25,N888|0.28,N888|0.30,N888|0.35,N888|0.38,N888|0.40,N888"></textarea>
-                        </div>
-                        <label class="layui-form-label guanfang" style="width: auto;">官方费率</label>
-                        <div class="layui-input-item guanfang">
-                            <textarea id="keyy1" name="secretkey1" class="layui-textarea" placeholder="示例：0.25|0.28|0.30|0.35|0.38|0.40|0.50|0.60"></textarea>
-                        </div>
-                        <div class="layui-form-mid x-red">
-                            <button class="layui-btn" lay-submit="" id="sub"    >提交</button>
-                        </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 15%;"></label>
+                <div class="layui-input-item">
+                    <span style="color:red;display:block">*所有费率所用单位为百分制</span>
+                </div>
+                <div class="layui-input-item">
+                    <span style="color:red;display:block;">*示例：0.35%</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:15%">商户名称</label>
+                <div class="layui-input-inline">
+                    <span  class="layui-input" id="merchantName" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:15%">商户编号</label>
+                <div class="layui-input-inline">
+                    <span  class="layui-input" id="merchantNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:15%">商户子账号</label>
+                <div class="layui-input-inline">
+                    <span  class="layui-input" id="subNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <form class="layui-form" lay-filter="create">
+                <div class="layui-form-item zhifubao" >
+                    <label class="layui-form-label" style="width: 15%;">支付宝费率</label>
+                    <div class="layui-input-inline">
+                        <select name="zhifubao" class="layui-input  rate" lay-verify="subaccountNumber1" id="zhifubao" lay-filter="zhifubao"></select>
                     </div>
-            </form>
+                </div>
+                <div class="layui-form-item weixin">
+                    <label class="layui-form-label" style="width: 15%;">微信支付费率</label>
+                    <div class="layui-input-inline">
+                        <select name="weixin" class="layui-input  rate" lay-verify="subaccountNumber"  id="weixin"  lay-filter="weixin"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item jingdong">
+                    <label class="layui-form-label" style="width: 15%;">京东支付费率</label>
+                    <div class="layui-input-inline">
+                        <select name="jingdong" class="layui-input  rate" lay-verify=""  id="jingdong"  lay-filter="jingdong"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item yinlian">
+                    <label class="layui-form-label" style="width: 15%;">银联扫码费率</label>
+                    <div class="layui-input-inline">
+                        <select name="yinlian" class="layui-input  rate" lay-verify=""  id="yinlian"  lay-filter="yinlian"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 15%;"></label>
+                    <div class="layui-form-mid x-red">
+                        <button class="layui-btn" lay-submit=""   id="sub">提交</button>
+                    </div>
+                </div>
         </div>
+        </form>
+    </div>
     </div>
     <script src="../../common/config.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
     var type111 = 0
     var code1 = ''
-    function subPage(data,data1){
+    function uniq(array){
+                var temp = []; //一个新的临时数组
+                for(var i = 0; i < array.length; i++){
+                    if(temp.indexOf(array[i]) == -1){
+                        temp.push(array[i]);
+                    }
+                }
+                return temp;
+            }
+            var arrr = new Array()
+    function subPage(data, data1) {
+        $('.zhifubao').hide()
+        $('.weixin').hide()
+        $('.jingdong').hide()
+        $('.yinlian').hide()
         var jgData = data
         console.log(jgData)
-        switch (jgData.paymentChannelType) {
-            case  2:
-            console.log('1312')
-                $('.fuyou').show()
-                break;
-             case  3:
-              console.log('1312')
-                $('.yrm').show()
-                break;
-             case  4:
-                $('.xdl').show()
-                break;
-            default:
-               $('.bufanng').show()
-                break;
-        }
-        var serverUrl = 'http://192.168.1.190:5002/'
+        $("#merchantName").html(jgData.merchantName)
+        $("#merchantNumber").html(jgData.merchantNumber)
+        $("#subNumber").html(jgData.subaccountNumber)
         var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+        CmsUtility.postAjaxCall(
+            //系统设置
+            CmsConfig.addressUrl.Mechanism.getRate, {
+                "institutionNumber": userNumber,
+                "id": jgData.paymentChannel
+            },
+            function(data) {
+
+                if (data.code == 1000) {
+
+                    for (var i = 0; i < data.data.length; i++) {
+                        if (data.data[i].switch1 != 0) {
+                            continue;
+                        }
+                        var obj = new Object()
+                        var aNum = 0
+                        for (var h = 0; h < arrr.length; h++) {
+                            if (arrr[h].name == data.data[i].paymentTypeName) {
+                                aNum++
+                            }
+                        }
+                        if (aNum == 0) {
+                            obj.name = data.data[i].paymentTypeName
+                            obj.onOff = data.data[i].switch1
+                            obj.type = data.data[i].onePaymentTypeInt
+                            console.log(obj)
+                            arrr.push(obj)
+                        }
+
+                    }
+                    arrr = uniq(arrr)
+                    console.log(arrr)
+                    for(var n = 0 ; n < arrr.length ; n++){
+                        if(arrr[n].type == 0){
+                            $('.zhifubao').show()
+                        }
+                        if(arrr[n].type == 1){
+                            $('.weixin').show()
+                        }
+                        if(arrr[n].type == 2){
+                            $('.jingdong').show()
+                        }
+                        if(arrr[n].type == 3){
+                            $('.yinlian').show()
+                        }
+                    }
+                    if(jgData.paymentChannelType == 3){
+            
+                        $('.zhifubao').hide()
+                    }
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+
+            },
+            'post',
+            'false'
+        )
+        var serverUrl = 'http://192.168.1.190:5002/'
+        
         layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
             layui.$.support.cors = true; //允许ajax跨域
             var $ = layui.jquery,
@@ -97,7 +206,69 @@
                 form = layui.form,
                 laytpl = layui.laytpl;
 
-            
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.getChannelRate, {
+                    "institutionNumber": userNumber,
+                    "paymentChannel": jgData.paymentChannel
+                },
+                function(data) {
+                    if (data.code == 1000) {
+                        // type111 = 2
+                        console.log(data)
+                        if (jgData.rateType == 'D1') {
+                            console.log(data.data[0].channelD1Rate)
+                            var rateL = data.data[0].channelD1Rate.split('&')
+                            console.log(data.data[0].channelD1Rate.indexOf('|'))
+                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
+                                }
+                                $('.rate').html(str)
+
+                            } else {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
+                                }
+                                $('.rate').html(str)
+                            }
+
+                        } else {
+                            var rateL = data.data[0].channelRate.split('&')
+                            console.log(data.data[0].channelRate.indexOf('|'))
+                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
+                                var str = '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
+                                }
+                                $('.rate').html(str)
+
+                            } else {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
+                                }
+                                $('.rate').html(str)
+                            }
+                        }
+                        form.render()
+                        // form.val('cardAdd', {
+                        //     "zhifubao": jgData.alipayRate.toFixed(4),
+                        //     "weixin": jgData.weChatRate.toFixed(4),
+                        //     "jingdong": jgData.jingdongRate.toFixed(4),
+                        //     "yinlian": jgData.unionPayRate.toFixed(4),
+                        // })
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
             //表单初始赋值
             // $('#sub').click(function(){
             //  console.log(code1)
@@ -108,19 +279,44 @@
                 //         return "一次生成最多5000条"
                 //     }
                 // },
-                title: function(value) {
+                subaccountNumber: function(value) {
                     console.log(value)
-                    if (value=='') {
+
+                    if (value == '') {
                         return '不能为空';
                     }
                 },
+                subaccountNumber1: function(value) {
+                    console.log(value)
+                    if(jgData.paymentChannelType !=3){
+                        if (value == '') {
+                        return '不能为空';
+                    }
+                    }
+                    
+                },
             });
-
+            form.on('select(zhifubao)',function(data){
+                console.log($(data.elem).find("option:selected").attr("data-num"));
+                $('#zhifubao').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+            })
+            form.on('select(weixin)',function(data){
+                console.log($(data.elem).find("option:selected").attr("data-num"));
+                $('#weixin').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+            })
+            form.on('select(jingdong)',function(data){
+                console.log($(data.elem).find("option:selected").attr("data-num"));
+                $('#jingdong').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+            })
+            form.on('select(yinlian)',function(data){
+                console.log($(data.elem).find("option:selected").attr("data-num"));
+                $('#yinlian').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+            })
             // $('#sub').click(function() {
-                
+
             //     var tjData = new Object();
             //     tjData.institutionNumber = userNumber;
-                
+
             //     tjData.number = $('#number').val()
             //     CmsUtility.postAjaxCall(
             //         //系统设置
@@ -149,30 +345,77 @@
             // })
 
             // //监听提交
-            form.on('submit(create)', function(data) {
-                return false
-                console.log(data.field)
-                // if(data.field.nuber)
-                var tjData = new Object();
-                tjData.institutionNumber = userNumber;
+            // $('#sub').click(function(){
+            //     var tjData = new Object();
+            //     console.log($('#zhifubao').attr('data-num'))
+            //     tjData.institutionNumber = userNumber;
+            //     tjData.paymentChannel = jgData.paymentChannel
+            //     tjData.subaccountNumber = jgData.subaccountNumber
+            //     tjData.paymentType = jgData.paymentChannelType
+            //     tjData.weChatRate = $('#weixin').val()
+            //     tjData.alipayRate = $('#zhifubao').val()
+            //     tjData.jingdongRate = $('#jingdong').val()
+            //     tjData.unionPayRate = $('#yinlian').val()
+            //     tjData.weChatCode  = $('#weixin').attr('data-num')
+            //     tjData.alipayCode = $('#zhifubao').attr('data-num')
+            //     tjData.jingdongCode = $('#jingdong').attr('data-num')
+            //     tjData.unionPayCode = $('#yinlian').attr('data-num')
+            //     CmsUtility.postAjaxCall(
+            //         //系统设置
+            //         'submit/updateInfoRate',
+            //         tjData,
+            //         function(data) {
+            //             if (data.code == 1000) {
+            //                 // type111 = 2
+
+
+            //                 // x_admin_close()
+            //                 // parent.layer.msg('生成成功')
+            //                 // parent.layui.table.reload('vip_cardList')
+
+
+            //             } else {
+            //                 layer.msg(data.msg)
+
+            //             }
+            //         },
+            //         function(data) {
+            //             console.log('222')
+            //         }
+            //     )
                 
-                tjData.bbmerchantNumber = jgData.subaccountNumber
+            // })
+            form.on('submit(create)', function(data) {
+                var tjData = new Object();
+                console.log($('#zhifubao').attr('data-num'))
+                tjData.institutionNumber = userNumber;
                 tjData.paymentChannel = jgData.paymentChannel
-                tjData.jsapiPath = data.field.jsapiPath
-                tjData.subappid = data.field.subappid
-                tjData.subscribeappid = data.field.subscribeappid
+                tjData.subaccountNumber = jgData.subaccountNumber
                 tjData.paymentType = jgData.paymentChannelType
+                tjData.weChatRate = $('#weixin').val()
+                tjData.alipayRate = $('#zhifubao').val()
+                tjData.jingdongRate = $('#jingdong').val()
+                tjData.unionPayRate = $('#yinlian').val()
+                if(jgData.paymentChannelType == 2){
+                    tjData.weChatCode  = $('#weixin').attr('data-num')
+                    tjData.alipayCode = $('#zhifubao').attr('data-num')
+                    tjData.jingdongCode = $('#jingdong').attr('data-num')
+                    tjData.unionPayCode = $('#yinlian').attr('data-num')
+                }
+                tjData.merchantNumber = jgData.merchantNumber
+                tjData.rateType = jgData.rateType
                 CmsUtility.postAjaxCall(
                     //系统设置
-                    CmsConfig.addressUrl.Mechanism.weChatPut,
+                    'submit/updateInfoRate',
                     tjData,
                     function(data) {
                         if (data.code == 1000) {
                             // type111 = 2
+                            
+                            parent.layer.msg(data.msg)
+                            x_admin_close()
 
-
-                            // x_admin_close()
-                            // parent.layer.msg('生成成功')
+                            // layer.msg('生成成功')
                             // parent.layui.table.reload('vip_cardList')
 
 
@@ -185,14 +428,12 @@
                         console.log('222')
                     }
                 )
-                return false
-            });
+                 return false
+            })
+               
 
         });
     }
-        
-
-   
     </script>
 </body>
 

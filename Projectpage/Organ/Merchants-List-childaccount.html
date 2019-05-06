@@ -22,6 +22,17 @@
     		height: auto;
     		white-space: normal;
     	}
+    	.layui-btn+.layui-btn {
+				margin-left: -2px;
+			}
+			.layui-table-cell{
+				overflow: visible;
+				padding: 0;
+			}
+			.layui-table .layui-form-select .layui-input{
+				height: 28px;
+				border: none;
+			}
     </style>
 	</head>
 
@@ -49,6 +60,12 @@
                 
             {{#  }); }}
 			
+		</script>
+		<script type="text/html" id="selectBar_lx">
+			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}" >
+				<option value="1" {{d.subsidy==1 ? 'selected' : ''}}>普通商户</option>
+				<option value="0" {{d.subsidy==0 ? 'selected' : ''}}>补贴商户A</option>
+			</select>
 		</script>
 		<script type="text/html" id="toolAdd">
 			<a class="layui-btn layui-btn-xs" id="rate" lay-event="add">新增子商户</a>
@@ -121,8 +138,14 @@
 									align: 'center',
 									title: '通道子商户',
 									toolbar: '#toolbar',
-									minWidth: 390
-								},{
+									minWidth: 300
+								}
+								, {
+								align: 'center',
+								toolbar: '#selectBar_lx',
+								width: 130,
+								title: '类型',
+							},{
 									align: 'center',
 									title: '操作',
 									toolbar: '#toolAdd',

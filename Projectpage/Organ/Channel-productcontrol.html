@@ -79,6 +79,7 @@
         <script src="../../common/utility.js"></script>
 		<script>
 			var tjData;
+			var jgData
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function() {
 				setTimeout(function() {
@@ -123,7 +124,22 @@
 						}
 					}
 				}
-				return newD
+				console.log(newD)
+				var newC = new Array()
+				for(var v = 0 ; v < newD.length;v++){
+					if(jgData.paymentChannelType == 0){
+						if(newD[v].paymentTypeName == '支付宝'){
+							newC.push(newD[v])
+						}
+					}else if(jgData.paymentChannelType == 1){
+						if(newD[v].paymentTypeName == '微信'){
+							newC.push(newD[v])
+						}
+					}else{
+						newC.push(newD[v])
+					}
+				}
+				return newC
 			}
 			function cost(data){
 				console.log(document.getElementsByTagName("td").length)
@@ -177,7 +193,7 @@
 			function subPage(data,data1){
 				var serverUrl = window.parent.serverUrl
 				var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-				var jgData = data
+				 jgData = data
 				console.log(jgData)
 				layui.use(['laytpl', 'laydate', 'table', 'form'], function() {
 					var laytpl = layui.laytpl,
@@ -250,8 +266,7 @@
 									align: 'center',
 									title: '提现费率(点击标题可选择费率)(单位:%)',
 									field:'cashRate',
-									width: 280,
-									minWidth: 100,
+									minWidth: 280,
 									edit:'cashRate'
 
 								}]

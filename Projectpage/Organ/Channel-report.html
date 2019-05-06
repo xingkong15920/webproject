@@ -31,29 +31,64 @@
 <body id="iosiframe">
     <div class="x-body">
         <div class="layui-row">
-            <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:105px">商户名称</label>
+                <div class="layui-input-block">
+                    <span  class="layui-input" id="merchantName" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:105px">商户编号</label>
+                <div class="layui-input-block">
+                    <span  class="layui-input" id="merchantNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:105px">商户子账号</label>
+                <div class="layui-input-block">
+                    <span  class="layui-input" id="subNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <form class="layui-form" lay-filter="report">
                 <div class="layui-form-item">
                     <label class="layui-form-label">支付授权目录</label>
                     <div class="layui-input-block">
-                        <input type="text" name="jsapiPath" lay-verify="url" autocomplete="off" placeholder="请输入支付授权目录" class="layui-input" id="number">
+                        <input type="text" name="paymentAuthorization" lay-verify="url||paymentAuthorization" autocomplete="off" placeholder="请输入支付授权目录" class="layui-input" id="number">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="subappid" lay-verify="title" autocomplete="off" placeholder="请输入APPID" class="layui-input" id="number1">
+                        <input type="text" name="appid" lay-verify="appid||title" autocomplete="off" placeholder="请输入APPID" class="layui-input" id="number1">
                     </div>
                 </div>
+                <!-- <div class="layui-form-item">
+                    <label class="layui-form-label">AppSecret</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="appsecret" lay-verify="appsecret||title" autocomplete="off" placeholder="请输入AppSecret" class="layui-input" id="number1">
+                    </div>
+                </div> -->
                 <div class="layui-form-item">
                     <label class="layui-form-label">推荐关注APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="subscribeappid" lay-verify="title" autocomplete="off" placeholder="请输入推荐关注APPID" class="layui-input" id="number2">
+                        <input type="text" name="recommendAppid" lay-verify="recommendAppid||title" autocomplete="off" placeholder="请输入推荐关注APPID" class="layui-input" id="number2">
+                    </div>
+                </div>
+                <div class="layui-form-item xdl" style="display:none">
+                    <label class="layui-form-label">AppSecret</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="appkey" lay-verify="appkey" autocomplete="off" placeholder="请输入AppSecret" class="layui-input" id="number2">
                     </div>
                 </div>
                 <div class="layui-input-block">
-			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="立即提交" id="sub">
+                   
+			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="报备" id="sub">
 			    </div>
             </form>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend style="font-weight: 500;">报备记录</legend>
+                    </fieldset>
+            <table class="layui-hide" id="table1" lay-filter="useruv"></table>
         </div>
     </div>
     <script src="../../common/config.js"></script>
@@ -61,9 +96,16 @@
     <script>
     var type111 = 0
     var code1 = ''
+    var reportList = '';
     function subPage(data,data1){
         var jgData = data
         console.log(jgData)
+        if(jgData.paymentChannelType == 4){
+            $('.xdl').show()
+        }
+        $("#merchantName").html(jgData.merchantName)
+        $("#merchantNumber").html(jgData.merchantNumber)
+        $("#subNumber").html(jgData.subaccountNumber)
         var serverUrl = 'http://192.168.1.190:5002/'
         var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
         layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
@@ -74,33 +116,79 @@
                 table = layui.table,
                 form = layui.form,
                 laytpl = layui.laytpl;
-
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    'submit/getweChatPut',
-                    {
+                table.render({
+                    elem: '#table1',
+                    url: CmsConfig.ServiceUrl.ApiRootUrl + 'submit/getweChatPutBd',
+                    where:{
                         "institutionNumber":userNumber,
-                        "bbmerchantNumber":data.subaccountNumber,
-                        "paymentChannel":data.paymentChannel,
-                        "paymentType":data.paymentChannelType,
+                        "subaccountNumber":jgData.subaccountNumber,
+                        //"subaccountNumber":'0001210F1766081',
                     },
-                    function(data) {
-                        if (data.code == 1000) {
-                            // type111 = 2
-                            console.log(typeof data.data[0].appidConfigList)
-                            // var arrList = data.data[0].appidConfigList.split(',')
-                            // for(var i = 0 ; i < data.data[0].appidConfigList)
-                            
+                    page: false,
+                    method: "post",
+                    id: 'deviceInfo',
+                    response: {
+                        "statusCode": "1000", //解析接口状态
+                    },
+                    parseData: function(res) {
 
-                        } else {
-                            layer.msg(data.msg)
-
+                        
+                        if (res.data == null) {
+                            return
+                        }
+                        console.log(res)
+                        return {
+                            "code": res.code,
+                            "data": res.data,
                         }
                     },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
+                    cols: [
+                        [{
+                            field: 'paymentAuthorization',
+                            title: '支付授权目录',
+                            align: 'center',
+                        }, {
+                            field: 'appid',
+                            title: 'APPID',
+                            align: 'center',
+                        }
+                        // , {
+                        //     title: 'AppSecret',
+                        //     align: 'center',
+                        //     field: 'appsecret',
+                        // }
+                        , {
+                            title: '推荐关注APPID',
+                            align: 'center',
+                            field: 'recommendAppid',
+                        }]
+                    ],
+                    done: function(res, curr, count) {
+                            console.log(res)
+                            reportList = res.data
+                    },
+                })
+                // CmsUtility.postAjaxCall(
+                //     //系统设置
+                //     'submit/getweChatPutBd',
+                //     {
+                //         "institutionNumber":userNumber,
+                //         //"subaccountNumber":data.subaccountNumber,
+                //         "subaccountNumber":'0001210F1766081',
+                        
+                //     },
+                //     function(data) {
+                //         if (data.code == 1000) {
+                            
+                //         } else {
+                //             //layer.msg(data.msg)
+
+                //         }
+                //     },
+                //     function(data) {
+                //         console.log('222')
+                //     }
+                // )
             //表单初始赋值
             // $('#sub').click(function(){
             //  console.log(code1)
@@ -111,10 +199,47 @@
                 //         return "一次生成最多5000条"
                 //     }
                 // },
-                title: function(value) {
+                "paymentAuthorization":function(value){
                     console.log(value)
-                    if (value=='') {
-                        return '不能为空';
+                    if(reportList==''){
+                        for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].paymentAuthorization){
+                            return '支付授权目录重复'
+                        }
+                    }
+                    }
+                    
+                },
+                "appid":function(value){
+                    if(reportList==''){
+                    for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].appid){
+                            return 'APPID重复'
+                        }
+                    }
+                }
+                },
+                "appsecret":function(value){
+                    if(reportList==''){
+                    for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].appsecret){
+                            return 'appsecret重复'
+                        }
+                    }
+                }
+                },
+                "recommendAppid":function(value){
+                    if(reportList==''){
+                    for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].recommendAppid){
+                            return '推荐关注APPID重复'
+                        }
+                    }
+                }
+                },
+                title: function(value) {
+                    if(value.length == "") {
+                        return '不能为空！';
                     }
                 },
             });
@@ -158,11 +283,12 @@
                 var tjData = new Object();
                 tjData.institutionNumber = userNumber;
                 
-                tjData.bbmerchantNumber = jgData.subaccountNumber
+                tjData.subaccountNumber = jgData.subaccountNumber
                 tjData.paymentChannel = jgData.paymentChannel
-                tjData.jsapiPath = data.field.jsapiPath
-                tjData.subappid = data.field.subappid
-                tjData.subscribeappid = data.field.subscribeappid
+                tjData.jsapiPath = data.field.paymentAuthorization
+                tjData.subappid = data.field.appid
+                tjData.appkey = data.field.appkey
+                tjData.subscribeappid = data.field.recommendAppid
                 tjData.paymentType = jgData.paymentChannelType
                 CmsUtility.postAjaxCall(
                     //系统设置
@@ -172,14 +298,14 @@
                         if (data.code == 1000) {
                             // type111 = 2
 
-
+                            layer.msg(data.msg)
                             // x_admin_close()
                             // parent.layer.msg('生成成功')
                             // parent.layui.table.reload('vip_cardList')
 
 
                         } else {
-                            layer.msg(data.msg)
+                            layer.alert(data.msg)
 
                         }
                     },
