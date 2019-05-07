@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<!-- <script type="text/javascript" src="../../public/js/vue.min.js"></script> -->
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
@@ -41,8 +42,19 @@
 			.huizongCon span {
 				font-size: 20px;
 			}
-			.col5{width: 20% !important;}
-			.col7{width: 14.2857% !important;}
+
+			.col5 {
+				width: 20% !important;
+			}
+
+			.col7 {
+				width: 14.2857% !important;
+			}
+
+			.redTips {
+				margin-left: 20px;
+				color: red;
+			}
 		</style>
 	</head>
 
@@ -60,50 +72,51 @@
 		<div class="x-body">
 			<div class="layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" name="couponName" id="startTime" placeholder="开始日期" autocomplete="off" class="layui-input">
+					<input type="text" name="startTime" id="startTime" placeholder="开始日期" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline">--</div>
 				<div class="layui-input-inline">
-					<input type="text" name="couponName" id="endTime" placeholder="结束日期" autocomplete="off" class="layui-input">
+					<input type="text" name="endTime" id="endTime" placeholder="结束日期" autocomplete="off" class="layui-input">
 				</div>
 				<div class="layui-input-inline coupons_screen">
-					<button class="layui-btn" id="searchZhe" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+					<button class="layui-btn" id="searchZhe" data-type="searchZhe" title="搜索"><i class="layui-icon">&#xe615;</i></button>
 				</div>
+				<div class="layui-input-inline redTips">不包含当日结算信息</div>
 			</div>
 			<!-- 微信支付 -->
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
 				<legend>微信支付</legend>
 			</fieldset>
-			<div class="layui-row layui-col-space30">
+			<div class="layui-row layui-col-space30" id="xBody_wx">
 				<!--汇总-->
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">笔数汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="weChatCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">金额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderNumber">0</span>笔</p>
+						<p class="huizongCon x-green"><span class="x-green" id="weChatAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">手续费汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="orderAev">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="weChatCharge">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">退款额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="weChatRefundAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">实收汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="weChantShiShouAmount">0</span>元</p>
 					</div>
 				</div>
 			</div>
@@ -129,36 +142,36 @@
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
 				<legend>支付宝支付</legend>
 			</fieldset>
-			<div class="layui-row layui-col-space30">
+			<div class="layui-row layui-col-space30" id="xBody_zfb">
 				<!--汇总-->
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">笔数汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="alipayCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">金额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderNumber">0</span>笔</p>
+						<p class="huizongCon x-green"><span class="x-green" id="alipayAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">手续费汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="orderAev">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="alipayCharge">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">退款额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="alipayRefundAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col5">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">实收汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="alipayShiShouAmount">0</span>元</p>
 					</div>
 				</div>
 			</div>
@@ -184,48 +197,48 @@
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
 				<legend>富友支付</legend>
 			</fieldset>
-			<div class="layui-row layui-col-space30">
+			<div class="layui-row layui-col-space30" id="xBody_fy">
 				<!--汇总-->
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">笔数汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="FyCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">金额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderNumber">0</span>笔</p>
+						<p class="huizongCon x-green"><span class="x-green" id="FyAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">手续费汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="orderAev">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="FyCharge">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">退款额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="FyRefundAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">实收汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="FyShiShouAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">补贴笔数</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="FySubsidyCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">补贴金额</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="FySubsidyAmount">0</span>元</p>
 					</div>
 				</div>
 			</div>
@@ -267,48 +280,48 @@
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
 				<legend>新大陆支付</legend>
 			</fieldset>
-			<div class="layui-row layui-col-space30">
+			<div class="layui-row layui-col-space30" id="xBody_xdl">
 				<!--汇总-->
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">笔数汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="XDLCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">金额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderNumber">0</span>笔</p>
+						<p class="huizongCon x-green"><span class="x-green" id="XDLAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">手续费汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="orderAev">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="XDLCharge">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">退款额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="XDLRefundAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">实收汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="XDLShiShouAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">补贴笔数</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="XDLSubsidyCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">补贴金额</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="XDLSubsidyAmount">0</span>元</p>
 					</div>
 				</div>
 			</div>
@@ -350,48 +363,48 @@
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
 				<legend>易融码支付</legend>
 			</fieldset>
-			<div class="layui-row layui-col-space30">
+			<div class="layui-row layui-col-space30" id="xBody_yrm">
 				<!--汇总-->
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">笔数汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="YrmCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">金额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="successOrderNumber">0</span>笔</p>
+						<p class="huizongCon x-green"><span class="x-green" id="YrmAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">手续费汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="orderAev">0</span>元</p>
+						<p class="huizongCon x-green"><span class="x-green" id="YrmCharge">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">退款额汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="YrmRefundAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">实收汇总</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="YrmShiShouAmount">0</span>元</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">补贴笔数</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="YrmSubsidyCount">0</span>笔</p>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm3 layui-col-md3 col7">
 					<div class="grid-demo border">
 						<p class="huizongTit x-red">补贴金额</p>
-						<p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
+						<p class="huizongCon x-green"><span class="x-green" id="YrmSubsidyAmount">0</span>元</p>
 					</div>
 				</div>
 			</div>
@@ -432,7 +445,6 @@
 		</div>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
-		<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
 		<script>
 			function changeRes(res) {
 				var res = res
@@ -451,665 +463,728 @@
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			var myDate = new Date();
-			var nowY = myDate.getFullYear();
-			var nowM = myDate.getMonth() + 1;
-			var nowD = myDate.getDate();
-			var enddate = nowY + "-" + (nowM < 10 ? "0" + nowM : nowM) + "-" + (nowD < 10 ? "0" + nowD : nowD); //当前日期    
-			var lw = new Date(myDate - 1000 * 60 * 60 * 24 * 30); //最后一个数字30可改，30天的意思
+			var sw = new Date(myDate - 1000 * 60 * 60 * 24);
+			var nowY = sw.getFullYear();
+			var nowM = sw.getMonth() + 1;
+			var nowD = sw.getDate();
+			var enddate = nowY + "-" + (nowM < 10 ? "0" + nowM : nowM) + "-" + (nowD < 10 ? "0" + nowD : nowD);
+			var lw = new Date(myDate - 1000 * 60 * 60 * 24 * 6);
 			var lastY = lw.getFullYear();
 			var lastM = lw.getMonth() + 1;
 			var lastD = lw.getDate();
 			var startdate = lastY + "-" + (lastM < 10 ? "0" + lastM : lastM) + "-" + (lastD < 10 ? "0" + lastD : lastD);
-			$('#startTime').val(startdate)
-			$('#endTime').val(enddate)
+
 			layui.use(['laydate', 'table', 'form', 'layer'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
 					form = layui.form,
 					layer = layui.layer;
 				laydate.render({
-					elem: '#couponName'
+					elem: '#startTime',
+					value: startdate,
+					max: enddate
 				})
 				laydate.render({
-					max: enddate,
-					elem: '#startTime'
+					elem: '#endTime',
+					value: enddate,
+					max: enddate
 				})
-				laydate.render({
-					max: enddate,
-					elem: '#endTime'
-				})
-				CmsUtility.postAjaxCall(
-					//系统设置
-					CmsConfig.addressUrl.Mechanism.orderAbout, {
-						"institutionNumber": userNumber
-					},
-					function(data) {
-						if (data.code == '1000') {
-							console.log(data)
-							$('#orderAev').html(data.data.orderAev)
-							$('#refoundPro').html(data.data.refoundPro)
-							$('#successOrderAmount').html(data.data.successOrderAmount)
-							$('#successOrderNumber').html(data.data.successOrderNumber)
 
-						} else {
-							layer.msg(data.msg)
-						}
-					},
-					function(data) {
-						console.log('222')
-					}
-				)
-				//微信数据
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderAmountTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_WX1',
-					id: 'members_WX1',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderAmount',
-							title: '交易金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderNumberTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_WX2',
-					id: 'members_WX2',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
+				function tableRender() {
+					//微信数据
+					//通道下商户金额前十 
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 1,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_WX1',
+						id: 'members_WX1',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderMoney',
+								title: '交易金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户交易笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 1,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_WX2',
+						id: 'members_WX2',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderCount',
+								title: '交易笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
 
-				//支付宝数据
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderAmountTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_ZFB1',
-					id: 'members_ZFB1',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderAmount',
-							title: '交易金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderNumberTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_ZFB2',
-					id: 'members_ZFB2',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
+					//支付宝数据
+					//通道下商户金额前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 0,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_ZFB1',
+						id: 'members_ZFB1',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderMoney',
+								title: '交易金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户交易笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 0,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_ZFB2',
+						id: 'members_ZFB2',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderCount',
+								title: '交易笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
 
-				//富友数据
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderAmountTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_FY1',
-					id: 'members_FY1',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderNumberTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_FY2',
-					id: 'members_FY2',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_FY3',
-					id: 'members_FY3',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '补贴金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_FY4',
-					id: 'members_FY4',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '补贴笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
+					//富友数据
+					//通道下商户金额前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 2,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_FY1',
+						id: 'members_FY1',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderMoney',
+								title: '交易金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户交易笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 2,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_FY2',
+						id: 'members_FY2',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderCount',
+								title: '交易笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户补贴金额前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChSubMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 2,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_FY3',
+						id: 'members_FY3',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'subsidyMoney',
+								title: '补贴金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户补贴笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPaySubCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 2,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_FY4',
+						id: 'members_FY4',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'subsidyCount',
+								title: '补贴笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
 
-				//新大陆数据
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderAmountTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_XDL1',
-					id: 'members_XDL1',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderNumberTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_XDL2',
-					id: 'members_XDL2',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_XDL3',
-					id: 'members_XDL3',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '补贴金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_XDL4',
-					id: 'members_XDL4',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '补贴笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
+					//新大陆数据
+					//通道下商户金额前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 4,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_XDL1',
+						id: 'members_XDL1',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderMoney',
+								title: '交易金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户交易笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 4,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_XDL2',
+						id: 'members_XDL2',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderCount',
+								title: '交易笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户补贴金额前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChSubMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 4,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_XDL3',
+						id: 'members_XDL3',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'subsidyMoney',
+								title: '补贴金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户补贴笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPaySubCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 4,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_XDL4',
+						id: 'members_XDL4',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'subsidyCount',
+								title: '补贴笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
 
-				//易融码数据
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderAmountTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_YRM1',
-					id: 'members_YRM1',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderNumberTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_YRM2',
-					id: 'members_YRM2',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '交易笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_YRM3',
-					id: 'members_YRM3',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '补贴金额',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-				//方法级渲染  
-				table.render({
-					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' +
-						userNumber,
-					elem: '#members_YRM4',
-					id: 'members_YRM4',
-					response: {
-						//res 即为原始返回的数据
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) { //res 即为原始返回的数据
-						return {
-							"code": res.code, //解析接口状态
-							"msg": res.msg, //解析提示文本
-							"count": res.count, //解析数据长度
-							"data": res.data, //解析数据列表
-						};
-					},
-					cols: [
-						[{
-							title: '排名',
-							type: 'numbers'
-						}, {
-							align: 'center',
-							field: 'merchantName',
-							title: '商户名称',
-						}, {
-							align: 'center',
-							field: 'successOrderNumber',
-							title: '补贴笔数',
-						}]
-					],
-					done: function(res, curr, count) {}
-				});
-			});
-
-			function searchZhe() {
-				// ddDate = []
-				// ddData = []
-				for (let i = 0; i < ddData.length; i++) {
-					ddData.splice(i)
+					//易融码数据
+					//通道下商户金额前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 3,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_YRM1',
+						id: 'members_YRM1',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderMoney',
+								title: '交易金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户交易笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 3,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_YRM2',
+						id: 'members_YRM2',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'orderCount',
+								title: '交易笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户补贴金额前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPayChSubMoney,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 3,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_YRM3',
+						id: 'members_YRM3',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'subsidyMoney',
+								title: '补贴金额',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
+					//通道下商户补贴笔数前十  
+					table.render({
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInsPaySubCount,
+						where: {
+							"institutionNumber": userNumber,
+							"paymentType": 3,
+							"startTime": $('#startTime').val(),
+							"endTime": $('#endTime').val(),
+						},
+						elem: '#members_YRM4',
+						id: 'members_YRM4',
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) { //res 即为原始返回的数据
+							return {
+								"code": res.code, //解析接口状态
+								"msg": res.msg, //解析提示文本
+								"count": res.count, //解析数据长度
+								"data": res.data, //解析数据列表
+							};
+						},
+						cols: [
+							[{
+								title: '排名',
+								type: 'numbers'
+							}, {
+								align: 'center',
+								field: 'Merchant_Name',
+								title: '商户名称',
+							}, {
+								align: 'center',
+								field: 'subsidyCount',
+								title: '补贴笔数',
+							}]
+						],
+						done: function(res, curr, count) {}
+					});
 				}
-				for (let i = 0; i < ddDate.length; i++) {
-					ddDate.splice(i)
-				}
-				CmsUtility.postAjaxCall(
-					//系统设置
-					CmsConfig.addressUrl.Mechanism.orderAmountList, {
-						"institutionNumber": userNumber,
-						"startTime": $('#startTime').val(),
-						"endTime": $('#endTime').val()
-					},
-					function(data) {
-						if (data.code == 1000) {
-							var res = data.data.orderAmountList
 
-							for (var j = 0; j < res.length; j++) {
-								ddDate.push(res[j].date)
-								ddData.push(res[j].orderTotalMoney)
-							}
-							ddDate.sort()
-							// 为echarts对象加载数据
-							console.log(ddData, ddDate)
-						} else {
-							layer.msg(data.msg)
-						}
-					},
-					function(data) {
-						console.log('222')
-					}
-				)
-			}
-			searchZhe()
-			$('#searchZhe').click(function() {
 				searchZhe()
-			})
+				tableRender()
+				$('#searchZhe').click(function() {
+					searchZhe()
+					tableRender()
+				})
+
+				function searchZhe() {
+					$.ajax({
+						type: "post",
+						url: 'http://192.168.1.113:5006/shanhe-mechanism/' + CmsConfig.addressUrl.Mechanism.getInsPayChSPSS,
+						data: {
+							"institutionNumber": userNumber,
+							"startTime": $('#startTime').val() + ' 00:00:00',
+							"endTime": $('#endTime').val() + ' 23:59:59',
+						},
+						async: true,
+						dataType: "json",
+						success: function(data) {
+							if (data.code == 1000) {
+								var reportT = data.data[0]
+								$('#weChatCount').html(data.data[0].weChatCount)
+								$('#weChatAmount').html(data.data[0].weChatAmount)
+								$('#weChatCharge').html(data.data[0].weChatCharge)
+								$('#weChatRefundAmount').html(data.data[0].weChatRefundAmount)
+								$('#weChantShiShouAmount').html(data.data[0].weChantShiShouAmount)
+								$('#alipayCount').html(data.data[0].alipayCount)
+								$('#alipayAmount').html(data.data[0].alipayAmount)
+								$('#alipayCharge').html(data.data[0].alipayCharge)
+								$('#alipayRefundAmount').html(data.data[0].alipayRefundAmount)
+								$('#alipayShiShouAmount').html(data.data[0].alipayShiShouAmount)
+								$('#FyCount').html(data.data[0].FyCount)
+								$('#FyAmount').html(data.data[0].FyAmount)
+								$('#FyCharge').html(data.data[0].FyCharge)
+								$('#FyRefundAmount').html(data.data[0].FyRefundAmount)
+								$('#FyShiShouAmount').html(data.data[0].FyShiShouAmount)
+								$('#FySubsidyCount').html(data.data[0].FySubsidyCount)
+								$('#FySubsidyAmount').html(data.data[0].FySubsidyAmount)
+								$('#XDLCount').html(data.data[0].XDLCount)
+								$('#XDLAmount').html(data.data[0].XDLAmount)
+								$('#XDLCharge').html(data.data[0].XDLCharge)
+								$('#XDLRefundAmount').html(data.data[0].XDLRefundAmount)
+								$('#XDLShiShouAmount').html(data.data[0].XDLShiShouAmount)
+								$('#XDLSubsidyCount').html(data.data[0].XDLSubsidyCount)
+								$('#XDLSubsidyAmount').html(data.data[0].XDLSubsidyAmount)
+								$('#YrmCount').html(data.data[0].YrmCount)
+								$('#YrmAmount').html(data.data[0].YrmAmount)
+								$('#YrmCharge').html(data.data[0].YrmCharge)
+								$('#YrmRefundAmount').html(data.data[0].YrmRefundAmount)
+								$('#YrmShiShouAmount').html(data.data[0].YrmShiShouAmount)
+								$('#YrmSubsidyCount').html(data.data[0].YrmSubsidyCount)
+								$('#YrmSubsidyAmount').html(data.data[0].YrmSubsidyAmount)
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+					})
+				}
+			});
 		</script>
 	</body>
 
