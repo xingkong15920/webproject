@@ -90,10 +90,16 @@
                 </div>
                 
                 <div class="layui-input-block">
-                   
+                   <input type="button" class="layui-btn"  value="查询" id="check">
 			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="报备" id="sub">
 			    </div>
             </form>
+            <div class="layui-form-item" style="margin-top:20px;display:none" id="infoBox">
+                <label class="layui-form-label">报备信息</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" name="aliPrivateKey" autocomplete="off" id="info" placeholder="RSA私钥" lay-verify="title" rows="3"></textarea>
+                </div>
+            </div>
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                         <legend style="font-weight: 500;">报备记录</legend>
                     </fieldset>
@@ -257,28 +263,42 @@
                 )
                 }
                 
-            
-                // CmsUtility.postAjaxCall(
-                //     //系统设置
-                //     'submit/getweChatPutBd',
-                //     {
-                //         "institutionNumber":userNumber,
-                //         //"subaccountNumber":data.subaccountNumber,
-                //         "subaccountNumber":'0001210F1766081',
-                        
-                //     },
-                //     function(data) {
-                //         if (data.code == 1000) {
+                $('#check').click(function(){
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        'submit/getweChatPut',
+                        {
+                            "institutionNumber":userNumber,
+                            "subaccountNumber":data.subaccountNumber,
+                            //"subaccountNumber":'0001210F1766081',
+                            "paymentChannel":jgData.paymentChannel,
+                            "paymentType":jgData.paymentChannelType
                             
-                //         } else {
-                //             //layer.msg(data.msg)
+                        },
+                        function(data) {
+                            if (data.code == 1000) {
+                                if(jgData.paymentChannelType == 2){
+                                    $('#info').val("appidConfigList : " + data.data[0].appidConfigList + '\n' + "jsapiPathList : " + data.data[0].jsapiPathList + '\n' + 'msg : ' + data.data[0].message)
+                                }else if(jgData.paymentChannelType == 4){
+                                    var str = ''
+                                    for(var i = 0 ; i < data.data.REC.length;i++){
+                                        str += 'Appid : ' + data.data.REC[i].Appid + ' , ' + 'PUBLIC_Appid : ' +data.data.REC[i].PUBLIC_Appid + ' , ' + "FollowSts : " + data.data.REC[i].FollowSts + '\n'
+                                    }
+                                    $('#info').val(str)
+                                }
+                                
+                                $('#infoBox').show()
+                            } else {
+                                layer.msg(data.msg)
 
-                //         }
-                //     },
-                //     function(data) {
-                //         console.log('222')
-                //     }
-                // )
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                })
+               
                 form.on('radio(wxType)', function(data) { //设置会员卡的有效期
                     if(jgData.paymentChannelType == 4){
                         if(data.value == 1){

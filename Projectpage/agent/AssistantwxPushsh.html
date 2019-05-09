@@ -96,6 +96,7 @@
             //系统设置
             CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
                 'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+                
             },
             function(data) {
                 if (data.code == 1000) {
@@ -104,7 +105,7 @@
                         layer.msg('未获取到商户路径')
                         return
                     }
-                    new QRCode(document.getElementById("qrcode1"), shHref + "/wechatPush/getCode.html?clerkNumber=" + '' + '&type=0&merchantNumber=' + jgData.merchantNumber + '&shopNumber=' + '');
+                    new QRCode(document.getElementById("qrcode1"), shHref + "/wechatPush/getCode1.html?clerkNumber=" + '' + '&type=0&merchantNumber=' + jgData.merchantNumber + '&shopNumber=' + '' + '&focusLink=' + data.data[0].focusLink);
                     layui.use(['table', 'layer'], function() {
                         $ = layui.jquery;
                         var form = layui.form,
@@ -117,7 +118,7 @@
                         var info;
                         var nObect = new Object()
                         nObect.clerkNumber = ''
-                        nObect.merchantNumber = data.merchantNumber
+                        nObect.merchantNumber = jgData.merchantNumber
                         nObect.shopNumber = ''
                         nObect.bindType = 0
                         $.ajax({

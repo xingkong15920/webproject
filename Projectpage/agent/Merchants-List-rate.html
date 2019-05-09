@@ -110,11 +110,13 @@
                                     "agentNumber": userNumber,
                                     "paymentChannel": data.data[0].paymentChannel,
                                     "rateType": data.data[0].rateType,
+                                    "institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
                                 },
                                 function(data) {
                                     console.log(data)
                                     if (data.code == '1000') {
-                                        yyRate = (data.data[0].rate*100)+'%'
+                                        yyRate = (data.data[0].rate*10000/100).toFixed(3)+'%'
+
                                         table.render({
                                             //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
                                             url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantRate + '?merchantNumber=' + jgData.merchantNumber,
@@ -155,7 +157,8 @@
                                                     title: '运营费率',
                                                     field: 'rate',
                                                     templet: function(data) {
-                                                        return (data.weChatRate*100) + '%' + '/' + (data.alipayRate*100) + '%'  + '/' + (data.jingdongRate*100) + '%'  + '/' + (data.unionPayRate*100) + '%' 
+                                                        return (data.weChatRate*10000/100) + '%' + '/' + (data.alipayRate*10000/100) + '%'  + '/' + (data.jingdongRate*10000/100) + '%'  + '/' + (data.unionPayRate*10000/100) + '%'  
+ 
                                                     }
                                                 }, {
                                                     align: 'center',
