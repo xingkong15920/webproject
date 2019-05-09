@@ -51,9 +51,10 @@
             </div>
             <form class="layui-form" lay-filter="report">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">支付授权目录</label>
+                    <label class="layui-form-label">报备类型</label>
                     <div class="layui-input-block">
-                        <input type="text" name="paymentAuthorization" lay-verify="url||paymentAuthorization" autocomplete="off" placeholder="请输入支付授权目录" class="layui-input" id="number">
+                        <input type="radio" name="wxType" value="1" title="公众号" checked="" lay-filter="wxType">
+                        <input type="radio" name="wxType" value="2" title="小程序" lay-filter="wxType">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -62,6 +63,19 @@
                         <input type="text" name="appid" lay-verify="appid||title" autocomplete="off" placeholder="请输入APPID" class="layui-input" id="number1">
                     </div>
                 </div>
+                <div class="layui-form-item xdl" >
+                    <label class="layui-form-label">AppSecret</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="appkey" lay-verify="appkey" autocomplete="off" placeholder="请输入AppSecret" class="layui-input" id="number2">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付授权目录</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="paymentAuthorization" lay-verify="url||paymentAuthorization" autocomplete="off" placeholder="请输入支付授权目录" class="layui-input" id="number">
+                    </div>
+                </div>
+                
                 <!-- <div class="layui-form-item">
                     <label class="layui-form-label">AppSecret</label>
                     <div class="layui-input-block">
@@ -74,12 +88,7 @@
                         <input type="text" name="recommendAppid" lay-verify="recommendAppid||title" autocomplete="off" placeholder="请输入推荐关注APPID" class="layui-input" id="number2">
                     </div>
                 </div>
-                <div class="layui-form-item xdl" style="display:none">
-                    <label class="layui-form-label">AppSecret</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="appkey" lay-verify="appkey" autocomplete="off" placeholder="请输入AppSecret" class="layui-input" id="number2">
-                    </div>
-                </div>
+                
                 <div class="layui-input-block">
                    
 			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="报备" id="sub">
@@ -98,7 +107,9 @@
     var code1 = ''
     var reportList = '';
     function subPage(data,data1){
+        
         var jgData = data
+       
         console.log(jgData)
         if(jgData.paymentChannelType == 4){
             $('.xdl').show()
@@ -161,6 +172,23 @@
                             title: '推荐关注APPID',
                             align: 'center',
                             field: 'recommendAppid',
+                        },{
+                            title: '报备类型',
+                            align: 'center',
+                            field: 'recommendAppid',
+                            templet:function(data){
+                                switch (data.wxType) {
+                                    case 1:
+                                        return '公众号'
+                                        break;
+                                    case 2:
+                                        return '小程序'
+                                        break;
+                                    default:
+                                        return '--'
+                                        break;
+                                }
+                            }  
                         }]
                     ],
                     done: function(res, curr, count) {
@@ -168,6 +196,68 @@
                             reportList = res.data
                     },
                 })
+                if(jgData.paymentChannelType == 4){
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        'Xdl/getConfigureXdl', {
+                            'institutionNumber': userNumber,
+                            'paymentChannel': jgData.paymentChannel
+                        },
+                        function(data) {
+                            if (data.code == 1000) {
+                                console.log(data)
+                                sjData = data.data
+                                
+                                form.val('report', {
+                                    "appid":sjData.wechatAPPID,
+                                    "appkey":sjData.wechatAppSecret,
+                                    "paymentAuthorization":sjData.payDASD,
+                                    "recommendAppid":sjData.recommendAPPID,
+                                    
+                                })
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        },
+                        'post',
+                        'false'
+                    )
+                }else if(jgData.paymentChannelType == 2){
+                    CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
+                        'institutionNumber': userNumber,
+                        'paymentChannel': jgData.paymentChannel
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            console.log(data)
+                            sjData = data.data[0]
+                            form.val('report', {
+                                "appid":sjData.wechatAppid,
+                                "appkey":sjData.wechatAppSecret,
+                                "paymentAuthorization":sjData.payDasd,
+                                "recommendAppid":sjData.recommendAppid,
+                                
+                            })
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    },
+                    'post',
+                    'false'
+                )
+                }
+                
+            
                 // CmsUtility.postAjaxCall(
                 //     //系统设置
                 //     'submit/getweChatPutBd',
@@ -189,6 +279,134 @@
                 //         console.log('222')
                 //     }
                 // )
+                form.on('radio(wxType)', function(data) { //设置会员卡的有效期
+                    if(jgData.paymentChannelType == 4){
+                        if(data.value == 1){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                'Xdl/getConfigureXdl', {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.wechatAPPID,
+                                            "appkey":sjData.wechatAppSecret,
+                                            "paymentAuthorization":sjData.payDASD,
+                                            "recommendAppid":sjData.recommendAPPID,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }else if(data.value == 2){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                'Xdl/getConfigureXdl', {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel':jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.smallRoutineAPPID,
+                                            "appkey":sjData.smallRoutineAppSecret,
+                                            "paymentAuthorization":sjData.payDASD,
+                                            "recommendAppid":sjData.recommendAPPID,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }
+                    }else if(jgData.paymentChannelType == 2){
+                        if(data.value == 1){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data[0]
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.wechatAppid,
+                                            "appkey":sjData.wechatAppSecret,
+                                            "paymentAuthorization":sjData.payDasd,
+                                            "recommendAppid":sjData.recommendAppid,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }else if(data.value == 2){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data[0]
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.smallroutineAppid,
+                                            "appkey":sjData.miniAppSecret,
+                                            "paymentAuthorization":sjData.payDasd,
+                                            "recommendAppid":sjData.recommendAppid,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }
+                    }
+                    
+                });
             //表单初始赋值
             // $('#sub').click(function(){
             //  console.log(code1)
@@ -288,6 +506,7 @@
                 tjData.jsapiPath = data.field.paymentAuthorization
                 tjData.subappid = data.field.appid
                 tjData.appkey = data.field.appkey
+                tjData.wxType = data.field.wxType
                 tjData.subscribeappid = data.field.recommendAppid
                 tjData.paymentType = jgData.paymentChannelType
                 CmsUtility.postAjaxCall(

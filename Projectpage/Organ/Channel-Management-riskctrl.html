@@ -131,6 +131,23 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			function toDecimal2(x) { 
+		      var f = parseFloat(x); 
+		      if (isNaN(f)) { 
+		        return false; 
+		      } 
+		      var f = Math.round(x*100)/100; 
+		      var s = f.toString(); 
+		      var rs = s.indexOf('.'); 
+		      if (rs < 0) { 
+		        rs = s.length; 
+		        s += '.'; 
+		      } 
+		      while (s.length <= rs + 2) { 
+		        s += '0'; 
+		      } 
+		      return s; 
+		    }
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function(){
 				
@@ -180,10 +197,12 @@
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add)', function(data, index) {
 						var addData = data.field
-						console.log(addData)
 						addData.institutionNumber = userNumber
 						addData.paymentChannel = jgData.id
 						addData.paymentChannelType = jgData.paymentChannelType
+						addData.dateCountMoney = toDecimal2(addData.dateCountMoney)
+						addData.singlepenMinMoney = toDecimal2(addData.singlepenMinMoney)
+						addData.singlepenMaxMoney = toDecimal2(addData.singlepenMaxMoney)
 						CmsUtility.postAjaxCall(
 						//系统设置
 							CmsConfig.addressUrl.Mechanism.updateRisk,

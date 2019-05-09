@@ -61,12 +61,7 @@
             {{#  }); }}
 			
 		</script>
-		<script type="text/html" id="selectBar_lx">
-			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}"  orderNumber="{{d.orderNumber}}" >
-				<option value="1" {{d.subsidy==1 ? 'selected' : ''}}>普通商户</option>
-				<option value="0" {{d.subsidy==0 ? 'selected' : ''}}>补贴商户A</option>
-			</select>
-		</script>
+
 		<script type="text/html" id="toolAdd">
 			<a class="layui-btn layui-btn-xs" id="rate" lay-event="add">新增子商户</a>
 		</script>
@@ -80,7 +75,11 @@
 				setTimeout(function(){parent.layer.close(index)},16); 
 			})
 			function changeRes(res) {
-				var res = res
+				console.log(res)
+				for(var i = 0 ; i < res.length;i++){
+					res[i].subsidyType1 = res[i].gather[0].subsidyType
+				}
+				console.log(res)
 				return res
 			}
 			
@@ -115,14 +114,14 @@
 									"statusCode":"1000", //解析接口状态
 									
 							},
-							//					parseData: function(res) { //res 即为原始返回的数据
-							//						return {
-							//							"code": res.code, //解析接口状态
-							//							"msg": res.msg, //解析提示文本
-							//							"count": res.count, //解析数据长度
-							//							"data": changeRes(res.result,res.count), //解析数据列表
-							//						};
-							//					},
+							parseData: function(res) { //res 即为原始返回的数据
+								return {
+									"code": res.code, //解析接口状态
+									"msg": res.msg, //解析提示文本
+									"count": res.count, //解析数据长度
+									"data": changeRes(res.data), //解析数据列表
+								};
+							},
 							cols: [
 								[{
 									align: 'center',
@@ -139,13 +138,9 @@
 									title: '通道子商户',
 									toolbar: '#toolbar',
 									minWidth: 300
-								}
-								, {
-								align: 'center',
-								toolbar: '#selectBar_lx',
-								width: 130,
-								title: '类型',
-							},{
+								}, 
+								
+							{
 									align: 'center',
 									title: '操作',
 									toolbar: '#toolAdd',
@@ -185,6 +180,36 @@
 						obj.elem.setAttribute('data-checkout',obj.elem.checked==true?0:1)
 
 					})
+					//商户类型的状态
+					form.on('select(shopSel)', function(data) {
+						// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+						//更改商户类型
+						console.log(data.elem.getAttribute("shopNumber"))
+						console.log(data)
+						var tjData = new Object();
+						tjData.merchantNumber = data.elem.getAttribute("shopNumber");
+						tjData.institutionNumber = userNumber
+						tjData.subsidy = data.value
+						tjData.deletionFlag = 0
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Mechanism.updateMerMsg,
+							tjData,
+							function(data){
+								if(data.code == 1000){
+									 
+									parent.layer.msg('更改成功')
+									layui.table.reload('vip_cardList')
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+					});
 					table.on('tool(members)', function(obj) {
 						console.log(obj)
 						var data = obj.data

@@ -25,6 +25,21 @@
 			.hiide{
 				display: none;
 			}
+			.layui-table-cell{
+    		height: auto;
+    		white-space: normal;
+    	}
+    	.layui-btn+.layui-btn {
+				margin-left: -2px;
+			}
+			.layui-table-cell{
+				overflow: visible;
+				padding: 0;
+			}
+			.layui-table .layui-form-select .layui-input{
+				height: 28px;
+				border: none;
+			}
 		</style>
 	</head>
 
@@ -53,17 +68,25 @@
 		<script type="text/html" id="switchBar">
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="switch" lay-text="启用|停用" {{d.disable==0 ? 'checked' : ''}} value="{{d.subaccountNumber}}">
 		</script>
+		<script type="text/html" id="selectBar_lx">
+			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}"  subaccountNumber="{{d.subaccountNumber}}" >
+				<option value="1" {{d.subsidy == 1 ? 'selected' : ''}}>普通商户</option>
+				<option value="0" {{d.subsidy == 0 ? 'selected' : ''}}>补贴商户A</option>
+				<option value="null" {{d.subsidy == null ? 'selected' : ''}}>未知类型</option>
+			</select>
+		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs xdl" id="edit" lay-event="rate">费率</a>
 			<a class="layui-btn layui-btn-xs report " id="report" lay-event="report">报备</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="riskctrl">风控</a>
-			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="add">补全资料</a>
+			
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			// <a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="add">补全资料</a>
 			function uniq(array){
 			    var temp = []; //一个新的临时数组
 			    for(var i = 0; i < array.length; i++){
@@ -212,7 +235,12 @@
 										
 										return str.substr(0,str.length-1)
 									}
-								}, {
+								},{
+								align: 'center',
+								toolbar: '#selectBar_lx',
+								width: 130,
+								title: '类型',
+							}, {
 									align: 'center',
 									field: 'rateType',
 									width: 100,
@@ -260,6 +288,37 @@
 					$('#search').click(function(){
 						tableRender()
 					})
+					form.on('select(shopSel)', function(data) {
+						// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+						//更改商户类型
+						console.log(data.elem.getAttribute("shopNumber"))
+						console.log(data)
+						var tjData = new Object();
+						tjData.paymentChannel = jgData.id
+						tjData.institutionNumber = userNumber
+						tjData.subaccountNumber = data.elem.getAttribute("subaccountNumber")
+						tjData.merchantNumber  = data.elem.getAttribute("shopNumber")
+						tjData.subsidyType = data.value
+						tjData.deletionFlag = 0
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Mechanism.updateInstitutionSub,
+							tjData,
+							function(data){
+								if(data.code == 1000){
+									 
+									layer.msg('更改成功')
+									layui.table.reload('vip_cardList')
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+					});
 					//监听性别操作
 					form.on('switch(switch)', function(data) {
 						// layer.tips('自助核销：' + (this.checked ? '已开启' : '已关闭'), data.othis)
