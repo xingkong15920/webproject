@@ -47,6 +47,9 @@
 		<div class="layui-row" style="margin-left:30px;margin-top:15px">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
+						<input type="text" name="couponName" id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="merchantNumber" placeholder="商户编号" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
@@ -170,9 +173,9 @@
 							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getInstitutionSub + '?institutionNumber=' + userNumber ,
 							where:{
 								"paymentChannel":jgData.id,
-								"merchantNumber":$('#merchantNumber').val(),
-								"subaccountNumber":$('#subaccountNumber').val()
-
+								"merchantNumber":$('#merchantNumber').val().trim(),
+								"subaccountNumber":$('#subaccountNumber').val().trim(),
+								"merchantName":$('#merchantName').val().trim()
 							},
 							elem: '#members',
 							height: 'full-220',
@@ -277,7 +280,7 @@
 								table1 = '费率(' + s.substr(0,s.length-1) + ')'
 								var ts = document.getElementsByTagName('thead')[0].getElementsByTagName('span')[3]
 								ts.innerHTML = table1
-								if(jgData.paymentChannelType == 4 || jgData.paymentChannelType == 0 || jgData.paymentChannelType == 1){
+								if(jgData.paymentChannelType == 4 ){
 									console.log($('.xdl'))
 									$('.xdl').hide()
 								}

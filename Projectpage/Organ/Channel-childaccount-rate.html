@@ -74,6 +74,20 @@
                 </div>
             </div>
             <form class="layui-form" lay-filter="create">
+                <div class="layui-form-item gf_zhifubao" style="display:none">
+                    <label class="layui-form-label" style="width: 15%;">支付宝费率</label>
+                    <div class="layui-input-inline">
+                        
+                        <input type="text" name="terminalNumber" autocomplete="off" placeholder="官方支付宝费率"  id="gfzhifubao" class="layui-input" lay-verify="title">
+                    </div>
+                </div>
+                <div class="layui-form-item gf_weixin" style="display:none">
+                    <label class="layui-form-label" style="width: 15%;">微信费率</label>
+                    <div class="layui-input-inline">
+                        
+                        <input type="text" name="terminalNumber" autocomplete="off" placeholder="官方微信费率"  id="gfweixin" class="layui-input" lay-verify="title">
+                    </div>
+                </div>
                 <div class="layui-form-item zhifubao" >
                     <label class="layui-form-label" style="width: 15%;">支付宝费率</label>
                     <div class="layui-input-inline">
@@ -134,7 +148,26 @@
         $("#merchantNumber").html(jgData.merchantNumber)
         $("#subNumber").html(jgData.subaccountNumber)
         var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-        CmsUtility.postAjaxCall(
+
+        
+        var serverUrl = 'http://192.168.1.190:5002/'
+        
+        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+            layui.$.support.cors = true; //允许ajax跨域
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                laytpl = layui.laytpl;
+                if(jgData.paymentChannelType == 0){
+            $('.gf_zhifubao').show()
+            $('#gfzhifubao').val((jgData.alipayRate*10000/100).toFixed(2) + '%')
+         }else if(jgData.paymentChannelType == 1){
+           $('.gf_weixin').show()
+           $('#gfweixin').val((jgData.weChatRate*10000/100).toFixed(2) + '%')
+         }else{
+            CmsUtility.postAjaxCall(
             //系统设置
             CmsConfig.addressUrl.Mechanism.getRate, {
                 "institutionNumber": userNumber,
@@ -169,15 +202,27 @@
                     for(var n = 0 ; n < arrr.length ; n++){
                         if(arrr[n].type == 0){
                             $('.zhifubao').show()
+                            form.val('create', {
+                                "zhifubao":jgData.alipayRate.toFixed(4)
+                            })
                         }
                         if(arrr[n].type == 1){
                             $('.weixin').show()
+                            form.val('create', {
+                                "weixin":jgData.weChatRate.toFixed(4)
+                            })
                         }
                         if(arrr[n].type == 2){
                             $('.jingdong').show()
+                            form.val('create', {
+                                "jingdong":jgData.jingdongRate.toFixed(4)
+                            })
                         }
                         if(arrr[n].type == 3){
                             $('.yinlian').show()
+                            form.val('create', {
+                                "yinlian":jgData.unionPayRate.toFixed(4)
+                            })
                         }
                     }
                     if(jgData.paymentChannelType == 3){
@@ -195,17 +240,7 @@
             'post',
             'false'
         )
-        var serverUrl = 'http://192.168.1.190:5002/'
-        
-        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
-            layui.$.support.cors = true; //允许ajax跨域
-            var $ = layui.jquery,
-                upload = layui.upload,
-                laydate = layui.laydate,
-                table = layui.table,
-                form = layui.form,
-                laytpl = layui.laytpl;
-
+         }
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.getChannelRate, {
@@ -394,8 +429,31 @@
                 tjData.paymentChannel = jgData.paymentChannel
                 tjData.subaccountNumber = jgData.subaccountNumber
                 tjData.paymentType = jgData.paymentChannelType
-                tjData.weChatRate = $('#weixin').val()
-                tjData.alipayRate = $('#zhifubao').val()
+                if(jgData.paymentChannelType == 0){
+                    if($('#gfzhifubao').val().indexOf('%')<0){
+                        tjData.alipayRate = ($('#gfzhifubao').val()/10000*100).toFixed(4)
+                    }else{
+                        tjData.alipayRate = ($('#gfzhifubao').val().split('%')[0]/10000*100).toFixed(4)
+                    }
+                    
+                }else{
+                    tjData.alipayRate = $('#zhifubao').val()
+                }
+                if(jgData.paymentChannelType == 1){
+                    if($('#gfweixin').val().indexOf('%')<0){
+                        tjData.weChatRate = ($('#gfweixin').val()/10000*100).toFixed(4)
+
+                    }else{
+                        console.log($('#gfweixin').val().split('%')/10000*100)
+                        tjData.weChatRate = ($('#gfweixin').val().split('%')[0]/10000*100).toFixed(4)
+                    }
+
+                    
+                }else{
+                    tjData.weChatRate = $('#weixin').val()
+                }
+                
+                
                 tjData.jingdongRate = $('#jingdong').val()
                 tjData.unionPayRate = $('#yinlian').val()
                 if(jgData.paymentChannelType == 2){
@@ -417,8 +475,8 @@
                             parent.layer.msg(data.msg)
                             x_admin_close()
 
-                            // layer.msg('生成成功')
-                            // parent.layui.table.reload('vip_cardList')
+                             layer.msg('修改成功')
+                             parent.layui.table.reload('vip_cardList')
 
 
                         } else {

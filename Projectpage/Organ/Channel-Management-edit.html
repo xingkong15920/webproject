@@ -70,17 +70,31 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">支付前缀</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="prefixPayment" autocomplete="off" placeholder="支付前缀(默认请写机构号)" class="layui-input" lay-verify="prefixPayment">
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">微信服务商ID</label>
                     <div class="layui-input-block">
                         <input type="text" name="facilitatorId" autocomplete="off" placeholder="微信服务商ID" class="layui-input" lay-verify="facilitatorId">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">微信支付key</label>
-                    <div class="layui-input-block">
-                        <textarea class="layui-textarea" name="wechatKey" autocomplete="off" placeholder="微信支付key" lay-verify="wechatKey" rows="3"></textarea>
+                        <label class="layui-form-label">微信支付key</label>
+                        <div class="layui-input-block">
+                            
+                            <input type="text" name="wechatKey" autocomplete="off" placeholder="微信支付key" class="layui-input" lay-verify="wechatKey">
+                        </div>
                     </div>
-                </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">退款证书路径</label>
+                        <div class="layui-input-block">
+                            
+                            <input type="text" name="certificatePath" autocomplete="off" placeholder="退款证书路径" class="layui-input" lay-verify="wechatLink">
+                        </div>
+                    </div>
                 
                
                 <div class="layui-form-item">
@@ -170,6 +184,12 @@
                     <label class="layui-form-label">应用公钥</label>
                     <div class="layui-input-block">
                         <textarea class="layui-textarea" name="alipayPublicKey" autocomplete="off" placeholder="应用公钥" lay-verify="alipayPublicKey" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付前缀</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="prefixPayment" autocomplete="off" placeholder="支付前缀(默认请写机构号)" class="layui-input" lay-verify="prefixPayment">
                     </div>
                 </div>
                  <div class="layui-form-item">
@@ -770,6 +790,8 @@
                                 "alipayDisable": sjData.alipayDisable == 0 ? true : false,
                                 "payDasd": sjData.payDasd,
                                 "recommendAppid": sjData.recommendAppid,
+                                "prefixPayment":sjData.prefixPayment,
+
                             })
                             type = sjData.alipayDisable == 0 ? true : false
                         } else {
@@ -810,7 +832,9 @@
                                 "wechatDisable": sjData.wechatDisable == 0 ? true : false,
                                 "payDasd": sjData.payDasd,
                                 "recommendAppid": sjData.recommendAppid,
-                                "miniAppSecret": sjData.miniAppSecret
+                                "miniAppSecret": sjData.miniAppSecret,
+                                "prefixPayment":sjData.prefixPayment,
+                                "certificatePath":sjData.certificatePath
                             })
                             type = sjData.wechatDisable == 0 ? true : false
                         } else {
@@ -917,12 +941,13 @@
                                 "aliPublicKey":sjData.aliPrivateKey,
                                 "aliPayPublicKey":sjData.aliPublicKey,
                                 "aliPID": sjData.aliPID,
+                                
                                 // "aliAppid":sjData.aliAppid,
                                 // "aliPayPublicKey":sjData.aliPayPublicKey,
                                 // "aliPrivateKey":sjData.aliPrivateKey,
                                 // "aliPublicKey":sjData.aliPublicKey,
                                 // "wechatAppSecret":sjData.wechatAppSecret,
-                                // "prefixPayment":sjData.prefixPayment,
+                                "prefixPayment":sjData.prefixPayment,
                                 // "entryKey":sjData.entryKey,
                                 // "entryFtpN":sjData.entryFtpN,
                                 // "entryFtpP":sjData.entryFtpP
@@ -971,6 +996,7 @@
                                 "paymentName": sjData.paymentName,
                                 "paymentSpell": sjData.paymentSpell,
                                 "aliPID": sjData.aliPID,
+                                "prefixPayment":sjData.prefixPayment,
                             })
                             type = sjData.disable == 0 ? true : false
                         } else {

@@ -61,7 +61,8 @@
 					<legend style="font-weight: 500;">代理商统计分析</legend>
 				</fieldset>
 				<!--报表-->
-				<div class="layui-col-xs12 layui-col-sm6 layui-col-md4">
+				<div style="display:block;height:513px">
+					<div class="layui-col-xs12 layui-col-sm6 layui-col-md4">
 					<div class="grid-demo border">
 						<div class="">
 							<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">代理商商户数TOP10</p>
@@ -72,19 +73,42 @@
 				<div class="layui-col-xs12 layui-col-sm6 layui-col-md4">
 					<div class="grid-demo border">
 						<div class="">
-							<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">代理商订单金额TOP10 </p>
+							<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">代理商订单金额TOP10(包含退款) </p>
 							<table class="layui-hide" id="members2" lay-filter="members2"></table>
 						</div>
 					</div>
 				</div>
 				<div class="layui-col-xs12 layui-col-sm6 layui-col-md4">
 					<div class="grid-demo border">
+						<div class="" >
+							<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">代理商退款金额TOP10</p>
+							<table class="layui-hide" id="members6" lay-filter="members3"></table>
+						</div>
+					</div>
+				</div>
+
+				</div>
+				<div>
+					<div class="layui-col-xs12 layui-col-sm6 layui-col-md4" style="overflow:hidden">
+					<div class="grid-demo border">
 						<div class="">
-							<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">代理商订单笔数TOP10</p>
+							<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">代理商订单笔数TOP10(包含退款)</p>
 							<table class="layui-hide" id="members3" lay-filter="members3"></table>
 						</div>
 					</div>
 				</div>
+				
+				<div class="layui-col-xs12 layui-col-sm6 layui-col-md4">
+					<div class="grid-demo border">
+						<div class="">
+							<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">代理商退款笔数TOP10</p>
+							<table class="layui-hide" id="members7" lay-filter="members3"></table>
+						</div>
+					</div>
+				</div>
+
+				</div>
+				
 			</div>
 			<div class="layui-row layui-col-space30">
 				<!--汇总-->
@@ -261,7 +285,76 @@
 					],
 					done: function(res, curr, count) {}
 				});
-
+				//代理商退款金额TOP10
+				table.render({
+					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrl +  'InsSPSS/getInsAgentRefundMoney?institutionNumber=' +
+						userNumber,
+					elem: '#members6',
+					id: 'vip_cardList2',
+					response: {
+						//res 即为原始返回的数据
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.count, //解析数据长度
+							"data": res.data, //解析数据列表
+						};
+					},
+					cols: [
+						[{
+							title: '排名',
+							type: 'numbers'
+						}, {
+							align: 'center',
+							field: 'Agent_Name',
+							title: '代理商名称',
+						}, {
+							align: 'center',
+							field: 'refundMoney',
+							title: '退款金额',
+						}]
+					],
+					done: function(res, curr, count) {}
+				});
+				//代理商退款笔数TOP10
+				table.render({
+					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrl +  'InsSPSS/getInsAgentRefundCount?institutionNumber=' +
+						userNumber,
+					elem: '#members7',
+					id: 'vip_cardList2',
+					response: {
+						//res 即为原始返回的数据
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.count, //解析数据长度
+							"data": res.data, //解析数据列表
+						};
+					},
+					cols: [
+						[{
+							title: '排名',
+							type: 'numbers'
+						}, {
+							align: 'center',
+							field: 'Agent_Name',
+							title: '代理商名称',
+						}, {
+							align: 'center',
+							field: 'refundCount',
+							title: '退款笔数',
+						}]
+					],
+					done: function(res, curr, count) {}
+				});
 				//代理商订单笔数TOP10  
 				table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,

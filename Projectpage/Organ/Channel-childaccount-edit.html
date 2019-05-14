@@ -55,36 +55,33 @@
 							</div>
 						</div>
 						<div class="layui-form-item">
-							<label class="layui-form-label">公众号APPID</label>
-							<div class="layui-input-inline">
-								<input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid">
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">公众号APPSECRET</label>
-							<div class="layui-input-inline">
-								<input type="text" name="appsecret" autocomplete="off" placeholder="公众号APPSECRET" class="layui-input" lay-verify="appsecret">
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">小程序APPID</label>
-							<div class="layui-input-inline">
-								<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid">
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">推荐关注APPID</label>
-							<div class="layui-input-inline">
-								<input type="text" name="suggestedAPPID" autocomplete="off" placeholder="推荐关注公众号APPID" class="layui-input" lay-verify="appsecret">
-							</div>
-						</div>
+                        <label class="layui-form-label">费率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="rate" autocomplete="off" placeholder="费率" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div>
+                   
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算类型</label>
+                        <div class="layui-input-block">
+                          <input type="radio" name="rateType" value="D1" title="D1" checked="">
+                          <input type="radio" name="rateType" value="D0" title="D0">
+
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">类型</label>
+                        <div class="layui-input-block">
+                          <!-- <input type="radio" name="subsidy" value="1" title="普通商户" checked="">
+                          <input type="radio" name="subsidy" value="0" title="补贴商户A"> -->
+                          <select name="subsidyType" id="merchantEnble" >
+                            <option value="0">补贴商户A</option>
+                            <option value="1">普通商户</option>
+                        </select>
+                        </div>
+                    </div>
 						
-						<div class="layui-form-item">
-							<label class="layui-form-label">支付授权目录</label>
-							<div class="layui-input-inline">
-								<input type="text" name="paymentDirectory" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
-							</div>
-						</div>
+						
 						
 						
 					</div>
@@ -124,6 +121,14 @@
         <script src="../../common/utility.js"></script>
          <script src="../../public/js/qrcode.min.js"></script>
 		<script>
+			var qrcode = new QRCode('qrcode', { 
+      text: '', 
+      width: 256, 
+      height: 256, 
+      colorDark : '#000000', 
+      colorLight : '#ffffff', 
+      correctLevel : QRCode.CorrectLevel.H 
+    });
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function(){
@@ -182,9 +187,33 @@
 				
 				console.log(jgData.payment)
 				if(jgData.payment == 0){
-					$('#noali').hide()
-					$('#ali').show()
-					new QRCode(document.getElementById('qrcode'), 'https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=2017070507654347&redirect_uri=http%3A%2F%2Fapi.hongxiaosou.cn%2Fshht%2FCon%2FaliPay&shopID=180308165207885');
+					CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Mechanism.getZFBOfficial, {
+                        'alipayNumber':jgData.channel
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            console.log(data)
+                            sjData = data.data[0]
+                             var jumphref = 'https://api.51shanhe.com/h5-pay/alioauth/oauth.html?institutionNumber=' + userNumber + '&merchantNumber='+jgData.merchantNumber + '&paymentChannel='+jgData.channel
+                            qrcode.clear(); 
+                            qrcode.makeCode('https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id='+sjData.alipayAppid+'&redirect_uri=' + jumphref); 
+            
+           						
+                                $('#ali').show()
+                          
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    },
+                    'post',
+                    'false'
+                )
 				}else{
 					$('#ali').hide()
 					$('#noali').show()
