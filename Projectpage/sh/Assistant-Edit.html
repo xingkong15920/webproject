@@ -18,6 +18,15 @@
 	<body>
 		<div class="x-body">
 			<form class="layui-form" lay-filter="editAssistant">
+				<!-- <div class="layui-form-item">
+					<label class="layui-form-label">角色</label>
+					<div class="layui-input-inline">
+						<select name="userKinds" id="userKinds" lay-filter="userKinds" lay-verify="userKinds">
+							<option value='4'>店长</option>
+							<option value='5'>店员</option>
+						</select>
+					</div>
+				</div> -->
 				<div class="layui-form-item">
 					<label class="layui-form-label">管理员名称</label>
 					<div class="layui-input-inline">
@@ -52,6 +61,7 @@
 					shopNumber = data.shopNumber,
 					clerkNumber = data.clerkNumber,
 					clerkName = data.clerkName,
+					userKinds = data.userKinds,
 					shopName = data.shopName;
 					console.log(data)
 				layui.use(['form', 'layer'], function() {
@@ -61,6 +71,7 @@
 
 					//表单初始赋值
 					form.val('editAssistant', {
+						// "userKinds":data.userKinds,
 						"clerkName": data.clerkName,
 						"registeredCell": data.registeredCell,
 					})
@@ -90,6 +101,7 @@
 						addData.shopNumber = shopNumber
 						addData.merchantNumber = userNumber
 						addData.shopName = shopName
+						addData.userKinds = userKinds
 						addData.deletionFlag = 0
 						// 发送请求
 						CmsUtility.postAjaxCall(

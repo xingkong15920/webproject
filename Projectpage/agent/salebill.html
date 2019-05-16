@@ -44,7 +44,10 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<select name="periodType" id="periodType">
+						<input type="text" name="couponName" id="couponName" placeholder="销售名称" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-input-inline">
+						<select name="cardVoucherName" id="cardVoucherName">
 							
 							<option value="1">日账单</option>
 							<option value="2">月账单</option>
@@ -67,9 +70,9 @@
 					</div>
 				</div>
 			</div>
-			<!-- <xblock>
-				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加服务商</button>
-			</xblock> -->
+			<xblock>
+				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加账单</button>
+			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="switchBar">
@@ -129,7 +132,6 @@
 					where:{
 						"startTime":sTiem,
 						"endTime":eTime,
-						"periodType":$('#periodType').val()
 					},
 					elem: '#members',
 					height: 'full-210',
@@ -158,43 +160,43 @@
 						[{
 							align: 'center',
 							field: 'orederNumber',
+							width: 250,
 							title: '账单号',
 						}, {
 							align: 'center',
 							field: 'importExportAmount',
+							width: 250,
 							title: '账单类型',
 							templet:function(data){
-								switch (data.weekOrMonthState) {
-									case 0:
-										return '周账单'
-										break;
-									case 1:
-										return '月账单'
-										break;
-									default:
-										return '日账单'
-										break;
-								}
+								return '日账单'
 							}
 						}, {
 							align: 'center',
 							field: 'importExportAmount',
-							title: '类型'
+							width: 250,
+							title: '类型',
+							templet:function(data){
+								return '分佣'
+							}
 						}, {
 							align: 'center',
 							field: 'importExportAmount',
+							width: 250,
 							title: '变动金额'
 						}, {
 							align: 'center',
 							field: 'earlyStageBalance',
+							width: 200,
 							title: '变动前金额',
 						}, {
 							align: 'center',
 							field: 'endTermBalance',
+							width: 250,
 							title: '变动后金额',
 						}, {
 							align: 'center',
 							field: 'inserttime',
+							width: 250,
 							title: '变动时间',
 							templet:function(data){
 								if(data.inserttime){
@@ -206,12 +208,8 @@
 						},{
 							align: 'center',
 							field: 'insertTime',
-							title: '备注'
-						},{
-							field: 'operation',
-							title: '操作',
-							toolbar: "#tool",
-							align: 'center',
+							width: 250,
+							title: '备注信息'
 						}]
 					],
 					page: true,
@@ -273,12 +271,12 @@
 				$('#addA').click(function(){
 					layer.open({
 						type: 2,
-						title: '添加服务商',
+						title: '添加账单',
 						shade: 0.5,
-						area: [$(window).width() * 0.9+'px', '90%'],
+						area: ['40%', '50%'],
 						maxmin: false,
 						resize: false,
-						content: ['Agent-add.html'],
+						content: ['salebilladd.html'],
 						success: function(layero, index) {
 							// 获取子页面的iframe
 							var iframe = window['layui-layer-iframe' + index];

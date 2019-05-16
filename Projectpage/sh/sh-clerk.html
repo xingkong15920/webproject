@@ -39,39 +39,33 @@
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script type="text/html" id="zhuangtai">
-			<input type="checkbox" name="switch" data-userKinds="{{d.userKinds}}" data-name="{{d.clerkName}}" value="{{d.clerkNumber}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.enable=='0' ? 'checked' : '' }}>
+			<input type="checkbox" name="switch" data-name="{{d.clerkName}}" value="{{d.clerkNumber}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.enable=='0' ? 'checked' : '' }}>
 		</script>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			function subPageclerk(data, userNumber) {
-				var data = data,
-					userNumber = userNumber,
-					shopName = data.shopName,
-					shopNumber = data.shopNumber;
-					console.log(data)
-				$('#layerSubpage').click(function() {
-					layer.open({
-						type: 2,
-						title: '添加店员',
-						area: ['500px', '550px'], //宽高
-						content: 'assistant-add.html',
-						success: function(layero, index) {
-							// 获取子页面的iframe
-							var iframe = window['layui-layer-iframe' + index];
-							// 向子页面的全局函数child传参
-							iframe.subPageClerkadd(data, userNumber)
-						}
-					});
-				})
-
+			$('#layerSubpage').click(function() {
+				layer.open({
+					type: 2,
+					title: '添加店员',
+					area: ['500px', '450px'], //宽高
+					content: 'assistant-add.html',
+					success: function(layero, index) {
+						// 获取子页面的iframe
+						var iframe = window['layui-layer-iframe' + index];
+						// 向子页面的全局函数child传参
+						iframe.subPageClerkadd(data, userNumber)
+					}
+				});
+			})
+			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 				layui.use(['table', 'form'], function() {
 					var table = layui.table,
 						form = layui.form;
 
 					//监听店员开启关闭操作
 					form.on('switch(toolbar_switch)', function(data) {
-						console.log(data.elem.dataset)
+						console.log(data.elem.dataset.name)
 						var tjData = new Object();
 						tjData.clerkNumber = data.value;
 						tjData.enable = this.checked ? '0' : '1';
@@ -80,7 +74,6 @@
 						tjData.merchantNumber = userNumber
 						tjData.shopName = shopName
 						tjData.clerkName = data.elem.dataset.name
-						tjData.userKinds = data.elem.dataset.userkinds
 						CmsUtility.postAjaxCall(
 							//系统设置
 							CmsConfig.addressUrl.Merchant.modifyClerk,
@@ -100,7 +93,7 @@
 					//方法级渲染
 					table.render({
 						elem: '#LAY_table_Assistant',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' + userNumber + '&shopNumber=' + shopNumber,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' + userNumber + '&shopNumber=' + '',
 						method: "post",
 						height: 'full-120',
 						page: true,
@@ -120,18 +113,15 @@
 						},
 						cols: [
 							[{
-							field: 'clerkNumber',
-							title: '编号',
-							align: 'center',
-							width: 250
-						},{
 								field: 'clerkName',
 								title: '姓名',
 								align: 'center',
+								width: 150
 							}, {
 								field: 'registeredCell',
 								title: '手机号',
 								align: 'center',
+								width: 150
 							}, {
 								field: 'registeredCell',
 								title: '角色',
@@ -154,14 +144,17 @@
 								field: 'shopName',
 								title: '所属门店',
 								align: 'center',
+								width: 250
 							}, {
 								field: 'insertTime',
 								title: '创建时间',
 								align: 'center',
+								width: 250
 							}, {
 								field: 'loginTime',
 								title: '最后登录时间',
 								align: 'center',
+								width: 250
 							}, {
 								align: 'center',
 								title: '状态',
@@ -185,7 +178,7 @@
 							layer.open({
 								type: 2,
 								title: '编辑',
-								area: ['460px', '350px'], //宽高
+								area: ['460px', '250px'], //宽高
 								content: 'assistant-edit.html',
 								success: function(layero, index) {
 									// 获取子页面的iframe
@@ -198,7 +191,7 @@
 							layer.open({
 								type: 2,
 								title: '修改密码',
-								area: ['520px', '250px'], //宽高
+								area: ['460px', '250px'], //宽高
 								content: 'assistant-pass.html',
 								success: function(layero, index) {
 									// 获取子页面的iframe
@@ -245,7 +238,6 @@
 								tjData.deletionFlag = 1;
 								tjData.clerkName = data.clerkName
 								tjData.shopName = data.shopName
-								tjData.userKinds = data.userKinds
 								CmsUtility.postAjaxCall(
 									//系统设置
 									CmsConfig.addressUrl.Merchant.modifyClerk,
@@ -267,7 +259,7 @@
 						}
 					});
 				});
-			}
+			
 		</script>
 	</body>
 
