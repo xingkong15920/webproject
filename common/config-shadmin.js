@@ -6,7 +6,7 @@ if (Edition == 'qty') {
 	server = 'http://192.168.1.134:5006/shanhe-mechanism/'
 	// server  = 'https://api.51shanhe.com/m-api/shanhe-mechanism/'
 } else {
-	server = 'http://192.168.1.113:4006/shanhe-organization/'
+	server = 'http://192.168.1.113:4006/shanhe-admin/'
 }
 /* 
 接口前缀解释
@@ -44,7 +44,12 @@ var CmsConfig = {
 			//退出
 			adminLogOut: "login/adminLogOut",
 			//自动登录
-			Automaticlist: "login/Automaticlist",
+			automaticlist: "login/automaticlist",
+		},
+		//机构后台接口
+		Mechanism: {
+			//获取
+			getInsRegInfo: "basicSetting/getInsRegInfo",
 		},
 		//总管理平台
 		Shadmin: {
@@ -53,29 +58,29 @@ var CmsConfig = {
 			//查询机构列表
 			getBcrmInsList: "bcrmIns/getBcrmInsList",
 			//删除（启用禁用）或者更新密码机构信息
-			delBcrmInsPass:"bcrmIns/delBcrmInsPass",
+			delBcrmInsPass: "bcrmIns/delBcrmInsPass",
 			//更新机构信息
-			updateBcrmIns:"bcrmIns/updateBcrmIns",
+			updateBcrmIns: "bcrmIns/updateBcrmIns",
 			//查询admin管理员
-			getBcrmUserList:"admin/getBcrmUserList",
+			getBcrmUserList: "admin/getBcrmUserList",
 			//添加admin管理员
-			addBcrmUser:"admin/addBcrmUser",
+			addBcrmUser: "admin/addBcrmUser",
 			//更新管理员密码
-			updateBcrmUserPs:"admin/updateBcrmUserPs",
+			updateBcrmUserPs: "admin/updateBcrmUserPs",
 			//删除管理员
-			delBcrmUser:"admin/delBcrmUser",
+			delBcrmUser: "admin/delBcrmUser",
 			//获取所有代理商
-			getAdminAgentList:"adminAg/getAdminAgentList",
+			getAdminAgentList: "adminAg/getAdminAgentList",
 			//代理商禁用启用
-			agentEnableDisable:"inAgent/agentEnableDisable",
+			agentEnableDisable: "inAgent/agentEnableDisable",
 			//代理商修改密码
-			updateAgentPassWord:"inAgent/updateAgentPassWord",
+			updateAgentPassWord: "inAgent/updateAgentPassWord",
 			//获取所有商户信息
-			getAdminMerList:"adminMer/getAdminMerList",
+			getAdminMerList: "adminMer/getAdminMerList",
 			//成功订单和异常订单
-			getSuOrderList:"inOrder/getSuOrderList",
+			getSuOrderList: "inOrder/getSuOrderList",
 			//退款订单
-			getRefundTrade:"inOrder/getRefundTrade",
+			getRefundTrade: "inOrder/getRefundTrade",
 		},
 		//公共
 		Public: {

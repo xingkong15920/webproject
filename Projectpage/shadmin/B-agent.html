@@ -78,22 +78,22 @@
 			var startdate = lastY + "-" + (lastM < 10 ? "0" + lastM : lastM) + "-" + (lastD < 10 ? "0" + lastD : lastD);
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
-			
-			function changeRes(res){
-				if(res == null){
+
+			function changeRes(res) {
+				if (res == null) {
 					return
 				}
-				for(var i = 0 ; i < res.length;i++){
-					if(res[i].agentType == 0){
+				for (var i = 0; i < res.length; i++) {
+					if (res[i].agentType == 0) {
 						res[i].agentType1 = '全国代理商'
 					}
-					if(res[i].agentType == 1){
+					if (res[i].agentType == 1) {
 						res[i].agentType1 = '省级代理商'
 					}
-					if(res[i].agentType == 2){
+					if (res[i].agentType == 2) {
 						res[i].agentType1 = '市级代理商'
 					}
-				}				
+				}
 				return res
 			}
 
@@ -115,7 +115,7 @@
 					max: enddate,
 					showBottom: false
 				})
- 
+
 				function tableRender() {
 					layer.load(2, {
 						shade: [0.4, '#393D49']
@@ -176,6 +176,11 @@
 								align: 'center',
 								width: 150
 							}, {
+								field: 'institutionName',
+								title: '所属机构',
+								align: 'center',
+								width: 150
+							}, {
 								field: 'state',
 								title: '状态',
 								toolbar: '#switchBar',
@@ -224,16 +229,16 @@
 						//系统设置
 						CmsConfig.addressUrl.Shadmin.agentEnableDisable,
 						tjData,
-						function(data){
-							if(data.code == 1000){
+						function(data) {
+							if (data.code == 1000) {
 								parent.layer.msg('更改成功')
 								layui.table.reload('agentL')
-							}else{
+							} else {
 								layer.msg(data.msg)
-								
+
 							}
 						},
-						function(data){
+						function(data) {
 							console.log('222')
 						}
 					)
@@ -242,7 +247,34 @@
 				//监听工具条
 				table.on('tool(bill)', function(obj) {
 					var data = obj.data;
-					if (obj.event === 'edit') {
+					if (obj.event === 'agentLogin') { //直接登录商户后台
+						var agHref = ''
+						var aData = data
+						console.log(aData)
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Mechanism.getInsRegInfo, {
+								'institutionNumber': aData.institutionNumber,
+							},
+							function(data) {
+								if (data.code == 1000) {
+									agHref = data.data[0].agentRoute
+									if (agHref == '') {
+										layer.msg('未获取到服务商路径')
+									}
+									var merHref = agHref + '/index.html?number=' + aData.agentNumber + '&ins=' + aData.institutionNumber
+									window.open(merHref)
+									console.log(merHref)
+								} else {
+									layer.msg(data.msg)
+
+								}
+							},
+							function(data) {
+								console.log('222')
+							}
+						)
+					} else if (obj.event === 'edit') {
 						return layer.msg("暂未开放！")
 						layer.open({
 							type: 2,

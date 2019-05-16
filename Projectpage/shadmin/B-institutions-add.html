@@ -78,6 +78,12 @@
 					</div>
 				</div>
 				<div class="layui-form-item">
+					<label class="layui-form-label">机构有效期</label>
+					<div class="layui-input-block">
+						<input type="text" name="effectiveDate" id="effectiveDate" lay-verify="title" placeholder="请选择机构有效期" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
 					<label class="layui-form-label">网站域名</label>
 					<div class="layui-input-block">
 						<input type="text" name="websiteRealmName" lay-verify="url" placeholder="请输入网站域名" class="layui-input">
@@ -118,6 +124,7 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			var index = parent.layer.getFrameIndex(window.name);
+			var nowDate = new Date();
 			$('#quxiao').click(function() {
 				setTimeout(function() {
 					parent.layer.close(index)
@@ -131,6 +138,13 @@
 					laydate = layui.laydate,
 					form = layui.form,
 					layer = layui.layer;
+
+				//有效期
+				laydate.render({
+					elem: '#effectiveDate',
+					min: 0,
+					value: nowDate
+				});
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
