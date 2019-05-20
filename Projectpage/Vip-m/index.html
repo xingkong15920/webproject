@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员中心</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="vipCenter" id="Vip">
+			<div class="vipBlock vipCardB">
+				<div class="vipCard">
+					<div class="vipCard_block vipCard_name">
+						<img :src="[vip_avatarImg]" id="vip_avatarImg">
+						<h3 class="vipCard_tit" v-cloak>{{vipCard_tit}}</h3>
+					</div>
+					<div class="vipCard_block vipCard_num" v-cloak>
+						NO.<span>{{vipCard_num}}</span>
+					</div>
+					<div class="vipCard_block vipCard_code">
+					</div>
+					<img src="./img/vipCard_bg.png" class="vipCard_bg vipCard_bg1">
+					<img src="./img/vipCard_bg.png" class="vipCard_bg vipCard_bg2">
+				</div>
+				<div class="vipProfile">
+					<div class="vipProfile_block">
+						<p class="vipProfile_tit">余额</p>
+						<p class="vipProfile_data"><span id="vipProfile_ye" v-cloak>212.00</span>(元)</p>
+					</div>
+					<div class="vipProfile_block">
+						<p class="vipProfile_tit">积分</p>
+						<p class="vipProfile_data"><span id="vipProfile_jf" v-cloak>21200</span></p>
+					</div>
+					<div class="vipProfile_block yhq">
+						<p class="vipProfile_tit">优惠券</p>
+						<p class="vipProfile_data"><span id="vipProfile_yhq" v-cloak>12</span>(张)</p>
+					</div>
+				</div>
+			</div>
+			<ul class="vipBlock vipTool">
+				<li class="vipTooli" v-cloak v-for="item in vipTooli" v-on:click="jump(item.address)">
+					<img :src="item.toolimg" class="toolimg">
+					<p class="toolitit">{{item.toolitit}}</p>
+				</li>
+			</ul>
+			<div class="vipBlock vipBill">
+				<div class="vipBilltit">
+					<p>最近账单</p>
+					<a href="recharge.html">查看更多</a>
+				</div>
+				<ul class="vipBillul">
+					<li class="vipBilli" v-for="item in vipBilli" v-cloak>
+						<div class="vipBilliL">
+							<p :class="item.vipBillitit == 1?'vipBillitit recharge':'vipBillitit'">{{item.vipBillitit == 1?'充值':'消费'}}</p>
+							<p class="vipBillitime">{{item.vipBillitime}}</p>
+						</div>
+						<div :class="item.vipBillitit == 1?'vipBilliR':'vipBilliR grayness'">
+							<p :class="item.vipBillitit == 1?'vipBillimoney recharge':'vipBillimoney'"><span :class=" item.vipBillistate == 0?'':'linethrough'">{{item.vipBillitit == 1?'+':'-'}}¥
+									{{item.vipBillimoney}}</span></p>
+							<p :class="item.vipBillitit == 1?'vipBillistate recharge':'vipBillistate'">{{item.vipBillistate == 0?'成功':'失败'}}</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="payCode" class="payCode hide">
+			<p class="payCodetit">付款码</p>
+			<p class="payCodetips">无需出示会员卡</p>
+			<div class="payCodeimg" id="payCodeimg"></div>
+			<div class="payCodeline"></div>
+			<p class="payCodemoney">余额：<span>￥212.00</span></p>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./js/qrcode.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$(".yhq").click(function() {
+				window.location.href = "coupons.html"
+			});
+			$(".vipCard_code").click(function() {
+				payCode()
+				// makeCode();
+			})
+
+		})
+		makeCode();
+
+		function makeCode() {
+			var qrcode = new QRCode("payCodeimg", {
+				width: 200,
+				height: 200,
+				colorDark: '#000000',
+				colorLight: '#ffffff'
+			});
+			var elText = "http://192.168.1.222/Projectpage/Vip-m/index.html";
+			qrcode.makeCode(elText);
+		}
+
+		function payCode() {
+			layer.open({
+				type: 1,
+				title: false,
+				closeBtn: 0,
+				skin: 'layui-layer-nobg',
+				area: 'calc(100% - 40px)',
+				shadeClose: true,
+				content: $('#payCode')
+			});
+		}
+
+		new Vue({
+			el: '#Vip',
+			data: {
+				vipCard_tit: "李先生",
+				vipCard_num: "12345678987654321234",
+				vip_avatarImg: "./img/vip-img.jpg",
+				vipTooli: [{
+					toolimg: "./img/hyqy.png",
+					toolitit: "会员权益",
+					address: "hyqy.html"
+				}, {
+					toolimg: "./img/xgzl.png",
+					toolitit: "修改资料",
+					address: "vipinfo.html"
+				}],
+				vipBilli: [{
+					vipBillitit: 1,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 0,
+					vipBillimoney: "101.00"
+				}, {
+					vipBillitit: 2,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 1,
+					vipBillimoney: "101.00"
+				}, {
+					vipBillitit: 1,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 0,
+					vipBillimoney: "11.00"
+				}, {
+					vipBillitit: 2,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 1,
+					vipBillimoney: "161.00"
+				}, {
+					vipBillitit: 1,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 0,
+					vipBillimoney: "101.00"
+				}, {
+					vipBillitit: 2,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 1,
+					vipBillimoney: "201.00"
+				}, {
+					vipBillitit: 1,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 0,
+					vipBillimoney: "101.00"
+				}, {
+					vipBillitit: 2,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 1,
+					vipBillimoney: "352.00"
+				}, {
+					vipBillitit: 1,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 0,
+					vipBillimoney: "101.00"
+				}, {
+					vipBillitit: 2,
+					vipBillitime: "2019-05-14",
+					vipBillistate: 1,
+					vipBillimoney: "101.00"
+				}]
+			},
+			methods: {
+				jump: function(data) {
+					window.location.href = data
+				}
+			}
+		})
+	</script>
+
+</html>
