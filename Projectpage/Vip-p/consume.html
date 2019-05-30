@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员消费</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1192462_drvin8iimxr.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="vipBody" id="vipBody">
+			<div class="vipBlock memberB">
+				<div class="memberInfo">
+					<div class="memberInfoL">
+						<span class="icon iconfont iconren"></span>
+						<p><span class="memberInfocell">17778261160</span><span class="memberInfonick">(一缕阳光)</span></p>
+					</div>
+					<div class="memberInfoR">
+						余额：<span class="F-qing"><span>212.00</span>(元)</span>
+					</div>
+				</div>
+			</div>
+			<div class="vipBlock memberB">
+				<div class="recordB" style="padding-bottom: 60px;">
+					<p class="recordBtit">消费金额</p>
+					<div><input type="number" src="" class="recordBinput" placeholder="请填写消费金额" v-model="customM" /><i>元</i></div>
+					<div class="couponsable">可用优惠券</div>
+					<ul class="couponsList">
+						<li class="couponsLi">
+							<div class="couponsCon">
+								<div class="couponsConC">
+									<div class="couponsConCBiaoshi couponsConCBiaoshi-mj">
+										<span class="couponsConCBiaoshicon"><i class="iconfont iconyouhuiquan"></i></span>
+										<span class="couponsConCBiaoshitit">满减券</span>
+									</div>
+									<div class="couponsConCXianzhi">单笔满<span>100</span>元可用</div>
+									<div class="couponsConCTime">有效期：<span>2019-03-14</span> - <span>2019-03-14</span></div>
+								</div>
+							</div>
+							<div class="couponsLei">
+								<div class="couponsLeiC">
+									<div class="couponsJine">¥ <span>20</span></div>
+									<!-- <div class="couponsLeixing">满{{item.couponsLeixing}}元使用</div> -->
+								</div>
+							</div>
+						</li>
+						<li class="couponsLi" v-for="(item,i) in couponsLi" :key="i" v-on:click="chooseP(item.paymentType,i)" :class="{choosePS: i == choosePS}">
+							<div class="couponsCon">
+								<div class="couponsConC">
+									<div class="couponsConCBiaoshi" :class="[item.couponsConCBiaoshi == 0 ? 'couponsConCBiaoshi-dj':'couponsConCBiaoshi-zk']">
+										<span class="couponsConCBiaoshicon"><i class="iconfont" :class="[item.couponsConCBiaoshi == 0 ? 'icondaijinquan-':'icondazhe']"></i></span>
+										<span class="couponsConCBiaoshitit">{{item.couponsConCBiaoshi == 0 ? '代金券':'折扣券'}}</span>
+									</div>
+									<div class="couponsConCXianzhi">单笔满<span>{{item.couponsLeixing}}</span>元可用</div>
+									<div class="couponsConCTime">有效期：<span>{{item.couponsConCTimeStart}}</span> - <span>{{item.couponsConCTimeEnd}}</span></div>
+								</div>
+							</div>
+							<div class="couponsLei">
+								<div class="couponsLeiC">
+									<div class="couponsJine">{{item.couponsConCBiaoshi == 0 ? '¥':'折'}} <span>{{item.couponsJine}}</span></div>
+									<!-- <div class="couponsLeixing">满{{item.couponsLeixing}}元使用</div> -->
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="viprecordsave">
+				<span class="viprecordsavebtn">确认消费(￥{{customM}})</span>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.vipInfosave').click(function() {
+
+			})
+		})
+		var customM, rechargeWli, rechargeBli, couponsLi
+		customM = '' //默认金额
+		rechargeWli = [{ //支付列表
+			paymentName: "支付宝",
+			paymentType: "0",
+			paymentImg: "iconzhifubao"
+		}, {
+			paymentName: "微信",
+			paymentType: "1",
+			paymentImg: "iconweixinzhifu"
+		}, {
+			paymentName: "现金",
+			paymentType: "2",
+			paymentImg: "iconjinronghongbaoxianjinqianbao"
+		}]
+		rechargeBli = [{ //金额列表
+			rechargeBlim: "10",
+			rechargeBlirm: "9.5"
+		}, {
+			rechargeBlim: "30",
+			rechargeBlirm: "29.5"
+		}, {
+			rechargeBlim: "50",
+			rechargeBlirm: "49.5"
+		}, {
+			rechargeBlim: "100",
+			rechargeBlirm: "98.5"
+		}, {
+			rechargeBlim: "300",
+			rechargeBlirm: "295"
+		}, {
+			rechargeBlim: "500",
+			rechargeBlirm: "485"
+		}]
+		couponsLi = [{
+			couponsJine: "50",
+			couponsLeixing: "199",
+			couponsConCBiaoshi: 0, //代金券
+			couponsConCTimeStart: "2019-03-14",
+			couponsConCTimeEnd: "2019-05-14",
+			couponsConyxq: 0
+		}, {
+			couponsJine: "100",
+			couponsLeixing: "299",
+			couponsConCBiaoshi: 1, //代金券
+			couponsConCTimeStart: "2019-02-24",
+			couponsConCTimeEnd: "2019-06-24",
+			couponsConyxq: 1
+		}, {
+			couponsJine: "30",
+			couponsLeixing: "99",
+			couponsConCBiaoshi: 0, //代金券
+			couponsConCTimeStart: "2018-07-14",
+			couponsConCTimeEnd: "2019-07-14",
+			couponsConyxq: 1
+		}, {
+			couponsJine: "50",
+			couponsLeixing: "199",
+			couponsConCBiaoshi: 0, //代金券
+			couponsConCTimeStart: "2019-03-14",
+			couponsConCTimeEnd: "2019-05-14",
+			couponsConyxq: 0
+		}, {
+			couponsJine: "100",
+			couponsLeixing: "299",
+			couponsConCBiaoshi: 1, //代金券
+			couponsConCTimeStart: "2019-02-24",
+			couponsConCTimeEnd: "2019-06-24",
+			couponsConyxq: 1
+		}, {
+			couponsJine: "30",
+			couponsLeixing: "99",
+			couponsConCBiaoshi: 0, //代金券
+			couponsConCTimeStart: "2018-07-14",
+			couponsConCTimeEnd: "2019-07-14",
+			couponsConyxq: 1
+		}]
+
+		new Vue({
+			el: '#vipBody',
+			data: {
+				chooseMS: '',
+				choosePS: '',
+				customM: customM,
+				rechargeBli: rechargeBli,
+				rechargeWli: rechargeWli
+			},
+			methods: {
+				// 选择金额
+				chooseM: function(m, rm, i) {
+					this.customM = m
+				},
+				// 选择支付方式
+				chooseP: function(d, n) {
+					this.choosePS = n
+				}
+			},
+			watch: {
+				customM: function(e) {
+					var that = this
+					for (var i = 0; i < rechargeBli.length; i++) {
+						if (that.customM == rechargeBli[i].rechargeBlim) {
+							that.chooseMS = i
+							break
+						} else {
+							that.chooseMS = 1000
+						}
+					}
+				}
+			},
+			created: function() {
+				var that = this
+				//初始customM为列表第一项时的值
+				// that.customM = rechargeBli[0].rechargeBlim
+				// console.log(that.customM)
+
+				//初始customM为50时列表状态
+				for (var j = 0; j < rechargeBli.length; j++) {
+					if (that.customM == rechargeBli[j].rechargeBlim) {
+						that.chooseMS = j
+						break
+					} else {
+						that.chooseMS = 1000
+					}
+				}
+			}
+		})
+	</script>
+</html>
