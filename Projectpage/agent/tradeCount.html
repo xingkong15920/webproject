@@ -47,29 +47,28 @@
 				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
 		</div>
 		<div class="x-body">
-			<!-- <div class="layui-row layui-form x-so">
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime1">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止时间" name="endTime" id="endTime1">
-				</div>
-				<div class="layui-input-inline">
-					<button class="layui-btn" lay-submit="" lay-filter=""  title="搜索" id="btn"><i class="layui-icon">&#xe615;</i></button>
-				</div>
-			</div> -->
 			
+			
+			<div class="layui-row layui-form x-so">
+				<div class="layui-input-inline">
+					<input type="text" name="shopname" id="shopName" placeholder="商户名称" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-input-inline">
+					<select name="payment" id="transactionPayment" lay-search="">
+						<option value="">所属服务商</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="开始时间" name="" id="startTime">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="截止时间" name="" id="endTime">
+				</div>
+				<div class="layui-input-inline">
+					<button class="layui-btn" lay-submit="" lay-filter="sreach"  title="搜索" id="btn1"><i class="layui-icon">&#xe615;</i></button>
+				</div>
+			</div>
 			<div class="baobiao  clearfix" style="display:block">
-				<!-- <div class="baobiao-col-1" style="padding-left: 0;">
-					<div class="baobiaoK">
-						<div class="baobiaolist" style="line-height:52px;font-size:16px">
-							商户数
-						</div>
-						<div style="line-height:50px;font-size:16px" id="shopCount">
-							0
-						</div>
-					</div>
-				</div> -->
 				<div class="baobiao-col-2">
 					<div class="baobiaoK">
 						<div class="baobiaolist">
@@ -185,24 +184,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="layui-row layui-form x-so">
-				<div class="layui-input-inline">
-					<input type="text" name="shopname" id="shopName" placeholder="商户名称" autocomplete="off" class="layui-input">
-				</div>
-				<div class="layui-input-inline">
-					<select name="payment" id="transactionPayment" lay-search="">
-						<option value="">所属服务商</option>
-					</select>
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始时间" name="" id="startTime">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止时间" name="" id="endTime">
-				</div>
-				<div class="layui-input-inline">
-					<button class="layui-btn" lay-submit="" lay-filter="sreach"  title="搜索" id="btn1"><i class="layui-icon">&#xe615;</i></button>
-				</div>
+			<div class="layui-form-item">
+						<div class="layui-inline place">
+							
+							<span style="color:red;display:block">*注:退款金额包含全部退款与部分退款</span>
+							<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）- 手续费=实收金额</span>
+						</div>
 			</div>
 			<table class="layui-table" id="table1" lay-filter="useruv"></table>
 		</div>
@@ -212,28 +199,39 @@
 	<script>
 		var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 		var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+		function fun_date(aa){
+		        var date1 = new Date(),
+		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
+		        var date2 = new Date(date1);
+		        date2.setDate(date1.getDate()+aa);
+		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
+		        return time2
+		    }
 		//列表
 		layui.use('laydate', function() {
 			var laydate = layui.laydate;
 			laydate.render({
 				elem: '#startTime', //指定元素
+				value:fun_date(-6)
 				
 				
 			});
 			laydate.render({
 				elem: '#endTime',
-				
+				value:fun_date(0)
 				
 			});
+		
 			laydate.render({
 				elem: '#startTime1', //指定元素
-				value:new Date()
+				value:fun_date(-6)
 				
 			});
 			laydate.render({
 				elem: '#endTime1',
-				value:new Date()
+				value:fun_date(0)
 			});
+				
 		});
 		layui.use(['form', 'table', 'laytpl'], function() {
 				var table = layui.table,
@@ -266,7 +264,51 @@
 							console.log('222')
 						}
 					)
+				var index = layer.load(2, {shade: [0.4, '#393D49']})
+				function getHuizong(){
+					CmsUtility.postAjaxCall(
+							//系统设置
+					CmsConfig.addressUrl.Agent.selectMerchant,
+					{
+						"agentNumber":userNumber,
+						"agentLevel":agentLevel,
+						"startTime":$('#startTime').val(),
+						"endTime":$('#endTime').val(),
+						"merchantName":$('#shopName').val().trim(),
+					},
+					function(data){
+						layer.closeAll()
+						if(data.code == 1000){
+							$('#shopCount').html(data.data.shopCount)
+							$('#brokerage').html(data.data.brokerage + '元')
+							$('#transactionNumber').html(data.data.transactionNumber)
+							$('#wTransactionNumber').html(data.data.wTransactionNumber)
+							$('#zTransactionNumber').html(data.data.zTransactionNumber)
+							$('#transactionMoney').html(data.data.transactionMoney)
+							$('#wTransactionMoney').html(data.data.wTransactionMoney)
 
+							$('#zTransactionMoney').html(data.data.zTransactionMoney)
+							$('#refundMoney').html(data.data.refundMoney)
+							$('#wRefundMoney').html(data.data.wRefundMoney)
+							$('#zRefundMoney').html(data.data.zRefundMoney)
+							$('#poundage').html(data.data.poundage)
+							$('#wpoundage').html(data.data.wpoundage)
+							$('#zpoundage').html(data.data.zpoundage)
+							$('#incomeMoney').html((data.data.transactionMoney-data.data.refundMoney-data.data.poundage).toFixed(2))
+							$('#wIncomeMoney').html((data.data.wTransactionMoney-data.data.wRefundMoney-data.data.wpoundage).toFixed(2))
+							$('#zIncomeMoney').html((data.data.zTransactionMoney-data.data.zRefundMoney-data.data.zpoundage).toFixed(2))
+						}else{
+							layer.msg(data.msg)
+							
+						}
+					},
+					function(data){
+						console.log('222')
+					}
+				)
+
+				}
+				getHuizong()
 			//方法级渲染
 			function tableRender(){
 				table.render({
@@ -359,134 +401,41 @@
 			tableRender()
 			$('#search').click(function(){
 				tableRender()
+				
 			})
 			$('#btn1').click(function(){
 				console.log('111')
 				tableRender()
+				getHuizong()
 			})
 			// 根據條件重载表格
-			var $ = layui.$,
-				active = {
-					reload: function() {
-						// 获取上面查询框的值
-						var shopname = $("#shopname").val().trim();
-						var startTime = $("#startTime").val().trim();
-						var endTime = $("#endTime").val().trim();
-						var passway = $("#payment option:selected").val().trim();
-						//执行重载
-						table.reload('tradeInfo', {
-							page: {
-								curr: 1 //重新从第 1 页开始
-							},
-							where: {
-								shopname: shopname,
-								passway: passway
-							}
-						});
-					}
-				};
+		// 	var $ = layui.$,
+		// 		active = {
+		// 			reload: function() {
+		// 				// 获取上面查询框的值
+		// 				var shopname = $("#shopname").val().trim();
+		// 				var startTime = $("#startTime").val().trim();
+		// 				var endTime = $("#endTime").val().trim();
+		// 				var passway = $("#payment option:selected").val().trim();
+		// 				//执行重载
+		// 				table.reload('tradeInfo', {
+		// 					page: {
+		// 						curr: 1 //重新从第 1 页开始
+		// 					},
+		// 					where: {
+		// 						shopname: shopname,
+		// 						passway: passway
+		// 					}
+		// 				});
+		// 			}
+		// 		};
 
-			$('.layui-row .layui-btn').on('click', function() {
-				var type = $(this).data('type');
-				active[type] ? active[type].call(this) : '';
-			});
-		});
+		// 	$('.layui-row .layui-btn').on('click', function() {
+		// 		var type = $(this).data('type');
+		// 		active[type] ? active[type].call(this) : '';
+		// 	});
+		 });
 	</script>
-	<script>
-		var beginDate = new Date();
-		if(beginDate.getMonth() == 1) {
-			beginDate.setYear(beginDate.getYear() - 1);
-			beginDate.setMonth(12);
-		} else {
-			beginDate.setMonth(beginDate.getMonth() - 1);
-		}
-		var endDate = new Date();
-
-		// 选择日期插件  
-		layui.use('laydate', function() {
-			var laydate = layui.laydate;
-			laydate.render({
-				elem: '#startTime', //指定元素
-				
-				
-			});
-			laydate.render({
-				elem: '#endTime',
-				
-				
-			});
-			laydate.render({
-				elem: '#startTime1', //指定元素
-				value:new Date()
-				
-			});
-			laydate.render({
-				elem: '#endTime1',
-				value:new Date()
-			});
-		});
-	</script>
-	<script type="text/javascript">
-		function getShop(){
-			
-			layui.use(['table', 'layer','laydate'], function() {
-				var table = layui.table,
-					form = layui.form,
-					laydate =  layui.laydate
-					laytpl = layui.laytpl,
-					layer = layui.layer,
-					$ = layui.jquery;
-					var startTime = $("#startTime1").val();
-					console.log(startTime)
-					var endTime = $("#endTime1").val();
-				var index = layer.load(2, {shade: [0.4, '#393D49']})
-				CmsUtility.postAjaxCall(
-							//系统设置
-					CmsConfig.addressUrl.Agent.selectMerchant,
-					{
-						"agentNumber":userNumber,
-						"agentLevel":agentLevel,
-						"startTime":startTime,
-						"endtime":endTime,
-					},
-					function(data){
-						layer.closeAll()
-						if(data.code == 1000){
-							$('#shopCount').html(data.data.agShopStatisticsResult.shopCount)
-							$('#brokerage').html(data.data.agShopStatisticsResult.brokerage + '元')
-							$('#transactionNumber').html(data.data.agShopStatisticsResult.transactionNumber)
-							$('#wTransactionNumber').html(data.data.agShopStatisticsResult.wTransactionNumber)
-							$('#zTransactionNumber').html(data.data.agShopStatisticsResult.zTransactionNumber)
-							$('#transactionMoney').html(data.data.agShopStatisticsResult.transactionMoney)
-							$('#wTransactionMoney').html(data.data.agShopStatisticsResult.wTransactionMoney)
-
-							$('#zTransactionMoney').html(data.data.agShopStatisticsResult.zTransactionMoney)
-							$('#refundMoney').html(data.data.agShopStatisticsResult.refundMoney)
-							$('#wRefundMoney').html(data.data.agShopStatisticsResult.wRefundMoney)
-							$('#zRefundMoney').html(data.data.agShopStatisticsResult.zRefundMoney)
-							$('#poundage').html(data.data.agShopStatisticsResult.poundage)
-							$('#wpoundage').html(data.data.agShopStatisticsResult.wpoundage)
-							$('#zpoundage').html(data.data.agShopStatisticsResult.zpoundage)
-							$('#incomeMoney').html(data.data.agShopStatisticsResult.incomeMoney)
-							$('#wIncomeMoney').html(data.data.agShopStatisticsResult.wIncomeMoney)
-							$('#zIncomeMoney').html(data.data.agShopStatisticsResult.zIncomeMoney)
-						}else{
-							layer.msg(data.msg)
-							
-						}
-					},
-					function(data){
-						console.log('222')
-					}
-				)
-
-			})
-			
-		}
-		getShop()
-		$("#btn").click(function() {
-			getShop()
-		});
-	</script>
+	
 
 </html>

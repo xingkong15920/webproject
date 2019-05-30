@@ -77,7 +77,7 @@
 			<span class="layui-breadcrumb">
 				<a href="">首页</a>
 				<a href="">财务分析</a>
-				<a><cite>交易统计分析</cite></a>
+				<a><cite>店员统计分析</cite></a>
 			</span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
@@ -88,13 +88,13 @@
 					<div class="layui-input-inline">
 						<!-- 需要数据对接(完成) -->
 						<select name="shopName" id="shopNumber" lay-search>
-							<option value="">--请选择门店--</option>
+							<option value="">--请选择店员--</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
 						<select name="source" id="source">
 							<option value="">支付渠道</option>
-							<option value="2">支付宝</option>
+							<option value="0">支付宝</option>
 							<option value="1">微信</option>
 						</select>
 					</div>
@@ -163,6 +163,8 @@
 			//var userNumber = '1000795634';
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
+			dataO.page = 1
+			dataO.limit = 200
 			// //获取商户下门店名称
 			// CmsUtility.postAjaxCall(
 			// 	CmsConfig.addressUrl.Merchant.getShopNames,
@@ -196,15 +198,16 @@
 					"endTime": $('#endTime').val(),
 					"shopNumber": $('#shopNumber').val(),
 					"source":$('#source').val(),
+					"institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
 				}
 				reloadres();
 				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getShopNames,
+					CmsConfig.addressUrl.Merchant.getClerks,
 					dataO,
 					function(data) {
-						var shopData = data.data
+						var shopData = data.data.result
 						for(var i = 0; i < shopData.length; i++) {
-							$("#shopNumber").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+							$("#shopNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + "</option>");
 						}
 						form.render()
 					}
@@ -212,30 +215,42 @@
 				function reloadres() {
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Merchant.getStatistics + '?merchantNumber=' + userNumber, 
+						'bill/getMerClerkBill' + '?merchantNumber=' + userNumber, 
 						{
 							"startTime": $('#startTime').val(),
 							"endTime": $('#endTime').val(),
-							"shopNumber": $('#shopNumber').val(),
-							"source":$('#source').val(),
+							"clerkNumber": $('#shopNumber').val(),
+							"zhifuType":$('#source').val(),
+							"institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
 						},
 						function(data) {
+							if(data.code  != 1000){
+								layer.msg(data.msg)
+								$('#orderTotalMoney').text(0)//实收额
+								$('#refundOrderTotalMoney').text(0)//退款额
+								$('#totalOrder').text(0)//交易笔数
+								$('#refundTotalOrder').text(0)//退款笔数
+								CmsUtility.clearListArr(Statement_Date)
+								CmsUtility.clearListArr(orderTotalMoney)
+								myChart.setOption(option);
+								return
+							}
 							CmsUtility.clearListArr(Statement_Date)
 							CmsUtility.clearListArr(orderTotalMoney)
 							console.log(data)
 							console.log(data.data.map2)
 							console.log(data.data.maps)
-							$('#orderTotalMoney').text(data.data.maps.orderTotalMoney)//实收额
-							$('#refundOrderTotalMoney').text(data.data.maps.refundOrderTotalMoney)//退款额
-							$('#totalOrder').text(data.data.maps.totalOrder)//交易笔数
-							$('#refundTotalOrder').text(data.data.maps.refundTotalOrder)//退款笔数
-							var data = data.data.map2
+							$('#orderTotalMoney').text(data.data.merClerkBill[0].transactionAmount)//实收额
+							$('#refundOrderTotalMoney').text(data.data.merClerkBill[0].refundAmount)//退款额
+							$('#totalOrder').text(data.data.merClerkBill[0].jyCount)//交易笔数
+							$('#refundTotalOrder').text(data.data.merClerkBill[0].shopPoundage)//退款笔数
+							var data = data.data.merClerkBillList
 							if(!data) {
 								return
 							}
 							for(var j = 0; j < data.length; j++) {
-								Statement_Date.push(data[j].Statement_Date)
-								orderTotalMoney.push(data[j].orderTotalMoney)
+								Statement_Date.push(data[j].transactionTime)
+								orderTotalMoney.push(data[j].transactionAmount)
 								weChatOrderTotalMoney.push(data[j].weChatOrderTotalMoney)
 							}
 							Statement_Date.sort()

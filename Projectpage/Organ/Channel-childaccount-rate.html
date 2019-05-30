@@ -116,17 +116,23 @@
                     <label class="layui-form-label" style="width: 15%;"></label>
                     <div class="layui-form-mid x-red">
                         <button class="layui-btn" lay-submit=""   id="sub">提交</button>
+                        
                     </div>
                 </div>
         </div>
         </form>
     </div>
+    <div style="position:fixed;left:0;bottom:0;width:100px;height:50px;border:1px solid block" onclick="hideModal()"></dir>
     </div>
     <script src="../../common/config.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
     var type111 = 0
     var code1 = ''
+    var jgData
+    var nnum = 0
+    var timer;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     function uniq(array){
                 var temp = []; //一个新的临时数组
                 for(var i = 0; i < array.length; i++){
@@ -137,19 +143,48 @@
                 return temp;
             }
             var arrr = new Array()
+        function hideModal(){
+            nnum++
+            console.log(jgData)
+            if(nnum == 5){
+                layer.msg('开启隐藏模式')
+                setTimeout(function(){
+                    layer.open({
+                    type: 2,
+                    title: '欢迎使用隐藏模式',
+                    shade: 0.5,
+                    area: ['80%', '45%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['hide-rate.html?institutionNumber='+userNumber + '&subaccountNumber='+jgData.subaccountNumber],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        // data.channel = channel
+                        iframe.subPage('data')
+                    }
+                });
+                },500)
+                
+            }
+            setTimeout(function(){
+                nnum = 0 
+            },1000)
+        }
     function subPage(data, data1) {
         $('.zhifubao').hide()
         $('.weixin').hide()
         $('.jingdong').hide()
         $('.yinlian').hide()
-        var jgData = data
+         jgData = data
         console.log(jgData)
         $("#merchantName").html(jgData.merchantName)
         $("#merchantNumber").html(jgData.merchantNumber)
         $("#subNumber").html(jgData.subaccountNumber)
-        var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-
         
+
+
         var serverUrl = 'http://192.168.1.190:5002/'
         
         layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
@@ -168,6 +203,84 @@
            $('#gfweixin').val((jgData.weChatRate*10000/100).toFixed(2) + '%')
          }else{
             CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.getChannelRate, {
+                    "institutionNumber": userNumber,
+                    "paymentChannel": jgData.paymentChannel
+                },
+                function(data) {
+                    if (data.code == 1000) {
+                        // type111 = 2
+                        console.log(data)
+                        if (jgData.rateType == 'D1') {
+                            console.log(data.data[0].channelD1Rate)
+                            var rateL = data.data[0].channelD1Rate.split('&')
+                            console.log(data.data[0].channelD1Rate.indexOf('|'))
+                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
+                                    if(jgData.alipayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#zhifubao').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.weChatRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#weixin').attr('data-num',rateL[i].split('|')[0])
+                                        $('#jingdong').attr('data-num')
+                                        $('#yinlian').attr('data-num')
+                                    }
+                                    if(jgData.jingdongRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#jingdong').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.unionPayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#yinlian').attr('data-num',rateL[i].split('|')[0])
+                                    }
+
+                                }
+
+                                $('.rate').html(str)
+
+                            } else {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
+                                }
+                                $('.rate').html(str)
+                            }
+
+                        } else {
+                            var rateL = data.data[0].channelRate.split('&')
+                            console.log(data.data[0].channelRate.indexOf('|'))
+                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
+                                var str = '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
+                                    if(jgData.alipayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#zhifubao').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.weChatRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#weixin').attr('data-num',rateL[i].split('|')[0])
+                                        $('#jingdong').attr('data-num')
+                                        $('#yinlian').attr('data-num')
+                                    }
+                                    if(jgData.jingdongRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#jingdong').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.unionPayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#yinlian').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                }
+                                $('.rate').html(str)
+
+                            } else {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
+                                }
+                                $('.rate').html(str)
+                            }
+                        }
+                        form.render()
+                        CmsUtility.postAjaxCall(
             //系统设置
             CmsConfig.addressUrl.Mechanism.getRate, {
                 "institutionNumber": userNumber,
@@ -240,55 +353,6 @@
             'post',
             'false'
         )
-         }
-            CmsUtility.postAjaxCall(
-                //系统设置
-                CmsConfig.addressUrl.Mechanism.getChannelRate, {
-                    "institutionNumber": userNumber,
-                    "paymentChannel": jgData.paymentChannel
-                },
-                function(data) {
-                    if (data.code == 1000) {
-                        // type111 = 2
-                        console.log(data)
-                        if (jgData.rateType == 'D1') {
-                            console.log(data.data[0].channelD1Rate)
-                            var rateL = data.data[0].channelD1Rate.split('&')
-                            console.log(data.data[0].channelD1Rate.indexOf('|'))
-                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
-                                var str =  '<option value="">请选择费率</option>'
-                                for (var i = 0; i < rateL.length; i++) {
-                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
-                                }
-                                $('.rate').html(str)
-
-                            } else {
-                                var str =  '<option value="">请选择费率</option>'
-                                for (var i = 0; i < rateL.length; i++) {
-                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
-                                }
-                                $('.rate').html(str)
-                            }
-
-                        } else {
-                            var rateL = data.data[0].channelRate.split('&')
-                            console.log(data.data[0].channelRate.indexOf('|'))
-                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
-                                var str = '<option value="">请选择费率</option>'
-                                for (var i = 0; i < rateL.length; i++) {
-                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
-                                }
-                                $('.rate').html(str)
-
-                            } else {
-                                var str =  '<option value="">请选择费率</option>'
-                                for (var i = 0; i < rateL.length; i++) {
-                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
-                                }
-                                $('.rate').html(str)
-                            }
-                        }
-                        form.render()
                         // form.val('cardAdd', {
                         //     "zhifubao": jgData.alipayRate.toFixed(4),
                         //     "weixin": jgData.weChatRate.toFixed(4),
@@ -304,6 +368,9 @@
                     console.log('222')
                 }
             )
+            
+         }
+            
             //表单初始赋值
             // $('#sub').click(function(){
             //  console.log(code1)
@@ -334,20 +401,21 @@
                 // },
             });
             form.on('select(zhifubao)',function(data){
-                console.log($(data.elem).find("option:selected").attr("data-num"));
-                $('#zhifubao').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#zhifubao').attr('data-num',num)
+
             })
             form.on('select(weixin)',function(data){
-                console.log($(data.elem).find("option:selected").attr("data-num"));
-                $('#weixin').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#weixin').attr('data-num',num)
             })
             form.on('select(jingdong)',function(data){
-                console.log($(data.elem).find("option:selected").attr("data-num"));
-                $('#jingdong').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#jingdong').attr('data-num',num)
             })
             form.on('select(yinlian)',function(data){
-                console.log($(data.elem).find("option:selected").attr("data-num"));
-                $('#yinlian').attr('data-num',$(data.elem).find("option:selected").attr("data-num"))
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#yinlian').attr('data-num',num)
             })
             // $('#sub').click(function() {
 
@@ -457,13 +525,22 @@
                 tjData.jingdongRate = $('#jingdong').val()
                 tjData.unionPayRate = $('#yinlian').val()
                 if(jgData.paymentChannelType == 2){
+
                     tjData.weChatCode  = $('#weixin').attr('data-num')
                     tjData.alipayCode = $('#zhifubao').attr('data-num')
                     tjData.jingdongCode = $('#jingdong').attr('data-num')
                     tjData.unionPayCode = $('#yinlian').attr('data-num')
                 }
+                if(jgData.paymentChannelType == 3){
+                    tjData.alipayRate  = tjData.alipayRate*100
+                    tjData.weChatRate = tjData.weChatRate*100
+                    tjData.jingdongRate = tjData.jingdongRate*100
+                    tjData.unionPayRate = tjData.unionPayRate*100
+                }
                 tjData.merchantNumber = jgData.merchantNumber
                 tjData.rateType = jgData.rateType
+                console.log(tjData)
+                return false 
                 CmsUtility.postAjaxCall(
                     //系统设置
                     'submit/updateInfoRate',

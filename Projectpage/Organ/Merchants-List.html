@@ -23,7 +23,7 @@
 				margin-left: -2px;
 			}
 			.layui-table-cell{
-				overflow: visible;
+				
 				padding: 0;
 			}
 			.layui-table .layui-form-select .layui-input{
@@ -87,6 +87,12 @@
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
+		<script type="text/html" id="shopName">
+			<span onclick="clickMer(this)" data-id="{{d.merchantNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.merchantName}}</span>
+		</script>
+		<script type="text/html" id="ageName">
+			<span onclick="clickAge(this)" data-id="{{d.agentNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.agentName}}</span>
+		</script>
 		<script type="text/html" id="switchBar">
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.merchantStatus==0 ? 'checked' : ''}}  orderNumber="{{d.orderNumber}}" value="{{d.merchantNumber}}">
 		</script>
@@ -117,6 +123,16 @@
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			function fun_date(aa){
+		        var date1 = new Date(),
+		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
+		        var date2 = new Date(date1);
+		        date2.setDate(date1.getDate()+aa);
+		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
+		        return time2
+		    }
+		    // $('#startTime').val(fun_date(-6))
+		    //  $('#endTime').val(fun_date(0))
 			// <a class="layui-btn layui-btn-xs" id="rate" lay-event="rate">费率</a>
 			//return false;
 			function changeRes(res) {
@@ -128,7 +144,59 @@
 				}
 				return res
 			}
-			
+			function clickMer(id){
+				var id = id.dataset.id
+					var shHref = ''
+						CmsUtility.postAjaxCall(
+								//系统设置
+							 CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
+                                'institutionNumber': userNumber,
+                            },
+							function(data){
+								if(data.code == 1000){
+									shHref = data.data[0].merchantRoute 
+									if(shHref==''){
+							layer.msg('未获取到商户路径')
+						}
+			var merHref = shHref + '/index.html?number='+id + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
+						window.open(merHref)
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+				}
+				function clickAge(id){
+					console.log(id)
+					var id = id.dataset.id
+					var agHref = ''
+						CmsUtility.postAjaxCall(
+								//系统设置
+							 CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
+                                'institutionNumber': userNumber,
+                            },
+							function(data){
+								if(data.code == 1000){
+									agHref = data.data[0].agentRoute 
+									if(agHref==''){
+							layer.msg('未获取到服务商路径')
+						}
+			var merHref = agHref + '/index.html?number='+id + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
+						window.open(merHref)
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+				}
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			CmsUtility.postAjaxCall(
@@ -204,6 +272,7 @@
 								align: 'center',
 								field: 'merchantName',
 								width: 250,
+								toolbar: '#shopName',
 								title: '商户名称'
 							}, {
 								align: 'center',
@@ -212,7 +281,7 @@
 								title: '商户手机号'
 							}, {
 								align: 'center',
-								field: 'agentName',
+								toolbar: '#ageName',
 								width: 200,
 								title: '所属代理'
 							}
@@ -355,6 +424,7 @@
 						}
 					)
 				});
+				
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
@@ -502,7 +572,7 @@
 							card: data.card,
 							cardType: 5
 						}
-						layer.confirm('真的删除此商户么', {
+						layer.confirm('真的删除('+ data.merchantName +')商户么', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {

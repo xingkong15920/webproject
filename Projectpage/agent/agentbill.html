@@ -46,9 +46,9 @@
 					<div class="layui-input-inline">
 						<select name="periodType" id="periodType">
 							
-							<option value="1">日账单</option>
+							<option value="0">日账单</option>
+							<option value="1">周账单</option>
 							<option value="2">月账单</option>
-							<option value="3">周账单</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -76,7 +76,7 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
 		</script>
 		<script type="text/html" id="tool" >
-			<a class="layui-btn layui-btn-xs lookBill {{agentLevel=='D'?'hi':'sh'}}" lay-event="look">查看明细</a>
+			<a class="layui-btn layui-btn-xs lookBill {{d.weekOrMonthState=='0'?'hi':'sh'}} {{d.weekOrMonthState=='1'?'hi':'sh'}} {{agentLevel=='D'?'hi':'sh'}}" lay-event="look">查看明细</a>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
@@ -119,8 +119,8 @@
 					});
 				//方法级渲染  
 				function tableRender(){
-					var sTiem = $('#startTime').val() + ' 00:00:00'
-					var eTime = $('#endTime').val() + ' 23:59:59'
+					var sTiem = $('#startTime').val()
+					var eTime = $('#endTime').val()
 					
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
@@ -165,10 +165,10 @@
 							title: '账单类型',
 							templet:function(data){
 								switch (data.weekOrMonthState) {
-									case 0:
+									case "0":
 										return '周账单'
 										break;
-									case 1:
+									case '1':
 										return '月账单'
 										break;
 									default:
@@ -196,13 +196,6 @@
 							align: 'center',
 							field: 'inserttime',
 							title: '变动时间',
-							templet:function(data){
-								if(data.inserttime){
-									return data.inserttime.split('.')[0].split('T')[0] + ' '+ data.inserttime.split('.')[0].split('T')[1] 
-								}else{
-									return ""
-								}
-							}
 						},{
 							align: 'center',
 							field: 'insertTime',

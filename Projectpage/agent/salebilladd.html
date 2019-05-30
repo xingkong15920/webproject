@@ -53,8 +53,7 @@
                     <div class="layui-input-block">
                         <select name="type" id="importExportIdentification" lay-verify="type">
                             <option value="">类型</option>
-                            <option value="-2">分佣</option>
-                            <option value="0">补贴</option>
+                            <option value="-2">补贴</option>
                         </select>
                     </div>
                 </div>
@@ -83,7 +82,7 @@
     var code1 = ''
     var pageNum
         var serverUrl = 'http://192.168.1.190:5002/'
-        var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
         function bl() {
         setTimeout(function() {
             $('#searchBox').hide()
@@ -101,22 +100,21 @@
         pageNum =1
         CmsUtility.postAjaxCall(
             //系统设置
-            'AgentRegister/getInsAglistA', 
+            CmsConfig.addressUrl.Agent.getSaleInfo, 
             {
                 
-                "institutionNumber": userNumber,
-                "agName":$('#agName').val(),
-                "page":pageNum,
+                "agentNumber": userNumber,
+                "saleName":$('#agName').val().trim(),
+                "page":1,
                 "limit":'100',
-                "agentType":''
             },
             function(data) {
                 console.log(this.value)
                 if (data.code == 1000) {
 
                     var str = ''
-                    for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
-                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                    for (var i = 0; i < data.data.saleRegisterInfoList.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.saleRegisterInfoList[i].saleNumber + '" data-name="' + data.data.saleRegisterInfoList[i].saleName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.saleRegisterInfoList[i].saleNumber + ']' + data.data.saleRegisterInfoList[i].saleName + '</div>'
                     }
                     document.getElementById('searchBox').innerHTML = str
 
@@ -153,7 +151,7 @@
             form.verify({
                 agentName:function(value){
                     if($('#agName').val() == '' || $('#agName').attr('agentNumber') == undefined){
-                        return '请搜索并选择代理商'
+                        return '请搜索并选择销售'
                     }
                 },
                 type:function(value){
@@ -174,14 +172,13 @@
             document.getElementById('searchBox').innerHTML = ''
             CmsUtility.postAjaxCall(
                 //系统设置
-                'AgentRegister/getInsAglistA', 
+               CmsConfig.addressUrl.Agent.getSaleInfo, 
             {
                 
-                "institutionNumber": userNumber,
-                "agName":$('#agName').val(),
-                "page":pageNum,
+                "agentNumber": userNumber,
+                "saleName":$('#agName').val().trim(),
+                "page":1,
                 "limit":'100',
-                "agentType":''
             },
             function(data) {
                 console.log(this.value)
@@ -191,8 +188,8 @@
                     //     return
                     //    }
                     var str = ''
-                    for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
-                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                    for (var i = 0; i < data.data.saleRegisterInfoList.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.saleRegisterInfoList[i].saleNumber + '" data-name="' + data.data.saleRegisterInfoList[i].saleName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.saleRegisterInfoList[i].saleNumber + ']' + data.data.saleRegisterInfoList[i].saleName + '</div>'
                     }
                         document.getElementById('searchBox').innerHTML = str
 
@@ -246,7 +243,7 @@
                 // if(data.field.nuber)
                 var tjData = new Object();
                 console.log($('#agName').attr('agentNumber'))
-                tjData.agentNumber = $('#agName').attr('agentNumber')
+                tjData.saleNumber = $('#agName').attr('agentNumber')
                 tjData.billType = data.field.type
                 tjData.billAccount = data.field.number
                 tjData.remark = data.field.mark
@@ -255,7 +252,7 @@
                 
                 CmsUtility.postAjaxCall(
                     //系统设置
-                    'AgentRegister/insertAgentLocal',
+                    'saleMain/addSaleLocal',
                     tjData,
                     function(data) {
                         if (data.code == 1000) {

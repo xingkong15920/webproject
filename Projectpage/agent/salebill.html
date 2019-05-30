@@ -44,14 +44,14 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="销售名称" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="saleName" placeholder="销售名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<select name="cardVoucherName" id="cardVoucherName">
+						<select name="cardVoucherName" id="billType">
 							
-							<option value="1">日账单</option>
+							<option value="0">日账单</option>
+							<option value="1">周账单</option>
 							<option value="2">月账单</option>
-							<option value="3">周账单</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -128,10 +128,12 @@
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					//url: './json/vip-card.json',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectAgentBillList + '?agentNumber=' + userNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + 'saleMain/getSaleBillList' + '?agentNumber=' + userNumber,
 					where:{
 						"startTime":sTiem,
 						"endTime":eTime,
+						"saleName":$('#saleName').val(),
+						"billType":$('#billType').val()
 					},
 					elem: '#members',
 					height: 'full-210',
@@ -153,13 +155,13 @@
 							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
 							"count": res.data.count, //解析数据长度
-							"data": res.data.agentBillList, //解析数据列表
+							"data": res.data.bills, //解析数据列表
 						};
 					},
 					cols: [
 						[{
 							align: 'center',
-							field: 'orederNumber',
+							field: 'orderNumber',
 							width: 250,
 							title: '账单号',
 						}, {
@@ -176,7 +178,26 @@
 							width: 250,
 							title: '类型',
 							templet:function(data){
-								return '分佣'
+								switch (data.identification) {
+									case 1:
+										return '分润'
+										break;
+									case -1:
+										return '提现'
+										break;
+									case 0:
+										return '冻结'
+										break;
+									case 2:
+										return '解冻'
+										break;
+									case -2:
+										return '补贴'
+										break;
+									default:
+										// statements_def
+										break;
+								}
 							}
 						}, {
 							align: 'center',
@@ -195,16 +216,9 @@
 							title: '变动后金额',
 						}, {
 							align: 'center',
-							field: 'inserttime',
+							field: 'settlemenDate',
 							width: 250,
 							title: '变动时间',
-							templet:function(data){
-								if(data.inserttime){
-									return data.inserttime.split('.')[0].split('T')[0] + ' '+ data.inserttime.split('.')[0].split('T')[1] 
-								}else{
-									return ""
-								}
-							}
 						},{
 							align: 'center',
 							field: 'insertTime',

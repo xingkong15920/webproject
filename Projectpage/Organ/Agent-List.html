@@ -70,6 +70,9 @@
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
+		<script type="text/html" id="ageName">
+			<span onclick="clickAge(this)" data-id="{{d.agentNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.agentName}}</span>
+		</script>
 		<script type="text/html" id="switchBar">
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
 		</script>
@@ -103,6 +106,50 @@
 				}				
 				return res
 			}
+			function clickAge(id){
+				var id = id.dataset.id
+					var agHref = ''
+						CmsUtility.postAjaxCall(
+								//系统设置
+							 CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
+                                'institutionNumber': userNumber,
+                            },
+							function(data){
+								if(data.code == 1000){
+									agHref = data.data[0].agentRoute 
+									if(agHref==''){
+							layer.msg('未获取到服务商路径')
+						}
+			var merHref = agHref + '/index.html?number='+id + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
+						window.open(merHref)
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+				}
+			var serverUrl = window.parent.serverUrl
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+			CmsUtility.postAjaxCall(
+			                    //系统设置
+                CmsConfig.addressUrl.Public.getInfoRate,
+                {
+                    "institutionNumber": userNumber
+                },
+                function(data) {
+                    sessionStorage.setItem("rate", JSON.stringify(data.data));
+                    
+                },
+                function(data){
+
+                },
+                'post',
+                'false'
+            )
 			var serverUrl = window.parent.serverUrl
 			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			layui.use(['laydate', 'table', 'form'], function() {
@@ -152,6 +199,7 @@
 						}, {
 							align: 'center',
 							field: 'agentName',
+							toolbar: '#ageName',
 							width: 150,
 							title: '代理名称'
 						}, {

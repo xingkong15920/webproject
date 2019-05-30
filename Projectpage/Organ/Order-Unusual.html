@@ -72,9 +72,13 @@
 					</div>
 					<div class="layui-input-inline">
 						<select name="type" id="transactionPassageway">
-							<!-- <option value="">支付通道</option>
-							<option value="0">富友</option>
-							<option value="1">新大陆</option> -->
+							<option value="">支付通道</option>
+							<option value="0">支付宝</option>
+							<option value="1">微信</option>
+							<option value="2">富友</option>
+							<option value="3">易融码</option>
+							<option value="4">新大陆</option>
+
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -131,28 +135,28 @@
 					table = layui.table,
 					form = layui.form;
 					
-					CmsUtility.postAjaxCall(
-								//系统设置
-						CmsConfig.addressUrl.Mechanism.getPassageList,
-						{
-							"institutionNumber":userNumber
-						},
-						function(data){
-							if(data.data == null){
-								return
-							}
-							var str = '<option value="">支付通道</option>'
-							for(var i =0 ; i<data.data.length;i++){
-								str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
-							}
-							console.log(str)
-							$('#transactionPassageway').html(str)
-							form.render()
-						},
-						function(data){
-							console.log('222')
-						}
-					)
+					// CmsUtility.postAjaxCall(
+					// 			//系统设置
+					// 	CmsConfig.addressUrl.Mechanism.getPassageList,
+					// 	{
+					// 		"institutionNumber":userNumber
+					// 	},
+					// 	function(data){
+					// 		if(data.data == null){
+					// 			return
+					// 		}
+					// 		var str = '<option value="">支付通道</option>'
+					// 		for(var i =0 ; i<data.data.length;i++){
+					// 			str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
+					// 		}
+					// 		console.log(str)
+					// 		$('#transactionPassageway').html(str)
+					// 		form.render()
+					// 	},
+					// 	function(data){
+					// 		console.log('222')
+					// 	}
+					// )
 				function tableRender(){
 					var index = layer.load(2, {shade: [0.4, '#393D49']})
 					//方法级渲染  
@@ -257,7 +261,7 @@
 								field: 'appid',
 								title: '支付方式',
 								templet:function(data){
-									if(data.transactionType == 1){
+									if(data.transactionType == 0){
 										return '支付宝'
 									}else{
 										return '微信'

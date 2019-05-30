@@ -135,6 +135,16 @@
 			// <a class="layui-btn layui-btn-xs" id="secretkey" lay-event="secretkey">秘钥</a>
 			// <a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 			//return false;
+			function fun_date(aa){
+		        var date1 = new Date(),
+		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
+		        var date2 = new Date(date1);
+		        date2.setDate(date1.getDate()+aa);
+		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
+		        return time2
+		    }
+		    $('#startTime').val(fun_date(-6))
+		     $('#endTime').val(fun_date(0))
 			function changeRes(res) {
 				var res = res
 				if(res.length == 0) {
@@ -215,28 +225,23 @@
 							[{
 								align: 'center',
 								field: 'orderNumber',
-								width: 100,
 								title: '商户流水号',
 							}, {
 								align: 'center',
 								field: 'merchantName',
-								width: 150,
 								title: '商户名称'
 							}, {
 								align: 'center',
 								field: 'registerCell',
-								width: 100,
 								title: '商户手机号'
 							}, {
 								align: 'center',
 								field: 'agentName',
-								width: 100,
 								title: '所属代理'
 							}, {
 								align: 'center',
 								field: 'subsidy',
 								// toolbar: '#selectBar_lx',
-								width: 130,
 								title: '类型',
 								templet:function(data){
 									if(data.subsidy == 1){
@@ -248,20 +253,17 @@
 								}
 							}, {
 								align: 'center',
-								field: 'agentName',
-								width: 100,
+								field: 'paymentName',
 								title: '进件通道'
 							}, {
 								align: 'center',
 								field: 'agentName',
-								width: 100,
 								title: '通道费率',
-								templet:function(){
-									return '0'
+								templet:function(data){
+									return (data.rate*10000/100).toFixed(2) + '%'
 								}
 							}, {
 								align: 'center',
-								width: 100,
 								title: '状态',
 								templet:function(data){
 									switch (data.auditStatus) {
@@ -298,18 +300,15 @@
 							, {
 								align: 'center',
 								field: 'insertTime',
-								width: 150,
 								title: '注册时间',
 							},{
 								align: 'center',
 								field: 'msg',
-								width: 300,
 								title: '原因',
 							}, {
 								align: 'center',
 								title: '操作',
 								toolbar: '#toolbar',
-								minWidth: 100
 							}]
 						],
 						page: true,

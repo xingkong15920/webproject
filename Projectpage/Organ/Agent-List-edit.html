@@ -218,6 +218,25 @@
                             </div>
                         </div>
                     </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>随行付通道</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="sxfRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D0费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="sxfRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 <!-- <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">T1费率(%)</label>
@@ -424,7 +443,7 @@
                        
                                 // "T1Rate": T1,
                                 
-                                "aliRate":(data.data[i].rate*100).toFixed(2),
+                                "aliRate":(data.data[i].rate*100).toFixed(3),
                             })
                         }
                         if(data.data[i].paymentChanneltype == 1){
@@ -432,7 +451,7 @@
                        
                                 // "T1Rate": T1,
                                 
-                                "wecharRate":(data.data[i].rate*100).toFixed(2) ,
+                                "wecharRate":(data.data[i].rate*100).toFixed(3) ,
                             })
                         }
                         if(data.data[i].paymentChanneltype == 2){
@@ -441,14 +460,14 @@
                            
                                     // "T1Rate": T1,
                                     
-                                    "fuyouRateD0":(data.data[i].rate*100).toFixed(2) ,
+                                    "fuyouRateD0":(data.data[i].rate*100).toFixed(3) ,
                                 })
                             }else{
                                 form.val('cardAdd', {
                            
                                     // "T1Rate": T1,
                                     
-                                    "fuyouRateD1":(data.data[i].rate*100).toFixed(2) ,
+                                    "fuyouRateD1":(data.data[i].rate*100).toFixed(3) ,
                                 })
                             }
                             
@@ -459,14 +478,14 @@
                            
                                     // "T1Rate": T1,
                                     
-                                    "yrmRateD0":(data.data[i].rate*100).toFixed(2) ,
+                                    "yrmRateD0":(data.data[i].rate*100).toFixed(3) ,
                                 })
                             }else{
                                 form.val('cardAdd', {
                            
                                     // "T1Rate": T1,
                                     
-                                    "yrmRateD1":(data.data[i].rate*100).toFixed(2) ,
+                                    "yrmRateD1":(data.data[i].rate*100).toFixed(3) ,
                                 })
                             }
                             
@@ -485,6 +504,24 @@
                                     // "T1Rate": T1,
                                     
                                     "xdlRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }
+                            
+                        }
+                        if(data.data[i].paymentChanneltype == 5){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "sxfRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }else{
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "sxfRateD1":(data.data[i].rate*100).toFixed(3) ,
                                 })
                             }
                             
@@ -600,11 +637,11 @@
                     }
                 },
                 baifenbi:function(value){
-                if(value.length != ''){
-                    if(value.indexOf('%')<0){
-                        return '费率格式不正确'
-                    }
-                }
+                // if(value.length != ''){
+                //     if(value.indexOf('%')<0){
+                //         return '费率格式不正确'
+                //     }
+                // }
                 
             }
             });
@@ -627,14 +664,16 @@
                 if(jgData.pAgentLevel == 'C'){
                     addData.agentLevel = 'D'
                 }
-                addData.aliRate  = (addData.aliRate/10000*100).toFixed(4)
-            addData.wecharRate = (addData.wecharRate/10000*100).toFixed(4)
-            addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(4)
-            addData.fuyouRateD0 = (addData.fuyouRateD0/10000*100).toFixed(4)
-            addData.yrmRateD1 = (addData.yrmRateD1/10000*100).toFixed(4)
-            addData.yrmRateD0 = (addData.yrmRateD0/10000*100).toFixed(4)
+                addData.aliRate  = (addData.aliRate/10000*100).toFixed(5)
+            addData.wecharRate = (addData.wecharRate/10000*100).toFixed(5)
+            addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(5)
+            addData.fuyouRateD0 = (addData.fuyouRateD0/10000*100).toFixed(5)
+            addData.yrmRateD1 = (addData.yrmRateD1/10000*100).toFixed(5)
+            addData.yrmRateD0 = (addData.yrmRateD0/10000*100).toFixed(5)
             addData.xdlRateD1 = (addData.xdlRateD1/10000*100).toFixed(5)
             addData.xdlRateD0 = (addData.xdlRateD0/10000*100).toFixed(5)
+            addData.sxfRateD0 = (addData.sxfRateD0/10000*100).toFixed(5)
+            addData.sxfRateD1 = (addData.sxfRateD1/10000*100).toFixed(5)
                 addData.pAgentLevel = jgData.pAgentLevel == '--'?'':jgData.pAgentLevel
                 console.log(addData)
                 // 发送请求

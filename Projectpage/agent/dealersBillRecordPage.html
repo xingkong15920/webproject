@@ -10,6 +10,7 @@
 		<meta http-equiv="Cache-Control" content="no-siteapp" />
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<link rel="stylesheet" href="../../public/css/style-baobiao.css">
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 
@@ -23,6 +24,42 @@
 			} */
 			.layui-table-cell{
 				height: auto;
+			}
+		</style>
+		<style type="text/css">
+			.index-zs .layui-col-md5 {
+				width: 20%;
+				text-align: center;
+			}
+			
+			.homelistitle {
+				font-size: 1.2rem;
+				margin-bottom: 10px;
+				color: #999;
+			}
+			
+			.homelistc:last-child {
+				margin-bottom: 20px;
+			}
+			
+			.homelistc {
+				font-size: 1.6rem;
+				font-weight: 600;
+			}
+			
+			.homelistc span {
+				display: block;
+				font-size: 1.6rem;
+				font-weight: 600;
+			}
+			
+			.homelistc span i {
+				font-style: normal;
+				font-size: 1.6rem;
+				font-weight: 600;
+			}
+			p{
+				font-size: 16px;
 			}
 		</style>
 	</head>
@@ -61,13 +98,77 @@
 				</div>
 				<div class="layui-input-inline">
 					<select id="orderState" name="orderState">
-						<option value="">订单类型</option>
+						<option value="10">订单类型</option>
 						<option value="1">交易成功</option>
 						<option value="5">部分退款</option>
 						<option value="4">全部退款</option>
 					</select>
 				</div>
 				<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+			</div>
+			<div class="baobiao" style="width:100%;height:143px">
+				<div class="baobiao-col-1" style="padding-left: 0;">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							笔数汇总
+						</div>
+						<div style="line-height:50px;font-size:16px" id="count" 	>
+							0
+						</div>
+					</div>
+				</div>
+				<div class="baobiao-col-1 jianhao" style="padding-right:0;position:relative">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							交易金额
+						</div>
+						<div style="line-height:50px;font-size:16px"  id="transactionAmount">
+							0元
+						</div>
+					</div>
+				</div>
+				<div style="width:20px;height:143px;float:left;margin-left:15px;font-size: 50px;
+    line-height: 154px;
+    text-align: center;">-</div>
+				<div class="baobiao-col-1 jianhao" style="padding-right: 0;">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							退款额
+						</div>
+						<div style="line-height:50px;font-size:16px"  id="refundAmount">
+							0元
+						</div>
+					</div>
+				</div>
+				<div style="width:20px;height:143px;float:left;margin-left:15px;font-size: 50px;
+    line-height: 154px;
+    text-align: center;">-</div>
+				<div class="baobiao-col-1 jianhao" style="padding-right: 0;">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							手续费
+						</div>
+						<div style="line-height:50px;font-size:16px"  id="shopPoundage">
+							0元
+						</div>
+					</div>
+				</div>
+				<div style="width:20px;height:143px;float:left;margin-left:15px;font-size: 50px;
+    line-height: 154px;
+    text-align: center;">=</div>
+				<div class="baobiao-col-1 denghao" style="padding-right: 0;">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							实收金额
+						</div>
+						<div style="line-height:50px;font-size:16px"  id="settlementAmount">
+							0元
+						</div>
+					</div>
+				</div>
+				
+				
+				
 			</div>
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill" style="font-size:14px"></table>
 		</div>
@@ -79,6 +180,7 @@
         <script src="../../common/utility.js"></script>
 		<script>
 			// <a class="layui-btn layui-btn-xs" lay-event="instep" style="margin-left:0">同步</a>
+			var newData;
 			function fun_date(aa){
 		       var date1 = new Date(),
 					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
@@ -96,6 +198,35 @@
 					c = 0 + c
 				}
 				return a + '-' + b + '-' + c
+		    }
+		    function changeList(data){
+		    	var dataL = data.transactionReceiptShareProfitList
+		    	for(var i = 0; i < dataL.length;i++){
+					if(dataL[i].orderState == 1){
+						dataL[i].orderState1 = "交易成功"
+					}
+					if(dataL[i].orderState == 2){
+						dataL[i].orderState1 = "已结算"
+					}
+					if(dataL[i].orderState == 3){
+						dataL[i].orderState1 = "失败"
+					}
+					if(dataL[i].orderState == 4){
+						dataL[i].orderState1 = "全部退款"
+					}
+					if(dataL[i].orderState == 5){
+						dataL[i].orderState1 = "部分退款"
+					}
+					if(dataL[i].orderState == 6){
+						dataL[i].orderState1 = "异常订单"
+					}
+					if(dataL[i].orderState == 7){
+						dataL[i].orderState1 = "退款中"
+					}
+					
+				}
+				newData = data.agentOrderList
+				return dataL
 		    }
 			window.onload = function(){
 				var beginDate = fun_date(-6);
@@ -124,6 +255,7 @@
 				//方法级渲染
 				console.log($('#startTime').val())
 				function tableRender(){
+					var index = layer.load(2, {shade: [0.4, '#393D49']})
 					table.render({
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectOrderList + '?agentNumber=' + userNumber ,
 						where:{
@@ -150,7 +282,7 @@
 								"msg":res.msg,
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.transactionReceiptShareProfitList,
+								"data": changeList(res.data),
 							}
 						},
 						cols: [
@@ -197,10 +329,57 @@
 								align: 'center',
 								width: 200,
 								templet:function(data){
-									return data.onePaymentTypeName + '/' + data.twoPaymentTypeName
+										var oneZ,twoZ
+									switch (data.onePaymentTypeName) {
+										case '0':
+											oneZ = '支付宝'
+											break;
+										case '1':
+										oneZ = '微信'
+											break;
+										case '2':
+										oneZ = '京东钱包'
+											break;
+										case '3':
+										oneZ = '银联支付'
+											break;
+										default:
+											oneZ = '--'
+											break;
+									}
+									switch (data.twoPaymentTypeName) {
+										case '0':
+											twoZ = '条码支付'
+											break;
+										case '1':
+											twoZ = '动态二维码支付'
+											break;
+										case '2':
+											twoZ = '小程序支付'
+											break;
+										case '3':
+											twoZ = 'APP支付'
+											break;
+										case '4':
+											twoZ = 'H5支付'
+											break;
+										case '5':
+											twoZ = '公众号支付'
+											break;
+										case '6':
+											twoZ = '服务窗支付'
+											break;
+										case '7':
+											twoZ = '预授权'
+											break;
+										default:
+											twoZ = '--'
+											break;
+									}
+									return  oneZ+ '</br>' + twoZ
 								}
 							}, {
-								field: 'orderState',
+								field: 'orderState1',
 								title: '订单描述',
 								align: 'center',
 
@@ -212,7 +391,21 @@
 								align: 'center',
 								minWidth: 120
 							}]
-						]
+						],
+						done:function(res, curr, count){
+							// console.log(newData)
+							// console.log(curr)
+							// console.log(count)
+							if(newData != undefined){
+								$("#count").html(newData.count)
+								$("#transactionAmount").html(newData.transactionAmount + '元')
+								$("#refundAmount").html(newData.refundAmount+ '元')
+								$("#shopPoundage").html(newData.shopPoundage+ '元')
+								$("#settlementAmount").html(newData.settlementAmount+ '元')
+							}
+							
+							layer.closeAll()
+						}
 					});
 				}
 				setTimeout(function(){

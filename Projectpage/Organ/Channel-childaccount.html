@@ -75,6 +75,8 @@
 			<select name="type" lay-filter="shopSel" shopNumber="{{d.merchantNumber}}"  subaccountNumber="{{d.subaccountNumber}}" >
 				<option value="1" {{d.subsidy == 1 ? 'selected' : ''}}>普通商户</option>
 				<option value="0" {{d.subsidy == 0 ? 'selected' : ''}}>补贴商户A</option>
+				<option value="2" {{d.subsidy == 2 ? 'selected' : ''}}>补贴商户B</option>
+				<option value="3" {{d.subsidy == 3 ? 'selected' : ''}}>餐饮补贴A</option>
 				<option value="null" {{d.subsidy == null ? 'selected' : ''}}>未知类型</option>
 			</select>
 		</script>
@@ -280,10 +282,10 @@
 								table1 = '费率(' + s.substr(0,s.length-1) + ')'
 								var ts = document.getElementsByTagName('thead')[0].getElementsByTagName('span')[3]
 								ts.innerHTML = table1
-								if(jgData.paymentChannelType == 4 ){
-									console.log($('.xdl'))
-									$('.xdl').hide()
-								}
+								// if(jgData.paymentChannelType == 4 ){
+								// 	console.log($('.xdl'))
+								// 	$('.xdl').hide()
+								// }
 							}
 						});
 					}
@@ -478,7 +480,7 @@
 								card: data.card,
 								cardType: 5
 							}
-							layer.confirm('真的删除此子账号么', {
+							layer.confirm('真的删除('+ data.subaccountNumber +')此子账号么', {
 								icon: 3,
 								title: '提示'
 							}, function(index) {

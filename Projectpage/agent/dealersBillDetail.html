@@ -43,10 +43,10 @@
                     <td>商户订单号</td>
                     <td><span id="batch"></span></td>
                 </tr>
-                <tr>
+               <!--  <tr>
                     <td>下游订单号</td>
                     <td><span id="orderNumber"></span></td>
-                </tr>
+                </tr> -->
                 <tr>
                     <td>交易金额</td>
                     <td><span id="transactionAmount"></span></td>
@@ -130,6 +130,78 @@ function subPagebill(data) {
     // $('#paymentChannelName').html(data.paymentChannelName)
     // $('#oneTransactionType').html(data.oneTransactionType)
     // $('#orderState').html(os)
+    var oneZ, twoZ
+    switch (data.onePaymentTypeName) {
+        case '0':
+            oneZ = '支付宝'
+            break;
+        case '1':
+            oneZ = '微信'
+            break;
+        case '2':
+            oneZ = '京东钱包'
+            break;
+        case '3':
+            oneZ = '银联支付'
+            break;
+        default:
+            oneZ = '--'
+            break;
+    }
+    switch (data.twoPaymentTypeName) {
+        case '0':
+            twoZ = '条码支付'
+            break;
+        case '1':
+            twoZ = '动态二维码支付'
+            break;
+        case '2':
+            twoZ = '小程序支付'
+            break;
+        case '3':
+            twoZ = 'APP支付'
+            break;
+        case '4':
+            twoZ = 'H5支付'
+            break;
+        case '5':
+            twoZ = '公众号支付'
+            break;
+        case '6':
+            twoZ = '服务窗支付'
+            break;
+        case '7':
+            twoZ = '预授权'
+            break;
+        default:
+            twoZ = '--'
+            break;
+    }
+    var payChannelName;
+    switch (data.paymentChannelName) {
+        case '0':
+            payChannelName = '支付宝'
+            break;
+        case '1':
+            payChannelName = '微信'
+            break;
+        case '2':
+            payChannelName = '富友'
+            break;
+        case '3':
+            payChannelName = '易融码'
+            break;
+        case '4':
+            payChannelName = '新大陆'
+            break;
+        case '5':
+            payChannelName = '随行付'
+            break;
+        
+        default:
+            payChannelName = '--'
+            break;
+    }
     $('#merchantNumber').html(jgData.merchantNumber)
     $('#merchantName').html(jgData.merchantName)
     $('#paymentOrderNumber').html(jgData.paymentOrderNumber)
@@ -140,8 +212,8 @@ function subPagebill(data) {
     $('#settlementAmount').html(jgData.settlementAmount)
     $('#orderTime').html(jgData.orderTime)
     $('#transactionTime').html(jgData.transactionTime)
-    $('#paymentChannelName').html(jgData.paymentChannelName)
-    $('#oneTransactionType').html(jgData.onePaymentTypeName + '/' + jgData.twoPaymentTypeName)
+    $('#paymentChannelName').html(payChannelName)
+    $('#oneTransactionType').html(oneZ + '/' + twoZ)
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
         var $ = layui.jquery,
             upload = layui.upload,

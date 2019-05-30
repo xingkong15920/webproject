@@ -257,13 +257,7 @@
 							field: 'inserttime',
 							title: '日期',
 							align: 'center',
-							templet:function(data){
-								if(data.inserttime){
-									return data.inserttime.split('.')[0].split('T')[0] + ' '+ data.inserttime.split('.')[0].split('T')[1] 
-								}else{
-									return ""
-								}
-							}
+							
 						}, {
 							field: 'importExportAmount',
 							align: 'center',
@@ -289,6 +283,9 @@
 		            },
 		            parseData: function(res) {
 		                //res 即为原始返回的数据
+		                if(res.code != 1000){
+		                	return
+		                }
 		                return {
 		                    "code": res.code, //解析接口状态
 		                    "msg": res.msg, //解析提示文本

@@ -172,6 +172,7 @@
             max: nowTime,
             value: endDate
         });
+        //下载
         $('#baobiao').click(function() {
             if ($('#billType').val() == 0 || $('#billType').val() == 3) {
                 if (!verTime()) {
@@ -187,7 +188,7 @@
                     //系统设置
                     'bill/getMerchantBillExcel', {
                         "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-                        "merchantNumber": '190221165543361',
+                        "merchantNumber": userNumber,
                         "merchantName": JSON.parse(sessionStorage.getItem('userSh')).merchantName,
                         "startTime": $('#startTime').val(),
                         "endTime": $('#endTime').val(),
@@ -217,14 +218,15 @@
                 // layui.table.reload('YLBlist');
             });
         })
+
         //方法级渲染
         function tableRender() {
-        	if($('#billType').val()== 0||$('#billType').val()==3){
-	        		if(!verTime()){
-		        		layer.msg('只能查询三个月以内数据')
-		        		return 
-		        	}
-	        	}
+            if ($('#billType').val() == 0 || $('#billType').val() == 3) {
+                if (!verTime()) {
+                    layer.msg('只能查询三个月以内数据')
+                    return
+                }
+            }
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
             table.render({
                 elem: '#LAY_table_bill',
