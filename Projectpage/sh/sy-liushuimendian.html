@@ -202,46 +202,31 @@
 		        		return 
 		        	}
 	        	}
-            layer.prompt({
-                title: '请输入您的邮箱地址'
-            }, function(pass, index) {
-
-                console.log(pass, index)
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    'bill/getShopBillExcel', {
-                        "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-                        "merchantNumber": userNumber,
-                        "merchantName": JSON.parse(sessionStorage.getItem('userSh')).merchantName,
-                        "shopNumber": $('#shopName').val().split('/')[0],
-                        "shopName": $('#shopName').val().split('/')[1],
-                        "startTime": $('#startTime').val(),
-                        "endTime": $('#endTime').val(),
-                        "mailBox": pass,
-                        "billType": $('#billType').val()
-                    },
-                    function(data) {
-                        if (data.code == 1000) {
-                            console.log(data)
-                            layer.msg('生成成功')
-
-                            layui.table.reload('billlist')
-                            layer.closeAll()
-                        } else {
-                            layer.msg(data.msg)
-
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
-                setTimeout(function() {
-                    layer.msg('邮件已发送,请稍后到邮箱查收')
-                    layui.table.reload('billlist')
-                }, 1000)
-                // layui.table.reload('YLBlist');
+            var newData = new Object()
+            newData.institutionNumber =  JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+            newData.merchantNumber =  userNumber,
+            newData.merchantName =  JSON.parse(sessionStorage.getItem('userSh')).merchantName,
+            newData.shopNumber =  $('#shopName').val().split('/')[0],
+            newData.shopName =  $('#shopName').val().split('/')[1],
+            newData.startTime =  $('#startTime').val(),
+            newData.endTime =  $('#endTime').val(),
+            newData.billType =  $('#billType').val()
+            layer.open({
+                type: 2,
+                title: '下载报表',
+                shade: 0.5,
+                area: ['30%', '30%'],
+                maxmin: false,
+                resize: false,
+                content: ['down-excel.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                    iframe.subPage(newData,'1')
+                }
             });
+            return
         })
         //方法级渲染
         function tableRender() {

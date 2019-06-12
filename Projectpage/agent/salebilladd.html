@@ -19,13 +19,14 @@
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style type="text/css">
-    #codeInfo{
-    	line-height: 38px;
-    	font-size: 24px;
-    	text-align: center;
-    	letter-spacing:5px
+    #codeInfo {
+        line-height: 38px;
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 5px
     }
-    .layui-input-block{
+
+    .layui-input-block {
         margin-left: 80px;
     }
     </style>
@@ -38,7 +39,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" style="width:65px">选择销售</label>
                     <div class="layui-input-block">
-                        <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择销售" class="layui-input" id="agName"   onblur="bl()" onfocus="fc()">
+                        <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择销售" class="layui-input" id="agName" onblur="bl()" onfocus="fc()">
                         <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
                             <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
                                 <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
@@ -49,29 +50,30 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:55px;z-index:9999">类型</label>
+                    <label class="layui-form-label" style="width:55px;z-index:9999">类型</label>
                     <div class="layui-input-block">
                         <select name="type" id="importExportIdentification" lay-verify="type">
                             <option value="">类型</option>
                             <option value="-2">补贴</option>
+                             <option value="-1">提现</option>
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:55px">金额</label>
+                    <label class="layui-form-label" style="width:55px">金额</label>
                     <div class="layui-input-block">
                         <input type="text" name="number" lay-verify="number" autocomplete="off" placeholder="请输入数字" class="layui-input" id="number">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:55px">备注</label>
+                    <label class="layui-form-label" style="width:55px">备注</label>
                     <div class="layui-input-block">
                         <input type="text" name="mark" lay-verify="" autocomplete="off" placeholder="请输入备注" class="layui-input" id="number">
                     </div>
                 </div>
                 <div class="layui-input-block">
-			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="立即提交" id="sub">
-			    </div>
+                    <input type="button" class="layui-btn" lay-submit="" lay-filter="create" value="立即提交" id="sub">
+                </div>
             </form>
         </div>
     </div>
@@ -81,32 +83,34 @@
     var type111 = 0
     var code1 = ''
     var pageNum
-        var serverUrl = 'http://192.168.1.190:5002/'
-        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
-        function bl() {
+    var serverUrl = 'http://192.168.1.190:5002/'
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+
+    function bl() {
         setTimeout(function() {
             $('#searchBox').hide()
         }, 200)
         //$('#searchBox').hide()
     }
+
     function clickS(e) {
         $('#agName').val(e.getAttribute('data-name'))
         $('#agName').attr('agentNumber', e.getAttribute('data-id'))
         $('#searchBox').hide()
     }
+
     function fc() {
         $('#searchBox').show()
         console.log($('#agName').val())
-        pageNum =1
+        pageNum = 1
         CmsUtility.postAjaxCall(
             //系统设置
-            CmsConfig.addressUrl.Agent.getSaleInfo, 
-            {
-                
+            CmsConfig.addressUrl.Agent.getSaleInfo, {
+
                 "agentNumber": userNumber,
-                "saleName":$('#agName').val().trim(),
-                "page":1,
-                "limit":'100',
+                "saleName": $('#agName').val().trim(),
+                "page": 1,
+                "limit": '100',
             },
             function(data) {
                 console.log(this.value)
@@ -134,63 +138,62 @@
         )
 
     }
-        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
-            layui.$.support.cors = true; //允许ajax跨域
-            var $ = layui.jquery,
-                upload = layui.upload,
-                laydate = layui.laydate,
-                table = layui.table,
-                form = layui.form,
-                laytpl = layui.laytpl;
+    layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+        layui.$.support.cors = true; //允许ajax跨域
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            laytpl = layui.laytpl;
 
-            
-            //表单初始赋值
-            // $('#sub').click(function(){
-            // 	console.log(code1)
-            // })
-            form.verify({
-                agentName:function(value){
-                    if($('#agName').val() == '' || $('#agName').attr('agentNumber') == undefined){
-                        return '请搜索并选择销售'
-                    }
-                },
-                type:function(value){
-                    if(value == ''){
-                        return '请选择账单类型'
-                    }
-                },
-                title: function(value) {
-                    console.log(value)
-                    if (value = '') {
-                        return '不能为空';
-                    }
-                },
-            });
-             $("#agName").bind('input propertychange', function() {
+
+        //表单初始赋值
+        // $('#sub').click(function(){
+        //  console.log(code1)
+        // })
+        form.verify({
+            agentName: function(value) {
+                if ($('#agName').val() == '' || $('#agName').attr('agentNumber') == undefined) {
+                    return '请搜索并选择销售'
+                }
+            },
+            type: function(value) {
+                if (value == '') {
+                    return '请选择账单类型'
+                }
+            },
+            title: function(value) {
+                console.log(value)
+                if (value = '') {
+                    return '不能为空';
+                }
+            },
+        });
+        $("#agName").bind('input propertychange', function() {
             console.log(this.value)
             $('#agName').removeAttr('agentNumber')
             document.getElementById('searchBox').innerHTML = ''
             CmsUtility.postAjaxCall(
                 //系统设置
-               CmsConfig.addressUrl.Agent.getSaleInfo, 
-            {
-                
-                "agentNumber": userNumber,
-                "saleName":$('#agName').val().trim(),
-                "page":1,
-                "limit":'100',
-            },
-            function(data) {
-                console.log(this.value)
-                if (data.code == 1000) {
-                    // if(data.data == null){
-                    //     layer.msg(data.msg)
-                    //     return
-                    //    }
-                    var str = ''
-                    for (var i = 0; i < data.data.saleRegisterInfoList.length; i++) {
-                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.saleRegisterInfoList[i].saleNumber + '" data-name="' + data.data.saleRegisterInfoList[i].saleName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.saleRegisterInfoList[i].saleNumber + ']' + data.data.saleRegisterInfoList[i].saleName + '</div>'
-                    }
+                CmsConfig.addressUrl.Agent.getSaleInfo, {
+
+                    "agentNumber": userNumber,
+                    "saleName": $('#agName').val().trim(),
+                    "page": 1,
+                    "limit": '100',
+                },
+                function(data) {
+                    console.log(this.value)
+                    if (data.code == 1000) {
+                        // if(data.data == null){
+                        //     layer.msg(data.msg)
+                        //     return
+                        //    }
+                        var str = ''
+                        for (var i = 0; i < data.data.saleRegisterInfoList.length; i++) {
+                            str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.saleRegisterInfoList[i].saleNumber + '" data-name="' + data.data.saleRegisterInfoList[i].saleName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.saleRegisterInfoList[i].saleNumber + ']' + data.data.saleRegisterInfoList[i].saleName + '</div>'
+                        }
                         document.getElementById('searchBox').innerHTML = str
 
 
@@ -204,96 +207,94 @@
                 }
             )
         })
-            // $('#sub').click(function() {
-                
-            //     var tjData = new Object();
-            //     tjData.institutionNumber = userNumber;
-                
-            //     tjData.number = $('#number').val()
-            //     CmsUtility.postAjaxCall(
-            //         //系统设置
-            //         CmsConfig.addressUrl.Mechanism.insertChannelRate,
-            //         tjData,
-            //         function(data) {
-            //             if (data.code == 1000) {
-            //                 // type111 = 2
+        // $('#sub').click(function() {
+
+        //     var tjData = new Object();
+        //     tjData.institutionNumber = userNumber;
+
+        //     tjData.number = $('#number').val()
+        //     CmsUtility.postAjaxCall(
+        //         //系统设置
+        //         CmsConfig.addressUrl.Mechanism.insertChannelRate,
+        //         tjData,
+        //         function(data) {
+        //             if (data.code == 1000) {
+        //                 // type111 = 2
 
 
-            //                 x_admin_close()
-            //                 parent.layer.msg('生成成功')
-            //                 parent.layui.table.reload('vip_cardList')
+        //                 x_admin_close()
+        //                 parent.layer.msg('生成成功')
+        //                 parent.layui.table.reload('vip_cardList')
 
 
-            //             } else {
-            //                 layer.msg(data.msg)
+        //             } else {
+        //                 layer.msg(data.msg)
 
-            //             }
-            //         },
-            //         function(data) {
-            //             console.log('222')
-            //         }
-            //     )
-            //     return false
-            // })
+        //             }
+        //         },
+        //         function(data) {
+        //             console.log('222')
+        //         }
+        //     )
+        //     return false
+        // })
 
-            // //监听提交
-            form.on('submit(create)', function(data) {
-            	
-            	console.log(data.field)
-                // if(data.field.nuber)
-                var tjData = new Object();
-                console.log($('#agName').attr('agentNumber'))
-                tjData.saleNumber = $('#agName').attr('agentNumber')
-                tjData.billType = data.field.type
-                tjData.billAccount = data.field.number
-                tjData.remark = data.field.mark
-                
-                console.log(tjData)
-                
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    'saleMain/addSaleLocal',
-                    tjData,
-                    function(data) {
-                        if (data.code == 1000) {
-                            // type111 = 2
+        // //监听提交
+        form.on('submit(create)', function(data) {
 
+            console.log(data.field)
+            // if(data.field.nuber)
+            var tjData = new Object();
+            console.log($('#agName').attr('agentNumber'))
+            tjData.saleNumber = $('#agName').attr('agentNumber')
+            tjData.billType = data.field.type
+            tjData.billAccount = data.field.number
+            tjData.remark = data.field.mark
 
-                            x_admin_close()
-                            parent.layer.msg('提交成功')
-                            parent.layui.table.reload('vip_cardList')
+            console.log(tjData)
+
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'saleMain/addSaleLocal',
+                tjData,
+                function(data) {
+                    if (data.code == 1000) {
+                        // type111 = 2
 
 
-                        } else {
-                            layer.msg(data.msg)
+                        x_admin_close()
+                        parent.layer.msg('提交成功')
+                        parent.layui.table.reload('vip_cardList')
 
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
+
+                    } else {
+                        layer.msg(data.msg)
+
                     }
-                )
-                return false
-            });
-
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            return false
         });
 
-    function createCode() {
-		code1 = ''
-		for(var i = 0; i < 4; i++) {
-			code1 += Math.floor(Math.random() * 10)
-		}
-		console.log($('#codeInfo'))
-		$('#codeInfo').html(code1)
-	}
-	createCode()
-	$(function() {
-		$("#codeInfo").click(function() {
-			createCode()
-		});
-	});
+    });
 
-   
+    function createCode() {
+        code1 = ''
+        for (var i = 0; i < 4; i++) {
+            code1 += Math.floor(Math.random() * 10)
+        }
+        console.log($('#codeInfo'))
+        $('#codeInfo').html(code1)
+    }
+    createCode()
+    $(function() {
+        $("#codeInfo").click(function() {
+            createCode()
+        });
+    });
     </script>
 </body>
 

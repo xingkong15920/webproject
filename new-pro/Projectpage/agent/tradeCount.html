@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style-baobiao1.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript">
+			// $(function() {
+			// 	$.ajax({
+			// 		type: 'POST',
+			// 		async: true,
+			// 		url: ".getqudao",
+			// 		success: function(data) {
+			// 			for(var i = 0; i < data.length; i++) {
+			// 				$("#payment").append("<option value='" + data[i].Passageway + "'>" + data[i].PassagewayC + "</option>");
+			// 			}
+			// 			form.render();
+			// 		}
+			// 	});
+			// })
+		</script>
+		<style type="text/css">
+			.clearfix:after{
+				display: block;
+				content: "";
+				clear: both;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="">首页</a>
+				<a><cite>概览统计</cite></a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
+		</div>
+		<div class="x-body">
+			
+			
+			<div class="layui-row layui-form x-so">
+				<div class="layui-input-inline">
+					<input type="text" name="shopname" id="shopName" placeholder="商户名称" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-input-inline">
+					<select name="payment" id="transactionPayment" lay-search="">
+						<option value="">所属服务商</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="开始时间" name="" id="startTime">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="截止时间" name="" id="endTime">
+				</div>
+				<div class="layui-input-inline">
+					<button class="layui-btn" lay-submit="" lay-filter="sreach"  title="搜索" id="btn1"><i class="layui-icon">&#xe615;</i></button>
+				</div>
+			</div>
+			<div class="layui-form-item">
+						<div class="layui-inline place">
+							
+							<span style="color:red;display:block">*注:退款金额包含全部退款与部分退款</span>
+							<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）- 手续费=实收金额</span>
+						</div>
+			</div>
+			<div class="baobiao  clearfix" style="display:block">
+				<div class="baobiao-col-2">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">交易笔数</p>
+							<p class="baobiaolistct"><span id="transactionNumber">0</span> 笔</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="wTransactionNumber">0</span> 单</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="zTransactionNumber">0</span> 单</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="baobiao-col-2" >
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">交易金额（元）</span>
+							</p>
+							<p class="baobiaolistct"><span id="transactionMoney">0</span> 元</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="wTransactionMoney">0</span> 元</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="zTransactionMoney">0</span> 元</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="baobiao-col-2">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">退款金额（元）</span>
+							</p>
+							<p class="baobiaolistct"><span id="refundMoney">0</span> 元</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="wRefundMoney">0</span> 元</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="zRefundMoney">0</span> 元</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div class="baobiao-col-1" style="padding-left: 0;">
+					<div class="baobiaoK">
+						<div class="baobiaolist" style="line-height:52px;font-size:16px">
+							佣金
+						</div>
+						<div style="line-height:50px;font-size:16px" id="brokerage">
+							0
+						</div>
+					</div>
+				</div> -->
+				<div class="baobiao-col-2">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">手续费（元）</span>
+							</p>
+							<p class="baobiaolistct"><span id="poundage">0</span> 元</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="wpoundage">0</span> 元</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="zpoundage">0</span> 元</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="baobiao-col-2">
+					<div class="baobiaoK">
+						<div class="baobiaolist">
+							<p class="baobiaolistitle">实收金额（元）</span>
+							</p>
+							<p class="baobiaolistct"><span id="incomeMoney">0</span> 元</p>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc dnsj">
+								<div></div>
+								<p><span id="wIncomeMoney">0</span> 元</p>
+							</div>
+						</div>
+						<div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+							<div class="baobiaodc wmsj">
+								<div></div>
+								<p><span id="zIncomeMoney">0</span> 元</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-tab layui-tab-card">
+			  <ul class="layui-tab-title">
+			    <li class="layui-this qiehuan" style="width:60px" onclick="tab(0)">交易金额</li>
+			    <li  style="width:60px" class="qiehuan"  onclick="tab(1)">交易笔数</li>
+			    <li  style="width:60px" class="qiehuan"  onclick="tab(2)">退款金额</li>
+			    <li  style="width:60px" class="qiehuan"  onclick="tab(3)">手续费</li>
+			    <li  style="width:60px" class="qiehuan" onclick="tab(4)">实收金额</li>
+			  </ul>
+			</div>
+			<div class="grid-demo border">
+				<div id="main" style="height: 400px"></div>
+			</div>
+			<table class="layui-table" id="table1" lay-filter="useruv"></table>
+		</div>
+	</body>
+	<script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+	<script>
+		var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+		var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+		var Statement_Date = []
+		var orderTotalMoney = []
+		var orderCount = []
+		var orderMoney = []
+		var refundMoney = []
+		var shouxuMoney = []
+		var shishou = []
+		var myChart
+		var option
+		function fun_date(aa){
+		        var date1 = new Date(),
+		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
+		        var date2 = new Date(date1);
+		        date2.setDate(date1.getDate()+aa);
+		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
+		        return time2
+		    }
+		   function tab(id){
+					switch (id) {
+						case 0:
+						
+							CmsUtility.clearListArr(orderTotalMoney)
+							for(let i = 0 ; i < orderMoney.length;i++){
+								orderTotalMoney.push(orderMoney[i])
+							}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 1:
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < orderCount.length;i++){
+									orderTotalMoney.push(orderCount[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 2:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < refundMoney.length;i++){
+									orderTotalMoney.push(refundMoney[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 3:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < shouxuMoney.length;i++){
+									orderTotalMoney.push(shouxuMoney[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 4:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < shishou.length;i++){
+									orderTotalMoney.push(shishou[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						default:
+							// statements_def
+							break;
+					}
+				}
+		//列表
+		layui.use('laydate', function() {
+			var laydate = layui.laydate;
+			laydate.render({
+				elem: '#startTime', //指定元素
+				value:fun_date(-6)
+				
+				
+			});
+			laydate.render({
+				elem: '#endTime',
+				value:fun_date(0)
+				
+			});
+		
+			laydate.render({
+				elem: '#startTime1', //指定元素
+				value:fun_date(-6)
+				
+			});
+			laydate.render({
+				elem: '#endTime1',
+				value:fun_date(0)
+			});
+				
+		});
+		layui.use(['form', 'table', 'laytpl'], function() {
+				var table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl,
+					$ = layui.jquery;
+				CmsUtility.postAjaxCall(
+								//系统设置
+						CmsConfig.addressUrl.Agent.getMyAgent,
+						{
+							'agentNumber':userNumber,
+							'agentLevel':agentLevel,
+							'userName':'',
+							'registerCell':'',
+							'page':1,
+							'limit':100
+						},
+						function(data){
+							if(data.data == null){
+								return
+							}
+							var str = '<option value="">请选择或搜索代理</option>'
+							for(var i =0 ; i<data.data.length;i++){
+								str += '<option value="'+ data.data[i].agentNumber+'">'+data.data[i].agentName+'</option>'
+							}
+							$('#transactionPayment').html(str)
+							form.render()
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+				var index = layer.load(2, {shade: [0.4, '#393D49']})
+				function getHuizong(){
+					CmsUtility.postAjaxCall(
+							//系统设置
+					CmsConfig.addressUrl.Agent.selectMerchant,
+					{
+						"agentNumber":userNumber,
+						"agentLevel":agentLevel,
+						"startTime":$('#startTime').val(),
+						"endTime":$('#endTime').val(),
+						"merchantName":$('#shopName').val().trim(),
+					},
+					function(data){
+						
+						if(data.code == 1000){
+							$('#shopCount').html(data.data.agShopStatisticsResult.shopCount)
+							$('#brokerage').html(data.data.agShopStatisticsResult.brokerage + '元')
+							$('#transactionNumber').html(data.data.agShopStatisticsResult.transactionNumber)
+							$('#wTransactionNumber').html(data.data.agShopStatisticsResult.wTransactionNumber)
+							$('#zTransactionNumber').html(data.data.agShopStatisticsResult.zTransactionNumber)
+							$('#transactionMoney').html(data.data.agShopStatisticsResult.transactionMoney)
+							$('#wTransactionMoney').html(data.data.agShopStatisticsResult.wTransactionMoney)
+
+							$('#zTransactionMoney').html(data.data.agShopStatisticsResult.zTransactionMoney)
+							$('#refundMoney').html(data.data.agShopStatisticsResult.refundMoney)
+							$('#wRefundMoney').html(data.data.agShopStatisticsResult.wRefundMoney)
+							$('#zRefundMoney').html(data.data.agShopStatisticsResult.zRefundMoney)
+							$('#poundage').html(data.data.agShopStatisticsResult.poundage)
+							$('#wpoundage').html(data.data.agShopStatisticsResult.wpoundage)
+							$('#zpoundage').html(data.data.agShopStatisticsResult.zpoundage)
+							$('#incomeMoney').html((data.data.agShopStatisticsResult.transactionMoney-data.data.agShopStatisticsResult.refundMoney-data.data.agShopStatisticsResult.poundage).toFixed(2))
+							$('#wIncomeMoney').html((data.data.agShopStatisticsResult.wTransactionMoney-data.data.agShopStatisticsResult.wRefundMoney-data.data.agShopStatisticsResult.wpoundage).toFixed(2))
+							$('#zIncomeMoney').html((data.data.agShopStatisticsResult.zTransactionMoney-data.data.agShopStatisticsResult.zRefundMoney-data.data.agShopStatisticsResult.zpoundage).toFixed(2))
+						}else{
+							layer.msg(data.msg)
+							
+						}
+					},
+					function(data){
+						console.log('222')
+					}
+				)
+				}
+				setTimeout(function(){
+					getHuizong()
+				},500)
+				
+				function reloadres() {
+					var index = layer.load(2, {shade: [0.4, '#393D49']})
+					CmsUtility.postAjaxCall(
+						//系统设置
+						'agentBill/getTransactionDateList' , 
+						{
+						"agentNumber":userNumber,
+						"agentLevel":agentLevel,
+						"startTime":$('#startTime').val(),
+						"endTime":$('#endTime').val(),
+						"merchantName":$('#shopName').val().trim(),
+						},
+						function(data) {
+							layer.closeAll()
+							CmsUtility.clearListArr(Statement_Date)
+							CmsUtility.clearListArr(orderTotalMoney)
+							CmsUtility.clearListArr(orderCount)
+							CmsUtility.clearListArr(orderMoney)
+							CmsUtility.clearListArr(refundMoney)
+							CmsUtility.clearListArr(shouxuMoney)
+							CmsUtility.clearListArr(shishou)
+							var data = data.data
+							for(var j = 0; j < data.length; j++) {
+								Statement_Date.push(data[j].time)
+								orderTotalMoney.push(data[j].transactionMoney)
+								orderCount.push(data[j].transactionNumber)
+								orderMoney.push(data[j].transactionMoney)
+								refundMoney.push(data[j].refundMoney)
+								shouxuMoney.push(data[j].poundage)
+								shishou.push(data[j].shishouMoney)
+							}
+							
+							Statement_Date.sort()
+							myChart.clear()
+							// 为echarts对象加载数据
+							myChart.setOption(option);
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				}
+				setTimeout(function(){
+					reloadres()
+				},500)
+				
+			//方法级渲染
+			function tableRender(){
+				table.render({
+					elem: '#table1',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + 'agentBill/getMerchantList' + '?agentNumber=' + userNumber ,
+					where:{
+						"transactionPayment":$('#transactionPayment').val().trim(),
+						"shopName":$('#shopName').val().trim(),
+						"agentLevel":agentLevel,
+						"startTime":$('#startTime').val(),
+						"endTime":$('#endTime').val(),
+					},
+					page: true,
+					limits: [10, 20],
+					method: "post",
+					id: 'tradeInfo',
+					response: { 
+					//res 即为原始返回的数据
+							"statusCode":"1000", //解析接口状态
+							
+					},
+					parseData: function(res) {
+						console.log(res)
+					 //res 即为原始返回的数据
+					 	if(res.data == null){
+					 		return
+					 	}
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.count, //解析数据长度
+							"data": res.data.merchants, //解析数据列表
+						};
+					},
+					cols: [
+						[{
+							field: 'merchantName',
+							title: '商户名称',
+							align: 'center'
+						}, {
+							field: 'merchantType',
+							title: '商户类型',
+							align: 'center'
+						}, {
+							field: 'registerCell',
+							title: '手机号码',
+							align: 'center'
+						}, {
+							field: 'agentName',
+							title: '所属服务商',
+							align: 'center'
+						}, {
+							field: 'transactionPayment',
+							title: '交易笔数',
+							align: 'center'
+						}, {
+							field: 'transactionAmount',
+							title: '交易金额',
+							align: 'center',
+							templet:function(data){
+								return data.transactionAmount.toFixed(2)
+							}
+						}, {
+							field: 'refundAmount',
+							title: '退款额',
+							align: 'center'
+						}, {
+							field: 'shopPoundage',
+							title: '手续费',
+							align: 'center'
+						}, {
+							field: 'shopPoundage',
+							title: '实收金额',
+							align: 'center',
+							templet:function(data){
+								return (data.transactionAmount - data.shopPoundage - data.refundAmount).toFixed(2)
+							}
+						}, {
+							field: 'subsidyAmount',
+							title: '补贴金额',
+							align: 'center'
+						}, {
+							field: 'subsidyNum',
+							title: '补贴笔数',
+							align: 'center'
+						}]
+					],
+					done:function(data){
+						layer.closeAll()
+					}
+				})
+			}
+			tableRender()
+			$('#search').click(function(){
+				tableRender()
+				
+			})
+			$('#btn1').click(function(){
+				console.log('111')
+				tableRender()
+				getHuizong()
+				reloadres()
+				console.log($('.qiehuan'))
+				var qiehuan = document.getElementsByClassName('qiehuan')
+				for(let i = 0 ; i <qiehuan.length;i++){
+					qiehuan[i].setAttribute('class','qiehuan')
+				}
+				qiehuan[0].setAttribute('class','layui-this qiehuan')
+			})
+			 myChart = echarts.init(document.getElementById('main'));
+			 option = {
+				grid: {
+					x: 70,
+					x2: 20,
+					y: 70,
+					y2: 40,
+					borderWidth: 1
+				},
+				title: '',
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross'
+					}
+				},
+				legend: {
+					data: ['金额']
+				},
+				calculable: true,
+				xAxis: [{
+					type: 'category',
+					axisTick: {
+						alignWithLabel: true
+					},
+					axisLine: {
+						onZero: false
+					},
+					data: Statement_Date
+				}],
+				yAxis: [{
+					splitLine: {
+						show: true,
+						lineStyle: {
+							type: "dashed",
+							color: "#dfdfdf"
+						}
+					},
+					axisLabel: {
+						textStyle: {
+							fontSize: 14,
+							color: '#5b6e89'
+						}
+					},
+					type: 'value'
+				}],
+				series: [{
+					name: '',
+					type: 'line',
+					smooth: true,
+					itemStyle: {
+						normal: {
+							areaStyle: {
+								type: 'default',
+								color: {
+									type: 'linear',
+									x: 0,
+									y: 0,
+									x2: 0,
+									y2: 1,
+									colorStops: [{
+										offset: 0,
+										color: '#6e94ff'
+									}, {
+										offset: 1,
+										color: '#ffffff'
+									}],
+									globalCoord: false
+								}
+							},
+							color: '#6e94ff'
+						}
+					},
+					data: orderTotalMoney
+				}]
+			};
+			// 根據條件重载表格
+		// 	var $ = layui.$,
+		// 		active = {
+		// 			reload: function() {
+		// 				// 获取上面查询框的值
+		// 				var shopname = $("#shopname").val().trim();
+		// 				var startTime = $("#startTime").val().trim();
+		// 				var endTime = $("#endTime").val().trim();
+		// 				var passway = $("#payment option:selected").val().trim();
+		// 				//执行重载
+		// 				table.reload('tradeInfo', {
+		// 					page: {
+		// 						curr: 1 //重新从第 1 页开始
+		// 					},
+		// 					where: {
+		// 						shopname: shopname,
+		// 						passway: passway
+		// 					}
+		// 				});
+		// 			}
+		// 		};
+
+		// 	$('.layui-row .layui-btn').on('click', function() {
+		// 		var type = $(this).data('type');
+		// 		active[type] ? active[type].call(this) : '';
+		// 	});
+		 });
+	</script>
+	
+
+</html>

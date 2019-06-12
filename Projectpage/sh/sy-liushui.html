@@ -70,7 +70,7 @@
             </div>
         </div>
         <div style="margin-bottom:20px;margin-top:20px">
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">交易笔数</p>
@@ -90,7 +90,7 @@
                     </div>
                 </div>
             </div>
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">交易金额（元）</span>
@@ -111,7 +111,28 @@
                     </div>
                 </div>
             </div>
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
+                <div class="baobiaoK">
+                    <div class="baobiaolist">
+                        <p class="baobiaolistitle">手续费（元）</span>
+                        </p>
+                        <p class="baobiaolistct" style="font-size:16px"><span id="shopPoundage">0</span> 元</p>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+                        <div class="baobiaodc dnsj">
+                            <div></div>
+                            <p><span id="weChatShopPoundage">0</span> 元</p>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+                        <div class="baobiaodc wmsj">
+                            <div></div>
+                            <p><span id="alipayShopPoundage">0</span> 元</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">退款金额（元）</span>
@@ -132,7 +153,7 @@
                     </div>
                 </div>
             </div>
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">实际收入（元）</span>
@@ -259,51 +280,36 @@
                 layer.msg('只能查询三个月以内数据')
                 return
             }
-            
-            layer.prompt({
-                title: '请输入您的邮箱地址'
-            }, function(pass, index) {
-                console.log(pass, index)
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    'transaction/getTransactionExcel', 
-                    {
-                        "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-                        "merchantNumber": userNumber,
-                        "merchantName": JSON.parse(sessionStorage.getItem('userSh')).merchantName,
-                        "shopNumber":$('#shopName').val().split('/')[0],
-                        "shopName":$('#shopName').val().split('/')[1],
-                        "clerkName":$('#Assistant').val().trim(),
-                        "batch": $('#orderCode').val().trim(),
-						"oneTransactionType": $('#payment').val().trim(),
-						"orderState": $('#orderStatus').val().trim(),
-                        "startTime": $('#startTime').val().split(' ')[0],
-                        "endTime": $('#endTime').val().split(' ')[0],
-                        "mailBox": pass,
-                        "billType": $('#billType').val()
-                    },
-                    function(data) {
-                        if (data.code == 1000) {
-                            // console.log(data)
-                            // layer.msg('生成成功')
-
-                            // layui.table.reload('deviceInfo')
-                            // layer.closeAll()
-                        } else {
-                            layer.msg(data.msg)
-
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
-                setTimeout(function() {
-                    layer.msg('邮件已发送,请稍后到邮箱查收')
-                    layer.closeAll()
-                }, 1000)
-                // layui.table.reload('YLBlist');
+            var newData = new Object()
+            newData.institutionNumber =  JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+            newData.merchantNumber =  userNumber,
+            newData.merchantName =  JSON.parse(sessionStorage.getItem('userSh')).merchantName,
+            newData.shopNumber = $('#shopName').val().split('/')[0],
+            newData.shopName = $('#shopName').val().split('/')[1],
+            newData.clerkName = $('#Assistant').val().trim(),
+            newData.batch =  $('#orderCode').val().trim(),
+            newData.oneTransactionType =  $('#payment').val().trim(),
+            newData.orderState =  $('#orderStatus').val().trim(),
+            newData.startTime =  $('#startTime').val().split(' ')[0],
+            newData.endTime =  $('#endTime').val().split(' ')[0],
+            newData.billType =  $('#billType').val()
+            layer.open({
+                type: 2,
+                title: '下载报表',
+                shade: 0.5,
+                area: ['30%', '30%'],
+                maxmin: false,
+                resize: false,
+                content: ['down-excel.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                    iframe.subPage(newData,'3')
+                }
             });
+            return
+           
         })
         CmsUtility.postAjaxCall(
             CmsConfig.addressUrl.Merchant.getShopNames,
@@ -342,12 +348,15 @@
                         $('#orderTotalMoney').html(data.data[0].orderTotalMoney)
                         $('#alipayOrderTotalMoney').html(data.data[0].alipayOrderTotalMoney)
                         $('#weChatOrderTotalMoney').html(data.data[0].weChatOrderTotalMoney)
+                        $("shopPoundage").html(data.data[0].shopPoundage)
+                        $("weChatShopPoundage").html(data.data[0].weChatShopPoundage)
+                        $("alipayShopPoundage").html(data.data[0].alipayShopPoundage)
                         $('#tuikuan').html(data.data[0].refundOrderTotalMoney)
                         $('#tuiweixin').html(data.data[0].refundWeChatOrderTotalMoney)
                         $('#tuiali').html(data.data[0].refundAlipayOrderTotalMoney)
-                        $('#shishou').html((data.data[0].orderTotalMoney - data.data[0].refundOrderTotalMoney).toFixed(2))
-                        $('#shiweixin').html((data.data[0].weChatOrderTotalMoney - data.data[0].refundWeChatOrderTotalMoney).toFixed(2))
-                        $('#shiali').html((data.data[0].alipayOrderTotalMoney - data.data[0].refundAlipayOrderTotalMoney).toFixed(2))
+                        $('#shishou').html((data.data[0].orderTotalMoney - data.data[0].shopPoundage - data.data[0].refundOrderTotalMoney).toFixed(2))
+                        $('#shiweixin').html((data.data[0].weChatOrderTotalMoney - data.data[0].weChatShopPoundage - data.data[0].refundWeChatOrderTotalMoney).toFixed(2))
+                        $('#shiali').html((data.data[0].alipayOrderTotalMoney - data.data[0].alipayShopPoundage - data.data[0].refundAlipayOrderTotalMoney).toFixed(2))
 
                     } else {
                         layer.msg(data.msg)

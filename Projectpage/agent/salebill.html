@@ -72,6 +72,7 @@
 			</div>
 			<xblock>
 				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加账单</button>
+				<button style="margni-left:30px" class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
@@ -120,10 +121,37 @@
 					  elem: '#endTime' ,//指定元素
 					  value: new Date()
 					});
+					$('#baobiao').click(function() {
+			            var newData = new Object()
+			            newData.institutionNumber =JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+			            newData.agentName =JSON.parse(sessionStorage.getItem('agentUser')).agentName,
+			            newData.agentNumber = userNumber,
+			            newData.startTime = $('#startTime').val(),
+						newData.endTime = $('#endTime').val(),
+						newData.saleName = $('#saleName').val(),
+						newData.billType = $('#billType').val()
+			            layer.open({
+			                type: 2,
+			                title: '下载报表',
+			                shade: 0.5,
+			                area: ['30%', '30%'],
+			                maxmin: false,
+			                resize: false,
+			                content: ['down-excel.html'],
+			                success: function(layero, index) {
+			                    // 获取子页面的iframe
+			                    var iframe = window['layui-layer-iframe' + index];
+			                    // 向子页面的全局函数child传w参
+			                    iframe.subPage(newData,'2')
+			                }
+			            });
+			            return 
+			           
+			        })
 				//方法级渲染  
 				function tableRender(){
-					var sTiem = $('#startTime').val() + ' 00:00:00'
-					var eTime = $('#endTime').val() + ' 23:59:59'
+					var sTiem = $('#startTime').val()
+					var eTime = $('#endTime').val()
 					
 					table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
@@ -164,41 +192,21 @@
 							field: 'orderNumber',
 							width: 250,
 							title: '账单号',
+						},{
+							align: 'center',
+							field: 'saleName',
+							width: 150,
+							title: '销售名称',
 						}, {
 							align: 'center',
-							field: 'importExportAmount',
+							field: 'billType',
 							width: 250,
 							title: '账单类型',
-							templet:function(data){
-								return '日账单'
-							}
 						}, {
 							align: 'center',
-							field: 'importExportAmount',
+							field: 'importExportIdentification',
 							width: 250,
 							title: '类型',
-							templet:function(data){
-								switch (data.identification) {
-									case 1:
-										return '分润'
-										break;
-									case -1:
-										return '提现'
-										break;
-									case 0:
-										return '冻结'
-										break;
-									case 2:
-										return '解冻'
-										break;
-									case -2:
-										return '补贴'
-										break;
-									default:
-										// statements_def
-										break;
-								}
-							}
 						}, {
 							align: 'center',
 							field: 'importExportAmount',

@@ -68,6 +68,13 @@
 					<button class="layui-btn" lay-submit="" lay-filter="sreach"  title="搜索" id="btn1"><i class="layui-icon">&#xe615;</i></button>
 				</div>
 			</div>
+			<div class="layui-form-item">
+						<div class="layui-inline place">
+							
+							<span style="color:red;display:block">*注:退款金额包含全部退款与部分退款</span>
+							<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）- 手续费=实收金额</span>
+						</div>
+			</div>
 			<div class="baobiao  clearfix" style="display:block">
 				<div class="baobiao-col-2">
 					<div class="baobiaoK">
@@ -184,21 +191,36 @@
 					</div>
 				</div>
 			</div>
-			<div class="layui-form-item">
-						<div class="layui-inline place">
-							
-							<span style="color:red;display:block">*注:退款金额包含全部退款与部分退款</span>
-							<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）- 手续费=实收金额</span>
-						</div>
+			<div class="layui-tab layui-tab-card">
+			  <ul class="layui-tab-title">
+			    <li class="layui-this qiehuan" style="width:60px" onclick="tab(0)">交易金额</li>
+			    <li  style="width:60px" class="qiehuan"  onclick="tab(1)">交易笔数</li>
+			    <li  style="width:60px" class="qiehuan"  onclick="tab(2)">退款金额</li>
+			    <li  style="width:60px" class="qiehuan"  onclick="tab(3)">手续费</li>
+			    <li  style="width:60px" class="qiehuan" onclick="tab(4)">实收金额</li>
+			  </ul>
+			</div>
+			<div class="grid-demo border">
+				<div id="main" style="height: 400px"></div>
 			</div>
 			<table class="layui-table" id="table1" lay-filter="useruv"></table>
 		</div>
 	</body>
 	<script src="../../common/config.js"></script>
     <script src="../../common/utility.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
 	<script>
 		var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 		var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+		var Statement_Date = []
+		var orderTotalMoney = []
+		var orderCount = []
+		var orderMoney = []
+		var refundMoney = []
+		var shouxuMoney = []
+		var shishou = []
+		var myChart
+		var option
 		function fun_date(aa){
 		        var date1 = new Date(),
 		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
@@ -207,6 +229,67 @@
 		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
 		        return time2
 		    }
+		   function tab(id){
+					switch (id) {
+						case 0:
+						
+							CmsUtility.clearListArr(orderTotalMoney)
+							for(let i = 0 ; i < orderMoney.length;i++){
+								orderTotalMoney.push(orderMoney[i])
+							}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 1:
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < orderCount.length;i++){
+									orderTotalMoney.push(orderCount[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 2:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < refundMoney.length;i++){
+									orderTotalMoney.push(refundMoney[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 3:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < shouxuMoney.length;i++){
+									orderTotalMoney.push(shouxuMoney[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 4:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < shishou.length;i++){
+									orderTotalMoney.push(shishou[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						default:
+							// statements_def
+							break;
+					}
+				}
 		//列表
 		layui.use('laydate', function() {
 			var laydate = layui.laydate;
@@ -277,7 +360,7 @@
 						"merchantName":$('#shopName').val().trim(),
 					},
 					function(data){
-						layer.closeAll()
+						
 						if(data.code == 1000){
 							$('#shopCount').html(data.data.shopCount)
 							$('#brokerage').html(data.data.brokerage + '元')
@@ -309,6 +392,52 @@
 
 				}
 				getHuizong()
+				function reloadres() {
+					var index = layer.load(2, {shade: [0.4, '#393D49']})
+					CmsUtility.postAjaxCall(
+						//系统设置
+						'agTransactionstatisticsController/getTransactionDateList' , 
+						{
+						"agentNumber":userNumber,
+						"agentLevel":agentLevel,
+						"startTime":$('#startTime').val(),
+						"endTime":$('#endTime').val(),
+						"merchantName":$('#shopName').val().trim(),
+						},
+						function(data) {
+							layer.closeAll()
+							CmsUtility.clearListArr(Statement_Date)
+							CmsUtility.clearListArr(orderTotalMoney)
+							CmsUtility.clearListArr(orderCount)
+							CmsUtility.clearListArr(orderMoney)
+							CmsUtility.clearListArr(refundMoney)
+							CmsUtility.clearListArr(shouxuMoney)
+							CmsUtility.clearListArr(shishou)
+							var data = data.data
+							for(var j = 0; j < data.length; j++) {
+								Statement_Date.push(data[j].time)
+								orderTotalMoney.push(data[j].transactionMoney)
+								orderCount.push(data[j].transactionNumber)
+								orderMoney.push(data[j].transactionMoney)
+								refundMoney.push(data[j].refundMoney)
+								shouxuMoney.push(data[j].poundage)
+								shishou.push(data[j].shishouMoney)
+							}
+							
+							Statement_Date.sort()
+							myChart.clear()
+							// 为echarts对象加载数据
+							myChart.setOption(option);
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				}
+				setTimeout(function(){
+					reloadres()
+				},500)
+				
 			//方法级渲染
 			function tableRender(){
 				table.render({
@@ -407,7 +536,90 @@
 				console.log('111')
 				tableRender()
 				getHuizong()
+				reloadres()
+				console.log($('.qiehuan'))
+				var qiehuan = document.getElementsByClassName('qiehuan')
+				for(let i = 0 ; i <qiehuan.length;i++){
+					qiehuan[i].setAttribute('class','qiehuan')
+				}
+				qiehuan[0].setAttribute('class','layui-this qiehuan')
 			})
+			 myChart = echarts.init(document.getElementById('main'));
+			 option = {
+				grid: {
+					x: 70,
+					x2: 20,
+					y: 70,
+					y2: 40,
+					borderWidth: 1
+				},
+				title: '',
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'cross'
+					}
+				},
+				legend: {
+					data: ['金额']
+				},
+				calculable: true,
+				xAxis: [{
+					type: 'category',
+					axisTick: {
+						alignWithLabel: true
+					},
+					axisLine: {
+						onZero: false
+					},
+					data: Statement_Date
+				}],
+				yAxis: [{
+					splitLine: {
+						show: true,
+						lineStyle: {
+							type: "dashed",
+							color: "#dfdfdf"
+						}
+					},
+					axisLabel: {
+						textStyle: {
+							fontSize: 14,
+							color: '#5b6e89'
+						}
+					},
+					type: 'value'
+				}],
+				series: [{
+					name: '',
+					type: 'line',
+					smooth: true,
+					itemStyle: {
+						normal: {
+							areaStyle: {
+								type: 'default',
+								color: {
+									type: 'linear',
+									x: 0,
+									y: 0,
+									x2: 0,
+									y2: 1,
+									colorStops: [{
+										offset: 0,
+										color: '#6e94ff'
+									}, {
+										offset: 1,
+										color: '#ffffff'
+									}],
+									globalCoord: false
+								}
+							},
+							color: '#6e94ff'
+						}
+					},
+					data: orderTotalMoney
+				}]
+			};
 			// 根據條件重载表格
 		// 	var $ = layui.$,
 		// 		active = {

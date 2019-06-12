@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    #codeInfo {
+        line-height: 38px;
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 5px
+    }
+
+    .layui-textarea {
+        height: min-height:80px;
+    }
+
+    .xdl,
+    .yrm,
+    .fuyou,
+    .guanfang {
+        display: none;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 70%;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:25%">商户子账号</label>
+                <div class="layui-input-inline" style="width:65%">
+                    <span  class="layui-input" id="subNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <form class="layui-form" lay-filter="create">
+               <div class="layui-form-item" >
+                    <label class="layui-form-label" style="width: 25%;">费率</label>
+                    <div class="layui-input-inline" style="width:65%">
+                        <!-- <select name="zhifubao" class="layui-input  rate" lay-verify="subaccountNumber1" id="" lay-filter="zhifubao"></select> -->
+                        <input type="text" name="rate" class="layui-input" lay-filter="title" value="0.0030" id="rate">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 15%;"></label>
+                    <div class="layui-form-mid x-red">
+                        <button class="layui-btn" lay-submit=""   id="sub">提交</button>
+                        <div style="width:100px;height:50px;border:1px solid block" onclick="hideModal()"></dir>
+                    </div>
+                </div>
+        </div>
+        </form>
+    </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var type111 = 0
+    var code1 = ''
+    var jgData
+    var nnum = 0
+    var timer;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var ins = CmsUtility.getQueryString('institutionNumber')
+    
+    var sub = CmsUtility.getQueryString('subaccountNumber')
+    function subPage(data, data1) {
+        $('.zhifubao').hide()
+        $('.weixin').hide()
+        $('.jingdong').hide()
+        $('.yinlian').hide()
+         jgData = data
+        console.log(jgData)
+        console.log(sub)
+        $("#subNumber").html(sub)
+        var ins = CmsUtility.getQueryString('institutionNumber')
+
+
+        var serverUrl = 'http://192.168.1.190:5002/'
+        
+        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+            layui.$.support.cors = true; //允许ajax跨域
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                laytpl = layui.laytpl;
+          
+            form.on('submit(create)', function(data) {
+                console.log(data)
+                var tjData = new Object();
+                tjData.institutionNumber = userNumber;
+                tjData.subaccountNumber = sub
+                tjData.weChatRate = $('#rate').val()
+                tjData.alipayRate = $('#rate').val()
+                tjData.jingdongRate = $('#rate').val()
+                tjData.unionPayRate = $('#rate').val()
+                console.log(tjData)
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'submit/getBdRate',
+                    tjData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+                            
+                            parent.layer.msg(data.msg)
+                            x_admin_close()
+
+                             layer.msg('修改成功')
+                             parent.layui.table.reload('vip_cardList')
+
+
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                 return false
+            })
+               
+
+        });
+    }
+    </script>
+</body>
+
+</html>

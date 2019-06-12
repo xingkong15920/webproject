@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="htf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<!-- <link rel="stylesheet" href="http://h5.51shanhe.com/sy_h5/css/mui.min.css"> -->
+		<!-- <link rel="stylesheet" href="//at.alicdn.com/t/font_521163_yml43aofkqi1kyb9.css"> -->
+		<link rel="stylesheet" href="http://h5.51shanhe.com/sy_h5/css/style.css" />		
+    <title>闪盒支付中心</title>
+    <!-- <script src="//cdn.jsdelivr.net/jquery/1.12.1/jquery.min.js"></script> -->
+    <!-- <script src="http://h5.51shanhe.com/sy_h5/js/mui.min.js"></script> -->
+</head>
+<body>
+		<style>
+			.mui-control-content {
+				background-color: white;
+				min-height: 215px;
+			}
+			.mui-control-content .mui-loading {
+				margin-top: 50px;
+			}
+            #newImg{
+                width: 100%;
+                height: auto;
+            }
+            .swipslider{
+                padding-top: 0 !important;
+            }
+            .swipslider .sw-slides{
+                position: inherit !important;
+                bottom: inherit !important;
+            }
+            .zfjg>.mui-card:first-child{
+                margin-bottom:0;
+            }
+		</style>
+		<div class="mui-content zfjg">
+		    <div class="mui-card">
+		        <ul class="mui-table-view">
+		            <li class="mui-table-view-cell zf zfcg">
+		            	<div class="zhicon"><i id="zficon" class="iconfont icon-ico_zhifuzhong"></i></div>
+		            	<h4 id = state>支付中</h4>
+		            	<h2><sup>¥</sup> ${info.totalAmound} </h2>
+		            </li>
+		            <li class="mui-table-view-cell zf">支付明细<span class="mui-badge">
+		             <#if (client == 'ali')>支付宝支付</#if>
+		             <#if (client == 'wechar')>微信支付</#if>
+		             &nbsp;¥${info.totalAmound}</span></li>
+		            <li class="mui-table-view-cell"><span class="mui-badge ">${info.storeName}</span>收款方</li>
+		        </ul>
+		    </div>
+		<link rel="stylesheet" type="text/css" href="http://h5.51shanhe.com/sy_h5/css/style-gg.css">
+		<link rel="stylesheet" type="text/css" href="http://h5.51shanhe.com/sy_h5/dist/swipeslider.css">
+			<style>
+				.sw-bullet,
+				.sw-next-prev {
+					display: none;
+				}
+			</style>
+			<div id="full_feature" class="swipslider" style="opacity:0;">
+				<ul id="slider" class="sw-slides">
+				</ul>
+			</div>
+			<script>
+				
+			 var guanggao="${guanggao}";
+                     //alert('广告：'+guanggao);
+                     var array=guanggao.split('*');
+                     for(var i=0;i<array.length;i++){
+                     	//console.log(array[i]);
+                     	var array_url=array[i].split('|||');
+                     	//var array_href=(array_url[array_url.length-1]);
+                     	var array_src=(array_url[array_url.length-2]);
+                        //alert(array[i]);
+						var ul = document.getElementById("slider");
+　　　					//添加 li
+　　　　					var li = document.createElement("li");
+　　　　					//设置 li 属性，如 id
+　　　　					li.setAttribute("class", "sw-slide");
+                       //添加 a
+                       //var a = document.createElement("a");
+                       //设置 a 属性，如 class
+                       //a.setAttribute("class", "sw-slide-href");
+                       //a.setAttribute("target", "_self");
+                       //a.setAttribute("href",array_href);
+                       //a.href = array_href;
+                       //a.setAttribute("onclick","ahref(array_href)")
+                       //设置 a 链接地址
+                       //a.click(window.location.replace(array_href));
+                       //添加 img
+                       var img = document.createElement("img");
+                       //设置 img 属性，如 id
+                       img.setAttribute("id", "newImg");
+                       //设置 img 图片地址
+                       img.src = array_src;
+
+                       	//li.appendChild(a);
+                       	//a.appendChild(img);
+                       	li.appendChild(img);
+　　　　					ul.appendChild(li);
+                     }
+            </script>
+			<script type="text/javascript" src="http://h5.51shanhe.com/sy_h5/dist/swipeslider.min.js"></script>
+			<script type="text/javascript">
+				$(function() {
+					$('#full_feature').swipeslider({
+						transitionDuration: 500,
+						autoPlayTimeout: 2000
+					});
+				});
+			</script>
+		</div>
+		    <script type="text/javascript" charset="utf-8">
+             function myFunction() {
+		        x = document.getElementById("state");
+		        x.innerHTML = "支付成功";
+		        $("#zficon").removeClass("icon-ico_zhifuzhong");
+		        $("#zficon").addClass("icon-zhifuchenggong1");
+		        $("#full_feature").css('opacity','1');
+		    }
+		      function myFunctionFail() {
+		        x = document.getElementById("state");
+		        x.innerHTML = "支付失败";
+		        $("#zficon").removeClass("icon-ico_zhifuzhong");
+		        $("#zficon").addClass("icon-zhifushibai");
+		        $("#full_feature").css('opacity','1');
+		    }
+		</script>
+<#if (result == 'SUCCESS')>
+	<#if (client == 'ali')>
+	<script>
+    // 调试时可以通过在页面定义一个元素，打印信息，使用alert方法不够优雅
+    function log(obj) {
+        $("#result").append(obj).append(" ").append("<br />");
+    }
+    $(document).ready(function(){
+        // 页面载入完成后即唤起收银台
+        // 此处${tradeNO}为模板语言语法，实际调用样例类似为tradePpay("2016072621001004200000000752")
+        tradePay("${tradeNO}"); 
+
+        // 通过jsapi关闭当前窗口，仅供参考，更多jsapi请访问
+        // /aod/54/104510
+        $("#closeButton").click(function() {
+           AlipayJSBridge.call('closeWebview');
+        });
+     });
+
+    // 由于js的载入是异步的，所以可以通过该方法，当AlipayJSBridgeReady事件发生后，再执行callback方法
+ 
+	   function ready(callback) {
+    	
+         if (window.AlipayJSBridge) {
+        	 if(callback){
+      		   callback();
+      		}
+         } else {
+             document.addEventListener('AlipayJSBridgeReady', callback, false);
+         }
+    }
+
+    function tradePay(tradeNO) {
+        ready(function(){
+             // 通过传入交易号唤起快捷调用方式(注意tradeNO大小写严格)
+             AlipayJSBridge.call("tradePay", {
+                  tradeNO: tradeNO
+             }, function (data) {
+                 log(JSON.stringify(data));
+                 if ("9000" == data.resultCode) {
+                     //log("支付成功");
+                     myFunction();
+                   
+                 }
+             });
+        });
+    }
+</script>
+    </#if>
+    <#if (client == 'wechar')>
+    <script>
+        function onBridgeReady(){
+            WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest', {
+                        "appId" : "${map.appId}",     //公众号名称，由商户传入
+                        "timeStamp" : "${map.timeStamp}",         //时间戳，自1970年以来的秒数
+                        "nonceStr" : "${map.nonceStr}", //随机串
+                        "package" : "${map.package}",
+                        "signType" : "${map.signType}",         //微信签名方式：
+                        "paySign" : "${map.paySign}" //微信签名,paySign 采用统一的微信支付 Sign 签名生成方法，注意这里 appId 也要参与签名，appId 与 config 中传入的 appId 一致，即最后参与签名的参数有appId, timeStamp, nonceStr, package, signType。
+                    },
+                    function(res) {
+                        if(res.err_msg == "get_brand_wcpay_request:ok" ) {     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                              myFunction();
+                        } else {
+                            myFunctionFail();
+                           // alert('支付失败：' + res.err_msg);
+                        }
+                       
+                       // WeixinJSBridge.call('closeWindow');
+                    }
+            );
+        }
+        if (typeof WeixinJSBridge == "undefined") {
+            if ( document.addEventListener ) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+    </script>
+    </#if>
+</#if>
+</body>
+</html>

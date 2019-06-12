@@ -2,10 +2,11 @@
 var Edition = 'qty';
 var server;
 if(Edition == 'qty'){
-	// server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
-      server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
+	server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
+    
+    //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
 }else{
-	server  = 'http://192.168.1.113:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.166:5006/shanhe-mechanism/'
 }
 /* 
 接口前缀解释
@@ -288,7 +289,7 @@ var CmsConfig = {
             getZFBOfficial:"InstitutionOfficial/getZFBOfficial",
             //更新支付宝通道
             updateAlipay:"InstitutionOfficial/updateAlipay",
-            //添加第三方通道
+            //添加第三方通道-富友
             insertThirdpartyTD:"InstitutionOfficial/insertThirdpartyTD",
             //--广告管理
             insertInstitutionAdvertisement:"InstitutionAdvertisement/insertInstitutionAdvertisement",
@@ -331,7 +332,27 @@ var CmsConfig = {
             //updata ,new 机构消息通知
             operateInsMeNotice:'insMeNotice/operateInsMeNotice',
             //查询富文本列表
-            getInsMeNotice:"insMeNotice/getInsMeNotice"
+            getInsMeNotice:"insMeNotice/getInsMeNotice",
+            //通道交易统计
+             getInsPayChSPSS:"InsSPSS/getInsPayChSPSS",
+             //通道下商户金额前十
+             getInsPayChMoney:"InsSPSS/getInsPayChMoney",
+             //通道下商户交易笔数前十
+             getInsPayCount:"InsSPSS/getInsPayCount",
+             //通道下商户补贴金额前十
+             getInsPayChSubMoney:"InsSPSS/getInsPayChSubMoney",
+             //通道下商户补贴笔数前十
+             getInsPaySubCount:"InsSPSS/getInsPaySubCount",
+             //代理商商户数TOP10
+             getInsAgentMerCount:"InsSPSS/getInsAgentMerCount",
+             //代理商订单金额TOP10
+             getInsAgentMoney:"InsSPSS/getInsAgentMoney",
+             //代理商订单笔数TOP10
+             getInsAgentCount:"InsSPSS/getInsAgentCount",
+             //补贴金额TOP10
+             getInsAgentSubMoney:"InsSPSS/getInsAgentSubMoney",
+             //补贴笔数TOP10
+             getInsAgentSubCount:"InsSPSS/getInsAgentSubCount",
         },
         //代理商后台
         Agent: {

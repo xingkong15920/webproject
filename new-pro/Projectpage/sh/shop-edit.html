@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<script src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.Geocoder"></script>
+		<style type="text/css">
+			.layui-upload-list {
+				width: 190px;
+				height: 150px;
+				border: 1px solid #e6e6e6;
+			}
+			
+			.layui-upload-img {}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-body">
+			<form class="layui-form" lay-filter="editShop">
+				<input type="hidden" id="picAddress" name="picAddress" autocomplete="off" class="layui-input">
+				<div class="layui-form-item">
+					<label for="username" class="layui-form-label">
+						<span class="x-red">*</span> 门店名称
+					</label>
+					<div class="layui-input-inline">
+						<input type="text" id="shopName" name="shopName" required="" lay-verify="shopName" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="x-red">*</span> 门店地址</label>
+					<div class="layui-input-inline">
+						<select name="province" id="provice" lay-filter="provice" lay-verify="provice">
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"></label>
+					<div class="layui-input-inline">
+						<select name="city" id="city" lay-filter="city" lay-verify="city">
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"></label>
+					<div class="layui-input-inline">
+						<select name="area" id="area" lay-filter="area" lay-verify="area">
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"><span class="x-red">*</span> 门店详细地址</label>
+					<div class="layui-input-inline">
+						<input type="text" id="address" name="address" lay-verify="address" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<!--<div class="layui-form-item">
+					<label class="layui-form-label"><span class="x-red">*</span> 管理员名称</label>
+					<div class="layui-input-inline">
+						<input type="text" id="address" name="adminName" lay-verify="adminName" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label for="phone" class="layui-form-label"><span class="x-red">*</span> 管理员电话</label>
+					<div class="layui-input-inline">
+						<input type="text" id="tphone" name="storePhone" lay-verify="phone" autocomplete="off" class="layui-input">
+					</div>
+				</div>-->
+				<div class="layui-form-item layui-form-text">
+					<label class="layui-form-label">备注1</label>
+					<div class="layui-input-inline" style="width: calc(100% - 150px);">
+						<textarea id="remarkOne" name="remark1" placeholder="请输入内容" class="layui-textarea"></textarea>
+					</div>
+				</div>
+
+				<div class="layui-form-item layui-layout-admin">
+					<div class="layui-input-block">
+						<div class="layui-footer" style="left: 0;text-align: center;">
+							<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+							<a class="layui-btn layui-btn-primary" onclick="x_admin_close()">取消</a>
+						</div>
+						<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+					</div>
+				</div>
+			</form>
+		</div>
+		<script src="../../common/config.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			function subPage(data, userNumber) {
+				var data1 = data,
+					userNumber = userNumber,
+					shopNumber = data1.shopNumber;
+					console.log(data1)
+					 var p = [],
+            c = [],
+            aa = [],
+            cityC = '0'
+				
+				layui.use(['form', 'layer', 'upload'], function() {
+					var $ = layui.jquery,
+						upload = layui.upload;
+					var form = layui.form,
+						layer = layui.layer;
+					CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Public.getAreajson, {},
+                function(data) {
+                    sessionStorage.setItem("address", data.data);
+                    address = JSON.parse(data.data)
+                    for (var i = 0; i < address.length; i++) {
+                        var a = new Object()
+                        a.provinceCode = address[i].value
+                        a.provinceName = address[i].text
+                        p.push(a)
+                        var b = new Object()
+                        b.provinceCode = address[i].value
+                        b.children = []
+                        for (var k = 0; k < address[i].children.length; k++) {
+                            var d = new Object()
+                            d.cityCode = address[i].children[k].value
+                            d.cityName = address[i].children[k].text
+                            b.children.push(d)
+                            var e = new Object()
+                            e.cityCode = address[i].children[k].value
+                            e.childeren = []
+                            for (var j = 0; j < address[i].children[k].children.length; j++) {
+                                var t = new Object()
+                                t.areaCode = address[i].children[k].children[j].value
+                                t.areaName = address[i].children[k].children[j].text
+                                e.childeren.push(t)
+                            }
+                            aa.push(e)
+                        }
+                        c.push(b)
+
+                    }
+                    if (data1.Province) {
+                        var str = '<option value="">请选择省</option>'
+                        for (var i1 = 0; i1 < p.length; i1++) {
+                            if (data1.Province == p[i1].provinceCode) {
+                                str += '<option value="' + p[i1].provinceCode + '" selected="">' + p[i1].provinceName + '</option>'
+                            } else {
+                                str += '<option value="' + p[i1].provinceCode + '">' + p[i1].provinceName + '</option>'
+                            }
+
+                        }
+                        $('#provice').html(str)
+                    }
+                    if (data1.city) {
+                        var str1 = '<option value="">请选择市</option>'
+                        for (var i3 = 0; i3 < c.length; i3++) {
+
+                            if (data1.Province == c[i3].provinceCode) {
+
+                                for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+                                    if (data1.city == c[i3].children[i2].cityCode) {
+                                        console.log(c[i3].children[i2])
+                                        str1 += '<option value="' + c[i3].children[i2].cityCode + '" selected="">' + c[i3].children[i2].cityName + '</option>'
+                                    } else {
+                                        str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+                                    }
+
+                                }
+                            }
+                        }
+                        $('#city').html(str1)
+                    }
+                    if (data1.area) {
+                        var str2 = '<option value="">请选择县区</option>'
+                        for (var i4 = 0; i4 < aa.length; i4++) {
+
+                            if (data1.city == aa[i4].cityCode) {
+
+                                for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+                                    if (data1.area == aa[i4].childeren[i5].areaCode) {
+                                        console.log(aa[i4].childeren[i5])
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '" selected="">' + aa[i4].childeren[i5].areaName + '</option>'
+                                    } else {
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+                                    }
+
+                                }
+                            }
+                        }
+                        $('#area').html(str2)
+                    }
+
+                    form.val('editShop', {
+										"shopName": data1.shopName,
+										"province": data1.Province,
+										"address":data1.address,
+										//"storePhone": data.storePhone,
+										"remark1": data1.remark1,
+									})
+                                    form.render()
+                },
+                function(data) {
+                    console.log(data)
+                },
+            )
+                //系统设置
+              
+					//表单初始赋值
+					
+					
+					
+					//省市区三联
+					 form.on('select(provice)', function(data) {
+
+                var str1 = '<option value="">请选择市</option>'
+                for (var i3 = 0; i3 < c.length; i3++) {
+
+                    if (data.value == c[i3].provinceCode) {
+
+                        for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                            str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                        }
+                    }
+                }
+                $('#city').html(str1)
+                var str2 = '<option value="">请选择县区</option>'
+                $('#area').html(str2)
+                form.render()
+
+            })
+            form.on('select(city)', function(data) {
+
+                var str2 = '<option value="">请选择县区</option>'
+                for (var i4 = 0; i4 < aa.length; i4++) {
+                    if (data.value == aa[i4].cityCode) {
+                        for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                            str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+
+
+                        }
+                    }
+                }
+                $('#area').html(str2)
+                form.render()
+
+            })
+					
+					//自定义验证规则
+					form.verify({
+						shopName: function(value) {
+							if(!value.length) {
+								return '店铺名称不能为空!';
+							}
+						},
+						provice: function(value) {
+							if(!value.length) {
+								return '请选择省!';
+							}
+						},
+						city: function(value) {
+							if(!value.length) {
+								return '请选择市!';
+							}
+						},
+						area: function(value) {
+							if(!value.length) {
+								return '请选择区!';
+							}
+						},
+						address: function(value) {
+							if(!value.length) {
+								return '请填写详细地址!';
+							}
+						},
+						adminName: function(value) {
+							if(!value.length) {
+								return '管理员名称不能为空!';
+							}
+						},
+					});
+
+					//监听提交
+					form.on('submit(add)', function(data) {
+						if(!data.field.shopNumber) {
+							data.field.shopNumber = shopNumber
+						}
+						var addData = data.field
+						// 发送请求
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Merchant.modifyShop + '?merchantNumber=' + userNumber,
+							addData,
+							function(data) {
+								if(data.code == 1000) {
+									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+									parent.layer.close(index); //再执行关闭
+									parent.layer.msg('更改成功')
+									parent.layui.table.reload('shoplist');
+
+								} else {
+									layer.msg(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							}
+						)
+						return false;
+					});
+				});
+			}
+		</script>
+	</body>
+
+</html>

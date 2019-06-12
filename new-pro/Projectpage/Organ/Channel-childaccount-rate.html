@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    #codeInfo {
+        line-height: 38px;
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 5px
+    }
+
+    .layui-textarea {
+        height: min-height:80px;
+    }
+
+    .xdl,
+    .yrm,
+    .fuyou,
+    .guanfang {
+        display: none;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 70%;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 15%;"></label>
+                <div class="layui-input-item">
+                    <span style="color:red;display:block">*所有费率所用单位为百分制</span>
+                </div>
+                <div class="layui-input-item">
+                    <span style="color:red;display:block;">*示例：0.35%</span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:15%">商户名称</label>
+                <div class="layui-input-inline">
+                    <span  class="layui-input" id="merchantName" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:15%">商户编号</label>
+                <div class="layui-input-inline">
+                    <span  class="layui-input" id="merchantNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:15%">商户子账号</label>
+                <div class="layui-input-inline">
+                    <span  class="layui-input" id="subNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <form class="layui-form" lay-filter="create">
+                <div class="layui-form-item gf_zhifubao" style="display:none">
+                    <label class="layui-form-label" style="width: 15%;">支付宝费率</label>
+                    <div class="layui-input-inline">
+                        
+                        <input type="text" name="terminalNumber" autocomplete="off" placeholder="官方支付宝费率"  id="gfzhifubao" class="layui-input" lay-verify="title">
+                    </div>
+                </div>
+                <div class="layui-form-item gf_weixin" style="display:none">
+                    <label class="layui-form-label" style="width: 15%;">微信费率</label>
+                    <div class="layui-input-inline">
+                        
+                        <input type="text" name="terminalNumber" autocomplete="off" placeholder="官方微信费率"  id="gfweixin" class="layui-input" lay-verify="title">
+                    </div>
+                </div>
+                <div class="layui-form-item zhifubao" >
+                    <label class="layui-form-label" style="width: 15%;">支付宝费率</label>
+                    <div class="layui-input-inline">
+                        <select name="zhifubao" class="layui-input  rate" lay-verify="subaccountNumber1" id="zhifubao" lay-filter="zhifubao"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item weixin">
+                    <label class="layui-form-label" style="width: 15%;">微信支付费率</label>
+                    <div class="layui-input-inline">
+                        <select name="weixin" class="layui-input  rate" lay-verify="subaccountNumber"  id="weixin"  lay-filter="weixin"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item jingdong">
+                    <label class="layui-form-label" style="width: 15%;">京东支付费率</label>
+                    <div class="layui-input-inline">
+                        <select name="jingdong" class="layui-input  rate" lay-verify=""  id="jingdong"  lay-filter="jingdong"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item yinlian">
+                    <label class="layui-form-label" style="width: 15%;">银联扫码费率</label>
+                    <div class="layui-input-inline">
+                        <select name="yinlian" class="layui-input  rate" lay-verify=""  id="yinlian"  lay-filter="yinlian"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 15%;"></label>
+                    <div class="layui-form-mid x-red">
+                        <button class="layui-btn" lay-submit=""   id="sub">提交</button>
+                        
+                    </div>
+                </div>
+        </div>
+        </form>
+    </div>
+    <div style="position:fixed;left:0;bottom:0;width:100px;height:50px;border:1px solid block" onclick="hideModal()"></dir>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var type111 = 0
+    var code1 = ''
+    var jgData
+    var nnum = 0
+    var timer;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    function uniq(array){
+                var temp = []; //一个新的临时数组
+                for(var i = 0; i < array.length; i++){
+                    if(temp.indexOf(array[i]) == -1){
+                        temp.push(array[i]);
+                    }
+                }
+                return temp;
+            }
+            var arrr = new Array()
+        function hideModal(){
+            nnum++
+            console.log(jgData)
+            if(nnum == 5){
+                layer.msg('开启隐藏模式')
+                setTimeout(function(){
+                    layer.open({
+                    type: 2,
+                    title: '欢迎使用隐藏模式',
+                    shade: 0.5,
+                    area: ['80%', '45%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['hide-rate.html?institutionNumber='+userNumber + '&subaccountNumber='+jgData.subaccountNumber],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        // data.channel = channel
+                        iframe.subPage('data')
+                    }
+                });
+                },500)
+                
+            }
+            setTimeout(function(){
+                nnum = 0 
+            },1000)
+        }
+    function subPage(data, data1) {
+        $('.zhifubao').hide()
+        $('.weixin').hide()
+        $('.jingdong').hide()
+        $('.yinlian').hide()
+         jgData = data
+        console.log(jgData)
+        $("#merchantName").html(jgData.merchantName)
+        $("#merchantNumber").html(jgData.merchantNumber)
+        $("#subNumber").html(jgData.subaccountNumber)
+        
+
+
+        var serverUrl = 'http://192.168.1.190:5002/'
+        
+        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+            layui.$.support.cors = true; //允许ajax跨域
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                laytpl = layui.laytpl;
+                if(jgData.paymentChannelType == 0){
+            $('.gf_zhifubao').show()
+            $('#gfzhifubao').val((jgData.alipayRate*10000/100).toFixed(2) + '%')
+         }else if(jgData.paymentChannelType == 1){
+           $('.gf_weixin').show()
+           $('#gfweixin').val((jgData.weChatRate*10000/100).toFixed(2) + '%')
+         }else{
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.getChannelRate, {
+                    "institutionNumber": userNumber,
+                    "paymentChannel": jgData.paymentChannel
+                },
+                function(data) {
+                    if (data.code == 1000) {
+                        // type111 = 2
+                        console.log(data)
+                        if (jgData.rateType == 'D1') {
+                            console.log(data.data[0].channelD1Rate)
+                            var rateL = data.data[0].channelD1Rate.split('&')
+                            console.log(data.data[0].channelD1Rate.indexOf('|'))
+                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
+                                    if(jgData.alipayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#zhifubao').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.weChatRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#weixin').attr('data-num',rateL[i].split('|')[0])
+                                        $('#jingdong').attr('data-num')
+                                        $('#yinlian').attr('data-num')
+                                    }
+                                    if(jgData.jingdongRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#jingdong').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.unionPayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#yinlian').attr('data-num',rateL[i].split('|')[0])
+                                    }
+
+                                }
+
+                                $('.rate').html(str)
+
+                            } else {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
+                                }
+                                $('.rate').html(str)
+                            }
+
+                        } else {
+                            var rateL = data.data[0].channelRate.split('&')
+                            console.log(data.data[0].channelRate.indexOf('|'))
+                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
+                                var str = '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
+                                    if(jgData.alipayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#zhifubao').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.weChatRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#weixin').attr('data-num',rateL[i].split('|')[0])
+                                        $('#jingdong').attr('data-num')
+                                        $('#yinlian').attr('data-num')
+                                    }
+                                    if(jgData.jingdongRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#jingdong').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.unionPayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#yinlian').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                }
+                                $('.rate').html(str)
+
+                            } else {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
+                                }
+                                $('.rate').html(str)
+                            }
+                        }
+                        form.render()
+                        CmsUtility.postAjaxCall(
+            //系统设置
+            CmsConfig.addressUrl.Mechanism.getRate, {
+                "institutionNumber": userNumber,
+                "id": jgData.paymentChannel
+            },
+            function(data) {
+
+                if (data.code == 1000) {
+
+                    for (var i = 0; i < data.data.length; i++) {
+                        if (data.data[i].switch1 != 0) {
+                            continue;
+                        }
+                        var obj = new Object()
+                        var aNum = 0
+                        for (var h = 0; h < arrr.length; h++) {
+                            if (arrr[h].name == data.data[i].paymentTypeName) {
+                                aNum++
+                            }
+                        }
+                        if (aNum == 0) {
+                            obj.name = data.data[i].paymentTypeName
+                            obj.onOff = data.data[i].switch1
+                            obj.type = data.data[i].onePaymentTypeInt
+                            console.log(obj)
+                            arrr.push(obj)
+                        }
+
+                    }
+                    arrr = uniq(arrr)
+                    console.log(arrr)
+                    for(var n = 0 ; n < arrr.length ; n++){
+                        if(arrr[n].type == 0){
+                            $('.zhifubao').show()
+                            form.val('create', {
+                                "zhifubao":jgData.alipayRate.toFixed(4)
+                            })
+                        }
+                        if(arrr[n].type == 1){
+                            $('.weixin').show()
+                            form.val('create', {
+                                "weixin":jgData.weChatRate.toFixed(4)
+                            })
+                        }
+                        if(arrr[n].type == 2){
+                            $('.jingdong').show()
+                            form.val('create', {
+                                "jingdong":jgData.jingdongRate.toFixed(4)
+                            })
+                        }
+                        if(arrr[n].type == 3){
+                            $('.yinlian').show()
+                            form.val('create', {
+                                "yinlian":jgData.unionPayRate.toFixed(4)
+                            })
+                        }
+                    }
+                    if(jgData.paymentChannelType == 3){
+            
+                        $('.zhifubao').hide()
+                    }
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+
+            },
+            'post',
+            'false'
+        )
+                        // form.val('cardAdd', {
+                        //     "zhifubao": jgData.alipayRate.toFixed(4),
+                        //     "weixin": jgData.weChatRate.toFixed(4),
+                        //     "jingdong": jgData.jingdongRate.toFixed(4),
+                        //     "yinlian": jgData.unionPayRate.toFixed(4),
+                        // })
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            
+         }
+            
+            //表单初始赋值
+            // $('#sub').click(function(){
+            //  console.log(code1)
+            // })
+            form.verify({
+                // number:function(value){
+                //     if(value >5000){
+                //         return "一次生成最多5000条"
+                //     }
+                // },
+                // subaccountNumber: function(value) {
+                //     console.log(value)
+                //     if(jgData.paymentChannelType != 0){
+                //         if (value == '') {
+                //             return '不能为空';
+                //         }
+                //     }
+                    
+                // },
+                // subaccountNumber1: function(value) {
+                //     console.log(value)
+                //     if(jgData.paymentChannelType !=3){
+                //         if (value == '') {
+                //         return '不能为空';
+                //     }
+                //     }
+                    
+                // },
+            });
+            form.on('select(zhifubao)',function(data){
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#zhifubao').attr('data-num',num)
+
+            })
+            form.on('select(weixin)',function(data){
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#weixin').attr('data-num',num)
+            })
+            form.on('select(jingdong)',function(data){
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#jingdong').attr('data-num',num)
+            })
+            form.on('select(yinlian)',function(data){
+                var num = $(data.elem).find("option:selected").attr("data-num");
+                $('#yinlian').attr('data-num',num)
+            })
+            // $('#sub').click(function() {
+
+            //     var tjData = new Object();
+            //     tjData.institutionNumber = userNumber;
+
+            //     tjData.number = $('#number').val()
+            //     CmsUtility.postAjaxCall(
+            //         //系统设置
+            //         CmsConfig.addressUrl.Mechanism.insertChannelRate,
+            //         tjData,
+            //         function(data) {
+            //             if (data.code == 1000) {
+            //                 // type111 = 2
+
+
+            //                 x_admin_close()
+            //                 parent.layer.msg('生成成功')
+            //                 parent.layui.table.reload('vip_cardList')
+
+
+            //             } else {
+            //                 layer.msg(data.msg)
+
+            //             }
+            //         },
+            //         function(data) {
+            //             console.log('222')
+            //         }
+            //     )
+            //     return false
+            // })
+
+            // //监听提交
+            // $('#sub').click(function(){
+            //     var tjData = new Object();
+            //     console.log($('#zhifubao').attr('data-num'))
+            //     tjData.institutionNumber = userNumber;
+            //     tjData.paymentChannel = jgData.paymentChannel
+            //     tjData.subaccountNumber = jgData.subaccountNumber
+            //     tjData.paymentType = jgData.paymentChannelType
+            //     tjData.weChatRate = $('#weixin').val()
+            //     tjData.alipayRate = $('#zhifubao').val()
+            //     tjData.jingdongRate = $('#jingdong').val()
+            //     tjData.unionPayRate = $('#yinlian').val()
+            //     tjData.weChatCode  = $('#weixin').attr('data-num')
+            //     tjData.alipayCode = $('#zhifubao').attr('data-num')
+            //     tjData.jingdongCode = $('#jingdong').attr('data-num')
+            //     tjData.unionPayCode = $('#yinlian').attr('data-num')
+            //     CmsUtility.postAjaxCall(
+            //         //系统设置
+            //         'submit/updateInfoRate',
+            //         tjData,
+            //         function(data) {
+            //             if (data.code == 1000) {
+            //                 // type111 = 2
+
+
+            //                 // x_admin_close()
+            //                 // parent.layer.msg('生成成功')
+            //                 // parent.layui.table.reload('vip_cardList')
+
+
+            //             } else {
+            //                 layer.msg(data.msg)
+
+            //             }
+            //         },
+            //         function(data) {
+            //             console.log('222')
+            //         }
+            //     )
+                
+            // })
+            form.on('submit(create)', function(data) {
+                var tjData = new Object();
+                console.log($('#zhifubao').attr('data-num'))
+                tjData.institutionNumber = userNumber;
+                tjData.paymentChannel = jgData.paymentChannel
+                tjData.subaccountNumber = jgData.subaccountNumber
+                tjData.paymentType = jgData.paymentChannelType
+                if(jgData.paymentChannelType == 0){
+                    if($('#gfzhifubao').val().indexOf('%')<0){
+                        tjData.alipayRate = ($('#gfzhifubao').val()/10000*100).toFixed(4)
+                    }else{
+                        tjData.alipayRate = ($('#gfzhifubao').val().split('%')[0]/10000*100).toFixed(4)
+                    }
+                    
+                }else{
+                    tjData.alipayRate = $('#zhifubao').val()
+                }
+                if(jgData.paymentChannelType == 1){
+                    if($('#gfweixin').val().indexOf('%')<0){
+                        tjData.weChatRate = ($('#gfweixin').val()/10000*100).toFixed(4)
+
+                    }else{
+                        console.log($('#gfweixin').val().split('%')/10000*100)
+                        tjData.weChatRate = ($('#gfweixin').val().split('%')[0]/10000*100).toFixed(4)
+                    }
+
+                    
+                }else{
+                    tjData.weChatRate = $('#weixin').val()
+                }
+                
+                
+                tjData.jingdongRate = $('#jingdong').val()
+                tjData.unionPayRate = $('#yinlian').val()
+                if(jgData.paymentChannelType == 2){
+
+                    tjData.weChatCode  = $('#weixin').attr('data-num')
+                    tjData.alipayCode = $('#zhifubao').attr('data-num')
+                    tjData.jingdongCode = $('#jingdong').attr('data-num')
+                    tjData.unionPayCode = $('#yinlian').attr('data-num')
+                }
+                if(jgData.paymentChannelType == 3){
+                    tjData.alipayRate  = tjData.alipayRate*100
+                    tjData.weChatRate = tjData.weChatRate*100
+                    tjData.jingdongRate = tjData.jingdongRate*100
+                    tjData.unionPayRate = tjData.unionPayRate*100
+                }
+                tjData.merchantNumber = jgData.merchantNumber
+                tjData.rateType = jgData.rateType
+                console.log(tjData)
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Mechanism.updateInfoRate,
+                    tjData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+                            
+                            parent.layer.msg(data.msg)
+                            x_admin_close()
+
+                             layer.msg('修改成功')
+                             parent.layui.table.reload('vip_cardList')
+
+
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                 return false
+            })
+               
+
+        });
+    }
+    </script>
+</body>
+
+</html>

@@ -22,6 +22,9 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
+			.hide{
+				display: none;
+			}
 		</style>
 	</head>
 
@@ -71,7 +74,11 @@
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="ageName">
-			<span onclick="clickAge(this)" data-id="{{d.agentNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.agentName}}</span>
+			<span  onclick="clickAge(this)" data-id="{{d.agentNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.agentName}}</span>
+		</script>
+		<script type="text/html" id="pageName">
+			<span class="{{d.dbAgentName=='--'?'hide':''}}" onclick="clickAge(this)" data-id="{{d.pAgentNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.dbAgentName}}</span>
+			<span class="{{d.dbAgentName !='--'?'hide':''}}" >{{d.dbAgentName}}</span>
 		</script>
 		<script type="text/html" id="switchBar">
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
@@ -81,7 +88,7 @@
 			
 			<a class="layui-btn layui-btn-xs" id="pass" lay-event="pass">密码</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
-			
+			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
 		<script src="../../common/config.js"></script>
         <script src="../../common/utility.js"></script>
@@ -215,6 +222,7 @@
 						}, {
 							align: 'center',
 							field: 'dbAgentName',
+							toolbar:'#pageName',
 							width: 150,
 							title: '上级代理',
 							
@@ -227,7 +235,7 @@
 							align: 'center',
 							field: 'agentBalance',
 							width: 180,
-							title: '账号总额/冻结额度',
+							title: '可提现金额/冻结额度',
 							templet:function(data){
 								var agentBalance
 								if(data.agentBalance == undefined){
@@ -425,7 +433,7 @@
 						});
 					} else if(obj.event === 'logout') { //注销
 						
-						layer.confirm('真的删除此代理商么', {
+						layer.confirm('真的删除('+ data.agentName +')此代理商么', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
@@ -433,14 +441,13 @@
 							console.log(data)
 							var addData = new Object()
 							addData.institutionNumber = userNumber
-							addData.deletionFlag = '1'
 							addData.agentNumber = data.agentNumber
-
+							addData.agentName = data.agentName
 							console.log(addData)
 							// 发送请求
 							CmsUtility.postAjaxCall(
 								//系统设置
-								CmsConfig.addressUrl.Mechanism.updateAgentRegister,
+								'AgentRegister/delAgent',
 								addData,
 								function(data){
 									if(data.code == 1000){

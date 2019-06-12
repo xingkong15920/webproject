@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+		<style type="text/css">
+			.layui-btn+.layui-btn {
+				margin-left: -2px;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-nav">
+			<span class="layui-breadcrumb">
+		        <a href="">首页</a>
+		        <a href="">商户管理</a>
+		        <a><cite>商户操作日志</cite></a>
+		      </span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+		</div>
+		<div class="x-body">
+			<div class="layui-row">
+				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
+					<div class="layui-input-inline">
+						<input type="text" name="" placeholder="商户名称" autocomplete="off" class="layui-input" id="merchantName" 	>
+					</div>
+					<div class="layui-input-inline">
+						<select name="" id="operationType">
+							<option value="">操作类型</option>
+							<option value="0">查看</option>
+							<option value="1">新增</option>
+							<option value="2">修改</option>
+							<option value="3">删除</option>
+							<option value="4">导出</option>
+						</select>
+					</div>
+					<div class="layui-input-inline coupons_screen"  id="search"> 
+						<button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon" >&#xe615;</i></button>
+					</div>
+				</div>
+			</div>
+			<table class="layui-hide" id="members" lay-filter="members"></table>
+		</div>
+		<script src="../../common/config-organ.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			function changeRes(res){
+				console.log(res)
+				if(res == null){
+					return
+				}
+				var res = res.merchantOperationLogMapperlist
+				for(var i = 0;i<res.length;i++){
+					if(res[i].operationType == 0){
+						res[i].operationType1 = '查看'
+					}
+					if(res[i].operationType == 1){
+						res[i].operationType1 = '新增'
+					}
+					if(res[i].operationType == 2){
+						res[i].operationType1 = '修改'
+					}
+					if(res[i].operationType == 3){
+						res[i].operationType1 = '删除'
+					}
+					if(res[i].operationType == 4){
+						res[i].operationType1 = '导出'
+					}
+				}
+				return res
+			}
+			var serverUrl = window.parent.serverUrl
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+			layui.use(['laydate', 'table', 'form'], function() {
+				var laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form;
+
+				//方法级渲染  
+				function tableRender(){
+					table.render({
+					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerchantOperationLog+ '?institutionNumber=' + userNumber  ,
+					where:{
+						"merchantName":$('#merchantName').val().trim(),
+						"operationType":$('#operationType').val(),
+					},
+					elem: '#members',
+					height: 'full-210',
+					id: 'vip_cardList',
+					response: { 
+					//res 即为原始返回的数据
+							"statusCode":"1000", //解析接口状态
+							
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						if(res.data == null){
+							return
+						}
+						return {
+							"code": res.code, //解析接口状态
+							"data": changeRes(res.data), //解析数据列表
+							"msg":res.msg,
+							"count":res.data.count
+						};
+					},
+					cols: [
+						[{
+							title: 'ID',
+							type: 'numbers'
+						},{
+							align: 'center',
+							field: 'merchantNumber',
+							width: 200,
+							title: '商户编号'
+						}, {
+							align: 'center',
+							field: 'merchantName',
+							width: 300,
+							title: '商户名称',
+						}, {
+							align: 'center',
+							field: 'operationNode',
+							width: 200,
+							title: '操作节点'
+						}, {
+							align: 'center',
+							field: 'operationType1',
+							width: 200,
+							title: '类型',
+						}, {
+							align: 'center',
+							field: 'operationContent',
+							width: 350,
+							title: '操作内容描述',
+						}, {
+							align: 'center',
+							field: 'insertTime',
+							minWidth: 200,
+							title: '操作时间',
+							templet:function(data){
+								return data.insertTime.split('.')[0]
+							}
+						}]
+					],
+					page: true,
+					done: function(res, curr, count) {
+						
+						if(res.data == null){
+							if(!!res.msg){
+								//layer.msg(res.msg)
+							}else{
+								layer.msg('无数据')
+							}
+							
+						}else{
+							//layer.msg(res.msg)
+						}
+					}
+				});
+				}
+				tableRender()
+				$('#search').click(function(){
+					
+					tableRender()
+				})
+				//监听工具条
+				table.on('tool(members)', function(obj) {
+					var data = obj.data;
+					if(obj.event === 'edit') { //编辑
+						layer.open({
+							type: 2,
+							title: '编辑',
+							shade: 0.5,
+							area: ['400px', '300px'],
+							maxmin: false,
+							resize: false,
+							content: ['Membersadd.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data, userNumber)
+							}
+						});
+					} else if(obj.event === 'logout') { //注销
+						var zhuxiaoData = {
+							card: data.card,
+							cardType: 5
+						}
+						layer.confirm('真的删除此会员卡么', {
+							icon: 3,
+							title: '提示'
+						}, function(index) {
+							// 发送请求
+							// $.ajax({
+							// 	type: "post",
+							// 	url: serverUrl + "memberCard/updateAssociatorCard",
+							// 	async: true,
+							// 	dataType: "json",
+							// 	contentType: "application/json",
+							// 	data: JSON.stringify(zhuxiaoData),
+							// 	success: function(data) {
+							// 		if(data.code == 0) {
+							// 			layer.close(index);
+							// 			layer.msg("会员卡已注销");
+							// 			// 刷新页面
+							// 			var curr = $("#curr").val();
+							// 			layui.table.reload('vip_cardList', {
+							// 				page: {
+							// 					curr: curr
+							// 				}
+							// 			});
+							// 		} else if(data.code == 1) {
+							// 			layer.msg("会员卡注销失败");
+							// 		}
+							// 	}
+							// });
+						});
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

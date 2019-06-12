@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    #codeInfo{
+    	line-height: 38px;
+    	font-size: 24px;
+    	text-align: center;
+    	letter-spacing:5px
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:105px">商户名称</label>
+                <div class="layui-input-block">
+                    <span  class="layui-input" id="merchantName" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:105px">商户编号</label>
+                <div class="layui-input-block">
+                    <span  class="layui-input" id="merchantNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:105px">商户子账号</label>
+                <div class="layui-input-block">
+                    <span  class="layui-input" id="subNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                </div>
+            </div>
+            <form class="layui-form" lay-filter="report">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报备类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="wxType" value="1" title="公众号" checked="" lay-filter="wxType">
+                        <input type="radio" name="wxType" value="2" title="小程序" lay-filter="wxType">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">APPID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="appid" lay-verify="appid||title" autocomplete="off" placeholder="请输入APPID" class="layui-input" id="number1">
+                    </div>
+                </div>
+                <div class="layui-form-item xdl" >
+                    <label class="layui-form-label">AppSecret</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="appkey" lay-verify="appkey" autocomplete="off" placeholder="请输入AppSecret" class="layui-input" id="number2">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付授权目录</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="paymentAuthorization" lay-verify="url||paymentAuthorization" autocomplete="off" placeholder="请输入支付授权目录" class="layui-input" id="number">
+                    </div>
+                </div>
+                
+                <!-- <div class="layui-form-item">
+                    <label class="layui-form-label">AppSecret</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="appsecret" lay-verify="appsecret||title" autocomplete="off" placeholder="请输入AppSecret" class="layui-input" id="number1">
+                    </div>
+                </div> -->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">推荐关注APPID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="recommendAppid" lay-verify="recommendAppid||title" autocomplete="off" placeholder="请输入推荐关注APPID" class="layui-input" id="number2">
+                    </div>
+                </div>
+                
+                <div class="layui-input-block">
+                   <input type="button" class="layui-btn"  value="查询" id="check">
+			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="报备" id="sub">
+			    </div>
+            </form>
+            <div class="layui-form-item" style="margin-top:20px;display:none" id="infoBox">
+                <label class="layui-form-label">报备信息</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" name="aliPrivateKey" autocomplete="off" id="info" placeholder="RSA私钥" lay-verify="title" rows="3"></textarea>
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend style="font-weight: 500;">报备记录</legend>
+                    </fieldset>
+            <table class="layui-hide" id="table1" lay-filter="useruv"></table>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var type111 = 0
+    var code1 = ''
+    var reportList = '';
+    function subPage(data,data1){
+        
+        var jgData = data
+       
+        console.log(jgData)
+        if(jgData.paymentChannelType == 4){
+            $('.xdl').show()
+        }
+        $("#merchantName").html(jgData.merchantName)
+        $("#merchantNumber").html(jgData.merchantNumber)
+        $("#subNumber").html(jgData.subaccountNumber)
+        var serverUrl = 'http://192.168.1.190:5002/'
+        var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+            layui.$.support.cors = true; //允许ajax跨域
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                laytpl = layui.laytpl;
+                table.render({
+                    elem: '#table1',
+                    url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getWeChatPutBd,
+                    where:{
+                        "institutionNumber":userNumber,
+                        "subaccountNumber":jgData.subaccountNumber,
+                        //"subaccountNumber":'0001210F1766081',
+                    },
+                    page: false,
+                    method: "post",
+                    id: 'deviceInfo',
+                    response: {
+                        "statusCode": "1000", //解析接口状态
+                    },
+                    parseData: function(res) {
+
+                        
+                        if (res.data == null) {
+                            return
+                        }
+                        console.log(res)
+                        return {
+                            "code": res.code,
+                            "data": res.data,
+                        }
+                    },
+                    cols: [
+                        [{
+                            field: 'paymentAuthorization',
+                            title: '支付授权目录',
+                            align: 'center',
+                        }, {
+                            field: 'appid',
+                            title: 'APPID',
+                            align: 'center',
+                        }
+                        // , {
+                        //     title: 'AppSecret',
+                        //     align: 'center',
+                        //     field: 'appsecret',
+                        // }
+                        , {
+                            title: '推荐关注APPID',
+                            align: 'center',
+                            field: 'recommendAppid',
+                        },{
+                            title: '报备类型',
+                            align: 'center',
+                            field: 'recommendAppid',
+                            templet:function(data){
+                                switch (data.wxType) {
+                                    case 1:
+                                        return '公众号'
+                                        break;
+                                    case 2:
+                                        return '小程序'
+                                        break;
+                                    default:
+                                        return '--'
+                                        break;
+                                }
+                            }  
+                        }, {
+                            title: '报备时间',
+                            align: 'center',
+                            field: 'updateTime',
+                        }]
+                    ],
+                    done: function(res, curr, count) {
+                            console.log(res)
+                            reportList = res.data
+                    },
+                })
+                if(jgData.paymentChannelType == 4){
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Mechanism.getConfigureXdl, {
+                            'institutionNumber': userNumber,
+                            'paymentChannel': jgData.paymentChannel
+                        },
+                        function(data) {
+                            if (data.code == 1000) {
+                                console.log(data)
+                                sjData = data.data
+                                
+                                form.val('report', {
+                                    "appid":sjData.wechatAPPID,
+                                    "appkey":sjData.wechatAppSecret,
+                                    "paymentAuthorization":sjData.payDASD,
+                                    "recommendAppid":sjData.recommendAPPID,
+                                    
+                                })
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        },
+                        'post',
+                        'false'
+                    )
+                }else if(jgData.paymentChannelType == 2){
+                    CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
+                        'institutionNumber': userNumber,
+                        'paymentChannel': jgData.paymentChannel
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            console.log(data)
+                            sjData = data.data[0]
+                            form.val('report', {
+                                "appid":sjData.wechatAppid,
+                                "appkey":sjData.wechatAppSecret,
+                                "paymentAuthorization":sjData.payDasd,
+                                "recommendAppid":sjData.recommendAppid,
+                                
+                            })
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    },
+                    'post',
+                    'false'
+                )
+                }
+                
+                $('#check').click(function(){
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Mechanism.getweChatPut,
+                        {
+                            "institutionNumber":userNumber,
+                            "subaccountNumber":data.subaccountNumber,
+                            //"subaccountNumber":'0001210F1766081',
+                            "paymentChannel":jgData.paymentChannel,
+                            "paymentType":jgData.paymentChannelType
+                            
+                        },
+                        function(data) {
+                            if (data.code == 1000) {
+                                if(jgData.paymentChannelType == 2){
+                                    $('#info').val("appidConfigList : " + data.data[0].appidConfigList + '\n' + "jsapiPathList : " + data.data[0].jsapiPathList + '\n' + 'msg : ' + data.data[0].message)
+                                }else if(jgData.paymentChannelType == 4){
+                                    var str = ''
+                                    for(var i = 0 ; i < data.data.REC.length;i++){
+                                        str += 'Appid : ' + data.data.REC[i].Appid + ' , ' + 'PUBLIC_Appid : ' +data.data.REC[i].PUBLIC_Appid + ' , ' + "FollowSts : " + data.data.REC[i].FollowSts + '\n'
+                                    }
+                                    $('#info').val(str)
+                                }
+                                
+                                $('#infoBox').show()
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            
+                            console.log('222')
+                        }
+                    )
+                })
+               
+                form.on('radio(wxType)', function(data) { //设置会员卡的有效期
+                    if(jgData.paymentChannelType == 4){
+                        if(data.value == 1){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Mechanism.getConfigureXdl, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.wechatAPPID,
+                                            "appkey":sjData.wechatAppSecret,
+                                            "paymentAuthorization":sjData.payDASD,
+                                            "recommendAppid":sjData.recommendAPPID,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }else if(data.value == 2){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Mechanism.getConfigureXdl, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel':jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.smallRoutineAPPID,
+                                            "appkey":sjData.smallRoutineAppSecret,
+                                            "paymentAuthorization":sjData.payDASD,
+                                            "recommendAppid":sjData.recommendAPPID,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }
+                    }else if(jgData.paymentChannelType == 2){
+                        if(data.value == 1){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data[0]
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.wechatAppid,
+                                            "appkey":sjData.wechatAppSecret,
+                                            "paymentAuthorization":sjData.payDasd,
+                                            "recommendAppid":sjData.recommendAppid,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }else if(data.value == 2){
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data[0]
+                                        
+                                        form.val('report', {
+                                            "appid":sjData.smallroutineAppid,
+                                            "appkey":sjData.miniAppSecret,
+                                            "paymentAuthorization":sjData.payDasd,
+                                            "recommendAppid":sjData.recommendAppid,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }
+                    }
+                    
+                });
+            //表单初始赋值
+            // $('#sub').click(function(){
+            //  console.log(code1)
+            // })
+            form.verify({
+                // number:function(value){
+                //     if(value >5000){
+                //         return "一次生成最多5000条"
+                //     }
+                // },
+                "paymentAuthorization":function(value){
+                    console.log(value)
+                    if(reportList==''){
+                        for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].paymentAuthorization){
+                            return '支付授权目录重复'
+                        }
+                    }
+                    }
+                    
+                },
+                "appid":function(value){
+                    if(reportList==''){
+                    for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].appid){
+                            return 'APPID重复'
+                        }
+                    }
+                }
+                },
+                "appsecret":function(value){
+                    if(reportList==''){
+                    for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].appsecret){
+                            return 'appsecret重复'
+                        }
+                    }
+                }
+                },
+                "recommendAppid":function(value){
+                    if(reportList==''){
+                    for(var i = 0 ; i < reportList.length;i++){
+                        if(value == reportList[i].recommendAppid){
+                            return '推荐关注APPID重复'
+                        }
+                    }
+                }
+                },
+                title: function(value) {
+                    if(value.length == "") {
+                        return '不能为空！';
+                    }
+                },
+            });
+            // $('#sub').click(function() {
+                
+            //     var tjData = new Object();
+            //     tjData.institutionNumber = userNumber;
+                
+            //     tjData.number = $('#number').val()
+            //     CmsUtility.postAjaxCall(
+            //         //系统设置
+            //         CmsConfig.addressUrl.Mechanism.insertChannelRate,
+            //         tjData,
+            //         function(data) {
+            //             if (data.code == 1000) {
+            //                 // type111 = 2
+
+
+            //                 x_admin_close()
+            //                 parent.layer.msg('生成成功')
+            //                 parent.layui.table.reload('vip_cardList')
+
+
+            //             } else {
+            //                 layer.msg(data.msg)
+
+            //             }
+            //         },
+            //         function(data) {
+            //             console.log('222')
+            //         }
+            //     )
+            //     return false
+            // })
+
+            // //监听提交
+            form.on('submit(create)', function(data) {
+                
+                console.log(data.field)
+                // if(data.field.nuber)
+                var tjData = new Object();
+                tjData.institutionNumber = userNumber;
+                
+                tjData.subaccountNumber = jgData.subaccountNumber
+                tjData.paymentChannel = jgData.paymentChannel
+                tjData.jsapiPath = data.field.paymentAuthorization
+                tjData.subappid = data.field.appid
+                tjData.appkey = data.field.appkey
+                tjData.wxType = data.field.wxType
+                tjData.subscribeappid = data.field.recommendAppid
+                tjData.paymentType = jgData.paymentChannelType
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Mechanism.weChatPut,
+                    tjData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+
+                            layer.msg(data.msg)
+                            // x_admin_close()
+                            // parent.layer.msg('生成成功')
+                            // parent.layui.table.reload('vip_cardList')
+
+
+                        } else {
+                            layer.alert(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                return false
+            });
+
+        });
+    }
+        
+
+   
+    </script>
+</body>
+
+</html>

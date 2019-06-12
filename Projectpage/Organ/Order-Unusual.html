@@ -48,17 +48,16 @@
 						<input type="text" name="couponName" id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="batch" placeholder="订单号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="shopName" placeholder="店铺名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="orderNumber" placeholder="通道订单号" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="batch" placeholder="订单号" autocomplete="off" class="layui-input">
 					</div>
+					
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="startTime" placeholder="创建时间" autocomplete="off" class="layui-input">
 					</div>
-					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="endTime" placeholder="完成时间" autocomplete="off" class="layui-input">
-					</div>
+					
 					
 					
 				</div>
@@ -82,7 +81,7 @@
 						</select>
 					</div>
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="subaccountNumber" placeholder="通道子商户" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="subaccountNumber" placeholder="子商户号" autocomplete="off" class="layui-input">
 					</div>
 					
 					<div class="layui-input-inline coupons_screen">
@@ -167,10 +166,10 @@
 						// + userNumber ,
 						where:{
 							"merchantName":$('#merchantName').val().trim(),
-							"startTime":$('#startTime').val().trim(),
-							"endTime":$('#endTime').val().trim(),
+							"startTime":$('#startTime').val(),
+							"endTime":$('#endTime').val(),
 							"batch":$('#batch').val().trim(),
-							"orderNumber":$('#orderNumber').val().trim(),
+							
 							"oneTransactionType":$('#oneTransactionType').val().trim(),
 							"transactionPassageway":$('#transactionPassageway').val(),
 							"subaccountNumber":$('#subaccountNumber').val(),
@@ -208,20 +207,30 @@
 							}, {
 								align: 'center',
 								field: 'batch',
-								width: 200,
-								title: '订单号',
+								width: 150,
+								title: '店铺名称',
+								templet:function(data){
+									return '--'
+								}
 								// templet:function(data){
 								// 	return  data.paymentOrderNumber + '</br>' +   data.batch + '</br>' + data.orderNumber
 								// }
 							}, {
 								align: 'center',
-								field: 'paymentOrderNumber',
+								field: 'batch',
 								width: 200,
-								title: '通道订单号',
+								title: '订单号',
 								// templet:function(data){
 								// 	return  data.paymentOrderNumber + '</br>' +   data.batch + '</br>' + data.orderNumber
 								// }
-							}, {
+							}
+							// , {
+							// 	align: 'center',
+							// 	field: 'paymentOrderNumber',
+							// 	width: 200,
+							// 	title: '通道订单号',
+							// }
+							, {
 								align: 'center',
 								field: 'transactionPassageway',
 								width: 120,
@@ -252,11 +261,13 @@
 								align: 'center',
 								field: 'subaccountNumber',
 								title: '子商户号',
-							}, {
-								align: 'center',
-								field: 'appid',
-								title: 'APPID',
-							}, {
+							}
+							// , {
+							// 	align: 'center',
+							// 	field: 'appid',
+							// 	title: 'APPID',
+							// }
+							, {
 								align: 'center',
 								field: 'appid',
 								title: '支付方式',
@@ -273,8 +284,7 @@
 								title: '创建时间',
 								templet:function(data){
 									var ot = data.insertTime || ''
-									var tt = data.transactionTime || ''
-									return ot + '</br>' + tt
+									return ot 
 								}
 							}, {
 								align: 'center',
@@ -284,6 +294,11 @@
 								align: 'center',
 								field: 'errorDescribe',
 								title: '异常信息',
+							}, {
+								align: 'center',
+								field: 'errorDescribe',
+								toolbar:'#toolbar',
+								title: '操作',
 							}]
 						],
 						page: true,
@@ -322,24 +337,32 @@
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
+
 					if(obj.event === 'Toview') { //编辑
-						layer.msg('订单已同步')
-						return
-						layer.open({
-							type: 2,
-							title: '系统订单号：' + data.id,
-							shade: 0.5,
-							area: ['600px', '500px'],
-							maxmin: false,
-							resize: false,
-							content: ['Order-detail.html'],
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
-							}
+						$.ajax({
+							type: "get",
+							url: 'https://api.51shanhe.com/p-order/sync/order',
+							async: true,
+							dataType: "json",
+							data: {
+								"batch":data.batch,
+								"insNumber":userNumber,
+								"merchantNumber":data.merchantNumber,
+								"orderState":'3'
+							},
+							success: function(data) {
+								if(data.code == 1000){
+									 layer.msg(data.msg)
+									// parent.layer.msg('更改成功')
+									layui.table.reload('vip_cardList')
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+
 						});
+						
 					} else if(obj.event === 'Sync') { //同步
 						var zhuxiaoData = {
 							card: data.card,

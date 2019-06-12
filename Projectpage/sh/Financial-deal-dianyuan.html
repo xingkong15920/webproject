@@ -163,8 +163,6 @@
 			//var userNumber = '1000795634';
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
-			dataO.page = 1
-			dataO.limit = 200
 			// //获取商户下门店名称
 			// CmsUtility.postAjaxCall(
 			// 	CmsConfig.addressUrl.Merchant.getShopNames,
@@ -202,10 +200,10 @@
 				}
 				reloadres();
 				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getClerks,
+					'bill/getMerClerkList',
 					dataO,
 					function(data) {
-						var shopData = data.data.result
+						var shopData = data.data
 						for(var i = 0; i < shopData.length; i++) {
 							$("#shopNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + "</option>");
 						}
