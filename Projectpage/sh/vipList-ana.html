@@ -68,8 +68,8 @@
 	<body>
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
-				<a href="">会员管理</a>
-				<a><cite>会员列表</cite></a>
+				<a href="">会员统计</a>
+				<a><cite>会员分析</cite></a>
 			</span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
 			 title="刷新">
@@ -79,68 +79,65 @@
 		<div class="x-body">
 			<div class="layui-form x-so">
 				<div class="layui-input-inline text">
-					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input class="layui-input" type="text" name="vipName" id="vipName" placeholder="会员昵称" autocomplete="off">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>今日</button>
 				</div>
 				<div class="layui-input-inline text">
-					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input class="layui-input" type="text" name="vipCell" id="vipCell" placeholder="手机号" autocomplete="off">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>昨日</button>
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime" autocomplete="off">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>本周</button>
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime" autocomplete="off">
-				</div>
-				<div class="layui-input-inline">
-					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>自定义</button>
 				</div>
 			</div>
 			<div class="layui-row layui-col-space15 paddigLeft0" style="margin: 0;margin-bottom: 10px;box-sizing: border-box;">
-				<div class="layui-col-md8 paddigLeft0">
-					<div class="layui-col-md6 statisticsK paddigTop0 paddigLeft0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">会员总数</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
-					</div>
-					<div class="layui-col-md6 statisticsK paddigTop0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">平均每日新增</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
-					</div>
-					<div class="layui-col-md6 statisticsK paddigBottom0 paddigLeft0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">累计消费</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
-					</div>
-					<div class="layui-col-md6 statisticsK paddigBottom0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">平均消费</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
+				<div class="layui-col-md3 statisticsK paddigLeft0">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">销售笔数</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214</span>笔</p>
 					</div>
 				</div>
-				<div class="layui-col-md4 statisticsTop10 paddigRight0">
-					<div class="statisticsB statisticsA paddigRight0">
-						<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">消费会员TOP3</p>
-						<table class="layui-hide" id="LAY_table_shop1" lay-filter="shop1"></table>
+				<div class="layui-col-md3 statisticsK">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">销售额</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
 					</div>
+				</div>
+				<div class="layui-col-md3 statisticsK">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">销售均价</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">2221.56</span>元</p>
+					</div>
+				</div>
+				<div class="layui-col-md3 statisticsK paddigRight0">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">单笔购买最高的会员</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">问问便利店</span></p>
+					</div>
+				</div>
+			</div>
+			<div class="statisticsB" style="height: auto;margin-bottom: 25px;">
+				<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">会员销售排行TOP10</p>
+				<div class="grid-demo border" style="width:100%;overflow:hidden">
+					<div id="main6" style="height: 450px;width:100%"></div>
 				</div>
 			</div>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
-		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-xs" lay-event="capital">资金</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
-		</script>
 		<script src="../../common/config.js"></script>
 		<script src="../../common/utility.js"></script>
+		<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
 		<script>
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
+			var myChart6 = echarts.init(document.getElementById('main6'));
+			var shopCountList = []
+			var dailimingcheng = []
+			var zongshanghushu = []
+			var huoyueshanghu = []
+			var qianshuishanghu = []
+
 			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
 					laydate = layui.laydate,
@@ -218,56 +215,63 @@
 					},
 					cols: [
 						[{
-							field: 'shopNumber',
-							title: 'ID',
-							align: 'center',
-							width: 200
+							type: 'numbers',
+							title: '序号',
 						}, {
 							field: 'shopNumber',
-							title: '卡号',
+							title: '会员卡号',
 							align: 'center',
 							width: 200
 						}, {
 							field: 'shopName',
-							title: '会员名称',
+							title: '会员姓名',
 							align: 'center',
 							width: 150
 						}, {
 							field: 'shopName',
-							title: '会员等级',
+							title: '类型',
 							align: 'center',
 							width: 150
-						}, {
-							field: 'storePhone',
-							title: '手机号',
-							align: 'center',
-							width: 120
 						}, {
 							field: 'city',
-							title: '余额',
+							title: '充值金额',
 							align: 'center',
 							width: 100
 						}, {
 							field: 'city',
-							title: '积分',
+							title: '赠送金额',
+							align: 'center',
+							width: 100
+						}, {
+							field: 'city',
+							title: '充值后金额',
 							align: 'center',
 							width: 100
 						}, {
 							field: 'insertTime',
-							title: '注册时间',
+							title: '充值时间',
 							align: 'center',
 							width: 180
+						}, {
+							field: 'shopName',
+							title: '支付方式',
+							align: 'center',
+							width: 150
+						}, {
+							field: 'shopName',
+							title: '消费店铺',
+							align: 'center',
+							width: 150
 						}, {
 							field: 'shopName',
 							title: '所属店铺',
 							align: 'center',
 							width: 150
 						}, {
-							field: 'operation',
-							title: '操作',
+							field: 'shopName',
+							title: '备注',
 							align: 'center',
-							toolbar: "#tool",
-							minWidth: 200
+							width: 150
 						}]
 					],
 					done: function(res, curr, count) {
@@ -373,6 +377,7 @@
 				var $ = layui.$,
 					active = {
 						reload: function() {
+							shopCount()
 							// 获取上面查询框的值
 							var shopName = $('#shopName');
 							var shopStatus = $('#shopStatus');
@@ -382,8 +387,7 @@
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
-									shopName: shopName.val().trim(),
-									enable: shopStatus.val().trim()
+
 								}
 							});
 						}
@@ -392,6 +396,202 @@
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});
+
+				// 柱状图渲染设置
+				var posList = [
+					'left', 'right', 'top', 'bottom',
+					'inside',
+					'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+					'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+				];
+				myChart6.configParameters = {
+					rotate: {
+						min: -90,
+						max: 90
+					},
+					align: {
+						options: {
+							left: 'left',
+							center: 'center',
+							right: 'right'
+						}
+					},
+					verticalAlign: {
+						options: {
+							top: 'top',
+							middle: 'middle',
+							bottom: 'bottom'
+						}
+					},
+					position: {
+						options: echarts.util.reduce(posList, function(map, pos) {
+							map[pos] = pos;
+							return map;
+						}, {})
+					},
+					distance: {
+						min: 0,
+						max: 100
+					}
+				};
+
+				myChart6.config = {
+					rotate: 90,
+					align: 'left',
+					verticalAlign: 'middle',
+					position: 'insideBottom',
+					distance: 30,
+					onChange: function() {
+						var labelOption = {
+							normal: {
+								rotate: app.config.rotate,
+								align: app.config.align,
+								verticalAlign: app.config.verticalAlign,
+								position: app.config.position,
+								distance: app.config.distance
+							}
+						};
+						myChart.setOption({
+							series: [{
+								label: labelOption
+							}, {
+								label: labelOption
+							}, {
+								label: labelOption
+							}, {
+								label: labelOption
+							}]
+						});
+					}
+				};
+				var labelOption = {
+					normal: {
+						show: true,
+						position: myChart6.config.position,
+						distance: myChart6.config.distance,
+						align: myChart6.config.align,
+						verticalAlign: myChart6.config.verticalAlign,
+						rotate: myChart6.config.rotate,
+						formatter: '{c}  {name|{a}}',
+						fontSize: 16,
+						rich: {
+							name: {
+								textBorderColor: '#fff'
+							}
+						}
+					}
+				};
+
+				var option6 = {
+					color: ['#003366', '#006699', '#4cabce'],
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'shadow'
+						}
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					legend: {
+						data: ['金额', '笔数']
+					},
+					calculable: true,
+					xAxis: [{
+						type: 'category',
+						axisTick: {
+							show: false
+						},
+						data: dailimingcheng,
+						axisLabel: {
+							interval: 0,
+							formatter: function(value) {
+
+								var ret = "";
+								var maxLength = 3;
+								var valLength = value.length;
+								var rowN = Math.ceil(valLength / maxLength);
+								if (rowN > 1) {
+									for (var i = 0; i < rowN; i++) {
+										var temp = ""; //每次截取的字符串  
+										var start = i * maxLength; //开始截取的位置  
+										var end = start + maxLength; //结束截取的位置  
+										//这里也可以加一个是否是最后一行的判断，但是不加也没有影响，那就不加吧  
+										temp = value.substring(start, end) + "\n";
+										ret += temp; //凭借最终的字符串  
+									}
+									return ret;
+								} else {
+									return value;
+								}
+							}
+						}
+					}],
+					yAxis: [{
+						type: 'value'
+					}],
+					series: [{
+						name: '金额',
+						type: 'bar',
+						barGap: 0,
+						barWidth: 15,
+						label: labelOption,
+						data: zongshanghushu
+					}, {
+						name: '笔数',
+						type: 'bar',
+						label: labelOption,
+						data: qianshuishanghu,
+						barWidth: 15,
+					}]
+				};
+				//代理商商户数TOP10  
+				function shopCount() {
+					// ddDate = []
+					// ddData = []
+
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.getInsAgentMerCount, {
+							"institutionNumber": 1004,
+							"page": 1,
+							"limit": 10
+						},
+						function(data) {
+
+							if (data.code == 1000) {
+								var res = data.data
+								var arr1 = ['product', '金额', '笔数']
+								shopCountList.push(arr1)
+								// shName = []
+								// shMoney = []
+								dailimingcheng.splice(0, res.length)
+								zongshanghushu.splice(0, res.length)
+								huoyueshanghu.splice(0, res.length)
+								qianshuishanghu.splice(0, res.length)
+								for (var j = 0; j < res.length; j++) {
+									dailimingcheng.push(res[j].agentName)
+									zongshanghushu.push(res[j].merchantCount)
+									huoyueshanghu.push(res[j].activeMerCount)
+									qianshuishanghu.push(res[j].silenceMerCount)
+								}
+
+								// 为echarts对象加载数据
+								myChart6.clear()
+								myChart6.setOption(option6, 'true');
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				}
+				shopCount()
 			});
 		</script>
 	</body>
