@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
@@ -22,10 +23,6 @@
 			.set {
 				width: 110px;
 				margin-right: 10px;
-			}
-
-			.layui-form-checkbox span {
-				width: 70px;
 			}
 
 			.layui-upload-img {
@@ -105,6 +102,29 @@
 			.tips_red {
 				color: red;
 			}
+
+			.tagsBody {
+				max-width: 800px;
+				border: 1px solid #e6e6e6;
+				padding: 10px;
+			}
+
+			.tagsBody .layui-form-item:last-child {
+				margin: 0;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.site-demo-active {
+				width: 100px;
+			}
+
+			.newTagsInput {
+				width: calc(100% - 100px);
+				margin-right: 10px;
+			}
+			#timing .layui-form-label{width: auto;}
 		</style>
 	</head>
 
@@ -134,10 +154,6 @@
 								<input type="checkbox" class="set" name="shengri" title="生日">
 								<input type="checkbox" class="set" name="mail" title="邮箱">
 								<input type="checkbox" class="set" name="address" title="地址">
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<div class="layui-input-block">
 								<input type="checkbox" class="set" name="chengwei" title="称谓">
 								<input type="checkbox" class="set" name="team" title="分组">
 								<input type="checkbox" class="set" name="tap" title="标签">
@@ -176,7 +192,6 @@
 								<label class="layui-form-label" style="width:50px;text-align:center;">积分</label>
 							</div>
 						</div>
-						<!-- <blockquote class="layui-elem-quote">会员级别和折扣设置</blockquote> -->
 						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 							<legend style="font-weight: 500;">会员级别和折扣设置</legend>
 						</fieldset>
@@ -186,7 +201,6 @@
 								<input type="radio" name="sex" value="1" title="关闭">
 							</div>
 						</div>
-						<!-- <blockquote class="layui-elem-quote">等级晋升规则</blockquote> -->
 						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 							<legend style="font-weight: 500;">等级晋升规则 </legend>
 						</fieldset>
@@ -200,67 +214,39 @@
 							会员分组设置
 							<span class="tips_red">将具有相同特征的会员放在一个分组，您可以更有针对性地营销。列如：5月1日发过短信、有欠款、可总换积分 </span>
 						</blockquote>
-						<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-							<legend style="font-weight: 500;">会员分组设置</legend>
-						</fieldset> -->
 						<div class="layui-form-item">
-							<div class="layui-input-block" id="teamList">
-								<!-- <input type="checkbox" class="set" name="name" title="分组一" checked="">
-                            <span class="del">x</span>
-                            <input type="checkbox" class="set" name="tel" title="分组二" checked="">
-                            <span class="del">x</span>
-                            <input type="checkbox" class="set" name="shengri" title="分组三" checked="">
-                            <span class="del">x</span> -->
-							</div>
-							<!-- <div class="layui-input-block" id="inputTags"></div> -->
-						</div>
-						<div class="layui-form-item">
-							<div class="layui-input-block">
-								<button class="layui-btn site-demo-active" id="newfenzu">新增分组</button>
+							<div class="layui-input-block tagsBody">
+								<div class="layui-form-item" id="teamList"></div>
+								<div class="layui-form-item">
+									<input class="layui-input newTagsInput" type="" name="" id="newfenzuVal" value="" />
+									<button class="layui-btn site-demo-active" id="newfenzu">新增分组</button>
+								</div>
 							</div>
 						</div>
 						<blockquote class="layui-elem-quote">
 							会员称谓设置
 							<span class="tips_red">无论是招呼客户，还是在营销短信，恰如其分的称呼，将为您的服务加分不少。例如：先生、女士、小朋友、美女等 </span>
 						</blockquote>
-						<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-							<legend style="font-weight: 500;">会员称谓设置</legend>
-						</fieldset> -->
 						<div class="layui-form-item">
-							<div class="layui-input-block" id="chengweiList">
-								<!--  <input type="checkbox" class="set" name="name" title="称谓一" checked="">
-                            <span class="del">x</span>
-                            <input type="checkbox" class="set" name="tel" title="称谓二" checked="">
-                            <span class="del">x</span>
-                            <input type="checkbox" class="set" name="shengri" title="称谓三" checked="">
-                            <span class="del">x</span> -->
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<div class="layui-input-block">
-								<button class="layui-btn site-demo-active" id="newchengwei">新增称谓</button>
+							<div class="layui-input-block tagsBody">
+								<div class="layui-form-item" id="chengweiList"></div>
+								<div class="layui-form-item">
+									<input class="layui-input newTagsInput" type="" name="" id="newchengweiVal" value="" />
+									<button class="layui-btn site-demo-active" id="newchengwei">新增称谓</button>
+								</div>
 							</div>
 						</div>
 						<blockquote class="layui-elem-quote">
 							会员标签设置
 							<span class="tips_red">帮您迅速锁定顾客喜好，投其所好地推荐商品，提高成交的可能性。例如：土豪、大方、注重质量、爱还价、苛刻等 </span>
 						</blockquote>
-						<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-							<legend style="font-weight: 500;">会员标签设置</legend>
-						</fieldset> -->
 						<div class="layui-form-item">
-							<div class="layui-input-block" id="tagList">
-								<!-- <input type="checkbox" class="set" name="name" title="标签一" checked="">
-                            <span class="del">x</span>
-                            <input type="checkbox" class="set" name="tel" title="标签二" checked="">
-                            <span class="del">x</span>
-                            <input type="checkbox" class="set" name="shengri" title="标签三" checked="">
-                            <span class="del">x</span> -->
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<div class="layui-input-block">
-								<button class="layui-btn site-demo-active" id="newtag">新增标签</button>
+							<div class="layui-input-block tagsBody">
+								<div class="layui-form-item" id="tagList"></div>
+								<div class="layui-form-item">
+									<input class="layui-input newTagsInput" type="" name="" id="newtagVal" value="" />
+									<button class="layui-btn site-demo-active" id="newtag">新增标签</button>
+								</div>
 							</div>
 						</div>
 						<blockquote class="layui-elem-quote">
@@ -268,10 +254,7 @@
 							<input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
 							<span class="tips_red">设置会员的跨店消费，跨店消费</span>
 						</blockquote>
-						<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-							<legend style="font-weight: 500;">会员共享</legend>
-						</fieldset> -->
-						<div id="timing">
+						<div id="timing" class="layui-input-block">
 							<div class="layui-form-item">
 								<label class="layui-form-label">跨店编辑</label>
 								<div class="layui-input-inline">
@@ -304,7 +287,6 @@
 				</div>
 				<script src="../../common/config.js"></script>
 				<script src="../../common/utility.js"></script>
-				<script type="text/javascript" src="../../public/js/inputTags.js"></script>
 				<script>
 					var serverUrl = 'http://192.168.1.190:5002/'
 					// var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
@@ -315,7 +297,7 @@
 					var type;
 					var logoUrl = '';
 
-					layui.use(['laydate', 'table', 'form', 'laytpl', 'upload',], function() {
+					layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 						layui.$.support.cors = true; //允许ajax跨域
 						var $ = layui.jquery,
 							upload = layui.upload,
@@ -323,98 +305,104 @@
 							table = layui.table,
 							form = layui.form,
 							laytpl = layui.laytpl;
-							// inputTags = layui.inputTags;
+
+
+						var $b1 = $('#newfenzu'),
+							$i1 = $('#newfenzuVal'),
+							$b2 = $('#newchengwei'),
+							$i2 = $('#newchengweiVal'),
+							$b3 = $('#newtag'),
+							$i3 = $('#newtagVal');
+						$i1.keyup(function(e) {
+							if (e.keyCode == 13) {
+								$b1.click();
+							}
+						});
+						$i2.keyup(function(e) {
+							if (e.keyCode == 13) {
+								$b2.click();
+							}
+						});
+						$i3.keyup(function(e) {
+							if (e.keyCode == 13) {
+								$b3.click();
+							}
+						});
+						//会员分组设置
 						var teamList = ['分组一', '分组二', '分组三']
 
 						function getTeam() {
 							var strT = ''
-
 							for (let i = 0; i < teamList.length; i++) {
-
 								strT += '<input type="checkbox" class="set" name="name" title="' + teamList[i] +
-									'" checked=""><span class="del fenzu" data-id="' + i + '" onclick="delfenzu(' + i + ')">x</span>'
+									'" checked=""><span class="del fenzu" data-id="' + i + '" onclick="delfenzu(' + i +
+									')"><i class="layui-icon layui-tab-close">ဆ</i></span>'
 							}
-
 							$('#teamList').html(strT)
-
 							form.render()
 						}
 						getTeam()
 						$('#newfenzu').click(function() {
-
-							layer.prompt({
-								title: '请输入分组名称',
-								formType: 3
-							}, function(pass, index) {
-								if (teamList.indexOf(pass) >= 0) {
-									layer.msg('分组名重复，请重新输入')
-									return
-								}
-								teamList.push(pass)
-								getTeam()
-								layer.close(index);
-							});
+							var newfenzuVal = $i1.val()
+							if (teamList.indexOf(newfenzuVal) >= 0) {
+								layer.msg('分组名重复，请重新输入')
+								return
+							}
+							$i1.val("")
+							teamList.push(newfenzuVal)
+							console.log(teamList)
+							getTeam()
 						})
+						//会员称谓设置
 						var chengweiList = ['称谓一', '称谓二', '称谓三']
 
 						function getChengwei() {
-
 							var strT = ''
 							for (let ii = 0; ii < chengweiList.length; ii++) {
-
 								strT += '<input type="checkbox" class="set" name="name" title="' + chengweiList[ii] +
-									'" checked=""><span class="del chengwei" data-id="' + ii + '" onclick="delchengwei(' + ii + ')">x</span>'
+									'" checked=""><span class="del chengwei" data-id="' + ii + '" onclick="delchengwei(' + ii +
+									')"><i class="layui-icon layui-tab-close">ဆ</i></span>'
 							}
-
 							$('#chengweiList').html(strT)
 							form.render()
 						}
 						getChengwei()
 						$('#newchengwei').click(function() {
-
-							layer.prompt({
-								title: '请输入称谓名称',
-								formType: 3
-							}, function(pass, index) {
-								if (chengweiList.indexOf(pass) >= 0) {
-									layer.msg('称谓名重复，请重新输入')
-									return
-								}
-								chengweiList.push(pass)
-								getChengwei()
-								layer.close(index);
-							});
+							var newchengweiVal = $i2.val()
+							if (teamList.indexOf(newchengweiVal) >= 0) {
+								layer.msg('分组名重复，请重新输入')
+								return
+							}
+							$i2.val("")
+							chengweiList.push(newchengweiVal)
+							console.log(teamList)
+							getChengwei()
 						})
+						//会员标签设置
 						var tagList1 = ['标签一', '标签二', '标签三']
 
 						function tagList() {
 							var strT = ''
 							for (let iii = 0; iii < tagList1.length; iii++) {
-
 								strT += '<input type="checkbox" class="set" name="name" title="' + tagList1[iii] +
-									'" checked=""><span class="del tag" data-id="' + iii + '" onclick="deltag(' + iii + ')">x</span>'
+									'" checked=""><span class="del tag" data-id="' + iii + '" onclick="deltag(' + iii +
+									')"><i class="layui-icon layui-tab-close">ဆ</i></span>'
 							}
-
 							$('#tagList').html(strT)
 							form.render()
 						}
 						tagList()
 						$('#newtag').click(function() {
-
-							layer.prompt({
-								title: '请输入标签名称',
-								formType: 3
-							}, function(pass, index) {
-								if (tagList1.indexOf(pass) >= 0) {
-									layer.msg('标签名重复，请重新输入')
-									return
-								}
-								tagList1.push(pass)
-								tagList()
-								layer.close(index);
-							});
+							var newtagVal = $i3.val()
+							if (teamList.indexOf(newtagVal) >= 0) {
+								layer.msg('分组名重复，请重新输入')
+								return
+							}
+							$i3.val("")
+							tagList1.push(newtagVal)
+							console.log(teamList)
+							tagList()
 						})
-
 						window.delfenzu = function(num) {
 							teamList.splice(num, 1)
 							getTeam()
@@ -427,15 +415,6 @@
 							tagList1.splice(num, 1)
 							tagList()
 						}
-
-						// inputTags.render({
-						// 	elem: '#inputTags',
-						// 	content: ['标题一', '标题二'],
-						// 	aldaBtn: true,
-						// 	done: function(value) {
-						// 		console.log(value)
-						// 	}
-						// })
 
 						/*---------- 监听开关 ----------*/
 						form.on('switch(timePreferences)', function(data) { //计时开关
