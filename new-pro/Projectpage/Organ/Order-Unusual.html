@@ -78,7 +78,7 @@
 							<option value="2">富友</option>
 							<option value="3">易融码</option>
 							<option value="4">新大陆</option>
-
+							<option value="5">随行付</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -284,6 +284,11 @@
 								align: 'center',
 								field: 'errorDescribe',
 								title: '异常信息',
+							}, {
+								align: 'center',
+								field: 'errorDescribe',
+								toolbar:'#toolbar',
+								title: '操作',
 							}]
 						],
 						page: true,
@@ -323,22 +328,28 @@
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
 					if(obj.event === 'Toview') { //编辑
-						layer.msg('订单已同步')
-						return
-						layer.open({
-							type: 2,
-							title: '系统订单号：' + data.id,
-							shade: 0.5,
-							area: ['600px', '500px'],
-							maxmin: false,
-							resize: false,
-							content: ['Order-detail.html'],
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
-							}
+						$.ajax({
+							type: "get",
+							url: 'https://api.51shanhe.com/p-order/sync/order',
+							async: true,
+							dataType: "json",
+							data: {
+								"batch":data.batch,
+								"insNumber":userNumber,
+								"merchantNumber":data.merchantNumber,
+								"orderState":'3'
+							},
+							success: function(data) {
+								if(data.code == 1000){
+									 layer.msg(data.msg)
+									// parent.layer.msg('更改成功')
+									layui.table.reload('vip_cardList')
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+
 						});
 					} else if(obj.event === 'Sync') { //同步
 						var zhuxiaoData = {

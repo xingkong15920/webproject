@@ -54,6 +54,40 @@
     #demoText a {
         margin-top: 10px;
     }
+
+    .layui-tab-title li:first-child {
+        width: 100px;
+    }
+
+    .layui-tab-title li {
+        width: 100px;
+    }
+    .del{
+       /* position: absolute;
+    right: 0;
+    top: 0; */
+    width: 30px;
+    height: 28px;
+    line-height: 26px;
+    margin-right: 10px;
+    top: 1px;
+    text-align: center;
+    color: #c2c2c2;
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    border: 1px solid #d2d2d2;
+    margin-top: 3px;
+    margin-left: -5px;
+    }
+    .del:hover{
+        background-color: #ff5722;
+    }
+    .layui-form-checkbox{
+        margin-right: 0;
+    }
+    
     </style>
 </head>
 
@@ -110,14 +144,14 @@
                         <div class="layui-inline">
                             <label class="layui-form-label"></label>
                             <div class="layui-input-inline" style="width:120px">
-                                <input type="text" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
+                                <input type="number" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
                             </div>
                             <label class="layui-form-label" style="width:50px;text-align:center;">元</label>
                             <label class="layui-form-label" style="width:50px;text-align:center;font-weight: bold">:</label>
                         </div>
                         <div class="layui-inline">
                             <div class="layui-input-inline" style="width:120px">
-                                <input type="text" name="agentRoute" class="layui-input" lay-verify="dailishang" id="dailishang">
+                                <input type="number" name="agentRoute" class="layui-input" lay-verify="dailishang" id="dailishang">
                             </div>
                             <label class="layui-form-label" style="width:50px;text-align:center;">积分</label>
                         </div>
@@ -129,7 +163,6 @@
                         <div class="layui-input-block">
                             <input type="radio" name="sex" value="0" title="开启" checked="">
                             <input type="radio" name="sex" value="1" title="关闭">
-                           
                         </div>
                     </div>
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -139,42 +172,88 @@
                         <div class="layui-input-block">
                             <input type="radio" name="levelup" value="0" title="按累计积分晋升等级" checked="">
                             <input type="radio" name="levelup" value="1" title="按当前积分晋升等级">
-                           
-                        </div>
-                    </div>
-                    
-                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                        <legend style="font-weight: 500;">公司信息</legend>
-                    </fieldset>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">公司版权</label>
-                        <div class="layui-input-inline" style="width: 50%;min-width: 360px;">
-                            <textarea name="companyCopyright" class="layui-textarea" lay-verify="banquan" id="banquan"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">网站统计代码</label>
-                        <div class="layui-input-inline" style="width: 50%;min-width: 360px;">
-                            <textarea name="websiteStatisticsCode" class="layui-textarea" lay-verify="tongji" id="tongji"></textarea>
                         </div>
                     </div>
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                        <legend style="font-weight: 500;">logo设置</legend>
+                        <legend style="font-weight: 500;">会员分组设置</legend>
                     </fieldset>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">平台logo</label>
-                        <div class="layui-input-inline">
-                            <div class="layui-upload-img" id="">
-                                <img src="../../public/images/default.png" id="demo1" style="max-width: 100%;height: 152px;" lay-filter="logo">
-                            </div>
-                                <p id="demoText"></p>
-                                <!--<button type="button" class="layui-btn">上传图片</button>-->
-                            </div>
-                            <div class="layui-input-inline uploadimgbtn">
-                                <p id="demoText" class="block"></p>
-                                <button type="button" class="layui-btn block" id="test1">上传图片</button>
-                            </div>
+                        <div class="layui-input-block" id="teamList">
+                            <!-- <input type="checkbox" class="set" name="name" title="分组一" checked="">
+                            <span class="del">x</span>
+                            <input type="checkbox" class="set" name="tel" title="分组二" checked="">
+                            <span class="del">x</span>
+                            <input type="checkbox" class="set" name="shengri" title="分组三" checked="">
+                            <span class="del">x</span> -->
                         </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn site-demo-active">新增分组</button>
+                        </div>
+                    </div>
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend style="font-weight: 500;">会员称谓设置</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" id="chengweiList">
+                           <!--  <input type="checkbox" class="set" name="name" title="称谓一" checked="">
+                            <span class="del">x</span>
+                            <input type="checkbox" class="set" name="tel" title="称谓二" checked="">
+                            <span class="del">x</span>
+                            <input type="checkbox" class="set" name="shengri" title="称谓三" checked="">
+                            <span class="del">x</span> -->
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn site-demo-active">新增称谓</button>
+                        </div>
+                    </div>
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend style="font-weight: 500;">会员标签设置</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" id="tagList">
+                            <!-- <input type="checkbox" class="set" name="name" title="标签一" checked="">
+                            <span class="del">x</span>
+                            <input type="checkbox" class="set" name="tel" title="标签二" checked="">
+                            <span class="del">x</span>
+                            <input type="checkbox" class="set" name="shengri" title="标签三" checked="">
+                            <span class="del">x</span> -->
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn site-demo-active">新增标签</button>
+                        </div>
+                    </div>
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend style="font-weight: 500;">会员共享</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <input type="radio" name="sex" value="1" title="关闭" checked="">
+                            <input type="radio" name="sex" value="0" title="开启">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">跨店编辑(包含跨店消费)</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="kuadian" value="0" title="开启" checked="">
+                            <input type="radio" name="kuadian" value="1" title="关闭" >
+                            
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">跨店编辑(不含跨店消费)</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="kuadian1" value="0" title="开启"  checked="">
+                            <input type="radio" name="kuadian1" value="1" title="关闭">
+                            
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-form-item layui-layout-admin">
                             <div class="layui-input-block">
                                 <div class="layui-footer" style="left: 0;text-align: center;">
@@ -191,8 +270,8 @@
             <script src="../../common/utility.js"></script>
             <script>
             var serverUrl = 'http://192.168.1.190:5002/'
-            var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-            console.log(userNumber)
+            // var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+            
             var code1;
             var jgData;
             var merchantca = false;
@@ -208,316 +287,70 @@
                     form = layui.form,
                     laytpl = layui.laytpl;
                 //D0
-                var d1L = new Array()
-                var d0L = new Array()
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    'login/getSalePcList', {
-                        "institutionNumber": userNumber,
-                    },
-                    function(data) {
-                        console.log(data)
-                        if (data.code == 1000) {
-                            for (var i = 0; i < data.data.d0Td.length; i++) {
-                                d0L.push(data.data.d0Td[i].paymentChannel)
-                            }
-                            for (var ii = 0; ii < data.data.d1Td.length; ii++) {
-                                d1L.push(data.data.d1Td[ii].paymentChannel)
-                            }
-                            console.log(d1L, d0L)
-                            CmsUtility.postAjaxCall(
-                                //系统设置
-                                'InstitutionOfficial/getTDList', {
-                                    "institutionNumber": userNumber,
-                                    "tDType": 'D0'
-                                },
-                                function(data) {
-                                    console.log(data)
-                                    if (data.code == 1000) {
-                                        // layer.msg('保存成功')
-                                        var str = ''
-                                        for (var i = 0; i < data.data.length; i++) {
-                                            if (d0L.indexOf(data.data[i].paymentChannel) >= 0) {
-                                                str += '<input type="checkbox"  name="D0rate" checked="true" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">'
-                                            } else {
-                                                str += '<input type="checkbox"  name="D0rate" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">'
-                                            }
+                var teamList = ['分组一','分组二','分组三']
+                function getTeam(){
+                   var strT = ''
 
-                                        }
-                                        $('#D0Box').html(str)
-                                    } else {
-                                        layer.msg(data.msg)
-                                    }
-                                },
-                                function(data) {
-                                    console.log('222')
-                                }
-                            )
-                            //D1
-                            CmsUtility.postAjaxCall(
-                                //系统设置
-                                'InstitutionOfficial/getTDList', {
-                                    "institutionNumber": userNumber,
-                                    "tDType": 'D1'
-                                },
-                                function(data) {
-                                    console.log(data)
-                                    if (data.code == 1000) {
-                                        // layer.msg('保存成功')
-                                        var str = ''
-                                        for (var i = 0; i < data.data.length; i++) {
-                                            if (d1L.indexOf(data.data[i].paymentChannel) >= 0) {
-                                                str += '<input type="checkbox" name="D1rate" checked="true" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">'
-                                            } else {
-                                                str += '<input type="checkbox" name="D1rate" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">'
-                                            }
+                    for(let i = 0 ; i < teamList.length;i++){
+                        console.log(i)
+                        strT += '<input type="checkbox" class="set" name="name" title="'+teamList[i]+'" checked=""><span class="del fenzu" data-id="'+i+'">x</span>'
+                    }
+                   
+                    $('#teamList').html(strT)
 
-                                        }
-                                        $('#D1Box').html(str)
-                                    } else {
-                                        layer.msg(data.msg)
-                                    }
-                                },
-                                function(data) {
-                                    console.log('222')
-                                }
-                            )
-                        } else {
-                            layer.msg(data.msg)
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    },
-                    'post',
-                    'false'
-                )
-                console.log(d1L, d0L)
-
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    CmsConfig.addressUrl.Mechanism.getOfficial, {
-                        "institutionNumber": userNumber,
-                        "page": "1",
-                        "limit": "1000"
-                    },
-                    function(data) {
-                        if (data.code == 1000) {
-                            var str = ''
-                            if (data.data == null) {
-
-                            } else {
-                                for (var i = 0; i < data.data.PaymentChannellist.length; i++) {
-                                    str += '<option value="' + data.data.PaymentChannellist[i].id + '">' + data.data.PaymentChannellist[i].paymentchannelname + '</option>'
-                                }
-                                $('#paymentNo').html(str)
-                                $('#paymentNo1').html(str)
-                                form.render()
-                            }
-
-                            CmsUtility.postAjaxCall(
-                                //系统设置
-                                CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
-                                    'institutionNumber': userNumber,
-                                },
-                                function(data) {
-                                    console.log(data)
-                                    if (data.code == 1000) {
-                                        if (data.data.length > 0) {
-                                            jgData = data.data[0]
-                                            merchantca = jgData.merchantCa == 0 ? true : false
-                                            jgData.merchantca = merchantca
-                                            form.render()
-                                            console.log(jgData.merchantca)
-                                            form.val('basic', {
-                                                //网站名称
-                                                "websiteName": jgData.websiteName || '',
-                                                //网站域名
-                                                "websiteRealmName": jgData.websiteRealmName || '',
-                                                "interfaceAddress": jgData.interfaceAddress,
-                                                //联系邮箱
-                                                "contactMailbox": jgData.contactMailbox || '',
-                                                //客服电话
-                                                "customServiceTell": jgData.customServiceTell || '',
-                                                //客服QQ
-                                                "customServiceQq": jgData.customServiceQq || '',
-                                                //关注链接
-                                                "focusLink": jgData.focusLink,
-                                                //机构路径
-                                                "institutionRoute": jgData.institutionRoute || '',
-                                                //代理商路径
-                                                "agentRoute": jgData.agentRoute || '',
-                                                //商户路径,
-                                                "merchantRoute": jgData.merchantRoute || '',
-                                                //公司版权
-                                                "companyCopyright": jgData.companyCopyright || '',
-                                                //机构logo图
-
-                                                //商户认证
-                                                "merchantCa": merchantca,
-                                                //网站统计代码
-                                                "websiteStatisticsCode": jgData.websiteStatisticsCode || '',
-                                                //验证次数限制
-                                                "verificationlimit": jgData.verificationlimit || '',
-                                                //验证冻结时间
-                                                "verifyingFreezingTime": jgData.verifyingFreezingTime || '',
-                                                // "paymentNo": jgData.paymentNo,
-                                                // "paymentNoD1": jgData.paymentNoD1
-                                            })
-                                            $('#demo1').attr('src', jgData.institutionLogo)
-                                            logoUrl = jgData.institutionLogo
-                                            type = 0
-                                        } else {
-                                            type = 1
-                                        }
-
-                                    } else {
-                                        alert(data.msg)
-                                    }
-                                },
-                                function(data) {
-                                    console.log('222')
-                                }
-                            )
-                        }
-                    },
-                    function(data) {
-
-                    },
-                    'post',
-                    'false'
-                )
-
-                if (type == 0) {
-                    //表单初始赋值
-                    console.log(jgData.interfaceAddress)
-                    form.val('basic', {
-                        //网站名称
-                        "websiteName": jgData.websiteName || '',
-                        //接口地址
-                        "interfaceAddress": jgData.interfaceAddress,
-                        //网站域名
-                        "websiteRealmName": jgData.websiteRealmName || '',
-                        //联系邮箱
-                        "contactMailbox": jgData.contactMailbox || '',
-                        //客服电话
-                        "customServiceTell": jgData.customServiceTell || '',
-                        //客服QQ
-                        "customServiceQq": jgData.customServiceQq || '',
-                        //机构路径
-                        "institutionRoute": jgData.institutionRoute || '',
-                        //代理商路径
-                        "agentRoute": jgData.agentRoute || '',
-                        //商户路径,
-                        "merchantRoute": jgData.merchantRoute || '',
-                        //公司版权
-                        "companyCopyright": jgData.companyCopyright || '',
-                        //机构logo图
-                        //商户认证
-                        "merchantCa": merchantca,
-                        //网站统计代码
-                        "websiteStatisticsCode": jgData.websiteStatisticsCode || '',
-                        //验证次数限制
-                        "verificationlimit": jgData.verificationlimit || '',
-                        //验证冻结时间
-                        "verifyingFreezingTime": jgData.verifyingFreezingTime || '',
-                        "paymentNo": jgData.paymentNo
-                    })
-                    //$('#merchantCa').checked = jgData.merchantca
+                    form.render() 
                 }
-                form.verify({
-                    htmlname: function(value) {
-                        if ($('#htmlname').val() == '') {
-                            return "请输入网站名称"
-                        }
-                    },
-                    zonghoutai: function(value) {
-                        if (value.length == '') {
-                            return "请输入总后台路径"
-                        }
-                    },
-                    dailishang: function(value) {
-                        if (value.length == '') {
-                            return '请输入代理商路径';
-                        }
-                    },
-                    shanghu: function(value) {
-                        if (value.length == '') {
-                            return '请输入商户路径';
-                        }
-                    },
-                    banquan: function(value) {
-                        if (value.length == '') {
-                            return '请输入版权信息';
-                        }
-                    },
-                    tongji: function(value) {
-                        if (value.length == '') {
-                            return '请输入统计代码';
-                        }
-                    },
-                    maxCishu: function(value) {
-                        if (value.length == '') {
-                            return '请输入最大次数限制';
-                        }
-                    },
-                    maxTime: function(value) {
-                        if (value.length == '') {
-                            return '请输入超限冻结时间';
-                        }
-                    },
-                    paymentNo: function(value) {
-                        // if (value.length == '') {
-                        //     return '请选择进件渠道';
-                        // }
-                    },
-                    kong: function(value) {
-                        if (value.length == '') {
-                            return '不能为空！';
-                        }
-                    }
-                });
-                //普通图片上传
-                var uploadInst = upload.render({
-                    elem: '#test1',
-                    url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
-                    data: {
-                        "institutionNumber": userNumber,
-                    },
-                    before: function(obj) {
-                        console.log(obj)
-                        //预读本地文件示例，不支持ie8
-                        obj.preview(function(index, file, result) {
-                            $('#demo1').attr('src', result); //图片链接（base64）
-                        });
-                    },
-                    done: function(res) {
-                        //如果上传失败
-                        if (res.code != 1000) {
-                            var demoText = $('#demoText');
-                            demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-                            demoText.find('.demo-reload').on('click', function() {
-                                uploadInst.upload();
-                            });
-                            return layer.msg('上传失败');
+                getTeam()
+                var chengweiList = ['称谓一','称谓二','称谓三']
+                function getChengwei(){
 
-                        } else {
-                            logoUrl = res.data
-                            return layer.msg('上传成功');
-
-                        }
-                        //上传成功
-                        console.log(res)
-                    },
-                    error: function() {
-                        //演示失败状态，并实现重传
-                        var demoText = $('#demoText');
-                        demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-                        demoText.find('.demo-reload').on('click', function() {
-                            uploadInst.upload();
-                        });
+                   var strT = ''
+                    for(let ii = 0 ; ii < chengweiList.length;ii++){
+                        
+                        strT += '<input type="checkbox" class="set" name="name" title="'+chengweiList[ii]+'" checked=""><span class="del chengwei" data-id="'+ii+'">x</span>'
                     }
-                });
+                   
+                    $('#chengweiList').html(strT)
+                    form.render() 
+                }
+                getChengwei()
+                 var tagList1 = ['标签一','标签二','标签三']
+                function tagList(){
+                   var strT = ''
+                    for(let iii = 0 ; iii < tagList1.length;iii++){
+                        
+                        strT += '<input type="checkbox" class="set" name="name" title="'+tagList1[iii]+'" checked=""><span class="del tag" data-id="'+iii+'">x</span>'
+                    }
+                   
+                    $('#tagList').html(strT)
+                    form.render() 
+                }
+                tagList()
+                function fenzuCli(){
+                    $('.fenzu').click(function(){
+                    console.log('123')
+                    teamList.splice(this.dataset.id,1)
+                    getTeam()
+                })
+                }
+                fenzuCli()
+                function chengweiCli(){
+                    $('.chengwei').click(function(){
+                    console.log('123')
+                    chengweiList.splice(this.dataset.id,1)
+                    getChengwei()
+                })
+                }
+                chengweiCli()
+                
+                function tagCli(){
+                    $('.tag').click(function(){
+                    console.log('123')
+                    tagList1.splice(this.dataset.id,1)
+                    tagList()
+                })
+                }
+                tagCli()
                 //监听指定开关
                 form.on('switch(switchTest)', function(data) {
                     layer.tips('商户认证：' + (this.checked ? '已开启' : '已关闭'), data.othis)

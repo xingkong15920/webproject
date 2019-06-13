@@ -40,49 +40,88 @@
     .huizongCon span {
         font-size: 20px;
     }
+    .layui-col-md2{
+        width: 12%;
+    }
     </style>
 </head>
 
 <body id="iosiframe">
     <div class="x-nav">
         <span class="layui-breadcrumb">
-		        <a href="">首页</a>
-		        <a href="">财务分析</a>
-		        <a><cite>交易统计分析</cite></a>
-		      </span>
+                <a href="">首页</a>
+                <a href="">财务分析</a>
+                <a><cite>交易统计分析</cite></a>
+              </span>
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+                <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
     </div>
     <div class="x-body">
+        <div class="layui-form x-so">
+            <div class="layui-input-inline">
+                <input type="text" name="couponName" id="startTime" placeholder="开始日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">--</div>
+            <div class="layui-input-inline">
+                <input type="text" name="couponName" id="endTime" placeholder="结束日期" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline coupons_screen">
+                <button class="layui-btn" id="searchZhe" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+            </div>
+        </div>
         <!-- <div class="layui-form x-so">
-				<div class="layui-input-inline">
-					<input type="text" name="couponName" id="couponName" placeholder="日期" autocomplete="off" class="layui-input">
-				</div>
-				<div class="layui-input-inline coupons_screen">
-					<button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
-				</div>
-			</div> -->
+                <div class="layui-input-inline">
+                    <input type="text" name="couponName" id="couponName" placeholder="日期" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline coupons_screen">
+                    <button class="layui-btn" data-type="reload" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </div> -->
         <div class="layui-row layui-col-space30">
             <!--汇总-->
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+             <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
                 <div class="grid-demo border">
-                    <p class="huizongTit x-red">订单金额</p>
-                    <p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">0</span>元</p>
-                </div>
-            </div>
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
-                <div class="grid-demo border">
-                    <p class="huizongTit x-red">订单笔数</p>
+                    <p class="huizongTit x-red">交易笔数</p>
                     <p class="huizongCon x-green"><span class="x-green" id="successOrderNumber">0</span>笔</p>
                 </div>
             </div>
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
+                <div class="grid-demo border">
+                    <p class="huizongTit x-red">退款笔数</p>
+                    <p class="huizongCon x-green"><span class="x-green" id="refundOrderNumber">0</span>笔</p>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
+                <div class="grid-demo border">
+                    <p class="huizongTit x-red">交易金额</p>
+                    <p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">0</span>元</p>
+                </div>
+            </div>
+           <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
+                <div class="grid-demo border">
+                    <p class="huizongTit x-red">退款金额</p>
+                    <p class="huizongCon x-green"><span class="x-green" id="refundOrderAmount">0</span>元</p>
+                </div>
+            </div>
+             <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
+                <div class="grid-demo border">
+                    <p class="huizongTit x-red">手续费</p>
+                    <p class="huizongCon x-green"><span class="x-green" id="poundageAmount">0</span>元</p>
+                </div>
+            </div>
+             <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
+                <div class="grid-demo border">
+                    <p class="huizongTit x-red">实收金额</p>
+                    <p class="huizongCon x-green"><span class="x-green" id="shishouAmount">0</span>元</p>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
                 <div class="grid-demo border">
                     <p class="huizongTit x-red">订单均价</p>
                     <p class="huizongCon x-green"><span class="x-green" id="orderAev">0</span>元</p>
                 </div>
             </div>
-            <div class="layui-col-xs12 layui-col-sm6 layui-col-md3">
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md2">
                 <div class="grid-demo border">
                     <p class="huizongTit x-red">退款率</p>
                     <p class="huizongCon x-green"><span class="x-green" id="refoundPro">0</span>%</p>
@@ -116,18 +155,6 @@
         </div>
     </div>
     <div class="x-body">
-        <div class="layui-form x-so">
-            <div class="layui-input-inline">
-                <input type="text" name="couponName" id="startTime" placeholder="开始日期" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline">--</div>
-            <div class="layui-input-inline">
-                <input type="text" name="couponName" id="endTime" placeholder="结束日期" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline coupons_screen">
-                <button class="layui-btn" id="searchZhe" title="搜索"><i class="layui-icon">&#xe615;</i></button>
-            </div>
-        </div>
         <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
             <div class="grid-demo border" style="width:100%;overflow:auto">
                 <div id="main" style="height: 500px;width:100%"></div>
@@ -156,16 +183,16 @@
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     var myDate = new Date();
-var nowY = myDate.getFullYear();
-var nowM = myDate.getMonth()+1;
-var nowD = myDate.getDate();
-var enddate = nowY+"-"+(nowM<10 ? "0" + nowM : nowM)+"-"+(nowD<10 ? "0" + nowD : nowD);//当前日期    
-console.log(enddate)
-var lw = new Date(myDate - 1000 * 60 * 60 * 24 * 30); //最后一个数字30可改，30天的意思
+    var nowY = myDate.getFullYear();
+    var nowM = myDate.getMonth() + 1;
+    var nowD = myDate.getDate();
+    var enddate = nowY + "-" + (nowM < 10 ? "0" + nowM : nowM) + "-" + (nowD < 10 ? "0" + nowD : nowD); //当前日期    
+    console.log(enddate)
+    var lw = new Date(myDate - 1000 * 60 * 60 * 24 * 30); //最后一个数字30可改，30天的意思
     var lastY = lw.getFullYear();
     var lastM = lw.getMonth() + 1;
     var lastD = lw.getDate();
-    var startdate=lastY+"-"+(lastM<10 ? "0" + lastM : lastM)+"-"+(lastD<10 ? "0"+ lastD : lastD);
+    var startdate = lastY + "-" + (lastM < 10 ? "0" + lastM : lastM) + "-" + (lastD < 10 ? "0" + lastD : lastD);
     $('#startTime').val(startdate)
     $('#endTime').val(enddate)
     var myChart = echarts.init(document.getElementById('main'));
@@ -173,7 +200,7 @@ var lw = new Date(myDate - 1000 * 60 * 60 * 24 * 30); //最后一个数字30可�
         var laydate = layui.laydate,
             table = layui.table,
             form = layui.form,
-        	layer = layui.layer;
+            layer = layui.layer;
         laydate.render({
             elem: '#couponName'
         })
@@ -183,213 +210,249 @@ var lw = new Date(myDate - 1000 * 60 * 60 * 24 * 30); //最后一个数字30可�
         laydate.render({
             elem: '#endTime'
         })
-        CmsUtility.postAjaxCall(
-            //系统设置
-            CmsConfig.addressUrl.Mechanism.orderAbout, {
-                "institutionNumber": userNumber
-            },
-            function(data) {
-                if (data.code == '1000') {
-                    console.log(data)
-                    $('#orderAev').html(data.data.orderAev)
-                    $('#refoundPro').html(data.data.refoundPro)
-                    $('#successOrderAmount').html(data.data.successOrderAmount)
-                    $('#successOrderNumber').html(data.data.successOrderNumber)
 
-                } else {
-                    layer.msg(data.msg)
-                }
-            },
-            function(data) {
-                console.log('222')
-            }
-        )
-        //方法级渲染  
-        table.render({
-            //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderAmountTop + '?institutionNumber=' + userNumber,
-            elem: '#members1',
-            id: 'vip_cardList1',
-            response: {
-                //res 即为原始返回的数据
-                "statusCode": "1000", //解析接口状态
+        function getOrder() {
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.orderAbout, {
+                    "institutionNumber": userNumber,
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val()
+                },
+                function(data) {
+                    if (data.code == '1000') {
+                        console.log(data)
+                        $('#orderAev').html(data.data.orderAev)
+                        $('#refoundPro').html(data.data.refoundPro)
+                        $('#successOrderAmount').html(data.data.successOrderAmount)
+                        $('#successOrderNumber').html(data.data.successOrderNumber)
+                        $('#refundOrderNumber').html(data.data.refundOrderNumber)                       
+                        $('#refundOrderAmount').html(data.data.refundOrderAmount)
+                        $('#poundageAmount').html(data.data.poundageAmount)
+                        $('#shishouAmount').html(data.data.shishouAmount)
 
-            },
-            parseData: function(res) { //res 即为原始返回的数据
 
-                return {
-                    "code": res.code, //解析接口状态
-                    "msg": res.msg, //解析提示文本
-                    "count": res.count, //解析数据长度
-                    "data": res.data, //解析数据列表
-                };
-            },
-            cols: [
-                [{
-                    title: '排名',
-                    type: 'numbers'
-                }, {
-                    align: 'center',
-                    field: 'merchantNumber',
-                    width: 130,
-                    title: '商户号',
-                }, {
-                    align: 'center',
-                    field: 'merchantName',
-                    width: 130,
-                    title: '用户名'
-                }, {
-                    align: 'center',
-                    field: 'successOrderAmount',
-                    title: '订单金额',
-                }]
-            ],
-            done: function(res, curr, count) {
-                // var res = res.data;
-                // for(var j = 0; j < res.length; j++) {
-                // 	ddDate.push(res[j].addtimea)
-                // 	ddData.push(res[j].merchants)
-                // }
-                // ddDate.sort()
-                // // 为echarts对象加载数据
-                // myChart.setOption(option);
-            }
-        });
-
-        //方法级渲染  
-        table.render({
-            //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderNumberTop + '?institutionNumber=' + userNumber,
-            elem: '#members2',
-            id: 'vip_cardList2',
-            response: {
-                //res 即为原始返回的数据
-                "statusCode": "1000", //解析接口状态
-
-            },
-            parseData: function(res) { //res 即为原始返回的数据
-                return {
-                    "code": res.code, //解析接口状态
-                    "msg": res.msg, //解析提示文本
-                    "count": res.count, //解析数据长度
-                    "data": res.data, //解析数据列表
-                };
-            },
-            cols: [
-                [{
-                    title: '排名',
-                    type: 'numbers'
-                }, {
-                    align: 'center',
-                    field: 'merchantNumber',
-                    width: 130,
-                    title: '商户号',
-                }, {
-                    align: 'center',
-                    field: 'merchantName',
-                    width: 130,
-                    title: '用户名'
-                }, {
-                    align: 'center',
-                    field: 'successOrderNumber',
-                    title: '订单笔数',
-                }]
-            ],
-            done: function(res, curr, count) {}
-        });
-
-        //方法级渲染  
-        table.render({
-            //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' + userNumber,
-            elem: '#members3',
-            id: 'vip_cardList3',
-            response: {
-                //res 即为原始返回的数据
-                "statusCode": "1000", //解析接口状态
-
-            },
-            parseData: function(res) { //res 即为原始返回的数据
-                return {
-                    "code": res.code, //解析接口状态
-                    "msg": res.msg, //解析提示文本
-                    "count": res.count, //解析数据长度
-                    "data": res.data, //解析数据列表
-                };
-            },
-            cols: [
-                [{
-                    title: '排名',
-                    type: 'numbers'
-                }, {
-                    align: 'center',
-                    field: 'Merchant_Number',
-                    width: 130,
-                    title: '商户号',
-                }, {
-                    align: 'center',
-                    field: 'Merchant_Name',
-                    width: 130,
-                    title: '用户名'
-                }, {
-                    align: 'center',
-                    field: 'successPro',
-                    title: '退款率',
-                    templet: function(data) {
-                        return data.successPro + '%'
+                    } else {
+                        layer.msg(data.msg)
                     }
-                }]
-            ],
-            done: function(res, curr, count) {}
-        });
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+        getOrder()
+        //方法级渲染 
+        function tableRender1() {
+            table.render({
+                //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderAmountTop + '?institutionNumber=' + userNumber,
+                where: {
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val()
+                },
+                elem: '#members1',
+                id: 'vip_cardList1',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                parseData: function(res) { //res 即为原始返回的数据
+
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": res.data, //解析数据列表
+                    };
+                },
+                cols: [
+                    [{
+                        title: '排名',
+                        type: 'numbers'
+                    }, {
+                        align: 'center',
+                        field: 'merchantNumber',
+                        width: 130,
+                        title: '商户号',
+                    }, {
+                        align: 'center',
+                        field: 'merchantName',
+                        width: 130,
+                        title: '用户名'
+                    }, {
+                        align: 'center',
+                        field: 'successOrderAmount',
+                        title: '订单金额',
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    // var res = res.data;
+                    // for(var j = 0; j < res.length; j++) {
+                    //  ddDate.push(res[j].addtimea)
+                    //  ddData.push(res[j].merchants)
+                    // }
+                    // ddDate.sort()
+                    // // 为echarts对象加载数据
+                    // myChart.setOption(option);
+                }
+            });
+        }
+
+        tableRender1()
+        //方法级渲染  
+        function tableRender2() {
+            table.render({
+                //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderNumberTop + '?institutionNumber=' + userNumber,
+                where: {
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val()
+                },
+                elem: '#members2',
+                id: 'vip_cardList2',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                parseData: function(res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": res.data, //解析数据列表
+                    };
+                },
+                cols: [
+                    [{
+                        title: '排名',
+                        type: 'numbers'
+                    }, {
+                        align: 'center',
+                        field: 'merchantNumber',
+                        width: 130,
+                        title: '商户号',
+                    }, {
+                        align: 'center',
+                        field: 'merchantName',
+                        width: 130,
+                        title: '用户名'
+                    }, {
+                        align: 'center',
+                        field: 'successOrderNumber',
+                        title: '订单笔数',
+                    }]
+                ],
+                done: function(res, curr, count) {}
+            });
+        }
+        tableRender2()
+
+        //方法级渲染  
+        function tableRender3() {
+            table.render({
+                //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.orderSuccessTop + '?institutionNumber=' + userNumber,
+                where: {
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val()
+                },
+                elem: '#members3',
+                id: 'vip_cardList3',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                parseData: function(res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": res.data, //解析数据列表
+                    };
+                },
+                cols: [
+                    [{
+                        title: '排名',
+                        type: 'numbers'
+                    }, {
+                        align: 'center',
+                        field: 'Merchant_Number',
+                        width: 130,
+                        title: '商户号',
+                    }, {
+                        align: 'center',
+                        field: 'Merchant_Name',
+                        width: 130,
+                        title: '用户名'
+                    }, {
+                        align: 'center',
+                        field: 'successPro',
+                        title: '退款率',
+                        templet: function(data) {
+                            return data.successPro + '%'
+                        }
+                    }]
+                ],
+                done: function(res, curr, count) {}
+            });
+        }
+        tableRender3()
+
+        function searchZhe() {
+            // ddDate = []
+            // ddData = []
+            for (let i = 0; i < ddData.length; i++) {
+                ddData.splice(i)
+            }
+            for (let i = 0; i < ddDate.length; i++) {
+                ddDate.splice(i)
+            }
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.orderAmountList, {
+                    "institutionNumber": userNumber,
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val()
+                },
+                function(data) {
+                    if (data.code == 1000) {
+                        var res = data.data.orderAmountList
+
+                        for (var j = 0; j < res.length; j++) {
+                            ddDate.push(res[j].date)
+                            ddData.push(res[j].orderTotalMoney)
+                        }
+                        ddDate.sort()
+                        // 为echarts对象加载数据
+                        myChart.clear()
+                        console.log(ddData, ddDate)
+                        myChart.setOption(option, 'true');
+                    } else {
+                        layer.msg(data.msg)
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+        searchZhe()
+        $('#searchZhe').click(function() {
+            searchZhe()
+            getOrder()
+            tableRender1()
+            tableRender2()
+            tableRender3()
+
+        })
     });
 
-    function searchZhe() {
-    	// ddDate = []
-    	// ddData = []
-        for(let i = 0 ; i < ddData.length;i++){
-            ddData.splice(i)
-        }
-        for(let i = 0 ; i < ddDate.length;i++){
-            ddDate.splice(i)
-        }
-        CmsUtility.postAjaxCall(
-            //系统设置
-            CmsConfig.addressUrl.Mechanism.orderAmountList, {
-                "institutionNumber": userNumber,
-                "startTime": $('#startTime').val(),
-                "endTime": $('#endTime').val()
-            },
-            function(data) {
-                if (data.code == 1000) {
-                	var res = data.data.orderAmountList
-                    
-                   for(var j = 0; j < res.length; j++) {
-                	ddDate.push(res[j].date)
-                	ddData.push(res[j].orderTotalMoney)
-                }
-                ddDate.sort()
-                // 为echarts对象加载数据
-                myChart.clear()
-                console.log(ddData,ddDate)
-                myChart.setOption(option,'true');
-                } else {
-                    layer.msg(data.msg)
-                }
-            },
-            function(data) {
-                console.log('222')
-            }
-        )
-    }
-    searchZhe()
-    $('#searchZhe').click(function(){
-    	 searchZhe()
-        //  myChart.un("click", function () {
-        //     alert("悲剧，你注销我了!");
-        // });
-    })
-    
+
+
     var option = {
         grid: {
             x: 50,
@@ -397,7 +460,7 @@ var lw = new Date(myDate - 1000 * 60 * 60 * 24 * 30); //最后一个数字30可�
             y: 70,
             y2: 40,
             borderWidth: 1,
-            left:100
+            left: 100
         },
         title: {
             text: '交易订单概况',
