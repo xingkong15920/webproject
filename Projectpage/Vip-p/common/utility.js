@@ -24,9 +24,9 @@ var CmsUtility = (function() {
             data: postData,
             async: isAsync,
             dataType: dataType,
-            // headers:{
-            //     contentType:"application/json"
-            // },
+            headers:{
+                contentType:"application/json"
+            },
             beforeSend: function() {
                 
             },

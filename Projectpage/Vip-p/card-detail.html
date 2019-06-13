@@ -19,31 +19,20 @@
 	</head>
 	<body>
 		<div class="cardAdd" id="cardAdd">
-			<div class="vipBlock">
-				<div class="cardA_name">
-					<label for="cardAName">会员卡名称：</label>
-					<input type="text" name="cardAName" id="cardAName" value="" class="cardANameInput" />
-				</div>
-				<div class="cardA_bg">
-					<p class="vipBlockBtit">自选卡面</p>
-					<ul class="cardA_bgul">
-						<li class="cardA_bgli" v-for="(item,i) in cardA_bgli" :key="i" v-on:click="chooseC(item.vipCardbgClass,i)" :class="[{chooseCS: i == chooseCS}]">
-							<!-- <img :src="item.vipCardbgClass"> -->
-							<div class="chooseCSicon"><i class="icon iconfont iconduigou1"></i></div>
-							<img :src="item.vipCardbgClass">
-						</li>
-					</ul>
-				</div>
-			</div>
 			<div class="vipBlock Topupj">
+				<div class="cardListuli ">
+					<div class="cardListuliPos cardListuliLT">
+						<span class="cardName">一级会员</span>
+					</div>
+				</div>
 				<p class="vipBlockBtit">充值优惠</p>
 				<ul class="TopupUl">
 					<li class="TopupUli">
 						<div class="TopupUliL">
 							充值满
-							<input type="number" class="Topupamount" @focus="inputfocus" @blur="inputblur" placeholder="例:100" value="100" />
+							<input type="number" class="Topupamount" placeholder="例:100" value="100" />
 							元，优惠
-							<input type="number" class="Giveamount" @focus="inputfocus" @blur="inputblur" placeholder="例:5" value="5" />
+							<input type="number" class="Giveamount" placeholder="例:5" value="5" />
 							元
 						</div>
 						<div class="TopupUliR" @click='addList'>
@@ -54,9 +43,9 @@
 					<li class="TopupUli" v-for='(item,i) in onsale'>
 						<div class="TopupUliL">
 							充值满
-							<input type="number" class="Topupamount" @focus="inputfocus" @blur="inputblur" v-model="item.Topupamount" />
+							<input type="number" class="Topupamount" v-model="item.Topupamount" />
 							元，优惠
-							<input type="number" class="Giveamount" @focus="inputfocus" @blur="inputblur" v-model="item.Giveamount" />
+							<input type="number" class="Giveamount" v-model="item.Giveamount" />
 							元
 						</div>
 						<div class="TopupUliR" @click="removelist(i)">
@@ -70,12 +59,12 @@
 				<p class="vipBlockBtit">激活卡赠送</p>
 				<div class="Activateamount">
 					激活赠送金额:
-					<input type="number" id="" value="" @focus="inputfocus" @blur="inputblur" placeholder="请输入金额" />
+					<input type="number" id="" value="20" placeholder="请输入金额" />
 					元
 				</div>
 				<div class="selectdefault">
 					<div class="checkB">
-						<input type="checkbox" name="" id="statementBtn" value="" />
+						<input type="checkbox" name="" id="statementBtn" value="" checked="" />
 						<label for="statementBtn"></label>
 					</div>
 					<div>将该会员卡设为默认会员类型</div>
@@ -84,7 +73,7 @@
 				<p class="vipBlockBTips">*设置合理的赠送金额，能帮助您以会员卡方式快速回笼资金<br />&nbsp;&nbsp;还可调动顾客的消费积极性，建议首次激活卡合理赠送金额</p>
 			</div>
 			<div class="viprecordsave" @click="viprecordsave">
-				<span class="viprecordsavebtn">创建会员卡</span>
+				<span class="viprecordsavebtn">保 存</span>
 			</div>
 		</div>
 	</body>
@@ -94,35 +83,14 @@
 	<script src="./js/vue.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var cardChoose, cardA_bgli, onsale
+			var cardChoose, onsale, cardBglv, vipCardbgClass, newImg
+			cardBglv = window.location.href.split('?')[1]
+			newImg = document.createElement("img");
+			newImg.src = './img/vipCard-bg' + cardBglv + '.png';
+			newImg.className = 'img'
+			$(".cardListuliLT").after(newImg);
 			cardChoose = 0 //默认选中会员卡
-			cardA_bgli = [{
-				vipCardbgClass: "./img/vipCard-bg1.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg2.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg3.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg4.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg5.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg6.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg7.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg8.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg9.png"
-			}]
 			onsale = []
-			// var newList = []
-			// for(var i = 0 ; i < class.length;i++){
-			// 	var newO = new Object()
-			// 	newO.now = class1.val()
-			// 	newO.befor = class2.val()
-			// 	newList.push(newO)
-			// }
 			//输入框获取焦点
 			$("input").focus(function() {
 				$(".viprecordsave").hide();
@@ -136,21 +104,12 @@
 				data: {
 					chooseCS: '',
 					onsale: onsale,
+					cardBglv: cardBglv,
+					vipCardbgClass: '',
 					nextTodoId: 1,
 					cardChoose: cardChoose,
-					cardA_bgli: cardA_bgli,
 				},
 				methods: {
-					//输入框获取焦点
-					inputfocus: function() {
-						$(".viprecordsave").hide();
-					},
-					//输入框失去焦点
-					inputblur: function() {
-						// setTimeout(function() {
-						$(".viprecordsave").show();
-						// },100)
-					},
 					// 选择会员卡背景
 					chooseC: function(d, n) {
 						this.chooseCS = n
@@ -184,41 +143,6 @@
 					var that = this
 				}
 			})
-			//格式数据类型
-			function changeData(res) {
-				for (var i = 0; i < res.length; i++) {
-					switch (res[i].vipCardbgC) {
-						case 1:
-							res[i].vipCardbgClass = "./img/vipCard-bg1.png"
-							break;
-						case 2:
-							res[i].vipCardbgClass = "./img/vipCard-bg2.png"
-							break;
-						case 3:
-							res[i].vipCardbgClass = "./img/vipCard-bg3.png"
-							break;
-						case 4:
-							res[i].vipCardbgClass = "./img/vipCard-bg4.png"
-							break;
-						case 5:
-							res[i].vipCardbgClass = "./img/vipCard-bg5.png"
-							break;
-						case 6:
-							res[i].vipCardbgClass = "./img/vipCard-bg6.png"
-							break;
-						case 7:
-							res[i].vipCardbgClass = "./img/vipCard-bg7.png"
-							break;
-						case 8:
-							res[i].vipCardbgClass = "./img/vipCard-bg8.png"
-							break;
-						case 9:
-							res[i].vipCardbgClass = "./img/vipCard-bg9.png"
-							break;
-					}
-				}
-				return res
-			}
 		})
 	</script>
 </html>

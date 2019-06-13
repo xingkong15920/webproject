@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员充值统计</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./lib/datepicker/css/datepicker.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+
+			.show {
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- <div class="date_title" id="date1" style="width: 200px;height: 50px;background: #0000FF;color: #fff;"></div> -->
+		<div class="statisRec" id="statisRec">
+			<div class="loadingB">
+				<div class="loading"></div>
+			</div>
+			<ul class="billTit">
+				<li class="billTitli" v-for="(item,i) in billTit" :key="i" v-on:click="billTitChoose(i)" :class="[{billTitC: i == billTitC}]"
+				 v-cloak>
+					{{item.billTitname}}
+				</li>
+				<div class="customtimeDiv">{{startTime}} ~ {{endTime}}</div>
+			</ul>
+			<ul class="billist">
+				<li class="billistli" v-for="(item,i) in billist" v-cloak>
+					<div class="billistliL">
+						<div class="billavatar">
+							<img :src="item.vipimg">
+						</div>
+						<div class="billistliLC">
+							<p>{{item.vipBillicell}}</p>
+							<span>{{item.vipBillitime}}</span>
+						</div>
+					</div>
+					<div class="billistliR">
+						<p>+ ¥ {{item.vipBillimoney}}</p>
+						<span>{{item.vipBillitype1}}</span>
+					</div>
+				</li>
+				<li class="branches">共计 <span>{{branches}}</span> 条记录</li>
+			</ul>
+			<div class="modal-mask" @click="hideModal"></div>
+			<div class="modal-dialog">
+				<div class="datepicker-here" data-range="true" data-date-minRange="2019-06-04" data-date-maxRange="2019-06-10"></div>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./lib/datepicker/js/datepicker.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var billTit, billist, startTime, endTime
+		billTit = [{
+			billTitname: "当天"
+		}, {
+			billTitname: "昨日"
+		}, {
+			billTitname: "近7天"
+		}, {
+			billTitname: "自定义",
+		}]
+
+
+		new Vue({
+			el: '#statisRec',
+			data: {
+				branches: '',
+				billTitC: '',
+				startTime: startTime,
+				endTime: endTime,
+				mask: false,
+				billTit: billTit,
+				billist: [],
+			},
+			methods: {
+				//请求会员卡列表
+				getList: function(s, e) {
+					var that = this,
+						Jdata = new Object
+					Jdata.startTime = s + ' 00:00:00'
+					Jdata.endTime = e + ' 23:59:59'
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Vip.recList,
+						Jdata,
+						function(data) {
+							that.billist = changeData(data.recList)
+							that.branches = data.recList.length
+							$('.loadingB').hide()
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+						'false'
+					)
+				},
+				// 选择列表类型
+				billTitChoose: function(n) {
+					var that = this
+					that.billTitC = n
+					that.startTime = startTime
+					that.endTime = endTime
+					if (n == 0) { //当天
+						that.mask = false
+						that.billist.splice(0, that.billist.length);
+						$('.loadingB').show()
+						$('.customtimeDiv').hide()
+						that.getList(fun_date(0), fun_date(0))
+					}
+					if (n == 1) { //昨日
+						that.mask = false
+						that.billist.splice(0, that.billist.length);
+						$('.loadingB').show()
+						$('.customtimeDiv').hide()
+						that.getList(fun_date(-1), fun_date(-1))
+					}
+					if (n == 2) { //近7天
+						that.mask = false
+						that.billist.splice(0, that.billist.length);
+						$('.loadingB').show()
+						$('.customtimeDiv').hide()
+						that.getList(fun_date(-6), fun_date(0))
+					}
+					if (n == 3) { //自定义
+						console.log('自定义')
+						that.mask = true
+						// that.billist.splice(0, that.billist.length);
+						$('.modal-mask').show()
+						$('.modal-dialog').addClass('maskshow')
+						$(this).addClass('.console')
+						// console.log(that.startTime, that.endTime)
+						$('.loadingB').show()
+						that.getList(that.startTime, that.endTime)
+					}
+				},
+				hideModal: function() {
+					$('.modal-mask').hide()
+					$('.modal-dialog').removeClass('maskshow')
+				}
+			},
+			created() {
+				this.billTitChoose(0)
+			}
+		})
+
+		//自定义时间
+		function Customtime(s, e) {
+			// console.log(s, e)
+			startTime = s
+			endTime = e
+		}
+
+		//格式数据类型
+		function changeData(res) {
+			for (var i = 0; i < res.length; i++) {
+				switch (res[i].vipBillitype) {
+					case 0:
+						res[i].vipBillitype1 = "消费成功"
+						break;
+					case 1:
+						res[i].vipBillitype1 = "消费失败"
+						break;
+					case 2:
+						res[i].vipBillitype1 = "充值成功"
+						break;
+					case 3:
+						res[i].vipBillitype1 = "充值失败"
+						break;
+				}
+			}
+			return res
+		}
+		// 时间格式化
+		function fun_date(aa) {
+			var date1 = new Date(),
+				time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+			var date2 = new Date(date1);
+			date2.setDate(date1.getDate() + aa);
+			var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+			var a = time2.split('-')[0],
+				b = time2.split('-')[1],
+				c = time2.split('-')[2]
+			if (b < 10) {
+				b = 0 + b
+			}
+			if (c < 10) {
+				c = 0 + c
+			}
+			return a + '-' + b + '-' + c
+		}
+	</script>
+
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员消费统计</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./lib/datepicker/css/datepicker.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+
+			.show {
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- <div class="date_title" id="date1" style="width: 200px;height: 50px;background: #0000FF;color: #fff;"></div> -->
+		<div class="statisRec" id="statisRec">
+			<ul class="billTit">
+				<li class="billTitli" v-for="(item,i) in billTit" :key="i" v-on:click="billTitChoose(i)" :class="[{billTitC: i == billTitC}]"
+				 v-cloak>
+					{{item.billTitname}}
+				</li>
+				<div class="" v-if="mask">{{startTime}} ~ {{endTime}}</div>
+			</ul>
+			<ul class="billist">
+				<li class="billistli" v-for="(item,i) in billist" v-cloak>
+					<div class="billistliL">
+						<div class="billavatar">
+							<img src="./img/vip-img.jpg">
+						</div>
+						<div class="billistliLC">
+							<p>{{item.vipBillicell}}</p>
+							<span>{{item.vipBillitime}}</span>
+						</div>
+					</div>
+					<div class="billistliR">
+						<p>+ ¥ {{item.vipBillimoney}}</p>
+						<span>{{item.vipBillitype1}}</span>
+					</div>
+				</li>
+				<li class="branches">共计 <span>{{branches}}</span> 条记录</li>
+			</ul>
+			<div class="modal-mask" @click="hideModal"></div>
+			<div class="modal-dialog">
+				<div class="datepicker-here" data-range="true"></div>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./lib/datepicker/js/datepicker.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var billTit, billist, startTime, endTime
+		billTit = [{
+			billTitname: "当天"
+		}, {
+			billTitname: "昨日"
+		}, {
+			billTitname: "近7天"
+		}, {
+			billTitname: "自定义",
+		}]
+		billist = [{
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "11.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "161.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "201.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "352.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "1.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "10.00",
+			vipBillicell: "17778261160"
+		}]
+		billistX = [{
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "1010.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "201.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "352.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "1.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "10.00",
+			vipBillicell: "17778261160"
+		}]
+		billistC = [{
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 3,
+			vipBillimoney: "11.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "161.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 3,
+			vipBillimoney: "201.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "352.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "1.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 3,
+			vipBillimoney: "10.00",
+			vipBillicell: "17778261160"
+		}]
+		
+		recV()
+
+		function recV() {
+			new Vue({
+				el: '#statisRec',
+				data: {
+					branches: '',
+					billTitC: '',
+					startTime: startTime,
+					endTime: endTime,
+					mask: false,
+					billTit: billTit,
+					billist: billist,
+				},
+				methods: {
+					// 选择列表类型
+					billTitChoose: function(n) {
+						var that = this
+						that.billTitC = n
+						if (n == 0) { //当天
+							that.mask = false
+							that.billist.splice(0, that.billist.length);
+							for (var i = 0; i < billistX.length; i++) {
+								that.billist.push(changeData(billistX[i]));
+							}
+							that.branches = that.billist.length
+						}
+						if (n == 1) { //昨日
+							that.mask = false
+							that.billist.splice(0, that.billist.length);
+							for (var i = 0; i < billistC.length; i++) {
+								that.billist.push(changeData(billistC[i]));
+							}
+							that.branches = that.billist.length
+						}
+						if (n == 2) { //近7天
+							that.mask = false
+							that.billist.splice(0, that.billist.length);
+							for (var i = 0; i < billistX.length; i++) {
+								that.billist.push(changeData(billistX[i]));
+							}
+							that.branches = that.billist.length
+						}
+						if (n == 3) { //自定义
+							console.log('自定义')
+							that.mask = true
+							$('.modal-mask').show()
+							$('.modal-dialog').addClass('maskshow')
+							$(this).addClass('.console')
+							console.log(startTime, endTime)
+						}
+					},
+					hideModal: function() {
+						$('.modal-mask').hide()
+						$('.modal-dialog').removeClass('maskshow')
+					}
+				},
+				created() {
+					this.billTitChoose(0)
+				}
+			})
+		}
+		
+		//自定义时间
+		function Customtime(s,e){
+			console.log(s,e)
+			startTime = s
+			endTime = e
+		}
+		
+		//格式数据类型
+		function changeData(res) {
+			switch (res.vipBillitype) {
+				case 0:
+					res.vipBillitype1 = "消费成功"
+					break;
+				case 1:
+					res.vipBillitype1 = "消费失败"
+					break;
+				case 2:
+					res.vipBillitype1 = "充值成功"
+					break;
+				case 3:
+					res.vipBillitype1 = "充值失败"
+					break;
+			}
+			return res
+		}
+	</script>
+
+</html>
