@@ -80,6 +80,8 @@
     border: 1px solid #d2d2d2;
     margin-top: 3px;
     margin-left: -5px;
+    text-indent: 2px;
+    cursor: pointer;
     }
     .del:hover{
         background-color: #ff5722;
@@ -189,7 +191,7 @@
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button class="layui-btn site-demo-active">新增分组</button>
+                            <button class="layui-btn site-demo-active" id="newfenzu">新增分组</button>
                         </div>
                     </div>
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -207,7 +209,7 @@
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button class="layui-btn site-demo-active">新增称谓</button>
+                            <button class="layui-btn site-demo-active" id="newchengwei">新增称谓</button>
                         </div>
                     </div>
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -225,7 +227,7 @@
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button class="layui-btn site-demo-active">新增标签</button>
+                            <button class="layui-btn site-demo-active" id="newtag">新增标签</button>
                         </div>
                     </div>
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -292,8 +294,8 @@
                    var strT = ''
 
                     for(let i = 0 ; i < teamList.length;i++){
-                        console.log(i)
-                        strT += '<input type="checkbox" class="set" name="name" title="'+teamList[i]+'" checked=""><span class="del fenzu" data-id="'+i+'">x</span>'
+                        
+                        strT += '<input type="checkbox" class="set" name="name" title="'+teamList[i]+'" checked=""><span class="del fenzu" data-id="'+i+'" onclick="delfenzu('+i+')">x</span>'
                     }
                    
                     $('#teamList').html(strT)
@@ -301,61 +303,84 @@
                     form.render() 
                 }
                 getTeam()
+                $('#newfenzu').click(function(){
+
+                    layer.prompt({title: '请输入分组名称', formType: 3}, function(pass, index){
+                        if(teamList.indexOf(pass) >= 0){
+                            layer.msg('分组名重复，请重新输入')
+                            return
+                        }
+                      teamList.push(pass)
+                      getTeam()
+                      layer.close(index);
+                    });
+                })
                 var chengweiList = ['称谓一','称谓二','称谓三']
                 function getChengwei(){
 
                    var strT = ''
                     for(let ii = 0 ; ii < chengweiList.length;ii++){
                         
-                        strT += '<input type="checkbox" class="set" name="name" title="'+chengweiList[ii]+'" checked=""><span class="del chengwei" data-id="'+ii+'">x</span>'
+                        strT += '<input type="checkbox" class="set" name="name" title="'+chengweiList[ii]+'" checked=""><span class="del chengwei" data-id="'+ii+'" onclick="delchengwei('+ii+')">x</span>'
                     }
                    
                     $('#chengweiList').html(strT)
                     form.render() 
                 }
                 getChengwei()
+                $('#newchengwei').click(function(){
+
+                    layer.prompt({title: '请输入称谓名称', formType: 3}, function(pass, index){
+                        if(chengweiList.indexOf(pass) >= 0){
+                            layer.msg('称谓名重复，请重新输入')
+                            return
+                        }
+                      chengweiList.push(pass)
+                      getChengwei()
+                      layer.close(index);
+                    });
+                })
                  var tagList1 = ['标签一','标签二','标签三']
                 function tagList(){
                    var strT = ''
                     for(let iii = 0 ; iii < tagList1.length;iii++){
                         
-                        strT += '<input type="checkbox" class="set" name="name" title="'+tagList1[iii]+'" checked=""><span class="del tag" data-id="'+iii+'">x</span>'
+                        strT += '<input type="checkbox" class="set" name="name" title="'+tagList1[iii]+'" checked=""><span class="del tag" data-id="'+iii+'" onclick="deltag('+iii+')">x</span>'
                     }
                    
                     $('#tagList').html(strT)
                     form.render() 
                 }
                 tagList()
-                function fenzuCli(){
-                    $('.fenzu').click(function(){
-                    console.log('123')
-                    teamList.splice(this.dataset.id,1)
-                    getTeam()
+                 $('#newtag').click(function(){
+
+                    layer.prompt({title: '请输入标签名称', formType: 3}, function(pass, index){
+                        if(tagList1.indexOf(pass) >= 0){
+                            layer.msg('标签名重复，请重新输入')
+                            return
+                        }
+                      tagList1.push(pass)
+                      tagList()
+                      layer.close(index);
+                    });
                 })
-                }
-                fenzuCli()
-                function chengweiCli(){
-                    $('.chengwei').click(function(){
-                    console.log('123')
-                    chengweiList.splice(this.dataset.id,1)
-                    getChengwei()
-                })
-                }
-                chengweiCli()
-                
-                function tagCli(){
-                    $('.tag').click(function(){
-                    console.log('123')
-                    tagList1.splice(this.dataset.id,1)
-                    tagList()
-                })
-                }
-                tagCli()
                 //监听指定开关
                 form.on('switch(switchTest)', function(data) {
                     layer.tips('商户认证：' + (this.checked ? '已开启' : '已关闭'), data.othis)
                     merchantca = this.checked
                 });
+                window.delfenzu = function(num){
+                    teamList.splice(num,1)
+                    getTeam()
+                }
+                window.delchengwei = function(num){
+                    chengweiList.splice(num,1)
+                    getChengwei()
+                }
+                window.deltag = function(num){
+                    tagList1.splice(num,1)
+                    tagList()
+                }
                 //监听提交
                 form.on('submit(add)', function(data) {
                     console.log(data)

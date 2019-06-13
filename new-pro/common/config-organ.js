@@ -1,5 +1,5 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty';
+var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
 	//server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
@@ -7,7 +7,7 @@ if(Edition == 'qty'){
    server = 'http://192.168.1.134:6005/shanhe-admin/'
     //server = 'https://nb.51shanhe.com/shanhe-admin/'
 }else{
-	server  = 'http://192.168.1.166:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.166:6005/shanhe-admin/'
 }
 /* 
 接口前缀解释
