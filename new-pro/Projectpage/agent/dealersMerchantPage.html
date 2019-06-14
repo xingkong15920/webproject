@@ -43,6 +43,11 @@
 				<button class="layui-btn" id="search" title="搜索"><i class="layui-icon">&#xe615;</i></button>
 			</div>
 			<table class="layui-hide" id="LAY_table_merchant" lay-filter="merchant"></table>
+			<xblock class="layui-row">
+				<button class="layui-btn layui-btn-xs downCode" data-type="getCheckDataall"><i class="layui-icon ">&#xe601;</i>批量禁用商户</button>
+				<button class="layui-btn layui-btn-xs downCode" data-type="AllgetCheckDataall"><i class="layui-icon ">&#xe601;</i>批量更换销售</button>
+				
+			</xblock>
 		</div>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
@@ -132,7 +137,7 @@
 							"agentLevel":agentLevel
 						},
 						elem: '#LAY_table_merchant',
-						height: 'full-140',
+						height: 'full-200',
 						//method: "post",
 						page: true,
 						id: 'merchantlist',
@@ -155,6 +160,8 @@
 						},
 						cols: [
 							[{
+								type: 'checkbox'
+							} ,{
 								field: 'merchantNumber',
 								title: '商户编号',
 								align: 'center',
@@ -228,6 +235,55 @@
 									ylbNumber: ylbNumber
 								}
 							});
+						},
+						getCheckDataall: function() {
+							var b = table.checkStatus('merchantlist').data;
+							console.log(b)
+							if(b.length == 0){
+								layer.msg('请选择商户')
+								return
+							}
+							var mer = b[0].merchantNumber
+							for(var i = 1 ; i < b.length;i++){
+								mer += '&' + b[i].merchantNumber
+							}
+							var tjData = new Object()
+							tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+							tjData.merchantNumbers = mer
+							tjData.merchantStatus = 1
+							tjData.deletionFlag = 0
+							CmsUtility.postAjaxCall(
+			                    //系统设置
+				                CmsConfig.addressUrl.Agent.stateMerchants,
+				                tjData,
+				                function(data) {
+				                    if(data.code == 1000){
+
+				                    	layer.msg(data.msg)
+				                    	setTimeout(function(){
+				                    		layui.table.reload('merchantlist')
+				                    	},1000)
+				                    }
+
+				                    
+				                },
+				                function(data){
+
+				                },
+				                'post',
+				                'false'
+				            )
+							
+							
+						},
+						AllgetCheckDataall: function() {
+							var b = table.checkStatus('merchantlist').data;
+							console.log(b)
+							if(b.length == 0){
+								layer.msg('请选择商户')
+								return
+							}
+							
 						},
 					};
 				table.on('tool(merchant)', function(obj) {

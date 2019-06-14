@@ -118,7 +118,7 @@
                     </div>
                 </div>
             </div>
-            <div class="baobiao-col-1" style="padding-right: 0;">
+            <!-- <div class="baobiao-col-1" style="padding-right: 0;">
                 <div class="baobiaoK">
                     <div class="baobiaolist" style="line-height:52px;font-size:16px">
                         佣金
@@ -127,7 +127,7 @@
                         0元
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="baobiao-col-2">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
@@ -151,7 +151,7 @@
             <div class="baobiao-col-2">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
-                        <p class="baobiaolistitle">商家收入（元）</span>
+                        <p class="baobiaolistitle">交易金额</span>
                         </p>
                         <p class="baobiaolistct" style="font-size:16px"><span id="incomeMoney">0</span> 元</p>
                     </div>
@@ -172,7 +172,28 @@
             <div class="baobiao-col-2">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
-                        <p class="baobiaolistitle">商家退款（元）</span>
+                        <p class="baobiaolistitle">退款金额</span>
+                        </p>
+                        <p class="baobiaolistct" style="font-size:16px"><span id="refundMoney">0</span> 元</p>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+                        <div class="baobiaodc dnsj">
+                            <div></div>
+                            <p style="font-size:16px"><span id="wRefundMoney">0</span> 元</p>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+                        <div class="baobiaodc wmsj">
+                            <div></div>
+                            <p style="font-size:16px"><span id="zRefundMoney">0</span> 元</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="baobiao-col-2">
+                <div class="baobiaoK">
+                    <div class="baobiaolist">
+                        <p class="baobiaolistitle">手续费</span>
                         </p>
                         <p class="baobiaolistct" style="font-size:16px"><span id="refundMoney">0</span> 元</p>
                     </div>
@@ -259,11 +280,17 @@
                 }, {
                     field: 'importExportAmount',
                     align: 'center',
-                    title: '分润金额'
+                    title: '分润金额',
+                    templet:function(data){
+                        return '￥' + data.importExportAmount
+                    }
                 }, {
                     field: 'endTermBalance',
                     title: '变动后金额',
                     align: 'center',
+                    templet:function(data){
+                        return '￥' + data.endTermBalance
+                    }
                 }]
             ]
         });
@@ -299,7 +326,10 @@
                 }, {
                     field: 'withdrawCashAmount',
                     align: 'center',
-                    title: '金额'
+                    title: '金额',
+                    templet:function(data){
+                        return '￥' + data.withdrawCashAmount
+                    }
                 }, {
                     field: 'bankCardNo',
                     align: 'center',
