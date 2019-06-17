@@ -137,11 +137,21 @@
 			//return false;
 			function fun_date(aa){
 		        var date1 = new Date(),
-		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
-		        var date2 = new Date(date1);
-		        date2.setDate(date1.getDate()+aa);
-		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
-		        return time2
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
 		    }
 		    $('#startTime').val(fun_date(-6))
 		     $('#endTime').val(fun_date(0))
@@ -190,7 +200,8 @@
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						// url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/shList',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerOrderlist + '?institutionNumber=' + userNumber ,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerOrderlist + '?institutionNumber=1009' ,
+						// + userNumber 
 						where:{
 							"agentName":$('#agentName').val().trim(),
 							"merchantName":$('#merchantName').val().trim(),
@@ -594,12 +605,44 @@
 								tjData.orderNumber = data.orderNumber;
 								tjData.auditStatus = 0
 								tjData.msg = pass
-								CmsUtility.postAjaxCall(
-									//系统设置
-									CmsConfig.addressUrl.Mechanism.updateMerInfo,
-									tjData,
-									function(data){
-										if(data.code == 1000){
+								
+								// CmsUtility.postAjaxCall(
+								// 	//系统设置
+								// 	CmsConfig.addressUrl.Mechanism.updateMerInfo,
+								// 	tjData,
+								// 	function(data){
+								// 		if(data.code == 1000){
+								// 			 layer.closeAll()
+								// 			layer.msg('操作成功')
+								// 			setTimeout(function(){
+								// 				tableRender()
+								// 			},500)
+											
+											
+								// 		}else{
+								// 			layer.msg(data.msg)
+											
+								// 		}
+								// 	},
+								// 	function(data){
+								// 		console.log('222')
+								// 	}
+								// )
+								$.ajax({
+						            type: 'POST',
+						            url: 'https://nb.51shanhe.com/shanhe-mechanism/submit/thirdPartyInfo', 
+						            data: tjData,
+						            async: 'false',
+						            dataType: 'json', 
+						            // headers:{
+						            //     contentType:"application/json"
+						            // },
+						            beforeSend: function() {
+						                
+						            },
+						            success: function(data) {
+						                
+						                if(data.code == 1000){
 											 layer.closeAll()
 											layer.msg('操作成功')
 											setTimeout(function(){
@@ -611,11 +654,31 @@
 											layer.msg(data.msg)
 											
 										}
-									},
-									function(data){
-										console.log('222')
-									}
-								)
+						            },
+						            complete: function() {
+						                
+						            },
+						            error:function(XMLHttpRequest, textStatus, errorThrown){
+						                // 状态码
+						                    console.log(XMLHttpRequest.status);
+						                    // 状态
+						                    console.log(XMLHttpRequest.readyState);
+						                    // 错误信息   
+						                    console.log(textStatus);
+						                    // if(textStatus == 'timeout'){
+						                    //     alert('接口访问超时，请稍后再试')
+						                    // }
+						                    // if(textStatus == 'error'){
+						                    //     alert('接口访问错误，请稍后再试')
+						                    // }
+						                    // if(textStatus == 'abort'){
+						                    //     alert('接口访问中止，请稍后再试')
+						                    // }
+						                    // if(textStatus == 'parsererror'){
+						                    //     alert('接口访问解析错误，请稍后再试')
+						                    // }
+						            }
+						        });
 
 							}
 

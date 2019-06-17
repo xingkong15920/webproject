@@ -1,13 +1,13 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty';
+var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
-	//server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
+	server  = 'https://nb.51shanhe.com/shanhe-service/'
     //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
     //server = 'http://148.70.79.191:10700/shanhe-service/'
-    server = 'http://192.168.1.134:6006/shanhe-service/'
+    //server = 'http://192.168.1.134:6006/shanhe-service/'
 }else{
-	server  = 'http://192.168.1.166:5006/shanhe-mechanism/'
+	server  = 'http://192.168.1.130:6006/shanhe-service/'
 }
 /* 
 接口前缀解释
@@ -33,7 +33,7 @@ var CmsConfig = {
             //代理商登录
             AgloginInfo:"agentCommon/AgloginInfo",
             //退出
-            exitLogin:"login/exitLogin",
+            exitLogin:"agentCommon/exitLogin",
             //自动登录
             Automaticlist:"agentCommon/Automaticlist",
 
@@ -81,8 +81,14 @@ var CmsConfig = {
            //解绑二维码
            updateShopCode:"merEquipment/updateShopCode",
             
-
-
+           //批量禁用
+           stateMerchants:"agMerchant/stateMerchants",
+           //批量更换销售
+           changeMerchants:"agMerchant/changeMerchants",
+            //查询当前代理下级代理
+            getOriginalAgentD:"agMerchant/getOriginalAgentD",
+            //查询代理下销售
+            getSaleD:"agMerchant/getSaleD",
             //销售
             //查询销售列表
             getSaleInfo:"agSale/getSaleInfo",

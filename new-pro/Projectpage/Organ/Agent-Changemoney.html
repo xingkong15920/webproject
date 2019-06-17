@@ -45,6 +45,13 @@
 						<input type="text" name="" id="orederNumber" placeholder="账单号"  class="layui-input">
 					</div>
 					<div class="layui-input-inline">
+						<select name="" id="billType">
+							<option value="0">日账单</option>
+							<option value="1">周账单</option>
+							<option value="2">月账单</option>
+						</select>
+					</div>
+					<div class="layui-input-inline">
 							<input type="text" name="" id="inserttime" placeholder="开始时间"  class="layui-input">
 					</div>
 					<div class="layui-input-inline">
@@ -82,11 +89,21 @@
 		<script>
 			function fun_date(aa){
 		        var date1 = new Date(),
-		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
-		        var date2 = new Date(date1);
-		        date2.setDate(date1.getDate()+aa);
-		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
-		        return time2
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
 		    }
 		    $('#inserttime').val(fun_date(-6))
 		     $('#updateTime').val(fun_date(0))
@@ -114,6 +131,7 @@
 							"orederNumber":$('#orederNumber').val().trim(),
 							"inserttime":$('#inserttime').val().trim(),
 							"updateTime":$('#updateTime').val().trim(),
+							"billType":$('#billType').val()
 						},
 						elem: '#members',
 						height: 'full-210',
@@ -137,12 +155,14 @@
 						cols: [
 							[{
 								align: 'center',
-								type: 'checkbox'
-							}, {
-								align: 'center',
 								field: 'orederNumber',
 								width: 150,
 								title: '账单号',
+							}, {
+								align: 'center',
+								field: 'timeType',
+								width: 150,
+								title: '账单类型',
 							}, {
 								align: 'center',
 								field: 'agentName',
@@ -176,25 +196,16 @@
 								field: 'earlyStageBalance',
 								width: 150,
 								title: '原金额',
-								templet:function(data){
-									return '￥' + data.earlyStageBalance
-								}
 							}, {
 								align: 'center',
 								field: 'importExportAmount',
 								width: 150,
 								title: '变动金额',
-								templet:function(data){
-									return '￥' + data.importExportAmount
-								}
 							}, {
 								align: 'center',
 								field: 'endTermBalance',
 								width: 150,
 								title: '变动后金额',
-								templet:function(data){
-									return '￥' + data.endTermBalance
-								}
 							}, {
 								align: 'center',
 								field: 'inserttime',
@@ -203,7 +214,6 @@
 							},{
 								align: 'center',
 								field: 'remarks',
-								width: 200,
 								title: '备注',
 							}]
 						],

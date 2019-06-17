@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    #codeInfo{
+    	line-height: 38px;
+    	font-size: 24px;
+    	text-align: center;
+    	letter-spacing:5px
+    }
+    .layui-input-block{
+        margin-left: 80px;
+    }
+    .btnBox{
+        position: relative;
+        left: 0;
+        top: 0;
+    }
+    .del{
+        width: 10px;
+        height: 10px;
+        line-height: 10px;
+        text-align: center;
+        position: absolute;
+        right: -5px;
+        top: -5px;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label"  style="width:55px;z-index:9999">服务商</label>
+                    <div class="layui-input-block">
+                        <select name="type" id="agent" lay-verify="type">
+                          
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"  style="width:55px;z-index:9999">销售</label>
+                    <div class="layui-input-block">
+                        <select name="type" id="sale" lay-verify="type">
+                          
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"  style="width:55px;z-index:9999">商户</label>
+                    <div class="layui-input-block" id="merBox">
+                     
+                      
+                    </div>
+                </div>
+                <div class="layui-input-block">
+			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="立即提交" id="sub">
+			    </div>
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+        function subPage(data){
+            var jgData = data
+            console.log(jgData)
+            var type111 = 0
+        var code1 = ''
+        var pageNum
+        var serverUrl = 'http://192.168.1.190:5002/'
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+            layui.$.support.cors = true; //允许ajax跨域
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                laytpl = layui.laytpl;
+                var agentList = [{
+                    agentName:JSON.parse(sessionStorage.getItem('agentUser')).agentName,
+                    agentNumber:JSON.parse(sessionStorage.getItem('agentUser')).Number
+                }]
+                var strT = ''
+                for (let i = 0; i < jgData.length; i++) {
+                    strT += '<input type="checkbox" class="set" name="name" title="' + jgData[i].name +
+                        '" value="'+jgData[i].number + '|' +jgData[i].sale  +'" checked="">'
+                }
+                $('#merBox').html(strT)
+                form.render()
+                CmsUtility.postAjaxCall(
+                        //系统设置
+                    CmsConfig.addressUrl.Agent.getOriginalAgentD,
+                    {
+                        "agentId":userNumber
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+                            var aList = agentList.concat(data.data)
+                            console.log(aList)
+                            var str = ''
+                            for(var i = 0 ; i < aList.length;i++){
+                                str += '<option value="'+ aList[i].agentNumber +'">'+ aList[i].agentName +'</option>'
+                            }
+                            $('#agent').html(str)
+                            CmsUtility.postAjaxCall(
+                        //系统设置
+                                CmsConfig.addressUrl.Agent.getSaleD,
+                                {
+                                    "agentId":userNumber
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        // type111 = 2
+                                        
+                                        var str = ''
+                                        for(let i = 0 ; i < data.data.length;i++){
+                                            str += '<option value="'+ data.data[i].saleNumber +'">'+ data.data[i].saleName +'</option>'
+                                        }
+                                        $('#sale').html(str)
+                                        form.render()
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                }
+                            )
+                            form.render()
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+            //表单初始赋值
+            // $('#sub').click(function(){
+            //  console.log(code1)
+            // })
+            form.verify({
+                agentName:function(value){
+                    if($('#agName').val() == '' || $('#agName').attr('agentNumber') == undefined){
+                        return '请搜索并选择销售'
+                    }
+                },
+                type:function(value){
+                    if(value == ''){
+                        return '请选择账单类型'
+                    }
+                },
+                title: function(value) {
+                    console.log(value)
+                    if (value = '') {
+                        return '不能为空';
+                    }
+                },
+            });
+             
+            // $('#sub').click(function() {
+                
+            //     var tjData = new Object();
+            //     tjData.institutionNumber = userNumber;
+                
+            //     tjData.number = $('#number').val()
+            //     CmsUtility.postAjaxCall(
+            //         //系统设置
+            //         CmsConfig.addressUrl.Mechanism.insertChannelRate,
+            //         tjData,
+            //         function(data) {
+            //             if (data.code == 1000) {
+            //                 // type111 = 2
+
+
+            //                 x_admin_close()
+            //                 parent.layer.msg('生成成功')
+            //                 parent.layui.table.reload('vip_cardList')
+
+
+            //             } else {
+            //                 layer.msg(data.msg)
+
+            //             }
+            //         },
+            //         function(data) {
+            //             console.log('222')
+            //         }
+            //     )
+            //     return false
+            // })
+
+            // //监听提交
+            form.on('submit(create)', function(data) {
+                
+                layer.confirm('确定要将这些商户切换到该销售下吗?', {icon: 3, title:'提示'} ,function(index) {
+                    console.log($('#agent').val())
+                    console.log($('#sale').val())
+                    var merList =[]
+                    var mer = document.getElementsByName('name')
+                    for(k in mer){
+                        if(mer[k].checked)
+                            merList.push(mer[k].value)
+                    }
+                    console.log(merList)
+                    var newL = []
+                    for(var i = 0 ; i < merList.length;i++){
+                        var newOb = new Object()
+                        //原代理编号
+                        newOb.originalAgent = userNumber
+                        if(merList[i].split('|')[1] != '__'){
+                            //原销售编号
+
+                            newOb.originalSale = merList[i].split('|')[1]
+                        }
+                        
+                        //商户编号
+                        newOb.merchantNumber = merList[i].split('|')[0]
+                        //迁移代理商编号
+                        newOb.presentAgent = $('#agent').val()
+                        //迁移销售编号
+                        newOb.presentSale = $('#sale').val()
+                        newL.push(newOb)
+                    }
+                    console.log(newL)
+                    $.ajax({
+                        type: 'post',
+                        url: CmsConfig.ServiceUrl.ApiRootUrl+CmsConfig.addressUrl.Agent.changeMerchants, 
+                        data: JSON.stringify(newL),
+                        async: 'true',
+                        dataType: 'json', 
+                        headers:{
+                            "Content-Type":"application/json;charset=UTF-8"
+                        },
+                        beforeSend: function() {
+                            
+                        },
+                        success: function(data) {
+                            console.log(data)
+                            if(data.code == 1000){
+                                 parent.layer.msg('更换成功')
+                                parent.layui.table.reload('merchantlist')
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        },
+                    });
+                    // CmsUtility.postAjaxCall(
+                    // //系统设置
+                    //     CmsConfig.addressUrl.Agent.changeMerchants,
+                    //     {
+                    //         "merchant":JSON.stringify(newL)
+                    //     },
+                    //     function(data) {
+                    //         if (data.code == 1000) {
+                    //             // type111 = 2
+
+
+                    //             // x_admin_close()
+                    //             // parent.layer.msg('提交成功')
+                    //             // parent.layui.table.reload('vip_cardList')
+
+
+                    //         } else {
+                    //             layer.msg(data.msg)
+
+                    //         }
+                    //     },
+                    //     function(data) {
+                    //         console.log('222')
+                    //     }
+                    // )
+                    return false
+                    })
+                return false
+                console.log(data.field)
+                // if(data.field.nuber)
+                var tjData = new Object();
+                console.log($('#agName').attr('agentNumber'))
+                tjData.saleNumber = $('#agName').attr('agentNumber')
+                tjData.billType = data.field.type
+                tjData.billAccount = data.field.number
+                tjData.remark = data.field.mark
+                
+                console.log(tjData)
+                
+                
+            });
+
+        });
+        }
+        
+
+    
+    </script>
+</body>
+
+</html>

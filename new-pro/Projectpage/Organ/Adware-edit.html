@@ -85,6 +85,10 @@
 			#demoText a {
 				margin-top: 10px;
 			}
+            #tips span{
+                line-height: 36px;
+                color: red;
+            }
 		</style>
 </head>
 
@@ -98,10 +102,10 @@
                 <div class="layui-form-item">
                         <label class="layui-form-label">选择位置</label>
                         <div class="layui-input-inline widthauto">
-                            <input type="radio" name="selectedPosition" value="0" title="支付后广告" lay-filter="cardvalid" checked="true">
-                            <input type="radio" name="selectedPosition" value="1" title="APP加载" lay-filter="cardvalid">
-                            <input type="radio" name="selectedPosition" value="2" title="APP首页" lay-filter="cardvalid">
-                            <input type="radio" name="selectedPosition" value="3" title="小程序首页" lay-filter="cardvalid">
+                            <input type="radio" name="selectedPosition" value="0" title="支付后广告" lay-filter="add" checked="true">
+                            <input type="radio" name="selectedPosition" value="1" title="APP加载" lay-filter="add">
+                            <input type="radio" name="selectedPosition" value="2" title="APP首页" lay-filter="add">
+                            <input type="radio" name="selectedPosition" value="3" title="小程序首页" lay-filter="add">
                         </div>
                     </div>
                 <div class="layui-form-item">
@@ -112,14 +116,21 @@
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">图片地址</label>
-                    <div class="layui-input-block">
-                        <div class="layui-upload-img" id="test1" style="height:200px">
-                            <img src="../../public/images/default.png" id="demo1" style="max-width: 100%;height:180px" lay-filter="logo" name="address" >
-							</div>
-                            <p id="demoText"></p>
-                            <!--<button type="button" class="layui-btn">上传图片</button>-->
-                        </div>
+                    <div class="layui-input-block" id="tips">
+                        <span>推荐尺寸：</span>
+                        <span>*闪屏页：1920*1080；</span>
+                        <span>*支付后广告：750*1200；</span>
+                        <span>*首页图：1920*1080；</span>
+                        <span>*小程序：750*1334；</span>
+                        <span>*单位：px</span>
                     </div>
+                    <div class="layui-input-block">
+                        <div class="layui-upload-img" id="test1" style="width:250px;height:300px">
+                            <img src="../../public/images/default.png" id="demo1" name="address" style="width:480px;max-width: 100%;height:270px;" lay-filter="logo" id="logo">
+                        </div>
+                            <p id="demoText"></p>
+                    </div>
+                </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">链接地址</label>
                         <div class="layui-input-block">
@@ -207,11 +218,74 @@
                         "state": jgData.state == 0 ? true : false,
                         "launchChannel": jgData.launchChannel.toString()
                     })
+                    switch (jgData.selectedPosition.toString()) {
+                        case "0":
+                            $('#test1').css({
+                                "width":"250px",
+                                "height":"300px"
+                            })
+                            break;
+                        case "1":
+                            $('#test1').css({
+                                "width":"480px",
+                                "height":"270px"
+                            })
+                            break;
+                        case "2":
+                            $('#test1').css({
+                                "width":"480px",
+                                "height":"270px"
+                            })
+                            break;
+                        case "3":
+                            $('#test1').css({
+                                "width":"250px",
+                                "height":"300px"
+                            })
+                            break;
+                        default:
+                            // statements_def
+                            break;
+                    }
                     $('#demo1').attr('src',jgData.address)
                     logoUrl = jgData.address
 
 
-
+                form.on('radio(add)', function (data) {
+                    switch (data.value) {
+                        case "0":
+                            console.log('123')
+                            $('#test1').css({
+                                "width":"250px",
+                                "height":"300px"
+                            })
+                            break;
+                        case "1":
+                            console.log('123')
+                            $('#test1').css({
+                                "width":"480px",
+                                "height":"270px"
+                            })
+                            break;
+                        case "2":
+                            console.log('123')
+                            $('#test1').css({
+                                "width":"480px",
+                                "height":"270px"
+                            })
+                            break;
+                        case "3":
+                            console.log('123')
+                            $('#test1').css({
+                                 "width":"250px",
+                                "height":"300px"
+                            })
+                            break;
+                        default:
+                            // statements_def
+                            break;
+                    }
+                });
 
 
                 //监听指定开关

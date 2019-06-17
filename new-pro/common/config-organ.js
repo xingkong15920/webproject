@@ -4,10 +4,10 @@ var server;
 if(Edition == 'qty'){
 	//server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
     //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
-   server = 'http://192.168.1.134:6005/shanhe-admin/'
-    //server = 'https://nb.51shanhe.com/shanhe-admin/'
+   //server = 'http://192.168.1.134:6005/shanhe-admin/'
+    server = 'https://nb.51shanhe.com/shanhe-admin/'
 }else{
-	server  = 'http://192.168.1.166:6005/shanhe-admin/'
+	server  = 'http://192.168.1.134:6005/shanhe-admin/'
 }
 /* 
 接口前缀解释
@@ -139,7 +139,7 @@ var CmsConfig = {
 
             //商户接口修改
             //商户通过接口    
-            thirdPartyInfo:"audit/updateMerInfo",
+            thirdPartyInfo:"InsMer/submitMerchant",
             //商户删除拒绝和修改
             updateMerInfo:"audit/updateMerInfo",
 
