@@ -1,180 +1,70 @@
-<!doctype html>
-<html lang="en">
-
+<!DOCTYPE html>
+<html>
 	<head>
-		<meta charset="utf-8">
-		<title>截屏并保存</title>
-		<script type="text/javascript" src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
-		<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
-		<style type="text/css">
-			body {
-				background: #ccc
-			}
-
-			#dw {
-				position: absolute;
-				top: 10px;
-				left: 10%;
-				height: 620px;
-				width: 1030px;
-				background: #fff;
-				border: 1px solid black;
-				padding: 10px
-			}
-
-			.close {
-				position: relative;
-				left: 10px;
-				width: 0.2em;
-				height: 1em;
-				background: #333;
-				-webkit-transform: rotate(45deg);
-				-moz-transform: rotate(45deg);
-				-o-transform: rotate(45deg);
-				-ms-transform: rotate(45deg);
-				transform: rotate(45deg);
-				display: inline-block;
-			}
-
-			.close:after {
-				content: "";
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 0.2em;
-				height: 1em;
-				background: #333;
-				-webkit-transform: rotate(270deg);
-				-moz-transform: rotate(270deg);
-				-o-transform: rotate(270deg);
-				-ms-transform: rotate(270deg);
-				transform: rotate(270deg);
-			}
-		</style>
-
-		<!-- js截屏plugin -->
-		<script type="text/javascript" src="/h5/screencapture/html2canvas.min.js"></script>
-		<script type="text/javascript" src="/h5/screencapture/canvas2image.js"></script>
-		<script type="text/javascript">
-			function convert2canvas() {
-				var cntElem = $('#content')[0];
-
-				var shareContent = cntElem; //需要截图的包裹的（原生的）DOM 对象
-				var width = shareContent.offsetWidth; //获取dom 宽度
-				var height = shareContent.offsetHeight; //获取dom 高度
-				var canvas = document.createElement("canvas"); //创建一个canvas节点
-				var scale = 2; //定义任意放大倍数 支持小数
-				canvas.width = width * scale; //定义canvas 宽度 * 缩放
-				canvas.height = height * scale; //定义canvas高度 *缩放
-				canvas.getContext("2d").scale(scale, scale); //获取context,设置scale 
-				var opts = {
-					scale: scale, // 添加的scale 参数
-					canvas: canvas, //自定义 canvas
-					// logging: true, //日志开关，便于查看html2canvas的内部执行流程
-					width: width, //dom 原始宽度
-					height: height,
-					useCORS: true // 【重要】开启跨域配置
-				};
-
-				html2canvas(shareContent, opts).then(function(canvas) {
-
-					var context = canvas.getContext('2d');
-					// 【重要】关闭抗锯齿
-					context.mozImageSmoothingEnabled = false;
-					context.webkitImageSmoothingEnabled = false;
-					context.msImageSmoothingEnabled = false;
-					context.imageSmoothingEnabled = false;
-
-					// 【重要】默认转化的格式为png,也可设置为其他格式
-					var img = Canvas2Image.convertToPNG(canvas, canvas.width, canvas.height);
-
-					//document.body.appendChild(img);
-					$("#content").css("display", "none");
-					$(".img-container").append(img);
-					$(img).css({
-						"width": canvas.width / 2 + "px",
-						"height": canvas.height + "px", /// 2
-					}).addClass('f-full');
-
-				});
-			}
-			convert2canvas();
-			/* $(function(){
-			    document.querySelector("button").addEventListener("click", function() {
-			        var cntElem = $('#content')[0];
-			        var shareContent = cntElem;//需要截图的包裹的（原生的）DOM 对象
-			        var width = shareContent.offsetWidth; //获取dom 宽度
-			        var height = shareContent.offsetHeight; //获取dom 高度
-			        var canvas = document.createElement("canvas"); //创建一个canvas节点
-			        var scale = 1.98; //定义任意放大倍数 支持小数
-			        canvas.width = width * scale; //定义canvas 宽度 * 缩放
-			        canvas.height = height * scale; //定义canvas高度 *缩放
-			        canvas.getContext("2d").scale(scale, scale); //获取context,设置scale 
-			        var opts = {
-			            scale: scale, // 添加的scale 参数
-			            canvas: canvas, //自定义 canvas
-			            // logging: true, //日志开关，便于查看html2canvas的内部执行流程
-			            width: width, //dom 原始宽度
-			            height: height,
-			            useCORS: true // 【重要】开启跨域配置
-			        };
-			        html2canvas(shareContent, opts).then(function (canvas) {
-			            var src = canvas.toDataURL();
-			            var link = document.createElement('a');
-			            //设置下载的文件名
-			            link.download = '报告';
-			            link.style.display = 'none';
-			            //设置下载路径
-			            link.href = src;
-			            //触发点击
-			            document.body.appendChild(link);
-			            link.click();
-			            //移除节点
-			            document.body.removeChild(link);
-			        });
-			    }, false);
-
-			}); */
-		</script>
+		<title>Utils</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	</head>
-
 	<body>
+		<style>
+			html, body{
+		margin: 0;
+		padding: 0;
+	}
+	.item{
+		background-color: #ccc;
+		height: 91px;
+		margin-bottom: 9px;
+	}
+	#ptr-instructions{
+		width: 100%;
+		height: 90px;
+		background-color: blue;
+		font-size: 20px;
+		color: #fff;
+		text-align: center;
+		overflow: hidden;
+	}
+</style>
 
-		<div id="dialog1" title="离职指引">
-			<p><a href="" style="display: block;text-align: center;" id="downloadImg" download="downImg">点击下载图片</a></p></br>
-			<p>
-				以前我们只能通过其他的截图工具来截取图像。现代浏览器的功能已经越来越强，随着H5的逐渐普及，浏览器本身就可以截图啦。html2canvas就是这样一款前端插件,它的原理是将Dom节点在Canvas里边画出来。虽然很方便，但有以下限制
-			</p>
-			<p>
-				以前我们只能通过其他的截图工具来截取图像。现代浏览器的功能已经越来越强，随着H5的逐渐普及，浏览器本身就可以截图啦。html2canvas就是这样一款前端插件,它的原理是将Dom节点在Canvas里边画出来。虽然很方便，但有以下限制
-			</p>
-			<p>
-				以前我们只能通过其他的截图工具来截取图像。现代浏览器的功能已经越来越强，随着H5的逐渐普及，浏览器本身就可以截图啦。html2canvas就是这样一款前端插件,它的原理是将Dom节点在Canvas里边画出来。虽然很方便，但有以下限制
-			</p>
-			<p>
-				以前我们只能通过其他的截图工具来截取图像。现代浏览器的功能已经越来越强，随着H5的逐渐普及，浏览器本身就可以截图啦。html2canvas就是这样一款前端插件,它的原理是将Dom节点在Canvas里边画出来。虽然很方便，但有以下限制
-			</p>
-			<p>
-				以前我们只能通过其他的截图工具来截取图像。现代浏览器的功能已经越来越强，随着H5的逐渐普及，浏览器本身就可以截图啦。html2canvas就是这样一款前端插件,它的原理是将Dom节点在Canvas里边画出来。虽然很方便，但有以下限制
-			</p>
-			<p>
-				以前我们只能通过其他的截图工具来截取图像。现代浏览器的功能已经越来越强，随着H5的逐渐普及，浏览器本身就可以截图啦。html2canvas就是这样一款前端插件,它的原理是将Dom节点在Canvas里边画出来。虽然很方便，但有以下限制
-			</p>
-			<input id="saveData" type="button" value="截图并下载"></br>
-
-		</div>
-		<div style="height: 30px;width: 168px;border:2px solid black;background: red;text-align: center;" onclick="doScreenShot()">截图</div>
-		<!-- 生成图片展示的DIV dw-->
-		<div id="dw">
-			<div style="float: right;width: 25px;height: 25px;" title="关闭" onclick="closeok()">
-				<span class="close"></span>
+		<div class="" style="height: 100vh;">
+			<div id="ptr-instructions">
+				<!--your loading icon here-->
+				<span class="ptr-instructions-text"></span>
+			</div>
+			<div id="billist">
+				<div class="item">1</div>
+				<div class="item">2</div>
+				<div class="item">3</div>
+				<div class="item">4</div>
+				<div class="item">5</div>
+				<div class="item">6</div>
+				<div class="item">7</div>
+				<div class="item">8</div>
+				<div class="item">9</div>
+				<div class="item">10</div>
+				<div class="item">11</div>
+				<div class="item">12</div>
+				<div class="item">13</div>
 			</div>
 		</div>
 
-		</br>
-
-
-
+		<script type="text/javascript" src="./js/pulltorefresh.1.js"></script>
+		<script>
+			pullToRefresh.init({
+				// required
+				ptrElement: '#ptr-instructions', // 'pull to refresh' intructions element
+				ptrTextElement: '.ptr-instructions-text', // intructions' text element
+				targetElement: '#billist', // target element that will be dragged and refreshed
+				// optional
+				instructionsPullToRefresh: 'pull to refresh', // text
+				instructionsReleaseToRefresh: 'Release to refresh', //text
+				instructionsRefreshing: 'refreshing', // text
+				threshold: 60, // minimum distance required to trigger the onPull callback
+				onPull: function() { // callback fn
+					// alert('onPull fired');
+					console.log('onPull fired');
+				}
+			});
+		</script>
 	</body>
-
 </html>

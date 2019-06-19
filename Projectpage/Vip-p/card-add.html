@@ -22,41 +22,37 @@
 			<div class="vipBlock">
 				<div class="cardA_name">
 					<label for="cardAName">会员卡名称：</label>
-					<input type="text" name="cardAName" id="cardAName" value="" class="cardANameInput" />
+					<input type="text" name="cardAName12321" id="cardAName" value="" @focus="inputfocus(event)" @blur="inputblur(event)"
+					 v-model="cardName" class="cardANameInput" />
 				</div>
 				<div class="cardA_bg">
 					<p class="vipBlockBtit">自选卡面</p>
 					<ul class="cardA_bgul">
-						<li class="cardA_bgli" v-for="(item,i) in cardA_bgli" :key="i" v-on:click="chooseC(item.vipCardbgClass,i)" :class="[{chooseCS: i == chooseCS}]">
-							<!-- <img :src="item.vipCardbgClass"> -->
+						<li class="cardA_bgli" v-for="(item,i) in cardA_bgli" :key="i" v-on:click="chooseC(item.localImgUrl,item.wechatImgUrl,item.imageId,i)"
+						 :class="[{chooseCS: i == chooseCS}]">
 							<div class="chooseCSicon"><i class="icon iconfont iconduigou1"></i></div>
-							<img :src="item.vipCardbgClass">
+							<img :src="item.localImgUrl">
 						</li>
 					</ul>
 				</div>
 			</div>
 			<div class="vipBlock Topupj">
-				<p class="vipBlockBtit">充值优惠</p>
+				<div class="TopupjTit">
+					<p class="vipBlockBtit">充值优惠</p>
+					<div class="TopupUliR" @click='addList'>
+						<i class="icon iconfont iconjia1"></i>
+						添加
+					</div>
+				</div>
 				<ul class="TopupUl">
-					<li class="TopupUli">
+					<li class="TopupUli" v-for='(item,i) in preferentialRecharges'>
 						<div class="TopupUliL">
 							充值满
-							<input type="number" class="Topupamount" @focus="inputfocus" @blur="inputblur" placeholder="例:100" value="100" />
+							<input type="number" name="onsale" class="Topupamount" @focus="inputfocus(event)" @blur="inputblur(event)"
+							 v-model="item.rechargeMoney" placeholder="例:100" />
 							元，优惠
-							<input type="number" class="Giveamount" @focus="inputfocus" @blur="inputblur" placeholder="例:5" value="5" />
-							元
-						</div>
-						<div class="TopupUliR" @click='addList'>
-							<i class="icon iconfont iconjia1"></i>
-							添加
-						</div>
-					</li>
-					<li class="TopupUli" v-for='(item,i) in onsale'>
-						<div class="TopupUliL">
-							充值满
-							<input type="number" class="Topupamount" @focus="inputfocus" @blur="inputblur" v-model="item.Topupamount" />
-							元，优惠
-							<input type="number" class="Giveamount" @focus="inputfocus" @blur="inputblur" v-model="item.Giveamount" />
+							<input type="number" name="onsaleM" class="Giveamount" @focus="inputfocus(event)" @blur="inputblur(event)"
+							 v-model="item.preferentialMoney" placeholder="例:5" />
 							元
 						</div>
 						<div class="TopupUliR" @click="removelist(i)">
@@ -70,12 +66,13 @@
 				<p class="vipBlockBtit">激活卡赠送</p>
 				<div class="Activateamount">
 					激活赠送金额:
-					<input type="number" id="" value="" @focus="inputfocus" @blur="inputblur" placeholder="请输入金额" />
+					<input type="number" id="" value="" v-model="giveMoney" @focus="inputfocus(event)" @blur="inputblur(event)"
+					 placeholder="请输入金额" />
 					元
 				</div>
 				<div class="selectdefault">
 					<div class="checkB">
-						<input type="checkbox" name="" id="statementBtn" value="" />
+						<input type="checkbox" name="" id="statementBtn" value="" v-on:click="Checkstate(defaultFlagS)" v-model="defaultFlagS" />
 						<label for="statementBtn"></label>
 					</div>
 					<div>将该会员卡设为默认会员类型</div>
@@ -94,95 +91,138 @@
 	<script src="./js/vue.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var cardChoose, cardA_bgli, onsale
-			cardChoose = 0 //默认选中会员卡
-			cardA_bgli = [{
-				vipCardbgClass: "./img/vipCard-bg1.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg2.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg3.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg4.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg5.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg6.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg7.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg8.png"
-			}, {
-				vipCardbgClass: "./img/vipCard-bg9.png"
-			}]
-			onsale = []
-			// var newList = []
-			// for(var i = 0 ; i < class.length;i++){
-			// 	var newO = new Object()
-			// 	newO.now = class1.val()
-			// 	newO.befor = class2.val()
-			// 	newList.push(newO)
-			// }
-			//输入框获取焦点
-			$("input").focus(function() {
-				$(".viprecordsave").hide();
-			});
-			//输入框失去焦点
-			$("input").blur(function() {
-				$(".viprecordsave").show();
-			});
 			new Vue({
 				el: '#cardAdd',
 				data: {
-					chooseCS: '',
-					onsale: onsale,
+					institutionNumber:'',
+					merchantNumber:'',
+					cardName: '',
+					giveMoney: '',
+					imageId: '',
+					localImgUrl: '',
+					wechatImgUrl: '',
+					defaultFlag: '0',
+					defaultFlagS: false,
+					chooseCS: 0,
+					preferentialRecharges: [{
+						rechargeMoney: "",
+						preferentialMoney: "",
+						preferentialType: "0"
+					}],
 					nextTodoId: 1,
-					cardChoose: cardChoose,
-					cardA_bgli: cardA_bgli,
+					cardA_bgli: [],
 				},
 				methods: {
+					// 获取会员卡背景列表
+					getVipBgList: function() {
+						var that = this,
+							sendData = new Object()
+						sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Member.getImages,
+							// CmsConfig.addressUrl.Vip.vipBglist,
+							sendData,
+							function(data) {
+								if (data.code === 1000) {
+									that.cardA_bgli = data.data
+									that.imageId = data.data[0].imageId
+									that.localImgUrl = data.data[0].localImgUrl
+									that.wechatImgUrl = data.data[0].wechatImgUrl
+								} else {
+									alert(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							},
+							'get',
+							'false'
+						)
+					},
 					//输入框获取焦点
-					inputfocus: function() {
+					inputfocus: function(event) {
+						// console.log(event.target.name)
 						$(".viprecordsave").hide();
 					},
 					//输入框失去焦点
-					inputblur: function() {
-						// setTimeout(function() {
+					inputblur: function(event) {
 						$(".viprecordsave").show();
-						// },100)
+						if (event.target.name == 'onsale') {}
+						// $(this).val()
 					},
 					// 选择会员卡背景
-					chooseC: function(d, n) {
-						this.chooseCS = n
+					chooseC: function(localImgUrl, wechatImgUrl, imageId, i) {
+						this.imageId = imageId
+						this.localImgUrl = localImgUrl
+						this.wechatImgUrl = wechatImgUrl
+						this.chooseCS = i
 					},
 					//添加优惠条件
 					addList: function() {
-						onsale.push({
-							Topupamount: "",
-							Giveamount: ""
+						this.preferentialRecharges.push({
+							rechargeMoney: "",
+							preferentialMoney: "",
+							preferentialType: "0"
 						})
-						// console.log(this.onsale)
+						console.log(this.preferentialRecharges)
 					},
 					//删除选中行
 					removelist: function(n) {
-						onsale.splice(n, 1);
+						if (this.preferentialRecharges.length == 1) {
+							return alert("充值优惠至少一条！")
+						}
+						this.preferentialRecharges.splice(n, 1);
+					},
+					Checkstate: function(defaultFlagS) {
+						if (defaultFlagS) {
+							this.defaultFlag = '0'
+						} else {
+							this.defaultFlag = '1'
+						}
 					},
 					//提交信息
 					viprecordsave: function() {
-						var onsaleNum = $(".Topupamount").length
-						// onsale.push({
-						// 	Topupamount: $(".Topupamount").eq(0).val(),
-						// 	Giveamount: $(".Giveamount").eq(0).val()
-						// })
-						console.log($(".Topupamount").eq(0).val())
+						var sendData = new Object(),
+							that = this
+						sendData.cardName = that.cardName
+						sendData.imageId = that.imageId
+						sendData.localImgUrl = that.localImgUrl
+						sendData.wechatImgUrl = that.wechatImgUrl
+						sendData.institutionNumber = that.institutionNumber
+						sendData.merchantNumber = that.merchantNumber
+						sendData.preferentialRecharges = that.preferentialRecharges
+						sendData.giveMoney = that.giveMoney
+						sendData.defaultFlag = that.defaultFlag
+						console.log(sendData)
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Card.addCard,
+							JSON.stringify(sendData),
+							function(data) {
+								if (data.code === 1000) {
+									window.history.go(-1)
+								} else {
+									alert(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							},
+							'post',
+							'false'
+						)
 					}
 				},
 				watch: {
 
 				},
 				created: function() {
-					var that = this
-				}
+					this.getVipBgList()
+					this.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+					this.merchantNumber = JSON.parse(sessionStorage.getItem('userInfo')).merNumber
+				},
+				mounted() {}
 			})
 			//格式数据类型
 			function changeData(res) {

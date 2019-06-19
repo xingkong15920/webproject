@@ -1,10 +1,10 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'lsl';
+var Edition = 'lsl1';
 var server;
 if (Edition == 'lsl') {
 	server = 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/'
 } else {
-	server = 'http://192.168.1.113:5002/'
+	server = 'http://192.168.1.66:6018/'
 }
 /* 
 接口前缀解释
@@ -28,6 +28,24 @@ var CmsConfig = {
 			cardList: "cardList",
 			//充值统计列表
 			recList: "recList",
+			//充值统计列表
+			conList: "conList",
+			//会员卡背景列表
+			vipBglist: "vipBglist",
+		},
+		// 会员接口列表
+		Member: {
+			//会员卡背景列表
+			getImages: "server/getImages",
+		},
+		// 会员卡接口列表
+		Card: {
+			//查询会员卡列表
+			getCards: "card/getCards",
+			// 添加会员卡
+			addCard: "card/addCard",
+			// 查询会员详情
+			getCardDetails: "card/getCardDetails",
 		},
 		//公共
 		Public: {

@@ -24,24 +24,24 @@
 	<body>
 		<div class="cardList" id="cardList">
 			<ul class="cardListul">
-				<li class="cardListuli" v-for="(item,i) in cardList" :key="i" v-cloak>
+				<li class="cardListuli" v-for="(item,i) in cardList" :key="i" v-cloak @click="cardetail(item.cardNo)">
 					<div class="cardListuliPos cardListuliLT">
-						<span class="default" :class="item.vipCarddefault?'show':'hide'">默认</span>
-						<span class="cardName">{{item.vipCardName}}</span>
+						<span class="default" :class="item.defaultFlag == 1?'show':'hide'">默认</span>
+						<span class="cardName">{{item.cardName}}</span>
 					</div>
-					<div class="cardListuliPos cardListuliLD" @click="cardDelet(item.vipCardbgCell,item.vipCardName)">
+					<div class="cardListuliPos cardListuliLD" @click.stop="cardDelet(item.vipCardbgCell,item.vipCardName)">
 						<i class="icon iconfont iconshanchu1"></i>
 						删除
 					</div>
-					<div class="cardListuliPos cardListuliRT" @click="shareway(item.vipCardbgCell,item.vipCardName)">
+					<div class="cardListuliPos cardListuliRT" @click.stop="shareway(item.vipCardbgCell,item.vipCardName)">
 						<i class="icon iconfont iconfenxiang"></i>
 						分享注册
 					</div>
-					<div class="cardListuliPos cardListuliRD" @click="cardetail(item.vipCardbgCell,item.vipCardbgC)">
+					<div class="cardListuliPos cardListuliRD">
 						<i class="icon iconfont icon3dtouchwenzhangxiangqingliebiao"></i>
 						查看详情
 					</div>
-					<img :src="item.vipCardbgClass" >
+					<img :src="item.localImgUrl">
 				</li>
 			</ul>
 			<div class="viprecordsave" @click="viprecordsave">
@@ -50,7 +50,7 @@
 			<!-- 删除会员卡 -->
 			<div id="cardDel" class="uplayer cardDel hide">
 				<p class="uplayerTips1">提示</p>
-				<p class="uplayerTips2">是否删除该会员卡，删除后将无法找回<br />{{vipCardIndex}}</p>
+				<p class="uplayerTips2">是否删除该会员卡，删除后将无法找回<br />{{vipCardName}}</p>
 			</div>
 			<!-- 分享方式 -->
 			<div id="cardShareway" class="uplayer cardShareway hide">
@@ -83,7 +83,6 @@
 		</div>
 	</body>
 	<script src="./js/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script src="./lib/layer/layer.js"></script>
@@ -91,172 +90,216 @@
 	<script src="./js/qrcode.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-
-			var cardShareWechat, cardShareCircle, cardSharecodeText, cardListli, vipCardbgClass
-			//请求会员卡列表
-			CmsUtility.postAjaxCall(
-				//系统设置
-				CmsConfig.addressUrl.Vip.cardList,
-				'',
-				function(data) {
-					cardListli = changeData(data.cardList)
-					newVue()
+			new Vue({
+				el: '#cardList',
+				data: {
+					insNumber: 0,
+					pageNo: 1,
+					pageCount: 10,
+					cardShareWechat: '',
+					cardShareCircle: '',
+					cardSharecodeText: '',
+					chooseCS: '',
+					vipCardIndex: '',
+					vipCardName: '',
+					cardA_bgli: [],
+					cardList: [],
 				},
-				function(data) {
-					console.log('222')
-				},
-				'get',
-				'false'
-			)
-
-			function newVue() {
-				new Vue({
-					el: '#cardList',
-					data: {
-						chooseCS: '',
-						vipCardIndex: '',
-						cardList: cardListli,
+				methods: {
+					// 获取会员卡背景列表
+					getVipBgList: function() {
+						var that = this,
+							sendData = new Object()
+						sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Member.getImages,
+							// CmsConfig.addressUrl.Vip.vipBglist,
+							sendData,
+							function(data) {
+								if (data.code === 1000) {
+									that.cardA_bgli = data.data
+								} else {
+									alert(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							},
+							'get',
+							'false'
+						)
 					},
-					methods: {
-						cardDelet: function(cell, name) {
-							this.vipCardIndex = cell
-							cardDel(cell)
-						},
-						shareway: function(d, t) {
-							cardShareWechat = t
-							cardShareCircle = t
-							cardSharecodeText = t
-							cardShareway(t)
-							setTimeout(function() {
-								makeCode(t)
-							}, 300)
-						},
-						shareregW: function() {
-
-						},
-						shareregC: function() {
-
-						},
-						shareregM: function() {
-							cardSharecode(cardSharecodeText)
-						},
-						saveCodeimg: function(e) {
-
-						},
-						cardetail: function(cell,lv) {
-							window.location.href = "card-detail.html?"+lv
-						},
-						viprecordsave: function() {
-							window.location.href = "card-add.html"
-						}
+					//请求会员卡列表
+					getvipList: function() {
+						var that = this,
+							sendData = new Object()
+						sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+						sendData.merchantNumber = JSON.parse(sessionStorage.getItem('userInfo')).merNumber
+						sendData.pageNo = that.pageNo
+						sendData.pageCount = that.pageCount
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Card.getCards,
+							sendData,
+							function(data) {
+								if (data.code === 1000) {
+									that.cardList = data.data
+									console.log(that.cardList)
+								} else {
+									alert(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							},
+							'get',
+							'false'
+						)
 					},
-					watch: {
+					cardDelet: function(cell, name) {
+						this.vipCardIndex = cell
+						this.vipCardName = name
+						cardDel(cell, name)
+					},
+					shareway: function(d, t) {
+						this.cardShareWechat = t
+						this.cardShareCircle = t
+						this.cardSharecodeText = t
+						cardShareway(t)
+						setTimeout(function() {
+							makeCode(t)
+						}, 300)
+					},
+					shareregW: function() {
 
 					},
-					created: function() {
-						var that = this
+					shareregC: function() {
+
+					},
+					shareregM: function() {
+						cardSharecode(this.cardSharecodeText)
+					},
+					saveCodeimg: function(e) {
+
+					},
+					cardetail: function(no) {
+						window.location.href = "card-detail.html?cardNo=" + no
+					},
+					viprecordsave: function() {
+						window.location.href = "card-add.html"
 					}
-				})
+				},
+				watch: {
 
-				// 删除弹出框
-				function cardDel(d) {
-					layer.closeAll()
-					layer.open({
-						type: 1,
-						title: false,
-						closeBtn: false,
-						shade: 0.5,
-						shadeClose: true,
-						area: 'calc(100% - 60px)',
-						id: 'LAY_layuipro',
-						btn: ['取消', '删除'],
-						btnAlign: 'c',
-						moveType: 1,
-						content: $('#cardDel'),
-						success: function(layero) {
-							var btn = layero.find('.layui-layer-btn');
-							btn.find('.layui-layer-btn1').click(function() {
-								console.log(d)
-								layer.msg("删除成功")
-							});
-						}
-					});
+				},
+				created: function() {
+					this.getVipBgList()
+				},
+				mounted() {
+					this.getvipList()
+				}
+			})
 
-				}
-				// 分享方式弹出框
-				function cardShareway(data) {
-					console.log(data)
-					layer.closeAll()
-					layer.open({
-						type: 1,
-						title: false,
-						closeBtn: 0,
-						shade: 0.5,
-						shadeClose: true,
-						skin: 'layui-layer-nobg',
-						area: 'calc(100% - 60px)',
-						content: $('#cardShareway')
-					});
-				}
-				// 生成会员二维码定义
-				var qrcode = new QRCode('shareCodeimg', {
-					width: 180,
-					height: 180,
-					colorDark: '#000000',
-					colorLight: '#ffffff',
-					correctLevel: QRCode.CorrectLevel.H
+			// 删除弹出框
+			function cardDel(d, n) {
+				layer.closeAll()
+				layer.open({
+					type: 1,
+					title: false,
+					closeBtn: false,
+					shade: 0.5,
+					shadeClose: true,
+					area: 'calc(100% - 60px)',
+					id: 'LAY_layuipro',
+					btn: ['取消', '删除'],
+					btnAlign: 'c',
+					moveType: 1,
+					content: $('#cardDel'),
+					success: function(layero) {
+						var btn = layero.find('.layui-layer-btn');
+						btn.find('.layui-layer-btn1').click(function() {
+							console.log(d, n)
+							layer.msg("删除成功")
+						});
+					}
 				});
-				// 生成会员二维码
-				function makeCode(d) {
-					qrcode.clear();
-					qrcode.makeCode(d);
-				}
-				// 会员二维码弹出框
-				function cardSharecode(d) {
-					layer.closeAll()
-					layer.open({
-						type: 1,
-						title: false,
-						closeBtn: 0,
-						shade: 0.5,
-						shadeClose: true,
-						skin: 'layui-layer-nobg',
-						area: 'calc(100% - 60px)',
-						content: $('#cardSharecode')
-					});
-				}
-				// 截取图片并保存
+
+			}
+			// 分享方式弹出框
+			function cardShareway(data) {
+				console.log(data)
+				layer.closeAll()
+				layer.open({
+					type: 1,
+					title: false,
+					closeBtn: 0,
+					shade: 0.5,
+					shadeClose: true,
+					skin: 'layui-layer-nobg',
+					area: 'calc(100% - 60px)',
+					content: $('#cardShareway')
+				});
+			}
+			// 生成会员二维码定义
+			var qrcode = new QRCode('shareCodeimg', {
+				width: 180,
+				height: 180,
+				colorDark: '#000000',
+				colorLight: '#ffffff',
+				correctLevel: QRCode.CorrectLevel.H
+			});
+			// 生成会员二维码
+			function makeCode(d) {
+				qrcode.clear();
+				qrcode.makeCode(d);
+			}
+			// 会员二维码弹出框
+			function cardSharecode(d) {
+				console.log(d)
+				layer.closeAll()
+				layer.open({
+					type: 1,
+					title: false,
+					closeBtn: 0,
+					shade: 0.5,
+					shadeClose: true,
+					skin: 'layui-layer-nobg',
+					area: 'calc(100% - 60px)',
+					content: $('#cardSharecode')
+				});
 			}
 			//格式数据类型
 			function changeData(res) {
+				var vipCardbglist = JSON.parse(sessionStorage.getItem('vipBglist'))
 				for (var i = 0; i < res.length; i++) {
 					switch (res[i].vipCardbgC) {
 						case 1:
-							res[i].vipCardbgClass = "./img/vipCard-bg1.png"
+							res[i].vipCardbgUrl = vipCardbglist[0].vipCardbgUrl
 							break;
 						case 2:
-							res[i].vipCardbgClass = "./img/vipCard-bg2.png"
+							res[i].vipCardbgUrl = vipCardbglist[1].vipCardbgUrl
 							break;
 						case 3:
-							res[i].vipCardbgClass = "./img/vipCard-bg3.png"
+							res[i].vipCardbgUrl = vipCardbglist[2].vipCardbgUrl
 							break;
 						case 4:
-							res[i].vipCardbgClass = "./img/vipCard-bg4.png"
+							res[i].vipCardbgUrl = vipCardbglist[3].vipCardbgUrl
 							break;
 						case 5:
-							res[i].vipCardbgClass = "./img/vipCard-bg5.png"
+							res[i].vipCardbgUrl = vipCardbglist[4].vipCardbgUrl
 							break;
 						case 6:
-							res[i].vipCardbgClass = "./img/vipCard-bg6.png"
+							res[i].vipCardbgUrl = vipCardbglist[5].vipCardbgUrl
 							break;
 						case 7:
-							res[i].vipCardbgClass = "./img/vipCard-bg7.png"
+							res[i].vipCardbgUrl = vipCardbglist[6].vipCardbgUrl
 							break;
 						case 8:
-							res[i].vipCardbgClass = "./img/vipCard-bg8.png"
+							res[i].vipCardbgUrl = vipCardbglist[7].vipCardbgUrl
 							break;
 						case 9:
-							res[i].vipCardbgClass = "./img/vipCard-bg9.png"
+							res[i].vipCardbgUrl = vipCardbglist[8].vipCardbgUrl
 							break;
 					}
 				}

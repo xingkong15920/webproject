@@ -385,18 +385,21 @@ var Datepicker;
 						_this.minRange = date;
 					}
 					_this.selectedDates = [_this.minRange, _this.maxRange]
-					
+
 					/* 修改 lsl */
-					startTime = _this.formatDate(format, _this.minRange)
-					endTime = _this.formatDate(format, _this.maxRange)
-					Customtime(startTime,endTime)
-					setTimeout(function() {
+					setTimeF()
+					getList(startTime, endTime)
+
+					function setTimeF() {
+						startTime = _this.formatDate(format, _this.minRange)
+						endTime = _this.formatDate(format, _this.maxRange)
+						Customtime(startTime, endTime)
 						$('.modal-mask').hide()
 						$('.modal-dialog').removeClass('maskshow')
-						$('.customtimeDiv').show()
-					}, 100)
+						$('.loadingB').show()
+					}
 					/* 修改 lsl */
-					
+
 				} else {
 					_this.selectedDates = [date];
 					_this.minRange = date;

@@ -1,86 +1,117 @@
-.pullToRefresh {
-    position:absolute;
-    left:0;
-    right:0;
-    margin:auto;
-    width: 50px;
-    height: 50px;
-    z-index: 10;
-    opacity: 1;
+@charset "utf-8";
 
-    transform:translateY(-55px) translateZ(0) rotateZ(0deg);
-    -ms-transform:translateY(-55px) translateZ(0) rotateZ(0deg); 	/* IE 9 */
-    -moz-transform:translateY(-55px) translateZ(0) rotateZ(0deg); 	/* Firefox */
-    -webkit-transform:translateY(-55px) translateZ(0) rotateZ(0deg); /* Safari 和 Chrome */
-    -o-transform:translateY(-55px) translateZ(0) rotateZ(0deg); 	/* Opera */
-}
-.backTranTop
-{
-    transition: transform 0.8s ease, opacity 0.8s ease;
-    -moz-transition: transform 0.8s ease, opacity 0.8s ease; /* Firefox 4 */
-    -webkit-transition: transform 0.8s ease, opacity 0.8s ease; /* Safari 和 Chrome */
-    -o-transition: transform 0.8s ease, opacity 0.8s ease; /* Opera */
-}
-.pullContainer {
-    position:relative;
-}
-.pullToRefresh img {
-    display:block;
-    width: 40px;
-    height: 40px;
-
-    /* 让img居中在.pullToRefresh中 */
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left:0;
-    right:0;
-    margin:auto;
-}
-/* loading旋转动画 */
-.loadingAnimation
-{
-    animation: loadingFrame 1s infinite;
-    -moz-animation: loadingFrame 1s infinite;	/* Firefox */
-    -webkit-animation: loadingFrame 1s infinite;	/* Safari 和 Chrome */
-    -o-animation: loadingFrame 1s infinite;	/* Opera */
-}
-@keyframes loadingFrame
-{
-    from {
-        transform: rotateZ(360deg);
-    }
-    to {
-        transform: rotateZ(0deg);
-    }
+#wrapper {
+	position: absolute;
+	z-index: 1;
+	height: 100%;
+	width: 100%;
 }
 
-@-moz-keyframes loadingFrame /* Firefox */
-{
-    from {
-        transform: rotateZ(360deg);
-    }
-    to {
-        transform: rotateZ(0deg);
-    }
+#scroller {
+	position: absolute;
+	z-index: 1;
+	/*	-webkit-touch-callout:none;*/
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	width: 100%;
+	padding: 0;
 }
 
-@-webkit-keyframes loadingFrame /* Safari 和 Chrome */
-{
-    from {
-        transform: rotateZ(360deg);
-    }
-    to {
-        transform: rotateZ(0deg);
-    }
+#scroller ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	text-align: left;
 }
 
-@-o-keyframes loadingFrame /* Opera */
-{
-    from {
-        transform: rotateZ(360deg);
-    }
-    to {
-        transform: rotateZ(0deg);
-    }
+#scroller li {
+	padding: 0 10px;
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #fff;
+	background-color: #fafafa;
+	font-size: 14px;
+}
+
+#pullDown,
+#pullUp {
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	font-size: 12px;
+	color: #888;
+	font-family: Arial, Microsoft YaHei;
+}
+
+#pullUp {
+	display: block;
+}
+
+.loader {
+	display: inline-block;
+	font-size: 0px;
+	padding: 0px;
+	display: none;
+}
+
+.loader span {
+	vertical-align: middle;
+	border-radius: 100%;
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin: 0 2px;
+	-webkit-animation: loader 0.8s linear infinite alternate;
+	animation: loader 0.8s linear infinite alternate;
+}
+
+.loader span:nth-child(1) {
+	-webkit-animation-delay: -1s;
+	animation-delay: -1s;
+	background: rgba(245, 103, 115, 0.6);
+}
+
+.loader span:nth-child(2) {
+	-webkit-animation-delay: -0.8s;
+	animation-delay: -0.8s;
+	background: rgba(245, 103, 115, 0.8);
+}
+
+.loader span:nth-child(3) {
+	-webkit-animation-delay: -0.26666s;
+	animation-delay: -0.26666s;
+	background: rgba(245, 103, 115, 1);
+}
+
+.loader span:nth-child(4) {
+	-webkit-animation-delay: -0.8s;
+	animation-delay: -0.8s;
+	background: rgba(245, 103, 115, 0.8);
+}
+
+.loader span:nth-child(5) {
+	-webkit-animation-delay: -1s;
+	animation-delay: -1s;
+	background: rgba(245, 103, 115, 0.4);
+}
+
+@keyframes loader {
+	from {
+		transform: scale(0, 0);
+	}
+
+	to {
+		transform: scale(1, 1);
+	}
+}
+
+@-webkit-keyframes loader {
+	from {
+		-webkit-transform: scale(0, 0);
+	}
+
+	to {
+		-webkit-transform: scale(1, 1);
+	}
 }
