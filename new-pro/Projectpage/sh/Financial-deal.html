@@ -107,13 +107,13 @@
 					<div class="layui-input-inline">
 						<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<span style="color:red;margin-left:20px">*不包含当日数据</span>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div class="layui-row Trad">
-				<div class="layui-col-md3">
+				<div class="layui-col-md3" style="width:17%">
 					<div class="homelist">
 						<p class="homelistitle">交易笔数</p>
 						<div class="homelistc">
@@ -121,7 +121,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="layui-col-md3">
+				<div class="layui-col-md3" style="width:17%">
 					<div class="homelist">
 						<p class="homelistitle">交易金额</p>
 						<div class="homelistc">
@@ -129,7 +129,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="layui-col-md3">
+				<div class="layui-col-md3" style="width:17%">
 					<div class="homelist">
 						<p class="homelistitle">退款金额</p>
 						<div class="homelistc">
@@ -138,7 +138,7 @@
 					</div>
 				</div>
 				
-				<div class="layui-col-md3">
+				<div class="layui-col-md3" style="width:17%">
 					<div class="homelist">
 						<p class="homelistitle">手续费</p>
 						<div class="homelistc">
@@ -146,7 +146,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="layui-col-md3">
+				<div class="layui-col-md3" style="width:17%">
 					<div class="homelist">
 						<p class="homelistitle">实收金额</p>
 						<div class="homelistc">
@@ -170,12 +170,16 @@
 			</div>
 		</div>
 		<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
-		<script src="../../common/config.js"></script>
+		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
 			var Statement_Date = []
 			var orderTotalMoney = []
-			var weChatOrderTotalMoney = []
+			var jyMoney = []
+			var jyCount = []
+			var reMoney = []
+			var shouMoney = []
+			var shishou = []
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			//var userNumber = '1000795634';
 			var dataO = new Object();
@@ -192,6 +196,69 @@
 			// 	}
 			// )
 			// 发送请求
+			function tab(id){
+					switch (id) {
+						case 0:
+						
+							CmsUtility.clearListArr(orderTotalMoney)
+							for(let i = 0 ; i < jyMoney.length;i++){
+								orderTotalMoney.push(jyMoney[i])
+							}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 1:
+
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < jyCount.length;i++){
+									orderTotalMoney.push(jyCount[i])
+								}
+							
+							myChart.clear()
+							console.log(orderTotalMoney)
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 2:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < reMoney.length;i++){
+									orderTotalMoney.push(reMoney[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 3:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < shouMoney.length;i++){
+									orderTotalMoney.push(shouMoney[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						case 4:
+							
+							CmsUtility.clearListArr(orderTotalMoney)
+								for(let i = 0 ; i < shishou.length;i++){
+									orderTotalMoney.push(shishou[i])
+								}
+							
+							myChart.clear()
+							myChart.setOption(option);
+							// statements_1
+							break;
+						default:
+							// statements_def
+							break;
+					}
+				}
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -237,26 +304,57 @@
 							"source":$('#source').val(),
 						},
 						function(data) {
+							if (data.data.maps == null) {
+		                        layer.msg('未查询到统计信息')
+		                        $('#totalOrder').text(0) //实收额
+		                        $('#orderTotalMoney').text(0) //退款额
+		                        $('#refundOrderTotalMoney').text(0) //交易笔数
+		                        $('#poundageTotalMoney').text(0) //退款笔数
+		                        $('#shishou').text(0) //退款笔数
+		                        CmsUtility.clearListArr(Statement_Date)
+		                        CmsUtility.clearListArr(orderTotalMoney)
+		                        CmsUtility.clearListArr(orderTotalMoney)
+		                        CmsUtility.clearListArr(jyMoney)
+		                        CmsUtility.clearListArr(jyCount)
+		                        CmsUtility.clearListArr(reMoney)
+		                        CmsUtility.clearListArr(shouMoney)
+		                        CmsUtility.clearListArr(shishou)
+		                        myChart.clear()
+		                        myChart.setOption(option);
+		                        return
+		                    }
 							CmsUtility.clearListArr(Statement_Date)
 							CmsUtility.clearListArr(orderTotalMoney)
+							CmsUtility.clearListArr(jyMoney)
+							CmsUtility.clearListArr(jyCount)
+							CmsUtility.clearListArr(reMoney)
+							CmsUtility.clearListArr(shouMoney)
+							CmsUtility.clearListArr(shishou)
 							console.log(data)
 							console.log(data.data.map2)
 							console.log(data.data.maps)
 							
-							$('#totalOrder').text(data.data.maps.totalOrder)
-							$('#orderTotalMoney').text(data.data.maps.orderTotalMoney)
-							$('#refundOrderTotalMoney').text(data.data.maps.refundOrderTotalMoney)
-							$('#poundageTotalMoney').text(data.data.maps.poundageTotalMoney)
-							$('#shishou').text(data.data.maps.orderTotalMoney-data.data.maps.refundOrderTotalMoney-data.data.maps.poundageTotalMoney)
+							$('#totalOrder').text(parseFloat(data.data.maps.totalOrder))
+							$('#orderTotalMoney').text(parseFloat(data.data.maps.orderTotalMoney).toFixed(2))
+							$('#refundOrderTotalMoney').text(parseFloat(data.data.maps.refundOrderTotalMoney).toFixed(2))
+							$('#poundageTotalMoney').text(parseFloat(data.data.maps.poundageTotalMoney).toFixed(2))
+							$('#shishou').text(parseFloat(data.data.maps.shishouMoney).toFixed(2))
 							var data = data.data.map2
 							if(!data) {
 								return
 							}
 							for(var j = 0; j < data.length; j++) {
-								Statement_Date.push(data[j].Statement_Date)
+								Statement_Date.push(data[j].statementDate)
 								orderTotalMoney.push(data[j].orderTotalMoney)
-								weChatOrderTotalMoney.push(data[j].weChatOrderTotalMoney)
+								jyMoney.push(data[j].orderTotalMoney)
+								jyCount.push(data[j].totalOrder)
+								reMoney.push(data[j].refundOrderTotalMoney)
+								shouMoney.push(data[j].poundageTotalMoney)
+								shishou.push((data[j].orderTotalMoney-data[j].refundOrderTotalMoney-data[j].poundageTotalMoney).toFixed(2))
 							}
+							
+							console.log(orderTotalMoney)
+							myChart.clear()
 							Statement_Date.sort()
 							// 为echarts对象加载数据
 							myChart.setOption(option);
@@ -273,7 +371,8 @@
 						reload: function() {
 							// 发送请求
 							reloadres();
-						}
+							var qiehuan = document.getElementsByClassName('qiehuan')
+for(let i = 0 ; i <qiehuan.length;i++) { qiehuan[i].setAttribute('class','qiehuan') } qiehuan[0].setAttribute('class','layui-this qiehuan') }
 					}
 
 				$('.layui-form .layui-btn').on('click', function() {
@@ -302,7 +401,7 @@
 					}
 				},
 				legend: {
-					data: ['金额']
+					data: ['']
 				},
 				calculable: true,
 				xAxis: [{
@@ -332,7 +431,7 @@
 					type: 'value'
 				}],
 				series: [{
-					name: '金额',
+					name: '',
 					type: 'line',
 					smooth: true,
 					itemStyle: {

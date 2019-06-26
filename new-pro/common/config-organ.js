@@ -4,10 +4,10 @@ var server;
 if(Edition == 'qty'){
 	//server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
     //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
-   //server = 'http://192.168.1.134:6005/shanhe-admin/'
-    server = 'https://nb.51shanhe.com/shanhe-admin/'
+   server = 'http://192.168.1.130:6005/shanhe-admin/'
+    //server = 'https://nb.51shanhe.com/shanhe-admin/'
 }else{
-	server  = 'http://192.168.1.134:6005/shanhe-admin/'
+	server  = 'http://192.168.1.167:6005/shanhe-admin/'
 }
 /* 
 接口前缀解释
@@ -257,7 +257,7 @@ var CmsConfig = {
             //查询子商户
             getInstitutionSub:"channelSub/getChannelSubMer",
             //添加子账户
-           insertInstitutionSub:"InstitutionSubaccount/insertInstitutionSub",
+           // insertInstitutionSub:"InstitutionSubaccount/insertInstitutionSub",
            //模糊查询商户
            getMerchantNumberlist:"channelSub/getMerchantNumberlist",
            //编辑子账号

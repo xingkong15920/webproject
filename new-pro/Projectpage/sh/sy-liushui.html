@@ -30,9 +30,11 @@
     <div class="x-body">
         <div class="demoTable">
             <div class="layui-form x-so">
-                <div class="layui-input-inline text">
-                    <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                    <input name="Assistant" id="Assistant" placeholder="营业员" autocomplete="off" class="layui-input">
+                <div class="layui-input-inline">
+                    <!-- 需要数据对接(完成) -->
+                    <select name="shopName" id="shopNumber" lay-search>
+                        <option value="">--请选择店员--</option>
+                    </select>
                 </div>
                 <div class="layui-input-inline text">
                     <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
@@ -70,7 +72,7 @@
             </div>
         </div>
         <div style="margin-bottom:20px;margin-top:20px">
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">交易笔数</p>
@@ -90,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">交易金额（元）</span>
@@ -111,7 +113,28 @@
                     </div>
                 </div>
             </div>
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
+                <div class="baobiaoK">
+                    <div class="baobiaolist">
+                        <p class="baobiaolistitle">手续费（元）</span>
+                        </p>
+                        <p class="baobiaolistct" style="font-size:16px"><span id="shopPoundage">0</span> 元</p>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+                        <div class="baobiaodc dnsj">
+                            <div></div>
+                            <p><span id="weChatShopPoundage">0</span> 元</p>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6 layui-col-xs6 baobiaod">
+                        <div class="baobiaodc wmsj">
+                            <div></div>
+                            <p><span id="alipayShopPoundage">0</span> 元</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">退款金额（元）</span>
@@ -132,7 +155,7 @@
                     </div>
                 </div>
             </div>
-            <div class="baobiao-col-4" style="width:20%;margin-right:20px;display:inline-block">
+            <div class="baobiao-col-4" style="width:16%;margin-right:20px;display:inline-block">
                 <div class="baobiaoK">
                     <div class="baobiaolist">
                         <p class="baobiaolistitle">实际收入（元）</span>
@@ -165,7 +188,7 @@
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
 
 		</script>
-    <script src="../../common/config.js"></script>
+    <script src="../../common/config-sh.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
     var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
@@ -220,7 +243,17 @@
         var date2 = new Date(date1);
         date2.setDate(date1.getDate() + aa);
         var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
-        return time2
+
+        var a = time2.split('-')[0],
+            b = time2.split('-')[1],
+            c = time2.split('-')[2]
+        if (b < 10) {
+            b = 0 + b
+        }
+        if (c < 10) {
+            c = 0 + c
+        }
+        return a + '-' + b + '-' + c
     }
     $('#startTime').val(fun_date(-6) + ' ' + '00:00:00')
     $('#endTime').val(fun_date(0) + ' ' + '23:59:59')
@@ -253,57 +286,54 @@
             max: nowTime,
             // value: endDate
         });
+        CmsUtility.postAjaxCall(
+            CmsConfig.addressUrl.Merchant.getClerkList,
+            dataO,
+            function(data) {
+                var shopData = data.data
+                for (var i = 0; i < shopData.length; i++) {
+                    $("#shopNumber").append("<option value='" + shopData[i].clerkNumber + '/'+shopData[i].clerkName  + "'>" + shopData[i].clerkName + "</option>");
+                }
+                form.render()
+            }
+        )
         $('#baobiao').click(function() {
            
             if (!verTime()) {
                 layer.msg('只能查询三个月以内数据')
                 return
             }
-            
-            layer.prompt({
-                title: '请输入您的邮箱地址'
-            }, function(pass, index) {
-                console.log(pass, index)
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    'transaction/getTransactionExcel', 
-                    {
-                        "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-                        "merchantNumber": userNumber,
-                        "merchantName": JSON.parse(sessionStorage.getItem('userSh')).merchantName,
-                        "shopNumber":$('#shopName').val().split('/')[0],
-                        "shopName":$('#shopName').val().split('/')[1],
-                        "clerkName":$('#Assistant').val().trim(),
-                        "batch": $('#orderCode').val().trim(),
-						"oneTransactionType": $('#payment').val().trim(),
-						"orderState": $('#orderStatus').val().trim(),
-                        "startTime": $('#startTime').val().split(' ')[0],
-                        "endTime": $('#endTime').val().split(' ')[0],
-                        "mailBox": pass,
-                        "billType": $('#billType').val()
-                    },
-                    function(data) {
-                        if (data.code == 1000) {
-                            // console.log(data)
-                            // layer.msg('生成成功')
-
-                            // layui.table.reload('deviceInfo')
-                            // layer.closeAll()
-                        } else {
-                            layer.msg(data.msg)
-
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
-                setTimeout(function() {
-                    layer.msg('邮件已发送,请稍后到邮箱查收')
-                    layer.closeAll()
-                }, 1000)
-                // layui.table.reload('YLBlist');
+            var newData = new Object()
+            newData.institutionNumber =  JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+            newData.merchantNumber =  userNumber,
+            newData.merchantName =  JSON.parse(sessionStorage.getItem('userSh')).merchantName,
+            newData.shopNumber = $('#shopName').val().split('/')[0],
+            newData.shopName = $('#shopName').val().split('/')[1],
+            newData.clerkerName = $('#shopNumber').val().split('/')[1],
+            newData.clerkerNumber = $('#shopNumber').val().split('/')[0],
+            newData.batch =  $('#orderCode').val().trim(),
+            newData.oneTransactionType =  $('#payment').val().trim(),
+            newData.orderState =  $('#orderStatus').val().trim(),
+            newData.startTime =  $('#startTime').val().split(' ')[0],
+            newData.endTime =  $('#endTime').val().split(' ')[0],
+            newData.billType =  $('#billType').val()
+            layer.open({
+                type: 2,
+                title: '下载报表',
+                shade: 0.5,
+                area: ['30%', '30%'],
+                maxmin: false,
+                resize: false,
+                content: ['down-excel.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                    iframe.subPage(newData,'3')
+                }
             });
+            return
+           
         })
         CmsUtility.postAjaxCall(
             CmsConfig.addressUrl.Merchant.getShopNames,
@@ -329,25 +359,30 @@
                     "startTime": $('#startTime').val().split(' ')[0],
                     "endTime": $('#endTime').val().split(' ')[0],
                     "zhifuType": $('#payment').val().trim(),
-                    "clerkName": $('#Assistant').val().trim(),
+                    "clerkerNumber": $('#shopNumber').val().split('/')[0],
                     "shopNumber": $('#shopName').val().split('/')[0],
                     "orderState": $('#orderStatus').val().trim(),
+                    "batch": $('#orderCode').val().trim(),
                 },
                 function(data) {
                     console.log(data)
                     if (data.code == 1000) {
-                        $('#totalOrder').html(data.data[0].totalOrder)
-                        $('#weChatTotalOrder').html(data.data[0].weChatTotalOrder)
-                        $('#alipayTotalOrder').html(data.data[0].alipayTotalOrder)
-                        $('#orderTotalMoney').html(data.data[0].orderTotalMoney)
-                        $('#alipayOrderTotalMoney').html(data.data[0].alipayOrderTotalMoney)
-                        $('#weChatOrderTotalMoney').html(data.data[0].weChatOrderTotalMoney)
-                        $('#tuikuan').html(data.data[0].refundOrderTotalMoney)
-                        $('#tuiweixin').html(data.data[0].refundWeChatOrderTotalMoney)
-                        $('#tuiali').html(data.data[0].refundAlipayOrderTotalMoney)
-                        $('#shishou').html((data.data[0].orderTotalMoney - data.data[0].refundOrderTotalMoney).toFixed(2))
-                        $('#shiweixin').html((data.data[0].weChatOrderTotalMoney - data.data[0].refundWeChatOrderTotalMoney).toFixed(2))
-                        $('#shiali').html((data.data[0].alipayOrderTotalMoney - data.data[0].refundAlipayOrderTotalMoney).toFixed(2))
+                        console.log(data.data.shopPoundage)
+                        $('#totalOrder').html(data.data.totalOrder)
+                        $('#weChatTotalOrder').html(data.data.weChatTotalOrder)
+                        $('#alipayTotalOrder').html(data.data.alipayTotalOrder)
+                        $('#orderTotalMoney').html(data.data.orderTotalMoney)
+                        $('#alipayOrderTotalMoney').html(data.data.alipayOrderTotalMoney)
+                        $('#weChatOrderTotalMoney').html(data.data.weChatOrderTotalMoney)
+                        $("#shopPoundage").html(data.data.shopPoundage)
+                        $("#weChatShopPoundage").html(data.data.weChatShopPoundage)
+                        $("#alipayShopPoundage").html(data.data.alipayShopPoundage)
+                        $('#tuikuan').html(data.data.refundOrderTotalMoney)
+                        $('#tuiweixin').html(data.data.refundWeChatOrderTotalMoney)
+                        $('#tuiali').html(data.data.refundAlipayOrderTotalMoney)
+                        $('#shishou').html((data.data.orderTotalMoney - data.data.shopPoundage - data.data.refundOrderTotalMoney).toFixed(2))
+                        $('#shiweixin').html((data.data.weChatOrderTotalMoney - data.data.weChatShopPoundage - data.data.refundWeChatOrderTotalMoney).toFixed(2))
+                        $('#shiali').html((data.data.alipayOrderTotalMoney - data.data.alipayShopPoundage - data.data.refundAlipayOrderTotalMoney).toFixed(2))
 
                     } else {
                         layer.msg(data.msg)
@@ -371,7 +406,7 @@
                 elem: '#LAY_table_bill',
                 url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getTransactionList + '?merchantNumber=' + userNumber,
                 where: {
-                    clerkName: $('#Assistant').val().trim(),
+                    clerkerNumber: $('#shopNumber').val().split('/')[0],
                     batch: $('#orderCode').val().trim(),
                     shopNumber: $('#shopName').val().split('/')[0],
                     oneTransactionType: $('#payment').val().trim(),

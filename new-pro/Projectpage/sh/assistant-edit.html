@@ -30,13 +30,13 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">管理员名称</label>
 					<div class="layui-input-inline">
-						<input type="text" id="name" name="clerkName" lay-verify="name" autocomplete="off" class="layui-input">
+						<input type="text" id="name" name="clerkerName" lay-verify="name" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">管理员电话</label>
 					<div class="layui-input-inline">
-						<input type="text" id="mphone" name="registeredCell" lay-verify="phone" autocomplete="off" class="layui-input">
+						<input type="text" id="mphone" name="clerkerTel" lay-verify="phone" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 
@@ -51,7 +51,7 @@
 				</div>
 			</form>
 		</div>
-		<script src="../../common/config.js"></script>
+		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
 			function subPageClerkedit(data, userNumber) {
@@ -72,8 +72,8 @@
 					//表单初始赋值
 					form.val('editAssistant', {
 						// "userKinds":data.userKinds,
-						"clerkName": data.clerkName,
-						"registeredCell": data.registeredCell,
+						"clerkerName": data.clerkName,
+						"clerkerTel": data.registeredCell,
 					})
 
 					//自定义验证规则
@@ -94,7 +94,7 @@
 					//监听提交
 					form.on('submit(add)', function(data) {
 						if(!data.field.clerkNumber){
-							data.field.clerkNumber = clerkNumber
+							data.field.clerkerNumber = clerkNumber
 						}
 						console.log(data.field);
 						var addData = data.field
@@ -106,7 +106,7 @@
 						// 发送请求
 						CmsUtility.postAjaxCall(
 							//系统设置
-							CmsConfig.addressUrl.Merchant.modifyClerk,
+							CmsConfig.addressUrl.Merchant.updateClerker,
 							addData,
 							function(data) {
 								if(data.code == 1000) {

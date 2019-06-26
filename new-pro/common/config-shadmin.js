@@ -3,10 +3,10 @@ var Edition = 'qty1';
 var server;
 if (Edition == 'qty') {
 	// server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
-	server = 'http://192.168.1.134:5006/shanhe-mechanism/'
+	server = 'http://192.168.1.134:6005/shanhe-mechanism/'
 	// server  = 'https://api.51shanhe.com/m-api/shanhe-mechanism/'
 } else {
-	server = 'http://192.168.1.113:4006/shanhe-admin/'
+	server = 'http://192.168.1.134:6005/shanhe-admin/'
 }
 /* 
 接口前缀解释

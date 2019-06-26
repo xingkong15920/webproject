@@ -320,7 +320,7 @@
         var str = '<option value="">请选择省</option>'
         $.ajax({
             type: 'post',
-            url:CmsConfig.ServiceUrl.ApiRootUrl +  CmsConfig.addressUrl.Public.getAddress, 
+            url:CmsConfig.ServiceUrl.ApiRootUrl +  CmsConfig.addressUrl.Public.getAreajson, 
             data: {
                 "provinceCode":'',
                 "cityCode":'',

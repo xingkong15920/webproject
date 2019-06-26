@@ -62,7 +62,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label"  style="width:60px;">金额</label>
                     <div class="layui-input-block">
-                        <input type="text" name="number" lay-verify="number" autocomplete="off" placeholder="请输入数字" class="layui-input" id="number">
+                        <input type="text" name="number" lay-verify="number||two" autocomplete="off" placeholder="请输入数字" class="layui-input" id="number">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -168,6 +168,13 @@
                         return '不能为空';
                     }
                 },
+                two:function(value){
+                    if(value.indexOf('.')>=0){
+                        if(value.split('.')[1].length >2){
+                            return '小数点后最多两位'
+                        }
+                    }
+                }
             });
              $("#agName").bind('input propertychange', function() {
             console.log(this.value)
@@ -253,7 +260,6 @@
                 tjData.remark = data.field.mark
                 
                 console.log(tjData)
-                
                 CmsUtility.postAjaxCall(
                     //系统设置
                     CmsConfig.addressUrl.Mechanism.addAgentLocal,

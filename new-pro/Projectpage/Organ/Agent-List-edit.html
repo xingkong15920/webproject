@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <blockquote class="layui-elem-quote">费率设置(费率单位为百分比，示例：0.38%)</blockquote>
-                    <fieldset class="layui-elem-field layui-field-title">
+                    <fieldset class="layui-elem-field layui-field-title alipay" style="display:none">
                         <legend>官方支付宝</legend>
                         <div class="layui-form-item">
                             <label class="layui-form-label">官方支付宝费率</label>
@@ -149,7 +149,7 @@
                             </div>
                         </div>
                     </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title">
+                    <fieldset class="layui-elem-field layui-field-title wechatpay" style="display:none">
                         <legend>官方微信</legend>
                         <div class="layui-form-item">
                             <label class="layui-form-label">官方微信费率</label>
@@ -161,7 +161,7 @@
                         </div>
                     </fieldset>
                     
-                    <fieldset class="layui-elem-field layui-field-title">
+                    <fieldset class="layui-elem-field layui-field-title fuyou" style="display:none">
                         <legend>富友通道</legend>
                         <div class="layui-form-item">
                             <div class="layui-inline">
@@ -180,7 +180,7 @@
                             </div>
                         </div>
                     </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title">
+                    <fieldset class="layui-elem-field layui-field-title yrm" style="display:none">
                         <legend>易融码通道</legend>
                         <div class="layui-form-item">
                             <div class="layui-inline">
@@ -199,10 +199,10 @@
                             </div>
                         </div>
                     </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title">
+                    <fieldset class="layui-elem-field layui-field-title xdl" style="display:none">
                         <legend>新大陆通道</legend>
                         <div class="layui-form-item">
-                            <div class="layui-inline">
+                            <!-- <div class="layui-inline">
                                 <label class="layui-form-label">D1费率(%)</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="xdlRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
@@ -215,10 +215,17 @@
                                     <input type="text" name="xdlRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
                              value="">
                                 </div>
+                            </div> -->
+                            <div class="layui-inline">
+                                <label class="layui-form-label">T1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="xdlRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="0.300">
+                                </div>
                             </div>
                         </div>
                     </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title">
+                    <fieldset class="layui-elem-field layui-field-title sxf" style="display:none">
                         <legend>随行付通道</legend>
                         <div class="layui-form-item">
                             <div class="layui-inline">
@@ -315,6 +322,53 @@
                 element = layui.element,
                 layer = layui.layer;
             var tableSelect = layui.tableSelect;
+            CmsUtility.postAjaxCall(
+                        //系统设置
+                CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("organUser")).institutionNumber,
+                {
+                    "page":1,
+                    "limit":10
+                },
+                function(data) {
+                    console.log(data)
+                    if(data.code == '1000') {
+                        
+                        for(var i = 0 ; i < data.data.PaymentChannellist.length;i++){
+                            switch (data.data.PaymentChannellist[i].paymentChannelType) {
+                                case 0:
+                                console.log('123')
+                                    $('.alipay').show()
+                                    break;
+                                case 1:
+                                    $('.wechatpay').show()
+                                    break;
+                                case 2:
+                                    $('.fuyou').show()
+                                    break;
+                                case 3:
+                                    $('.yrm').show()
+                                    break;
+                                case 4:
+                                    $('.xdl').show()
+                                    break;
+                                case 5:
+                                    $('.sxf').show()
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
+                            }
+                        }
+                        
+
+                    } else {
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Public.getAreajson, {},
@@ -498,12 +552,19 @@
                                     
                                     "xdlRateD0":(data.data[i].rate*100).toFixed(3) ,
                                 })
-                            }else{
+                            }else if(data.data[i].rateType == 'D1'){
                                 form.val('cardAdd', {
                            
                                     // "T1Rate": T1,
                                     
                                     "xdlRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }else{
+                               form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "xdlRateT1":(data.data[i].rate*100).toFixed(3) ,
                                 })
                             }
                             
@@ -672,6 +733,7 @@
             addData.yrmRateD0 = (addData.yrmRateD0/10000*100).toFixed(5)
             addData.xdlRateD1 = (addData.xdlRateD1/10000*100).toFixed(5)
             addData.xdlRateD0 = (addData.xdlRateD0/10000*100).toFixed(5)
+            addData.xdlRateT1 = (addData.xdlRateT1/10000*100).toFixed(5)
             addData.sxfRateD0 = (addData.sxfRateD0/10000*100).toFixed(5)
             addData.sxfRateD1 = (addData.sxfRateD1/10000*100).toFixed(5)
                 addData.pAgentLevel = jgData.pAgentLevel == '--'?'':jgData.pAgentLevel

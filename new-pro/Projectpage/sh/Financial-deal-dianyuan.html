@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<meta name="renderer" content="webkit">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-		<style>
-			.x-so input.layui-input {
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style>
+        .x-so input.layui-input {
 				width: 100%;
 			}
 			
@@ -70,294 +70,400 @@
 				font-size: 20px;
 			}
 		</style>
-	</head>
+</head>
 
-	<body id="iosiframe">
-		<div class="x-nav">
-			<span class="layui-breadcrumb">
+<body id="iosiframe">
+    <div class="x-nav">
+        <span class="layui-breadcrumb">
 				<a href="">首页</a>
 				<a href="">财务分析</a>
 				<a><cite>店员统计分析</cite></a>
 			</span>
-			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
-		</div>
-		<div class="x-body">
-			<div class="layui-row">
-				<div class="layui-form x-so">
-					<div class="layui-input-inline">
-						<!-- 需要数据对接(完成) -->
-						<select name="shopName" id="shopNumber" lay-search>
-							<option value="">--请选择店员--</option>
-						</select>
-					</div>
-					<div class="layui-input-inline">
-						<select name="source" id="source">
-							<option value="">支付渠道</option>
-							<option value="0">支付宝</option>
-							<option value="1">微信</option>
-						</select>
-					</div>
-					<div class="layui-input-inline">
-						<input type="text" class="layui-input" placeholder="开始日" autocomplete="off" name="startTime" id="startTime">
-					</div>
-					<div class="layui-input-inline">
-						<input type="text" class="layui-input" placeholder="截止日" autocomplete="off" name="endTime" id="endTime">
-					</div>
-					<div class="layui-input-inline">
-						<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
-					</div>
-					<div class="layui-input-inline">
-						<span style="color:red;margin-left:20px">*不包含当日数据</span>
-					</div>
-				</div>
-			</div>
-			<div class="layui-row Trad">
-				<div class="layui-col-md3">
-					<div class="homelist">
-						<p class="homelistitle">实收额</p>
-						<div class="homelistc">
-							<span class="x-left homelistct" style="line-height:40px;" id="orderTotalMoney"></span>
-						</div>
-					</div>
-				</div>
-				<div class="layui-col-md3">
-					<div class="homelist">
-						<p class="homelistitle">退款额</p>
-						<div class="homelistc">
-							<span class="x-left homelistct" style="line-height:40px;" id="refundOrderTotalMoney"></span>
-						</div>
-					</div>
-				</div>
-				<div class="layui-col-md3">
-					<div class="homelist">
-						<p class="homelistitle">交易笔数</p>
-						<div class="homelistc">
-							<span class="x-left homelistct" style="line-height:40px;" id="totalOrder"></span>
-						</div>
-					</div>
-				</div>
-				<div class="layui-col-md3">
-					<div class="homelist">
-						<p class="homelistitle">退款笔数</p>
-						<div class="homelistc">
-							<span class="x-left homelistct" style="line-height:40px;" id="refundTotalOrder"></span>
-						</div>
-					</div>
-				</div>
+    </div>
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form x-so">
+                <div class="layui-input-inline">
+                    <!-- 需要数据对接(完成) -->
+                    <select name="shopName" id="shopNumber" lay-search>
+                        <option value="">--请选择店员--</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="source" id="source">
+                        <option value="">支付渠道</option>
+                        <option value="2">支付宝</option>
+                            <option value="1">微信</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="开始日" autocomplete="off" name="startTime" id="startTime">
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="截止日" autocomplete="off" name="endTime" id="endTime">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+                <!-- <div class="layui-input-inline">
+                    <span style="color:red;margin-left:20px">*不包含当日数据</span>
+                </div> -->
+            </div>
+        </div>
+        <div class="layui-row Trad">
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">交易笔数</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="totalOrder"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">交易金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="orderTotalMoney"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">退款金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="refundOrderTotalMoney"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">手续费</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="poundageTotalMoney"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">实收金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="shishou"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this qiehuan" style="width:60px" onclick="tab(0)">交易金额</li>
+                <li style="width:60px" class="qiehuan" onclick="tab(1)">交易笔数</li>
+                <li style="width:60px" class="qiehuan" onclick="tab(2)">退款金额</li>
+                <li style="width:60px" class="qiehuan" onclick="tab(3)">手续费</li>
+                <li style="width:60px" class="qiehuan" onclick="tab(4)">实收金额</li>
+            </ul>
+        </div>
+        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+        <div class="grid-demo border">
+            <div id="main" style="height: 500px"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+    <script src="../../common/config-sh.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var Statement_Date = []
+    var orderTotalMoney = []
+    var jyMoney = []
+    var jyCount = []
+    var reMoney = []
+    var shouMoney = []
+    var shishou = []
+    var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+    var myChart
+    //var userNumber = '1000795634';
+    var dataO = new Object();
+    dataO.merchantNumber = userNumber
+    // //获取商户下门店名称
+    // CmsUtility.postAjaxCall(
+    // 	CmsConfig.addressUrl.Merchant.getShopNames,
+    // 	dataO,
+    // 	function(data) {
+    // 		var shopData = data.data
+    // 		for(var i = 0; i < shopData.length; i++) {
+    // 			$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+    // 		}
+    // 	}
+    // )
+    function tab(id) {
+        switch (id) {
+            case 0:
 
-			</div>
-			<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
-			<div class="grid-demo border">
-				<div id="main" style="height: 500px"></div>
-			</div>
-		</div>
-		<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
-		<script src="../../common/config.js"></script>
-		<script src="../../common/utility.js"></script>
-		<script>
-			var Statement_Date = []
-			var orderTotalMoney = []
-			var weChatOrderTotalMoney = []
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			//var userNumber = '1000795634';
-			var dataO = new Object();
-			dataO.merchantNumber = userNumber
-			dataO.page = 1
-			dataO.limit = 200
-			// //获取商户下门店名称
-			// CmsUtility.postAjaxCall(
-			// 	CmsConfig.addressUrl.Merchant.getShopNames,
-			// 	dataO,
-			// 	function(data) {
-			// 		var shopData = data.data
-			// 		for(var i = 0; i < shopData.length; i++) {
-			// 			$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
-			// 		}
-			// 	}
-			// )
-			// 发送请求
-			layui.use(['laydate', 'table', 'form'], function() {
-				var laydate = layui.laydate,
-					table = layui.table,
-					form = layui.form,
-					$ = layui.jquery;
-				laydate.render({
-					elem: '#couponName'
-				})
-				laydate.render({
-					elem: '#startTime',
-					value: new Date(new Date() - 1000 * 60 * 60 * 24 * 7)
-				})
-				laydate.render({
-					elem: '#endTime',
-					value: new Date()
-				})
-				var addData = {
-					"startTime": $('#startTime').val(),
-					"endTime": $('#endTime').val(),
-					"shopNumber": $('#shopNumber').val(),
-					"source":$('#source').val(),
-					"institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
-				}
-				reloadres();
-				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getClerks,
-					dataO,
-					function(data) {
-						var shopData = data.data.result
-						for(var i = 0; i < shopData.length; i++) {
-							$("#shopNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + "</option>");
-						}
-						form.render()
-					}
-				)
-				function reloadres() {
-					CmsUtility.postAjaxCall(
-						//系统设置
-						'bill/getMerClerkBill' + '?merchantNumber=' + userNumber, 
-						{
-							"startTime": $('#startTime').val(),
-							"endTime": $('#endTime').val(),
-							"clerkNumber": $('#shopNumber').val(),
-							"zhifuType":$('#source').val(),
-							"institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
-						},
-						function(data) {
-							if(data.code  != 1000){
-								layer.msg(data.msg)
-								$('#orderTotalMoney').text(0)//实收额
-								$('#refundOrderTotalMoney').text(0)//退款额
-								$('#totalOrder').text(0)//交易笔数
-								$('#refundTotalOrder').text(0)//退款笔数
-								CmsUtility.clearListArr(Statement_Date)
-								CmsUtility.clearListArr(orderTotalMoney)
-								myChart.setOption(option);
-								return
-							}
-							CmsUtility.clearListArr(Statement_Date)
-							CmsUtility.clearListArr(orderTotalMoney)
-							console.log(data)
-							console.log(data.data.map2)
-							console.log(data.data.maps)
-							$('#orderTotalMoney').text(data.data.merClerkBill[0].transactionAmount)//实收额
-							$('#refundOrderTotalMoney').text(data.data.merClerkBill[0].refundAmount)//退款额
-							$('#totalOrder').text(data.data.merClerkBill[0].jyCount)//交易笔数
-							$('#refundTotalOrder').text(data.data.merClerkBill[0].shopPoundage)//退款笔数
-							var data = data.data.merClerkBillList
-							if(!data) {
-								return
-							}
-							for(var j = 0; j < data.length; j++) {
-								Statement_Date.push(data[j].transactionTime)
-								orderTotalMoney.push(data[j].transactionAmount)
-								weChatOrderTotalMoney.push(data[j].weChatOrderTotalMoney)
-							}
-							Statement_Date.sort()
-							// 为echarts对象加载数据
-							myChart.setOption(option);
-						},
-						function(data) {
-							console.log('222')
-						}
-					)
-				}
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < jyMoney.length; i++) {
+                    orderTotalMoney.push(jyMoney[i])
+                }
 
-				//方法级渲染  
-				var $ = layui.$,
-					active = {
-						reload: function() {
-							// 发送请求
-							reloadres();
-						}
-					}
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 1:
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < jyCount.length; i++) {
+                    orderTotalMoney.push(jyCount[i])
+                }
 
-				$('.layui-form .layui-btn').on('click', function() {
-					var type = $(this).data('type');
-					active[type] ? active[type].call(this) : '';
-				});
-			});
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 2:
 
-			var myChart = echarts.init(document.getElementById('main'));
-			var option = {
-				grid: {
-					x: 70,
-					x2: 20,
-					y: 70,
-					y2: 40,
-					borderWidth: 1
-				},
-				title: {
-					text: '交易订单概况',
-					subtext: '按天统计'
-				},
-				tooltip: {
-					trigger: 'axis',
-					axisPointer: {
-						type: 'cross'
-					}
-				},
-				legend: {
-					data: ['金额']
-				},
-				calculable: true,
-				xAxis: [{
-					type: 'category',
-					axisTick: {
-						alignWithLabel: true
-					},
-					axisLine: {
-						onZero: false
-					},
-					data: Statement_Date
-				}],
-				yAxis: [{
-					splitLine: {
-						show: true,
-						lineStyle: {
-							type: "dashed",
-							color: "#dfdfdf"
-						}
-					},
-					axisLabel: {
-						textStyle: {
-							fontSize: 14,
-							color: '#5b6e89'
-						}
-					},
-					type: 'value'
-				}],
-				series: [{
-					name: '金额',
-					type: 'line',
-					smooth: true,
-					itemStyle: {
-						normal: {
-							areaStyle: {
-								type: 'default',
-								color: {
-									type: 'linear',
-									x: 0,
-									y: 0,
-									x2: 0,
-									y2: 1,
-									colorStops: [{
-										offset: 0,
-										color: '#6e94ff'
-									}, {
-										offset: 1,
-										color: '#ffffff'
-									}],
-									globalCoord: false
-								}
-							},
-							color: '#6e94ff'
-						}
-					},
-					data: orderTotalMoney
-				}]
-			};
-		</script>
-	</body>
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < reMoney.length; i++) {
+                    orderTotalMoney.push(reMoney[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 3:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < shouMoney.length; i++) {
+                    orderTotalMoney.push(shouMoney[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 4:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < shishou.length; i++) {
+                    orderTotalMoney.push(shishou[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            default:
+                // statements_def
+                break;
+        }
+    }
+    // 发送请求
+    layui.use(['laydate', 'table', 'form'], function() {
+        var laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            $ = layui.jquery;
+        laydate.render({
+            elem: '#couponName'
+        })
+        laydate.render({
+            elem: '#startTime',
+            value: new Date(new Date() - 1000 * 60 * 60 * 24 * 7)
+        })
+        laydate.render({
+            elem: '#endTime',
+            value: new Date()
+        })
+        var addData = {
+            "startTime": $('#startTime').val(),
+            "endTime": $('#endTime').val(),
+            "shopNumber": $('#shopNumber').val(),
+            "source": $('#source').val(),
+            "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
+        }
+        reloadres();
+        CmsUtility.postAjaxCall(
+            CmsConfig.addressUrl.Merchant.getClerkList,
+            dataO,
+            function(data) {
+                var shopData = data.data
+                for (var i = 0; i < shopData.length; i++) {
+                    $("#shopNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + "</option>");
+                }
+                form.render()
+            }
+        )
+
+        function reloadres() {
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Merchant.getClerkStatistics + '?merchantNumber=' + userNumber, {
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
+                    "clerkNumber": $('#shopNumber').val(),
+                    "zhifuType": $('#source').val(),
+                    // "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
+                },
+                function(data) {
+                    if (data.code != 1000) {
+                        layer.msg(data.msg)
+                        $('#orderTotalMoney').text(0) //实收额
+                        $('#refundOrderTotalMoney').text(0) //退款额
+                        $('#totalOrder').text(0) //交易笔数
+                        $('#poundageTotalMoney').text(0) //退款笔数
+                        $('#shishou').text(0) //退款笔数
+                        CmsUtility.clearListArr(Statement_Date)
+                        CmsUtility.clearListArr(orderTotalMoney)
+                        CmsUtility.clearListArr(orderTotalMoney)
+                        CmsUtility.clearListArr(jyMoney)
+                        CmsUtility.clearListArr(jyCount)
+                        CmsUtility.clearListArr(reMoney)
+                        CmsUtility.clearListArr(shouMoney)
+                        CmsUtility.clearListArr(shishou)
+                        myChart.clear()
+                        myChart.setOption(option);
+                        return
+                    }
+                    CmsUtility.clearListArr(Statement_Date)
+                    CmsUtility.clearListArr(orderTotalMoney)
+                    CmsUtility.clearListArr(orderTotalMoney)
+                    CmsUtility.clearListArr(jyMoney)
+                    CmsUtility.clearListArr(jyCount)
+                    CmsUtility.clearListArr(reMoney)
+                    CmsUtility.clearListArr(shouMoney)
+                    CmsUtility.clearListArr(shishou)
+                    console.log(data)
+                    console.log(data.data.map2)
+                    console.log(data.data.maps)
+                    $('#totalOrder').text(data.data.merClerkBill[0].totalOrder)
+                    $('#orderTotalMoney').text(parseFloat(data.data.merClerkBill[0].orderTotalMoney).toFixed(2))
+                    $('#refundOrderTotalMoney').text(parseFloat(data.data.merClerkBill[0].refundOrderTotalMoney).toFixed(2))
+                    $('#poundageTotalMoney').text(parseFloat(data.data.merClerkBill[0].poundageTotalMoney).toFixed(2))
+                    $('#shishou').text(parseFloat(data.data.merClerkBill[0].shishouMoney).toFixed(2))
+                    var data = data.data.merClerkBillList
+                    if (!data) {
+                        return
+                    }
+                    for (var j = 0; j < data.length; j++) {
+                        Statement_Date.push(data[j].statementDate)
+                        orderTotalMoney.push(data[j].orderTotalMoney)
+                        jyMoney.push(data[j].orderTotalMoney)
+                        jyCount.push(data[j].totalOrder)
+                        reMoney.push(data[j].refundOrderTotalMoney)
+                        shouMoney.push(data[j].poundageTotalMoney)
+                        shishou.push((data[j].shishouMoney))
+                    }
+                    Statement_Date.sort()
+                    myChart.clear()
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+
+        //方法级渲染  
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    // 发送请求
+                    reloadres();
+                    var qiehuan = document.getElementsByClassName('qiehuan')
+                    for (let i = 0; i < qiehuan.length; i++) {
+                        qiehuan[i].setAttribute('class', 'qiehuan')
+                    }
+                    qiehuan[0].setAttribute('class', 'layui-this qiehuan')
+
+                }
+            }
+
+        $('.layui-form .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+    myChart = echarts.init(document.getElementById('main'));
+    var option = {
+        grid: {
+            x: 70,
+            x2: 20,
+            y: 70,
+            y2: 40,
+            borderWidth: 1
+        },
+        title: {
+            text: '交易订单概况',
+            subtext: '按天统计'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        legend: {
+            data: ['']
+        },
+        calculable: true,
+        xAxis: [{
+            type: 'category',
+            axisTick: {
+                alignWithLabel: true
+            },
+            axisLine: {
+                onZero: false
+            },
+            data: Statement_Date
+        }],
+        yAxis: [{
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    type: "dashed",
+                    color: "#dfdfdf"
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    fontSize: 14,
+                    color: '#5b6e89'
+                }
+            },
+            type: 'value'
+        }],
+        series: [{
+            name: '',
+            type: 'line',
+            smooth: true,
+            itemStyle: {
+                normal: {
+                    areaStyle: {
+                        type: 'default',
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0,
+                                color: '#6e94ff'
+                            }, {
+                                offset: 1,
+                                color: '#ffffff'
+                            }],
+                            globalCoord: false
+                        }
+                    },
+                    color: '#6e94ff'
+                }
+            },
+            data: orderTotalMoney
+        }]
+    };
+    </script>
+</body>
 
 </html>

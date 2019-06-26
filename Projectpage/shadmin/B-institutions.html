@@ -159,7 +159,14 @@
 								field: 'effectiveDate',
 								title: '有效期',
 								align: 'center',
-								width: 200
+								width: 200,
+								templet:function(data){
+									if(data.secular == 0){
+										return '长期'
+									}else{
+										return data.effectiveDate
+									}
+								}
 							}, {
 								field: 'enable',
 								title: '状态',
@@ -219,7 +226,7 @@
 						layer.open({
 							type: 2,
 							title: '编辑',
-							area: ['400px', '500px'], //宽高
+							area: ['70%', '700px'], //宽高
 							content: 'B-institutions-edit.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
@@ -229,7 +236,7 @@
 							}
 						});
 					} else if (obj.event === 'del') { //注销
-						layer.confirm('真的删除此机构吗', {
+						layer.confirm('真的删除('+ data.institutionName +')此机构吗', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
@@ -266,7 +273,7 @@
 						type: 2,
 						title: '添加机构',
 						shade: 0.5,
-						area: ['400px', '500px'],
+						area: ['70%', '700px'],
 						maxmin: false,
 						resize: false,
 						content: ['B-institutions-add.html'],

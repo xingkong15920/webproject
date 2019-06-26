@@ -37,7 +37,7 @@
 			<a class="layui-btn layui-btn-xs" lay-event="eQRcode">单二维码</a>
 			<a class="layui-btn layui-btn-xs" lay-event="QRcode">带背景二维码</a>
 		</script>
-		<script src="../../common/config.js"></script>
+		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
 			function subPagedevice(data, userNumber) {
@@ -198,14 +198,15 @@
 						var id = data.QRCode;
 						console.log(data)
 						if(obj.event == 'eQRcode') {
-							window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.setcode + "?qrcodeurl=" + data.equipmentLinkAddress + "&qrcodeId=" + data.equipmentNumber + '&institutionNumber=' +JSON.parse(sessionStorage.getItem('userSh')).institutionNumber ;
+							console.log(CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Merchant.setcode + "?qrcodeurl=" + data.equipmentLinkAddress + "&qrcodeId=" + data.equipmentNumber + '&institutionNumber=' +JSON.parse(sessionStorage.getItem('userSh')).institutionNumber)
+							window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Merchant.setcode + "?qrcodeurl=" + data.equipmentLinkAddress + "&qrcodeId=" + data.equipmentNumber + '&institutionNumber=' +JSON.parse(sessionStorage.getItem('userSh')).institutionNumber ;
 						} else if(obj.event == 'QRcode') {
 							// var kuai = 350; //600 -> 800 小
 							// var kuai2 = 350;
 							// var kuai3 = 180; //600->500 左移
 							// var kuai4 = 360; //570->950 下
 							// window.location.href = ".qrcode/downservletImages?qrcodeurl=" + url + "&qrcodeId=" + id + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 570 + "&logo2=" + 260;
-							window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.downservletImages +"?qrcodeId=" + data.equipmentNumber + '&institutionNumber=' + JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+							window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Merchant.downservletImages +"?qrcodeId=" + data.equipmentNumber + '&institutionNumber=' + JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 						} else if(obj.event == 'zhuangtaidisable') {
 							var mydata = {
 								"shangnumber": data.UserNumber,

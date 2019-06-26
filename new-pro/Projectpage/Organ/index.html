@@ -107,7 +107,7 @@
 									<cite>推送设置</cite>
 								</a>
 							</li> -->
-							<li>
+							<li class="level1">
 								<a lay-href="messagepush.html">
 									<i class="icon icon icon-mimashezhi"></i>
 									<cite>消息配置</cite>
@@ -182,12 +182,12 @@
 									<cite>商户操作日志</cite>
 								</a>
 							</li>
-							<li>
+							<!-- <li>
 								<a lay-href="shop-echarts.html">
 									<i class="icon icon icon-caozuorizhi"></i>
 									<cite>商户分析</cite>
 								</a>
-							</li>
+							</li> -->
 						</ul>
 					</li>
 					<li class="layui-nav-item">
@@ -332,37 +332,37 @@
 							<i class="iconfont nav_right">&#xe697;</i>
 						</a>
 						<ul class="sub-menu">
-							<li>
+							<li class="alipay" style="display:none">
 								<a lay-href="Financial-channel-ali.html">
 									<i class="icon icon icon-jiaoyitongji1"></i>
 									<cite>官方支付宝</cite>
 								</a>
 							</li>
-							<li>
+							<li class="wechatpay" style="display:none">
 								<a lay-href="Financial-channel-wechar.html">
 									<i class="icon icon icon-pingtaibaobiao"></i>
 									<cite>官方微信</cite>
 								</a>
 							</li>
-							<li>
+							<li class="fuyou" style="display:none">
 								<a lay-href="Financial-channel-fuyou.html">
 									<i class="icon icon icon-jiaoyitongji"></i>
 									<cite>富友通道</cite>
 								</a>
 							</li>
-							<li>
+							<li class="yrm" style="display:none">
 								<a lay-href="Financial-channel-yrm.html">
 									<i class="icon icon icon-jiaoyitongji"></i>
 									<cite>易融码通道</cite>
 								</a>
 							</li>
-							<li>
+							<li class="xdl" style="display:none">
 								<a lay-href="Financial-channel-xdl.html">
 									<i class="icon icon icon-jiaoyitongji"></i>
 									<cite>新大陆通道</cite>
 								</a>
 							</li>
-							<li>
+							<li class="sxf" style="display:none">
 								<a lay-href="Financial-channel-sxf.html">
 									<i class="icon icon icon-jiaoyitongji"></i>
 									<cite>随行付通道</cite>
@@ -395,12 +395,12 @@
 									<cite>代理商统计分析</cite>
 								</a>
 							</li>
-							<li>
+							<!-- <li>
 								<a lay-href="Financial-channel.html">
 									<i class="icon icon icon-jiaoyitongji"></i>
 									<cite>通道统计分析</cite>
 								</a>
-							</li>
+							</li> -->
 							<!--<li>
 								<a lay-href="Financial-flowrecord.html">
 									<i class="iconfont">&#xe6a7;</i>
@@ -409,7 +409,7 @@
 							</li>-->
 						</ul>
 					</li>
-					<li class="layui-nav-item">
+					<li class="layui-nav-item level1">
 						<a lay-href="Third-List.html">
 							<i class="icon icon icon-disanfang"></i>
 							<cite>第三方管理</cite>
@@ -490,6 +490,53 @@
 				
 				$('.level1').hide()
 			}
+			CmsUtility.postAjaxCall(
+						//系统设置
+				CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("organUser")).institutionNumber,
+				{
+					"page":1,
+					"limit":10
+				},
+				function(data) {
+					console.log(data)
+					if(data.code == '1000') {
+						
+						for(var i = 0 ; i < data.data.PaymentChannellist.length;i++){
+							switch (data.data.PaymentChannellist[i].paymentChannelType) {
+								case 0:
+								console.log('123')
+									$('.alipay').show()
+									break;
+								case 1:
+									$('.wechatpay').show()
+									break;
+								case 2:
+									$('.fuyou').show()
+									break;
+								case 3:
+									$('.yrm').show()
+									break;
+								case 4:
+									$('.xdl').show()
+									break;
+								case 5:
+									$('.sxf').show()
+									break;
+								default:
+									// statements_def
+									break;
+							}
+						}
+						
+
+					} else {
+
+					}
+				},
+				function(data) {
+					console.log('222')
+				}
+			)
 			$('#userName').html(JSON.parse(sessionStorage.getItem("organUser")).merchantName)
 			var  reg = new RegExp('(?<=[^.]*[.]+).*?(?=[.]+)')
 					var loc = window.location.href
@@ -499,7 +546,7 @@
 								//系统设置
 						CmsConfig.addressUrl.Public.getSitePath,
 						{
-							"sitePath":'lehuofuwu.com',
+							"sitePath":'51shanhe.com',
 						},
 						function(data) {
 							console.log(data)
@@ -517,6 +564,14 @@
 						}
 					)
 			console.log(JSON.parse(sessionStorage.getItem("organUser")).login)
+			layui.use('layer', function() {
+
+				var layer = layui.layer
+				layer.config({
+					  extend: 'myskin/style.css', //加载新皮肤
+					  skin: 'layer-ext-myskin' //一旦设定，所有弹层风格都采用此主题。
+					});
+			})
 			$(function() {
 				$('#logout').click(function() {
 					console.log('退出')

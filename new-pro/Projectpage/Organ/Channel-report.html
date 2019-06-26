@@ -239,32 +239,61 @@
                 }else if(jgData.paymentChannelType == 2){
                     CmsUtility.postAjaxCall(
                     //系统设置
-                    CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
-                        'institutionNumber': userNumber,
-                        'paymentChannel': jgData.paymentChannel
-                    },
-                    function(data) {
-                        if (data.code == 1000) {
-                            console.log(data)
-                            sjData = data.data[0]
-                            form.val('report', {
-                                "appid":sjData.wechatAppid,
-                                "appkey":sjData.wechatAppSecret,
-                                "paymentAuthorization":sjData.payDasd,
-                                "recommendAppid":sjData.recommendAppid,
-                                
-                            })
-                        } else {
-                            layer.msg(data.msg)
+                        CmsConfig.addressUrl.Mechanism.getThirdpartyOfficial, {
+                            'institutionNumber': userNumber,
+                            'paymentChannel': jgData.paymentChannel
+                        },
+                        function(data) {
+                            if (data.code == 1000) {
+                                console.log(data)
+                                sjData = data.data[0]
+                                form.val('report', {
+                                    "appid":sjData.wechatAppid,
+                                    "appkey":sjData.wechatAppSecret,
+                                    "paymentAuthorization":sjData.payDasd,
+                                    "recommendAppid":sjData.recommendAppid,
+                                    
+                                })
+                            } else {
+                                layer.msg(data.msg)
 
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    },
-                    'post',
-                    'false'
-                )
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        },
+                        'post',
+                        'false'
+                    )
+                }else if(jgData.paymentChannelType == 5){
+                    CmsUtility.postAjaxCall(
+                    //系统设置
+                        CmsConfig.addressUrl.Mechanism.getSxfChannel, {
+                            'institutionNumber': userNumber,
+                            'paymentChannel': jgData.paymentChannel
+                        },
+                        function(data) {
+                            if (data.code == 1000) {
+                                console.log(data)
+                                sjData = data.data
+                                form.val('report', {
+                                    "appid":sjData.weChatAPPID,
+                                    "appkey":sjData.wechatAppSecret,
+                                    "paymentAuthorization":sjData.payDASD,
+                                    "recommendAppid":sjData.recommendAPPID,
+                                    
+                                })
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        },
+                        'post',
+                        'false'
+                    )
                 }
                 
                 $('#check').click(function(){
@@ -280,6 +309,7 @@
                             
                         },
                         function(data) {
+                            var data = data
                             if (data.code == 1000) {
                                 if(jgData.paymentChannelType == 2){
                                     $('#info').val("appidConfigList : " + data.data[0].appidConfigList + '\n' + "jsapiPathList : " + data.data[0].jsapiPathList + '\n' + 'msg : ' + data.data[0].message)
@@ -287,6 +317,17 @@
                                     var str = ''
                                     for(var i = 0 ; i < data.data.REC.length;i++){
                                         str += 'Appid : ' + data.data.REC[i].Appid + ' , ' + 'PUBLIC_Appid : ' +data.data.REC[i].PUBLIC_Appid + ' , ' + "FollowSts : " + data.data.REC[i].FollowSts + '\n'
+                                    }
+                                    $('#info').val(str)
+                                }else if(jgData.paymentChannelType == 5){
+                                    // JSON.parse(data.data.respData.data)
+                                    var infoData = JSON.parse(data.data).respData.data
+                                    var str = ''
+                                    for(var i = 0 ; i < infoData.appConfigList.length;i++){
+                                        str += 'appidConfigList : ' + 'subAppid--' +  infoData.appConfigList[i].subAppid + ' , ' + 'subscribeAppid--' +infoData.appConfigList[i].subscribeAppid  + '\n'
+                                    }
+                                    for(var i = 0 ; i < infoData.jsApiPathList.length;i++){
+                                        str += 'jsApiPathList : '  +  infoData.jsApiPathList[i] + '\n'
                                     }
                                     $('#info').val(str)
                                 }
@@ -429,6 +470,67 @@
                                 'false'
                             )
                         }
+                    }else if(jgData.paymentChannelType == 5){
+                        if(data.value == 1){
+                            CmsUtility.postAjaxCall(
+                            //系统设置
+                                CmsConfig.addressUrl.Mechanism.getSxfChannel, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data
+                                        form.val('report', {
+                                            "appid":sjData.weChatAPPID,
+                                            "appkey":sjData.wechatAppSecret,
+                                            "paymentAuthorization":sjData.payDASD,
+                                            "recommendAppid":sjData.recommendAPPID,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }else if(data.value == 2){
+                     
+                               CmsUtility.postAjaxCall(
+                            //系统设置
+                                CmsConfig.addressUrl.Mechanism.getSxfChannel, {
+                                    'institutionNumber': userNumber,
+                                    'paymentChannel': jgData.paymentChannel
+                                },
+                                function(data) {
+                                    if (data.code == 1000) {
+                                        console.log(data)
+                                        sjData = data.data
+                                        form.val('report', {
+                                            "appid":sjData.smallRoutineAPPID,
+                                            "appkey":sjData.miniAppSecret,
+                                            "paymentAuthorization":sjData.payDASD,
+                                            "recommendAppid":sjData.recommendAPPID,
+                                            
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'post',
+                                'false'
+                            )
+                        }
                     }
                     
                 });
@@ -545,7 +647,7 @@
                             layer.msg(data.msg)
                             // x_admin_close()
                             // parent.layer.msg('生成成功')
-                            // parent.layui.table.reload('vip_cardList')
+                            layui.table.reload('deviceInfo')
 
 
                         } else {

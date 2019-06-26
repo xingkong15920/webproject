@@ -52,7 +52,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label"  style="width:55px;z-index:9999">服务商</label>
                     <div class="layui-input-block">
-                        <select name="type" id="agent" lay-verify="type">
+                        <select name="type" id="agent" lay-verify="type" lay-filter="agentChange">
                           
                         </select>
                     </div>
@@ -118,7 +118,7 @@
                         if (data.code == 1000) {
                             // type111 = 2
                             var aList = agentList.concat(data.data)
-                            console.log(aList)
+                            
                             var str = ''
                             for(var i = 0 ; i < aList.length;i++){
                                 str += '<option value="'+ aList[i].agentNumber +'">'+ aList[i].agentName +'</option>'
@@ -163,6 +163,39 @@
             // $('#sub').click(function(){
             //  console.log(code1)
             // })
+            form.on('select(agentChange)', function(data) {
+                console.log(data.value)
+                CmsUtility.postAjaxCall(
+                        //系统设置
+                    CmsConfig.addressUrl.Agent.getSaleD,
+                    {
+                        "agentId":data.value
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+                            
+                            var str = ''
+                            for(let i = 0 ; i < data.data.length;i++){
+                                str += '<option value="'+ data.data[i].saleNumber +'">'+ data.data[i].saleName +'</option>'
+                            }
+                            $('#sale').html(str)
+                            form.render()
+                        } else {
+                            var str = ''
+                            $('#sale').html(str)
+                            form.render()
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                form.render()
+
+            })
             form.verify({
                 agentName:function(value){
                     if($('#agName').val() == '' || $('#agName').attr('agentNumber') == undefined){

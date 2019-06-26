@@ -555,28 +555,54 @@
 							tjData.orderNumber = data.orderNumber;
 							tjData.paymentType = data.paymentType
 							tjData.paymentChannel = data.paymentChannel
-							CmsUtility.postAjaxCall(
-								//系统设置
-								CmsConfig.addressUrl.Mechanism.thirdPartyInfo,
-								tjData,
-								function(data){
-									if(data.code == 1000){
-										 layer.closeAll()
-										layer.msg('操作成功')
-										setTimeout(function(){
-											tableRender()
-										},500)
+							$.ajax({
+						            type: 'POST',
+						            url: 'https://nb.51shanhe.com/shanhe-mechanism/submit/thirdPartyInfo', 
+						            data: tjData,
+						            async: 'false',
+						            dataType: 'json', 
+						            // headers:{
+						            //     contentType:"application/json"
+						            // },
+						            beforeSend: function() {
+						                
+						            },
+						            success: function(data) {
+						                
+						                if(data.code == 1000){
+											 layer.closeAll()
+											layer.msg('操作成功')
+											
+											layui.table.reload('vip_cardList')
+											
+										}else{
+											layer.msg(data.msg)
+											
+										}
+						            },
+						        });
+							// CmsUtility.postAjaxCall(
+							// 	//系统设置
+							// 	CmsConfig.addressUrl.Mechanism.thirdPartyInfo,
+							// 	tjData,
+							// 	function(data){
+							// 		if(data.code == 1000){
+							// 			 layer.closeAll()
+							// 			layer.msg('操作成功')
+							// 			setTimeout(function(){
+							// 				tableRender()
+							// 			},500)
 										
 										
-									}else{
-										layer.msg(data.msg)
+							// 		}else{
+							// 			layer.msg(data.msg)
 										
-									}
-								},
-								function(data){
-									console.log('222')
-								}
-							)
+							// 		}
+							// 	},
+							// 	function(data){
+							// 		console.log('222')
+							// 	}
+							// )
 						return
 						// layer.open({
 						// 	type: 2,
@@ -606,43 +632,12 @@
 								tjData.auditStatus = 0
 								tjData.msg = pass
 								
-								// CmsUtility.postAjaxCall(
-								// 	//系统设置
-								// 	CmsConfig.addressUrl.Mechanism.updateMerInfo,
-								// 	tjData,
-								// 	function(data){
-								// 		if(data.code == 1000){
-								// 			 layer.closeAll()
-								// 			layer.msg('操作成功')
-								// 			setTimeout(function(){
-								// 				tableRender()
-								// 			},500)
-											
-											
-								// 		}else{
-								// 			layer.msg(data.msg)
-											
-								// 		}
-								// 	},
-								// 	function(data){
-								// 		console.log('222')
-								// 	}
-								// )
-								$.ajax({
-						            type: 'POST',
-						            url: 'https://nb.51shanhe.com/shanhe-mechanism/submit/thirdPartyInfo', 
-						            data: tjData,
-						            async: 'false',
-						            dataType: 'json', 
-						            // headers:{
-						            //     contentType:"application/json"
-						            // },
-						            beforeSend: function() {
-						                
-						            },
-						            success: function(data) {
-						                
-						                if(data.code == 1000){
+								CmsUtility.postAjaxCall(
+									//系统设置
+									CmsConfig.addressUrl.Mechanism.updateMerInfo,
+									tjData,
+									function(data){
+										if(data.code == 1000){
 											 layer.closeAll()
 											layer.msg('操作成功')
 											setTimeout(function(){
@@ -654,51 +649,17 @@
 											layer.msg(data.msg)
 											
 										}
-						            },
-						            complete: function() {
-						                
-						            },
-						            error:function(XMLHttpRequest, textStatus, errorThrown){
-						                // 状态码
-						                    console.log(XMLHttpRequest.status);
-						                    // 状态
-						                    console.log(XMLHttpRequest.readyState);
-						                    // 错误信息   
-						                    console.log(textStatus);
-						                    // if(textStatus == 'timeout'){
-						                    //     alert('接口访问超时，请稍后再试')
-						                    // }
-						                    // if(textStatus == 'error'){
-						                    //     alert('接口访问错误，请稍后再试')
-						                    // }
-						                    // if(textStatus == 'abort'){
-						                    //     alert('接口访问中止，请稍后再试')
-						                    // }
-						                    // if(textStatus == 'parsererror'){
-						                    //     alert('接口访问解析错误，请稍后再试')
-						                    // }
-						            }
-						        });
+									},
+									function(data){
+										console.log('222')
+									}
+								)
+								
 
 							}
 
 						)
 						return
-						// layer.open({
-						// 	type: 2,
-						// 	title: '秘钥',
-						// 	shade: 0.5,
-						// 	area: ['400px', '270px'],
-						// 	maxmin: false,
-						// 	resize: false,
-						// 	content: ['Merchants-List-secretkey.html'],
-						// 	success: function(layero, index) {
-						// 		// 获取子页面的iframe
-						// 		var iframe = window['layui-layer-iframe' + index];
-						// 		// 向子页面的全局函数child传参
-						// 		iframe.subPage(data, userNumber)
-						// 	}
-						// });
 					} else if(obj.event === 'logout') { //注销
 						var zhuxiaoData = {
 							card: data.card,

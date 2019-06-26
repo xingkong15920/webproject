@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.statisticsK {
+				padding: 15px;
+			}
+
+			.paddigTop0 {
+				padding-top: 0;
+			}
+
+			.paddigLeft0 {
+				padding-left: 0;
+			}
+
+			.paddigRight0 {
+				padding-right: 0;
+			}
+
+			.paddigBottom0 {
+				padding-bottom: 0;
+			}
+
+			.statisticsB {
+				width: 100%;
+				height: 100px;
+				box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+				box-sizing: border-box;
+				padding: 15px;
+			}
+
+			.statisticsB.statisticsA {
+				height: 230px;
+			}
+
+			.statisticsTop10 {
+				background: #fff;
+			}
+
+			.huizongTit {
+				font-size: 20px;
+				margin-bottom: 20px;
+			}
+
+			.huizongCon {
+				font-size: 20px;
+			}
+
+			.huizongCon span {
+				font-size: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="">会员统计</a>
+				<a><cite>会员分析</cite></a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+			 title="刷新">
+				<i class="layui-icon" style="line-height:30px">ဂ</i>
+			</a>
+		</div>
+		<div class="x-body">
+			<div class="layui-form x-so">
+				<div class="layui-input-inline text">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>今日</button>
+				</div>
+				<div class="layui-input-inline text">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>昨日</button>
+				</div>
+				<div class="layui-input-inline">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>本周</button>
+				</div>
+				<div class="layui-input-inline">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i>自定义</button>
+				</div>
+			</div>
+			<div class="layui-row layui-col-space15 paddigLeft0" style="margin: 0;margin-bottom: 10px;box-sizing: border-box;">
+				<div class="layui-col-md3 statisticsK paddigLeft0">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">销售笔数</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214</span>笔</p>
+					</div>
+				</div>
+				<div class="layui-col-md3 statisticsK">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">销售额</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
+					</div>
+				</div>
+				<div class="layui-col-md3 statisticsK">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">销售均价</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">2221.56</span>元</p>
+					</div>
+				</div>
+				<div class="layui-col-md3 statisticsK paddigRight0">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">单笔购买最高的会员</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">问问便利店</span></p>
+					</div>
+				</div>
+			</div>
+			<div class="statisticsB" style="height: auto;margin-bottom: 25px;">
+				<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">会员销售排行TOP10</p>
+				<div class="grid-demo border" style="width:100%;overflow:hidden">
+					<div id="main6" style="height: 450px;width:100%"></div>
+				</div>
+			</div>
+			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+		<script>
+			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
+			var myChart6 = echarts.init(document.getElementById('main6'));
+			var shopCountList = []
+			var dailimingcheng = []
+			var zongshanghushu = []
+			var huoyueshanghu = []
+			var qianshuishanghu = []
+
+			layui.use(['table', 'laydate', 'form'], function() {
+				var table = layui.table,
+					laydate = layui.laydate,
+					form = layui.form,
+					$ = layui.jquery;
+				//时间插件
+				laydate.render({
+					elem: '#startTime',
+					type: 'date',
+					max: '',
+					value: new Date(),
+					showBottom: false
+				});
+				laydate.render({
+					elem: '#endTime',
+					type: 'date',
+					max: '',
+					value: new Date(),
+					showBottom: false
+				});
+
+				//方法级渲染
+				table.render({
+					elem: '#LAY_table_shop1',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+						userNumber,
+					method: "post",
+					page: false,
+					id: 'vipList',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if (res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.result,
+						}
+					},
+					cols: [
+						[{
+							field: 'shopName',
+							title: '会员名称',
+							align: 'center',
+						}]
+					],
+					done: function(res, curr, count) {
+
+					}
+				});
+				//方法级渲染
+				table.render({
+					elem: '#LAY_table_shop',
+					// url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+					// 	userNumber,
+					url:'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+					// method: "post",
+					method: "get",
+					height: 'full-400',
+					page: true,
+					id: 'vipList',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if (res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.result,
+						}
+					},
+					cols: [
+						[{
+							type: 'numbers',
+							title: '序号',
+						}, {
+							field: 'shopNumber',
+							title: '会员卡号',
+							align: 'center',
+							width: 200
+						}, {
+							field: 'shopName',
+							title: '会员姓名',
+							align: 'center',
+							width: 150
+						}, {
+							field: 'typeL',
+							title: '类型',
+							align: 'center',
+							width: 150
+						}, {
+							field: 'city',
+							title: '充值金额',
+							align: 'center',
+							width: 100,
+							templet: function(data) {
+								return 200
+							}
+						}, {
+							field: 'city',
+							title: '赠送金额',
+							align: 'center',
+							width: 100,
+							templet: function(data) {
+								return 50
+							}
+						}, {
+							field: 'city',
+							title: '充值后金额',
+							align: 'center',
+							width: 100,
+							templet: function(data) {
+								return data.city + 250
+							}
+						}, {
+							field: 'insertTime',
+							title: '充值时间',
+							align: 'center',
+							width: 180
+						}, {
+							field: 'typeP',
+							title: '支付方式',
+							align: 'center',
+							width: 150
+						}, {
+							field: 'shopName',
+							title: '消费店铺',
+							align: 'center',
+							width: 150
+						}, {
+							field: 'shopNameO',
+							title: '所属店铺',
+							align: 'center',
+							width: 150
+						}, {
+							field: 'shopName0',
+							title: '备注',
+							align: 'center',
+							width: 150
+						}]
+					],
+					done: function(res, curr, count) {
+						console.log(res)
+						if (res.data == null) {
+							// layer.msg(res.msg)
+						} else {
+
+						}
+					}
+				});
+				form.on('switch(consumptionPreferences)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					console.log(data);
+					tjData.merchantNumber = userNumber,
+						tjData.shopNumber = data.elem.dataset.shopnumber,
+						tjData.deletionFlag = 0
+					tjData.enable = this.checked ? '0' : '1';
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Merchant.modifyShop,
+						tjData,
+						function(data) {
+							if (data.code == 1000) {
+
+								parent.layer.msg('更改成功')
+								layui.table.reload('vipList')
+							} else {
+								layer.msg(data.msg)
+
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				});
+				//监听工具条
+				table.on('tool(shop)', function(obj) {
+					var data = obj.data;
+
+					if (obj.event === 'edit') {
+						// 跳转编辑详情页面
+						layer.open({
+							type: 2,
+							title: data.shopName,
+							area: ['90%', '90%'],
+							content: 'shop-edit.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data, userNumber)
+							}
+						});
+					} else if (obj.event === 'capital') {
+						// 跳转编辑详情页面
+						layer.open({
+							type: 2,
+							title: '店员列表',
+							area: ['90%', '90%'],
+							content: 'sy-yingyeyuan.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageclerk(data, userNumber)
+							}
+						});
+					} else if (obj.event === 'delete') {
+						// 弹出是否要删除门店
+						layer.confirm('确定要删除(' + data.shopName + ')门店么?删除成功将删除门店下所有店员！！！', function(index) {
+							var mydata = {
+								"merchantNumber": userNumber,
+								"shopNumber": data.shopNumber,
+								"deletionFlag": 1
+							}
+							// 发送请求
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Merchant.modifyShop,
+								mydata,
+								function(data) {
+									if (data.code == 1000) {
+										layer.close(index);
+										layer.msg('删除成功！')
+										layui.table.reload('vipList');
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+							layer.close(index);
+						});
+					}
+				});
+
+				// 根據條件重载表格
+				var $ = layui.$,
+					active = {
+						reload: function() {
+							shopCount()
+							// 获取上面查询框的值
+							var shopName = $('#shopName');
+							var shopStatus = $('#shopStatus');
+							//执行重载
+							table.reload('vipList', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+
+								}
+							});
+						}
+					};
+				$('.layui-form .layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+
+				// 柱状图渲染设置
+				var posList = [
+					'left', 'right', 'top', 'bottom',
+					'inside',
+					'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+					'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+				];
+				myChart6.configParameters = {
+					rotate: {
+						min: -90,
+						max: 90
+					},
+					align: {
+						options: {
+							left: 'left',
+							center: 'center',
+							right: 'right'
+						}
+					},
+					verticalAlign: {
+						options: {
+							top: 'top',
+							middle: 'middle',
+							bottom: 'bottom'
+						}
+					},
+					position: {
+						options: echarts.util.reduce(posList, function(map, pos) {
+							map[pos] = pos;
+							return map;
+						}, {})
+					},
+					distance: {
+						min: 0,
+						max: 100
+					}
+				};
+
+				myChart6.config = {
+					rotate: 90,
+					align: 'left',
+					verticalAlign: 'middle',
+					position: 'insideBottom',
+					distance: 30,
+					onChange: function() {
+						var labelOption = {
+							normal: {
+								rotate: app.config.rotate,
+								align: app.config.align,
+								verticalAlign: app.config.verticalAlign,
+								position: app.config.position,
+								distance: app.config.distance
+							}
+						};
+						myChart.setOption({
+							series: [{
+								label: labelOption
+							}, {
+								label: labelOption
+							}, {
+								label: labelOption
+							}, {
+								label: labelOption
+							}]
+						});
+					}
+				};
+				var labelOption = {
+					normal: {
+						show: true,
+						position: myChart6.config.position,
+						distance: myChart6.config.distance,
+						align: myChart6.config.align,
+						verticalAlign: myChart6.config.verticalAlign,
+						rotate: myChart6.config.rotate,
+						formatter: '{c}  {name|{a}}',
+						fontSize: 16,
+						rich: {
+							name: {
+								textBorderColor: '#fff'
+							}
+						}
+					}
+				};
+
+				var option6 = {
+					color: ['#003366', '#006699', '#4cabce'],
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'shadow'
+						}
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					legend: {
+						data: ['金额', '笔数']
+					},
+					calculable: true,
+					xAxis: [{
+						type: 'category',
+						axisTick: {
+							show: false
+						},
+						data: dailimingcheng,
+						axisLabel: {
+							interval: 0,
+							formatter: function(value) {
+
+								var ret = "";
+								var maxLength = 3;
+								var valLength = value.length;
+								var rowN = Math.ceil(valLength / maxLength);
+								if (rowN > 1) {
+									for (var i = 0; i < rowN; i++) {
+										var temp = ""; //每次截取的字符串  
+										var start = i * maxLength; //开始截取的位置  
+										var end = start + maxLength; //结束截取的位置  
+										//这里也可以加一个是否是最后一行的判断，但是不加也没有影响，那就不加吧  
+										temp = value.substring(start, end) + "\n";
+										ret += temp; //凭借最终的字符串  
+									}
+									return ret;
+								} else {
+									return value;
+								}
+							}
+						}
+					}],
+					yAxis: [{
+						type: 'value'
+					}],
+					series: [{
+						name: '金额',
+						type: 'bar',
+						barGap: 0,
+						barWidth: 15,
+						label: labelOption,
+						data: zongshanghushu
+					}, {
+						name: '笔数',
+						type: 'bar',
+						label: labelOption,
+						data: qianshuishanghu,
+						barWidth: 15,
+					}]
+				};
+				//代理商商户数TOP10  
+				function shopCount() {
+					// ddDate = []
+					// ddData = []
+
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.getInsAgentMerCount, {
+							"institutionNumber": 1004,
+							"page": 1,
+							"limit": 10
+						},
+						function(data) {
+
+							if (data.code == 1000) {
+								var res = data.data
+								var arr1 = ['product', '金额', '笔数']
+								shopCountList.push(arr1)
+								// shName = []
+								// shMoney = []
+								dailimingcheng.splice(0, res.length)
+								zongshanghushu.splice(0, res.length)
+								huoyueshanghu.splice(0, res.length)
+								qianshuishanghu.splice(0, res.length)
+								for (var j = 0; j < res.length; j++) {
+									dailimingcheng.push(res[j].agentName)
+									zongshanghushu.push(res[j].merchantCount)
+									huoyueshanghu.push(res[j].activeMerCount)
+									qianshuishanghu.push(res[j].silenceMerCount)
+								}
+
+								// 为echarts对象加载数据
+								myChart6.clear()
+								myChart6.setOption(option6, 'true');
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				}
+				shopCount()
+			});
+		</script>
+	</body>
+
+</html>

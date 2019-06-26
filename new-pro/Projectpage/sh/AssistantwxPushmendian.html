@@ -85,7 +85,7 @@
     <!-- <script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="UntieWx">解绑</a>
 		</script> -->
-    <script src="../../common/config.js"></script>
+    <script src="../../common/config-sh.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
     var shHref
@@ -99,17 +99,17 @@
         console.log(userNumber)
         CmsUtility.postAjaxCall(
             //系统设置
-            CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
+            CmsConfig.addressUrl.Merchant.getInsInfo, {
                 'institutionNumber': JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
             },
             function(data) {
                 if (data.code == 1000) {
-                    shHref = data.data[0].interfaceAddress
+                    shHref = data.data.interfaceAddress
                     if (shHref == '') {
                         layer.msg('未获取到商户路径')
                         return
                     }
-                    new QRCode(document.getElementById("qrcode1"), shHref + "/wechatPush/getCode.html?clerkNumber=" + ' ' + '&type=1&merchantNumber=' + userNumber + '&shopNumber=' + shopNumber+ '&focusLink=' + data.data[0].focusLink);
+                    new QRCode(document.getElementById("qrcode1"), shHref + "/wechatPush/getCode.html?clerkNumber=" + ' ' + '&type=1&merchantNumber=' + userNumber + '&shopNumber=' + shopNumber+ '&focusLink=' + data.data.focusLink);
                     layui.use(['table', 'layer'], function() {
                         $ = layui.jquery;
                         var form = layui.form,
