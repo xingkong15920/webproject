@@ -6,7 +6,7 @@ if(Edition == 'qty'){
     
     server  = 'http://192.168.1.167:6007/shanhe-merchant/'
 }else{
-	server  = 'http://192.168.1.166:5006/shanhe-mechanism/'
+	server  = 'https://nb.51shanhe.com/shanhe-merchant/'
 }
 /* 
 接口前缀解释
@@ -34,7 +34,7 @@ var CmsConfig = {
             //退出
             exitLogin:"login/loginOut",
             //自动登录
-            Automaticlist:"login/Automaticlist",
+            Automaticlist:"login/automaticLogin",
 
         },
         

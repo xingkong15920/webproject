@@ -7,7 +7,7 @@ if(Edition == 'qty'){
     //server = 'http://148.70.79.191:10700/shanhe-service/'
     //server = 'http://192.168.1.134:6006/shanhe-service/'
 }else{
-	server  = 'http://192.168.1.167:6006/shanhe-service/'
+	server  = 'http://192.168.1.130:6006/shanhe-service/'
 }
 /* 
 接口前缀解释
@@ -102,7 +102,7 @@ var CmsConfig = {
             //代理
             insertAgent:"AgManagement/insertAgent",
             //查询列表
-            getAgent:"AgManagement/getAgent",
+            getAgent:"agentManage/getAgentList",
             //编辑代理
             modifyAgent:"AgManagement/modifyAgent",
 
@@ -154,6 +154,8 @@ var CmsConfig = {
             getMerBatchInfo:"agMerOrder/getMerBatchInfoListUp",
             //代理商商户汇总
             getMerBatchInfoCollect:"agMerOrder/getMerBatchInfoListUp",
+            //销售统计新街口
+            getMerchantAllAndXz:"saleStatistics/getMerchantAllAndXz",
         },
        
         //公共

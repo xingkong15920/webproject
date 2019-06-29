@@ -14,7 +14,15 @@
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript" src="../../public/js/data.js"></script>
 	</head>
-
+	<style type="text/css">
+		.layui-table .layui-form-select .layui-input{
+				height: 28px;
+				border: none;
+			}
+		.laytable-cell-1-0-3 {
+			overflow: visible;
+		}
+	</style>
 	<body>
 		<!--<div class="x-nav">
 			<span class="layui-breadcrumb">
@@ -38,6 +46,12 @@
 			<a class="layui-btn layui-btn-xs" lay-event="pay">一码付</a>
 			<a class="layui-btn layui-btn-xs" lay-event="payNumber">定额二维码</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+		</script>
+		<script type="text/html" id="selectBar_lx">
+			<select name="type" lay-filter="shopSel" clerkNumber="{{d.clerkNumber}}"   shopNumber="{{d.shopNumber}}" refundJurisdiction="{{d.refundJurisdiction}}" clerkName="{{d.clerkName}}">
+				<option value="5" {{d.userKinds==5 ? 'selected' : ''}}>店员</option>
+				<option value="4" {{d.userKinds==4 ? 'selected' : ''}}>店长</option>
+			</select>
 		</script>
 		<script type="text/html" id="zhuangtai">
 			<input type="checkbox" name="switch" data-userKinds="{{d.userKinds}}" data-name="{{d.clerkName}}" value="{{d.clerkNumber}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.enable=='0' ? 'checked' : '' }}>
@@ -128,6 +142,35 @@
 							}
 						)
 					});
+					form.on('select(shopSel)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					//更改商户类型
+					
+					var tjData = new Object();
+					tjData.clerkerNumber = data.elem.getAttribute("clerkNumber");
+					tjData.refundJurisdiction = data.elem.getAttribute("refundJurisdiction");
+					tjData.deletionFlag = 0;
+					tjData.shopNumber = data.elem.getAttribute("shopNumber")
+					tjData.merchantNumber = userNumber
+					tjData.shopName = shopName
+					tjData.clerkName = data.elem.getAttribute("clerkName")
+					tjData.userKinds = data.value
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Merchant.updateClerkerAuthority,
+						tjData,
+						function(data) {
+							if(data.code == 1000) {
+								parent.layer.msg('更改成功')
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				});
 					//方法级渲染
 					table.render({
 						elem: '#LAY_table_Assistant',
@@ -178,7 +221,8 @@
 											// statements_def
 											break;
 									}
-								}
+								},
+								toolbar:"#selectBar_lx"
 							}, {
 								field: 'shopName',
 								title: '所属门店',

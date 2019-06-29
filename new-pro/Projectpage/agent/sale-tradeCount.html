@@ -289,49 +289,49 @@ layui.use(['form', 'table', 'laytpl','laydate'], function() {
         value: fun_date(0)
     });
     //新增商户
-        function newShopCount() {
-            // ddDate = []
-            // ddData = []
-            for (let i = 0; i < shCount.length; i++) {
-                shCount.splice(i)
-            }
-            CmsUtility.postAjaxCall(
-                //系统设置
-                'saleStatistics/getXzMerchant', {
-                    "agentNumber": userNumber,
-                    "saleName": $('#shopName').val(),
-                    "startTime": $('#startTime').val(),
-                    "endTime":$('#endTime').val(),
-                    "page": 1,
-                    "limit": 10
-                },
-                function(data) {
+        // function newShopCount() {
+        //     // ddDate = []
+        //     // ddData = []
+        //     for (let i = 0; i < shCount.length; i++) {
+        //         shCount.splice(i)
+        //     }
+        //     CmsUtility.postAjaxCall(
+        //         //系统设置
+        //         'saleStatistics/getMerchantAllAndXz', {
+        //             "agentNumber": userNumber,
+        //             "saleName": $('#shopName').val(),
+        //             "startTime": $('#startTime').val(),
+        //             "endTime":$('#endTime').val(),
+        //             "page": 1,
+        //             "limit": 10
+        //         },
+        //         function(data) {
 
-                    if (data.code == 1000) {
-                        var res = data.data
-                        // shCount = []
-                        for (var j = 0; j < res.length; j++) {
-                            var newO = new Object()
-                            newO.name = res[j].saleName
-                            newO.value = res[j].merNewCount
-                            shCount.push(newO)
+        //             if (data.code == 1000) {
+        //                 var res = data.data
+        //                 // shCount = []
+        //                 for (var j = 0; j < res.length; j++) {
+        //                     var newO = new Object()
+        //                     newO.name = res[j].saleName
+        //                     newO.value = res[j].merNewCount
+        //                     shCount.push(newO)
 
-                        }
-                        // 为echarts对象加载数据
-                        myChart.clear()
-                        myChart.setOption(option, 'true');
-                    } else {
-                        $('#main').hide()
-                        $('#newCount').show()
+        //                 }
+        //                 // 为echarts对象加载数据
+        //                 myChart.clear()
+        //                 myChart.setOption(option, 'true');
+        //             } else {
+        //                 $('#main').hide()
+        //                 $('#newCount').show()
                         
-                    }
-                },
-                function(data) {
-                    console.log('222')
-                }
-            )
-        }
-        newShopCount()
+        //             }
+        //         },
+        //         function(data) {
+        //             console.log('222')
+        //         }
+        //     )
+        // }
+        // newShopCount()
         //全部商户
         function allShopCount() {
             // ddDate = []
@@ -339,9 +339,12 @@ layui.use(['form', 'table', 'laytpl','laydate'], function() {
             for (let i = 0; i < shCount1.length; i++) {
                 shCount1.splice(i)
             }
+            for (let i = 0; i < shCount.length; i++) {
+                shCount.splice(i)
+            }
             CmsUtility.postAjaxCall(
                 //系统设置
-                'saleStatistics/getMerchant', {
+                'saleStatistics/getMerchantAllAndXz', {
                     "agentNumber": userNumber,
                     "saleName": $('#shopName').val(),
                     "startTime": $('#startTime').val(),
@@ -355,15 +358,42 @@ layui.use(['form', 'table', 'laytpl','laydate'], function() {
                         var res = data.data
                         // shCount = []
                         for (var j = 0; j < res.length; j++) {
-                            var newO = new Object()
-                            newO.name = res[j].saleName
-                            newO.value = res[j].merCount
-                            shCount1.push(newO)
+                            if(res[j].merCount != 0){
+                                var newO = new Object()
+                                newO.name = res[j].saleName
+                                newO.value = res[j].merCount
+                                shCount1.push(newO)
+                            }
+                            
 
                         }
                         // 为echarts对象加载数据
                         myChart1.clear()
                         myChart1.setOption(option1, 'true');
+                        if (data.code == 1000) {
+                            var res = data.data
+                            // shCount = []
+                            for (var j = 0; j < res.length; j++) {
+                                if(res[j].merNewCount != 0){
+                                    var newO = new Object()
+                                    newO.name = res[j].saleName
+                                    newO.value = res[j].merNewCount
+                                    shCount.push(newO)
+                                }
+                                
+
+                            }
+                            // 为echarts对象加载数据
+                            myChart.clear()
+                            myChart.setOption(option, 'true');
+                        }
+                        if(shCount.length == 0){
+
+                                $('#main').hide()
+                                $('#newCount').show()
+                                
+                            
+                        }
                     } else {
                         $('#main1').hide()
                         $('#newCount1').show()
@@ -382,6 +412,9 @@ layui.use(['form', 'table', 'laytpl','laydate'], function() {
             // ddData = []
             for (let i = 0; i < shCount2.length; i++) {
                 shCount2.splice(i)
+            }
+            for (let i = 0; i < shCount3.length; i++) {
+                shCount3.splice(i)
             }
             CmsUtility.postAjaxCall(
                 //系统设置
@@ -413,32 +446,6 @@ layui.use(['form', 'table', 'laytpl','laydate'], function() {
                         $('#newCount2').show()
                         
                     }
-                },
-                function(data) {
-                    console.log('222')
-                }
-            )
-        }
-        tradeMoney()
-        //交易笔数
-        function tradeCount() {
-            // ddDate = []
-            // ddData = []
-            for (let i = 0; i < shCount3.length; i++) {
-                shCount3.splice(i)
-            }
-            CmsUtility.postAjaxCall(
-                //系统设置
-                'saleStatistics/getSaleMerTotalMoney', {
-                    "agentNumber": userNumber,
-                    "saleName": $('#shopName').val(),
-                    "startTime": $('#startTime').val(),
-                    "endTime":$('#endTime').val(),
-                    "page": 1,
-                    "limit": 10
-                },
-                function(data) {
-
                     if (data.code == 1000) {
                         var res = data.data
                         // shCount = []
@@ -464,7 +471,52 @@ layui.use(['form', 'table', 'laytpl','laydate'], function() {
                 }
             )
         }
-        tradeCount()
+        tradeMoney()
+        //交易笔数
+        // function tradeCount() {
+        //     // ddDate = []
+        //     // ddData = []
+        //     for (let i = 0; i < shCount3.length; i++) {
+        //         shCount3.splice(i)
+        //     }
+        //     CmsUtility.postAjaxCall(
+        //         //系统设置
+        //         'saleStatistics/getSaleMerTotalMoney', {
+        //             "agentNumber": userNumber,
+        //             "saleName": $('#shopName').val(),
+        //             "startTime": $('#startTime').val(),
+        //             "endTime":$('#endTime').val(),
+        //             "page": 1,
+        //             "limit": 10
+        //         },
+        //         function(data) {
+
+        //             if (data.code == 1000) {
+        //                 var res = data.data
+        //                 // shCount = []
+        //                 for (var j = 0; j < res.length; j++) {
+        //                     var newO = new Object()
+        //                     newO.name = res[j].saleName
+        //                     newO.value = res[j].totalOrder
+        //                     shCount3.push(newO)
+
+        //                 }
+        //                 // 为echarts对象加载数据
+        //                 console.log(shCount3)
+        //                 myChart3.clear()
+        //                 myChart3.setOption(option3, 'true');
+        //             } else {
+        //                 $('#main3').hide()
+        //                 $('#newCount3').show()
+                        
+        //             }
+        //         },
+        //         function(data) {
+        //             console.log('222')
+        //         }
+        //     )
+        // }
+        // tradeCount()
     //方法级渲染
     function tableRender() {
         console.log($('#startTime').val() )

@@ -269,6 +269,8 @@
             //D0
             var d1L = new Array()
             var d0L = new Array()
+            var d1N = new Array()
+            var d0N = new Array()
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.getSalePcList, {
@@ -277,74 +279,32 @@
                 function(data) {
                     console.log(data)
                     if (data.code == 1000) {
-                        for (var i = 0; i < data.data.d0Td.length; i++) {
-                            d0L.push(data.data.d0Td[i].paymentChannel)
+                        var str = ''
+                        var d0 = data.data.d0Td
+                        for (let i = 0; i < d0.length; i++) {
+                             if(d0[i].incomingParts == 0){
+                                str += '<input type="checkbox" name="D0rate" checked="true" value="' + d0[i].paymentChannel + '" title="' + d0[i].paymentChannelName + '">'
+                             }else{
+                                str += '<input type="checkbox" name="D0rate"  value="' + d0[i].paymentChannel + '" title="' + d0[i].paymentChannelName + '">'
+                             }
+                            
                         }
-                        for (var ii = 0; ii < data.data.d1Td.length; ii++) {
-                            d1L.push(data.data.d1Td[ii].paymentChannel)
+                        $('#D0Box').html(str)
+                        form.render()
+                        var str1 = ''
+                        var d1 = data.data.d1Td
+                        for (let i = 0; i < d1.length; i++) {
+                             if(d1[i].incomingParts == 0){
+                                str1 += '<input type="checkbox" name="D1rate" checked="true" value="' + d1[i].paymentChannel + '" title="' + d1[i].paymentChannelName + '">'
+                             }else{
+                                str1 += '<input type="checkbox" name="D1rate" value="' + d1[i].paymentChannel + '" title="' + d1[i].paymentChannelName + '">'
+                             }
+                            
                         }
-                        console.log(d1L, d0L)
-                        CmsUtility.postAjaxCall(
-                            //系统设置
-                             CmsConfig.addressUrl.Mechanism.getTDList, {
-                                "institutionNumber": userNumber,
-                                "tDType": 'D0'
-                            },
-                            function(data) {
-                                console.log(data)
-                                if (data.code == 1000) {
-                                    // layer.msg('保存成功')
-                                    var str = ''
-                                    for (var i = 0; i < data.data.length; i++) {
-                                        console.log(data.data[i])
-                                        if(d0L.indexOf(data.data[i].paymentChannel) >=0){
-                                            str += '<input type="checkbox"  name="D0rate" checked="true" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">'
-                                        }else {
-                                           str += '<input type="checkbox"  name="D0rate" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">' 
-                                        }
-                                        
-                                    }
-                                    console.log(str)
-                                    $('#D0Box').html(str)
-                                    form.render()
-                                } else {
-                                    layer.msg(data.msg)
-                                }
-                            },
-                            function(data) {
-                                console.log('222')
-                            }
-                        )
-                        //D1
-                        CmsUtility.postAjaxCall(
-                            //系统设置
-                            CmsConfig.addressUrl.Mechanism.getTDList, {
-                                "institutionNumber": userNumber,
-                                "tDType": 'D1'
-                            },
-                            function(data) {
-                                console.log(data)
-                                if (data.code == 1000) {
-                                    // layer.msg('保存成功')
-                                    var str = ''
-                                    for (var i = 0; i < data.data.length; i++) {
-                                         if(d1L.indexOf(data.data[i].paymentChannel) >=0){
-                                            str += '<input type="checkbox" name="D1rate" checked="true" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">'
-                                         }else{
-                                            str += '<input type="checkbox" name="D1rate" value="' + data.data[i].paymentChannel + '" title="' + data.data[i].paymentName + '">'
-                                         }
-                                        
-                                    }
-                                    $('#D1Box').html(str)
-                                    form.render()
-                                } else {
-                                    layer.msg(data.msg)
-                                }
-                            },
-                            function(data) {
-                                console.log('222')
-                            }
-                        )
+                        $('#D1Box').html(str1)
+                        form.render()
+                        return
+                        
                     } else {
                         layer.msg(data.msg)
                     }
@@ -560,44 +520,8 @@
             //监听提交
             form.on('submit(add)', function(data) {
                 console.log(data)
-                var arr = new Array();
-                $("input:checkbox[name='D0rate']:checked").each(function(i) {
-                    arr[i] = $(this).val();
-                });
-                D0List = arr.join('|')
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    CmsConfig.addressUrl.Mechanism.updateTDList, {
-                        "institutionNumber": userNumber,
-                        "tDType": 'D0',
-                        "paymentChannelList": D0List
-                    },
-                    function(data) {
-
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
-                var arr1 = new Array();
-                $("input:checkbox[name='D1rate']:checked").each(function(i) {
-                    arr1[i] = $(this).val();
-                });
-                D1List = arr1.join('|')
-                CmsUtility.postAjaxCall(
-                    //系统设置
-                    CmsConfig.addressUrl.Mechanism.updateTDList, {
-                        "institutionNumber": userNumber,
-                        "tDType": 'D1',
-                        "paymentChannelList": D1List
-                    },
-                    function(data) {
-
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
+                
+                
                 var data = data.field;
                 if (merchantca == true) {
                     data.merchantCa = 0
@@ -609,6 +533,7 @@
                     layer.msg('请上传logo图片')
                     return false
                 }
+                var D0List = '',D1List = ''
                 data.institutionLogo = logoUrl
                 data.institutionNumber = userNumber
                 CmsUtility.postAjaxCall(
@@ -617,7 +542,57 @@
                     data,
                     function(data) {
                         if (data.code == 1000) {
-                            layer.msg('保存成功')
+                            var arr = new Array();
+                            $("input:checkbox[name='D0rate']:checked").each(function(i) {
+                                arr[i] = $(this).val();
+                            });
+                            if(arr.length == 1){
+                               D0List = arr[0] + '&' 
+                            }else if(arr.length >1){
+                                D0List = arr.join('&')
+                            }
+                            
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                CmsConfig.addressUrl.Mechanism.updateTDList, {
+                                    "institutionNumber": userNumber,
+                                    "tDType": 'D0',
+                                    "paymentChannelList": D0List
+                                },
+                                function(data) {
+                                    if(data.code == 1000){
+                                        var arr1 = new Array();
+                                        $("input:checkbox[name='D1rate']:checked").each(function(i) {
+                                            arr1[i] = $(this).val();
+                                        });
+                                        if(arr1.length == 1){
+                                           D1List = arr1[0] + '&' 
+                                        }else if(arr1.length >1){
+                                            D1List = arr1.join('&')
+                                        }
+                                        // D1List = arr1.join('&')
+                                        CmsUtility.postAjaxCall(
+                                            //系统设置
+                                            CmsConfig.addressUrl.Mechanism.updateTDList, {
+                                                "institutionNumber": userNumber,
+                                                "tDType": 'D1',
+                                                "paymentChannelList": D1List
+                                            },
+                                            function(data) {
+                                                layer.msg(data.msg)
+                                            },
+                                            function(data) {
+                                                console.log('222')
+                                            }
+                                        )
+                                    }else{
+                                        layer.msg(data.msg)
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                }
+                            )
                         } else {
                             layer.msg(data.msg)
                         }
