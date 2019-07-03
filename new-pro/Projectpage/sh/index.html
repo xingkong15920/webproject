@@ -17,65 +17,63 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script src="../../common/config-sh.js"></script>
-	<script src="../../common/utility.js"></script>
+		<script src="../../common/utility.js"></script>
 		<script type="text/javascript">
 			var number = CmsUtility.getQueryString('number')
 			var ins = CmsUtility.getQueryString('ins')
 			var cname = ''
 			var cip = ''
-			if(CmsUtility.getQueryString('number') != null){
+			if (CmsUtility.getQueryString('number') != null) {
 				$.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
 					console.log(returnCitySN)
 					cip = returnCitySN.cip
 				});
 				//获取用户所在城市信息
 				var citysearch = new AMap.CitySearch();
-					//自动获取用户IP，返回当前城市
-					citysearch.getLocalCity(function(status, result) {
-						console.log(status, result)
-						if(status === 'complete' && result.info === 'OK') {
-							if(result && result.city && result.bounds) {
-								cname = result.province + result.city
-								console.log(cip,cname)
-								CmsUtility.postAjaxCall(
-									//系统设置
-									CmsConfig.addressUrl.Login.Automaticlist,
-									{
-										"loginClass":'3',
-										"number":number,
-										"institutionNumber":ins,
-										"address":cname,
-										"IP":cip
-									},
-									function(data) {
-										if(data.code == '1000') {
-											console.log(data)
-											var data = data.data
-											console.log(data)
-											
-											sessionStorage.setItem("userSh", JSON.stringify(data));
-											window.location.href = decodeURIComponent(window.location).split('?')[0]
-											// layer.msg('登录成功')
-											// setTimeout(function() {
-											// 	window.location.href = 'index.html'
-											// }, 500)
-										} else {
-											//layer.msg(data.msg)
-										}
-									},
-									function(data) {
-										console.log('222')
+				//自动获取用户IP，返回当前城市
+				citysearch.getLocalCity(function(status, result) {
+					console.log(status, result)
+					if (status === 'complete' && result.info === 'OK') {
+						if (result && result.city && result.bounds) {
+							cname = result.province + result.city
+							console.log(cip, cname)
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Login.Automaticlist, {
+									"loginClass": '3',
+									"number": number,
+									"institutionNumber": ins,
+									"address": cname,
+									"IP": cip
+								},
+								function(data) {
+									if (data.code == '1000') {
+										console.log(data)
+										var data = data.data
+										console.log(data)
+
+										sessionStorage.setItem("userSh", JSON.stringify(data));
+										window.location.href = decodeURIComponent(window.location).split('?')[0]
+										// layer.msg('登录成功')
+										// setTimeout(function() {
+										// 	window.location.href = 'index.html'
+										// }, 500)
+									} else {
+										//layer.msg(data.msg)
 									}
-								)
-							}
-						} else {
-					}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+					} else {}
 				})
 				// window.location.href = decodeURIComponent(window.location).split('?')[0]
-			}else{
-				if(!sessionStorage.getItem("userSh")){
+			} else {
+				if (!sessionStorage.getItem("userSh")) {
 					console.log(sessionStorage.getItem("userSh"))
-					window.location.href = 'login.html' 
+					window.location.href = 'login.html'
 				}
 			}
 			var dw = $(window).width(),
@@ -86,7 +84,7 @@
 			var cssText = "width:" + dw + "px !important;";
 			iframe.css("cssText", cssText);
 
-			if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //判断是苹果设备还是其他设备 
+			if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //判断是苹果设备还是其他设备 
 				ifmbox.addClass('ifm-ios');
 				iframe.attr("scrolling", "no") //评估设置设置为no
 			} else {
@@ -100,7 +98,7 @@
 		<!-- 顶部开始 -->
 		<div class="container">
 			<div class="logo">
-				<a href="./index.html" id="titName"   style="width:250px">商户管理系统</a>
+				<a href="./index.html" id="titName" style="width:250px">商户管理系统</a>
 			</div>
 			<div class="left_open">
 				<i title="展开左侧栏" class="iconfont">&#xe699;</i>
@@ -146,7 +144,7 @@
 							<cite>广告管理</cite>
 						</a>
 					</li> -->
-					
+
 					<li class="layui-nav-item">
 						<a href="javascript:;">
 							<i class="icon icon icon-zhangdan"></i>
@@ -199,7 +197,12 @@
 									<cite>会员卡配置</cite>
 								</a>
 							</li>
-							
+							<li>
+								<a lay-href="vipCardSet-w.html">
+									<i class="icon icon icon-zhanghuzijinbiandongbiao"></i>
+									<cite>微信会员卡</cite>
+								</a>
+							</li>
 						</ul>
 					</li>
 					<li class="layui-nav-item">
@@ -210,21 +213,21 @@
 						</a>
 						<ul class="sub-menu">
 							<li>
-								<a lay-href="vipCardSet.html">
-									<i class="icon icon icon-zhanghuzijinbiandongbiao"></i>
-									<cite>会员卡配置</cite>
-								</a>
-							</li>
-							<li>
 								<a lay-href="vipLevelList.html">
 									<i class="icon icon icon-zhanghuzijinbiandongbiao"></i>
 									<cite>会员等级</cite>
 								</a>
 							</li>
 							<li>
-								<a lay-href="vipSet.html">
+								<a lay-href="vipsetrec.html">
 									<i class="icon icon icon-fengkongshezhi"></i>
-									<cite>会员配置</cite>
+									<cite>充值设置</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipsetdiscount.html">
+									<i class="icon icon icon-fengkongshezhi"></i>
+									<cite>折扣设置</cite>
 								</a>
 							</li>
 							<li>
@@ -234,12 +237,24 @@
 								</a>
 							</li>
 							<li>
-								<a lay-href="vipCount.html">
+								<a lay-href="vipreportrec.html">
 									<i class="icon icon icon-shanghupingtai"></i>
-									<cite>收支记录</cite>
+									<cite>充值流水</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportref.html">
+									<i class="icon icon icon-shanghupingtai"></i>
+									<cite>退款明细</cite>
 								</a>
 							</li>
 						</ul>
+					</li>
+					<li class="layui-nav-item">
+						<a lay-href="vipactivity.html">
+							<i class="icon icon icon-shujutongji"></i>
+							<cite>营销中心</cite>
+						</a>
 					</li>
 					<li class="layui-nav-item">
 						<a href="javascript:;">
@@ -285,32 +300,32 @@
 	<script src="../../common/config-sh.js"></script>
 	<script src="../../common/utility.js"></script>
 	<script type="text/javascript">
-		$('#userName').html(JSON.parse(sessionStorage.getItem("userSh")).merchantName + '/' + JSON.parse(sessionStorage.getItem("userSh")).Number)
-		var  reg = new RegExp('(?<=[^.]*[.]+).*?(?=[.]+)')
-			var loc = window.location.href
-			console.log(loc)
-			console.log(loc.match(reg))
-			CmsUtility.postAjaxCall(
-						//系统设置
-				CmsConfig.addressUrl.Public.getSitePath,
-				{
-					"sitePath":'51shanhe.com',
-				},
-				function(data) {
-					console.log(data)
-					if(data.code == '1000') {
-						$('#titName').html(data.data[0].websiteName +'-商户管理平台')
-						$('#title').html(data.data[0].websiteName +'-商户管理平台')
-						sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));
-						// document.write('<title>机构后台管理系统</title>')
-					} else {
-						layer.msg(data.msg)
-					}
-				},
-				function(data) {
-					console.log('222')
+		$('#userName').html(JSON.parse(sessionStorage.getItem("userSh")).merchantName + '/' + JSON.parse(sessionStorage.getItem(
+			"userSh")).Number)
+		var reg = new RegExp('(?<=[^.]*[.]+).*?(?=[.]+)')
+		var loc = window.location.href
+		console.log(loc)
+		console.log(loc.match(reg))
+		CmsUtility.postAjaxCall(
+			//系统设置
+			CmsConfig.addressUrl.Public.getSitePath, {
+				"sitePath": '51shanhe.com',
+			},
+			function(data) {
+				console.log(data)
+				if (data.code == '1000') {
+					$('#titName').html(data.data[0].websiteName + '-商户管理平台')
+					$('#title').html(data.data[0].websiteName + '-商户管理平台')
+					sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));
+					// document.write('<title>机构后台管理系统</title>')
+				} else {
+					layer.msg(data.msg)
 				}
-			)
+			},
+			function(data) {
+				console.log('222')
+			}
+		)
 		console.log(JSON.parse(sessionStorage.getItem("userSh")).login)
 		$(function() {
 			$('#logout').click(function() {
@@ -318,13 +333,12 @@
 				console.log(sessionStorage.getItem("userSh"))
 				CmsUtility.postAjaxCall(
 					//系统设置
-					CmsConfig.addressUrl.Login.exitLogin, 
-					{
+					CmsConfig.addressUrl.Login.exitLogin, {
 						"number": JSON.parse(sessionStorage.getItem("userSh")).Number,
-						"institutionNumber":JSON.parse(sessionStorage.getItem("userSh")).institutionNumber
+						"institutionNumber": JSON.parse(sessionStorage.getItem("userSh")).institutionNumber
 					},
 					function(data) {
-						if(data.code == '1000') {
+						if (data.code == '1000') {
 							// layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
 							// 	title: ''
 							// })

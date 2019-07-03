@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/card.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+		<style type="text/css">
+			.layui-input-inline.widthauto,
+			.layui-form-mid.widthauto {
+				margin: 0;
+			}
+
+			.consumeCard {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.consumeCard::after {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a>会员卡管理</a>
+				<a><cite>微信会员卡</cite></a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+			 title="刷新">
+				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				var navH = $(".cardSetpreview").offset().top;
+				$(window).scroll(function() {
+					var scroH = $(this).scrollTop();
+					if (scroH >= navH) {
+						$(".cardSetpreview").css({
+							// "position": "fixed"
+							'top': '10px'
+						});
+					} else if (scroH < navH) {
+						$(".cardSetpreview").css({
+							// "position": "static"
+							'top': '60px'
+						});
+					}
+				})
+			})
+		</script>
+		<div class="x-body">
+			<div class="layui-row">
+				<div class="layui-col-xs3 layui-col-sm3 layui-col-md3 cardSetpreview">
+					<img src="./images/topbar.png" class="topbar">
+					<div class="card_boby">
+						<div class="card_b card_bc1">
+							<img class="card_b_bg" id="cardBimg">
+							<div class="card_b_lt card_posi">
+								<img src="./images/logo.png" id="ppLogopv">
+								<div class="">
+									<p class="">闪盒收银</p>
+									<p class="ltNamepv"></p>
+								</div>
+							</div>
+							<div class="card_b_ld card_posi">
+								<!-- <p><i class="icon icon icon-dailiguanli1"></i>黄金会员</p> -->
+								<p>NO.8888 8888 8888 8888</p>
+							</div>
+							<!-- <div class="card_b_rt card_posi">
+								<span><i class="icon icon icon-dailiguanli1"></i></span>
+								<p>黄金会员</p>
+							</div>
+							<div class="card_b_rd card_posi">
+								<span><i class="icon icon icon-dailiguanli1"></i></span>
+								<p>黄金会员</p>
+							</div> -->
+						</div>
+						<ul class="card_qList">
+							<li class="card_qListli lishow">
+								<h3>积分</h3>
+								<p>1200</p>
+							</li>
+							<li class="card_qListli lishow">
+								<h3>余额</h3>
+								<p>1200<span>(元)</span></p>
+							</li>
+							<li class="card_qListli lishow">
+								<h3>优惠券</h3>
+								<p>12<span>(张)</span></p>
+							</li>
+							<li class="card_qListli">
+								<h3>等级</h3>
+								<p>Lv.12</p>
+							</li>
+						</ul>
+						<ul class="card_cList">
+							<li class="card_cListli">
+								<img src="./images/code_erwei.png">
+								<p>8888 8888 8888 8888</p>
+							</li>
+							<li class="card_cListli" style="display: none;">
+								<img src="./images/code_yiwei.png" style="width: 80%;">
+								<p>8888 8888 8888 8888</p>
+							</li>
+						</ul>
+					</div>
+					<ul class="card_fList" style="border-top: 1px solid #e6e6e6;">
+						<li class="card_fListli">
+							<p>推荐给朋友</p>
+							<i class="iconfont"></i>
+						</li>
+						<li class="card_fListli">
+							<p>会员卡详情</p>
+							<i class="iconfont"></i>
+						</li>
+						<li class="card_fListli">
+							<p>适用门店</p>
+							<i class="iconfont"></i>
+						</li>
+					</ul>
+				</div>
+				<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet">
+					<div class="layui-form" lay-filter="basic">
+						<div class="layui-form-item consumeCard">
+							<div class="layui-input-inline widthauto">
+								<label class="layui-form-label widthauto">会员卡ID</label>
+								<div class="layui-form-mid">pHucvv9_7VbjAJflf8jy51X_egHE</div>
+							</div>
+							<div class="layui-input-inline widthauto" style="display: flex;justify-content: space-around;align-items: center;">
+								<div class="layui-btn layui-btn-normal layui-btn-sm vipCardLink">会员卡领取链接</div>
+							</div>
+						</div>
+						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 0;">
+							<legend style="font-weight: 500;">基本设置</legend>
+						</fieldset>
+						<div class="layui-form-item sysItem">
+							<div class="layui-form-item max600">
+								<label class="layui-form-label">卡副标题</label>
+								<div class="layui-input-block">
+									<input type="text" name="institutionRoute" class="layui-input" lay-verify="ltName" id="ltName" value="让收银更简单">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">栏位展示</label>
+								<div class="layui-input-block columnshow">
+									<input type="checkbox" name="columnshow" lay-skin="primary" lay-filter="columnshow" value="0" title="积分"
+									 checked="" disabled="">
+									<input type="checkbox" name="columnshow" lay-skin="primary" lay-filter="columnshow" value="1" title="余额"
+									 checked="">
+									<input type="checkbox" name="columnshow" lay-skin="primary" lay-filter="columnshow" value="2" title="优惠券"
+									 checked="">
+									<input type="checkbox" name="columnshow" lay-skin="primary" lay-filter="columnshow" value="3" title="等级">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">条码展示</label>
+								<div class="layui-input-block barcodeshow">
+									<input type="radio" name="barcodeshow" lay-filter="barcodeshow" value="0" title="二维码" checked="">
+									<input type="radio" name="barcodeshow" lay-filter="barcodeshow" value="1" title="条形码">
+									<input type="radio" name="barcodeshow" lay-filter="barcodeshow" value="2" title="不展示">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">商户服务</label>
+								<div class="layui-input-block merservices">
+									<input type="checkbox" name="merservices" lay-skin="primary" value="0" title="免费WIFI" checked="">
+									<input type="checkbox" name="merservices" lay-skin="primary" value="1" title="可带宠物" checked="">
+									<input type="checkbox" name="merservices" lay-skin="primary" value="2" title="免费停车" checked="">
+									<input type="checkbox" name="merservices" lay-skin="primary" value="3" title="可外卖" checked="">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">图文介绍</label>
+								<div class="layui-input-block" style="line-height: 36px;color: #666;">图片建议尺寸：900像素 *
+									500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
+								<div class="layui-input-block">
+									<div class="layui-form-item max480">
+										<div class="intBtn max480" lay-data="{url: '/c/', accept: 'file',size:10000}">
+											上传图片
+											<img src="" id="intBtnimg">
+										</div>
+										<textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+									</div>
+									<div class="layui-form-item addBtnB max480">
+										<div class="layui-btn layui-btn-primary layui-btn-sm addBtn">增加图文</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 自定义入口一 -->
+						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+							<legend style="font-weight: 500;">自定义入口一</legend>
+						</fieldset>
+						<div class="layui-form-item sysItem">
+							<div class="layui-form-item">
+								<div class="layui-input-block ">
+									<input type="radio" name="customOne" lay-filter="customOne" value="0" title="不设置">
+									<input type="radio" name="customOne" lay-filter="customOne" value="1" title="自定义链接" checked="">
+									<input type="radio" name="customOne" lay-filter="customOne" value="2" title="自定义小程序">
+								</div>
+							</div>
+							<div class="customOneB max600">
+								<div class="layui-form-item">
+									<label class="layui-form-label">入口名称</label>
+									<div class="layui-input-block">
+										<input type="text" name="customOnelNInput" class="layui-input" lay-verify="" id="customOnelNInput" value="推荐给朋友"
+										 placeholder="入口名称">
+									</div>
+								</div>
+								<div class="customOne-link">
+									<div class="layui-form-item">
+										<label class="layui-form-label">自定义链接</label>
+										<div class="layui-input-block">
+											<input type="text" name="customOnelLInput" class="layui-input" lay-verify="" id="customOnelLInput"
+											 placeholder="自定义链接地址">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">引导语</label>
+										<div class="layui-input-block">
+											<input type="text" name="customOnelYInput" class="layui-input" lay-verify="" id="customOnelYInput"
+											 placeholder="引导语">
+										</div>
+									</div>
+								</div>
+								<div class="customOne-miniapp" style="display: none;">
+									<div class="layui-form-item">
+										<label class="layui-form-label">小程序ID</label>
+										<div class="layui-input-block">
+											<input type="text" name="customOnemIInput" class="layui-input" lay-verify="" id="customOnemIInput"
+											 placeholder="小程序ID">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">小程序页面</label>
+										<div class="layui-input-block">
+											<input type="text" name="customOnemPInput" class="layui-input" lay-verify="" id="customOnemPInput"
+											 placeholder="小程序页面路径path">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">引导语</label>
+										<div class="layui-input-block">
+											<input type="text" name="customOnemYInput" class="layui-input" lay-verify="" id="customOnemYInput"
+											 placeholder="引导语">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 自定义入口二 -->
+						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+							<legend style="font-weight: 500;">自定义入口二</legend>
+						</fieldset>
+						<div class="layui-form-item sysItem">
+							<div class="layui-form-item">
+								<div class="layui-input-block ">
+									<input type="radio" name="customTwo" lay-filter="customTwo" value="0" title="不设置">
+									<input type="radio" name="customTwo" lay-filter="customTwo" value="1" title="自定义链接" checked="">
+									<input type="radio" name="customTwo" lay-filter="customTwo" value="2" title="自定义小程序">
+								</div>
+							</div>
+							<div class="customTwoB max600">
+								<div class="layui-form-item">
+									<label class="layui-form-label">入口名称</label>
+									<div class="layui-input-block">
+										<input type="text" name="customTwolNInput" class="layui-input" lay-verify="" id="customTwolNInput" value="会员卡详情"
+										 placeholder="入口名称">
+									</div>
+								</div>
+								<div class="customTwo-link">
+									<div class="layui-form-item">
+										<label class="layui-form-label">自定义链接</label>
+										<div class="layui-input-block">
+											<input type="text" name="customTwolLInput" class="layui-input" lay-verify="" id="customTwolLInput"
+											 placeholder="自定义链接地址">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">引导语</label>
+										<div class="layui-input-block">
+											<input type="text" name="customTwolYInput" class="layui-input" lay-verify="" id="customTwolYInput"
+											 placeholder="引导语">
+										</div>
+									</div>
+								</div>
+								<div class="customTwo-miniapp" style="display: none;">
+									<div class="layui-form-item">
+										<label class="layui-form-label">小程序ID</label>
+										<div class="layui-input-block">
+											<input type="text" name="customTwomIInput" class="layui-input" lay-verify="" id="customTwomIInput"
+											 placeholder="小程序ID">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">小程序页面</label>
+										<div class="layui-input-block">
+											<input type="text" name="customTwomPInput" class="layui-input" lay-verify="" id="customTwomPInput"
+											 placeholder="小程序页面路径path">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">引导语</label>
+										<div class="layui-input-block">
+											<input type="text" name="customTwomYInput" class="layui-input" lay-verify="" id="customTwomYInput"
+											 placeholder="引导语">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 自定义入口三 -->
+						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+							<legend style="font-weight: 500;">自定义入口三</legend>
+						</fieldset>
+						<div class="layui-form-item sysItem">
+							<div class="layui-form-item">
+								<div class="layui-input-block ">
+									<input type="radio" name="customThree" lay-filter="customThree" value="0" title="不设置">
+									<input type="radio" name="customThree" lay-filter="customThree" value="1" title="自定义链接" checked="">
+									<input type="radio" name="customThree" lay-filter="customThree" value="2" title="自定义小程序">
+								</div>
+							</div>
+							<div class="customThreeB max600">
+								<div class="layui-form-item">
+									<label class="layui-form-label">入口名称</label>
+									<div class="layui-input-block">
+										<input type="text" name="customThreelNInput" class="layui-input" lay-verify="" id="customThreelNInput" value="适用门店"
+										 placeholder="入口名称">
+									</div>
+								</div>
+								<div class="customThree-link">
+									<div class="layui-form-item">
+										<label class="layui-form-label">自定义链接</label>
+										<div class="layui-input-block">
+											<input type="text" name="customThreelLInput" class="layui-input" lay-verify="" id="customThreelLInput"
+											 placeholder="自定义链接地址">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">引导语</label>
+										<div class="layui-input-block">
+											<input type="text" name="customThreelYInput" class="layui-input" lay-verify="" id="customThreelYInput"
+											 placeholder="引导语">
+										</div>
+									</div>
+								</div>
+								<div class="customThree-miniapp" style="display: none;">
+									<div class="layui-form-item">
+										<label class="layui-form-label">小程序ID</label>
+										<div class="layui-input-block">
+											<input type="text" name="customThreemIInput" class="layui-input" lay-verify="" id="customThreemIInput"
+											 placeholder="小程序ID">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">小程序页面</label>
+										<div class="layui-input-block">
+											<input type="text" name="customThreemPInput" class="layui-input" lay-verify="" id="customThreemPInput"
+											 placeholder="小程序页面路径path">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">引导语</label>
+										<div class="layui-input-block">
+											<input type="text" name="customThreemYInput" class="layui-input" lay-verify="" id="customThreemYInput"
+											 placeholder="引导语">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-form-item layui-layout-admin">
+								<div class="layui-input-block">
+									<div class="layui-footer" style="left: 0;text-align: center;">
+										<button class="layui-btn" lay-submit="" lay-filter="add">同步到微信</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="cardQrcode" style="display: none;">
+							<img src="./images/erweima.jpg">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var serverUrl = 'http://192.168.1.190:5002/'
+			// var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+
+			var code1;
+			var jgData;
+			var merchantca = false;
+			var type;
+			var logoUrl = '';
+			var chooseCnum
+
+			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+				layui.$.support.cors = true; //允许ajax跨域
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl;
+
+
+				var $b1 = $('#newfenzu'),
+					$i1 = $('#newfenzuVal'),
+					$b2 = $('#newchengwei'),
+					$i2 = $('#newchengweiVal'),
+					$b3 = $('#newtag'),
+					$i3 = $('#newtagVal');
+				$i1.keyup(function(e) {
+					if (e.keyCode == 13) {
+						$b1.click();
+					}
+				});
+				$i2.keyup(function(e) {
+					if (e.keyCode == 13) {
+						$b2.click();
+					}
+				});
+				$i3.keyup(function(e) {
+					if (e.keyCode == 13) {
+						$b3.click();
+					}
+				});
+				//会员分组设置
+				var teamList = ['分组一', '分组二', '分组三']
+
+				function getTeam() {
+					var strT = ''
+					for (let i = 0; i < teamList.length; i++) {
+						strT += '<input type="checkbox" class="set" name="name" title="' + teamList[i] +
+							'" checked=""><span class="del fenzu" data-id="' + i + '" onclick="delfenzu(' + i +
+							')"><i class="layui-icon layui-tab-close">ဆ</i></span>'
+					}
+					$('#teamList').html(strT)
+					form.render()
+				}
+				getTeam()
+				$('#newfenzu').click(function() {
+					var newfenzuVal = $i1.val()
+					if (teamList.indexOf(newfenzuVal) >= 0) {
+						layer.msg('分组名重复，请重新输入')
+						return
+					}
+					$i1.val("")
+					teamList.push(newfenzuVal)
+					console.log(teamList)
+					getTeam()
+				})
+				//会员称谓设置
+				var chengweiList = ['称谓一', '称谓二', '称谓三']
+
+				function getChengwei() {
+					var strT = ''
+					for (let ii = 0; ii < chengweiList.length; ii++) {
+						strT += '<input type="checkbox" class="set" name="name" title="' + chengweiList[ii] +
+							'" checked=""><span class="del chengwei" data-id="' + ii + '" onclick="delchengwei(' + ii +
+							')"><i class="layui-icon layui-tab-close">ဆ</i></span>'
+					}
+					$('#chengweiList').html(strT)
+					form.render()
+				}
+				getChengwei()
+				$('#newchengwei').click(function() {
+					var newchengweiVal = $i2.val()
+					if (teamList.indexOf(newchengweiVal) >= 0) {
+						layer.msg('分组名重复，请重新输入')
+						return
+					}
+					$i2.val("")
+					chengweiList.push(newchengweiVal)
+					console.log(teamList)
+					getChengwei()
+				})
+				//会员标签设置
+				var tagList1 = ['标签一', '标签二', '标签三']
+
+				function tagList() {
+					var strT = ''
+					for (let iii = 0; iii < tagList1.length; iii++) {
+						strT += '<input type="checkbox" class="set" name="name" title="' + tagList1[iii] +
+							'" checked=""><span class="del tag" data-id="' + iii + '" onclick="deltag(' + iii +
+							')"><i class="layui-icon layui-tab-close">ဆ</i></span>'
+					}
+					$('#tagList').html(strT)
+					form.render()
+				}
+				tagList()
+				$('#newtag').click(function() {
+					var newtagVal = $i3.val()
+					if (teamList.indexOf(newtagVal) >= 0) {
+						layer.msg('分组名重复，请重新输入')
+						return
+					}
+					$i3.val("")
+					tagList1.push(newtagVal)
+					console.log(teamList)
+					tagList()
+				})
+				window.delfenzu = function(num) {
+					teamList.splice(num, 1)
+					getTeam()
+				}
+				window.delchengwei = function(num) {
+					chengweiList.splice(num, 1)
+					getChengwei()
+				}
+				window.deltag = function(num) {
+					tagList1.splice(num, 1)
+					tagList()
+				}
+
+
+				/*---------- 单选复选监听 ----------*/
+				form.on('checkbox(columnshow)', function(data) {
+					if ($("input[name='columnshow']:checked").length > 3) {
+						$(this).prop("checked", false);
+						form.render('checkbox');
+						layer.msg("最多只能选择3个标签", function() {});
+					} else {
+						if (data.elem.checked) {
+							$('.card_qListli').eq(data.elem.value).addClass('lishow')
+						} else {
+							$('.card_qListli').eq(data.elem.value).removeClass('lishow')
+						}
+					}
+				});
+				form.on('radio(barcodeshow)', function(data) {
+					console.log(data.value)
+					if (data.value == 0) {
+						$('.card_cListli').eq(0).show()
+						$('.card_cListli').eq(1).hide()
+					} else if (data.value == 1) {
+						$('.card_cListli').eq(0).hide()
+						$('.card_cListli').eq(1).show()
+					} else if (data.value == 2) {
+						$('.card_cListli').hide()
+					}
+				});
+				// 图文设置
+				$('.addBtn').click(function() {
+
+				})
+				// 自定义入口一
+				form.on('radio(customOne)', function(data) {
+					if (data.value == 0) {
+						$('.customOneB').hide()
+						$('#customOnelNInput').val('')
+						$('.card_fListli').eq(0).children('p').html('自定义入口一')
+					} else if (data.value == 1) {
+						$('.customOneB').show()
+						$('.customOne-link').show()
+						$('.customOne-miniapp').hide()
+						// $('.card_fListli').eq(0).children('p').html()
+					} else if (data.value == 2) {
+						$('.customOneB').show()
+						$('.customOne-link').hide()
+						$('.customOne-miniapp').show()
+						// $('.card_fListli').eq(0).children('p').html()
+					}
+				});
+				$("#customOnelNInput").on("input", function(e) {
+					console.log(e.delegateTarget.value);
+					if (e.delegateTarget.value == '') {
+						$('.card_fListli').eq(0).children('p').html('自定义入口二')
+					} else {
+						$('.card_fListli').eq(0).children('p').html(e.delegateTarget.value)
+					}
+				});
+				// 自定义入口二
+				form.on('radio(customTwo)', function(data) {
+					if (data.value == 0) {
+						$('.customTwoB').hide()
+						$('#customTwolNInput').val('')
+						$('.card_fListli').eq(1).children('p').html('自定义入口二')
+					} else if (data.value == 1) {
+						$('.customTwoB').show()
+						$('.customTwo-link').show()
+						$('.customTwo-miniapp').hide()
+						// $('.card_fListli').eq(1).children('p').html()
+					} else if (data.value == 2) {
+						$('.customTwoB').show()
+						$('.customTwo-link').hide()
+						$('.customTwo-miniapp').show()
+						// $('.card_fListli').eq(1).children('p').html()
+					}
+				});
+				$("#customTwolNInput").on("input", function(e) {
+					console.log(e.delegateTarget.value);
+					if (e.delegateTarget.value == '') {
+						$('.card_fListli').eq(1).children('p').html('自定义入口二')
+					} else {
+						$('.card_fListli').eq(1).children('p').html(e.delegateTarget.value)
+					}
+				});
+				// 自定义入口三
+				form.on('radio(customThree)', function(data) {
+					if (data.value == 0) {
+						$('.customThreeB').hide()
+						$('#customThreelNInput').val('')
+						$('.card_fListli').eq(2).children('p').html('自定义入口三')
+					} else if (data.value == 1) {
+						$('.customThreeB').show()
+						$('.customThree-link').show()
+						$('.customThree-miniapp').hide()
+						// $('.card_fListli').eq(2).children('p').html()
+					} else if (data.value == 2) {
+						$('.customThreeB').show()
+						$('.customThree-link').hide()
+						$('.customThree-miniapp').show()
+						// $('.card_fListli').eq(2).children('p').html()
+					}
+				});
+				$("#customThreelNInput").on("input", function(e) {
+					console.log(e.delegateTarget.value);
+					if (e.delegateTarget.value == '') {
+						$('.card_fListli').eq(2).children('p').html('自定义入口三')
+					} else {
+						$('.card_fListli').eq(2).children('p').html(e.delegateTarget.value)
+					}
+				});
+				/*---------- Input监听 ----------*/
+				ltname()
+				/*---------- 品牌logo ----------*/
+				var uploadInst = upload.render({
+					elem: '#ppLogo',
+					url: '/upload/',
+					size: 1024,
+					accept: 'file',
+					exts: 'jpg|jpeg|png',
+					before: function(obj) {
+						//预读本地文件示例，不支持ie8
+						obj.preview(function(index, file, result) {
+							$('#ppLogo').attr('src', result); //图片链接（base64）
+							$('#ppLogopv').attr('src', result); //图片链接（base64）
+						});
+					},
+					done: function(res) {
+						//如果上传失败
+						if (res.code > 0) {
+							return layer.msg('上传失败');
+						}
+						//上传成功
+					},
+					error: function() {
+						//演示失败状态，并实现重传
+						// var demoText = $('#demoText');
+						// demoText.html(
+						// 	'<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+						// demoText.find('.demo-reload').on('click', function() {
+						// 	uploadInst.upload();
+						// });
+					},
+				});
+
+				/*---------- 会员卡背景 ----------*/
+				var uploadInst = upload.render({
+					elem: '#cardBgimg',
+					url: '/upload/',
+					before: function(obj) {
+						//预读本地文件示例，不支持ie8
+						obj.preview(function(index, file, result) {
+							$('#cardBgimg').attr('src', result); //图片链接（base64）
+							$('#cardBimg').attr('src', result); //图片链接（base64）
+						});
+					},
+					done: function(res) {
+						//如果上传失败
+						if (res.code > 0) {
+							return layer.msg('上传失败');
+						}
+						//上传成功
+					},
+					error: function() {
+						//演示失败状态，并实现重传
+						var demoText = $('#demoText');
+						demoText.html(
+							'<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+						demoText.find('.demo-reload').on('click', function() {
+							uploadInst.upload();
+						});
+					}
+				});
+
+				/*---------- 图文上传 ----------*/
+				upload.render({
+					elem: '.intBtn',
+					before: function(obj) {
+						obj.preview(function(index, file, result) {
+							$('#intBtnimg').attr({
+								src: result,
+								width: '480',
+								height: '282'
+							}); //图片链接（base64）
+						});
+						layer.tips('接口地址：' + this.url, this.item, {
+							tips: 1
+						});
+						// console.log(result)
+					},
+					done: function(res, index, upload) {
+						var item = this.item;
+						console.log(item); //获取当前触发上传的元素，layui 2.1.0 新增
+					}
+				})
+
+				/*---------- 监听开关 ----------*/
+				form.on('switch(timePreferences)', function(data) { //计时开关
+					if (data.elem.checked == true) {
+						$('#timing').show()
+						data.elem.value = "0"
+						console.log(data.elem.value)
+					} else if (data.elem.checked == false) {
+						data.elem.value = "1"
+						console.log(data.elem.value)
+						$('#timing').hide()
+					}
+				});
+				//表单初始赋值
+				form.val('basic', {
+					"timePreferences": true
+				})
+				//监听提交
+				form.on('submit(add)', function(data) {
+					if (!chooseCnum) {
+						data.chooseCnum = 1
+					} else {
+						data.chooseCnum = chooseCnum
+					}
+					console.log(data.chooseCnum)
+					if (logoUrl == '') {
+						layer.msg('请上传logo图片')
+						return false
+					}
+					data.institutionLogo = logoUrl
+					data.institutionNumber = userNumber
+					// layer.alert(JSON.stringify(data.field), {
+					//  title: '最终的提交信息'
+					// })
+					return false;
+				});
+			});
+			$('.card_qListli').click(function(e) {
+				chooseCnum = $('.card_qListli').index(this) + 1
+				console.log(chooseCnum)
+			})
+
+			$('.chooseColor span').click(function(e) {
+				chooseCnum = $('.chooseColor span').index(this) + 1
+				$(this).siblings('span').removeClass('chooseCC layui-icon layui-icon-ok')
+				$(this).addClass('chooseCC layui-icon layui-icon-ok')
+				$('.card_b').attr("class", 'card_b card_bc' + chooseCnum)
+			})
+
+			function ltname() {
+				$('.ltNamepv').text($("#ltName").val())
+				$("#ltName").on("input", function(e) {
+					//获取input输入的值
+					console.log(e.delegateTarget.value);
+					$('.ltNamepv').text(e.delegateTarget.value)
+				});
+			}
+		</script>
+	</body>
+
+</html>

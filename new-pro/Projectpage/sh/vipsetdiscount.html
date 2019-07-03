@@ -19,7 +19,7 @@
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
 				<a>会员管理</a>
-				<a><cite>会员等级</cite></a>
+				<a><cite>折扣设置</cite></a>
 			</span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
 			 title="刷新">
@@ -29,7 +29,7 @@
 		<div class="x-body">
 
 			<xblock>
-				<button class="layui-btn" onclick="x_admin_show('添加等级','vipLevelAdd.html',600)"><i class="layui-icon"></i>添加等级</button>
+				<button class="layui-btn" onclick="x_admin_show('添加折扣设置','vipsetdiscountadd.html','600','550')"><i class="layui-icon"></i>添加折扣设置</button>
 			</xblock>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
@@ -91,7 +91,7 @@
 					cols: [
 						[{
 							field: 'shopName',
-							title: '等级名称',
+							title: '会员等级',
 							align: 'center',
 							width: 200,
 							templet: function(data) {
@@ -99,41 +99,47 @@
 							}
 						}, {
 							field: 'shopName',
-							title: '等级类型',
+							title: '可使用支付方式',
 							align: 'center',
 							width: 130,
 							templet: function(data) {
-								return '等级类型' + Math.round(Math.random() * 10)
+								return '微信'
 							}
 						}, {
 							field: 'shopName',
-							title: '所需积分',
+							title: '折扣',
 							align: 'center',
 							width: 100,
 							templet: function(data) {
-								return 100
+								return Math.round(Math.random() * 10)
 							}
 						}, {
 							field: 'shopName',
-							title: '开卡金额',
+							title: '最低消费',
 							align: 'center',
 							width: 100,
 							templet: function(data) {
-								return 500
+								return 50
 							}
 						}, {
 							field: 'shopName',
-							title: '赠送金额',
+							title: '节假日是否可用',
 							align: 'center',
-							width: 100,
+							width: 150,
 							templet: function(data) {
-								return 500
+								return '可用'
 							}
 						}, {
 							field: 'insertTime',
-							title: '有效期',
+							title: '可用时间',
 							align: 'center',
 							width: 180,
+						}, {
+							field: 'insertTime',
+							title: '状态',
+							toolbar: "#switchBar",
+							align: 'center',
+							width: 120,
 						}, {
 							field: 'insertTime',
 							title: '创建时间',
@@ -191,9 +197,9 @@
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
-							title: '会员等级编辑',
-							area: ['600px', '90%'],
-							content: 'vipLevelAdd.html',
+							title: '会员编辑',
+							area: ['600px', '500px'],
+							content: 'vipsetdiscountadd.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -202,10 +208,10 @@
 							}
 						});
 					} else if (obj.event === 'delete') {
-						// layer.msg('删除此会员等级？')
+						// layer.msg('删除会员卡')
 						// return
 						// 弹出是否要删除门店
-						layer.confirm('确定要删除此会员等级？', function(index) {
+						layer.confirm('确定要删除此折扣设置？', function(index) {
 							var mydata = {
 								"merchantNumber": userNumber,
 								"shopNumber": data.shopNumber,

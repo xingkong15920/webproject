@@ -19,7 +19,7 @@
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
 				<a>会员管理</a>
-				<a><cite>会员等级</cite></a>
+				<a><cite>充值设置</cite></a>
 			</span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
 			 title="刷新">
@@ -29,7 +29,7 @@
 		<div class="x-body">
 
 			<xblock>
-				<button class="layui-btn" onclick="x_admin_show('添加等级','vipLevelAdd.html',600)"><i class="layui-icon"></i>添加等级</button>
+				<button class="layui-btn" onclick="x_admin_show('添加充值设置','vipsetrecadd.html','600')"><i class="layui-icon"></i>添加充值设置</button>
 			</xblock>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
@@ -91,7 +91,7 @@
 					cols: [
 						[{
 							field: 'shopName',
-							title: '等级名称',
+							title: '会员等级',
 							align: 'center',
 							width: 200,
 							templet: function(data) {
@@ -99,27 +99,11 @@
 							}
 						}, {
 							field: 'shopName',
-							title: '等级类型',
-							align: 'center',
-							width: 130,
-							templet: function(data) {
-								return '等级类型' + Math.round(Math.random() * 10)
-							}
-						}, {
-							field: 'shopName',
-							title: '所需积分',
+							title: '充值金额',
 							align: 'center',
 							width: 100,
 							templet: function(data) {
 								return 100
-							}
-						}, {
-							field: 'shopName',
-							title: '开卡金额',
-							align: 'center',
-							width: 100,
-							templet: function(data) {
-								return 500
 							}
 						}, {
 							field: 'shopName',
@@ -130,10 +114,32 @@
 								return 500
 							}
 						}, {
+							field: 'shopName',
+							title: '赠送积分',
+							align: 'center',
+							width: 100,
+							templet: function(data) {
+								return 500
+							}
+						}, {
 							field: 'insertTime',
-							title: '有效期',
+							title: '活动时间',
 							align: 'center',
 							width: 180,
+						}, {
+							field: 'insertTime',
+							title: '状态',
+							toolbar: "#switchBar",
+							align: 'center',
+							width: 120,
+						}, {
+							field: 'insertTime',
+							title: '备注',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								return ''
+							}
 						}, {
 							field: 'insertTime',
 							title: '创建时间',
@@ -144,7 +150,7 @@
 							title: '操作',
 							align: 'center',
 							toolbar: "#tool",
-							minWidth: 150
+							minWidth: 350
 						}]
 					],
 					done: function(res, curr, count) {
@@ -191,9 +197,9 @@
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
-							title: '会员等级编辑',
+							title: '编辑-充值设置',
 							area: ['600px', '90%'],
-							content: 'vipLevelAdd.html',
+							content: 'vipsetrecadd.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -202,10 +208,10 @@
 							}
 						});
 					} else if (obj.event === 'delete') {
-						// layer.msg('删除此会员等级？')
+						// layer.msg('删除会员卡')
 						// return
 						// 弹出是否要删除门店
-						layer.confirm('确定要删除此会员等级？', function(index) {
+						layer.confirm('确定要此充值设置?', function(index) {
 							var mydata = {
 								"merchantNumber": userNumber,
 								"shopNumber": data.shopNumber,
