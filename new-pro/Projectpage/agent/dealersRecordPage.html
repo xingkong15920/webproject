@@ -31,7 +31,7 @@
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input type="text" name="name" id="userName" placeholder="姓名" autocomplete="off" class="layui-input">
+					<input type="text" name="name" id="userName" placeholder="服务商名称" autocomplete="off" class="layui-input">
 				</div>
 				<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
 			</div>
@@ -41,10 +41,10 @@
 			<table class="layui-hide" id="LAY_table_Salesman" lay-filter="Salesman"></table>
 		</div>
 		<script type="text/html" id="tool">
-			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">修改费率</a>
 			
 			
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+			<a class="layui-btn layui-btn-xs " lay-event="delete">修改密码</a>
 		</script>
 		<script type="text/html" id="toolbar_switch">
 			<input type="checkbox" name="switch" value="{{d.agentNumber}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="启用|禁用" {{ d.state==0 ? 'checked' : '' }}>
@@ -79,7 +79,7 @@
 					table.render({
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgent + '?agentNumber=' + userNumber ,
 						where:{
-							"userName":$('#userName').val(),
+							"agentName":$('#userName').val(),
 							"registerCell":$('#registerCell').val(),
 							"agentLevel":agentLevel
 						},
@@ -218,9 +218,9 @@
 						// 修改经销商信息
 						layer.open({
 							type: 2,
-							title: '编辑',
-							area: ['900px', '560px'], //宽高
-							content: 'dealersRecordEdit.html',
+							title: '修改费率-' + data.agentName,
+							area: ['900px', '90%'], //宽高
+							content: 'agent-rate.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -290,36 +290,50 @@
 						});
 
 					} else if(obj.event == 'delete') {
-						
-						layer.confirm('确定要删除么?', function(index) {
-							// 发送请求,将经销商进行删除
-							
-							var ajData = new Object()
-							ajData.agentNumber = userNumber
-							ajData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
-							ajData.deletionFlag = '1'
-							ajData.dbAgentNumber = data.agentNumber
-							console.log(ajData)
-							// if()
-							CmsUtility.postAjaxCall(
-								//系统设置
-								CmsConfig.addressUrl.Agent.modifyAgent,
-								ajData,
-								function(data){
-									if(data.code == 1000){
-										
-										layer.msg('更改成功')
-										layui.table.reload('salesmanList')
-									}else{
-										layer.msg(data.msg)
-										
-									}
-								},
-								function(data){
-									console.log('222')
-								}
-							)
+						layer.open({
+							type: 2,
+							title: '重置密码-' + data.agentName,
+							shade: 0.5,
+							area: ['460px', '350px'],
+							maxmin: false,
+							resize: false,
+							content: ['Agent-pass.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data)
+							}
 						});
+						// layer.confirm('确定要删除么?', function(index) {
+						// 	// 发送请求,将经销商进行删除
+							
+						// 	var ajData = new Object()
+						// 	ajData.agentNumber = userNumber
+						// 	ajData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+						// 	ajData.deletionFlag = '1'
+						// 	ajData.dbAgentNumber = data.agentNumber
+						// 	console.log(ajData)
+						// 	// if()
+						// 	CmsUtility.postAjaxCall(
+						// 		//系统设置
+						// 		CmsConfig.addressUrl.Agent.modifyAgent,
+						// 		ajData,
+						// 		function(data){
+						// 			if(data.code == 1000){
+										
+						// 				layer.msg('更改成功')
+						// 				layui.table.reload('salesmanList')
+						// 			}else{
+						// 				layer.msg(data.msg)
+										
+						// 			}
+						// 		},
+						// 		function(data){
+						// 			console.log('222')
+						// 		}
+						// 	)
+						// });
 					}
 				});
 

@@ -58,12 +58,16 @@ var CmsConfig = {
             //店员管理
             getClerks: "clerk/getClerks",
             //店员管理--添加店员
-            addClerk: "clerk/addClerk",
+            addClerk: "clerk/addClerker",
             //店员管理--修改店员
             //编辑店员
             updateClerker:"clerk/updateClerker",
             //更改店员状态
             modifyClerk: "clerk/updateClerkerStatus",
+            //更改店员角色
+            updateClerkerType:"clerk/updateClerkerType",
+            //删除店员
+            deleteClerker:"clerk/deleteClerker",
             //退款权限
             updateClerkerAuthority:"clerk/updateClerkerAuthority",
             //修改店员密码

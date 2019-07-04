@@ -1,5 +1,5 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty';
+var Edition = 'qty1';
 var server;
 if(Edition == 'qty'){
 	//server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
@@ -526,7 +526,7 @@ var CmsConfig = {
         Public: {
             //省市区接口
             getAddress:"login/getAddress",
-            //获取图片
+            //上传图片
             addPic:"photo/addPic",
             //新的省市区接口
             getAreajson:"insCommon/getAreajson",

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .widthauto {
+				width: auto !important;
+			}
+			
+			.tips_red {
+				color: red;
+			}
+			
+			.layui-form-label {
+				padding-left: 0;
+				width: 100px;
+			}
+			
+			.layui-input-block {
+				margin-left: 115px;
+			}
+			
+			.layui-elem-quote {
+				font-size: 18px;
+			}
+			
+			.layui-elem-field {
+				margin: 0;
+			}
+			
+			.layui-elem-field legend {
+				font-size: 16px;
+				margin-bottom: 15px;
+			}
+			
+			.layui-upload-img {
+				width: 92px;
+				height: 92px;
+				margin: 0 10px 10px 0;
+			}
+			
+			.Since_inline {
+				display: inline-block;
+				width: auto !important;
+				line-height: 38px;
+			}
+			
+			.layui-elem-quote .layui-form-switch {
+				margin: 0 15px;
+				margin-top: 0;
+			}
+		</style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form" action="" lay-filter="cardAdd">
+                
+                <blockquote class="layui-elem-quote">费率设置(费率单位为百分比，示例：0.38%)</blockquote>
+                    <fieldset class="layui-elem-field layui-field-title alipay" style="display:none">
+                        <legend>官方支付宝</legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">官方支付宝费率</label>
+                            <div class="layui-input-inline">
+                                
+                                <input type="text" name="aliRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title wechatpay" style="display:none">
+                        <legend>官方微信</legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">官方微信费率</label>
+                            <div class="layui-input-inline">
+                                
+                                <input type="text" name="wecharRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset class="layui-elem-field layui-field-title fuyou" style="display:none">
+                        <legend>富友通道</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="fuyouRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D0费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="fuyouRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title yrm" style="display:none">
+                        <legend>易融码通道</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D1费率(%)</label>
+                                <div class="layui-input-inline">
+                                   <input type="text" name="yrmRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D0费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="yrmRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title xdl" style="display:none">
+                        <legend>新大陆通道</legend>
+                        <div class="layui-form-item">
+                            
+                            <div class="layui-inline">
+                                <label class="layui-form-label">T1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="xdlRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="0.300">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title sxf" style="display:none">
+                        <legend>随行付通道</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="sxfRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                            <!-- <div class="layui-inline">
+                                <label class="layui-form-label">D0费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="sxfRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div> -->
+                        </div>
+                    </fieldset>
+                
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+
+    function subPage(data, data1) {
+        var jgData = data
+        console.log(jgData)
+        var rateList = ['0.20','0.21','0.22','0.23','0.24','0.25','0.26','0.27','0.28','0.30','0.35','0.38','0.40','0.50','0.60']
+       
+        console.log(rateList)
+        var strate = '<option value="">请选择费率</option>'
+        for(var r = 0 ; r < rateList.length;r++){
+            strate += '<option value="'  +rateList[r]/100  +'">'+ rateList[r]+'%</option>'
+        }
+
+        $('.rateBox').html(strate)
+        var st = strate
+        $('.xdlD1').html(st+= '<option value="0.00235">0.235%</option>')
+        $('.xdlD0').html(st+= '<option value="0.00255">0.255%</option>')
+        var p = [],
+            c = [],
+            aa = []
+        var serverUrl = window.parent.serverUrl
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+        var agentNumber = jgData.agentNumber
+        layui.use(['laydate', 'table', 'upload', 'form'], function() {
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer;
+            var tableSelect = layui.tableSelect;
+            CmsUtility.postAjaxCall(
+                        //系统设置
+                CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+                {
+                    "page":1,
+                    "limit":10
+                },
+                function(data) {
+                    console.log(data)
+                    if(data.code == '1000') {
+                        
+                        for(var i = 0 ; i < data.data.PaymentChannellist.length;i++){
+                            switch (data.data.PaymentChannellist[i].paymentChannelType) {
+                                case 0:
+                                console.log('123')
+                                    $('.alipay').show()
+                                    break;
+                                case 1:
+                                    $('.wechatpay').show()
+                                    break;
+                                case 2:
+                                    $('.fuyou').show()
+                                    break;
+                                case 3:
+                                    $('.yrm').show()
+                                    break;
+                                case 4:
+                                    $('.xdl').show()
+                                    break;
+                                case 5:
+                                    $('.sxf').show()
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
+                            }
+                        }
+                        
+
+                    } else {
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Public.getAreajson, {},
+                function(data) {
+                    sessionStorage.setItem("address", data.data);
+                    address = JSON.parse(data.data)
+                    for (var i = 0; i < address.length; i++) {
+                        var a = new Object()
+                        a.provinceCode = address[i].value
+                        a.provinceName = address[i].text
+                        p.push(a)
+                        var b = new Object()
+                        b.provinceCode = address[i].value
+                        b.children = []
+                        for (var k = 0; k < address[i].children.length; k++) {
+                            var d = new Object()
+                            d.cityCode = address[i].children[k].value
+                            d.cityName = address[i].children[k].text
+                            b.children.push(d)
+                            var e = new Object()
+                            e.cityCode = address[i].children[k].value
+                            e.childeren = []
+                            for (var j = 0; j < address[i].children[k].children.length; j++) {
+                                var t = new Object()
+                                t.areaCode = address[i].children[k].children[j].value
+                                t.areaName = address[i].children[k].children[j].text
+                                e.childeren.push(t)
+                            }
+                            aa.push(e)
+                        }
+                        c.push(b)
+
+                    }
+                    if (jgData.province) {
+                        var str = '<option value="">请选择省</option>'
+                        for (var i1 = 0; i1 < p.length; i1++) {
+                            if (jgData.province == p[i1].provinceCode) {
+                                str += '<option value="' + p[i1].provinceCode + '" selected="">' + p[i1].provinceName + '</option>'
+                            } else {
+                                str += '<option value="' + p[i1].provinceCode + '">' + p[i1].provinceName + '</option>'
+                            }
+
+                        }
+                        $('#provice').html(str)
+                    }
+                    if (jgData.city) {
+                        var str1 = '<option value="">请选择市</option>'
+                        for (var i3 = 0; i3 < c.length; i3++) {
+
+                            if (jgData.province == c[i3].provinceCode) {
+
+                                for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+                                    if (jgData.city == c[i3].children[i2].cityCode) {
+                                        console.log(c[i3].children[i2])
+                                        str1 += '<option value="' + c[i3].children[i2].cityCode + '" selected="">' + c[i3].children[i2].cityName + '</option>'
+                                    } else {
+                                        str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+                                    }
+
+                                }
+                            }
+                        }
+                        $('#city').html(str1)
+                    }
+                    if (jgData.area) {
+                        var str2 = '<option value="">请选择县区</option>'
+                        for (var i4 = 0; i4 < aa.length; i4++) {
+
+                            if (jgData.city == aa[i4].cityCode) {
+
+                                for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+                                    if (jgData.area == aa[i4].childeren[i5].areaCode) {
+                                        console.log(aa[i4].childeren[i5])
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '" selected="">' + aa[i4].childeren[i5].areaName + '</option>'
+                                    } else {
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+                                    }
+
+                                }
+                            }
+                        }
+                        $('#area').html(str2)
+                    }
+
+                    form.val('cardAdd', {
+                        // "agentType": jgData.agentType.toString(),
+                        // "agentName": jgData.agentName,
+                        // "userName": jgData.userName,
+                        // "registerCell": jgData.registerCell,
+                        // "province": jgData.province,
+                        // "city": jgData.city,
+                        // "area": jgData.area,
+                        // "address": jgData.address,
+                        // "T1Rate": T1,
+                        // "wechatRate":jgData.wechatRate,
+                        // "aliRate":jgData.aliRate,
+                        // "fuyouRateD1":jgData.fuyouRateD1,
+                        // "fuyouRateD0":jgData.fuyouRateD0,
+                        // "xdlRateD0":jgData.xdlRateD0,
+                        // "xdlRateD1":jgData.xdlRateD1,
+                        // "yrmRateD1":jgData.yrmRateD1,
+                        // "yrmRateD0":jgData.yrmRateD0,
+                    })
+                    form.render()
+                },
+                function(data) {
+                    console.log(data)
+                },
+            )
+            var rateList = []
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Agent.getAgentRate, 
+                {
+                    "agentNumber":jgData.agentNumber
+                },
+                function(data) {
+                    data.data.sort(compare('paymentChanneltype'))
+                    var rateData = data.data
+                    console.log(rateData)
+                    for(var i = 0 ; i < data.data.length;i++){
+                        if(data.data[i].paymentChanneltype == 0){
+                            form.val('cardAdd', {
+                       
+                                // "T1Rate": T1,
+                                
+                                "aliRate":(data.data[i].rate*100).toFixed(3),
+                            })
+                        }
+                        if(data.data[i].paymentChanneltype == 1){
+                            form.val('cardAdd', {
+                       
+                                // "T1Rate": T1,
+                                
+                                "wecharRate":(data.data[i].rate*100).toFixed(3) ,
+                            })
+                        }
+                        if(data.data[i].paymentChanneltype == 2){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "fuyouRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }else{
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "fuyouRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }
+                            
+                        }
+                        if(data.data[i].paymentChanneltype == 3){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "yrmRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }else{
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "yrmRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }
+                            
+                        }
+                        if(data.data[i].paymentChanneltype == 4){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "xdlRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }else if(data.data[i].rateType == 'D1'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "xdlRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }else{
+                               form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "xdlRateT1":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }
+                            
+                        }
+                        if(data.data[i].paymentChanneltype == 5){
+                            if(data.data[i].rateType == 'D0'){
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "sxfRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }else{
+                                form.val('cardAdd', {
+                           
+                                    // "T1Rate": T1,
+                                    
+                                    "sxfRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                })
+                            }
+                            
+                        }
+                    }
+                    // form.val('cardAdd', {
+                       
+                    //     // "T1Rate": T1,
+                        
+                    //     "aliRate":rateData[0].rate || '',
+                    //     "wecharRate":rateData[1].rate || '',
+                    //     "fuyouRateD1":rateData[2].rate || '',
+                    //     "fuyouRateD0":rateData[3].rate || '',
+                       
+                    //     "yrmRateD1":rateData[4].rate || '',
+                    //     "yrmRateD0":rateData[5].rate || '',
+                    //     "xdlRateD1":rateData[6].rate || '',
+                    //     "xdlRateD0":rateData[7].rate || '',
+                    // })
+                    form.render()
+                },
+                function(data){
+
+                }
+            )
+            function compare(property){
+                return function(a,b){
+                    var value1 = a[property];
+                    var value2 = b[property];
+                    return value1 - value2;
+                }
+            }
+            // var Arr = jgData.Rate.split('|')
+            // var nO = new Array()
+            // var T1, D1, D0;
+            // for (var i = 0; i < Arr.length; i++) {
+            //     if (Arr[i].split(':')[0] == 'T1') {
+            //         T1 = Arr[i].split(':')[1]
+            //     }
+            //     if (Arr[i].split(':')[0] == 'D1') {
+            //         D1 = Arr[i].split(':')[1]
+            //     }
+            //     if (Arr[i].split(':')[0] == 'D0') {
+            //         D0 = Arr[i].split(':')[1]
+            //     }
+            // }
+            form.render()
+
+            setTimeout(function() {
+                form.render()
+            }, 300)
+            // if(!!jgData.province){
+            //  console.log()
+            //  CmsUtility.choosePro(jgData.province);
+            // }
+            // if(!!jgData.province  && !!jgData.city){
+            //  console.log(jgData.province,jgData.city )
+            //  CmsUtility.chooseCity(jgData.province,jgData.city)
+            // }
+            // if(!!jgData.city  &&  !!jgData.area){
+            //  CmsUtility.chooseArea(jgData.city,jgData.area)
+            // }
+
+
+            form.on('select(provice)', function(data) {
+
+                var str1 = '<option value="">请选择市</option>'
+                for (var i3 = 0; i3 < c.length; i3++) {
+
+                    if (data.value == c[i3].provinceCode) {
+
+                        for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                            str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                        }
+                    }
+                }
+                $('#city').html(str1)
+                var str2 = '<option value="">请选择县区</option>'
+                $('#area').html(str2)
+                form.render()
+
+            })
+            form.on('select(city)', function(data) {
+
+                var str2 = '<option value="">请选择县区</option>'
+                for (var i4 = 0; i4 < aa.length; i4++) {
+                    if (data.value == aa[i4].cityCode) {
+                        for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                            str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+
+
+                        }
+                    }
+                }
+                $('#area').html(str2)
+                form.render()
+
+            })
+            /*---------- 自定义验证规则 ----------*/
+            form.verify({
+                title: function(value) {
+                    if(value == null){
+                     return '不能为空！';
+                }
+                    if (value.length == "") {
+                        return '不能为空！';
+                    }
+                },
+                baifenbi:function(value){
+                // if(value.length != ''){
+                //     if(value.indexOf('%')<0){
+                //         return '费率格式不正确'
+                //     }
+                // }
+                
+            }
+            });
+            /*---------- 监听提交 ----------*/
+            form.on('submit(add)', function(data, index) {
+                var addData = data.field
+                addData.institutionNumber = userNumber
+                addData.deletionFlag = '0'
+                addData.agentNumber = jgData.agentNumber
+                addData.pAgentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
+                if(jgData.pAgentLevel == '--'){
+                    addData.agentLevel = 'A'
+                }
+                if(jgData.pAgentLevel == 'A'){
+                    addData.agentLevel = 'B'
+                }
+                if(jgData.pAgentLevel == 'B'){
+                    addData.agentLevel = 'C'
+                }
+                if(jgData.pAgentLevel == 'C'){
+                    addData.agentLevel = 'D'
+                }
+                addData.aliRate  = (addData.aliRate/10000*100).toFixed(5)
+            addData.wecharRate = (addData.wecharRate/10000*100).toFixed(5)
+            addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(5)
+            addData.fuyouRateD0 = (addData.fuyouRateD0/10000*100).toFixed(5)
+            addData.yrmRateD1 = (addData.yrmRateD1/10000*100).toFixed(5)
+            addData.yrmRateD0 = (addData.yrmRateD0/10000*100).toFixed(5)
+            // addData.xdlRateD1 = (addData.xdlRateD1/10000*100).toFixed(5)
+            // addData.xdlRateD0 = (addData.xdlRateD0/10000*100).toFixed(5)
+            addData.xdlRateT1 = (addData.xdlRateT1/10000*100).toFixed(5)
+            // addData.sxfRateD0 = (addData.sxfRateD0/10000*100).toFixed(5)
+            addData.sxfRateD1 = (addData.sxfRateD1/10000*100).toFixed(5)
+                addData.pAgentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
+                addData.agentLevel = jgData.agentLevel
+                console.log(addData)
+                // 发送请求
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Agent.updataAgentRate,
+                    addData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            setTimeout(function() {
+                                $('#quxiao').click()
+                            }, 16);
+                            parent.layer.msg('更改成功')
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                return false;
+            });
+        });
+    }
+    </script>
+</body>
+
+</html>

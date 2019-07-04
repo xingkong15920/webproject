@@ -45,6 +45,8 @@ var CmsConfig = {
             //订单管理
             //查询订单
             selectOrderList:"agOrder/getAgOrderList",
+            //查询退款
+            getTransactionList:"agOrder/getTransactionList",
             //商户
         	//查询商户信息
             getMerchantlist:"agMerchant/getAgMerchantlist",
@@ -87,8 +89,17 @@ var CmsConfig = {
            changeMerchants:"agMerchant/changeMerchants",
             //查询当前代理下级代理
             getOriginalAgentD:"agMerchant/getOriginalAgentD",
+            //查询代理商费率
+            getAgentRate:"agentManage/getAgentRate",
+            //查询机构下通道
+            getChannel:"agentManage/getChannel",
+            //更新代理商费率
+            updataAgentRate:'agentManage/updataAgentRate',
             //查询代理下销售
             getSaleD:"agMerchant/getSaleD",
+
+
+
             //销售
             //查询销售列表
             getSaleInfo:"agSale/getSaleInfo",
@@ -101,10 +112,10 @@ var CmsConfig = {
 
             //代理
             insertAgent:"AgManagement/insertAgent",
-            //查询列表
+            //查询列表(下级)
             getAgent:"agentManage/getAgentList",
             //编辑代理
-            modifyAgent:"AgManagement/modifyAgent",
+            upAgentInfo:"agentManage/upAgentInfo",
 
             //提现
             //查询提现账户
@@ -156,6 +167,19 @@ var CmsConfig = {
             getMerBatchInfoCollect:"agMerOrder/getMerBatchInfoListUp",
             //销售统计新街口
             getMerchantAllAndXz:"saleStatistics/getMerchantAllAndXz",
+
+
+            //广告
+            //插入广告
+            addAdvertising:"insAdvertising/addAdvertising",
+            //查询广告
+            getAdvertising:"insAdvertising/getAdvertising",
+            //编辑广告
+            updateAdvertising:"insAdvertising/updateAdvertising",
+            //长传图片
+            addPic:"photo/addPic",
+            //上传视频
+            addVideo:"video/addVideo",
         },
        
         //公共

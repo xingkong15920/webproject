@@ -352,20 +352,29 @@
                 layer.msg('只能查询三个月以内数据')
                 return
             }
-            CmsUtility.postAjaxCall(
-                //系统设置
-                CmsConfig.addressUrl.Merchant.getMerBatchInSum, {
+            $.ajax({
+                type: 'post',
+                url:CmsConfig.ServiceUrl.ApiRootUrl+ CmsConfig.addressUrl.Merchant.getMerBatchInSum, 
+                data: {
                     "merchantNumber": userNumber,
-                    "startTime": $('#startTime').val().split(' ')[0],
-                    "endTime": $('#endTime').val().split(' ')[0],
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
                     "zhifuType": $('#payment').val().trim(),
                     "clerkerNumber": $('#shopNumber').val().split('/')[0],
                     "shopNumber": $('#shopName').val().split('/')[0],
                     "orderState": $('#orderStatus').val().trim(),
                     "batch": $('#orderCode').val().trim(),
                 },
-                function(data) {
-                    console.log(data)
+                async: 'true',
+                dataType: 'json', 
+                // headers:{
+                //     contentType:"application/json"
+                // },
+                beforeSend: function() {
+                    
+                },
+                success: function(data) {
+                    
                     if (data.code == 1000) {
                         console.log(data.data.shopPoundage)
                         $('#totalOrder').html(data.data.totalOrder)
@@ -389,10 +398,8 @@
 
                     }
                 },
-                function(data) {
-                    console.log('222')
-                }
-            )
+            });
+            
         }
         getHuizong()
         //方法级渲染
