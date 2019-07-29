@@ -23,22 +23,23 @@
 		<div class="vipCenter B-gray" id="Vip">
 			<div class="vipBlock vipmemberB">
 				<div class="vipmember">
+					<img :src="memDetails.localImgUrl" class="vipmemberBg">
 					<div class="vipmember_block vipmember_name">
-						<img :src="[vip_avatarImg]" id="vip_avatarImg">
-						<h3 class="vipmember_tit" v-cloak>{{vipmember_tit}}</h3>
+						<img :src="memDetails.logo" id="vip_avatarImg">
+						<h3 class="vipmember_tit" v-cloak>{{memDetails.name}}</h3>
 					</div>
 					<div class="vipmember_block vipmember_num" v-cloak>
-						NO.<span>{{vipmember_num}}</span>
+						NO.<span>{{memDetails.memberNo}}</span>
 					</div>
 					<div class="vipmember_block vipmember_level">
 						<span class="icon iconfont iconwangguan"></span>
-						<p>一级会员</p>
+						<p>{{memDetails.cardName}}</p>
 					</div>
 				</div>
 				<div class="vipclassdetail">
 					<div class="vipclassdetail_block">
 						<p class="vipclassdetail_tit">余额</p>
-						<p class="vipclassdetail_data"><span id="vipclassdetail_ye" v-cloak>212.00</span>(元)</p>
+						<p class="vipclassdetail_data"><span id="vipclassdetail_ye" v-cloak>{{memDetails.accountBalance}}</span>(元)</p>
 					</div>
 					<div class="vipclassdetail_block yhq">
 						<p class="vipclassdetail_tit">优惠券</p>
@@ -47,7 +48,7 @@
 				</div>
 			</div>
 			<ul class="vipBlock vipclassify">
-				<li class="vipclassifyi" v-cloak v-for="item in vipclassifyi" v-on:click="jump(item.address)">
+				<li class="vipclassifyi" v-cloak v-for="(item,i) in vipclassifyi" v-on:click="jump(item.address,i)">
 					<span class="icon iconfont classifyimg" :class="item.classifyimg"></span>
 					<p class="classifyitit">{{item.classifyitit}}</p>
 				</li>
@@ -81,11 +82,6 @@
 	<script src="./js/qrcode.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			var cardBglv = 2
-			var newImg = document.createElement("img");
-			newImg.src = './img/vipCard-bg' + cardBglv + '.png';
-			newImg.className = 'img'
-			$(".vipmember_level").after(newImg);
 			$(".yhq").click(function() {
 				window.location.href = "coupons.html"
 			});
@@ -98,9 +94,8 @@
 		new Vue({
 			el: '#Vip',
 			data: {
-				vipmember_tit: "李先生",
-				vipmember_num: "12345678987654321234",
-				vip_avatarImg: "./img/vip-img.jpg",
+				memberNo: '',
+				memDetails: {},
 				vipclassifyi: [{
 					classifyimg: "iconchongzhi-",
 					classifyitit: "充值",
@@ -114,62 +109,44 @@
 					classifyitit: "修改资料",
 					address: "vipinfo-edit.html"
 				}],
-				vipBilli: [{
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "11.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "161.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "201.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "352.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "101.00"
-				}]
+				vipBilli: []
 			},
 			methods: {
-				jump: function(data) {
+				getMemDetails() {
+					var that = this,
+						sendData = new Object()
+					sendData.memberNo = that.memberNo
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Member.getMemDetails,
+						sendData,
+						function(data) {
+							if (data.code === 1000) {
+								that.memDetails = data.data
+								console.log(that.memDetails)
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+						'false'
+					)
+				},
+				jump: function(data,i) {
 					window.location.href = data
+					if(i === 2){
+						window.location.open(data + '?memberNo=' + this.memberNo)
+					}
 				}
+			},
+			created() {
+				this.memberNo = window.location.href.split('?memberNo=')[1]
+			},
+			mounted() {
+				this.getMemDetails()
 			}
 		})
 	</script>

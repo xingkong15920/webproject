@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/card.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+		<style type="text/css">
+			.layui-colorpicker-main {
+				width: 294px;
+			}
+
+			.layui-input-inline.widthauto,
+			.layui-form-mid.widthauto {
+				margin: 0;
+			}
+
+			.layui-form-checkbox span {
+				width: 75px;
+			}
+
+			.layui-input-block {
+				margin-left: 105px;
+			}
+
+			.layui-colorpicker {
+				height: 38px;
+				width: 38px;
+			}
+
+			.setSP {
+				background-size: cover;
+			}
+
+			.postTit {
+				position: absolute;
+				width: 64%;
+				left: 17%;
+				top: 22px;
+				text-align: center;
+				color: #fff;
+				overflow: hidden;
+				word-wrap: normal;
+				height: 20px;
+				line-height: 20px;
+			}
+
+			.colorChoose {
+				line-height: 38px;
+				margin-left: 10px;
+			}
+
+			.sysBtn {
+				width: calc(100% - 115px);
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				flex-wrap: wrap;
+			}
+
+			.sysBtn .layui-input-inline {
+				width: 45%;
+				margin: 0;
+			}
+
+			.sysBtn .layui-form-label {
+				width: auto;
+			}
+
+			.getCardBg {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 40%;
+			}
+
+			.getCardBg img {
+				width: 100%;
+				height: 100%;
+				display: none;
+			}
+
+			.getCardBgzz {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe" class="iframe_index_1 autoHeight">
+		<script type="text/javascript">
+			$(function() {
+				var navH = $(".setSP").offset().top;
+				$(window).scroll(function() {
+					var scroH = $(this).scrollTop();
+					if (scroH >= navH) {
+						$(".setSP").css({
+							'top': '10px'
+						});
+					} else if (scroH < navH) {
+						$(".setSP").css({
+							'top': '40px'
+						});
+					}
+				})
+			})
+		</script>
+		<div class="x-body iframe_index_1_con">
+			<div class="layui-row">
+				<div class="layui-form" lay-filter="basic">
+					<div class="layui-col-xs3 layui-col-sm3 layui-col-md3 setSP">
+						<img src="./images/topbar_w.png" class="topbar topbar_w">
+						<p class="postTit"></p>
+						<div class="getCardB" id="getCardB">
+							<div class="cardB">
+								<div class="cardB_lt">
+									<img src="http://jg1004.oss-cn-beijing.aliyuncs.com/crm/logo/1564217346001.png" class="cardB_lt_img">
+									<div class="cardB_lt_name">
+										<h3>闪盒收银</h3>
+										<p>未来新零售</p>
+									</div>
+								</div>
+								<div class="cardB_ld">
+									<p>8888 8888 8888 8888</p>
+								</div>
+								<div class="cardB_rt">
+									<img src="./img/erweima-2@2x.png">
+								</div>
+								<img src="http://jg1004.oss-cn-beijing.aliyuncs.com/crm/background/1564217436664.png" class="cardBbg">
+							</div>
+							<div class="cardBtn">
+								立即领取
+							</div>
+							<div class="detaili shareD">
+								<label>分享说明</label>
+								<p class="postrxplain">分享说明</p>
+							</div>
+							<ul class="cardDul">
+								<div class="cardDulTit">[会员卡详情]</div>
+								<li>
+									<div class="detaili">
+										<label>特权说明</label>
+										<p>激活赠送10积分+100 等级经验+代金券+会员钱包买单享受五折特权</p>
+									</div>
+								</li>
+								<li>
+									<div class="detaili">
+										<label>使用须知</label>
+										<p>每人限领一张 该卡仅作为体验使用</p>
+									</div>
+								</li>
+							</ul>
+							<ul class="cardDul cardDulmd">
+								<div class="cardDulTit">[适用门店]</div>
+								<li v-for="item in store">
+									<div class="detaili">
+										<label>门店名称</label>
+										<p>门店名称</p>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet" style="margin-bottom: 20px;">
+						<div class="layui-form-item">
+							<blockquote class="layui-elem-quote consumeTit">
+								<i class="leftline"></i>
+								分享海报设置
+								<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
+								<span class="tips_red">设置目前卡的有效期</span> -->
+							</blockquote>
+							<input type="file" class="input_img layui-input" style="display: none;" id="upBg" />
+							<div class="layui-form-item widthauto">
+								<label class="layui-form-label"><span class="redC">* </span>海报标题 :</label>
+								<div class="layui-input-inline max360">
+									<input type="text" name="posterTitle" class="layui-input" id="posterTitle" lay-verify="posterTitle" value="海报标题">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>背景颜色 :</label>
+								<div class="layui-input-block chooseColor">
+									<span data-color="colorC0" class="card_bc0"></span>
+									<span data-color="colorC1" class="card_bc1"></span>
+									<span data-color="colorC2" class="card_bc2"></span>
+									<span data-color="colorC3" class="card_bc3"></span>
+									<span data-color="colorC4" class="card_bc4"></span>
+									<span data-color="colorC5" class="card_bc5"></span>
+									<span data-color="colorC6" class="card_bc6"></span>
+									<span data-color="colorC7" class="card_bc7"></span>
+									<span data-color="colorC8" class="card_bc8"></span>
+									<span data-color="colorC9" class="card_bc9"></span>
+									<span data-color="colorC10" class="card_bc10"></span>
+									<span data-color="colorC11" class="card_bc11"></span>
+									<span data-color="colorC11" class="card_bc12"></span>
+									<span data-color="colorC11" class="card_bc13"></span>
+								</div>
+							</div>
+							<div class="layui-form-item max600">
+								<label class="layui-form-label">背景图片 :</label>
+								<div class="layui-input-block cardBgimg">
+									<div class="layui-upload-list">
+										<div class="layui-upload-img" id="cardBg">
+											<img id="cardBgImg">
+											<div class="upTips">
+												+<br />上传背景图片
+											</div>
+										</div>
+										<div class="imgDel" data-id="cardBg" style="display: none;">
+											<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+										</div>
+									</div>
+								</div>
+								<div class="layui-input-block layui-word-aux">建议尺寸1080px*675px，选择与卡内容相关的图片，仅支持JPG、JPEG、PNG图片文件，且文件小于1M</div>
+							</div>
+							<div class="layui-form-item widthauto">
+								<label class="layui-form-label"><span class="redC">* </span>分享说明 :</label>
+								<div class="layui-input-inline max360">
+									<input type="text" name="posterShareExplain" class="layui-input" id="posterShareExplain" value="分享说明"
+									 lay-verify="posterShareExplain">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>按钮设置 :</label>
+								<div class="layui-input-inline sysBtn" style="width: calc(100% - 115px);">
+									<div class="layui-input-inline">
+										<label class="layui-form-label">按钮背景 :</label>
+										<div class="layui-input-inline widthauto">
+											<div id="color_btn"></div>
+										</div>
+										<div class="layui-input-inline colorChoose colorChooseBtn" style="width: 120px;"></div>
+									</div>
+									<div class="layui-input-inline">
+										<label class="layui-form-label">文本颜色 :</label>
+										<div class="layui-input-inline widthauto">
+											<div id="color_text"></div>
+										</div>
+										<div class="layui-input-inline colorChoose colorChooseText" style="width: 120px;"></div>
+									</div>
+									<div class="layui-input-inline">
+										<label class="layui-form-label">圆角半径 :</label>
+										<div class="layui-input-inline widthauto">
+											<input type="number" name="posButtRadius" autocomplete="off" class="layui-input" lay-verify="btnradius" id="btnradius"
+											 value="50">
+										</div>
+									</div>
+									<div class="layui-input-inline">
+										<label class="layui-form-label">不透明度 :</label>
+										<div class="layui-input-inline widthauto">
+											<input type="number" name="posButtOpacity" autocomplete="off" class="layui-input" lay-verify="btnopacity" id="btnopacity"
+											 value="100">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+						<div class="layui-block">
+							<div class="layui-footer" style="left: 0;text-align: center;">
+								<button class="layui-btn addBtn" lay-submit="" lay-filter="add"></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
+			var _w = $('.setSP').width()
+			var _h = (_w - 60) / 1.68449197
+			$('.cardB').width(_w - 60)
+			$('.cardB').height(_h)
+
+			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload', 'layer', 'colorpicker'], function() {
+				layui.$.support.cors = true; //允许ajax跨域
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					layer = layui.layer,
+					laytpl = layui.laytpl,
+					colorpicker = layui.colorpicker;
+				var tableSelect = layui.tableSelect;
+
+				// var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+				var postCon
+				var colorListIndex
+				var colorList = ["63b359", "2c9f67", "509fc9", "5885cf", "9062c0", "d09a45", "e4b138", "ee903c", "f08500",
+					"a9d92d", "dd6549", "cc463d", "cf3e36", "5E6671"
+				]
+				var cardsetVal = ["姓名", "手机号", "性别", "生日", "身份证", "邮箱", "详细地址", "教育背景", "行业", "收入", "兴趣爱好"]
+				var cardsetC = ["姓名", "手机号", "性别", "生日"]
+				var symdName = []
+				var symdList = []
+				var colorC
+				var logo_id = '';
+				var poster_imgId = ''
+				var posButtcolor = ''
+				var posButtTextColor = ''
+				var Imgbase
+				var chooseCnum = 0
+
+				//查询有无会员卡
+				function getPostCon() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getPoster,
+						data: {
+							"merchantNumber": merNumber
+						},
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code === 1000) {
+								if (data.data.posterImgId == '') {
+									$('#getCardBg').hide()
+								} else {
+									$('#getCardBg').attr('src', data.data.posterImgUrl)
+								}
+								postCon = data.data
+								poster_imgId = data.data.posterImgId
+								posButtcolor = data.data.posButtcolor
+								posButtTextColor = data.data.posButtTextColor
+								$('.cardBtn').css('border-radius', data.data.posButtRadius + 'px')
+								$('.cardBtn').css('opacity', data.data.posButtOpacity / 100)
+								$('.colorChooseBtn').text(data.data.posButtcolor)
+								$('.colorChooseText').text(data.data.posButtTextColor)
+								$('#cardBgImg').attr('src', data.data.posterImgUrl)
+								$('.setSP').css('background-color', data.data.posterColor)
+								$('.setSP').css('background-image', 'url(' + data.data.posterImgUrl + ')')
+								$('.postTit').text(data.data.cardName)
+								$('.addBtn').text('更新海报设置')
+								$('.addBtn').attr('lay-filter', 'update')
+							}
+							if (data.code == -2) {
+								layer.closeAll('loading');
+								layer.msg('暂无海报设置，请添加')
+								postCon = ''
+								$('.upTips').show()
+								$('.addBtn').text('添加海报设置')
+								$('.addBtn').attr('lay-filter', 'add')
+							}
+						}
+					});
+				}
+
+				getPostCon()
+
+
+
+
+				//颜色选择器
+				colorpicker.render({
+					elem: '#color_btn',
+					color: '#E57F12',
+					done: function(color) {
+						console.log(color)
+						posButtcolor = color
+						$('.colorChooseBtn').text(color);
+						$('.cardBtn').css('background', color)
+					}
+				});
+				colorpicker.render({
+					elem: '#color_text',
+					color: '#fff',
+					done: function(color) {
+						console.log(color)
+						posButtTextColor = color
+						$('.colorChooseText').text(color);
+						$('.cardBtn').css('color', color)
+					}
+				});
+
+
+				$('#btnradius').on("input", function(e) {
+					$('.cardBtn').css('border-radius', e.delegateTarget.value + 'px')
+				})
+				$('#btnopacity').on("input", function(e) {
+					if (e.delegateTarget.value < 1) {
+						return layer.msg('不透明度最低为1', function() {})
+					} else if (e.delegateTarget.value > 100) {
+						return layer.msg('不透明度最高为100', function() {
+							$('#btnopacity').val('100')
+						})
+					} else {
+						$('.cardBtn').css('opacity', e.delegateTarget.value / 100)
+					}
+				})
+
+
+				/*---------- Input监听 ----------*/
+				ltname()
+
+				/*---------- 品牌logo，卡背景上传 ----------*/
+				$('#cardBg').click(function() {
+					$('#upBg').click()
+				})
+				$('.layui-upload-img').on({
+					mouseover: function() {
+						var cardId = $(this).attr("id")
+						var cardSrc = $('#' + cardId + 'Img').attr("src")
+						if (cardId === 'cardBg' && cardSrc) {
+							$('.cardBgimg .imgDel').css({
+								"display": "block",
+								"opacity": 1
+							})
+						}
+					}
+				})
+				$('.imgDel').on({
+					mouseleave: function() {
+						$('.imgDel').css({
+							"display": "none",
+							"opacity": 0
+						})
+					}
+				})
+				$('.imgDel').click(function(e) {
+					var delId = e.currentTarget.dataset.id
+					if (delId == 'cardBg') {
+						console.log('cardBg')
+						$('#cardBg').find('img').removeAttr("src")
+						$('.setSP').css("background-image", '')
+						$(this).prev().find(".upTips").show()
+						poster_imgId = ''
+					}
+					$(this).hide()
+				})
+				$("#upBg").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						Imgbase = data
+					});
+					setTimeout(function() {
+						var datas = {
+							"imgBaseStr": Imgbase,
+							"institutionNumber": insNumber,
+							"imgType": "3",
+							"merchantNumber": merNumber
+						}
+						// 发送请求
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+							data: JSON.stringify(datas),
+							dataType: "json",
+							async: false,
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								layer.closeAll('loading');
+								if (data.code === 1000) {
+									poster_imgId = data.data.imageId
+									$('#cardBgImg').attr('src', data.data.localImgUrl);
+									$('.setSP').css('background-image', 'url(' + data.data.localImgUrl + ')')
+									$('#cardBg').find('.upTips').hide();
+								}
+							}
+						});
+					}, 300)
+				});
+
+				//表单初始赋值
+				setTimeout(function() {
+					if (postCon != '') {
+						console.log(postCon.posterTitle)
+						form.val('basic', {
+							"posterTitle": postCon.posterTitle,
+							"posterShareExplain": postCon.posterShareExplain,
+							"posButtRadius": postCon.posButtRadius,
+							"posButtOpacity": postCon.posButtOpacity,
+						})
+						ltname()
+						layer.closeAll('loading');
+					}
+				}, 500)
+				//表单验证
+				form.verify({
+					ltName: function(value) {
+						if (value == '') {
+							return '品牌名称不能为空！';
+						} else if (value.length > 5) {
+							return '品牌名称不能超过5个字符'
+						}
+					},
+					operationTips: function(value) {
+						if (value == '') {
+							return '操作提示不能为空！';
+						}
+					},
+					privilegeTips: function(value) {
+						if (value == '') {
+							return '特权说明不能为空！';
+						}
+					},
+					useTips: function(value) {
+						if (value == '') {
+							return '使用须知不能为空！';
+						}
+					},
+					phone: [/^1[3456789]\d{9}$/, "请输入正确的手机号"],
+					shareTit: function(value) {
+						if (value == '') {
+							return '分享标题不能为空！';
+						}
+					},
+					shareCon: function(value) {
+						if (value == '') {
+							return '分享描述不能为空！';
+						}
+					},
+				});
+				//监听提交-添加
+				form.on('submit(add)', function(data) {
+					var data = data.field
+					if (poster_imgId == '') {
+						layer.msg('请上传背景图片!', function() {})
+						return false
+					}else{
+						poster_imgId = poster_imgId
+					}
+					if (posButtcolor == '') {
+						layer.msg('请选择按钮填充颜色！', function() {})
+						return false
+					}else{
+						posButtcolor = posButtcolor
+					}
+					if (posButtTextColor == '') {
+						layer.msg('请选择按钮文本颜色！', function() {})
+						return false
+					}else{
+						posButtTextColor = posButtTextColor
+					}
+					data.posButtcolor = posButtcolor
+					data.posButtTextColor = posButtTextColor
+					data.posterColor = "#" + colorList[chooseCnum]
+					data.posterImgId = poster_imgId
+					data.merchantNumber = merNumber
+					console.log(data)
+
+					// return
+					layer.load(2, {
+						shade: 0.5
+					});
+					// 发送请求
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addPoster,
+						data: JSON.stringify(data),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code === 1000) {
+								layer.closeAll('loading');
+								layer.msg('设置分享海报成功')
+							}
+						}
+					});
+					return false;
+				});
+				//监听提交-更新
+				form.on('submit(update)', function(data) {
+					var data = data.field
+					if (poster_imgId == '') {
+						layer.msg('请上传背景图片!', function() {})
+						return false
+					}
+					if (posButtcolor == '') {
+						layer.msg('请选择按钮填充颜色！', function() {})
+						return false
+					}
+					if (posButtTextColor == '') {
+						layer.msg('请选择按钮文本颜色！', function() {})
+						return false
+					}
+					data.posButtcolor = posButtcolor
+					data.posButtTextColor = posButtTextColor
+					data.posterColor = "#" + colorList[chooseCnum]
+					data.posterImgId = poster_imgId
+					data.merchantNumber = merNumber
+					console.log(data)
+
+					// return
+					layer.load(2, {
+						shade: 0.5
+					});
+					// 发送请求
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updatePoster,
+						data: JSON.stringify(data),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code === 1000) {
+								layer.closeAll('loading');
+								layer.msg('设置分享海报成功')
+							}
+						}
+					});
+					return false;
+				});
+
+
+				$('.vipCardLink').click(function() {
+					layer.open({
+						type: 1,
+						shadeClose: true,
+						shade: 0.5,
+						title: false,
+						content: $('.cardQrcode'),
+					});
+				})
+
+				ccolor()
+
+				function ccolor() {
+					$('.chooseColor span').eq(0).addClass('chooseCC layui-icon layui-icon-ok');
+					$('.chooseColor span').click(function(e) {
+						chooseCnum = $('.chooseColor span').index(this)
+						$(this).addClass('chooseCC layui-icon layui-icon-ok');
+						$('.chooseColor span').not($(this)).removeClass('chooseCC layui-icon layui-icon-ok')
+						$('.card_b_bg').attr('class', 'card_b_bg card_bc' + chooseCnum)
+						$('.setSP').css('background-color', '#' + colorList[chooseCnum])
+					})
+				}
+
+				function ltname() {
+					$('.postTit').text($("#posterTitle").val())
+					$('.postrxplain').text($("#posterShareExplain").val())
+					$("#posterTitle").on("input", function(e) {
+						//获取input输入的值
+						console.log(e.delegateTarget.value);
+						$('.postTit').text(e.delegateTarget.value)
+					});
+					$("#posterShareExplain").on("input", function(e) {
+						//获取input输入的值
+						console.log(e.delegateTarget.value);
+						$('.postrxplain').text(e.delegateTarget.value)
+					});
+				}
+
+				function uploadImg(input_file, get_data) {
+					/*input_file：文件按钮对象*/
+					/*get_data: 转换成功后执行的方法*/
+					if (typeof(FileReader) === 'undefined') {
+						alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
+					} else {
+						try {
+							/*图片转Base64 核心代码*/
+							var file = input_file.files[0];
+							//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
+							if (!/image\/\w+/.test(file.type)) {
+								alert("请确保文件为图像类型");
+								return false;
+							}
+							var reader = new FileReader();
+							reader.onload = function() {
+								get_data(this.result);
+							}
+							reader.readAsDataURL(file);
+						} catch (e) {
+							alert('图片转Base64出错啦！' + e.toString())
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+
+</html>

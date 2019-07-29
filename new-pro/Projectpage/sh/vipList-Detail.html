@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.layui-tab-title li {
+				width: auto;
+				min-width: initial;
+			}
+
+			.layui-tab-title li:first-child {
+				width: auto;
+			}
+
+			.layui-form-switch {
+				width: 62px;
+			}
+
+			.layui-table-page select {
+				height: auto;
+			}
+
+			.vipDetailB {
+				height: 150px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-body vipdetail" style="padding: 0;">
+			<div class="vipDetailB">
+				<img src="../../public/images/vip-img.jpg" class="vipDetailBImg">
+				<div class="vipDetailBCon">
+					<h3>会员名称：<span id="memName"></span></h3>
+					<p>会员等级：<span id="memLv"></span></p>
+					<h2>手机号：<span id="memCell"></span></h2>
+					<p>昵称：<span id="memNick"></span></p>
+				</div>
+			</div>
+			<div class="layui-tab layui-tab-brief" lay-filter="vipcenter">
+				<ul class="layui-tab-title">
+					<li class="layui-this">会员信息</li>
+					<li>消费信息</li>
+					<li>消费记录</li>
+					<li>充值记录</li>
+					<li>积分记录</li>
+					<li>退款记录</li>
+				</ul>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<div class="vipdetail_B" id="mDetails">
+							<div class="conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									会员资产
+								</blockquote>
+								<div class="vipdetail_B_D">
+									<p>总余额：<span v-cloak>{{memCon.allBalance}}</span> 元</p>
+									<p>实充余额：<span v-cloak>{{memCon.accountBalance}}</span> 元</p>
+									<p>赠送余额：<span v-cloak>{{memCon.giveMoney}}</span> 元</p>
+									<p>积分：<span v-cloak>{{memCon.integral}}</span> 分</p>
+									<p>优惠券：<span v-cloak>{{memCon.couponCount}}</span> 张</p>
+								</div>
+							</div>
+							<div class="conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									基础信息
+								</blockquote>
+								<div class="vipdetail_B_D">
+									<p>会员卡号：<span v-cloak>{{memCon.memberNo}}</span></p>
+									<p>手机号码：<span v-cloak>{{memCon.cell}}</span></p>
+									<p>所属门店：<span v-cloak>{{memCon.shopName}}</span></p>
+									<p>会员等级：<span v-cloak>{{memCon.gradeName}}</span></p>
+									<p>会员性别：<span v-cloak>{{memCon.sex}}</span></p>
+									<p>会员生日：<span v-cloak>{{memCon.birthday}}</span></p>
+									<p>会员年龄：<span v-cloak>{{memCon.age}}</span></p>
+									<p>会员星座：<span v-cloak>{{memCon.constellation}}</span></p>
+									<p>会员邮箱：<span v-cloak>{{memCon.mailbox}}</span></p>
+									<p>公众账号：<span v-cloak>{{memCon.publicFollow}}</span></p>
+									<p>会员绑定：<span v-cloak>{{memCon.publicFollow}}</span></p>
+									<p>注册日期：<span v-cloak>{{memCon.registerTime}}</span></p>
+									<p>所在国家：<span v-cloak>{{memCon.country}}</span></p>
+									<p>所在省份：<span v-cloak>{{memCon.province}}</span></p>
+									<p>所在城市：<span v-cloak>{{memCon.city}}</span></p>
+									<p>实体卡ID：<span v-cloak>{{memCon.cardNo}}</span></p>
+									<p>身份证号：<span v-cloak>{{memCon.idnumber}}</span></p>
+								</div>
+							</div>
+							<div class="conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									微信信息
+								</blockquote>
+								<div class="vipdetail_B_D">
+									<p>会员卡ID：<span v-cloak>{{memCon.wxMemberInfo.memberNo}}</span></p>
+									<p>AppId：<span v-cloak>{{memCon.wxMemberInfo.appId}}</span></p>
+									<p>Openid：<span v-cloak>{{memCon.wxMemberInfo.openId}}</span></p>
+									<p>激活状态：<span v-cloak>{{memCon.wxMemberInfo.activation}}</span></p>
+									<p class="widthauto">UnionID：<span v-cloak>{{memCon.wxMemberInfo.unionId}}</span></p>
+								</div>
+							</div>
+							<div class="conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									支付宝会员卡信息
+								</blockquote>
+								<div class="vipdetail_B_D">
+									<p>会员卡ID：<span v-cloak>{{memCon.memberNo}}</span></p>
+									<p>AppId：<span v-cloak>{{memCon.appid}}</span></p>
+									<p>UserId：<span v-cloak>{{memCon.userId}}</span></p>
+									<p>支付宝业务卡号：<span v-cloak>{{memCon.alipayId}}</span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="vipdetail_B" id="cptionDetail">
+							<div class="conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									消费统计
+								</blockquote>
+								<div class="vipdetail_B_D">
+									<p>消费金额：<span v-cloak>{{cpDetail.censusInfo.consumMoney}}</span></p>
+									<p>充值金额：<span v-cloak>{{cpDetail.censusInfo.rechargeMoney}}</span></p>
+									<p>获得积分：<span v-cloak>{{cpDetail.censusInfo.getIntegral}}</span></p>
+									<p>消费笔数：<span v-cloak>{{cpDetail.censusInfo.consumCount}}</span></p>
+									<p>充值次数：<span v-cloak>{{cpDetail.censusInfo.rechargeCount}}</span></p>
+									<p>使用积分：<span v-cloak>{{cpDetail.censusInfo.useIntegral}}</span></p>
+									<p>退款金额：<span v-cloak>{{cpDetail.censusInfo.refundMoney}}</span></p>
+									<p>获得优惠券：<span v-cloak>{{cpDetail.censusInfo.getCouponCount}}</span></p>
+									<p>退款次数：<span v-cloak>{{cpDetail.censusInfo.refundCount}}</span></p>
+									<p>使用优惠券：<span v-cloak>{{cpDetail.censusInfo.useCouponCount}}</span></p>
+								</div>
+							</div>
+							<div class="conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									最近消费
+								</blockquote>
+								<div class="vipdetail_B_D">
+									<p>最近消费门店：<span v-cloak>{{cpDetail.lastOrder.shopName}}</span></p>
+									<p>最近消费金额：<span v-cloak>{{cpDetail.lastOrder.cell}}</span></p>
+									<p>最近消费时间：<span v-cloak>{{cpDetail.lastOrder.shopName}}</span></p>
+								</div>
+							</div>
+							<div class="conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									平均消费
+								</blockquote>
+								<div class="vipdetail_B_D">
+									<p>平均客单价：<span v-cloak>{{cpDetail.passengerUnitPrice}}</span></p>
+									<p>平均日笔数：<span v-cloak>{{cpDetail.dayCount}}</span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="vipdetail_B">
+							<table class="layui-hide" id="saleRec" lay-filter="saleRec"></table>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="vipdetail_B">
+							<table class="layui-hide" id="topupRec" lay-filter="topupRec"></table>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="vipdetail_B">
+							<table class="layui-hide" id="inteRec" lay-filter="inteRec"></table>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="vipdetail_B">
+							<table class="layui-hide" id="refundRec" lay-filter="refundRec"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var _h = $(window).height();
+			var _h1 = $('.layui-tab-title').outerHeight();
+			var _h2 = _h - _h1 - 150
+			console.log(_h, _h1, _h2)
+			$('.x-iframe').height(_h2)
+			$('.layui-tab-item').height(_h2)
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var memCon, consumption
+
+			function subPageCon(mNo) {
+				var memberNo = mNo
+
+				//查询会员详情
+				function getDetail() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMemDetails,
+						data: {
+							"memberNo": memberNo
+						},
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code === 1000) {
+								$('#memName').text(data.data.name)
+								$('#memLv').text(data.data.gradeName)
+								$('#memCell').text(data.data.cell)
+								$('#memNick').text(data.data.nickName)
+								setDetail(changeData(data.data))
+							} else {
+								layer.msg('查询等级详情失败')
+							}
+						}
+					});
+				}
+				//查询会员详情
+				function getConsumption() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getConsumInfo,
+						data: {
+							"memberNo": memberNo
+						},
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code === 1000) {
+								setcpDetail(changeData(data.data))
+							} else {
+								layer.msg('查询等级详情失败')
+							}
+						}
+					});
+				}
+
+				function setDetail(obj) {
+					layer.closeAll('loading');
+					new Vue({
+						el: '#mDetails',
+						data: {
+							memCon: obj
+						}
+					})
+				}
+
+				function setcpDetail(obj) {
+					layer.closeAll('loading');
+					new Vue({
+						el: '#cptionDetail',
+						data: {
+							cpDetail: obj
+						}
+					})
+				}
+
+				layui.use(['table', 'laydate', 'element'], function() {
+					var table = layui.table,
+						$ = layui.$,
+						element = layui.element,
+						laydate = layui.laydate,
+						form = layui.form;
+
+
+					//消费记录
+					function saleList() {
+						layer.load(2, {
+							shade: 0.5
+						});
+						table.render({
+							elem: '#saleRec',
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCRecord + '?memberNo=' +
+								memberNo,
+							method: "get",
+							height: 'full-230',
+							page: true,
+							id: 'vipList',
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.orders,
+								}
+							},
+							cols: [
+								[{
+									field: 'headImg',
+									title: '订单号/消费时间',
+									align: 'center',
+									width: 200,
+									templet: function(data) {
+										return data.orderNumber + '<br>' + data.orderTime
+									}
+								}, {
+									field: 'shopName',
+									title: '消费门店',
+									align: 'center',
+									width: 150
+								}, {
+									field: 'money',
+									title: '订单金额',
+									align: 'center',
+									width: 100
+								}, {
+									field: 'memberNo',
+									title: '支付金额',
+									align: 'center',
+									width: 100
+								}, {
+									field: 'cell',
+									title: '优惠金额',
+									align: 'center',
+									width: 100
+								}, {
+									field: 'gradeName',
+									title: '支付类型',
+									align: 'center',
+									width: 120
+								}, {
+									field: 'allBalance',
+									title: '操作人',
+									align: 'center',
+									width: 100
+								}]
+							],
+							done: function(res, curr, count) {
+								layer.closeAll('loading');
+								if (res.code == 1000) {
+									console.log(res.data)
+								} else {
+									layer.msg(res.msg)
+								}
+							}
+						});
+					}
+					//充值记录
+					function topupList() {
+						layer.load(2, {
+							shade: 0.5
+						});
+						table.render({
+							elem: '#topupRec',
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRRecord + '?memberNo=' +
+								memberNo,
+							method: "get",
+							height: 'full-230',
+							page: true,
+							id: 'vipList',
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.orders,
+								}
+							},
+							cols: [
+								[{
+										field: 'headImg',
+										title: '订单号/消费时间',
+										align: 'center',
+										width: 200,
+										templet: function(data) {
+											return data.orderNumber + '<br>' + data.orderTime
+										}
+									}, {
+										field: 'shopName',
+										title: '充值门店',
+										align: 'center',
+										width: 150
+									}, {
+										field: 'money',
+										title: '充值金额',
+										align: 'center',
+										width: 100
+									}, {
+										field: 'giveMoney',
+										title: '赠送金额',
+										align: 'center',
+										width: 100
+									},
+									// {
+									// 	field: 'cell',
+									// 	title: '开卡费',
+									// 	align: 'center',
+									// 	width: 100
+									// }, 
+									{
+										field: 'orderState',
+										title: '充值类型',
+										align: 'center',
+										width: 120
+									}, {
+										field: 'orderState',
+										title: '充值方式',
+										align: 'center',
+										width: 120
+									}, {
+										field: 'clerkName',
+										title: '操作人',
+										align: 'center',
+										width: 100
+									}
+								]
+							],
+							done: function(res, curr, count) {
+								layer.closeAll('loading');
+								if (res.code == 1000) {
+									console.log(res.data)
+								} else {
+									layer.msg(res.msg)
+								}
+							}
+						});
+					}
+					//积分记录
+					function inteList() {
+						layer.load(2, {
+							shade: 0.5
+						});
+						table.render({
+							elem: '#inteRec',
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getIntegrals + '?memberNo=' +
+								memberNo,
+							method: "get",
+							height: 'full-230',
+							page: true,
+							id: 'vipList',
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.integralInfos,
+								}
+							},
+							cols: [
+								[{
+									field: 'changeTime',
+									title: '变动时间',
+									align: 'center',
+									width: '40%'
+								}, {
+									field: 'changeIntegral',
+									title: '变动积分',
+									align: 'center',
+									width: '20%'
+								}, {
+									field: 'changeType',
+									title: '变动类型',
+									align: 'center',
+									width: '20%'
+								}, {
+									field: 'clerkName',
+									title: '操作人',
+									align: 'center',
+								}]
+							],
+							done: function(res, curr, count) {
+								layer.closeAll('loading');
+								if (res.code == 1000) {
+									console.log(res.data)
+								} else {
+									layer.msg(res.msg)
+								}
+							}
+						});
+					}
+					//退款记录
+					function refundList() {
+						layer.load(2, {
+							shade: 0.5
+						});
+						table.render({
+							elem: '#refundRec',
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMRefundTurnovers + '?memberNo=' +
+								memberNo + '&merchatNumber=' + merNumber,
+							method: "get",
+							height: 'full-230',
+							page: true,
+							id: 'vipList',
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.memberList,
+								}
+							},
+							cols: [
+								[{
+									field: 'headImg',
+									title: '订单号/退款时间',
+									align: 'center',
+									width: 200,
+									templet: function(data) {
+										return data.memberNo + '<br>' + data.registerTime
+									}
+								}, {
+									field: 'name',
+									title: '退款门店',
+									align: 'center',
+									width: 150
+								}, {
+									field: 'nickName',
+									title: '订单金额',
+									align: 'center',
+									width: 100
+								}, {
+									field: 'memberNo',
+									title: '退款金额',
+									align: 'center',
+									width: 100
+								}, {
+									field: 'cell',
+									title: '退款状态',
+									align: 'center',
+									width: 100
+								}, {
+									field: 'allBalance',
+									title: '操作人',
+									align: 'center',
+									width: 100
+								}]
+							],
+							done: function(res, curr, count) {
+								layer.closeAll('loading');
+								if (res.code == 1000) {
+									console.log(res.data)
+								} else {
+									layer.msg(res.msg)
+								}
+							}
+						});
+					}
+
+					getDetail()
+					//监听选项卡切换
+					element.on('tab(vipcenter)', function(data) {
+						console.log(data.index)
+						// var src = $(".layui-tab-item.layui-show").find("iframe").attr("src");
+						switch (data.index) {
+							case 0:
+								getDetail()
+								break;
+							case 1:
+								getConsumption()
+								break;
+							case 2:
+								saleList()
+								break;
+							case 3:
+								topupList()
+								break;
+							case 4:
+								inteList()
+								break;
+							case 5:
+								refundList()
+								break;
+							default:
+								break;
+						}
+					});
+				});
+			}
+
+			function changeData(obj) {
+				var reg = new RegExp("null", "g")
+				var data = JSON.stringify(obj).replace(reg, '"--"')
+				return JSON.parse(data)
+			}
+		</script>
+	</body>
+
+</html>

@@ -16,25 +16,14 @@
 	</head>
 
 	<body>
-		<div class="x-nav">
-			<span class="layui-breadcrumb">
-				<a>会员管理</a>
-				<a><cite>会员等级</cite></a>
-			</span>
-			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
-			 title="刷新">
-				<i class="layui-icon" style="line-height:30px">ဂ</i>
-			</a>
-		</div>
 		<div class="x-body">
-
 			<xblock>
-				<button class="layui-btn" onclick="x_admin_show('添加等级','vipLevelAdd.html',600)"><i class="layui-icon"></i>添加等级</button>
+				<button class="layui-btn" onclick="x_admin_show('添加等级','vipLevelAdd.html','600')"><i class="layui-icon"></i>添加等级</button>
 			</xblock>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.enable==0 ? 'checked' : ''}}  data-shopNumber="{{d.shopNumber}}" value="{{d.enable}}">
+			<input type="checkbox" name="recEnabled" lay-skin="switch" lay-filter="recEnabled" lay-text="启用|禁用" {{d.defaultFlag==1 ? 'checked' : ''}}  data-gradeNo="{{d.gradeNo}}" value="{{d.defaultFlag}}">
 		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -43,38 +32,22 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
 			layui.use('table', function() {
 				var table = layui.table,
 					form = layui.form;
-				CmsUtility.choosePro();
-				setTimeout(function() {
-					form.render()
-				}, 100)
-
-				//省市区三联
-				form.on('select(provice)', function(data) {
-					CmsUtility.chooseCity(data.value)
-					setTimeout(function() {
-						form.render()
-					}, 100)
-				})
-				form.on('select(city)', function(data) {
-					CmsUtility.chooseArea(data.value)
-					setTimeout(function() {
-						form.render()
-					}, 100)
-				})
 
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_shop',
-					// url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' + userNumber,
-					url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
+						merNumber,
 					method: "get",
-					height: 'full-200',
+					height: 'full-97',
 					page: true,
-					id: 'shoplist',
+					id: 'gradeList',
 					response: {
 						"statusCode": "1000", //解析接口状态
 					},
@@ -85,55 +58,67 @@
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.result,
+							"data": res.data.grades,
 						}
 					},
 					cols: [
 						[{
-							field: 'shopName',
+							field: 'gradeName',
 							title: '等级名称',
 							align: 'center',
 							width: 200,
-							templet: function(data) {
-								return '等级名称' + Math.round(Math.random() * 10)
-							}
 						}, {
-							field: 'shopName',
+							field: 'gradeType',
 							title: '等级类型',
 							align: 'center',
 							width: 130,
 							templet: function(data) {
-								return '等级类型' + Math.round(Math.random() * 10)
+								if (data.gradeType == 0) {
+									return '正常等级'
+								} else if (data.gradeType == 1) {
+									return '锁定等级'
+								}
 							}
+						}, {
+							field: 'operation',
+							title: '默认开卡等级',
+							align: 'center',
+							toolbar: "#switchBar",
+							minWidth: 120
 						}, {
 							field: 'shopName',
 							title: '所需积分',
 							align: 'center',
-							width: 100,
+							width: 200,
 							templet: function(data) {
-								return 100
+								if (data.integralType == 0) {
+									return '累计积分(' + data.integral + '积分)'
+								} else if (data.integralType == 1) {
+									return '剩余积分(' + data.integral + '积分)'
+								}
 							}
 						}, {
-							field: 'shopName',
+							field: 'initMoney',
 							title: '开卡金额',
 							align: 'center',
-							width: 100,
-							templet: function(data) {
-								return 500
-							}
+							width: 120,
 						}, {
-							field: 'shopName',
+							field: 'giveMoney',
 							title: '赠送金额',
 							align: 'center',
-							width: 100,
-							templet: function(data) {
-								return 500
-							}
+							width: 120,
 						}, {
-							field: 'insertTime',
+							field: 'termValidity',
 							title: '有效期',
 							align: 'center',
 							width: 180,
+							templet: function(data) {
+								if (data.termValidity > 0) {
+									return data.termValidity + '天'
+								} else {
+									return '永久'
+								}
+							}
 						}, {
 							field: 'insertTime',
 							title: '创建时间',
@@ -142,13 +127,12 @@
 						}, {
 							field: 'operation',
 							title: '操作',
-							align: 'center',
+							align: 'left',
 							toolbar: "#tool",
 							minWidth: 150
 						}]
 					],
 					done: function(res, curr, count) {
-						console.log(res)
 						if (res.data == null) {
 							// layer.msg(res.msg)
 						} else {
@@ -156,79 +140,79 @@
 						}
 					}
 				});
-				form.on('switch(consumptionPreferences)', function(data) {
-					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					var tjData = new Object();
-					console.log(data);
-					tjData.merchantNumber = userNumber,
-						tjData.shopNumber = data.elem.dataset.shopnumber,
-						tjData.deletionFlag = 0
-					tjData.enable = this.checked ? '0' : '1';
-					CmsUtility.postAjaxCall(
-						//系统设置
-						CmsConfig.addressUrl.Merchant.modifyShop,
-						tjData,
-						function(data) {
+				
+				//列表设置默认会员等级
+				form.on('switch(recEnabled)', function(data) {
+					// layer.tips('会员等级：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object()
+					tjData.merchantNumber = merNumber
+					tjData.gradeNo = data.elem.dataset.gradeno
+					console.log(tjData)
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.setDefault,
+						data: JSON.stringify(tjData),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
 							if (data.code == 1000) {
-
 								parent.layer.msg('更改成功')
-								layui.table.reload('shoplist')
+								layui.table.reload('gradeList')
 							} else {
 								layer.msg(data.msg)
-
+				
 							}
-						},
-						function(data) {
-							console.log('222')
 						}
-					)
+					});
 				});
+				
 				//监听工具条
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
-
 					if (obj.event === 'edit') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
 							title: '会员等级编辑',
 							area: ['600px', '90%'],
-							content: 'vipLevelAdd.html',
+							content: 'vipLevelEdit.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
+								iframe.subPageCon(data.gradeNo)
 							}
 						});
 					} else if (obj.event === 'delete') {
-						// layer.msg('删除此会员等级？')
-						// return
-						// 弹出是否要删除门店
+						// 弹出是否要删除会员等级
 						layer.confirm('确定要删除此会员等级？', function(index) {
 							var mydata = {
-								"merchantNumber": userNumber,
-								"shopNumber": data.shopNumber,
-								"deletionFlag": 1
+								"gradeNo": data.gradeNo
 							}
 							// 发送请求
-							CmsUtility.postAjaxCall(
-								//系统设置
-								CmsConfig.addressUrl.Merchant.modifyShop,
-								mydata,
-								function(data) {
+							$.ajax({
+								type: "post",
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.deleteGrade,
+								data: JSON.stringify(mydata),
+								dataType: "json",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								success: function(data) {
+									layer.closeAll('loading');
 									if (data.code == 1000) {
 										layer.close(index);
 										layer.msg('删除成功！')
-										layui.table.reload('shoplist');
+										layui.table.reload('gradeList');
 									} else {
 										layer.msg(data.msg)
+
 									}
-								},
-								function(data) {
-									console.log('222')
 								}
-							)
+							});
 							layer.close(index);
 						});
 					}
@@ -242,7 +226,7 @@
 							var shopName = $('#shopName');
 							var shopStatus = $('#shopStatus');
 							//执行重载
-							table.reload('shoplist', {
+							table.reload('gradeList', {
 								page: {
 									curr: 1 //重新从第 1 页开始
 								},

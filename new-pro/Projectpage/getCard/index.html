@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>领取会员卡</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<!--<script src="js/htmlfont.js" type="text/javascript" charset="utf-8"></script>-->
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+	</head>
+	<body>
+		<div id="loadstart" class="loadzz">
+			<div class="loading_k">
+				<div class="loading"></div>
+			</div>
+		</div>
+		<div class="getCardB" id="getCardB">
+			<div class="cardB" v-cloak>
+				<div class="cardB_lt">
+					<img :src="setCard.logoUrl" class="cardB_lt_img">
+					<div class="cardB_lt_name">
+						<h3>{{setCard.cardName}}</h3>
+						<p>{{subtitle}}</p>
+					</div>
+				</div>
+				<div class="cardB_ld">
+					<p>8888 8888 8888 8888</p>
+				</div>
+				<div class="cardB_rt">
+					<img src="./img/erweima-2@2x.png">
+				</div>
+				<img :src="setCard.localImgUrl" class="cardBbg">
+			</div>
+			<div class="cardBtn" v-on:click="takeCard()" v-cloak>
+				立即领取
+			</div>
+			<div class="detaili shareD" v-cloak>
+				<label>分享说明</label>
+				<p>{{setCard.shareDescribe}}</p>
+			</div>
+			<ul class="cardDul" v-cloak>
+				<div class="cardDulTit">[会员卡详情]</div>
+				<li>
+					<div class="detaili">
+						<label>特权说明</label>
+						<p>{{setCard.privilegeState}}</p>
+					</div>
+				</li>
+				<li>
+					<div class="detaili">
+						<label>使用须知</label>
+						<p>{{setCard.useInstructions}}</p>
+					</div>
+				</li>
+			</ul>
+			<ul class="cardDul cardDulmd" v-cloak>
+				<div class="cardDulTit">[适用门店]</div>
+				<li v-for="item in store">
+					<div class="detaili">
+						<label>门店名称</label>
+						<p>{{item.split('||')[1]}}</p>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script>
+		var _w = $(window).width()
+		var _h = (_w - 60) / 1.68449197
+		$('.cardB').width(_w - 60)
+		$('.cardB').height(_h)
+
+		var ceshi = {
+			"institutionNumber": 1004,
+		}
+		sessionStorage.setItem("ceshi", JSON.stringify(ceshi));
+		var insNumber = JSON.parse(sessionStorage.getItem('ceshi')).institutionNumber;
+		var merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl
+		var deliveryNo = window.location.href.split('?deliveryNo=')[1]
+
+		// 查询渠道详情
+		getdeliveryCon()
+
+		function getdeliveryCon() {
+			$.ajax({
+				type: "get",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getChannelDetails,
+				data: {
+					"deliveryNo": deliveryNo
+				},
+				async: false,
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						applystore = data.data.shopNumbers
+						merNumber = data.data.merchantNumber
+						// 查询商户会员卡详情
+						getCardCon()
+						// 查询微信会员卡详情
+						getCardWxCon()
+						// 获取会员分享详情
+						getshareCard()
+						//设置页面内容
+						setTimeout(function() {
+							setCardf()
+						}, 500);
+					} else {
+						alert(data.msg)
+						return
+					}
+				}
+			});
+		}
+
+		function getCardCon() {
+			$.ajax({
+				type: "get",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard,
+				data: {
+					"merchantNumber": merNumber
+				},
+				async: false,
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						cardCon = data.data
+					} else {
+						alert(data.msg)
+						return
+					}
+				}
+			});
+		}
+
+		function getCardWxCon() {
+			$.ajax({
+				type: "get",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard,
+				data: {
+					"merchantNumber": merNumber
+				},
+				async: false,
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						wxCardNo = data.data.wxCardNo
+						subtitle = data.data.subtitle
+					} else {
+						alert(data.msg)
+						return
+					}
+				}
+			});
+		}
+
+		function getshareCard() {
+			$.ajax({
+				type: "get",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Card.shareCard,
+				data: {
+					"merchantNumber": merNumber,
+					"cardNo": merNumber,
+					"wxCardId": wxCardNo,
+					"institutionNumber": insNumber,
+					"deliveryNo": deliveryNo,
+				},
+				async: false,
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						console.log(data.data.codeUrl)
+						showQrcodeUrl = data.data.showQrcodeUrl
+					} else {
+						alert(data.msg)
+						return
+					}
+				}
+			});
+		}
+
+		function setCardf() {
+			new Vue({
+				el: '#getCardB',
+				data: {
+					setCard: cardCon,
+					store: applystore,
+					subtitle: subtitle,
+				},
+				methods: {
+					takeCard: function() {
+						window.location.href = showQrcodeUrl
+					}
+				},
+				mounted() {
+					$('#loadstart').hide()
+				}
+			})
+		}
+	</script>
+</html>

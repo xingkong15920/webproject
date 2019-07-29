@@ -27,13 +27,20 @@
 			.width80 {
 				width: 80px;
 			}
+
 			.layui-input-inline-inline {
 				line-height: 36px;
 				margin-right: 5px;
 				display: inline-block;
 			}
-			.layui-form-item{margin-bottom: 20px;}
-			.layui-form-item .layui-input-inline{width: 350px;}
+
+			.layui-form-item {
+				margin-bottom: 20px;
+			}
+
+			.layui-form-item .layui-input-inline {
+				width: 350px;
+			}
 		</style>
 	</head>
 
@@ -45,19 +52,28 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">活动名称</label>
 						<div class="layui-input-inline">
-							<input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入充值金额" class="layui-input">
+							<input type="text" name="activityName" lay-verify="activityName" autocomplete="off" placeholder="请输入活动名称" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">活动时间</label>
-						<div class="layui-input-inline">
+						<!-- <div class="layui-input-inline">
 							<input type="text" name="name" lay-verify="title" id="resetper" autocomplete="off" placeholder="请输入活动起止时间" class="layui-input">
+						</div> -->
+						<div class="layui-input-inline" style="width: 162px;">
+							<input type="text" name="startTime" id="startTime" lay-verify="startTime" autocomplete="off" class="layui-input"
+							 placeholder="开始时间">
+						</div>
+						<div class="layui-form-mid">-</div>
+						<div class="layui-input-inline" style="width: 162px;">
+							<input type="text" name="endTime" id="endTime" lay-verify="endTime" autocomplete="off" class="layui-input"
+							 placeholder="截止时间">
 						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">适用门店</label>
 						<div class="layui-input-inline">
-							<input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
+							<input type="text" lay-verify="mdSelect" autocomplete="off" placeholder="请选择适用门店" id="mdSelect" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -65,7 +81,7 @@
 						<div class="layui-input-inline widthauto">
 							<div class="layui-input-inline-inline">消费满</div>
 							<div class="layui-input-inline-inline width80">
-								<input type="number" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
+								<input type="number" name="activityConditional" class="layui-input" lay-verify="activityConditional">
 							</div>
 							<div class="layui-input-inline-inline">元，送会员卡</div>
 						</div>
@@ -73,8 +89,10 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">微信子商户</label>
 						<div class="layui-input-inline">
-							<input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入赠送积分" class="layui-input">
+							<textarea class="layui-textarea" name="subMerchant" lay-verify="subMerchant" placeholder="可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开"></textarea>
 						</div>
+						<label class="layui-form-label"></label>
+						<div class="layui-input-inline-inline">可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开</div>
 					</div>
 					<div class="layui-form-item layui-layout-admin">
 						<div class="layui-input-block">
@@ -91,183 +109,147 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			var index = parent.layer.getFrameIndex(window.name);
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var shopNumbers = []
 			$('#quxiao').click(function() {
 				setTimeout(function() {
 					parent.layer.close(index)
 				}, 16);
 			})
 
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
-			var logoUrl = ''
-			layui.use(['laydate', 'table', 'upload', 'form'], function() {
-				var $ = layui.jquery,
-					upload = layui.upload,
-					laydate = layui.laydate,
-					table = layui.table,
-					form = layui.form,
-					admin = layui.admin,
-					element = layui.element,
-					layer = layui.layer;
-				var tableSelect = layui.tableSelect;
+			function subPageCon(actType) {
+				console.log(actType)
+				layui.use(['laydate', 'table', 'upload', 'form'], function() {
+					var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						admin = layui.admin,
+						element = layui.element,
+						layer = layui.layer;
+					var tableSelect = layui.tableSelect;
 
-				tableSelect.render({
-					elem: '#levelSelect',
-					searchKey: 'my',
-					checkedKey: 'id',
-					searchPlaceholder: '等级名称',
-					table: {
-						url: 'table.json',
-						cols: [
-							[{
-									type: 'checkbox'
-								},
-								{
-									field: 'id',
-									title: 'ID',
-									width: 100
-								},
-								{
-									field: 'username',
-									title: '姓名',
-									width: 300
-								},
-								{
-									field: 'sex',
-									title: '性别',
-									width: 100
+					// 选择日期插件  
+					laydate.render({
+						elem: '#startTime',
+						type: 'date',
+					});
+					laydate.render({
+						elem: '#endTime',
+						type: 'date',
+					});
+
+
+					tableSelect.render({
+						elem: '#mdSelect',
+						searchKey: 'shopName',
+						checkedKey: 'shopNumber',
+						searchPlaceholder: '门店名称',
+						table: {
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+								merNumber,
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
 								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.result,
+								}
+							},
+							cols: [
+								[{
+									type: 'checkbox'
+								}, {
+									field: 'shopName',
+									title: '门店名称',
+									align: 'center',
+								}]
 							]
-						]
-					},
-					done: function(elem, data) {
-						var NEWJSON = []
-						layui.each(data.data, function(index, item) {
-							NEWJSON.push(item.username)
-						})
-						elem.val(NEWJSON.join(","))
-					}
-				})
-
-
-
-				//执行一个laydate实例
-				laydate.render({
-					elem: '#resetper',
-					range: true,
-					value:'2019-07-10 - 2019-08-07'
-				});
-
-				//监听指定开关
-				form.on('switch(switchTest)', function(data) {
-					layer.tips('广告状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)
-				});
-
-				/*---------- 优惠设置 ----------*/
-
-
-				/*---------- 积分时效 ----------*/
-				form.on('radio(resetperiodically)', function(data) {
-					if (data.value == 0) {
-						$('.resetper').hide()
-					} else if (data.value == 1) {
-						$('.resetper').show()
-					}
-				});
-
-
-				/*---------- 普通图片上传 ----------*/
-				var uploadInst = upload.render({
-					elem: '#test1',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
-					data: {
-						"institutionNumber": userNumber,
-					},
-					before: function(obj) {
-						//预读本地文件示例，不支持ie8
-						obj.preview(function(index, file, result) {
-							$('#demo1').attr('src', result); //图片链接（base64）
-						});
-					},
-					done: function(res) {
-						//如果上传失败
-						console.log(res)
-						if (res.code != 1000) {
-							return layer.msg('上传失败');
-						} else {
-							logoUrl = res.data
+						},
+						done: function(elem, data) {
+							shopNumbers.splice(0)
+							var shopname = []
+							layui.each(data.data, function(index, item) {
+								shopNumbers.push(item.shopNumber)
+								shopname.push(item.shopName)
+							})
+							elem.val(shopname.join('||'))
 						}
-						//上传成功
-					},
-					error: function() {
-						//演示失败状态，并实现重传
-						var demoText = $('#demoText');
-						demoText.html(
-							'<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-						demoText.find('.demo-reload').on('click', function() {
-							uploadInst.upload();
-						});
-					}
-				});
+					})
 
-				/*---------- 自定义验证规则 ----------*/
-				form.verify({
-					title: function(value) {
-						if (value.length == "") {
-							return '不能为空！';
-						}
-					},
-
-				});
-
-				/*---------- 监听开关 ----------*/
-				//form.on('switch(level)', function(data) { //等级开关
-				//	layer.tips('等级开关：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-				//});
-
-				/*---------- 监听提交 ----------*/
-				form.on('submit(add)', function(data, index) {
-					return false
-					var data = data.field
-					data.institutionNumber = userNumber
-					console.log(data)
-					if (!data.state) {
-						data.state = 1
-					} else {
-						data.state = 0
-					}
-					console.log(logoUrl)
-					if (logoUrl == '') {
-						layer.msg('请上传图片')
-						return
-					}
-					data.address = logoUrl
-
-					// if()
-					CmsUtility.postAjaxCall(
-						//系统设置
-						CmsConfig.addressUrl.Mechanism.insertInstitutionAdvertisement,
-						data,
-						function(data) {
-							if (data.code == 1000) {
-								setTimeout(function() {
-									$('#quxiao').click()
-								}, 16);
-								parent.layer.msg('保存成功')
-								parent.layui.table.reload('vip_cardList')
-							} else {
-								layer.msg(data.msg)
-
+					/*---------- 自定义验证规则 ----------*/
+					form.verify({
+						activityName: function(value) {
+							if (value == "") {
+								return '活动名称不能为空！';
 							}
 						},
-						function(data) {
-							console.log('222')
-						}
-					)
-					return false;
-				});
+						startTime: function(value) {
+							if (value.length == "") {
+								return '请选择活动开始时间！';
+							}
+						},
+						endTime: function(value) {
+							if (value.length == "") {
+								return '请选择活动结束时间！';
+							}
+						},
+						mdSelect: function(value) {
+							if (value.length == "") {
+								return '请选择适用门店！';
+							}
+						},
+						activityConditional: function(value) {
+							if (value.length == "") {
+								return '请示如活动条件！';
+							}
+						},
+					});
 
-			});
+					/*---------- 监听提交 ----------*/
+					form.on('submit(add)', function(data, index) {
+						layer.load(2, {
+							shade: 0.5
+						});
+						var data = data.field
+						data.merchantNumber = merNumber
+						data.shopNumbers = shopNumbers
+						data.startTime = data.startTime + ' 00:00:00'
+						data.endTime = data.endTime + ' 23:59:59'
+						data.activityType = actType
+						data.activityState = 0
+						console.log(data)
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addActivity,
+							data: JSON.stringify(data),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								layer.closeAll('loading');
+								if (data.code == 1000) {
+									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+									parent.layer.close(index); //再执行关闭
+									parent.layer.msg('添加活动成功')
+								} else {
+									layer.msg(data.msg)
+								}
+							}
+						});
+						return false;
+					});
+
+				});
+			}
 		</script>
 	</body>
 

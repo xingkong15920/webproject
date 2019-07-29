@@ -14,45 +14,72 @@
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript" src="../../public/js/data.js"></script>
 		<style type="text/css">
-			.statisticsK {
-				padding: 15px;
-			}
-
-			.paddigTop0 {
-				padding-top: 0;
-			}
-
-			.paddigLeft0 {
-				padding-left: 0;
-			}
-
-			.paddigRight0 {
-				padding-right: 0;
-			}
-
-			.paddigBottom0 {
-				padding-bottom: 0;
-			}
-
 			.statisticsB {
 				width: 100%;
-				height: 100px;
+				height: 150px;
 				box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 				box-sizing: border-box;
 				padding: 15px;
-			}
-
-			.statisticsB.statisticsA {
-				height: 230px;
-			}
-
-			.statisticsTop10 {
+				border-radius: 4px;
+				display: flex;
+				justify-content: space-between;
+				flex-direction: column;
 				background: #fff;
+			}
+
+			.statisticsBList {
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+			}
+
+			.statisticsBList li {
+				width: 30%;
+				height: 100%;
+				text-align: center;
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+				flex-direction: column;
+			}
+
+			.statisticsBList li p {
+				width: 100%;
+				margin-bottom: 5px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.statisticsBList li span {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: #fff;
+				font-weight: 600;
+				font-size: 20px;
+				width: 30%;
+				height: 0;
+				overflow: hidden;
+				background: red;
+				transition: 1.5s all;
+			}
+
+			.statisticsBList li:nth-child(1) span {
+				background: #FF5722;
+			}
+
+			.statisticsBList li:nth-child(2) span {
+				background: #FFB800;
+			}
+
+			.statisticsBList li:nth-child(3) span {
+				background: #009688;
 			}
 
 			.huizongTit {
 				font-size: 20px;
-				margin-bottom: 20px;
 			}
 
 			.huizongCon {
@@ -62,29 +89,30 @@
 			.huizongCon span {
 				font-size: 20px;
 			}
+
+			.layui-table-cell {
+				height: auto;
+			}
+
+			.layui-table-cell img {
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				overflow: hidden;
+			}
 		</style>
 	</head>
 
 	<body>
-		<div class="x-nav">
-			<span class="layui-breadcrumb">
-				<a>会员管理</a>
-				<a><cite>会员列表</cite></a>
-			</span>
-			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
-			 title="刷新">
-				<i class="layui-icon" style="line-height:30px">ဂ</i>
-			</a>
-		</div>
 		<div class="x-body">
 			<div class="layui-form x-so">
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input class="layui-input" type="text" name="vipName" id="vipName" placeholder="会员昵称" autocomplete="off">
+					<input class="layui-input" type="text" name="nickname" id="nickname" placeholder="会员昵称" autocomplete="off">
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input class="layui-input" type="text" name="vipCell" id="vipCell" placeholder="手机号" autocomplete="off">
+					<input class="layui-input" type="text" name="cell" id="cell" placeholder="手机号" autocomplete="off">
 				</div>
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime" autocomplete="off">
@@ -96,56 +124,75 @@
 					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
 				</div>
 			</div>
-			<div class="layui-row layui-col-space15 paddigLeft0" style="margin: 0;margin-bottom: 10px;box-sizing: border-box;">
-				<div class="layui-col-md8 paddigLeft0">
-					<div class="layui-col-md6 statisticsK paddigTop0 paddigLeft0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">会员总数</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
-					</div>
-					<div class="layui-col-md6 statisticsK paddigTop0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">平均每日新增</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
-					</div>
-					<div class="layui-col-md6 statisticsK paddigBottom0 paddigLeft0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">累计消费</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
-					</div>
-					<div class="layui-col-md6 statisticsK paddigBottom0">
-						<div class="statisticsB">
-							<p class="huizongTit x-red">平均消费</p>
-							<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">22214872.62</span>元</p>
-						</div>
+			<div class="layui-row layui-col-space15">
+				<div class="layui-col-md2">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">会员总数</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">2221</span>位</p>
 					</div>
 				</div>
-				<div class="layui-col-md4 statisticsTop10 paddigRight0">
-					<div class="statisticsB statisticsA paddigRight0">
-						<p class="x-red" style="font-size: 20px;margin-bottom: 15px;">消费会员TOP3</p>
-						<table class="layui-hide" id="LAY_table_shop1" lay-filter="shop1"></table>
+				<div class="layui-col-md2">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">平均每日新增</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">62</span>位</p>
+					</div>
+				</div>
+				<div class="layui-col-md2">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">累计消费</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">222148</span>元</p>
+					</div>
+				</div>
+				<div class="layui-col-md2">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">平均消费</p>
+						<p class="huizongCon x-green"><span class="x-green" id="successOrderAmount">2148</span>元</p>
+					</div>
+				</div>
+				<div class="layui-col-md4">
+					<div class="statisticsB">
+						<p class="huizongTit x-red">消费会员TOP3</p>
+						<ul class="statisticsBList">
+							<li>
+								<p id="payToptwo"></p>
+								<span>2</span>
+							</li>
+							<li>
+								<p id="payTopone"></p>
+								<span>1</span>
+							</li>
+							<li>
+								<p id="payTopthree"></p>
+								<span>3</span>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
 		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="capital">资金</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+			<a class="layui-btn layui-btn-xs" lay-event="level">等级</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">退卡</a>
 		</script>
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
 					laydate = layui.laydate,
 					form = layui.form,
 					$ = layui.jquery;
+
+				parent.layer.load(2, {
+					shade: 0.5
+				});
+
 				//时间插件
 				laydate.render({
 					elem: '#startTime',
@@ -164,45 +211,11 @@
 
 				//方法级渲染
 				table.render({
-					elem: '#LAY_table_shop1',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
-						userNumber,
-					method: "post",
-					page: false,
-					id: 'vipList',
-					response: {
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) {
-						if (res.data == null) {
-							return
-						}
-						return {
-							"code": res.code,
-							"count": res.data.count,
-							"data": res.data.result,
-						}
-					},
-					cols: [
-						[{
-							field: 'shopName',
-							title: '会员名称',
-							align: 'center',
-						}]
-					],
-					done: function(res, curr, count) {
-
-					}
-				});
-				//方法级渲染
-				table.render({
 					elem: '#LAY_table_shop',
-					// url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
-					// 	userNumber,
-					// method: "post",
-					url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers + '?merchantNumber=' +
+						merNumber,
 					method: "get",
-					height: 'full-400',
+					height: 'full-287',
 					page: true,
 					id: 'vipList',
 					response: {
@@ -215,53 +228,75 @@
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.result,
+							"data": res.data.memberList,
 						}
 					},
 					cols: [
 						[{
-							field: 'shopNumber',
-							title: 'ID',
+							field: 'headImg',
+							title: '头像',
 							align: 'center',
-							width: 200
+							width: 70,
+							templet: function(data) {
+								if (data.headImg == '') {
+									return '<img src="../../public/images/vip-img.jpg" class="vipImg">'
+								} else {
+									return '<img src="' + data.headImg + '" class="vipImg">'
+								}
+							}
 						}, {
-							field: 'shopNumber',
-							title: '卡号',
-							align: 'center',
-							width: 200
-						}, {
-							field: 'shopName',
-							title: '会员名称',
-							align: 'center',
-							width: 150
-						}, {
-							field: 'vipLv',
-							title: '会员等级',
+							field: 'name',
+							title: '姓名',
 							align: 'center',
 							width: 150
 						}, {
-							field: 'storePhone',
+							field: 'nickName',
+							title: '昵称',
+							align: 'center',
+							width: 150
+						}, {
+							field: 'memberNo',
+							title: '会员卡号',
+							align: 'center',
+							width: 220
+						}, {
+							field: 'cell',
 							title: '手机号',
 							align: 'center',
 							width: 120
 						}, {
-							field: 'city',
-							title: '余额',
+							field: 'gradeName',
+							title: '会员等级',
 							align: 'center',
 							width: 100
 						}, {
-							field: 'cityb',
-							title: '积分',
+							field: 'allBalance',
+							title: '会员总余额',
 							align: 'center',
 							width: 100
 						}, {
-							field: 'insertTime',
+							field: 'accountBalance',
+							title: '实充余额',
+							align: 'center',
+							width: 100
+						}, {
+							field: 'giveMoney',
+							title: '赠送余额',
+							align: 'center',
+							width: 100
+						}, {
+							field: 'integral',
+							title: '会员积分',
+							align: 'center',
+							width: 100
+						}, {
+							field: 'registerTime',
 							title: '注册时间',
 							align: 'center',
 							width: 180
 						}, {
 							field: 'shopName',
-							title: '所属店铺',
+							title: '注册门店',
 							align: 'center',
 							width: 150
 						}, {
@@ -269,125 +304,163 @@
 							title: '操作',
 							align: 'center',
 							toolbar: "#tool",
-							minWidth: 200
+							minWidth: 300
 						}]
 					],
 					done: function(res, curr, count) {
-						console.log(res)
-						if (res.data == null) {
-							// layer.msg(res.msg)
+						parent.layer.closeAll('loading');
+						if (res.code == 1000) {
+							console.log(res.data)
+							$('#payTopone').text(res.data[0].nickName)
+							// $('#payToptwo').text(res.data[1].nickName)
+							// $('#payTopthree').text(res.data[2].nickName)
+							top3Height()
 						} else {
-
+							// layer.msg(res.msg)
 						}
 					}
 				});
-				form.on('switch(consumptionPreferences)', function(data) {
-					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					var tjData = new Object();
-					console.log(data);
-					tjData.merchantNumber = userNumber,
-						tjData.shopNumber = data.elem.dataset.shopnumber,
-						tjData.deletionFlag = 0
-					tjData.enable = this.checked ? '0' : '1';
-					CmsUtility.postAjaxCall(
-						//系统设置
-						CmsConfig.addressUrl.Merchant.modifyShop,
-						tjData,
-						function(data) {
-							if (data.code == 1000) {
 
-								parent.layer.msg('更改成功')
-								layui.table.reload('vipList')
-							} else {
-								layer.msg(data.msg)
-
-							}
-						},
-						function(data) {
-							console.log('222')
-						}
-					)
-				});
 				//监听工具条
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
-
-					if (obj.event === 'edit') {
+					if (obj.event === 'detail') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
-							title: data.shopName,
-							area: ['90%', '90%'],
-							content: 'shop-edit.html',
+							title: false,
+							offset: 'r',
+							area: ['70%', '100%'],
+							shade: 0.6,
+							shadeClose: true,
+							anim: 2,
+							closeBtn: 0,
+							content: 'vipList-Detail.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
+								iframe.subPageCon(data.memberNo)
+							}
+						});
+					} else if (obj.event === 'edit') {
+						// 跳转编辑详情页面
+						layer.open({
+							type: 2,
+							title: '编辑会员信息   ' + data.name + '-' + data.memberNo,
+							area: ['600px', '90%'],
+							content: 'vipList-Detail-e.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageCon(data.memberNo)
 							}
 						});
 					} else if (obj.event === 'capital') {
-						// 跳转编辑详情页面
+						// 跳转资金页面
 						layer.open({
 							type: 2,
-							title: '店员列表',
-							area: ['90%', '90%'],
-							content: 'sy-yingyeyuan.html',
+							title: '资金变更',
+							area: ['600px', '600px'],
+							content: 'vipList-Detail-c.html',
 							success: function(layero, index) {
-								// 获取子页面的iframe
+								// 获取父页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPageclerk(data, userNumber)
+								// 向父页面的全局函数child传参
+								iframe.subPageCon(data.memberNo)
+							}
+						});
+					} else if (obj.event === 'level') {
+						// 跳转等级页面
+						// parent.layer.alert()
+						layer.open({
+							type: 2,
+							title: '等级变更',
+							area: ['600px', '600px'],
+							content: 'vipList-Detail-l.html',
+							success: function(layero, index) {
+								// 获取父页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向父页面的全局函数child传参
+								iframe.subPageCon(data.memberNo)
 							}
 						});
 					} else if (obj.event === 'delete') {
 						// 弹出是否要删除门店
-						layer.confirm('确定要删除(' + data.shopName + ')门店么?删除成功将删除门店下所有店员！！！', function(index) {
+						layer.confirm('确定要删除<br>会员卡(' + data.gradeName + ')<br>所属卡会员(' + data.name + ')', function(index) {
 							var mydata = {
-								"merchantNumber": userNumber,
-								"shopNumber": data.shopNumber,
-								"deletionFlag": 1
+								"memberNo": data.memberNo
 							}
+							return
 							// 发送请求
-							CmsUtility.postAjaxCall(
-								//系统设置
-								CmsConfig.addressUrl.Merchant.modifyShop,
-								mydata,
-								function(data) {
+							$.ajax({
+								type: "post",
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.deleteMember,
+								data: JSON.stringify(mydata),
+								dataType: "json",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								success: function(data) {
+									parent.layer.closeAll('loading');
 									if (data.code == 1000) {
 										layer.close(index);
 										layer.msg('删除成功！')
 										layui.table.reload('vipList');
 									} else {
 										layer.msg(data.msg)
+
 									}
-								},
-								function(data) {
-									console.log('222')
 								}
-							)
-							layer.close(index);
+							});
 						});
 					}
 				});
+				// table.on('row(shop)', function(obj) {
+				// 	var data = obj.data;
+				// 	console.log(data)
+				// 	layer.open({
+				// 		type: 2,
+				// 		title: false,
+				// 		offset: 'r',
+				// 		area: ['70%', '100%'],
+				// 		shade: 0.6,
+				// 		shadeClose: true,
+				// 		anim: 2,
+				// 		closeBtn: 0,
+				// 		content: 'vipList-Detail.html',
+				// 		success: function(layero, index) {
+				// 			// 获取子页面的iframe
+				// 			var iframe = window['layui-layer-iframe' + index];
+				// 			// 向子页面的全局函数child传参
+				// 			iframe.subPageCon(data.memberNo)
+				// 		}
+				// 	});
+				// });
 
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {
 						reload: function() {
 							// 获取上面查询框的值
-							var shopName = $('#shopName');
-							var shopStatus = $('#shopStatus');
+							var nickname = $('#nickname');
+							var cell = $('#cell');
+							var startTime = $('#startTime');
+							var endTime = $('#endTime');
 							//执行重载
 							table.reload('vipList', {
 								page: {
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
-									shopName: shopName.val().trim(),
-									enable: shopStatus.val().trim()
+									nickName: nickname.val(),
+									cell: cell.val(),
+									registerTime: startTime.val(),
+									registerTime: endTime.val()
 								}
 							});
+							top3Height()
 						}
 					};
 				$('.layui-form .layui-btn').on('click', function() {
@@ -395,6 +468,12 @@
 					active[type] ? active[type].call(this) : '';
 				});
 			});
+
+			function top3Height() {
+				$('.statisticsBList li').eq(0).find('span').css('height', '50%')
+				$('.statisticsBList li').eq(1).find('span').css('height', '75%')
+				$('.statisticsBList li').eq(2).find('span').css('height', '25%')
+			}
 		</script>
 	</body>
 

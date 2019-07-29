@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+			.layui-table-cell {
+				height: auto;
+			}
+		</style>
+	</head>
+
+	<body class="iframe_index_1">
+		<div class="x-body iframe_index_1_con">
+			<div class="demoTable layui-form x-so">
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="退款订单号" name="name" id="name">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="会员昵称" name="name" id="name">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="会员手机号" name="name" id="name">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="原充值订单号" name="name" id="name">
+				</div>
+				<div class="layui-input-inline">
+					<select name="quiz3">
+						<option value="">全部门店</option>
+						<option value="00010">书香门店</option>
+						<option value="00011">文文便利店</option>
+						<option value="00012">王胖子杂货店</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<select name="quiz3">
+						<option value="">退款方式</option>
+						<option value="0">支付宝</option>
+						<option value="1">微信</option>
+						<option value="2">现金</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<select name="quiz3">
+						<option value="">操作员</option>
+						<option value="0001001">李烈</option>
+						<option value="0001002">王胖</option>
+						<option value="0001003">张洲</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
+				</div>
+				<div class="layui-input-inline">
+					<button class="layui-btn" id="search">
+						<i class="layui-icon">&#xe615;</i>
+					</button>
+				</div>
+			</div>
+			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			function verTime() {
+				var arr1 = $('#startTime').val().split('-');
+				var arr2 = $('#endTime').val().split('-');
+				arr1[1] = parseInt(arr1[1]);
+				arr1[2] = parseInt(arr1[2]);
+				arr2[1] = parseInt(arr2[1]);
+				arr2[2] = parseInt(arr2[2]);
+				var flag = true;
+				if (arr1[0] == arr2[0]) { //同年
+					if (arr2[1] - arr1[1] > 3) { //月间隔超过3个月
+						flag = false;
+					} else if (arr2[1] - arr1[1] == 3) { //月相隔3个月，比较日
+						if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+							flag = false;
+						}
+					}
+				} else { //不同年
+					if (arr2[0] - arr1[0] > 1) {
+						flag = false;
+					} else if (arr2[0] - arr1[0] == 1) {
+						if (arr1[1] < 10) { //开始年的月份小于10时，不需要跨年
+							flag = false;
+						} else if (arr1[1] + 3 - arr2[1] < 12) { //月相隔大于3个月
+							flag = false;
+						} else if (arr1[1] + 3 - arr2[1] == 12) { //月相隔3个月，比较日
+							if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+								flag = false;
+							}
+						}
+					}
+				}
+				if (!flag) {
+
+					return false;
+				} else {
+					return true;
+				}
+
+			}
+
+			function changeRes(data) {
+				return
+				if (data == null) {
+					return
+				}
+				if (res.data == '查询数据为空') {
+					return
+				}
+				for (var i = 0; i < data.length; i++) {
+					if (!data[i].weChatOrderTotalMoney) {
+						data[i].weChatOrderTotalMoneya = "-"
+					} else {
+						data[i].weChatOrderTotalMoneya = data[i].weChatOrderTotalMoney
+					}
+					if (!data[i].weChatTotalOrder) {
+						data[i].weChatTotalOrdera = "-"
+					} else {
+						data[i].weChatTotalOrdera = data[i].weChatTotalOrder
+					}
+					if (!data[i].alipayOrderTotalMoney) {
+						data[i].alipayOrderTotalMoneya = "-"
+					} else {
+						data[i].alipayOrderTotalMoneya = data[i].alipayOrderTotalMoney
+					}
+					if (!data[i].alipayTotalOrder) {
+						data[i].alipayTotalOrdera = "-"
+					} else {
+						data[i].alipayTotalOrdera = data[i].alipayTotalOrder
+					}
+				}
+				return data
+			}
+
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
+			}
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var startDate = fun_date(-6);
+			var endDate = fun_date(0);
+			var nowTime = new Date().valueOf();
+			layui.use(['table', 'laydate'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					laydate = layui.laydate;
+
+				// 选择日期插件  
+				laydate.render({
+					elem: '#startTime',
+					type: 'date',
+					value: startDate
+				});
+				laydate.render({
+					elem: '#endTime',
+					type: 'date',
+					max: nowTime,
+					value: endDate
+				});
+				$('#baobiao').click(function() {
+					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
+						if (!verTime()) {
+							layer.msg('只能查询三个月以内数据')
+							return
+						}
+					}
+					var newData = new Object()
+					newData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+						newData.merchantNumber = '190221165543361',
+						newData.merchantName = JSON.parse(sessionStorage.getItem('userSh')).merchantName,
+						newData.startTime = $('#startTime').val(),
+						newData.endTime = $('#endTime').val(),
+						newData.billType = $('#billType').val()
+					layer.open({
+						type: 2,
+						title: '下载报表',
+						shade: 0.5,
+						area: ['30%', '30%'],
+						maxmin: false,
+						resize: false,
+						content: ['down-excel.html'],
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传w参
+							iframe.subPage(newData, '2')
+						}
+					});
+					return
+
+				})
+				//方法级渲染
+				function tableRender() {
+					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
+						if (!verTime()) {
+							layer.msg('只能查询三个月以内数据')
+							return
+						}
+					}
+					var index = layer.load(2, {
+						shade: [0.4, '#393D49']
+					})
+					table.render({
+						elem: '#LAY_table_bill',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRefcardTurs + '?merchantNumber=' +
+							merNumber,
+						method: "get",
+						height: "full-200",
+						page: true,
+						id: 'billlist',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+
+							if (res.data == null) {
+								return
+							}
+							if (res.data == '查询数据为空') {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.refundTurnoverInfos,
+							}
+						},
+						cols: [
+							[{
+								field: 'refundTime',
+								title: '退卡时间',
+								align: 'center',
+								width: 180
+							}, {
+								field: 'shopName',
+								title: '退卡门店',
+								align: 'center',
+								width: 120,
+							}, {
+								field: 'refundCardNo',
+								title: '退卡订单',
+								align: 'center',
+								width: 220,
+							}, {
+								field: 'name',
+								title: '会员姓名',
+								align: 'center',
+								width: 150,
+							}, {
+								field: 'cell',
+								title: '会员手机号',
+								align: 'center',
+								width: 120,
+								templet: function(data) {
+									return '13081058585'
+								}
+							}, {
+								field: 'cell',
+								title: '退卡方式',
+								align: 'center',
+								width: 120,
+							}, {
+								field: 'refundAmount',
+								title: '退卡金额',
+								align: 'center',
+								width: 120,
+							}, {
+								field: 'statementDate',
+								title: '实充退款金额',
+								align: 'center',
+								width: 120,
+								templet: function(data) {
+									return Math.round(Math.random() * 50)
+								}
+							}, {
+								field: 'statementDate',
+								title: '赠送退款金额',
+								align: 'center',
+								width: 120,
+								templet: function(data) {
+									return Math.round(Math.random() * 30)
+								}
+							}, {
+								field: 'statementDate',
+								title: '开卡退款金额',
+								align: 'center',
+								width: 120,
+								templet: function(data) {
+									return Math.round(Math.random() * 100)
+								}
+							}, {
+								field: 'shopName',
+								title: '操作员',
+								align: 'center',
+								width: 120,
+							}]
+						],
+						done: function(res, curr, count) {
+							console.log(res)
+							layer.closeAll()
+						}
+					});
+					$(".layui-table-header .laytable-cell-1-0-10").hover(function() {
+						layer.tips('用户实际充值金额 = 订单金额 - 退款金额', '.layui-table-header .laytable-cell-1-0-10', {
+							tips: 3
+						});
+					});
+					$(".layui-table-header .laytable-cell-1-0-11").hover(function() {
+						layer.tips('用户实际充值赠送金额', '.layui-table-header .laytable-cell-1-0-11', {
+							tips: 3
+						});
+					});
+					$(".layui-table-header .laytable-cell-1-0-12").hover(function() {
+						layer.tips('微信、支付宝交易手续费', '.layui-table-header .laytable-cell-1-0-12', {
+							tips: 3
+						});
+					});
+					$(".layui-table-header .laytable-cell-1-0-13").hover(function() {
+						layer.tips('商户微信、支付宝实际到账金额 = 实充金额 - 手续费', '.layui-table-header .laytable-cell-1-0-13', {
+							tips: 3
+						});
+					});
+				}
+
+				setTimeout(function() {
+					tableRender()
+				}, 500)
+				$('#search').click(function() {
+					tableRender()
+				})
+				// 根據條件重载表格
+				var $ = layui.$,
+					active = {
+						// reload: function() {
+						// 	// 获取上面查询框的值
+						// 	var shopName = $('#shopName');
+						// 	var startTime = $('#startTime');
+						// 	var endTime = $('#endTime');
+
+						// 	//执行重载
+						// 	table.reload('billlist', {
+						// 		page: {
+						// 			curr: 1 //重新从第 1 页开始
+						// 		},
+						// 		where: {
+						// 			startTime: startTime.val(),
+						// 			endTime: endTime.val(),
+						// 			shopName: shopName.val(),
+						// 		}
+						// 	});
+						// }
+					};
+
+				$('.demoTable .layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+			});
+		</script>
+	</body>
+
+</html>

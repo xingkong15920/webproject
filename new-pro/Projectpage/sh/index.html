@@ -12,6 +12,7 @@
 		<link rel="stylesheet" href="../../public/css/font.css">
 		<link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
@@ -19,6 +20,11 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script type="text/javascript">
+			var ceshi = {
+				"institutionNumber": 1004,
+				"merchantNumber": 180913174959820
+			}
+			sessionStorage.setItem("ceshi", JSON.stringify(ceshi));
 			var number = CmsUtility.getQueryString('number')
 			var ins = CmsUtility.getQueryString('ins')
 			var cname = ''
@@ -103,6 +109,9 @@
 			<div class="left_open">
 				<i title="展开左侧栏" class="iconfont">&#xe699;</i>
 			</div>
+			<div class="left_refresh" style="margin-left: 15px;">
+				<i title="刷新" class="layui-icon layui-icon-refresh"></i>
+			</div>
 			<ul class="layui-nav right" lay-filter="">
 				<li class="layui-nav-item">
 					<a href="javascript:;" id="userName"></a>
@@ -124,6 +133,12 @@
 						<a lay-href="sy-liushui.html">
 							<i class="icon icon icon-jiaoyishuju"></i>
 							<cite>订单管理</cite>
+						</a>
+					</li>
+					<li class="layui-nav-item">
+						<a lay-href="Preflow.html">
+							<i class="icon icon icon-jiaoyishuju"></i>
+							<cite>预授权流水</cite>
 						</a>
 					</li>
 					<li class="layui-nav-item">
@@ -164,6 +179,12 @@
 									<cite>商户账单</cite>
 								</a>
 							</li>
+							<li>
+								<a lay-href="sy-liushuijiaoban.html">
+									<i class="icon icon icon-mendiandingdan"></i>
+									<cite>交班账单</cite>
+								</a>
+							</li>
 						</ul>
 					</li>
 					<li class="layui-nav-item">
@@ -178,7 +199,7 @@
 							<cite>店员统计</cite>
 						</a>
 					</li>
-					<li class="layui-nav-item" style="border-bottom:2px dashed white">
+					<li class="layui-nav-item" style="border-bottom: 30px solid #28333E;">
 						<a lay-href="setSystem.html">
 							<i class="icon icon icon-fengkongshezhi"></i>
 							<cite>系统设置</cite>
@@ -203,9 +224,21 @@
 									<cite>微信会员卡</cite>
 								</a>
 							</li>
+							<li>
+								<a lay-href="vipCardSet-p.html">
+									<i class="icon icon icon-zhanghuzijinbiandongbiao"></i>
+									<cite>分享海报</cite>
+								</a>
+							</li>
 						</ul>
 					</li>
 					<li class="layui-nav-item">
+						<a lay-href="vipCenter.html">
+							<i class="icon icon icon-dailiguanli1" style="font-size:12px"></i>
+							<cite>会员管理</cite>
+						</a>
+					</li>
+					<!-- <li class="layui-nav-item">
 						<a href="javascript:;">
 							<i class="icon icon icon-dailiguanli1" style="font-size:12px"></i>
 							<cite>会员管理</cite>
@@ -231,15 +264,42 @@
 								</a>
 							</li>
 							<li>
+								<a lay-href="vipPutway.html">
+									<i class="icon icon icon-fengkongshezhi"></i>
+									<cite>投放渠道</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipFollow.html">
+									<i class="icon icon icon-fengkongshezhi"></i>
+									<cite>跟随推荐</cite>
+								</a>
+							</li>
+							<li>
 								<a lay-href="vipList.html">
 									<i class="icon icon icon-mendiandingdan"></i>
 									<cite>会员列表</cite>
 								</a>
 							</li>
+						</ul>
+					</li> -->
+					<li class="layui-nav-item">
+						<a href="javascript:;">
+							<i class="icon icon icon-dailiguanli1" style="font-size:12px"></i>
+							<cite>流水明细</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
 							<li>
 								<a lay-href="vipreportrec.html">
 									<i class="icon icon icon-shanghupingtai"></i>
-									<cite>充值流水</cite>
+									<cite>充值明细</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportinteTurs.html">
+									<i class="icon icon icon-shanghupingtai"></i>
+									<cite>积分明细</cite>
 								</a>
 							</li>
 							<li>
@@ -248,12 +308,18 @@
 									<cite>退款明细</cite>
 								</a>
 							</li>
+							<li>
+								<a lay-href="vipreportcardTurs.html">
+									<i class="icon icon icon-shanghupingtai"></i>
+									<cite>退卡明细</cite>
+								</a>
+							</li>
 						</ul>
 					</li>
 					<li class="layui-nav-item">
 						<a lay-href="vipactivity.html">
 							<i class="icon icon icon-shujutongji"></i>
-							<cite>营销中心</cite>
+							<cite>营销活动</cite>
 						</a>
 					</li>
 					<li class="layui-nav-item">
@@ -289,7 +355,7 @@
 				</ul>
 				<div class="layui-tab-content">
 					<div class="layui-tab-item layui-show">
-						<iframe src='sy-liushui.html' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+						<iframe src='vipCenter.html' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
 					</div>
 				</div>
 			</div>

@@ -21,19 +21,20 @@
 	<body>
 		<div class="vipCenter" id="Vip">
 			<div class="vipBlock vipmemberseach ">
-				<p class="vipmemberall">全部会员(<span>8</span>)</p>
-				<input type="text" id="" value="" placeholder="会员手机号/姓名" class="vipmemberseachinput" />
+				<p class="vipmemberall">全部会员(<span v-cloak>{{vipmemberNum}}</span>)</p>
+				<input type="text" id="" value="" v-model="cell" placeholder="会员手机号/姓名" class="vipmemberseachinput" />
+				<!-- <button type="button">搜索</button> -->
 				<img src="./img/seach.png" class="vipmemberseachicon">
 			</div>
 			<div class="mask hide"></div>
 			<ul class="vipmemberul">
-				<li class="vipmemberi" v-for="item in vipmemberi" v-cloak v-on:click="vipmemberinfo(item.vipmemberinfo)">
+				<li class="vipmemberi" v-for="item in vipmemberi" v-cloak v-on:click="vipmemberinfo(item.memberNo)">
 					<div class="vipmemberiL">
-						<img :src="item.vipmemberimg" class="vipmemberimg">
+						<img :src="item.logo" class="vipmemberimg">
 					</div>
 					<div class="vipmemberiR">
-						<p class="vipmembername">{{item.vipmembername}}</p>
-						<p class="vipmembercell">{{item.vipmembercell}}</p>
+						<p class="vipmembername">{{item.nickName}}</p>
+						<p class="vipmembercell">{{item.cell}}</p>
 					</div>
 				</li>
 			</ul>
@@ -67,72 +68,48 @@
 		new Vue({
 			el: '#Vip',
 			data: {
-				vipmemberi: [{
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}, {
-					vipmembername: "一缕阳光",
-					vipmembercell: "17712345678",
-					vipmemberinfo: "vipinfo.html",
-					vipmemberimg:"./img/vip-img.jpg"
-				}]
+				cell: '',
+				pageNo: 1,
+				pageCount: 10,
+				vipmemberi: [],
+				vipmemberNum:''
 			},
 			methods: {
+				// 获取会员列表
+				getMembers: function() {
+					var that = this,
+						sendData = new Object()
+					sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+					sendData.merchantNumber = JSON.parse(sessionStorage.getItem('userInfo')).merNumber
+					sendData.pageNo = that.pageNo
+					sendData.pageCount = that.pageCount
+					sendData.cell = that.cell
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Member.getMembers,
+						sendData,
+						function(data) {
+							if (data.code === 1000) {
+								that.vipmemberi = data.data.memberList
+								that.vipmemberNum = data.data.memberCount
+								console.log(that.vipmemberi)
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+						'false'
+					)
+				},
 				vipmemberinfo: function(data) {
-					window.location.href = data
+					window.location.href = 'vipinfo.html?memberNo=' + data
 				}
+			},
+			created() {
+				this.getMembers()
 			}
 		})
 	</script>

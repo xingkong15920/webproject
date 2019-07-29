@@ -18,23 +18,23 @@
 		</style>
 	</head>
 	<body>
-		<div class="vipInfo">
+		<div class="vipInfo" id="vipInfoEdit">
 			<ul class="vipInfoul">
 				<li class="vipInfoli">
 					<div class="vipInfoliL">姓名</div>
 					<div class="vipInfoliR">
-						<input type="text" value="李先生" class="vipInput" id="vipName" />
+						<input type="text" class="vipInput" v-model="memberName" />
 					</div>
 				</li>
 				<li class="vipInfoli">
 					<div class="vipInfoliL">性别</div>
 					<div class="vipInfoliR">
 						<div class="vipInputRB">
-							<input type="radio" name="vipSex" value="1" class="vipInputR" id="vipInputR1" checked="" />
+							<input type="radio" name="vipSex" class="vipInputR" id="vipInputR1" value="1" v-model="memberSex" />
 							<label for="vipInputR1"><span>男</span></label>
 						</div>
 						<div class="vipInputRB">
-							<input type="radio" name="vipSex" value="2" class="vipInputR" id="vipInputR2" />
+							<input type="radio" name="vipSex" class="vipInputR" id="vipInputR2" value="0" v-model="memberSex" />
 							<label for="vipInputR2"><span>女</span></label>
 						</div>
 					</div>
@@ -48,29 +48,29 @@
 				<li class="vipInfoli">
 					<div class="vipInfoliL">手机号</div>
 					<div class="vipInfoliR">
-						<input type="number" value="13081058624" class="vipInput" id="vipCell" />
+						<input type="number" class="vipInput" v-model="memberCell" />
 					</div>
 				</li>
 				<li class="vipInfoli">
 					<div class="vipInfoliL">昵称</div>
 					<div class="vipInfoliR">
-						<input type="text" readonly="readonly" value="哈喽李先森" class="vipInput unedit" id="vipNick" />
+						<input type="text" readonly="readonly" class="vipInput unedit" v-model="memDetails.nickName" />
 					</div>
 				</li>
 				<li class="vipInfoli">
 					<div class="vipInfoliL">卡号</div>
 					<div class="vipInfoliR">
-						<input type="text" readonly="readonly" value="12345678987654321234" class="vipInput unedit" id="vipNum" />
+						<input type="text" readonly="readonly" class="vipInput unedit" v-model="memDetails.memberNo" />
 					</div>
 				</li>
 				<li class="vipInfoli">
 					<div class="vipInfoliL">激活时间</div>
 					<div class="vipInfoliR">
-						<input type="text" readonly="readonly" value="2019-05-12 15:23:24" class="vipInput unedit" id="activatime" />
+						<input type="text" readonly="readonly" class="vipInput unedit" v-model="memDetails.activationTime" />
 					</div>
 				</li>
 			</ul>
-			<div class="vipInfosave">保 存</div>
+			<div class="vipInfosave" @click="vipInfosave()">保 存</div>
 		</div>
 	</body>
 	<script src="./js/jquery.min.js"></script>
@@ -82,44 +82,122 @@
 	<script src="./js/iScroll.js"></script>
 	<script src="./js/Mdate.js"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
-			var vipData, radioval, vipNum, vipNick, vipName, vipCell, vipbir, activatime
-			var Newyear = new Date().getFullYear();
-			var Newmonth = nums(new Date().getMonth() + 1);
-			var Newday = nums(new Date().getDate());
-			
-			vipData = new Object
-			setdate(Newyear, Newmonth, Newday)
-			new Mdate("vipbir")
-			$('input[name=vipSex]').click(function() {
-				radioval = $(this).val();
-			});
-			$('.vipInfosave').click(function() {
-				vipData.vipNum = $('#vipNum').val()
-				vipData.vipNick = $('#vipNick').val()
-				vipData.vipName = $('#vipName').val()
-				vipData.vipSex = radioval
-				vipData.vipCell = $('#vipCell').val()
-				vipData.vipbir = $('#vipbir').html()
-				vipData.activatime = $('#activatime').val()
-				console.log(radioval)
-				console.log(vipData)
-			})
-			//日期封装赋值
-			function setdate(Newyear, Newmonth, Newday) {
-				$('#vipbir').get(0).innerHTML = Newyear + "-" + Newmonth + "-" + Newday;
-				$('#vipbir').get(0).setAttribute("data-year", Newyear);
-				$('#vipbir').get(0).setAttribute("data-month", Newmonth);
-				$('#vipbir').get(0).setAttribute("data-day", Newday);
+		var Newyear, Newmonth, Newday, vipData, vipBirth
+
+		new Vue({
+			el: '#vipInfoEdit',
+			data: {
+				memberName: '',
+				memberSex: '',
+				memberBir: '',
+				memberCell: '',
+				memberNo: '',
+				memDetails: {},
+			},
+			methods: {
+				getMemDetails() {
+					var that = this,
+						sendData = new Object()
+					sendData.memberNo = that.memberNo
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Member.getMemDetails,
+						sendData,
+						function(data) {
+							if (data.code === 1000) {
+								that.memDetails = data.data
+								that.memberName = data.data.name
+								that.memberCell = data.data.cell
+								that.memberSex = data.data.sex
+								Newyear = data.data.birthday.split('-')[0]
+								Newmonth = nums(data.data.birthday.split('-')[1])
+								Newday = nums(data.data.birthday.split('-')[2])
+								setdate(Newyear, Newmonth, Newday)
+								new Mdate("vipbir")
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+						'false'
+					)
+				},
+				vipInfosave: function() {
+					var that = this,
+						sendData = new Object()
+					sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+					sendData.name = that.memberName
+					sendData.sex = that.memberSex
+					sendData.birthday = $('#vipbir').html()
+					sendData.cell = that.memberCell
+					sendData.memberNo = that.memberNo
+					console.log(sendData)
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Member.updateMemInfo,
+						JSON.stringify(sendData),
+						function(data) {
+							if (data.code === 1000) {
+								layer.msg(data.msg)
+								// window.opener=null
+								// window.open('','_self')
+								// window.close()
+								open('', '_self').close();
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'post',
+						'false'
+					)
+				}
+			},
+			created() {
+				this.memberNo = window.location.href.split('?memberNo=')[1]
+			},
+			mounted() {
+				this.getMemDetails()
 			}
-			//日期加零
-			function nums(num) {
-				if(num < 10) {
+		})
+
+		$('input[name=vipSex]').click(function() {
+			radioval = $(this).val();
+		});
+		// $('.vipInfosave').click(function() {
+		// 	vipData.vipNum = $('#vipNum').val()
+		// 	vipData.vipNick = $('#vipNick').val()
+		// 	vipData.vipName = $('#vipName').val()
+		// 	vipData.vipSex = radioval
+		// 	vipData.vipCell = $('#vipCell').val()
+		// 	vipData.vipbir = $('#vipbir').html()
+		// 	vipData.activatime = $('#activatime').val()
+		// 	console.log(radioval)
+		// 	console.log(vipData)
+		// })
+		//日期封装赋值
+		function setdate(Newyear, Newmonth, Newday) {
+			$('#vipbir').get(0).innerHTML = Newyear + "-" + Newmonth + "-" + Newday;
+			$('#vipbir').get(0).setAttribute("data-year", Newyear);
+			$('#vipbir').get(0).setAttribute("data-month", Newmonth);
+			$('#vipbir').get(0).setAttribute("data-day", Newday);
+		}
+		//日期加零
+		function nums(num) {
+			if (num.length == 1) {
+				if (num < 10) {
 					return "0" + num
 				} else {
 					return num
 				}
+			} else {
+				return num
 			}
-		})
+		}
 	</script>
 </html>
