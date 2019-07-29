@@ -9,6 +9,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/card.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
@@ -18,23 +20,21 @@
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 		<style type="text/css">
-			.max360 {
-				max-width: 360px;
-				width: 100% !important;
+			.layui-form-switch {
+				width: 60px;
 			}
 
-			.width80 {
-				width: 80px;
+			.layui-form-onswitch em {
+				margin-right: 18px;
+				margin-left: 3px;
 			}
 
-			.layui-input-inline-inline {
-				line-height: 36px;
-				margin-right: 5px;
-				display: inline-block;
+			.layui-form-switch i {
+				top: 2px;
 			}
 
-			.resetper {
-				display: none;
+			.layui-form-switch em {
+				top: -1px;
 			}
 		</style>
 	</head>
@@ -43,150 +43,185 @@
 		<div class="x-body">
 			<div class="layui-row">
 				<div class="layui-form" action="" lay-filter="cardAdd">
-					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 0;">
-						<legend>基础信息</legend>
-					</fieldset>
-					<div class="layui-form-item">
-						<label class="layui-form-label">等级类型</label>
-						<div class="layui-input-inline max360">
-							<input type="radio" name="leveltype" value="0" title="正常等级" lay-filter="" checked="true">
-							<input type="radio" name="leveltype" value="1" title="锁定等级" lay-filter="">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">等级名称</label>
-						<div class="layui-input-inline max360">
-							<input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入等级名称" class="layui-input">
-						</div>
-						<label class="layui-form-label"></label>
-						<div class="layui-form-mid layui-word-aux">等级名称不允许重复</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">所需积分</label>
-						<div class="layui-input-inline max360">
-							<input type="radio" name="needinte" value="0" title="累计积分" lay-filter="" checked="true">
-							<input type="radio" name="needinte" value="1" title="剩余积分" lay-filter="">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">开卡金额</label>
-						<div class="layui-input-inline max360">
-							<input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入开卡金额" class="layui-input">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">赠送金额</label>
-						<div class="layui-input-inline max360">
-							<input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入赠送金额" class="layui-input">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label" lay-tips="会员过期后会员状态将变更为无会员阶段， 需要重新购买会员或变更会员等级重新成为优惠会员。">有效期<i class="layui-icon alone-tips"></i></label>
-						<div class="layui-input-inline max360">
-							<input type="text" name="name" lay-verify="title" autocomplete="off" placeholder="请输入有效期" class="layui-input">
-						</div>
-						<div class="layui-form-mid layui-word-aux">会员有效期设置，可设置限时会员，0为永久</div>
-
-						<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
-					</div>
-					<div class="layui-form-item layui-form-text">
-						<label class="layui-form-label">等级说明</label>
-						<div class="layui-input-inline max360">
-							<textarea placeholder="可以填写会员等级权益、升级规则等信息，非必填项" class="layui-textarea"></textarea>
-						</div>
-					</div>
-
-					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 0;">
-						<legend>积分规则</legend>
-					</fieldset>
-					<div class="layui-form-item">
-						<label class="layui-form-label">消费积分规则</label>
-						<div class="layui-input-inline max360">
-							<div class="layui-input-inline-inline">每消费</div>
-							<div class="layui-input-inline-inline width80">
-								<input type="number" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
+					<div class="conBlock">
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							基本设置
+							<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
+								<span class="tips_red">设置目前卡的有效期</span> -->
+						</blockquote>
+						<input type="file" class="input_img layui-input" style="display: none;" id="upBg" />
+						<div class="layui-form-item">
+							<label class="layui-form-label">默认等级：</label>
+							<div class="layui-input-inline widthauto" style="margin-right: 20px;">
+								<input type="checkbox" name="defaultFlag" lay-skin="switch" lay-filter="recEnabled" lay-text="启用|禁用">
 							</div>
-							<div class="layui-input-inline-inline">元，获得</div>
-							<div class="layui-input-inline-inline width80">
-								<input type="number" name="agentRoute" class="layui-input" lay-verify="dailishang" id="dailishang">
+							<div class="layui-form-mid layui-word-aux">设置开卡默认会员等级，非必选</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">等级类型：</label>
+							<div class="layui-input-inline max360">
+								<input type="radio" name="gradeType" value="0" title="正常等级" lay-filter="" checked="true">
+								<input type="radio" name="gradeType" value="1" title="锁定等级" lay-filter="">
 							</div>
-							<div class="layui-input-inline-inline">积分</div>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">单笔上限</label>
-						<div class="layui-input-inline max360">
-							<div class="layui-input-inline-inline">上限赠</div>
-							<div class="layui-input-inline-inline width80">
-								<input type="number" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
+						<div class="layui-form-item">
+							<label class="layui-form-label">等级名称：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" name="gradeName" lay-verify="gradeName" autocomplete="off" placeholder="请输入等级名称" class="layui-input">
 							</div>
-							<div class="layui-input-inline-inline">积分</div>
+							<label class="layui-form-label"></label>
+							<div class="layui-form-mid layui-word-aux">等级名称不允许重复</div>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">开卡积分</label>
-						<div class="layui-input-inline max360">
-							<div class="layui-input-inline-inline">开卡送</div>
-							<div class="layui-input-inline-inline width80">
-								<input type="number" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
+						<div class="layui-form-item">
+							<label class="layui-form-label">所需积分：</label>
+							<div class="layui-input-inline widthauto">
+								<input type="radio" name="integralType" value="0" title="累计积分" lay-filter="" checked="true">
+								<input type="radio" name="integralType" value="1" title="剩余积分" lay-filter="">
 							</div>
-							<div class="layui-input-inline-inline">积分</div>
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">退款积分</label>
-						<div class="layui-input-block">
-							<input type="radio" name="tui" value="0" title="退积分" checked="">
-							<input type="radio" name="tui" value="1" title="不退积分">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">积分抵扣</label>
-						<div class="layui-input-inline max360">
-							<div class="layui-input-inline-inline">每使用</div>
-							<div class="layui-input-inline-inline width80">
-								<input type="number" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
+							<div class="layui-input-inline" style="width: 134px;">
+								<input type="text" name="integral" lay-verify="integral" autocomplete="off" placeholder="升级所需积分" class="layui-input">
 							</div>
-							<div class="layui-input-inline-inline">积分，抵扣1元</div>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">升级赠送</label>
-						<div class="layui-input-inline max360">
-							<div class="layui-input-inline-inline">每升级</div>
-							<div class="layui-input-inline-inline width80">
-								<input type="number" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="zonghoutai">
+						<div class="layui-form-item">
+							<label class="layui-form-label">开卡金额：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" name="initMoney" lay-verify="initMoney" autocomplete="off" placeholder="请输入开卡金额" class="layui-input">
 							</div>
-							<div class="layui-input-inline-inline">积分</div>
 						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">时效</label>
-						<div class="layui-input-inline" style="width:220px">
-							<input type="radio" name="resetperiodically" value="0" title="永久有效" lay-filter="resetperiodically" checked="">
-							<input type="radio" name="resetperiodically" value="1" title="定期清零" lay-filter="resetperiodically">
-						</div>
-						<div class="resetper">
-							<div class="layui-input-inline" style="width:200px;margin-top: 15px;">
-								<input type="text" name="institutionRoute" class="layui-input" lay-verify="zonghoutai" id="resetper"
-								 placeholder="请选择时间">
+						<div class="layui-form-item">
+							<label class="layui-form-label">赠送金额：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" name="giveMoney" lay-verify="giveMoney" autocomplete="off" placeholder="请输入赠送金额" class="layui-input">
 							</div>
-							<div class="layui-form-mid layui-word-aux" style="margin-top: 15px;">固定每年积分到期清零</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">有效期：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" name="termValidity" lay-verify="termValidity" autocomplete="off" placeholder="请输入有效期天数"
+								 class="layui-input">
+							</div>
+							<label class="layui-form-label"></label>
+							<div class="layui-input-inline max360">
+								<div class="layui-form-mid layui-word-aux">会员有效期设置，可设置限时会员，0为永久。会员过期后会员状态将变更为无会员阶段， 需要重新购买会员或变更会员等级重新成为优惠会员。</div>
+							</div>
+							<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">等级说明：</label>
+							<div class="layui-input-inline max360">
+								<textarea name="gradeExplain" placeholder="可以填写会员等级权益、升级规则等信息，非必填项" class="layui-textarea"></textarea>
+							</div>
 						</div>
 					</div>
 
-					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 0;">
-						<legend>会员卡背景</legend>
-					</fieldset>
-					<div class="layui-form-item">
-						<label class="layui-form-label">会员卡背景</label>
-						<div class="layui-input-block">
-							<span style="color:red">*建议上传尺寸244*153 像素PNG图，图片小于5M</span>
-							<div class="layui-upload-img" id="test1" style="height:153px;width:244px">
-								<img src="../../public/images/default.png" id="demo1" name="address" style="height:153px;width:244px"
-								 lay-filter="logo" id="logo">
+					<div class="conBlock">
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							积分规则
+							<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
+								<span class="tips_red">设置目前卡的有效期</span> -->
+						</blockquote>
+						<div class="layui-form-item">
+							<label class="layui-form-label">消费积分：</label>
+							<div class="layui-input-inline max360">
+								<div class="layui-input-inline-inline">每消费</div>
+								<div class="layui-input-inline-inline width80">
+									<input type="number" name="consumeMoney" class="layui-input" lay-verify="consumeMoney">
+								</div>
+								<div class="layui-input-inline-inline">元，获得</div>
+								<div class="layui-input-inline-inline width80">
+									<input type="number" name="getIntegral" class="layui-input" lay-verify="getIntegral">
+								</div>
+								<div class="layui-input-inline-inline">积分</div>
 							</div>
-							<p id="demoText"></p>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">单笔上限：</label>
+							<div class="layui-input-inline max360">
+								<div class="layui-input-inline-inline">上限赠</div>
+								<div class="layui-input-inline-inline width80">
+									<input type="number" name="singleGetIntegral" class="layui-input" lay-verify="singleGetIntegral">
+								</div>
+								<div class="layui-input-inline-inline">积分</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">开卡积分：</label>
+							<div class="layui-input-inline max360">
+								<div class="layui-input-inline-inline">开卡送</div>
+								<div class="layui-input-inline-inline width80">
+									<input type="number" name="initIntegral" class="layui-input" lay-verify="initIntegral">
+								</div>
+								<div class="layui-input-inline-inline">积分</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">退款积分：</label>
+							<div class="layui-input-inline" style="width:220px">
+								<input type="radio" name="refundIntegralState" value="0" title="退积分" checked="">
+								<input type="radio" name="refundIntegralState" value="1" title="不退积分">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">积分抵扣：</label>
+							<div class="layui-input-inline max360">
+								<div class="layui-input-inline-inline">每使用</div>
+								<div class="layui-input-inline-inline width80">
+									<input type="number" name="integralDeduct" class="layui-input" lay-verify="integralDeduct">
+								</div>
+								<div class="layui-input-inline-inline">积分，抵扣1元</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">升级赠送：</label>
+							<div class="layui-input-inline max360">
+								<div class="layui-input-inline-inline">升级赠</div>
+								<div class="layui-input-inline-inline width80">
+									<input type="number" name="upGetIntegral" class="layui-input" lay-verify="upGetIntegral">
+								</div>
+								<div class="layui-input-inline-inline">积分</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">积分时效：</label>
+							<div class="layui-input-inline" style="width:220px">
+								<input type="radio" name="timeType" value="0" title="永久有效" lay-filter="timeType" checked="">
+								<input type="radio" name="timeType" value="1" title="定期清零" lay-filter="timeType">
+							</div>
+							<div class="resetper">
+								<div class="layui-input-inline" style="width:200px;margin-top: 15px;">
+									<input type="text" name="invalidTime" id="invalidTime" class="layui-input" lay-verify="invalidTime"
+									 placeholder="请选择时间">
+								</div>
+								<div class="layui-form-mid layui-word-aux" style="margin-top: 15px;">固定每年积分到期清零</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="conBlock">
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							会员卡背景
+							<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
+								<span class="tips_red">设置目前卡的有效期</span> -->
+						</blockquote>
+						<div class="layui-form-item max600">
+							<label class="layui-form-label"><span class="redC">* </span>会员卡背景 :</label>
+							<div class="layui-input-block cardBgimg">
+								<div class="layui-upload-list">
+									<div class="layui-upload-img" id="cardBg">
+										<img src="./images/cardBg_default.png" id="cardBgImg">
+										<div class="upTips">
+											+<br />上传卡背景
+										</div>
+									</div>
+									<div class="imgDel" data-id="cardBg" style="display: none;">
+										<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+									</div>
+								</div>
+							</div>
+							<div class="layui-input-block layui-word-aux">建议尺寸1080px*675px，选择与卡内容相关的图片，仅支持JPG、JPEG、PNG图片文件，且文件小于1M</div>
 						</div>
 					</div>
 					<div class="layui-form-item layui-layout-admin">
@@ -204,6 +239,7 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			$(".conBlock:last").css("margin-bottom", "44px");
 			var index = parent.layer.getFrameIndex(window.name);
 			$('#quxiao').click(function() {
 				setTimeout(function() {
@@ -211,8 +247,9 @@
 				}, 16);
 			})
 
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
-			var logoUrl = ''
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var cardBackgroundId = ''
 			layui.use(['laydate', 'table', 'upload', 'form'], function() {
 				var $ = layui.jquery,
 					upload = layui.upload,
@@ -225,7 +262,7 @@
 
 				//执行一个laydate实例
 				laydate.render({
-					elem: '#resetper' //指定元素
+					elem: '#invalidTime' //指定元素
 				});
 
 				//监听指定开关
@@ -237,7 +274,7 @@
 
 
 				/*---------- 积分时效 ----------*/
-				form.on('radio(resetperiodically)', function(data) {
+				form.on('radio(timeType)', function(data) {
 					if (data.value == 0) {
 						$('.resetper').hide()
 					} else if (data.value == 1) {
@@ -246,48 +283,163 @@
 				});
 
 
-				/*---------- 普通图片上传 ----------*/
-				var uploadInst = upload.render({
-					elem: '#test1',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
-					data: {
-						"institutionNumber": userNumber,
-					},
-					before: function(obj) {
-						//预读本地文件示例，不支持ie8
-						obj.preview(function(index, file, result) {
-							$('#demo1').attr('src', result); //图片链接（base64）
-						});
-					},
-					done: function(res) {
-						//如果上传失败
-						console.log(res)
-						if (res.code != 1000) {
-							return layer.msg('上传失败');
-						} else {
-							logoUrl = res.data
+				/*---------- 默认开卡 ----------*/
+				// form.on('switch(recEnabled)', function(data) {
+				// 	// layer.tips('会员等级：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+				// 	var tjData = new Object()
+				// 	tjData.rechargeSetNo = data.elem.dataset.rechargesetno
+				// 	tjData.enabled = this.checked ? '0' : '1'
+				// 	$.ajax({
+				// 		type: "post",
+				// 		url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateEnabled,
+				// 		data: JSON.stringify(tjData),
+				// 		dataType: "json",
+				// 		headers: {
+				// 			"Content-Type": "application/json"
+				// 		},
+				// 		success: function(data) {
+				// 			layer.closeAll('loading');
+				// 			if (data.code == 1000) {
+				// 				parent.layer.msg('更改成功')
+				// 				layui.table.reload('gradeList')
+				// 			} else {
+				// 				layer.msg(data.msg)
+				// 
+				// 			}
+				// 		}
+				// 	});
+				// });
+
+
+				/*---------- 品牌logo，卡背景上传 ----------*/
+				$('#cardBg').click(function() {
+					$('#upBg').click()
+				})
+				$('.layui-upload-img').on({
+					mouseover: function() {
+						var cardId = $(this).attr("id")
+						var cardSrc = $('#' + cardId + 'Img').attr("src")
+						if (cardId === 'cardBg' && cardSrc) {
+							$('.cardBgimg .imgDel').css({
+								"display": "block",
+								"opacity": 1
+							})
 						}
-						//上传成功
-					},
-					error: function() {
-						//演示失败状态，并实现重传
-						var demoText = $('#demoText');
-						demoText.html(
-							'<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-						demoText.find('.demo-reload').on('click', function() {
-							uploadInst.upload();
-						});
 					}
+				})
+				$('.imgDel').on({
+					mouseleave: function() {
+						$('.imgDel').css({
+							"display": "none",
+							"opacity": 0
+						})
+					}
+				})
+				$('.imgDel').click(function(e) {
+					var delId = e.currentTarget.dataset.id
+					if (delId == 'cardBg') {
+						console.log('cardBg')
+						$('#cardBg').find('img').remove()
+						$('#cardBimg').find('img').remove()
+						$(this).prev().find(".upTips").show()
+						cardBackgroundId = ''
+					}
+					$(this).hide()
+				})
+				$("#upBg").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						Imgbase = data
+					});
+					setTimeout(function() {
+						var datas = {
+							"imgBaseStr": Imgbase,
+							"institutionNumber": insNumber,
+							"imgType": "1",
+							"merchantNumber": merNumber
+						}
+						// 发送请求
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+							data: JSON.stringify(datas),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								layer.closeAll('loading');
+								if (data.code === 1000) {
+									cardBackgroundId = data.data.imageId
+									$('#cardBg').append('<img src="' + data.data.localImgUrl + '" id="cardBgImg">');
+									$('#cardBg').find('.upTips').hide();
+								}
+							}
+						});
+					}, 300)
 				});
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
-					title: function(value) {
-						if (value.length == "") {
-							return '不能为空！';
+					gradeName: function(value) {
+						if (value == '') {
+							return '等级名称不能为空！';
+						} else if (value.length > 5) {
+							return '等级名称不能超过5个字符'
 						}
 					},
-
+					integral: function(value) {
+						if (value == '') {
+							return '请填写升级所需积分';
+						}
+					},
+					initMoney: function(value) {
+						if (value == '') {
+							return '请填写开卡金额';
+						}
+					},
+					giveMoney: function(value) {
+						if (value == '') {
+							return '请填写赠送金额';
+						}
+					},
+					termValidity: function(value) {
+						if (value == '') {
+							return '请填写请填写正确的有效期！';
+						}
+					},
+					consumeMoney: function(value) {
+						if (value == '') {
+							return '请填写消费金额';
+						}
+					},
+					getIntegral: function(value) {
+						if (value == '') {
+							return '请填写赠送积分';
+						}
+					},
+					singleGetIntegral: function(value) {
+						if (value == '') {
+							return '请填写单笔上限金额';
+						}
+					},
+					initIntegral: function(value) {
+						if (value == '') {
+							return '请填写开卡赠送积分';
+						}
+					},
+					integralDeduct: function(value) {
+						if (value == '') {
+							return '请填写积分抵现规则';
+						}
+					},
+					upGetIntegral: function(value) {
+						if (value == '') {
+							return '请填写升级送积分规则';
+						}
+					},
 				});
 
 				/*---------- 监听开关 ----------*/
@@ -297,47 +449,74 @@
 
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
-					return false
 					var data = data.field
-					data.institutionNumber = userNumber
-					console.log(data)
-					if (!data.state) {
-						data.state = 1
-					} else {
-						data.state = 0
-					}
-					console.log(logoUrl)
-					if (logoUrl == '') {
-						layer.msg('请上传图片')
+					data.merchantNumber = merNumber
+					data.cardBackgroundId = cardBackgroundId
+					if (cardBackgroundId == '') {
+						layer.msg('请上传卡背景图片')
 						return
 					}
-					data.address = logoUrl
+					if (data.defaultFlag) {
+						data.defaultFlag = 1
+					} else {
+						data.defaultFlag = 0
+					}
+					layer.load(2, {
+						shade: 0.5
+					});
+					setTimeout(function() {
+						console.log(data)
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addGrade,
+							data: JSON.stringify(data),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								layer.closeAll('loading');
+								if (data.code == 1000) {
+									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+									parent.layer.close(index); //再执行关闭
+									parent.layer.msg('添加等级成功')
+									parent.layui.table.reload('gradeList')
+								} else {
+									layer.msg(data.msg)
 
-					// if()
-					CmsUtility.postAjaxCall(
-						//系统设置
-						CmsConfig.addressUrl.Mechanism.insertInstitutionAdvertisement,
-						data,
-						function(data) {
-							if (data.code == 1000) {
-								setTimeout(function() {
-									$('#quxiao').click()
-								}, 16);
-								parent.layer.msg('保存成功')
-								parent.layui.table.reload('vip_cardList')
-							} else {
-								layer.msg(data.msg)
-
+								}
 							}
-						},
-						function(data) {
-							console.log('222')
-						}
-					)
+						});
+					}, 300)
 					return false;
 				});
 
 			});
+
+			function uploadImg(input_file, get_data) {
+				/*input_file：文件按钮对象*/
+				/*get_data: 转换成功后执行的方法*/
+				if (typeof(FileReader) === 'undefined') {
+					alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
+				} else {
+					try {
+						/*图片转Base64 核心代码*/
+						var file = input_file.files[0];
+						//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
+						if (!/image\/\w+/.test(file.type)) {
+							alert("请确保文件为图像类型");
+							return false;
+						}
+						var reader = new FileReader();
+						reader.onload = function() {
+							get_data(this.result);
+						}
+						reader.readAsDataURL(file);
+					} catch (e) {
+						alert('图片转Base64出错啦！' + e.toString())
+					}
+				}
+			}
 		</script>
 	</body>
 

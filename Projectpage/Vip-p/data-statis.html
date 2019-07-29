@@ -44,28 +44,17 @@
 	<script src="./js/qrcode.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			var newmemberstoday, membershipcard, builtmembershipcard
-			newmemberstoday = "2"
-			membershipcard = "123"
-			builtmembershipcard = "5"
-			$(".yhq").click(function() {
-				window.location.href = "coupons.html"
-			});
-
 			new Vue({
 				el: '#Vip',
 				data: {
-					vipCard_tit: "李先生",
-					vipCard_num: "12345678987654321234",
-					vip_avatarImg: "./img/vip-img.jpg",
 					vipToolul1: [{
-						toolcl: newmemberstoday,
+						toolcl: '',
 						toolitit: "今日新增会员",
 					}, {
-						toolcl: membershipcard,
-						toolitit: "会员卡总数",
+						toolcl: '',
+						toolitit: "会员总数",
 					}, {
-						toolcl: builtmembershipcard,
+						toolcl: '',
 						toolitit: "已建会员卡类型",
 					}],
 					vipToolul2: [{
@@ -81,62 +70,44 @@
 						toolitit: "会员消费统计",
 						address: "vip-statis-con.html"
 					}],
-					vipBilli: [{
-						vipBillitit: 1,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 0,
-						vipBillimoney: "101.00"
-					}, {
-						vipBillitit: 2,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 1,
-						vipBillimoney: "101.00"
-					}, {
-						vipBillitit: 1,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 0,
-						vipBillimoney: "11.00"
-					}, {
-						vipBillitit: 2,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 1,
-						vipBillimoney: "161.00"
-					}, {
-						vipBillitit: 1,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 0,
-						vipBillimoney: "101.00"
-					}, {
-						vipBillitit: 2,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 1,
-						vipBillimoney: "201.00"
-					}, {
-						vipBillitit: 1,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 0,
-						vipBillimoney: "101.00"
-					}, {
-						vipBillitit: 2,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 1,
-						vipBillimoney: "352.00"
-					}, {
-						vipBillitit: 1,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 0,
-						vipBillimoney: "101.00"
-					}, {
-						vipBillitit: 2,
-						vipBillitime: "2019-05-14",
-						vipBillistate: 1,
-						vipBillimoney: "101.00"
-					}]
 				},
 				methods: {
+					// 查询会员汇总
+					getMemSummary: function() {
+						var that = this,
+							sendData = new Object()
+						sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+						sendData.merchantNumber = JSON.parse(sessionStorage.getItem('userInfo')).merNumber
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Member.getMemSummary,
+							sendData,
+							function(data) {
+								if (data.code === 1000) {
+									that.vipToolul1[0].toolcl = data.data.memberTodCount
+									that.vipToolul1[1].toolcl = data.data.memberCount
+									that.vipToolul1[2].toolcl = data.data.cardCount
+									console.log(data.data)
+								} else {
+									alert(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							},
+							'get',
+							'false'
+						)
+					},
 					jump: function(data) {
 						window.location.href = data
 					}
+				},
+				created() {
+					
+				},
+				mounted() {
+					this.getMemSummary()
 				}
 			})
 		})

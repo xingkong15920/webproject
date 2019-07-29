@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+	</head>
+
+	<body>
+		<ul class="actList" id="activityInfos">
+			<li class="actListli" v-cloak v-for="item in actList" v-on:click="jumpAdd(item.activityType)">
+				<div class="actBody">
+					<img src="./images/21.png" class="actBtop">
+					<div class="actdown">
+						<h3>{{item.activityName}}</h3>
+						<p>{{item.activityName}}</p>
+					</div>
+				</div>
+			</li>
+			<!-- <li class="actListli">
+					<div class="actBody">
+						<img src="./images/21.png" class="actBtop">
+						<div class="actdown">
+							<h3>支付即会员</h3>
+							<p>快速招募新会员，微信支付成功后可领取会员卡</p>
+						</div>
+					</div>
+				</li> -->
+			<li class="actListli actListadd">
+				<div class="actBody">
+					<span>+</span>
+					<p>添加支付场景</p>
+				</div>
+			</li>
+		</ul>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var actlist = [{
+				'activityType': 0,
+				'activityName': '支付即会员',
+				'activityTips': '快速招募新会员，微信支付成功后可领取会员卡'
+			}, {
+				'activityType': 1,
+				'activityName': '储值有礼',
+				'activityTips': '顾客沉淀，对于充值达到金额的会员进行奖励'
+			}]
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					laydate = layui.laydate,
+					form = layui.form,
+					element = layui.element;
+
+				setActInof(actlist)
+
+				function setActInof(obj) {
+					parent.layer.load(2, {
+						shade: 0.5
+					});
+					new Vue({
+						el: '#activityInfos',
+						data: {
+							actList: obj
+						},
+						methods: {
+							jumpAdd: function(e) {
+								switch (e) {
+									case 0:
+										parent.layer.open({
+											type: 2,
+											title: '支付即会员 - 添加活动',
+											area: ['600px', '650px'],
+											content: 'vipactivityadd.html',
+											success: function(layero, index) {
+												// 获取父页面的iframe
+												var iframe = parent.window['layui-layer-iframe' + index];
+												// 向父页面的全局函数child传参
+												iframe.subPageCon(e)
+											}
+										});
+										break;
+									case 1:
+										parent.layer.open({
+											type: 2,
+											title: '储值有礼 - 添加活动',
+											area: ['600px', '650px'],
+											content: 'vipactivityadd.html',
+											success: function(layero, index) {
+												// 获取父页面的iframe
+												var iframe = parent.window['layui-layer-iframe' + index];
+												// 向父页面的全局函数child传参
+												iframe.subPageCon(e)
+											}
+										});
+										break;
+								}
+							}
+						},
+						mounted() {
+							setTimeout(function() {
+								parent.layer.closeAll('loading');
+							}, 500);
+						}
+					})
+				}
+				$('.actListadd .actBody').on('click', function() {
+					console.log(111)
+					layer.open({
+						type: 2,
+						area: ['600px', '650px'],
+						fixed: false, //不固定
+						maxmin: true,
+						resize: false,
+						content: 'vipactivityadd.html'
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

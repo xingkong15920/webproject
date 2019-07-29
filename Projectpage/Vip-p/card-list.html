@@ -23,17 +23,20 @@
 	</head>
 	<body>
 		<div class="cardList" id="cardList">
+			<div class="loadingB">
+				<div class="loading"></div>
+			</div>
 			<ul class="cardListul">
 				<li class="cardListuli" v-for="(item,i) in cardList" :key="i" v-cloak @click="cardetail(item.cardNo)">
 					<div class="cardListuliPos cardListuliLT">
 						<span class="default" :class="item.defaultFlag == 1?'show':'hide'">默认</span>
 						<span class="cardName">{{item.cardName}}</span>
 					</div>
-					<div class="cardListuliPos cardListuliLD" @click.stop="cardDelet(item.vipCardbgCell,item.vipCardName)">
+					<div class="cardListuliPos cardListuliLD" @click.stop="cardDelet(item.cardNo,item.wxCardId,item.cardName)">
 						<i class="icon iconfont iconshanchu1"></i>
 						删除
 					</div>
-					<div class="cardListuliPos cardListuliRT" @click.stop="shareway(item.vipCardbgCell,item.vipCardName)">
+					<div class="cardListuliPos cardListuliRT" @click.stop="shareway(item.cardNo,item.wxCardId)">
 						<i class="icon iconfont iconfenxiang"></i>
 						分享注册
 					</div>
@@ -88,12 +91,12 @@
 	<script src="./lib/layer/layer.js"></script>
 	<script src="./js/vue.min.js"></script>
 	<script src="./js/qrcode.min.js"></script>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			new Vue({
 				el: '#cardList',
 				data: {
-					insNumber: 0,
 					pageNo: 1,
 					pageCount: 10,
 					cardShareWechat: '',
@@ -102,8 +105,9 @@
 					chooseCS: '',
 					vipCardIndex: '',
 					vipCardName: '',
-					cardA_bgli: [],
-					cardList: [],
+					thirdCardType: '1', //三方会员卡类型
+					cardA_bgli: [], //会员卡背景列表
+					cardList: [], //会员卡列表
 				},
 				methods: {
 					// 获取会员卡背景列表
@@ -113,8 +117,7 @@
 						sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
 						CmsUtility.postAjaxCall(
 							//系统设置
-							CmsConfig.addressUrl.Member.getImages,
-							// CmsConfig.addressUrl.Vip.vipBglist,
+							CmsConfig.addressUrl.Server.getImages,
 							sendData,
 							function(data) {
 								if (data.code === 1000) {
@@ -143,6 +146,7 @@
 							CmsConfig.addressUrl.Card.getCards,
 							sendData,
 							function(data) {
+								$('.loadingB').hide()
 								if (data.code === 1000) {
 									that.cardList = data.data
 									console.log(that.cardList)
@@ -157,19 +161,39 @@
 							'false'
 						)
 					},
-					cardDelet: function(cell, name) {
-						this.vipCardIndex = cell
-						this.vipCardName = name
-						cardDel(cell, name)
+					cardDelet: function(cardNo, wxCardId, cardName) {
+						// this.vipCardIndex = cell
+						// this.vipCardName = name
+						cardDel(cardNo, wxCardId, cardName)
 					},
 					shareway: function(d, t) {
-						this.cardShareWechat = t
-						this.cardShareCircle = t
-						this.cardSharecodeText = t
-						cardShareway(t)
-						setTimeout(function() {
-							makeCode(t)
-						}, 300)
+						var that = this,
+							sendData = new Object()
+						sendData.cardNo = d
+						sendData.wxCardId = t
+						sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+						sendData.thirdCardType = that.thirdCardType
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Card.shareCard,
+							sendData,
+							function(data) {
+								if (data.code === 1000) {
+									console.log(data.data)
+									setTimeout(function() {
+										makeCode(data.data.codeUrl)
+									}, 300)
+								} else {
+									alert(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							},
+							'get',
+							'false'
+						)
+						cardShareway()
 					},
 					shareregW: function() {
 
@@ -178,7 +202,7 @@
 
 					},
 					shareregM: function() {
-						cardSharecode(this.cardSharecodeText)
+						cardSharecode()
 					},
 					saveCodeimg: function(e) {
 
@@ -195,14 +219,22 @@
 				},
 				created: function() {
 					this.getVipBgList()
+					$('.loadingB').show()
 				},
 				mounted() {
+					// methods里面定义的方法, 需要赋值给window
+					window.getvipList = this.getvipList;
 					this.getvipList()
 				}
 			})
 
+			// 微信分享操作
+			function initwx(timestamp, signature) {
+
+			}
+
 			// 删除弹出框
-			function cardDel(d, n) {
+			function cardDel(d, c, n) {
 				layer.closeAll()
 				layer.open({
 					type: 1,
@@ -219,16 +251,37 @@
 					success: function(layero) {
 						var btn = layero.find('.layui-layer-btn');
 						btn.find('.layui-layer-btn1').click(function() {
-							console.log(d, n)
-							layer.msg("删除成功")
+							var that = this,
+								sendData = new Object()
+							sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+							sendData.cardNo = d
+							sendData.wxCardId = c
+							console.log(sendData)
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Card.removeCard,
+								JSON.stringify(sendData),
+								function(data) {
+									if (data.code === 1000) {
+										layer.msg("删除成功")
+										getvipList()
+									} else {
+										alert(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								},
+								'post',
+								'false'
+							)
 						});
 					}
 				});
 
 			}
 			// 分享方式弹出框
-			function cardShareway(data) {
-				console.log(data)
+			function cardShareway() {
 				layer.closeAll()
 				layer.open({
 					type: 1,
@@ -255,8 +308,7 @@
 				qrcode.makeCode(d);
 			}
 			// 会员二维码弹出框
-			function cardSharecode(d) {
-				console.log(d)
+			function cardSharecode() {
 				layer.closeAll()
 				layer.open({
 					type: 1,

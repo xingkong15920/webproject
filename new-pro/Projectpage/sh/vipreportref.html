@@ -10,6 +10,7 @@
 		<meta http-equiv="Cache-Control" content="no-siteapp" />
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
@@ -20,14 +21,8 @@
 		</style>
 	</head>
 
-	<body>
-		<div class="x-nav">
-			<span class="layui-breadcrumb"> <a>会员管理</a> <a> <cite>退款明细</cite></a>
-			</span>
-			<a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);"
-			 title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
-		</div>
-		<div class="x-body">
+	<body class="iframe_index_1">
+		<div class="x-body iframe_index_1_con">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="退款订单号" name="name" id="name">
@@ -173,8 +168,8 @@
 				}
 				return a + '-' + b + '-' + c
 			}
-			// var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var userNumber = "123123131"
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var startDate = fun_date(-6);
 			var endDate = fun_date(0);
 			var nowTime = new Date().valueOf();
@@ -240,14 +235,8 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						// url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getMerchantBill + '?merchantNumber=' +
-						//     userNumber,
-						url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
-						// where: {
-						//     "startTime": $('#startTime').val(),
-						//     "endTime": $('#endTime').val(),
-						//     "billType": $('#billType').val()
-						// },
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRefundTurnovers + '?merchantNumber=' +
+							merNumber,
 						method: "get",
 						height: "full-200",
 						page: true,
@@ -357,14 +346,6 @@
 								}
 							}, {
 								field: 'statementDate',
-								title: '实充金额',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 100)
-								}
-							}, {
-								field: 'statementDate',
 								title: '手续费',
 								align: 'center',
 								width: 120,
@@ -383,7 +364,7 @@
 								width: 180,
 							}, {
 								field: 'shopName',
-								title: '收银员',
+								title: '操作员',
 								align: 'center',
 								width: 120,
 							}]
@@ -394,16 +375,24 @@
 						}
 					});
 					$(".layui-table-header .laytable-cell-1-0-10").hover(function() {
-						layer.tips('用户实际充值金额 = 订单金额 - 退款金额', '.layui-table-header .laytable-cell-1-0-10',{tips: 3});
+						layer.tips('用户实际充值金额 = 订单金额 - 退款金额', '.layui-table-header .laytable-cell-1-0-10', {
+							tips: 3
+						});
 					});
 					$(".layui-table-header .laytable-cell-1-0-11").hover(function() {
-						layer.tips('用户实际充值赠送金额', '.layui-table-header .laytable-cell-1-0-11',{tips: 3});
+						layer.tips('用户实际充值赠送金额', '.layui-table-header .laytable-cell-1-0-11', {
+							tips: 3
+						});
 					});
 					$(".layui-table-header .laytable-cell-1-0-12").hover(function() {
-						layer.tips('微信、支付宝交易手续费', '.layui-table-header .laytable-cell-1-0-12',{tips: 3});
+						layer.tips('微信、支付宝交易手续费', '.layui-table-header .laytable-cell-1-0-12', {
+							tips: 3
+						});
 					});
 					$(".layui-table-header .laytable-cell-1-0-13").hover(function() {
-						layer.tips('商户微信、支付宝实际到账金额 = 实充金额 - 手续费', '.layui-table-header .laytable-cell-1-0-13',{tips: 3});
+						layer.tips('商户微信、支付宝实际到账金额 = 实充金额 - 手续费', '.layui-table-header .laytable-cell-1-0-13', {
+							tips: 3
+						});
 					});
 				}
 

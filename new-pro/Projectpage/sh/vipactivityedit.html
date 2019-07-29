@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+		<style type="text/css">
+			.max360 {
+				max-width: 360px;
+				width: 100% !important;
+			}
+
+			.width80 {
+				width: 80px;
+			}
+
+			.layui-input-inline-inline {
+				line-height: 36px;
+				margin-right: 5px;
+				display: inline-block;
+			}
+
+			.layui-form-item {
+				margin-bottom: 20px;
+			}
+
+			.layui-form-item .layui-input-inline {
+				width: 350px;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-body">
+			<div class="layui-row">
+				<div class="layui-form" action="" lay-filter="actEdit">
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">活动名称</label>
+						<div class="layui-input-inline">
+							<input type="text" name="activityName" lay-verify="activityName" autocomplete="off" placeholder="请输入活动名称" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">活动时间</label>
+						<!-- <div class="layui-input-inline">
+							<input type="text" name="name" lay-verify="title" id="resetper" autocomplete="off" placeholder="请输入活动起止时间" class="layui-input">
+						</div> -->
+						<div class="layui-input-inline" style="width: 162px;">
+							<input type="text" name="startTime" id="startTime" lay-verify="startTime" autocomplete="off" class="layui-input"
+							 placeholder="开始时间">
+						</div>
+						<div class="layui-form-mid">-</div>
+						<div class="layui-input-inline" style="width: 162px;">
+							<input type="text" name="endTime" id="endTime" lay-verify="endTime" autocomplete="off" class="layui-input"
+							 placeholder="截止时间">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">适用门店</label>
+						<div class="layui-input-inline">
+							<input type="text" lay-verify="mdSelect" autocomplete="off" placeholder="请选择适用门店" id="mdSelect" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">活动条件</label>
+						<div class="layui-input-inline widthauto">
+							<div class="layui-input-inline-inline">消费满</div>
+							<div class="layui-input-inline-inline width80">
+								<input type="number" name="activityConditional" class="layui-input" lay-verify="activityConditional">
+							</div>
+							<div class="layui-input-inline-inline">元，送会员卡</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">微信子商户</label>
+						<div class="layui-input-inline">
+							<textarea class="layui-textarea" name="subMerchant" lay-verify="subMerchant" placeholder="可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开"></textarea>
+						</div>
+						<label class="layui-form-label"></label>
+						<div class="layui-input-inline-inline">可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开</div>
+					</div>
+					<div class="layui-form-item layui-layout-admin">
+						<div class="layui-input-block">
+							<div class="layui-footer" style="left: 0;text-align: center;">
+								<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+							</div>
+							<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var shopNumbers = [],
+				shopname = []
+			$('#quxiao').click(function() {
+				setTimeout(function() {
+					parent.layer.close(index)
+				}, 16);
+			})
+
+			function subPageCon(actCon) {
+				layui.use(['laydate', 'table', 'upload', 'form'], function() {
+					var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						admin = layui.admin,
+						element = layui.element,
+						layer = layui.layer;
+					var tableSelect = layui.tableSelect;
+
+					layer.load(2, {
+						shade: 0.5
+					});
+
+					// 选择日期插件  
+					laydate.render({
+						elem: '#startTime',
+						type: 'date',
+					});
+					laydate.render({
+						elem: '#endTime',
+						type: 'date',
+					});
+
+
+					tableSelect.render({
+						elem: '#mdSelect',
+						searchKey: 'shopName',
+						checkedKey: 'shopNumber',
+						searchPlaceholder: '门店名称',
+						table: {
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+								merNumber,
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.result,
+								}
+							},
+							cols: [
+								[{
+									type: 'checkbox'
+								}, {
+									field: 'shopName',
+									title: '门店名称',
+									align: 'center',
+								}]
+							]
+						},
+						done: function(elem, data) {
+							shopNumbers.splice(0)
+							shopname.splice(0)
+							layui.each(data.data, function(index, item) {
+								shopNumbers.push(item.shopNumber)
+								shopname.push(item.shopName)
+							})
+							elem.val(shopname.join('||'))
+						}
+					})
+
+					/*---------- 自定义验证规则 ----------*/
+					form.verify({
+						activityName: function(value) {
+							if (value == "") {
+								return '活动名称不能为空！';
+							}
+						},
+						startTime: function(value) {
+							if (value.length == "") {
+								return '请选择活动开始时间！';
+							}
+						},
+						endTime: function(value) {
+							if (value.length == "") {
+								return '请选择活动结束时间！';
+							}
+						},
+						mdSelect: function(value) {
+							if (value.length == "") {
+								return '请选择适用门店！';
+							}
+						},
+						activityConditional: function(value) {
+							if (value.length == "") {
+								return '请示如活动条件！';
+							}
+						},
+					});
+
+					/*---------- 初始赋值 ----------*/
+					setTimeout(function() {
+						console.log(actCon)
+						if (actCon.shopNumbers.length > 0) {
+							shopNumbers.splice(0)
+							shopname.splice(0)
+							for (i = 0; i < actCon.shopNumbers.length; i++) {
+								shopNumbers.push(actCon.shopNumbers[i].split('||')[0])
+								shopname.push(actCon.shopNumbers[i].split('||')[1])
+							}
+							$('#mdSelect').attr('ts-selected', shopNumbers)
+							$('#mdSelect').val(shopname.join('||'))
+							form.val('actEdit', {
+								"activityName": actCon.activityName,
+								"startTime": actCon.startTime.split(' ')[0],
+								"endTime": actCon.endTime.split(' ')[0],
+								"activityConditional": actCon.activityConditional,
+							})
+							layer.closeAll('loading');
+						}else{
+							layer.msg('获取使用门店失败')
+						}
+					}, 300)
+
+					/*---------- 监听提交 ----------*/
+					form.on('submit(add)', function(data, index) {
+						layer.load(2, {
+							shade: 0.5
+						});
+						var data = data.field
+						data.activityNo = actCon.activityNo
+						data.activityType = actCon.activityType
+						data.activityState = actCon.activityState
+						data.merchantNumber = merNumber
+						data.shopNumbers = shopNumbers
+						data.startTime = data.startTime + ' 00:00:00'
+						data.endTime = data.endTime + ' 23:59:59'
+						console.log(data)
+						// return
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateActivity,
+							data: JSON.stringify(data),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								layer.closeAll('loading');
+								if (data.code == 1000) {
+									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+									parent.layer.close(index); //再执行关闭
+									parent.layer.msg('编辑活动成功')
+									parent.layui.table.reload('actlist')
+								} else {
+									layer.msg(data.msg)
+								}
+							}
+						});
+						return false;
+					});
+
+				});
+			}
+		</script>
+	</body>
+
+</html>

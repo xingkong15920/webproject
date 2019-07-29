@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-body">
+			<div class="layui-row">
+				<div class="layui-form" action="" lay-filter="putwayAdd">
+					<div class="conBlock">
+						<div class="layui-form-item">
+							<label class="layui-form-label">渠道名称：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" name="channelName" lay-verify="channelName" autocomplete="off" placeholder="请输入渠道名称" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">关联门店：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" lay-verify="mdSelect" autocomplete="off" placeholder="请选择关联门店" id="mdSelect" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item dySelect" style="display: none;">
+							<label class="layui-form-label">关联店员：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" autocomplete="off" placeholder="请选择关联店员" id="dySelect" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">赠送金额：</label>
+							<div class="layui-input-inline max360" style="width:150px!important">
+								<input type="number" name="giveMoney" lay-verify="giveMoney" autocomplete="off" placeholder="请输入赠送金额" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">0代表不赠送</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">赠送积分：</label>
+							<div class="layui-input-inline max360" style="width:150px!important">
+								<input type="number" name="giveIntegral" lay-verify="giveIntegral" autocomplete="off" placeholder="请输入赠送积分"
+								 class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">0代表不赠送</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">备注：</label>
+							<div class="layui-input-inline max360">
+								<textarea name="remarks" placeholder="可以填写投放渠道的权益、规则等信息，非必填项" class="layui-textarea"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-layout-admin">
+						<div class="layui-input-block">
+							<div class="layui-footer" style="left: 0;text-align: center;">
+								<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+							</div>
+							<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			$(".conBlock:last").css("margin-bottom", "44px");
+			var index = parent.layer.getFrameIndex(window.name);
+			$('#quxiao').click(function() {
+				setTimeout(function() {
+					parent.layer.close(index)
+				}, 16);
+			})
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
+			var clerkNumbers = []
+			var shopNumber = []
+			layui.use(['laydate', 'table', 'upload', 'form'], function() {
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					admin = layui.admin,
+					element = layui.element,
+					layer = layui.layer;
+				var tableSelect = layui.tableSelect;
+
+				tableSelect.render({
+					elem: '#mdSelect',
+					searchKey: 'shopName',
+					checkedKey: 'shopNumber',
+					searchPlaceholder: '门店名称',
+					table: {
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+							merNumber,
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.result,
+							}
+						},
+						cols: [
+							[{
+								type: 'checkbox'
+							}, {
+								field: 'shopName',
+								title: '门店名称',
+								align: 'center',
+							}]
+						]
+					},
+					done: function(elem, data) {
+						shopNumber.splice(0)
+						var shopname = []
+						layui.each(data.data, function(index, item) {
+							shopNumber.push(item.shopNumber)
+							shopname.push(item.shopName)
+						})
+						elem.val(shopname.join('||'))
+						console.log(shopNumber.length)
+						console.log(shopNumber[0])
+						if (shopNumber.length == 1) {
+							$('.dySelect').show()
+							$('.dySelect').find('input').attr('lay-verify', 'dySelect')
+							dyselect()
+						} else {
+							$('.dySelect').hide()
+							$('.dySelect').find('input').removeAttr('lay-verify')
+						}
+					}
+				});
+
+				function dyselect() {
+					tableSelect.render({
+						elem: '#dySelect',
+						searchKey: 'gradeName',
+						checkedKey: 'gradeNo',
+						searchPlaceholder: '等级名称',
+						table: {
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' +
+								merNumber + '&shopNumber=' + shopNumber[0],
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.result,
+								}
+							},
+							cols: [
+								[{
+									type: 'radio'
+								}, {
+									field: 'clerkName',
+									title: '店员名称',
+									align: 'center',
+									width: 150,
+								}, {
+									field: 'shopName',
+									title: '所属门店',
+									align: 'center',
+									width: 200,
+								}]
+							]
+						},
+						done: function(elem, data) {
+							clerkNumbers.splice(0)
+							var clerkName = ''
+							layui.each(data.data, function(index, item) {
+								clerkNumbers.push(item.clerkNumber)
+								clerkName = item.clerkName
+							})
+							elem.val(clerkName)
+						}
+					})
+				}
+
+
+				/*---------- 优惠设置 ----------*/
+
+
+				/*---------- 积分时效 ----------*/
+
+
+				/*---------- 普通图片上传 ----------*/
+
+				/*---------- 自定义验证规则 ----------*/
+				form.verify({
+					channelName: function(value) {
+						if (value == '') {
+							return '渠道名称不能为空！';
+						} else if (value.length >= 10) {
+							return '渠道名称最大为10个字符！';
+						}
+					},
+					mdSelect: function(value) {
+						if (value == '') {
+							return '请选择关联门店！';
+						}
+					},
+					dySelect: function(value) {
+						if (value == '') {
+							return '请选择关联门店店员！';
+						}
+					},
+					giveMoney: function(value) {
+						if (value == '') {
+							return '赠送金额不能为空！';
+						} else if (value <= -1) {
+							return '赠送金额最低为0！';
+						}
+					},
+					giveIntegral: function(value) {
+						if (value == '') {
+							return '赠送积分不能为空！';
+						} else if (value <= -1) {
+							return '赠送积分最低为0！';
+						}
+					},
+				});
+
+				/*---------- 监听开关 ----------*/
+				//form.on('switch(level)', function(data) { //等级开关
+				//	layer.tips('等级开关：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+				//});
+
+				/*---------- 监听提交 ----------*/
+				form.on('submit(add)', function(data, index) {
+					var data = data.field
+					data.merchantNumber = merNumber
+					data.shopNumbers = shopNumber
+					data.clerkNumbers = clerkNumbers
+					// data.shopNumbers = ['15638623441493942']
+					// data.clerkNumbers = ['15638623441493942']
+					console.log(data)
+					// return
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addChannel,
+						data: JSON.stringify(data),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
+							if (data.code == 1000) {
+								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+								parent.layer.close(index); //再执行关闭
+								parent.layer.msg('添加渠道成功')
+								parent.layui.table.reload('putwayList')
+							} else {
+								layer.msg(data.msg)
+							}
+						}
+					});
+					return false;
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

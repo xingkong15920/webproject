@@ -10,6 +10,7 @@
 		<meta http-equiv="Cache-Control" content="no-siteapp" />
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
@@ -20,14 +21,8 @@
 		</style>
 	</head>
 
-	<body>
-		<div class="x-nav">
-			<span class="layui-breadcrumb"> <a>会员管理</a> <a> <cite>充值流水</cite></a>
-			</span>
-			<a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);"
-			 title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
-		</div>
-		<div class="x-body">
+	<body class="iframe_index_1">
+		<div class="x-body iframe_index_1_con">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="会员昵称" name="name" id="name">
@@ -176,8 +171,8 @@
 				}
 				return a + '-' + b + '-' + c
 			}
-			// var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var userNumber = "123123131"
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var startDate = fun_date(-6);
 			var endDate = fun_date(0);
 			var nowTime = new Date().valueOf();
@@ -243,14 +238,8 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						// url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getMerchantBill + '?merchantNumber=' +
-						//     userNumber,
-						url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
-						// where: {
-						//     "startTime": $('#startTime').val(),
-						//     "endTime": $('#endTime').val(),
-						//     "billType": $('#billType').val()
-						// },
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getTurnovers + '?merchantNumber=' +
+							merNumber,
 						method: "get",
 						height: "full-200",
 						page: true,
@@ -266,127 +255,133 @@
 							if (res.data == '查询数据为空') {
 								return
 							}
-							console.log('123')
-							for (var i = 0; i < res.data.result.length; i++) {
-								if (res.data.result[i] == null) {
-									res.data.result.splice(i, 1)
-								}
-							}
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.result,
+								"data": res.data.rechargeTurnovers,
 							}
 						},
 						cols: [
 							[{
-								field: 'insertTime',
+								field: 'rechargeTime',
 								title: '充值时间',
 								align: 'center',
-								width: 180
+								width: 180,
 							}, {
-								field: 'shopNumber',
-								title: '充值单号',
+								field: 'shopName',
+								title: '充值门店',
 								align: 'center',
 								width: 220,
 							}, {
-								field: 'statementDate',
+								field: 'rechrgeNo',
+								title: '充值单号',
+								align: 'center',
+								width: 380,
+							}, {
+								field: 'name',
 								title: '会员姓名',
 								align: 'center',
 								width: 150,
-								templet: function(data) {
-									return '会员' + Math.round(Math.random() * 100)
-								}
 							}, {
-								field: 'shopNumber',
+								field: 'cell',
 								title: '会员手机号',
 								align: 'center',
 								width: 120,
-								templet: function(data) {
-									return '13081058585'
-								}
 							}, {
-								field: 'shopNumber',
+								field: 'payType',
 								title: '支付方式',
 								align: 'center',
 								width: 120,
 								templet: function(data) {
-									return '微信'
+									switch (data.payType) {
+										case 0:
+											return '现金'
+											break;
+										case 1:
+											return '微信'
+											break;
+										case 2:
+											return '支付宝'
+											break;
+									}
 								}
 							}, {
-								field: 'shopNumber',
+								field: 'orderSource',
 								title: '订单来源',
 								align: 'center',
 								width: 120,
 								templet: function(data) {
-									return 'PC收银台'
+									switch (data.orderSource) {
+										case 0:
+											return 'PC收银台'
+											break;
+										case 1:
+											return '安卓'
+											break;
+										case 2:
+											return 'IOS'
+											break;
+										case 3:
+											return '商户后台'
+											break;
+										case 4:
+											return '营销赠送'
+											break;
+									}
 								}
 							}, {
-								field: 'statementDate',
+								field: 'orderState',
 								title: '订单状态',
 								align: 'center',
 								width: 120,
 								templet: function(data) {
-									return '已完成'
+									switch (data.orderState) {
+										case 0:
+											return '未完成'
+											break;
+										case 1:
+											return '已完成'
+											break;
+										case 2:
+											return '已退款'
+											break;
+										case 3:
+											return '已关闭'
+											break;
+									}
 								}
 							}, {
-								field: 'statementDate',
+								field: 'orderAmount',
 								title: '订单金额',
 								align: 'center',
 								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 100)
-								}
 							}, {
-								field: 'statementDate',
-								title: '赠送金额',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 100)
-								}
-							}, {
-								field: 'statementDate',
+								field: 'refundAmount',
 								title: '退款金额',
 								align: 'center',
 								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 10)
-								}
 							}, {
-								field: 'statementDate',
+								field: 'realAmount',
 								title: '实充金额',
 								align: 'center',
 								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 100)
-								}
 							}, {
-								field: 'insertTime',
+								field: 'giveAmount',
 								title: '赠送金额',
 								align: 'center',
 								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 50)
-								}
 							}, {
-								field: 'statementDate',
+								field: 'serviceCharge',
 								title: '手续费',
 								align: 'center',
 								width: 120,
-								templet: function(data) {
-									return '支: ' + Math.round(Math.random() * 10) + '<br>微: ' + Math.round(Math.random() * 10)
-								}
 							}, {
-								field: 'vipCardName',
+								field: 'settlementAmount',
 								title: '结算金额',
 								align: 'center',
 								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 50)
-								}
 							}, {
-								field: 'shopName',
+								field: 'clerkName',
 								title: '收银员',
 								align: 'center',
 								width: 120,
@@ -398,16 +393,24 @@
 						}
 					});
 					$(".layui-table-header .laytable-cell-1-0-10").hover(function() {
-						layer.tips('用户实际充值金额 = 订单金额 - 退款金额', '.layui-table-header .laytable-cell-1-0-10',{tips: 3});
+						layer.tips('用户实际充值金额 = 订单金额 - 退款金额', '.layui-table-header .laytable-cell-1-0-10', {
+							tips: 3
+						});
 					});
 					$(".layui-table-header .laytable-cell-1-0-11").hover(function() {
-						layer.tips('用户实际充值赠送金额', '.layui-table-header .laytable-cell-1-0-11',{tips: 3});
+						layer.tips('用户实际充值赠送金额', '.layui-table-header .laytable-cell-1-0-11', {
+							tips: 3
+						});
 					});
 					$(".layui-table-header .laytable-cell-1-0-12").hover(function() {
-						layer.tips('微信、支付宝交易手续费', '.layui-table-header .laytable-cell-1-0-12',{tips: 3});
+						layer.tips('微信、支付宝交易手续费', '.layui-table-header .laytable-cell-1-0-12', {
+							tips: 3
+						});
 					});
 					$(".layui-table-header .laytable-cell-1-0-13").hover(function() {
-						layer.tips('商户微信、支付宝实际到账金额 = 实充金额 - 手续费', '.layui-table-header .laytable-cell-1-0-13',{tips: 3});
+						layer.tips('商户微信、支付宝实际到账金额 = 实充金额 - 手续费', '.layui-table-header .laytable-cell-1-0-13', {
+							tips: 3
+						});
 					});
 				}
 

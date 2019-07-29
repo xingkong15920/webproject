@@ -4,7 +4,7 @@ var server;
 if (Edition == 'lsl') {
 	server = 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/'
 } else {
-	server = 'http://192.168.1.66:6018/'
+	server = 'http://192.168.1.66:80/'
 }
 /* 
 接口前缀解释
@@ -23,18 +23,20 @@ var CmsConfig = {
 	},
 	addressUrl: {
 		//会员
-		Vip: {
-			//会员列表
-			cardList: "cardList",
-			//充值统计列表
-			recList: "recList",
-			//充值统计列表
-			conList: "conList",
-			//会员卡背景列表
-			vipBglist: "vipBglist",
-		},
-		// 会员接口列表
 		Member: {
+			// 查询会员列表
+			getMembers: "member/getMembers",
+			// 查询会员详情
+			getMemDetails: "member/getMemDetails",
+			//充值统计列表
+			//充值统计列表
+			// 查询会员汇总
+			getMemSummary:"member/getMemSummary",
+			// 修改会员信息
+			updateMemInfo:"member/updateMemInfo",
+		},
+		// 会员卡背景列表
+		Server: {
 			//会员卡背景列表
 			getImages: "server/getImages",
 		},
@@ -46,6 +48,10 @@ var CmsConfig = {
 			addCard: "card/addCard",
 			// 查询会员详情
 			getCardDetails: "card/getCardDetails",
+			// 获取会员卡分享链接
+			shareCard: "card/shareCard",
+			// 删除会员卡
+			removeCard:"card/removeCard",
 		},
 		//公共
 		Public: {

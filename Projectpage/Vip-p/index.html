@@ -22,10 +22,10 @@
 		<div class="vipCenter" id="Vip">
 			<div class="vipBlock vipCardB">
 				<div class="vipCard-zhang">
-					今日新增会员<span>0</span>个
+					今日新增会员<span v-cloak> {{memberTodCount}} </span>个
 				</div>
 				<div class="vipCard-zong">
-					总数<span>121</span>
+					总数<span v-cloak> {{memberCount}}</span>
 				</div>
 				<ul class="vipCardtool">
 					<li class="vipCardtooli vipstatement">
@@ -79,9 +79,8 @@
 		new Vue({
 			el: '#Vip',
 			data: {
-				vipCard_tit: "李先生",
-				vipCard_num: "12345678987654321234",
-				vip_avatarImg: "./img/vip-img.jpg",
+				memberTodCount: '',
+				memberCount: '',
 				vipToolul1: [{
 					toolcl: "iconhuiyuan",
 					toolitit: "会员管理",
@@ -108,62 +107,40 @@
 					toolitit: "消费账单",
 					address: "vip-statis-con.html"
 				}],
-				vipBilli: [{
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "11.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "161.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "201.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "352.00"
-				}, {
-					vipBillitit: 1,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 0,
-					vipBillimoney: "101.00"
-				}, {
-					vipBillitit: 2,
-					vipBillitime: "2019-05-14",
-					vipBillistate: 1,
-					vipBillimoney: "101.00"
-				}]
 			},
 			methods: {
+				// 查询会员汇总
+				getMemSummary: function() {
+					var that = this,
+						sendData = new Object()
+					sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+					sendData.merchantNumber = JSON.parse(sessionStorage.getItem('userInfo')).merNumber
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Member.getMemSummary,
+						sendData,
+						function(data) {
+							if (data.code === 1000) {
+								that.memberTodCount = data.data.memberTodCount
+								that.memberCount = data.data.memberCount
+								console.log(data.data)
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+						'false'
+					)
+				},
 				jump: function(data) {
 					window.location.href = data
 				}
+			},
+			mounted() {
+				this.getMemSummary()
 			}
 		})
 	</script>

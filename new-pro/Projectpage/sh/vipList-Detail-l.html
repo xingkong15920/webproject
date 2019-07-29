@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+		<style type="text/css">
+			.iframe_index_1::-webkit-scrollbar {
+				display: none;
+			}
+
+			.iframe_index_1_con {
+				padding: 20px;
+			}
+
+			.max360 {
+				max-width: 360px;
+				width: 100% !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-body vipdetail" style="padding: 0;">
+			<div class="vipDetailB" id="mDetails">
+				<img src="../../public/images/vip-img.jpg" class="vipDetailBImg">
+				<div class="vipDetailBCon vipDetailBCon1">
+					<p>名称：<span v-cloak>{{name}}</span></p>
+					<p>卡号：<span v-cloak>{{gradeName}}</span></p>
+				</div>
+				<div class="vipDetailBCon vipDetailBCon1">
+					<p>电话：<span v-cloak>{{cell}}</span></p>
+					<p>余额：(充值)<span v-cloak>{{accountBalance}}</span> / (赠送)<span v-cloak>{{giveMoney}}</span></p>
+				</div>
+				<div class="vipDetailBCon vipDetailBCon1">
+					<p style="opacity: 0;">.</p>
+					<p>积分：<span v-cloak>{{integral}}</span></p>
+				</div>
+			</div>
+			<div class="iframe_index_1 autoScroll">
+				<div class="iframe_index_1_con autoHeight">
+					<div class="layui-form" action="" lay-filter="actEdit">
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 80px;">等级</label>
+							<div class="layui-input-inline max360">
+								<!-- <input type="text" lay-verify="gradeNos" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input"> -->
+								<input type="text" lay-verify="mdSelect" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label" style="width: 80px;">备注</label>
+							<div class="layui-input-inline max360">
+								<textarea class="layui-textarea" name="subMerchant" lay-verify="subMerchant" placeholder="可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item" style="text-align: center;">
+							<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+							<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var _h = $(window).height();
+			var _h1 = $('.vipDetailB').outerHeight();
+			var _h2 = _h - _h1 - 40
+			console.log(_h, _h1, _h2)
+			$('.iframe_index_1').height(_h2)
+			$('#quxiao').click(function() {
+				setTimeout(function() {
+					layer.close(index)
+				}, 16);
+			})
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var gradeNos
+
+			function subPageCon(mNo) {
+				var memberNo = mNo
+				console.log(memberNo)
+
+				layui.use(['laydate', 'table', 'upload', 'form'], function() {
+					var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						admin = layui.admin,
+						element = layui.element,
+						layer = layui.layer;
+					var tableSelect = layui.tableSelect;
+
+					//查询会员详情
+					getDetail()
+
+					tableSelect.render({
+						elem: '#levelSelect',
+						searchKey: 'gradeName',
+						checkedKey: 'gradeNo',
+						searchPlaceholder: '等级名称',
+						table: {
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
+								merNumber,
+							response: {
+								"statusCode": "1000", //解析接口状态 
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.grades,
+								}
+							},
+							cols: [
+								[{
+									type: 'radio'
+								}, {
+									field: 'gradeName',
+									title: '等级名称',
+									align: 'center',
+									width: 150,
+								}, {
+									field: 'termValidity',
+									title: '有效期',
+									align: 'center',
+									width: 100,
+									templet: function(data) {
+										return data.termValidity + '天'
+									}
+								}]
+							]
+						},
+						done: function(elem, data) {
+							gradeNos = ''
+							var gradeName
+							layui.each(data.data, function(index, item) {
+								gradeNos = item.gradeNo
+								gradeName = item.gradeName
+							})
+							elem.val(gradeName)
+						}
+					})
+
+
+					function getDetail() {
+						layer.load(2, {
+							shade: 0.5
+						});
+						$.ajax({
+							type: "get",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMemDetails,
+							data: {
+								"memberNo": memberNo,
+							},
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code === 1000) {
+									$('#levelSelect').attr('ts-selected', data.data.gradeNo)
+									$('#levelSelect').val(data.data.gradeName)
+									setDetail(changeData(data.data))
+								} else {
+									layer.msg('查询等级详情失败')
+								}
+							}
+						});
+					}
+
+					function setDetail(obj) {
+						console.log(obj)
+						layer.closeAll('loading');
+						new Vue({
+							el: '#mDetails',
+							data: obj
+						})
+					}
+
+					function changeData(obj) {
+						var reg = new RegExp("null", "g")
+						var data = JSON.stringify(obj).replace(reg, '"--"')
+						return JSON.parse(data)
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

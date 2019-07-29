@@ -16,25 +16,14 @@
 	</head>
 
 	<body>
-		<div class="x-nav">
-			<span class="layui-breadcrumb">
-				<a>会员管理</a>
-				<a><cite>折扣设置</cite></a>
-			</span>
-			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
-			 title="刷新">
-				<i class="layui-icon" style="line-height:30px">ဂ</i>
-			</a>
-		</div>
 		<div class="x-body">
-
 			<xblock>
 				<button class="layui-btn" onclick="x_admin_show('添加折扣设置','vipsetdiscountadd.html','600','550')"><i class="layui-icon"></i>添加折扣设置</button>
 			</xblock>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.enable==0 ? 'checked' : ''}}  data-shopNumber="{{d.shopNumber}}" value="{{d.enable}}">
+			<input type="checkbox" name="discountabled" lay-skin="switch" lay-filter="discountabled" lay-text="启用|禁用" {{d.enabled==0 ? 'checked' : ''}}  data-discountNo="{{d.discountNo}}" value="{{d.enabled}}">
 		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -43,38 +32,20 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use('table', function() {
 				var table = layui.table,
 					form = layui.form;
-				CmsUtility.choosePro();
-				setTimeout(function() {
-					form.render()
-				}, 100)
-
-				//省市区三联
-				form.on('select(provice)', function(data) {
-					CmsUtility.chooseCity(data.value)
-					setTimeout(function() {
-						form.render()
-					}, 100)
-				})
-				form.on('select(city)', function(data) {
-					CmsUtility.chooseArea(data.value)
-					setTimeout(function() {
-						form.render()
-					}, 100)
-				})
 
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_shop',
-					// url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' + userNumber,
-					url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getZSets + '?merchantNumber=' + merNumber,
 					method: "get",
-					height: 'full-200',
+					height: 'full-97',
 					page: true,
-					id: 'shoplist',
+					id: 'discountSetList',
 					response: {
 						"statusCode": "1000", //解析接口状态
 					},
@@ -85,55 +56,80 @@
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.result,
+							"data": res.data.discountSets,
 						}
 					},
 					cols: [
 						[{
-							field: 'shopName',
+							field: 'gradeNos',
 							title: '会员等级',
 							align: 'center',
-							width: 200,
+							width: 150,
 							templet: function(data) {
-								return '等级名称' + Math.round(Math.random() * 10)
+								return '已选 ' + data.gradeNos.length + ' 个等级'
 							}
 						}, {
-							field: 'shopName',
 							title: '可使用支付方式',
 							align: 'center',
-							width: 130,
+							width: 300,
 							templet: function(data) {
-								return '微信'
+								var str = [],
+									str1, str2, str3, str4
+								if (data.wxPayState == 0) {
+									str1 = '微信'
+									str.push(str1)
+								}
+								if (data.aliPayState == 0) {
+									str2 = '支付宝'
+									str.push(str2)
+								}
+								if (data.cloudPayState == 0) {
+									str3 = '云闪付'
+									str.push(str3)
+								}
+								if (data.jdPayState == 0) {
+									str4 = '京东钱包'
+									str.push(str4)
+								}
+								return str.join(' / ')
 							}
 						}, {
-							field: 'shopName',
+							field: 'discount',
 							title: '折扣',
 							align: 'center',
 							width: 100,
 							templet: function(data) {
-								return Math.round(Math.random() * 10)
+								return data.discount.split('.')[1]
 							}
 						}, {
-							field: 'shopName',
+							field: 'minConsumMoney',
 							title: '最低消费',
 							align: 'center',
 							width: 100,
-							templet: function(data) {
-								return 50
-							}
 						}, {
-							field: 'shopName',
+							field: 'holidayState',
 							title: '节假日是否可用',
 							align: 'center',
 							width: 150,
 							templet: function(data) {
-								return '可用'
+								if (data.holidayState == 0) {
+									return '可用'
+								} else if (data.holidayState == 1) {
+									return '不可用'
+								}
 							}
 						}, {
 							field: 'insertTime',
-							title: '可用时间',
+							title: '活动时间',
 							align: 'center',
-							width: 180,
+							width: 220,
+							templet: function(data) {
+								if (data.timeType == 0) {
+									return '永久'
+								} else if (data.timeType == 1) {
+									return data.startTime.split(' ')[0] + ' ~ ' + data.endTime.split(' ')[0]
+								}
+							}
 						}, {
 							field: 'insertTime',
 							title: '状态',
@@ -162,32 +158,30 @@
 						}
 					}
 				});
-				form.on('switch(consumptionPreferences)', function(data) {
+				form.on('switch(discountabled)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					var tjData = new Object();
-					console.log(data);
-					tjData.merchantNumber = userNumber,
-						tjData.shopNumber = data.elem.dataset.shopnumber,
-						tjData.deletionFlag = 0
-					tjData.enable = this.checked ? '0' : '1';
-					CmsUtility.postAjaxCall(
-						//系统设置
-						CmsConfig.addressUrl.Merchant.modifyShop,
-						tjData,
-						function(data) {
+					tjData.discountNo = data.elem.dataset.discountno,
+						tjData.enabled = this.checked ? '0' : '1';
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateZEnabled,
+						data: JSON.stringify(tjData),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
 							if (data.code == 1000) {
-
 								parent.layer.msg('更改成功')
-								layui.table.reload('shoplist')
+								layui.table.reload('discountSetList')
 							} else {
 								layer.msg(data.msg)
 
 							}
-						},
-						function(data) {
-							console.log('222')
 						}
-					)
+					});
 				});
 				//监听工具条
 				table.on('tool(shop)', function(obj) {
@@ -199,43 +193,41 @@
 							type: 2,
 							title: '会员编辑',
 							area: ['600px', '500px'],
-							content: 'vipsetdiscountadd.html',
+							content: 'vipsetdiscountedit.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
+								iframe.subPageCon(data.discountNo)
 							}
 						});
 					} else if (obj.event === 'delete') {
-						// layer.msg('删除会员卡')
-						// return
-						// 弹出是否要删除门店
+						// 弹出是删除询问框
 						layer.confirm('确定要删除此折扣设置？', function(index) {
 							var mydata = {
-								"merchantNumber": userNumber,
-								"shopNumber": data.shopNumber,
-								"deletionFlag": 1
+								"discountNo": data.discountNo,
 							}
 							// 发送请求
-							CmsUtility.postAjaxCall(
-								//系统设置
-								CmsConfig.addressUrl.Merchant.modifyShop,
-								mydata,
-								function(data) {
+							$.ajax({
+								type: "post",
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.deleteZSet,
+								data: JSON.stringify(mydata),
+								dataType: "json",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								success: function(data) {
+									layer.closeAll('loading');
 									if (data.code == 1000) {
 										layer.close(index);
 										layer.msg('删除成功！')
-										layui.table.reload('shoplist');
+										layui.table.reload('discountSetList');
 									} else {
 										layer.msg(data.msg)
+
 									}
-								},
-								function(data) {
-									console.log('222')
 								}
-							)
-							layer.close(index);
+							});
 						});
 					}
 				});
@@ -248,13 +240,13 @@
 							var shopName = $('#shopName');
 							var shopStatus = $('#shopStatus');
 							//执行重载
-							table.reload('shoplist', {
+							table.reload('discountSetList', {
 								page: {
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
 									shopName: shopName.val().trim(),
-									enable: shopStatus.val().trim()
+									enabled: shopStatus.val().trim()
 								}
 							});
 						}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<!-- <link rel="stylesheet" href="../../public/css/style.1.2.1.css"> -->
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.layui-table-cell {
+				height: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="demoTable layui-form x-so">
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" autocomplete="off" placeholder="活动名称" id="activityName">
+			</div>
+			<div class="layui-input-inline">
+				<select name="activityType" id="activityType">
+					<option value="">活动类型</option>
+					<option value="0">支付即会员</option>
+				</select>
+			</div>
+			<div class="layui-input-inline">
+				<select name="activityState" id="activityState">
+					<option value="">活动状态</option>
+					<option value="0">进行中</option>
+					<option value="1">已终止</option>
+					<option value="2">未开始</option>
+				</select>
+			</div>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" placeholder="开始日" autocomplete="off" id="startTime">
+			</div>
+			<div class="layui-input-inline">
+				<input type="text" class="layui-input" placeholder="截止日" autocomplete="off" id="endTime">
+			</div>
+			<div class="layui-input-inline">
+				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+			</div>
+		</div>
+		<table class="layui-hide" id="actlisttable" lay-filter="shop"></table>
+		<script type="text/html" id="switchBar">
+			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.enable==0 ? 'checked' : ''}}  data-shopNumber="{{d.shopNumber}}" value="{{d.enable}}">
+		</script>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+		</script>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					laydate = layui.laydate,
+					form = layui.form,
+					element = layui.element;
+
+				// 选择日期插件  
+				laydate.render({
+					elem: '#startTime',
+					type: 'date',
+				});
+				laydate.render({
+					elem: '#endTime',
+					type: 'date',
+				});
+
+				//方法级渲染
+				getactivityList()
+
+				function getactivityList() {
+					parent.layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#actlisttable',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getActivitys + '?merchantNumber=' +
+							merNumber,
+						method: "get",
+						height: 'full-48',
+						page: true,
+						id: 'actlist',
+						skin: 'line',
+						even: true,
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.activityInfos,
+							}
+						},
+						cols: [
+							[{
+								field: 'activityName',
+								title: '活动名称',
+								align: 'center',
+								width: 250,
+							}, {
+								field: 'insertTime',
+								title: '活动时间',
+								align: 'center',
+								width: 200,
+								templet: function(data) {
+									return data.startTime.split(' ')[0] + ' ~ ' + data.endTime.split(' ')[0]
+								}
+							}, {
+								field: 'activityType',
+								title: '活动类型',
+								align: 'center',
+								width: 180,
+								templet: function(data) {
+									switch (data.activityType) {
+										case 0:
+											return '支付即会员'
+											break;
+										case 1:
+											return '储值有礼'
+											break;
+									}
+								}
+							}, {
+								field: 'activityState',
+								title: '活动状态',
+								align: 'center',
+								width: 180,
+								templet: function(data) {
+									switch (data.activityState) {
+										case 0:
+											return '进行中'
+											break;
+										case 1:
+											return '已终止'
+											break;
+										case 2:
+											return '未开始'
+											break;
+									}
+								}
+							}, {
+								title: '适用门店',
+								align: 'center',
+								width: 180,
+								templet: function(data) {
+									if (data.shopNumbers.length > 1) {
+										return '已选 ' + data.shopNumbers.length + ' 个门店'
+									} else if (data.shopNumbers.length == 1) {
+										return data.shopNumbers[0].split('||')[0] + '<br>' + data.shopNumbers[0].split('||')[1]
+									}
+								}
+							}, {
+								field: 'insertTime',
+								title: '创建时间',
+								align: 'center',
+								width: 180,
+							}, {
+								field: 'operation',
+								title: '操作',
+								align: 'center',
+								toolbar: "#tool",
+								minWidth: 150
+							}]
+						],
+						done: function(res, curr, count) {
+							parent.layer.closeAll('loading');
+							console.log(res)
+							if (res.data == null) {
+								// layer.msg(res.msg)
+							} else {
+
+							}
+						}
+					});
+				}
+				form.on('switch(consumptionPreferences)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					console.log(data);
+					tjData.merchantNumber = insNumber,
+						tjData.shopNumber = data.elem.dataset.shopnumber,
+						tjData.deletionFlag = 0
+					tjData.enable = this.checked ? '0' : '1';
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Merchant.modifyShop,
+						tjData,
+						function(data) {
+							if (data.code == 1000) {
+
+								parent.layer.msg('更改成功')
+								layui.table.reload('actlist')
+							} else {
+								layer.msg(data.msg)
+
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				});
+				//监听工具条
+				table.on('tool(shop)', function(obj) {
+					var data = obj.data;
+					console.log(data.activityType)
+					if (obj.event === 'edit') {
+						// 跳转编辑详情页面
+						switch (data.activityType) {
+							case 0:
+								layer.open({
+									type: 2,
+									title: '活动编辑',
+									area: ['600px', '650px'],
+									content: 'vipactivityedit.html',
+									success: function(layero, index) {
+										// 获取子页面的iframe
+										var iframe = window['layui-layer-iframe' + index];
+										// 向子页面的全局函数child传参
+										iframe.subPageCon(data)
+									}
+								});
+								break;
+						}
+					} else if (obj.event === 'delete') {
+						// layer.msg('删除会员卡')
+						// return
+						// 弹出是否要删除门店
+						layer.confirm('确定要删除(' + data.title + ')活动？', function(index) {
+							var mydata = {
+								"merchantNumber": insNumber,
+								"shopNumber": data.shopNumber,
+								"deletionFlag": 1
+							}
+							// 发送请求
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Merchant.modifyShop,
+								mydata,
+								function(data) {
+									if (data.code == 1000) {
+										layer.close(index);
+										layer.msg('删除成功！')
+										layui.table.reload('actlist');
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+							layer.close(index);
+						});
+					}
+				});
+
+				// 根據條件重载表格
+				var $ = layui.$,
+					active = {
+						reload: function() {
+							// 获取上面查询框的值
+							var activityName = $('#activityName')
+							var activityType = $('#activityType')
+							var activityState = $('#activityState')
+							var startTime = $('#startTime')
+							var endTime = $('#endTime')
+							//执行重载
+							table.reload('actlist', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									activityName: activityName.val(),
+									activityType: activityType.val(),
+									activityState: activityState.val(),
+									startTime: startTime.val(),
+									endTime: endTime.val(),
+								}
+							});
+						}
+					};
+				$('.layui-form .layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+			});
+		</script>
+	</body>
+
+</html>

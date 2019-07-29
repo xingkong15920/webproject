@@ -94,23 +94,23 @@
 			new Vue({
 				el: '#cardAdd',
 				data: {
-					institutionNumber:'',
-					merchantNumber:'',
-					cardName: '',
-					giveMoney: '',
-					imageId: '',
-					localImgUrl: '',
-					wechatImgUrl: '',
-					defaultFlag: '0',
-					defaultFlagS: false,
+					institutionNumber: '', //机构号
+					merchantNumber: '', //商户号
+					cardName: '', //会员卡名称
+					giveMoney: '', //赠送金额
+					imageId: '', //图片本地服务器地址
+					localImgUrl: '', //图片本地服务器地址
+					wechatImgUrl: '', //图片微信服务器地址
+					defaultFlag: '0', //默认卡标识
+					defaultFlagS: false, //默认卡标识-自定义
 					chooseCS: 0,
-					preferentialRecharges: [{
+					preferentialRecharges: [{ //充值优惠list
 						rechargeMoney: "",
 						preferentialMoney: "",
 						preferentialType: "0"
 					}],
 					nextTodoId: 1,
-					cardA_bgli: [],
+					cardA_bgli: [], //会员卡背景
 				},
 				methods: {
 					// 获取会员卡背景列表
@@ -120,7 +120,7 @@
 						sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
 						CmsUtility.postAjaxCall(
 							//系统设置
-							CmsConfig.addressUrl.Member.getImages,
+							CmsConfig.addressUrl.Server.getImages,
 							// CmsConfig.addressUrl.Vip.vipBglist,
 							sendData,
 							function(data) {
@@ -201,7 +201,8 @@
 							JSON.stringify(sendData),
 							function(data) {
 								if (data.code === 1000) {
-									window.history.go(-1)
+									window.history.go(-1);
+									location.reload()
 								} else {
 									alert(data.msg)
 								}
