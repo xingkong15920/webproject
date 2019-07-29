@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .layui-input-inline,.layui-select-title,.layui-form-select {
+        width: 380px !important;
+    }
+
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form" action="" lay-filter="cardAdd">
+                <div class="layui-form-item" id="type1" style="display:none">
+                    <label class="layui-form-label">商户名称</label>
+                    <div class="layui-input-inline" style="position:relative;left:0;bottom:0">
+                        <input type="text" name="merchantNumber" autocomplete="off" placeholder="" id="merchantNumber" class="layui-input" lay-verify="merchantNumber" >
+                       
+                    </div>
+                </div>
+                <div id="noali" style="display:none">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">子商户号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="subaccountNumber" autocomplete="off" placeholder="子商户号" class="layui-input" lay-verify="subaccountNumber">
+                        </div>
+                    </div>
+                    <div class="layui-form-item xdl">
+                        <label class="layui-form-label">商户秘钥</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
+                        </div>
+                    </div>
+                     <div class="layui-form-item xdl">
+                        <label class="layui-form-label">终端号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div>
+                    <div class="layui-form-item xdl">
+                        <label class="layui-form-label">门店号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="stoeId" autocomplete="off" placeholder="门店号" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">费率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="rate" autocomplete="off" placeholder="费率" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div>
+                   
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算类型</label>
+                        <div class="layui-input-block">
+                          <input type="radio" name="rateType" value="D1" title="D1" checked="">
+                          <input type="radio" name="rateType" value="D0" title="D0">
+                            <input id="wxshow" type="radio" name="rateType" value="T1" title="T1">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">类型</label>
+                        <div class="layui-input-block">
+                          <!-- <input type="radio" name="subsidy" value="1" title="普通商户" checked="">
+                          <input type="radio" name="subsidy" value="0" title="补贴商户A"> -->
+                          <select name="subsidyType" class="layui-input" id="merchantEnble" >
+                            
+                            <option value="0">补贴商户A</option>
+                            <option value="1">普通商户</option>
+                        </select>
+                        </div>
+                    </div>
+               
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao" onclick="x_admin_close()">关闭</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+                   
+                </div>
+                <div id="ali" style="display:none">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">请扫码获取授权</label>
+                        <div class="layui-input-inline">
+                            <div id="qrcode"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="layui-form-item">
+						<label class="layui-form-label">成本费率模式</label>
+						<div class="layui-input-inline widthauto">
+							<input type="radio" name="Costratemodel" value="0" title="继承通道" checked="">
+							<input type="radio" name="Costratemodel" value="1" title="自定义">
+						</div>
+						<div class="layui-input-inline">
+							<input type="text" name="disCount" autocomplete="off" placeholder="自定义成本费率" class="layui-input">
+						</div>
+					</div> -->
+                <!-- <div class="layui-form-item">
+                    <label class="layui-form-label">风控继承</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="riskMode" lay-skin="switch" lay-filter="riskMode" lay-text="是|否" checked>
+                        </div>
+                    </div>
+                </div> -->
+                
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script src="../../public/js/qrcode.js"></script>
+    <script>
+    var channel = CmsUtility.getQueryString('channel')
+    var payment = CmsUtility.getQueryString('payment')
+    var type = CmsUtility.getQueryString('type')
+    var app = CmsUtility.getQueryString('app')
+    var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+    var qrcode = new QRCode('qrcode', { 
+      text: '', 
+      width: 256, 
+      height: 256, 
+      colorDark : '#000000', 
+      colorLight : '#ffffff', 
+      correctLevel : QRCode.CorrectLevel.H 
+    });
+
+    // // 设置参数方式
+    // var qrcode = new QRCode('qrcode', {
+    //   text: 'your content',
+    //   width: 380,
+    //   height: 380,
+    //   colorDark : '#000000',
+    //   colorLight : '#ffffff',
+    //   correctLevel : QRCode.CorrectLevel.H
+    // });
+
+    // 使用 API
+    // qrcode.clear();
+    // qrcode.makeCode('new content');
+    if (payment == 0) {
+        $('#noali').hide()
+       
+    } else {
+        $('#noali').show()
+        
+    }
+    if(payment != 4){
+        $('.xdl').hide()
+    }
+    if(payment != 1){
+    	$('#wxshow').hide()
+    }
+    if (type == 1) {
+        $('#type1').hide()
+    } else {
+        $('#type1').show()
+    }
+
+    var serverUrl = window.parent.serverUrl;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var riskMode = true
+    var disable = true
+
+    
+
+    
+
+    
+    layui.use(['flow', 'laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。  
+        var flow = layui.flow;
+        
+        var tableSelect = layui.tableSelect;
+
+       
+        form.on('select(search1)'),
+            function(data) {
+                console.log('12121')
+            }
+        /*---------- 自定义验证规则 ----------*/
+        if (type == 1) {
+            form.verify({
+
+                subaccountNumber: function(value) {
+                    if (value.length == "") {
+                        return '子商户编号不得为空';
+                    }
+                },
+                // subaccountKey: function(value) {
+                // 	if(value.length == "") {
+                // 		return '商户秘钥不能为空！';
+                // 	}
+                // },
+                // wechatAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '微信公众号appID不能为空！';
+                // 	}
+                // },
+                // smallroutineAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '小程序appID不能为空！';
+                // 	}
+                // },
+                // appsecret: function(value) {
+                // 	if(value.length == "") {
+                // 		return 'appsecret不能为空！';
+                // 	}
+                // },
+                // terminalNumber: function(value) {
+                // 	if(value.length == "") {
+                // 		return '终端号不能为空！';
+                // 	}
+                // },
+            });
+        } else if (type != 1) {
+            form.verify({
+                merchantNumber: function(value) {
+                    console.log($('#search').attr('shopNumber'))
+                    if (value.length == "" || $('#search').attr('shopNumber') == undefined) {
+                        return '请搜索并选择商户'
+                    }
+
+                },
+                subaccountNumber: function(value) {
+                    if (value.length == "") {
+                        return '子商户编号不得为空';
+                    }
+                },
+                // subaccountKey: function(value) {
+                // 	if(value.length == "") {
+                // 		return '商户秘钥不能为空！';
+                // 	}
+                // },
+                // wechatAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '微信公众号appID不能为空！';
+                // 	}
+                // },
+                // smallroutineAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '小程序appID不能为空！';
+                // 	}
+                // },
+                // appsecret: function(value) {
+                // 	if(value.length == "") {
+                // 		return 'appsecret不能为空！';
+                // 	}
+                // },
+                // terminalNumber: function(value) {
+                // 	if(value.length == "") {
+                // 		return '终端号不能为空！';
+                // 	}
+                // },
+            });
+        }
+
+
+        /*---------- 监听开关 ----------*/
+        //form.on('switch(level)', function(data) { //等级开关
+        //	layer.tips('等级开关：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+        //});
+        form.on('switch(riskMode)', function(data) { //消费优惠开关
+            // layer.tips('继承状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            riskMode = this.checked
+
+        });
+        form.on('switch(disable)', function(data) { //充值优惠开关
+            // layer.tips('充值优惠：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            disable = this.checked
+        });
+
+        /*---------- 监听提交 ----------*/
+        form.on('submit(add)', function(data, index) {
+            // if(type != 1){
+            // 	if(!!document.getElementById('search').getAttribute('shopNumber'))
+            // 	layer.msg('请搜索商户名称')
+            // 	document.getElementById('search').onfocus()
+            // 	return false
+            // }
+            var tjData = data.field;
+            tjData.riskMode = riskMode == true ? 0 : 1
+            tjData.disable = disable == true ? 0 : 1
+            tjData.institutionNumber = userNumber
+            if (type == 1) {
+                tjData.merchantNumber = merchantNumber
+            } else {
+                tjData.merchantNumber = document.getElementById('search').getAttribute('shopNumber')
+            }
+            tjData.paymentChannel = channel
+
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.insertInstitutionSub,
+                tjData,
+                function(data) {
+                    if (data.code == 1000) {
+
+                        parent.layer.msg('保存成功')
+                        setTimeout(function() {
+                            x_admin_close()
+                            parent.layui.table.reload('vip_cardList')
+                        }, 16);
+
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            return false;
+        });
+
+    });
+    </script>
+</body>
+
+</html>

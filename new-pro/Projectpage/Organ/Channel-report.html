@@ -91,7 +91,10 @@
                 
                 <div class="layui-input-block">
                    <input type="button" class="layui-btn"  value="查询" id="check">
-			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="报备" id="sub">
+			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="报备" id="sub" style="display:none">
+                 
+                  <input type="button" class="layui-btn"  lay-submit="" lay-filter="create123456"  value="支付授权目录" id="subHref"  style="display:none">
+
 			    </div>
             </form>
             <div class="layui-form-item" style="margin-top:20px;display:none" id="infoBox">
@@ -119,7 +122,38 @@
         console.log(jgData)
         if(jgData.paymentChannelType == 4){
             $('.xdl').show()
+            CmsUtility.postAjaxCall(
+                    //系统设置
+            'commonSub/getMerAuditStatus',
+            {
+                "institutionNumber":JSON.parse(sessionStorage.getItem('organUser')).institutionNumber,
+                "merchantNumber":jgData.merchantNumber,
+                "subaccountNumber":jgData.subaccountNumber,
+            },
+            function(data) {
+                if (data.code == 1000) {
+                    // type111 = 2
+                    if(data.data == 2){
+                        $('#sub').show()
+                        $('#subHref').show()
+                       
+                    }
+                    
+
+
+                } else {
+                    layer.alert(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }
+        )
+        }else{
+            $('#sub').show()
         }
+        
         $("#merchantName").html(jgData.merchantName)
         $("#merchantNumber").html(jgData.merchantNumber)
         $("#subNumber").html(jgData.subaccountNumber)
@@ -189,6 +223,9 @@
                                         break;
                                     case 2:
                                         return '小程序'
+                                        break;
+                                     case 3:
+                                        return '支付授权目录'
                                         break;
                                     default:
                                         return '--'
@@ -622,7 +659,7 @@
 
             // //监听提交
             form.on('submit(create)', function(data) {
-                
+                var index = layer.load(2, {shade: [0.4, '#393D49']})
                 console.log(data.field)
                 // if(data.field.nuber)
                 var tjData = new Object();
@@ -643,7 +680,7 @@
                     function(data) {
                         if (data.code == 1000) {
                             // type111 = 2
-
+                            layer.closeAll()
                             layer.msg(data.msg)
                             // x_admin_close()
                             // parent.layer.msg('生成成功')
@@ -661,7 +698,43 @@
                 )
                 return false
             });
+            form.on('submit(create123456)', function(data) {
+                var index = layer.load(2, {shade: [0.4, '#393D49']})
+                console.log(data.field)
+                // if(data.field.nuber)
+                var tjData = new Object();
+                tjData.institutionNumber = userNumber;
+                
+                tjData.subaccountNumber = jgData.subaccountNumber
+                tjData.paymentChannel = jgData.paymentChannel
+                tjData.jsapiPath = data.field.paymentAuthorization
+               
+                tjData.paymentType = jgData.paymentChannelType
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'commonSub/payAuthorizePut',
+                    tjData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            // type111 = 2
+                            layer.closeAll()
+                            layer.msg(data.msg)
+                            // x_admin_close()
+                            // parent.layer.msg('生成成功')
+                            layui.table.reload('deviceInfo')
 
+
+                        } else {
+                            layer.alert(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                return false
+            });
         });
     }
         

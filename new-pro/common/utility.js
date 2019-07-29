@@ -70,7 +70,120 @@
             }
         });
     }
-
+    function postAjaxCall1(subApiUrl, postData, succCallback, errorCallback, type, isAsync, dataType) {
+        var type = type || "post";
+        var dataType = dataType || "json";
+        var isAsync = isAsync || true;
+        var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
+       //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
+        
+       
+        $.ajax({
+            type: type,
+            url: fullUrl, 
+            data: postData,
+            async: isAsync,
+            dataType: dataType, 
+            // headers:{
+            //     contentType:"application/json"
+            // },
+            beforeSend: function() {
+                
+            },
+            success: function(data) {
+                
+                if (!data.requestCode || data.requestCode == 0) {
+                    if (succCallback) {
+                        succCallback(data);
+                    }
+                } else {
+                    if (errorCallback) {
+                        errorCallback(data);
+                    }
+                }
+            },
+            complete: function() {
+                
+            },
+            error:function(XMLHttpRequest, textStatus, errorThrown){
+                // 状态码
+                    console.log(XMLHttpRequest.status);
+                    // 状态
+                    console.log(XMLHttpRequest.readyState);
+                    // 错误信息   
+                    console.log(textStatus);
+                    // if(textStatus == 'timeout'){
+                    //     alert('接口访问超时，请稍后再试')
+                    // }
+                    // if(textStatus == 'error'){
+                    //     alert('接口访问错误，请稍后再试')
+                    // }
+                    // if(textStatus == 'abort'){
+                    //     alert('接口访问中止，请稍后再试')
+                    // }
+                    // if(textStatus == 'parsererror'){
+                    //     alert('接口访问解析错误，请稍后再试')
+                    // }
+            }
+        });
+    }
+    function postAjaxCallPublic(subApiUrl, postData, succCallback, errorCallback, type, isAsync, dataType) {
+        var type = type || "post";
+        var dataType = dataType || "json";
+        var isAsync = isAsync || true;
+        var fullUrl = CmsConfig.ServiceUrl.PubUrl + subApiUrl;
+       //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
+        
+        postData = JSON.parse(JSON.stringify(postData).replace(/ /g,''))
+        $.ajax({
+            type: type,
+            url: fullUrl, 
+            data: postData,
+            async: isAsync,
+            dataType: dataType, 
+            // headers:{
+            //     contentType:"application/json"
+            // },
+            beforeSend: function() {
+                
+            },
+            success: function(data) {
+                
+                if (!data.requestCode || data.requestCode == 0) {
+                    if (succCallback) {
+                        succCallback(data);
+                    }
+                } else {
+                    if (errorCallback) {
+                        errorCallback(data);
+                    }
+                }
+            },
+            complete: function() {
+                
+            },
+            error:function(XMLHttpRequest, textStatus, errorThrown){
+                // 状态码
+                    console.log(XMLHttpRequest.status);
+                    // 状态
+                    console.log(XMLHttpRequest.readyState);
+                    // 错误信息   
+                    console.log(textStatus);
+                    // if(textStatus == 'timeout'){
+                    //     alert('接口访问超时，请稍后再试')
+                    // }
+                    // if(textStatus == 'error'){
+                    //     alert('接口访问错误，请稍后再试')
+                    // }
+                    // if(textStatus == 'abort'){
+                    //     alert('接口访问中止，请稍后再试')
+                    // }
+                    // if(textStatus == 'parsererror'){
+                    //     alert('接口访问解析错误，请稍后再试')
+                    // }
+            }
+        });
+    }
     //数据数组处理根据server 端返回的json
     function getArrFromJson(data, arr) {
         for (var i = 0; i < data.length; i++) {
@@ -489,6 +602,8 @@
     }
     return {
         postAjaxCall: postAjaxCall,
+        postAjaxCallPublic:postAjaxCallPublic,
+        postAjaxCall1:postAjaxCall1,
         getArrFromJson: getArrFromJson,
         clearListArr: clearListArr,
         convertToDateTime: convertToDateTime,

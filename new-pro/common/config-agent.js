@@ -1,13 +1,17 @@
 //prd  线上		cs 测试   渠通宇104
 var Edition = 'qty1';
 var server;
+var publicUrl
 if(Edition == 'qty'){
 	server  = 'https://nb.51shanhe.com/shanhe-service/'
     //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
     //server = 'http://148.70.79.191:10700/shanhe-service/'
     //server = 'http://192.168.1.134:6006/shanhe-service/'
+    publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }else{
-	server  = 'http://192.168.1.130:6006/shanhe-service/'
+	server  = 'http://192.168.1.167:6006/shanhe-service/'
+    publicUrl = 'http://192.168.1.167:5006/shanhe-common/'
+    //server  = 'http://47.95.247.16:6106/shanhe-service/'
 }
 /* 
 接口前缀解释
@@ -21,7 +25,8 @@ var CmsConfig = {
     ServiceUrl: {
          //ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
         //ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-        ApiRootUrl:server
+        ApiRootUrl:server,
+        PubUrl:publicUrl
         // imgUrl:imgAdd
     },
     addressUrl: {
@@ -56,6 +61,8 @@ var CmsConfig = {
             delMerchant:"agMerchant/delMerchant",
             //获取商户信息
             getAgMerchant:"agMerchant/getAgMerchant",
+            //修改商户广告状态
+            changeMerAdState:"agMerchant/changeMerAdState",
             //获取商户图片
             getMerPhoto:"agMerchant/getMerPhoto",
             //修改商户密码
@@ -116,6 +123,9 @@ var CmsConfig = {
             getAgent:"agentManage/getAgentList",
             //编辑代理
             upAgentInfo:"agentManage/upAgentInfo",
+            //更改代理状态
+            agentEnableDisable:"agentManage/agentEnableDisable",
+
 
             //提现
             //查询提现账户
@@ -180,6 +190,28 @@ var CmsConfig = {
             addPic:"photo/addPic",
             //上传视频
             addVideo:"video/addVideo",
+
+            //设备管理
+            getAgEquipmentList:"agentQrCode/getAgEquipmentList",
+            //获取是商户设备列表
+            getMerEquipmentList2:"merEquipment/getMerEquipmentList2",
+            //绑定设备
+            bindEquipment:"merEquipment/bindEquipment",
+            //解绑设备
+            unbindEquipment:"merEquipment/unbindEquipment",
+            //查询代理商下可用商户
+            getMerchants:"agentQrCode/getMerchants",
+            //添加设备
+            addAgEquipment:"agentQrCode/addAgEquipment",
+            //删除设备
+            delAgEquipment:"agentQrCode/delAgEquipment",
+            
+
+
+
+
+            //修改密码
+            updatePass:"system/updatePass",
         },
        
         //公共

@@ -114,7 +114,7 @@
 			</select>
 		</script>
 		<script type="text/html" id="toolbar">
-			
+			<a class="layui-btn layui-btn-xs  " id="create" lay-event="create">生成</a>
 			<a class="layui-btn layui-btn-xs  {{d.auditStatus==1 ? '' : 'hiide'}}" id="rate" lay-event="success">提交</a>
 			
 			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.auditStatus==1 ? '' : 'hiide'}} "  id="pass" lay-event="fail">拒绝</a>
@@ -335,8 +335,10 @@
 					});
 
 				}
+				setTimeout(function(){
+					tableRender()
+				},500)
 				
-				tableRender()
 				$('#search').click(function(){
 					tableRender()
 					
@@ -441,6 +443,22 @@
 							maxmin: false,
 							resize: false,
 							content: ['Merchants-List-channel.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data, userNumber)
+							}
+						});
+					}else if(obj.event === 'create') { //通道
+						layer.open({
+							type: 2,
+							title: '生成',
+							shade: 0.5,
+							area: ['40%', '70%'],
+							maxmin: false,
+							resize: false,
+							content: ['merchant-create-sub.html'],
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
@@ -557,8 +575,8 @@
 							tjData.paymentChannel = data.paymentChannel
 							$.ajax({
 						            type: 'POST',
-						            url: 'https://api.51shanhe.com/m-submit/incoming/submitMerchant', 
-						            // url: 'http://192.168.1.167:5008/m-submit/incoming/submitMerchant', 
+						            //url: 'https://api.51shanhe.com/m-wechat/register/intoSubmission', 
+						             url: 'http://192.168.1.167:6005/shanhe-admin/audit/submitMerchant', 
 						            data: tjData,
 						            async: 'false',
 						            dataType: 'json', 
@@ -569,16 +587,19 @@
 						                
 						            },
 						            success: function(data) {
-						                
+						                layer.closeAll() 
 						                if(data.code == 1000){
-											 layer.closeAll()
-											layer.msg('操作成功')
 											
-											layui.table.reload('vip_cardList')
+											layer.msg('操作成功')
+											setTimeout(function(){
+												layui.table.reload('vip_cardList')
+											},1000)
 											
 										}else{
 											layer.msg(data.msg)
-											
+											setTimeout(function(){
+												layui.table.reload('vip_cardList')
+											},1000)
 										}
 						            },
 						        });

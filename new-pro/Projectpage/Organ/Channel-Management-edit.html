@@ -923,12 +923,13 @@
                 CmsUtility.postAjaxCall(
                     //系统设置
                     CmsConfig.addressUrl.Mechanism.getZFBOfficial, {
-                        'alipayNumber': jgData.id
+                        'alipayNumber': jgData.id,
+                        'institutionNumber':userNumber
                     },
                     function(data) {
                         if (data.code == 1000) {
                             console.log(data)
-                            sjData = data.data[0]
+                            sjData = data.data
                             $('#GF_zfb').show()
                             form.val('GF_zfb', {
                                 "alipayName": sjData.alipayName,
@@ -965,12 +966,13 @@
                 CmsUtility.postAjaxCall(
                     //系统设置
                     CmsConfig.addressUrl.Mechanism.getWXOfficial, {
-                        'wechatNumber': jgData.id
+                        'wechatNumber': jgData.id,
+                        'institutionNumber':userNumber
                     },
                     function(data) {
                         if (data.code == 1000) {
                             console.log(data)
-                            sjData = data.data[0]
+                            sjData = data.data
                             $('#GF_wx').show()
                             form.val('GF_wx', {
                                 "wechatName": sjData.wechatName,
@@ -1013,7 +1015,7 @@
                     function(data) {
                         if (data.code == 1000) {
                             console.log(data)
-                            sjData = data.data[0]
+                            sjData = data.data
                             $('#FY').show()
                             form.val('FY', {
                                 "paymentName": sjData.paymentName,
@@ -1067,7 +1069,7 @@
                     function(data) {
                         if (data.code == 1000) {
                             console.log(data)
-                            sjData = data.data[0]
+                            sjData = data.data
                             $('#yrm').show()
                             form.val('yrm', {
                                 "agencyKey": sjData.agencyKey,

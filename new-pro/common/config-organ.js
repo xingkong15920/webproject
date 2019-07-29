@@ -1,13 +1,16 @@
 //prd  线上		cs 测试   渠通宇104
 var Edition = 'qty1';
 var server;
+var publicUrl
 if(Edition == 'qty'){
 	//server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
     //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
    //server = 'http://192.168.1.130:6005/shanhe-admin/'
     server = 'https://nb.51shanhe.com/shanhe-admin/'
+    publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }else{
 	server  = 'http://192.168.1.167:6005/shanhe-admin/'
+    publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }
 /* 
 接口前缀解释
@@ -21,13 +24,14 @@ var CmsConfig = {
     ServiceUrl: {
          //ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
         //ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-        ApiRootUrl:server
+        ApiRootUrl:server,
+        PubUrl:publicUrl
         // imgUrl:imgAdd
     },
     addressUrl: {
         Login: {
             // 获取验证码
-            createCode: "login/createCode",
+            createCode: "login/sendCode",
             // 登录
             login: "login/loginJG",
             //代理商登录
@@ -189,6 +193,8 @@ var CmsConfig = {
             addAgentLocal:"insAgentBill/addAgentLocal",
             //删除代理商
             delAgent:"insAgent/delAgent",
+            //更改代理商广告权限
+            agentAdvert:"insAgent/agentAdvert",
             /*代理列表
             
             操作接口：
@@ -338,14 +344,14 @@ var CmsConfig = {
             insertThirdpartyTD:"fyCha/addFyChannel",
             //--广告管理
             //添加广告
-            insertInstitutionAdvertisement:"insAdvertising/addAdvertising",
+            addAdvertising:"insAdvertising/addAdvertising",
              //广告列表"
             getInstitutionAdvertisementList:"insAdvertising/getAdvertising",
             //广告列表操作：
             //状态的开/关
             updateInstitutionAdvertisementState:"insAdvertising/updateAdvertising",
             //编辑接口
-            updateInstitutionAdvertisement:"insAdvertising/updateAdvertising",
+            updateAdvertising:"insAdvertising/updateAdvertising",
             //删除接口
             delInstitutionAdvertisementState:"insAdvertising/updateAdvertising",
             
@@ -527,7 +533,9 @@ var CmsConfig = {
             //省市区接口
             getAddress:"login/getAddress",
             //上传图片
-            addPic:"photo/addPic",
+            addPic:"insAdvertising/addPic",
+             //上传视频
+            addVideo:"insAdvertising/addVideo",
             //新的省市区接口
             getAreajson:"insCommon/getAreajson",
             //根据机构号获取费率

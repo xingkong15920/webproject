@@ -119,8 +119,8 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">广告类型</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="type" value="0" title="图片" lay-filter="type" checked="true">
-                        <input type="radio" name="type" value="1" title="视频" lay-filter="type">
+                        <input type="radio" name="advertType" value="0" title="图片" lay-filter="type" checked="true">
+                        <input type="radio" name="advertType" value="1" title="视频" lay-filter="type">
                     </div>
                 </div>
                 <div class="layui-form-item image">
@@ -143,20 +143,25 @@
                 <div class="layui-form-item image">
                     <label class="layui-form-label">图片描述</label>
                     <div class="layui-input-block">
-                        <input type="text" name="url" lay-verify="" autocomplete="off" placeholder="请输入图片描述" class="layui-input">
+                        <input type="text" name="describe" lay-verify="" autocomplete="off" placeholder="请输入图片描述" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item image">
                     <label class="layui-form-label">链接地址</label>
                     <div class="layui-input-block">
-                        <input type="text" name="url" lay-verify="url" autocomplete="off" placeholder="请输入跳转链接" class="layui-input">
+                        <input type="text" name="url" lay-verify="" autocomplete="off" placeholder="请输入跳转链接" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item video" style="display:none">
                     <label class="layui-form-label">视频地址</label>
+                    <div class="layui-input-block" id="tips">
+                        <span>注意：</span>
+                        <span>*上传视频格式必须为MP4，且大小不得超过10M</span>
+                    </div>
                     <div class="layui-input-block">
-                        <div class="layui-upload-img" id="test2" style="width:400px;height:300px">
-                            <img src="../../public/images/default.png" id="demo2" name="address" style="width:480px;max-width: 100%;height:270px;" lay-filter="logo1" id="logo1">
+                        <div class="layui-upload-img" id="test2" style="width:400px;height:300px;position:relative;left:0;top:0">
+                            <img src="../../public/images/default1.png" id="demo2" name="address" style="width:400px;max-width: 100%;height:270px;position:absolute;left:0;top:0;z-index:9999">
+                            <video id="logo2" src="" style="width:400px;max-width: 100%;height:270px;position:absolute;left:0;top:0" controls="controls"></video>
                         </div>
                         <p id="demoText1"></p>
                     </div>
@@ -164,7 +169,7 @@
                 <div class="layui-form-item video" style="display:none">
                     <label class="layui-form-label">视频描述</label>
                     <div class="layui-input-block">
-                        <input type="text" name="url" lay-verify="" autocomplete="off" placeholder="请输入视频描述" class="layui-input">
+                        <input type="text" name="describe1" lay-verify="" autocomplete="off" placeholder="请输入视频描述" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -214,7 +219,7 @@
         setTimeout(function() { parent.layer.close(index) }, 16);
     })
     var serverUrl = window.parent.serverUrl
-    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
     var logoUrl = ''
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
         var $ = layui.jquery,
@@ -249,10 +254,14 @@
         form.on('radio(add)', function(data) {
             switch (data.value) {
                 case "0":
-                    console.log('123')
+
                     $('#test1').css({
                         "width": "250px",
                         "height": "300px"
+                    })
+                    form.val('cardAdd', {
+
+                        "launchChannel": '0'
                     })
                     break;
                 case "1":
@@ -274,6 +283,18 @@
                     $('#test1').css({
                         "width": "250px",
                         "height": "300px"
+                    })
+                    break;
+                case "4":
+                    form.val('cardAdd', {
+
+                        "launchChannel": '1'
+                    })
+                    break;
+                case "5":
+                    form.val('cardAdd', {
+
+                        "launchChannel": '2'
                     })
                     break;
                 default:
@@ -326,39 +347,41 @@
             }
         });
         //上传视频
-        // var uploadInst = upload.render({
-        //     elem: '#test2',
-        //     url: '/uploadFiles/uploadVideo',
-        //     field: "layuiVideo",
-        //     data: { "dir": "media" },
-        //     accept: 'video', //视频
-        //         // ,before:function (obj) {
-        //         //     $('#demo9').css('display','block').attr('src', "http://p6nngxvb7.bkt.clouddn.com/FsyjSltTtkVtzepa_w7zsnS_S7zO"); //链接（base64）http://p6nngxvb7.bkt.clouddn.com/FsyjSltTtkVtzepa_w7zsnS_S7zO
-        //         // }
-                
-        //     done: function(res) {
-        //         if (res.code == 1) {
-        //             layer.alert(res.message, 5);
-        //         }
-        //         if (res.error > 0) {
-        //             return layer.msg(res.message);
-        //         }
-        //         if (res.error == 0) {
-        //             alert("res.url:" + res.url);
-        //             $("#videourl").val(res.url);
-        //             $("#demo2").attr("src", res.url);
-        //             layer.alert("上传成功", { offset: ['200px', '450px'], icon: 6 });
-        //         }
-        //     },
-        //     error: function() {
-        //         //演示失败状态，并实现重传
-        //         var demoText = $('#demoText1');
-        //         demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
-        //         demoText.find('.demo-reload').on('click', function() {
-        //             uploadInst.upload();
-        //         });
-        //     }
-        // });
+        var uploadInst1 = upload.render({
+            elem: '#test2',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addVideo,
+            field: "file",
+            data: {
+                "institutionNumber": userNumber,
+            },
+            accept: 'video' ,//视频,
+            acceptMime:'mp4',
+            size:'11000',
+            before:function(obj){
+                // $('#demo1').hide()
+                // console.log(obj)
+                var index = layer.load(2, {shade: [0.4, '#393D49']})
+            },
+            done: function(res) {
+                console.log(res)
+                if(res.code == 1000){
+                    $('#demo2').hide()
+                    $('#logo2').attr('src',res.data)
+                    logoUrl = res.data
+                    layer.closeAll()
+                }else{
+                    layer.msg(res.msg)
+                }
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText1');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function() {
+                    uploadInst.upload();
+                });
+            }
+        });
         /*---------- 自定义验证规则 ----------*/
         form.verify({
             title: function(value) {
@@ -378,6 +401,13 @@
         form.on('submit(add)', function(data, index) {
             var data = data.field
             data.institutionNumber = userNumber
+            if (data.advertType == 0) {
+                data.address = logoUrl
+                data.describe = data.describe
+            } else {
+                data.describe = data.describe1
+                data.address = logoUrl
+            }
             console.log(data)
             if (!data.state) {
                 data.state = 1
@@ -386,15 +416,16 @@
             }
             console.log(logoUrl)
             if (logoUrl == '') {
-                layer.msg('请上传图片')
+                layer.msg('请上传图片或者视频')
                 return
             }
-            data.address = logoUrl
+            data.startTime = data.startTime + ' 00:00:00'
+            data.endTime = data.endTime + ' 23:59:59'
 
             // if()
-            CmsUtility.postAjaxCall(
+            CmsUtility.postAjaxCall1(
                 //系统设置
-                CmsConfig.addressUrl.Mechanism.insertInstitutionAdvertisement,
+                CmsConfig.addressUrl.Mechanism.addAdvertising,
                 data,
                 function(data) {
                     if (data.code == 1000) {

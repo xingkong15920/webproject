@@ -13,7 +13,6 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 	</head>
-
 	<body>
 		<div class="x-nav">
 			<span class="layui-breadcrumb"><a href="">首页</a><a><cite>商户管理</cite></a></span>
@@ -51,18 +50,21 @@
 		</div>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
-			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
 			<a class="layui-btn layui-btn-xs" lay-event="resetpass">密码</a>
 			<a class="layui-btn layui-btn-xs" lay-event="feilvset">费率</a>
 			<a class="layui-btn layui-btn-xs" lay-event="codecard">码牌</a>
-			<a class="layui-btn layui-btn-xs" lay-event="horn">设备绑定</a>
-			<a class="layui-btn layui-btn-xs" lay-event="push">微信推送(商户)</a>
+			<a class="layui-btn layui-btn-xs" lay-event="horn">设备</a>
+			<a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
 			<a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
-			<a class="layui-btn layui-btn-xs" lay-event="recomId">推荐人ID</a>
+			<a class="layui-btn layui-btn-xs" lay-event="recomId">ID</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script type="text/html" id="toolbar_switch">
 			<input type="checkbox" name="switch" value="{{d.merchantStatus}}" lay-skin="switch" lay-filter="consumptionPreferences" data-mername="{{d.merchantNumber}}" lay-text="开|关" {{ d.merchantStatus==0 ? 'checked' : '' }}>
+		</script>
+		<script type="text/html" id="toolbar_switch1">
+			<input type="checkbox" name="switch1" value="{{d.advertJurisdiction}}" lay-skin="switch" lay-filter="consumptionPreferences1" data-mername="{{d.merchantNumber}}" lay-text="开|关" {{ d.advertJurisdiction==0 ? 'checked' : '' }}>
 		</script>
 		<script src="../../common/config-agent.js"></script>
         <script src="../../common/utility.js"></script>
@@ -183,12 +185,17 @@
 								field: 'merchantType',
 								title: '类型',
 								align: 'center',
-								width: 120
+								width: 80
 							}, {
 								field: 'insertTime',
 								title: '创建时间',
 								align: 'center',
-								width: 200
+								width: 150
+							}, {
+								toolbar: '#toolbar_switch1',
+								title: '广告权限',
+								align: 'center',
+								width: 120
 							}, {
 								toolbar: '#toolbar_switch',
 								title: '状态',
@@ -392,7 +399,7 @@
 							content: 'configuration.html',
 							success: function(layero, index) {
 								var iframe = window['layui-layer-iframe' + index];
-								iframe.subPageClerkpass(data, userNumber)
+								iframe.subPageClerkpass(data, data.merchantNumber)
 							}
 						});
 					} else if(obj.event == 'secretkey') {
@@ -477,6 +484,31 @@
 					CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Agent.stateMerchant,
+						tjData,
+						function(data){
+							if(data.code == 1000){
+								 
+								parent.layer.msg('更改成功')
+								layui.table.reload('merchantlist')
+							}else{
+								layer.msg(data.msg)
+								
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+				});
+				form.on('switch(consumptionPreferences1)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					// tjData.agentNumber = userNumber;
+					tjData.merchantNumber = data.elem.dataset.mername;
+					tjData.advertJurisdiction =this.checked?'0':'1';
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Agent.changeMerAdState,
 						tjData,
 						function(data){
 							if(data.code == 1000){

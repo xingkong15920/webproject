@@ -102,6 +102,13 @@
                         <legend>富友通道</legend>
                         <div class="layui-form-item">
                             <div class="layui-inline">
+                                <label class="layui-form-label">T1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="fuyouRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
                                 <label class="layui-form-label">D1费率(%)</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="fuyouRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
@@ -120,6 +127,13 @@
                     <fieldset class="layui-elem-field layui-field-title yrm" style="display:none">
                         <legend>易融码通道</legend>
                         <div class="layui-form-item">
+                             <div class="layui-inline">
+                                <label class="layui-form-label">T1费率(%)</label>
+                                <div class="layui-input-inline">
+                                   <input type="text" name="yrmRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">D1费率(%)</label>
                                 <div class="layui-input-inline">
@@ -139,19 +153,40 @@
                     <fieldset class="layui-elem-field layui-field-title xdl" style="display:none">
                         <legend>新大陆通道</legend>
                         <div class="layui-form-item">
-                            
                             <div class="layui-inline">
                                 <label class="layui-form-label">T1费率(%)</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="xdlRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="0.300">
+                             value="">
                                 </div>
                             </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="xdlRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">D0费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="xdlRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
+                            
                         </div>
                     </fieldset>
                     <fieldset class="layui-elem-field layui-field-title sxf" style="display:none">
                         <legend>随行付通道</legend>
                         <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">T1费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="sxfRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
+                             value="">
+                                </div>
+                            </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">D1费率(%)</label>
                                 <div class="layui-input-inline">
@@ -159,13 +194,13 @@
                              value="">
                                 </div>
                             </div>
-                            <!-- <div class="layui-inline">
+                            <div class="layui-inline">
                                 <label class="layui-form-label">D0费率(%)</label>
                                 <div class="layui-input-inline">
                                     <input type="text" name="sxfRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
                              value="">
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </fieldset>
                 
@@ -390,7 +425,7 @@
                     data.data.sort(compare('paymentChanneltype'))
                     var rateData = data.data
                     console.log(rateData)
-                    for(var i = 0 ; i < data.data.length;i++){
+                     for(var i = 0 ; i < data.data.length;i++){
                         if(data.data[i].paymentChanneltype == 0){
                             form.val('cardAdd', {
                        
@@ -408,82 +443,111 @@
                             })
                         }
                         if(data.data[i].paymentChanneltype == 2){
-                            if(data.data[i].rateType == 'D0'){
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                            switch (data.data[i].rateType) {
+                                case 'D0':
+                                    form.val('cardAdd', {
                                     
-                                    "fuyouRateD0":(data.data[i].rate*100).toFixed(3) ,
-                                })
-                            }else{
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                                        "fuyouRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'D1':
+                                    form.val('cardAdd', {
                                     
-                                    "fuyouRateD1":(data.data[i].rate*100).toFixed(3) ,
-                                })
+                                        "fuyouRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'T1':
+                                    form.val('cardAdd', {
+                                    
+                                        "fuyouRateT1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
                             }
+                            
                             
                         }
                         if(data.data[i].paymentChanneltype == 3){
-                            if(data.data[i].rateType == 'D0'){
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                             switch (data.data[i].rateType) {
+                                case 'D0':
+                                    form.val('cardAdd', {
                                     
-                                    "yrmRateD0":(data.data[i].rate*100).toFixed(3) ,
-                                })
-                            }else{
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                                        "yrmRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'D1':
+                                    form.val('cardAdd', {
                                     
-                                    "yrmRateD1":(data.data[i].rate*100).toFixed(3) ,
-                                })
+                                        "yrmRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'T1':
+                                    form.val('cardAdd', {
+                                    
+                                        "yrmRateT1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
                             }
+                            
                             
                         }
                         if(data.data[i].paymentChanneltype == 4){
-                            if(data.data[i].rateType == 'D0'){
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                            switch (data.data[i].rateType) {
+                                case 'D0':
+                                    form.val('cardAdd', {
                                     
-                                    "xdlRateD0":(data.data[i].rate*100).toFixed(3) ,
-                                })
-                            }else if(data.data[i].rateType == 'D1'){
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                                        "xdlRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'D1':
+                                    form.val('cardAdd', {
                                     
-                                    "xdlRateD1":(data.data[i].rate*100).toFixed(3) ,
-                                })
-                            }else{
-                               form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                                        "xdlRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'T1':
+                                    form.val('cardAdd', {
                                     
-                                    "xdlRateT1":(data.data[i].rate*100).toFixed(3) ,
-                                })
+                                        "xdlRateT1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
                             }
+                            
                             
                         }
                         if(data.data[i].paymentChanneltype == 5){
-                            if(data.data[i].rateType == 'D0'){
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                            switch (data.data[i].rateType) {
+                                case 'D0':
+                                    form.val('cardAdd', {
                                     
-                                    "sxfRateD0":(data.data[i].rate*100).toFixed(3) ,
-                                })
-                            }else{
-                                form.val('cardAdd', {
-                           
-                                    // "T1Rate": T1,
+                                        "sxfRateD0":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'D1':
+                                    form.val('cardAdd', {
                                     
-                                    "sxfRateD1":(data.data[i].rate*100).toFixed(3) ,
-                                })
+                                        "sxfRateD1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                case 'T1':
+                                    form.val('cardAdd', {
+                                    
+                                        "sxfRateT1":(data.data[i].rate*100).toFixed(3) ,
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
                             }
+                            
                             
                         }
                     }
@@ -625,16 +689,19 @@
                     addData.agentLevel = 'D'
                 }
                 addData.aliRate  = (addData.aliRate/10000*100).toFixed(5)
-            addData.wecharRate = (addData.wecharRate/10000*100).toFixed(5)
-            addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(5)
-            addData.fuyouRateD0 = (addData.fuyouRateD0/10000*100).toFixed(5)
-            addData.yrmRateD1 = (addData.yrmRateD1/10000*100).toFixed(5)
-            addData.yrmRateD0 = (addData.yrmRateD0/10000*100).toFixed(5)
-            // addData.xdlRateD1 = (addData.xdlRateD1/10000*100).toFixed(5)
-            // addData.xdlRateD0 = (addData.xdlRateD0/10000*100).toFixed(5)
-            addData.xdlRateT1 = (addData.xdlRateT1/10000*100).toFixed(5)
-            // addData.sxfRateD0 = (addData.sxfRateD0/10000*100).toFixed(5)
-            addData.sxfRateD1 = (addData.sxfRateD1/10000*100).toFixed(5)
+                addData.wecharRate = (addData.wecharRate/10000*100).toFixed(5)
+                addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(5)
+                addData.fuyouRateD0 = (addData.fuyouRateD0/10000*100).toFixed(5)
+                addData.fuyouRateT1 = (addData.fuyouRateT1/10000*100).toFixed(5)
+                addData.yrmRateD1 = (addData.yrmRateD1/10000*100).toFixed(5)
+                addData.yrmRateD0 = (addData.yrmRateD0/10000*100).toFixed(5)
+                addData.yrmRateT1 = (addData.yrmRateT1/10000*100).toFixed(5)
+                addData.xdlRateD1 = (addData.xdlRateD1/10000*100).toFixed(5)
+                addData.xdlRateD0 = (addData.xdlRateD0/10000*100).toFixed(5)
+                addData.xdlRateT1 = (addData.xdlRateT1/10000*100).toFixed(5)
+                addData.sxfRateD0 = (addData.sxfRateD0/10000*100).toFixed(5)
+                addData.sxfRateD1 = (addData.sxfRateD1/10000*100).toFixed(5)
+                addData.sxfRateT1 = (addData.sxfRateT1/10000*100).toFixed(5)
                 addData.pAgentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
                 addData.agentLevel = jgData.agentLevel
                 console.log(addData)

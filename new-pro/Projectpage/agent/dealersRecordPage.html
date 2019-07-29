@@ -146,9 +146,7 @@
 							title: '添加时间',
 							align: 'center',
 							width: 150,
-							templet:function(data){
-								return data.insertTime.split('.')[0].split('T')[0] + ' ' + data.insertTime.split('.')[0].split('T')[1]
-							}
+							
 						}, {
 							field: 'operation',
 							title: '操作',
@@ -185,17 +183,16 @@
 					};
 				form.on('switch(toolbar_switch)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					console.log(data)
+					
 					var ajData = new Object()
-					ajData.agentNumber = userNumber
+					ajData.agentNumber = data.value
 					ajData.state = this.checked?0:1
-					ajData.deletionFlag = '0'
-					ajData.dbAgentNumber = data.value
+					ajData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
 					console.log(ajData)
 					// if()
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Agent.modifyAgent,
+						CmsConfig.addressUrl.Agent.agentEnableDisable,
 						ajData,
 						function(data){
 							if(data.code == 1000){
@@ -219,7 +216,7 @@
 						layer.open({
 							type: 2,
 							title: '修改费率-' + data.agentName,
-							area: ['900px', '90%'], //宽高
+							area: ['70%', '90%'], //宽高
 							content: 'agent-rate.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe

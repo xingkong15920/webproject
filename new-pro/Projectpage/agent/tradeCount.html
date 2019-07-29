@@ -373,24 +373,24 @@
 					function(data){
 						
 						if(data.code == 1000){
-							$('#shopCount').html(data.data.agShopStatisticsResult.shopCount)
-							$('#brokerage').html(data.data.agShopStatisticsResult.brokerage + '元')
-							$('#transactionNumber').html(data.data.agShopStatisticsResult.transactionNumber)
-							$('#wTransactionNumber').html(data.data.agShopStatisticsResult.wTransactionNumber)
-							$('#zTransactionNumber').html(data.data.agShopStatisticsResult.zTransactionNumber)
-							$('#transactionMoney').html(data.data.agShopStatisticsResult.transactionMoney)
-							$('#wTransactionMoney').html(data.data.agShopStatisticsResult.wTransactionMoney)
+							$('#shopCount').html(data.data.shopCount)
+							$('#brokerage').html(data.data.brokerage + '元')
+							$('#transactionNumber').html(data.data.transactionNumber)
+							$('#wTransactionNumber').html(data.data.wTransactionNumber)
+							$('#zTransactionNumber').html(data.data.zTransactionNumber)
+							$('#transactionMoney').html(data.data.transactionMoney)
+							$('#wTransactionMoney').html(data.data.wTransactionMoney)
 
-							$('#zTransactionMoney').html(data.data.agShopStatisticsResult.zTransactionMoney)
-							$('#refundMoney').html(data.data.agShopStatisticsResult.refundMoney)
-							$('#wRefundMoney').html(data.data.agShopStatisticsResult.wRefundMoney)
-							$('#zRefundMoney').html(data.data.agShopStatisticsResult.zRefundMoney)
-							$('#poundage').html(data.data.agShopStatisticsResult.poundage)
-							$('#wpoundage').html(data.data.agShopStatisticsResult.wpoundage)
-							$('#zpoundage').html(data.data.agShopStatisticsResult.zpoundage)
-							$('#incomeMoney').html(data.data.agShopStatisticsResult.orderTotalMoneySS)
-							$('#wIncomeMoney').html(data.data.agShopStatisticsResult.weChatOrderTotalMoneySS)
-							$('#zIncomeMoney').html(data.data.agShopStatisticsResult.alipayOrderTotalMoneySS)
+							$('#zTransactionMoney').html(data.data.zTransactionMoney)
+							$('#refundMoney').html(data.data.refundMoney)
+							$('#wRefundMoney').html(data.data.wRefundMoney)
+							$('#zRefundMoney').html(data.data.zRefundMoney)
+							$('#poundage').html(data.data.poundage)
+							$('#wpoundage').html(data.data.wpoundage)
+							$('#zpoundage').html(data.data.zpoundage)
+							$('#incomeMoney').html(data.data.orderTotalMoneySS)
+							$('#wIncomeMoney').html(data.data.weChatOrderTotalMoneySS)
+							$('#zIncomeMoney').html(data.data.alipayOrderTotalMoneySS)
 						}else{
 							layer.msg(data.msg)
 							
@@ -461,8 +461,8 @@
 						"dbAgentNumber":$('#transactionPayment').val().trim(),
 						"merchantName":$('#shopName').val().trim(),
 						"agentLevel":agentLevel,
-						"startTime":$('#startTime').val(),
-						"endTime":$('#endTime').val(),
+						"startTime":$('#startTime').val() + ' 00:00:00',
+						"endTime":$('#endTime').val() + ' 23:59:59',
 					},
 					page: true,
 					limits: [10, 20],
@@ -471,7 +471,7 @@
 					response: { 
 					//res 即为原始返回的数据
 							"statusCode":"1000", //解析接口状态
-							
+					
 					},
 					parseData: function(res) {
 						console.log(res)

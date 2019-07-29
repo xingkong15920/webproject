@@ -12,6 +12,12 @@
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+			#tableBox td{
+				text-align: center;
+			}
+
+		</style>
 	</head>
 
 	<body>
@@ -19,7 +25,20 @@
 			<!-- <xblock class="demoTable">
 				<button class="layui-btn" data-type="addMP"><i class="layui-icon"></i>添加设备</button>
 			</xblock> -->
-			<table class="layui-table" id="LAY_table_product" lay-filter="product"></table>
+			<table class="layui-table" id="LAY_table_product" lay-filter="product">
+				<thead>
+					<tr>
+						<th style="text-align:center">设备图片</th>
+						<th style="text-align:center">设备名称</th>
+						<th style="text-align:center">设备用途</th>
+						<th style="text-align:center">绑定数量</th>
+						<th style="text-align:center">操作</th>
+					</tr>
+				</thead>
+				<tbody id="tableBox">
+
+				</tbody>
+			</table>
 		</div>
 		<script type="text/html" id="img">
 			<img src="" style="width:100px;height:100px;border:1px solid black">
@@ -30,8 +49,9 @@
 		<script src="../../common/config-agent.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			var merchantNumber
 			function subPage(data,data1,data2){
-				console.log(data1,data2)
+				merchantNumber = data1
 				var jgData = data
 				layui.use(['table', 'table', 'laytpl'], function() {
 					var table = layui.table,
@@ -40,56 +60,106 @@
 						$ = layui.jquery;
 					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 					var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
-				//方法级渲染
-				table.render({
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getShopYLB + '?merchantNumber=' + jgData.merchantNumber,
-					
-					elem: '#LAY_table_product',
-					//method: "post",
-					height: 'full-120',
-					id: 'YLBlist',
-					response: {
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) {
-						if(res.data == null) {
-							return
-						}
-						return {
-							"code": res.code,
-							// "count": res.data,
-							"data": res.data.shopYLBList,
-						}
-					},
-					cols: [
-						[{
-							field: 'shopName',
-							title: '设备图片',
-							align: 'center',
-							
-						},{
-							field: 'shopName',
-							title: '设备名称',
-							align: 'center',
-							
-						},{
-							field: 'shopName',
-							title: '设备用途',
-							align: 'center',
-							
-						}, {
-							field: 'operation',
-							title: '操作',
-							toolbar: "#tool",
-							align: 'center',
-							minWidth: 100
-						}]
+					var tableList = [
+					{
+						img:'../../public/images/yunlaba.png',
+						name:'智联博众云喇叭',
+						yongtu:'语音播报',
+						count:'0',
+						type:'0',
+						class:'0'
+					},{
+						img:'../../public/images/xingpos.png',
+						name:'星POS',
+						yongtu:'支付收款',
+						count:'0',
+						type:'1',
+						class:'1'
+					},{
+						img:'../../public/images/qingtingf1.png',
+						name:'天之河L1',
+						yongtu:'刷脸设备',
+						count:'0',
+						type:'2',
+						class:'2'
+					},{
+						img:'../../public/images/qingtingf1.png',
+						name:'蜻蜓F1',
+						yongtu:'刷脸设备',
+						count:'0',
+						type:'2',
+						class:'4'
+					},{
+						img:'../../public/images/qingtingf4.png',
+						name:'蜻蜓F4',
+						yongtu:'刷脸设备',
+						count:'0',
+						type:'2',
+						class:'3'
+					},{
+						img:'../../public/images/liandia8.png',
+						name:'联迪A8',
+						yongtu:'支付收款',
+						count:'0',
+						type:'1',
+						class:'5'
+					}
 					]
-				});
-
+				window.createStr = function(data){
+					var str = ''
+					for(let i = 0 ; i < tableList.length;i++){
+						str += '<tr style="height:60px"><td><img style="width:40px;height:40px;margin-top:10px;" src="'+ tableList[i].img +'"></td><td>'+ tableList[i].name +'</td><td>'+ tableList[i].yongtu +'</td><td>'+ tableList[i].count +'</td><td><a class="layui-btn layui-btn-xs" lay-event="bangding" onclick="addEquiment('+i+')">绑定</a></td></tr>'
+					}
+					$('#tableBox').html(str)
+				}
+				window.addEquiment = function(data){
+					layer.open({
+						type: 2,
+						title: '绑定设备',
+						area: ['50%', '100%'],
+						content: 'equipment-add.html',
+						success: function(layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传参
+							iframe.subPage(tableList[data],merchantNumber)
+						}
+					})
+				}
+				CmsUtility.postAjaxCall(
+				//系统设置
+					'merEquipment/getMerEquipmentList2',
+					{
+						"merchantNumber":merchantNumber,
+						"page":1,
+						"limit":50
+					},
+					function(data){
+						if(data.code == 1000){
+							console.log(data)
+							for(let i = 0 ; i < tableList.length;i++){
+								for(let j = 0 ; j < data.data.length;j++){
+									if(tableList[i].class == data.data[j].equipmentClass){
+										tableList[i].count = data.data[j].count
+										break
+									}
+								}
+							}
+							createStr()
+						}else{
+							createStr()
+							//layer.msg(data.msg)
+						}
+					},
+					function(data){
+						console.log('222')
+					}
+				)
+				
 				table.on('tool(product)', function(obj) {
 					var data = obj.data;
 					console.log(data)
+
 					if(obj.event === 'unbind') {
 						// 发送请求,解绑云喇叭
 						layer.confirm('真的要解绑么?', function(index) {

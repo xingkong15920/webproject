@@ -184,11 +184,17 @@
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-inline" style="width:800px">
+                        <label class="layui-form-label" style="width:100px">T1进件通道</label>
+                        <div class="layui-input-block" style="width:100%" id="T1Box">
+                        
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline" style="width:800px">
                         <label class="layui-form-label" style="width:100px">D1进件通道</label>
                         <div class="layui-input-block" style="width:100%" id="D1Box">
-                            <!-- <input type="checkbox" name="like[write]" title="写作">
-                          <input type="checkbox" name="like[read]" title="阅读" checked="">
-                          <input type="checkbox" name="like[game]" title="游戏"> -->
+                         
                         </div>
                     </div>
                 </div>
@@ -196,12 +202,11 @@
                     <div class="layui-inline" style="width:800px">
                         <label class="layui-form-label" style="width:100px">D0进件通道</label>
                         <div class="layui-input-block" style="width:100%" id="D0Box">
-                            <!--  <input type="checkbox" name="like[write]" title="写作">
-                          <input type="checkbox" name="like[read]" title="阅读" checked="">
-                          <input type="checkbox" name="like[game]" title="游戏"> -->
+                        
                         </div>
                     </div>
                 </div>
+                 
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">公司信息</legend>
                 </fieldset>
@@ -302,6 +307,18 @@
                             
                         }
                         $('#D1Box').html(str1)
+                        form.render()
+                        var str2 = ''
+                        var t1 = data.data.t1Td
+                        for (let i = 0; i < t1.length; i++) {
+                             if(t1[i].incomingParts == 0){
+                                str2 += '<input type="checkbox" name="T1rate" checked="true" value="' + t1[i].paymentChannel + '" title="' + t1[i].paymentChannelName + '">'
+                             }else{
+                                str2 += '<input type="checkbox" name="T1rate" value="' + t1[i].paymentChannel + '" title="' + t1[i].paymentChannelName + '">'
+                             }
+                            
+                        }
+                        $('#T1Box').html(str2)
                         form.render()
                         return
                         
@@ -533,7 +550,7 @@
                     layer.msg('请上传logo图片')
                     return false
                 }
-                var D0List = '',D1List = ''
+                var D0List = '',D1List = '',T1List = ''
                 data.institutionLogo = logoUrl
                 data.institutionNumber = userNumber
                 CmsUtility.postAjaxCall(
@@ -579,7 +596,32 @@
                                                 "paymentChannelList": D1List
                                             },
                                             function(data) {
-                                                layer.msg(data.msg)
+                                                if(data.code == 1000){
+                                                    var arr2 = new Array();
+                                                    $("input:checkbox[name='T1rate']:checked").each(function(i) {
+                                                        arr2[i] = $(this).val();
+                                                    });
+                                                    if(arr2.length == 1){
+                                                       T1List = arr2[0] + '&' 
+                                                    }else if(arr2.length >1){
+                                                        T1List = arr2.join('&')
+                                                    }
+                                                    // D1List = arr1.join('&')
+                                                    CmsUtility.postAjaxCall(
+                                                        //系统设置
+                                                        CmsConfig.addressUrl.Mechanism.updateTDList, {
+                                                            "institutionNumber": userNumber,
+                                                            "tDType": 'T1',
+                                                            "paymentChannelList": T1List
+                                                        },
+                                                        function(data) {
+                                                            layer.msg(data.msg)
+                                                        },
+                                                        function(data) {
+                                                            console.log('222')
+                                                        }
+                                                    )
+                                                }
                                             },
                                             function(data) {
                                                 console.log('222')

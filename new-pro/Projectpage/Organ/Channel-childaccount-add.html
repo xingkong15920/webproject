@@ -206,12 +206,13 @@
             CmsUtility.postAjaxCall(
                     //系统设置
                     CmsConfig.addressUrl.Mechanism.getZFBOfficial, {
-                        'alipayNumber':channel
+                        'alipayNumber':channel,
+                        'institutionNumber':userNumber
                     },
                     function(data) {
                         if (data.code == 1000) {
                             console.log(data)
-                            sjData = data.data[0]
+                            sjData = data.data
                              var jumphref = 'https://api.51shanhe.com/h5-pay/alioauth/oauth.html?institutionNumber=' + userNumber + '&merchantNumber='+e.getAttribute('data-name') + '&paymentChannel='+channel
                             qrcode.clear(); 
                             qrcode.makeCode('https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id='+sjData.alipayAppid+'&redirect_uri=' + jumphref); 
@@ -253,11 +254,10 @@
             },
             function(data) {
                 console.log(this.value)
-                console.log(data.data.merchantNumberlist)
                 if (data.code == 1000) {
                     var str = ''
-                    for (var i = 0; i < data.data.merchantNumberlist.length; i++) {
-                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.merchantNumberlist[i].merchantName + '" data-name="' + data.data.merchantNumberlist[i].merchantNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.merchantNumberlist[i].merchantNumber + ']' + data.data.merchantNumberlist[i].merchantName + '</div>'
+                    for (var i = 0; i < data.data.institutionSubaccountlist.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.institutionSubaccountlist[i].merchantName + '" data-name="' + data.data.institutionSubaccountlist[i].merchantNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.institutionSubaccountlist[i].merchantNumber + ']' + data.data.institutionSubaccountlist[i].merchantName + '</div>'
                     }
                     document.getElementById('searchBox').innerHTML = str
                     // layer.msg('保存成功')

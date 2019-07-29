@@ -83,6 +83,9 @@
 		<script type="text/html" id="switchBar">
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
 		</script>
+		<script type="text/html" id="switchBar1">
+			<input type="checkbox" name="consumptionPreferences1" lay-skin="switch" lay-filter="consumptionPreferences1" lay-text="启用|停用" {{d.advertJurisdiction==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
+		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">登录</a>
 			
@@ -228,6 +231,11 @@
 							
 						}, {
 							align: 'center',
+							toolbar: '#switchBar1',
+							width: 100,
+							title: '广告权限',
+						}, {
+							align: 'center',
 							toolbar: '#switchBar',
 							width: 100,
 							title: '状态',
@@ -336,6 +344,39 @@
 						}
 					)
 				});
+				form.on('switch(consumptionPreferences1)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					console.log(data)
+					// var tjData = new Object();
+					// tjData.institutionNumber = userNumber;
+					// tjData.number = data.value;
+					// tjData.state = this.checked?'0':'1';
+					// console.log(data)
+					var addData = new Object()
+					addData.institutionNumber = userNumber
+					addData.advert = this.checked?'0':'1';
+					addData.agentNumber = data.value
+
+					console.log(addData)
+					// 发送请求
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Mechanism.agentAdvert,
+						addData,
+						function(data){
+							if(data.code == 1000){
+								
+								layer.msg('更改成功')
+								// tableRender()
+							}else{
+								layer.msg(data.msg)
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+				});
 				//监听工具条
 				
 				$('#addA').click(function(){
@@ -343,7 +384,7 @@
 						type: 2,
 						title: '添加代理',
 						shade: 0.5,
-						area: [$(window).width() * 0.6+'px', '90%'],
+						area: [$(window).width() * 0.7+'px', '90%'],
 						maxmin: false,
 						resize: false,
 						content: ['Agent-add.html'],
@@ -420,7 +461,7 @@
 							type: 2,
 							title: '编辑',
 							shade: 0.5,
-							area: ['60%', '90%'],
+							area: ['70%', '90%'],
 							maxmin: false,
 							resize: false,
 							content: ['Agent-List-edit.html'],

@@ -31,7 +31,7 @@
 		<body class="login-bg organ">
 			<div class="message" id="code1">
 				<!-- <h2>Hello!</h2> -->
-				<h6 id="wel">机构管理平台-找回密码</h6>
+				<h6 id="wel">找回密码</h6>
 			</div>
 			<div method="post" class="layui-form"  style="max-width:500px">
 				<div class="layui-form-item ">
@@ -110,7 +110,7 @@
 								//系统设置
 						CmsConfig.addressUrl.Public.getSitePath,
 						{
-							"sitePath":'hongxiaosou',
+							"sitePath":'51shanhe.com',
 						},
 						function(data) {
 							console.log(data)
@@ -161,9 +161,9 @@
 								if($('#verificationCode').val() == '') {
 									return '请输入验证码';
 								}
-								if($('#verificationCode').val() != code1) {
-									return '请输入正确的验证码';
-								}
+								// if($('#verificationCode').val() != code1) {
+								// 	return '请输入正确的验证码';
+								// }
 							}
 						});
 
@@ -173,12 +173,12 @@
 							ajaData.login = $('#username').val();
 							ajaData.loginPass = $('#repassword').val();
 							ajaData.loginClass = 1;
-							ajaData.code = code1
+							ajaData.code = $('#verificationCode').val()
 							ajaData.institutionNumber = JSON.parse(sessionStorage.getItem("jgInfo")).institutionNumber
 							console.log(ajaData)
 							CmsUtility.postAjaxCall(
 								//系统设置
-								'login/updatePas',
+								'agentCommon/updatePas',
 								ajaData,
 								function(data) {
 									if(data.code == '1000') {
@@ -242,11 +242,13 @@
 					if(codeT != true){
 						return
 					}
-					CmsUtility.postAjaxCall(
+					CmsUtility.postAjaxCallPublic(
 								//系统设置
-						'Verify/salePhone',
+						'login/sendCode',
 						{
-								"phone": $('#username').val()
+								"phone": $('#username').val(),
+								"loginClass":1,
+								"institutionNumber":JSON.parse(sessionStorage.getItem("jgInfo")).institutionNumber
 						},
 						function(data) {
 							if(data.code == '1000') {

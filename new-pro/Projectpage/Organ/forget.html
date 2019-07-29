@@ -113,7 +113,7 @@
 								//系统设置
 						CmsConfig.addressUrl.Public.getSitePath,
 						{
-							"sitePath":'hongxiaosou',
+							"sitePath":'51shanhe.com',
 						},
 						function(data) {
 							console.log(data)
@@ -181,7 +181,7 @@
 							console.log(ajaData)
 							CmsUtility.postAjaxCall(
 								//系统设置
-								'login/updatePas',
+								'login/updatePassword',
 								ajaData,
 								function(data) {
 									if(data.code == '1000') {
@@ -245,11 +245,13 @@
 					if(codeT != true){
 						return
 					}
-					CmsUtility.postAjaxCall(
+					CmsUtility.postAjaxCallPublic(
 								//系统设置
-						'Verify/salePhone',
+						'login/sendCode',
 						{
-								"phone": $('#username').val()
+								"phone": $('#username').val(),
+								"loginClass":0,
+								"institutionNumber":JSON.parse(sessionStorage.getItem("jgInfo")).institutionNumber
 						},
 						function(data) {
 							if(data.code == '1000') {

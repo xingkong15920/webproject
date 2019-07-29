@@ -37,13 +37,17 @@
 						</div>
 					</div>
 					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: auto;">T1进件费率</label>
+						<div class="layui-input-item">
+							<textarea id="channelT1Rate" name="channelT1Rate" class="layui-textarea"></textarea>
+						</div>
 						<label class="layui-form-label" style="width: auto;">D0进件费率</label>
 						<div class="layui-input-item">
-							<textarea id="keyy" name="secretkey" class="layui-textarea"></textarea>
+							<textarea id="channelD0Rate" name="channelD0Rate" class="layui-textarea"></textarea>
 						</div>
 						<label class="layui-form-label" style="width: auto;">D1进件费率</label>
 						<div class="layui-input-item">
-							<textarea id="keyy1" name="secretkey1" class="layui-textarea"></textarea>
+							<textarea id="channelD1Rate" name="channelD1Rate" class="layui-textarea"></textarea>
 						</div>
 						<div class="layui-form-mid x-red">
 							<button class="layui-btn" lay-submit="" id="sub" 	>提交</button>
@@ -82,8 +86,9 @@
 									// type111 = 2
 									console.log(data)
 									form.val('secretkey', {
-											"secretkey": data.data[0].channelRate,
-											"secretkey1": data.data[0].channelD1Rate
+											"channelD0Rate": data.data[0].channelD0Rate,
+											"channelD1Rate": data.data[0].channelD1Rate,
+											"channelT1Rate":data.data[0].channelT1Rate
 										})
 									// if(!data.data[0].channelRate){
 									// 	// layer.msg(data.msg)
@@ -113,8 +118,9 @@
 						var tjData = new Object();
 						tjData.institutionNumber = userNumber;
 						tjData.id = jgData.id;
-						tjData.channelRate = $('#keyy').val()
-						tjData.channelD1Rate = $('#keyy1').val()
+						tjData.channelT1Rate = $('#channelT1Rate').val()
+						tjData.channelD1Rate = $('#channelD1Rate').val()
+						tjData.channelD0Rate = $('#channelD0Rate').val()
 						CmsUtility.postAjaxCall(
 							//系统设置
 							CmsConfig.addressUrl.Mechanism.insertChannelRate,
