@@ -17,6 +17,7 @@
 		<script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
 		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 		<!--[if lt IE 9]>
             <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -178,7 +179,7 @@
 						<li class="card_fListli">
 							<div class="card_fListliDiv">
 								<p>推荐给朋友</p>
-								<span>点击查看</span>
+								<span></span>
 							</div>
 							<i class="iconfont"></i>
 						</li>
@@ -234,6 +235,15 @@
 								<label class="layui-form-label">商户服务</label>
 								<div class="layui-input-block merservices">
 								</div>
+							</div>
+							<div class="layui-form-item max600">
+								<label class="layui-form-label">适用门店 :</label>
+								<div class="layui-input-block">
+									<input type="text" name="applyShops" class="layui-input" lay-verify="" id="symd" autocomplete="off"
+									 ts-selected="" placeholder="请选择适用门店">
+								</div>
+								<label class="layui-form-label"></label>
+								<div class="layui-form-mid layui-word-aux">空为不限制，门店核销或会员到店消费前，需要效验此项</div>
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label">图文介绍</label>
@@ -495,7 +505,7 @@
 				</div>
 			</div>
 		</div>
-		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
@@ -507,6 +517,7 @@
 			var cardCon;
 			var chooseCnum
 			var wxCardNo
+			var shopNumbers = []
 			var columnDVal = ["积分", "余额", "优惠券", "等级"]
 			var merchantSL = ["免费WIFI", "可带宠物", "免费停车", "可外卖"]
 			var imageTexts = []
@@ -521,6 +532,7 @@
 					table = layui.table,
 					form = layui.form,
 					laytpl = layui.laytpl;
+				var tableSelect = layui.tableSelect;
 
 
 				//查询有无会员卡
@@ -543,6 +555,8 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								$('.ltN').text(data.data.cardName)
+								$('#ppLogopv').attr('src', data.data.logoUrl)
+								$('.card_b_bg').attr('src', data.data.localImgUrl)
 							} else {
 								layer.msg(data.msg)
 							}
@@ -619,6 +633,16 @@
 									}
 								}
 								$('.merservices').html(strS)
+
+								// 适用门店
+								var applyShopsList = []
+								for (i = 0; i < data.data.applyShops.length; i++) {
+									applyShopsList.push(data.data.applyShops[i].split('||')[0])
+								}
+								console.log(applyShopsList)
+								$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
+								$('#symd').attr('ts-selected', applyShopsList.join(','))
+
 
 								//图文列表
 								var strTW = ''
@@ -758,13 +782,13 @@
 							}
 							if (data.code == -2) {
 								layer.closeAll('loading');
-
+								console.log(columnDVal)
 								// 栏位展示
 								var strL = ''
 								for (let i = 0; i < columnDVal.length; i++) {
 									if (i == 0) {
 										strL += '<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + cocolumnDVal[i] +
+											columnDVal[i] + '" title="' + columnDVal[i] +
 											'" lay-filter="columnDisplay" checked="" disabled="">'
 									} else {
 										strL += '<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" value="' +
@@ -790,6 +814,48 @@
 						}
 					});
 				}
+
+				tableSelect.render({
+					elem: '#symd',
+					searchKey: 'shopName',
+					checkedKey: 'shopNumber',
+					searchPlaceholder: '门店名称',
+					table: {
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+							merNumber,
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.result,
+							}
+						},
+						cols: [
+							[{
+								type: 'checkbox'
+							}, {
+								field: 'shopName',
+								title: '门店名称',
+								align: 'center',
+							}]
+						]
+					},
+					done: function(elem, data) {
+						shopNumbers.splice(0)
+						var shopname = []
+						layui.each(data.data, function(index, item) {
+							shopNumbers.push(item.shopNumber)
+							shopname.push(item.shopName)
+						})
+						elem.val('已选 ' + shopNumbers.length + ' 个门店')
+					}
+				})
 
 
 				/*---------- 图文添加 ----------*/
@@ -1241,7 +1307,15 @@
 					});
 					data.columnDisplay = arrc.join('||');
 					data.merchantService = arrm.join('||');
+					data.institutionNumber = insNumber
+					data.merchantNumber = merNumber
 					data.wxCardNo = wxCardNo
+					data.applyShops = shopNumbers
+					if (shopNumbers != '') {
+						data.shopJurisdiction = 1
+					} else {
+						data.shopJurisdiction = 0
+					}
 					console.log(data)
 					layer.load(2, {
 						shade: 0.5
@@ -1301,6 +1375,12 @@
 					data.merchantService = arrm.join('||');
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
+					data.applyShops = shopNumbers
+					if (shopNumbers != '') {
+						data.shopJurisdiction = 0
+					} else {
+						data.shopJurisdiction = 1
+					}
 					console.log(data)
 					layer.load(2, {
 						shade: 0.5

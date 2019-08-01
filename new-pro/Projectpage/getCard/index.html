@@ -8,6 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<!--<script src="js/htmlfont.js" type="text/javascript" charset="utf-8"></script>-->
 		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
 	</head>
 	<body>
@@ -67,6 +68,7 @@
 		</div>
 	</body>
 	<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./js/sweetalert.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
@@ -83,9 +85,14 @@
 		var insNumber = JSON.parse(sessionStorage.getItem('ceshi')).institutionNumber;
 		var merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl
 		var deliveryNo = window.location.href.split('?deliveryNo=')[1]
+		var tit = true
 
 		// 查询渠道详情
 		getdeliveryCon()
+		//设置页面内容
+		setTimeout(function() {
+			setCardf()
+		}, 500);
 
 		function getdeliveryCon() {
 			$.ajax({
@@ -103,30 +110,72 @@
 					if (data.code === 1000) {
 						applystore = data.data.shopNumbers
 						merNumber = data.data.merchantNumber
-						// 查询商户会员卡详情
-						getCardCon()
-						// 查询微信会员卡详情
-						getCardWxCon()
-						// 获取会员分享详情
-						getshareCard()
-						//设置页面内容
-						setTimeout(function() {
-							setCardf()
-						}, 500);
+						getshareCon(data.data.merchantNumber)
+						getCardCon(data.data.merchantNumber)
+						getCardWxCon(data.data.merchantNumber)
 					} else {
-						alert(data.msg)
-						return
+						console.log(data.msg)
+						swal({
+							title: "",
+							text: data.msg,
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: false,
+						});
 					}
 				}
 			});
 		}
 
-		function getCardCon() {
+		function getshareCon(merNum) {
+			$.ajax({
+				type: "get",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getPoster,
+				data: {
+					"merchantNumber": merNum
+				},
+				async: false,
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						if (data.data.posterEnabled == 0) {
+							$('title').html(data.data.posterTitle)
+							$('.cardBtn').css('border-radius', data.data.posButtRadius + 'px')
+							$('.cardBtn').css('opacity', data.data.posButtOpacity / 100)
+							$('.cardBtn').css('background', data.data.posButtcolor)
+							$('.cardBtn').css('color', data.data.posButtTextColor)
+							$('body').css('background-color', data.data.posterColor)
+							$('body').css('background-image', 'url(' + data.data.posterImgUrl + ')')
+							tit = false
+						}
+					} else if (data.code === -2) {
+						console.log(data.msg)
+						tit = true
+					} else {
+						console.log(data.msg)
+						swal({
+							title: "",
+							text: data.msg,
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: false,
+						});
+					}
+				}
+			});
+		}
+
+		function getCardCon(merNum) {
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard,
 				data: {
-					"merchantNumber": merNumber
+					"merchantNumber": merNum
 				},
 				async: false,
 				dataType: "json",
@@ -136,20 +185,30 @@
 				success: function(data) {
 					if (data.code === 1000) {
 						cardCon = data.data
+						if (tit) {
+							$('title').html(data.data.shareTitle)
+						}
 					} else {
-						alert(data.msg)
-						return
+						console.log(data.msg)
+						swal({
+							title: "",
+							text: data.msg,
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: false,
+						});
 					}
 				}
 			});
 		}
 
-		function getCardWxCon() {
+		function getCardWxCon(merNum) {
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard,
 				data: {
-					"merchantNumber": merNumber
+					"merchantNumber": merNum
 				},
 				async: false,
 				dataType: "json",
@@ -161,14 +220,22 @@
 						wxCardNo = data.data.wxCardNo
 						subtitle = data.data.subtitle
 					} else {
-						alert(data.msg)
-						return
+						console.log(data.msg)
+						swal({
+							title: "",
+							text: data.msg,
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: false,
+						});
 					}
 				}
 			});
 		}
 
 		function getshareCard() {
+			console.log(merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl)
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Card.shareCard,
@@ -186,11 +253,17 @@
 				},
 				success: function(data) {
 					if (data.code === 1000) {
-						console.log(data.data.codeUrl)
-						showQrcodeUrl = data.data.showQrcodeUrl
+						window.location.href = data.data.showQrcodeUrl
 					} else {
-						alert(data.msg)
-						return
+						console.log(data.msg, 1111)
+						swal({
+							title: "",
+							text: data.msg,
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: false,
+						});
 					}
 				}
 			});
@@ -206,7 +279,7 @@
 				},
 				methods: {
 					takeCard: function() {
-						window.location.href = showQrcodeUrl
+						getshareCard()
 					}
 				},
 				mounted() {
