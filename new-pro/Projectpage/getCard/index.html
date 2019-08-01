@@ -38,7 +38,7 @@
 			</div>
 			<div class="detaili shareD" v-cloak>
 				<label>分享说明</label>
-				<p>{{setCard.shareDescribe}}</p>
+				<p>{{shareDescribe}}</p>
 			</div>
 			<ul class="cardDul" v-cloak>
 				<div class="cardDulTit">[会员卡详情]</div>
@@ -82,7 +82,7 @@
 		}
 		sessionStorage.setItem("ceshi", JSON.stringify(ceshi));
 		var insNumber = JSON.parse(sessionStorage.getItem('ceshi')).institutionNumber;
-		var merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl
+		var merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl, shareDescribeText
 		var deliveryNo = window.location.href.split('?deliveryNo=')[1]
 		var tit = true
 
@@ -142,6 +142,7 @@
 				success: function(data) {
 					if (data.code === 1000) {
 						if (data.data.posterEnabled == 0) {
+							shareDescribeText = data.data.posterShareExplain
 							$('title').html(data.data.posterTitle)
 							$('.cardBtn').css('border-radius', data.data.posButtRadius + 'px')
 							$('.cardBtn').css('opacity', data.data.posButtOpacity / 100)
@@ -185,6 +186,7 @@
 					if (data.code === 1000) {
 						cardCon = data.data
 						if (tit) {
+							shareDescribeText = data.data.shareDescribe
 							$('title').html(data.data.shareTitle)
 						}
 					} else {
@@ -272,6 +274,7 @@
 			new Vue({
 				el: '#getCardB',
 				data: {
+					shareDescribe: shareDescribeText,
 					setCard: cardCon,
 					store: applystore,
 					subtitle: subtitle,
