@@ -556,9 +556,14 @@
 							if (data.code === 1000) {
 								$('.ltN').text(data.data.cardName)
 								$('#ppLogopv').attr('src', data.data.logoUrl)
-								$('.card_b_bg').attr('src', data.data.localImgUrl)
+								if (data.data.localImgUrl) {
+									$('.card_b_bg').attr('src', data.data.localImgUrl)
+								} else {
+									$('#cardBimg').hide()
+								}
 							} else {
-								layer.msg(data.msg)
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
 							}
 						}
 					});
@@ -578,7 +583,8 @@
 								cardCon = data.data
 								wxCardNo = data.data.wxCardNo
 								$('.ltNamepv').text(data.data.subtitle)
-								$('#cardBimg').attr('src', data.data.logoUrl);
+								$('#cardBimg').show();
+								$('#cardBimg').attr('src', data.data.localImgUrl);
 								$('#ppLogopv').attr('src', data.data.logoUrl);
 								console.log(data.data.columnDisplay)
 								// 栏位展示
@@ -779,9 +785,9 @@
 
 								form.render('checkbox')
 								$('.addBtn').attr('lay-filter', 'update')
-							}
-							if (data.code == -2) {
+							} else if (data.code === -2) {
 								layer.closeAll('loading');
+								layer.msg(data.msg + '，请添加')
 								console.log(columnDVal)
 								// 栏位展示
 								var strL = ''
@@ -810,6 +816,10 @@
 								form.render('checkbox')
 								cardCon = ''
 								$('.addBtn').attr('lay-filter', 'add')
+							} else {
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
+
 							}
 						}
 					});
@@ -1336,7 +1346,8 @@
 								parent.layer.msg(data.msg)
 								location.replace(location.href)
 							} else {
-								layer.msg(data.msg)
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
 							}
 						}
 					});
@@ -1401,7 +1412,8 @@
 								parent.layer.msg(data.msg)
 								location.replace(location.href)
 							} else {
-								layer.msg(data.msg)
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
 							}
 						}
 					});

@@ -96,7 +96,7 @@
 						</div>
 						<div class="space10"></div>
 						<ul class="card_fList">
-							<li class="card_fListli">
+							<li class="card_fListli vipCardLink">
 								付费升级
 								<i class="iconfont"></i>
 							</li>
@@ -362,9 +362,9 @@
 								form.render('checkbox')
 								$('.addBtn').text('更新会员卡')
 								$('.addBtn').attr('lay-filter', 'update')
-							}
-							if (data.code == -2) {
+							} else if (data.code === -2) {
 								layer.closeAll('loading');
+								layer.msg(data.msg + '，请添加')
 								cardCon = ''
 								var str = ''
 								for (let i = 0; i < cardsetVal.length; i++) {
@@ -380,6 +380,9 @@
 								form.render('checkbox')
 								$('.addBtn').text('添加会员卡')
 								$('.addBtn').attr('lay-filter', 'add')
+							} else {
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
 							}
 						}
 					});
@@ -660,6 +663,10 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
+							} else {
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
 							}
 						}
 					});
@@ -707,9 +714,10 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								layer.closeAll('loading');
-								layer.msg(data.msg)
+								parent.layer.msg(data.msg)
 							} else {
-								layer.msg(data.msg)
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
 							}
 						}
 					});

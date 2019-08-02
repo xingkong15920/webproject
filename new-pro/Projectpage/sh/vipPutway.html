@@ -27,15 +27,23 @@
 				<button class="layui-btn" onclick="x_admin_show('添加渠道','vipPutwayAdd.html',600)"><i class="layui-icon"></i>添加渠道</button>
 			</xblock>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
+			<div class="cardQrcode" style="display: none;">
+				<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
+			</div>
 		</div>
 		<script type="text/html" id="switchBar">
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.enable==0 ? 'checked' : ''}}  data-shopNumber="{{d.shopNumber}}" value="{{d.enable}}">
+		</script>
+		<script type="text/html" id="shareBar">
+			<a class="layui-btn layui-btn-xs" lay-event="wxlink">微信卡券</a>
+			<a class="layui-btn layui-btn-xs" lay-event="shlink">领取链接</a>
 		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
+		<script src="../../public/js/qrcode.js"></script>
 		<script>
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
@@ -113,9 +121,7 @@
 							title: '二维码',
 							align: 'center',
 							width: 180,
-							templet: function(data) {
-								return '微信卡券：领取链接：'
-							}
+							toolbar: "#shareBar"
 						}, {
 							field: 'giveMoney',
 							title: '赠送金额',
@@ -177,7 +183,27 @@
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
 
-					if (obj.event === 'delete') {
+					if (obj.event === 'wxlink') {
+						qrcode.makeCode(data.getCardUrl);
+						layer.open({
+							type: 1,
+							shadeClose: true,
+							shade: 0.5,
+							title: false,
+							area: ['380px', '380px'],
+							content: $('.cardQrcode'),
+						});
+					} else if (obj.event === 'shlink') {
+						qrcode.makeCode(data.getCardUrl);
+						layer.open({
+							type: 1,
+							shadeClose: true,
+							shade: 0.5,
+							title: false,
+							area: ['380px', '380px'],
+							content: $('.cardQrcode'),
+						});
+					} else if (obj.event === 'delete') {
 						// 弹出是删除询问框
 						layer.confirm('确定要删除此折扣设置？', function(index) {
 							var mydata = {
@@ -230,6 +256,11 @@
 				$('.layui-form .layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
+				});
+
+				var qrcode = new QRCode(document.getElementById("qrcode"), {
+					width: 340,
+					height: 340
 				});
 			});
 		</script>

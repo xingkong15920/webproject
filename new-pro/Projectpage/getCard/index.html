@@ -72,18 +72,24 @@
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script>
+		
+		function getQueryString(name) {
+		    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+		    var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+		    if (r != null) {
+		        return unescape(r[2]);
+		    }
+		    return null;
+		}
+		
 		var _w = $(window).width()
 		var _h = (_w - 60) / 1.68449197
 		$('.cardB').width(_w - 60)
 		$('.cardB').height(_h)
 
-		var ceshi = {
-			"institutionNumber": 1004,
-		}
-		sessionStorage.setItem("ceshi", JSON.stringify(ceshi));
-		var insNumber = JSON.parse(sessionStorage.getItem('ceshi')).institutionNumber;
 		var merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl, shareDescribeText
-		var deliveryNo = window.location.href.split('?deliveryNo=')[1]
+		var deliveryNo = getQueryString('deliveryNo')
+		var insNumber = getQueryString('institutionNumber')
 		var tit = true
 
 		// 查询渠道详情
