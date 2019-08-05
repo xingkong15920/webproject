@@ -88,7 +88,12 @@
                         <input type="text" name="recommendAppid" lay-verify="recommendAppid||title" autocomplete="off" placeholder="请输入推荐关注APPID" class="layui-input" id="number2">
                     </div>
                 </div>
-                
+                <div class="layui-form-item" id="sxf123221" style="display:none">
+                    <label class="layui-form-label">微信子商户号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="SxfsubMchId" lay-verify="" autocomplete="off" placeholder="请输入微信子商户号" class="layui-input" id="SxfsubMchId">
+                    </div>
+                </div>
                 <div class="layui-input-block">
                    <input type="button" class="layui-btn"  value="查询" id="check">
 			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="报备" id="sub" style="display:none">
@@ -120,6 +125,9 @@
         var jgData = data
        
         console.log(jgData)
+        if(jgData.paymentChannelType == 5){
+            $('#sxf123221').show()
+        }
         if(jgData.paymentChannelType == 4){
             $('.xdl').show()
             CmsUtility.postAjaxCall(
@@ -139,7 +147,9 @@
                        
                     }
                     
-
+                    if(data.data. == 5){
+                        layer.msg('该商户暂有审核状态，请稍后报备')
+                    }
 
                 } else {
                     layer.alert(data.msg)
@@ -671,6 +681,7 @@
                 tjData.subappid = data.field.appid
                 tjData.appkey = data.field.appkey
                 tjData.wxType = data.field.wxType
+                tjData.SxfsubMchId = data.field.SxfsubMchId
                 tjData.subscribeappid = data.field.recommendAppid
                 tjData.paymentType = jgData.paymentChannelType
                 CmsUtility.postAjaxCall(
@@ -678,9 +689,10 @@
                     CmsConfig.addressUrl.Mechanism.weChatPut,
                     tjData,
                     function(data) {
+                        layer.closeAll()
                         if (data.code == 1000) {
                             // type111 = 2
-                            layer.closeAll()
+                            
                             layer.msg(data.msg)
                             // x_admin_close()
                             // parent.layer.msg('生成成功')

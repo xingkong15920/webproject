@@ -88,8 +88,10 @@
                           <input type="radio" name="subsidy" value="0" title="补贴商户A"> -->
                           <select name="subsidyType" id="merchantEnble" >
                             
-                            <option value="0">补贴商户A</option>
                             <option value="1">普通商户</option>
+                            <option value="0" >补贴商户A</option>
+                            <option value="2" >补贴商户B</option>
+                            <option value="3" >餐饮补贴A</option>
                         </select>
                         </div>
                     </div>
@@ -97,7 +99,7 @@
                     <label class="layui-form-label">状态</label>
                     <div class="layui-input-inline">
                         <div class="layui-input-inline">
-                            <input type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关" checked>
+                            <input class="layui-checkbox" type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关" checked>
                         </div>
                     </div>
                 </div>
@@ -337,14 +339,13 @@
                     "limit":100
                 },
                 function(data) {
-                    console.log(this.value)
-                    console.log(data.data)
+                    
                     if (data.code == 1000) {
                         var str = ''
 
-                        for (var i = 0; i < data.data.merchantNumberlist.length; i++) {
-                            str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.merchantNumberlist[i].merchantName + '" data-name="' + data.data.merchantNumberlist[i].merchantNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.merchantNumberlist[i].merchantNumber + ']' + data.data.merchantNumberlist[i].merchantName + '</div>'
-                        }
+                        for (var i = 0; i < data.data.institutionSubaccountlist.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.institutionSubaccountlist[i].merchantName + '" data-name="' + data.data.institutionSubaccountlist[i].merchantNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.institutionSubaccountlist[i].merchantNumber + ']' + data.data.institutionSubaccountlist[i].merchantName + '</div>'
+                    }
                         document.getElementById('searchBox').innerHTML = str
                         // layer.msg('保存成功')
                         // setTimeout(function(){
@@ -478,7 +479,8 @@
                 tjData.merchantNumber = document.getElementById('search').getAttribute('shopNumber')
             }
             tjData.paymentChannel = channel
-
+            tjData.channelType = payment
+            tjData.rate = tjData.rate.replace('%','')
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.insertInstitutionSub,

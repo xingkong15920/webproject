@@ -20,7 +20,7 @@
         var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
        //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
         
-        postData = JSON.parse(JSON.stringify(postData).replace(/ /g,''))
+        postData = JSON.parse(JSON.stringify(postData).replace(/\s+/g,''))
         $.ajax({
             type: type,
             url: fullUrl, 
