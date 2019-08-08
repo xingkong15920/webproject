@@ -86,19 +86,15 @@
 							<input type="radio"  id="dlNum1027" style="display:none"  name="agentType" value="3" title="股权服务商" lay-filter="cardvalid">
 						</div>
 					</div>
-					<div class="layui-form-item">
+					<!-- <div class="layui-form-item">
                     <label class="layui-form-label">选择服务商</label>
                     <div class="layui-input-block">
                         <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择服务商，如不选，则为一级服务商" class="layui-input" id="agName"   onblur="bl()" onfocus="fc()">
                         <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
-                            <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
-                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
-                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
-                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
-                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div> -->
+                            
                         </div>
                     </div>
-                </div>
+                </div> -->
 					<div class="layui-form-item">
 						<label class="layui-form-label">服务商名称</label>
 						<div class="layui-input-block">
@@ -331,7 +327,7 @@
 		<script src="../../common/config-organ.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
+			if(JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber == '1027'){
 				$("#dlNum1027").show()
 			}
 		var index = parent.layer.getFrameIndex(window.name);
@@ -394,7 +390,7 @@
 
     }
     var serverUrl = window.parent.serverUrl
-    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
         var $ = layui.jquery,
             upload = layui.upload,
@@ -410,7 +406,7 @@
         // },100)
         CmsUtility.postAjaxCall(
 						//系统设置
-				CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("organUser")).institutionNumber,
+				CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber,
 				{
 					"page":1,
 					"limit":10
@@ -660,14 +656,13 @@
             // layer.alert(JSON.stringify(data.field), {
             //  title: '最终的提交信息'
             // })
-            console.log($('#agName').attr('agentNumber'))
             
             var index = layer.load(2, {shade: [0.4, '#393D49']})
             var addData = data.field
             addData.institutionNumber = userNumber
             addData.Deletion_Flag = '0'
-            addData.pAgentNumber = $('#agName').attr('agentNumber')
-            addData.pAgentLevel = $('#agName').attr('agentType')
+            addData.pAgentNumber = JSON.parse(sessionStorage.getItem("agentUser")).Number
+            addData.pAgentLevel = JSON.parse(sessionStorage.getItem("agentUser")).agentLevel
             addData.aliRate  = (addData.aliRate/10000*100).toFixed(5)
             addData.wecharRate = (addData.wecharRate/10000*100).toFixed(5)
             addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(5)

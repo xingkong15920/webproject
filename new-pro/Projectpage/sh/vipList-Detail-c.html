@@ -16,6 +16,7 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
 		<style type="text/css">
 			.iframe_index_1::-webkit-scrollbar {
 				display: none;
@@ -28,6 +29,28 @@
 			.max360 {
 				max-width: 360px;
 				width: 100% !important;
+			}
+
+			.max180 {
+				max-width: 175px;
+				width: 100% !important;
+			}
+
+			.labelConsome {
+				height: 38px;
+				padding-top: 0;
+				padding-bottom: 0;
+				display: flex;
+				justify-content: flex-end;
+				align-items: flex-end;
+			}
+
+			.layui-table-body.layui-table-main {
+				height: 156px;
+			}
+
+			.layui-form.layui-border-box.layui-table-view {
+				height: 240px;
 			}
 		</style>
 	</head>
@@ -58,6 +81,16 @@
 								<input type="radio" name="changeType" value="0" title="消费扣款" lay-filter="changeType" checked="true">
 								<input type="radio" name="changeType" value="1" title="现金充值" lay-filter="changeType">
 								<input type="radio" name="changeType" value="2" title="积分变更" lay-filter="changeType">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label labelConsome">操作门店<br>操作员</label>
+							<div class="layui-input-inline max180">
+								<input type="text" id="selectMd" lay-verify="selectMd" autocomplete="off" readonly="readonly" placeholder="选择操作门店"
+								 class="layui-input">
+							</div>
+							<div class="layui-input-inline max180 dySelect" style="display: none;">
+								<input type="text" id="selectDy" autocomplete="off" readonly="readonly" placeholder="选择操作员" class="layui-input">
 							</div>
 						</div>
 						<div class="saleB">
@@ -114,7 +147,12 @@
 			$('.iframe_index_1').height(_h2)
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var shopNumber
+			var shopNumber,
+				clerkNumber,
+				oldVal,
+				newVal
+			var clerkNumbers = []
+			var shopNumbers = []
 
 			function subPageCon(mNo) {
 				var memberNo = mNo
@@ -125,7 +163,111 @@
 						element = layui.element,
 						laydate = layui.laydate,
 						form = layui.form;
+					var tableSelect = layui.tableSelect;
 
+					tableSelect.render({
+						elem: '#selectMd',
+						searchKey: 'shopName',
+						checkedKey: 'shopNumber',
+						searchPlaceholder: '门店名称',
+						table: {
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+								merNumber,
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.result,
+								}
+							},
+							cols: [
+								[{
+									type: 'radio'
+								}, {
+									field: 'shopName',
+									title: '门店名称',
+									align: 'center',
+								}]
+							]
+						},
+						done: function(elem, data) {
+							shopNumbers.splice(0)
+							var shopname = [],
+								shopNum = ''
+							layui.each(data.data, function(index, item) {
+								shopNumbers.push(item.shopNumber)
+								shopname.push(item.shopName)
+								newVal = item.shopNumber
+								shopNumber = item.shopNumber
+							})
+							elem.val(shopname.join('||'))
+							if (shopNumbers.length == 1) {
+								$('.dySelect').show()
+								$('.dySelect').find('input').attr('lay-verify', 'selectDy')
+								dyselect()
+							} else {
+								$('.dySelect').hide()
+								$('.dySelect').find('input').removeAttr('lay-verify')
+							}
+						}
+					});
+
+					function dyselect() {
+						tableSelect.render({
+							elem: '#selectDy',
+							searchKey: 'clerkName',
+							checkedKey: 'clerkNumber',
+							searchPlaceholder: '等级名称',
+							table: {
+								url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' +
+									merNumber + '&shopNumber=' + shopNumbers[0],
+								response: {
+									"statusCode": "1000", //解析接口状态
+								},
+								parseData: function(res) {
+									if (res.data == null) {
+										return
+									}
+									return {
+										"code": res.code,
+										"count": res.data.count,
+										"data": res.data.result,
+									}
+								},
+								cols: [
+									[{
+										type: 'radio'
+									}, {
+										field: 'clerkName',
+										title: '店员名称',
+										align: 'center',
+										width: 150,
+									}, {
+										field: 'shopName',
+										title: '所属门店',
+										align: 'center',
+										width: 200,
+									}]
+								]
+							},
+							done: function(elem, data) {
+								clerkNumbers.splice(0)
+								var clerkName = ''
+								layui.each(data.data, function(index, item) {
+									clerkNumbers.push(item.clerkNumber)
+									clerkName = item.clerkName
+									clerkNumber = item.clerkNumber
+								})
+								elem.val(clerkName)
+							}
+						})
+					}
 
 					/*---------- 积分时效 ----------*/
 					form.on('radio(changeType)', function(data) {
@@ -155,6 +297,16 @@
 					});
 					/*---------- 自定义验证规则 ----------*/
 					form.verify({
+						selectMd: function(value) {
+							if (value == '') {
+								return '请选择消费门店！';
+							}
+						},
+						selectDy: function(value) {
+							if (value == '') {
+								return '请选择操作员！';
+							}
+						},
 						consumMoney: function(value) {
 							if (value == '') {
 								return '请填写消费金额！';
@@ -182,8 +334,8 @@
 						data.institutionNumber = insNumber
 						data.merchantNumber = merNumber
 						data.memberNo = memberNo
-						data.shopNumber = ''
-						data.clerkNumber = ''
+						data.shopNumber = shopNumber
+						data.clerkNumber = clerkNumber
 						if (data.changeType == 0) {
 							data.consumMoney = $('#consumMoney').val()
 						} else if (data.changeType == 1) {
@@ -193,7 +345,7 @@
 							data.integral = $('#integral').val()
 						}
 						console.log(data)
-
+						// return
 						// 发送请求
 						$.ajax({
 							type: "post",

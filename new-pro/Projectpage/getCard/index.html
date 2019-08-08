@@ -16,7 +16,7 @@
 				<div class="loading"></div>
 			</div>
 		</div>
-		<div class="getCardB" id="getCardB">
+		<div class="getCardB" id="getCardB" style="display:none">
 			<div class="cardB" v-cloak>
 				<div class="cardB_lt">
 					<img :src="setCard.logoUrl" class="cardB_lt_img">
@@ -69,35 +69,99 @@
 	<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/sweetalert.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script>
-		
 		function getQueryString(name) {
-		    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-		    var r = decodeURIComponent(window.location.search).substr(1).match(reg);
-		    if (r != null) {
-		        return unescape(r[2]);
-		    }
-		    return null;
+			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
 		}
-		
+
 		var _w = $(window).width()
 		var _h = (_w - 60) / 1.68449197
 		$('.cardB').width(_w - 60)
 		$('.cardB').height(_h)
 
-		var merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl, shareDescribeText
-		var deliveryNo = getQueryString('deliveryNo')
-		var insNumber = getQueryString('institutionNumber')
+		var cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl, shareDescribeText
+		var deliveryNo
+		var insNumber
+		var merNumber
+		var shareLink = ''
 		var tit = true
+		var mebInfo
+		var weixinCode
+		var comId
+		if (window.location.href.indexOf('code=') == -1) {
+			deliveryNo = getQueryString('deliveryNo')
+			insNumber = getQueryString('institutionNumber')
+			merNumber = getQueryString('merchantNumber')
+		} else {
+			deliveryNo = JSON.parse(sessionStorage.getItem('num')).deliveryNo
+			insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+			merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+		}
 
-		// 查询渠道详情
-		getdeliveryCon()
-		//设置页面内容
-		setTimeout(function() {
-			setCardf()
-		}, 500);
+		$.ajax({
+			url: "http://192.168.1.66/shanhe-member/server/getMerAppId?merchantNumber=" + merNumber,
+			type: "GET",
+			async: false,
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded"
+			},
+			success: function(data) {
+				// alert(data)
+				if (data.code != 1000) {
+					alert(data.msg)
+				}
+				weixinCode = data.data.appId;
+				comId = data.data.componentAppid;
+			}
+		})
+		var code;
+		if (window.location.href.indexOf('code=') == -1) {
+
+			var num = {
+				"deliveryNo": getQueryString('deliveryNo'),
+				"institutionNumber": getQueryString('institutionNumber'),
+				"merchantNumber": getQueryString('merchantNumber')
+			}
+			sessionStorage.setItem("num", JSON.stringify(num));
+			var scope = "snsapi_userinfo";
+			var redirect_uri = window.location.href;
+			window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + weixinCode + '&redirect_uri=' +
+				redirect_uri + '&response_type=code&scope=' + scope + '&state=STATE&component_appid=' + comId + '#wechat_redirect'
+		} else {
+
+			code = window.location.href.split('code=')[1].split('&')[0];
+			$.ajax({
+				url: "http://192.168.1.66/shanhe-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
+					weixinCode + '&code=' + code,
+				type: "GET",
+				async: false,
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded"
+				},
+				success: function(data) {
+					alert(JSON.stringify(data))
+					getdeliveryCon()
+					mebInfo = data.data
+					if (data.code == '-2') {
+						getCardWxCon()
+						setTimeout(function() {
+							getshareCard()
+						}, 1000);
+					} else if (data.code == '1000') {
+						$('#getCardB').show()
+					}
+				}
+			})
+		}
+
 
 		function getdeliveryCon() {
 			$.ajax({
@@ -114,10 +178,9 @@
 				success: function(data) {
 					if (data.code === 1000) {
 						applystore = data.data.shopNumbers
-						merNumber = data.data.merchantNumber
-						getshareCon(data.data.merchantNumber)
-						getCardCon(data.data.merchantNumber)
-						getCardWxCon(data.data.merchantNumber)
+						getshareCon()
+						getCardCon()
+						getCardWxCon()
 					} else {
 						console.log(data.msg)
 						swal({
@@ -133,12 +196,12 @@
 			});
 		}
 
-		function getshareCon(merNum) {
+		function getshareCon() {
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getPoster,
 				data: {
-					"merchantNumber": merNum
+					"merchantNumber": merNumber
 				},
 				async: true,
 				dataType: "json",
@@ -176,14 +239,14 @@
 			});
 		}
 
-		function getCardCon(merNum) {
+		function getCardCon() {
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard,
 				data: {
-					"merchantNumber": merNum
+					"merchantNumber": merNumber
 				},
-				async: true,
+				async: false,
 				dataType: "json",
 				headers: {
 					"Content-Type": "application/json"
@@ -195,6 +258,10 @@
 							shareDescribeText = data.data.shareDescribe
 							$('title').html(data.data.shareTitle)
 						}
+						//设置页面内容
+						setTimeout(function() {
+							setCardf()
+						}, 500);
 					} else {
 						console.log(data.msg)
 						swal({
@@ -210,12 +277,12 @@
 			});
 		}
 
-		function getCardWxCon(merNum) {
+		function getCardWxCon() {
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard,
 				data: {
-					"merchantNumber": merNum
+					"merchantNumber": merNumber
 				},
 				async: true,
 				dataType: "json",
@@ -242,7 +309,7 @@
 		}
 
 		function getshareCard() {
-			console.log(merNumber, cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl)
+			alert(wxCardNo)
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Card.shareCard,
@@ -259,8 +326,10 @@
 					"Content-Type": "application/json"
 				},
 				success: function(data) {
+
 					if (data.code === 1000) {
-						window.location.href = data.data.showQrcodeUrl
+						shareLink = data.data.getCardUrl
+						window.location.href = data.data.getCardUrl
 					} else {
 						console.log(data.msg, 1111)
 						swal({

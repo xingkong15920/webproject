@@ -141,7 +141,7 @@
 						<div class="getCardB" id="getCardB">
 							<div class="cardB">
 								<div class="cardB_lt">
-									<img src="http://jg1004.oss-cn-beijing.aliyuncs.com/crm/logo/1564217346001.png" class="cardB_lt_img">
+									<img src="" class="cardB_lt_img">
 									<div class="cardB_lt_name">
 										<h3>闪盒收银</h3>
 										<p>未来新零售</p>
@@ -153,7 +153,7 @@
 								<div class="cardB_rt">
 									<img src="../../public/images/erweima-2@2x.png">
 								</div>
-								<img src="http://jg1004.oss-cn-beijing.aliyuncs.com/crm/background/1564217436664.png" class="cardBbg">
+								<img src="" class="cardBbg">
 							</div>
 							<div class="cardBtn">
 								立即领取
@@ -404,7 +404,12 @@
 							if (data.code === 1000) {
 								$('.cardB_lt_name h3').text(data.data.cardName)
 								$('.cardB_lt_img').attr('src', data.data.logoUrl)
-								$('.cardBbg').attr('src', data.data.localImgUrl)
+								if (data.data.localImgUrl != null) {
+									$('.cardBbg').attr('src', data.data.localImgUrl)
+								} else {
+									$('.cardBbg').remove()
+								}
+								$('.cardB').css('background-color', data.data.color)
 							} else {
 								layer.msg(data.msg)
 							}
@@ -438,7 +443,7 @@
 
 
 				setTimeout(function() {
-				console.log(posButtcolor, posButtTextColor)
+					console.log(posButtcolor, posButtTextColor)
 					//颜色选择器
 					colorpicker.render({
 						elem: '#color_btn',

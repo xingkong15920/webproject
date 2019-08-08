@@ -58,9 +58,10 @@
 					<div class="layui-input-inline">
 						<select name="type" id="agentType">
 							<option value="">代理商类型</option>
-							<option value="0">全国代理商</option>
-							<option value="1">省级代理商</option>
-							<option value="2">市级代理商</option>
+							<option value="0">全国服务商</option>
+							<option value="1">省级服务商</option>
+							<option value="2">市级服务商</option>
+							<option id="dlNum1027" style="display:none" value="3">市级服务商</option>
 						</select>
 					</div>
 					<div class="layui-input-inline coupons_screen">
@@ -98,6 +99,9 @@
 		<script>
 			// <a class="layui-btn layui-btn-xs" id="rate" lay-event="rate">费率</a>
 			// 
+			if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
+				$("#dlNum1027").show()
+			}
 			function changeRes(res){
 				if(res == null){
 					return
@@ -105,13 +109,16 @@
 				var res = res.agentRegisterlist
 				for(var i = 0 ; i < res.length;i++){
 					if(res[i].agentType == 0){
-						res[i].agentType1 = '全国代理商'
+						res[i].agentType1 = '全国服务商'
 					}
 					if(res[i].agentType == 1){
-						res[i].agentType1 = '省级代理商'
+						res[i].agentType1 = '省级服务商'
 					}
 					if(res[i].agentType == 2){
-						res[i].agentType1 = '市级代理商'
+						res[i].agentType1 = '市级服务商'
+					}
+					if(res[i].agentType == 3){
+						res[i].agentType1 = '股权服务商'
 					}
 				}				
 				return res

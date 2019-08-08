@@ -100,6 +100,9 @@
 				border-radius: 50%;
 				overflow: hidden;
 			}
+			.layui-btn+.layui-btn{
+				margin: 0;
+			}
 		</style>
 	</head>
 
@@ -124,7 +127,7 @@
 					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
 				</div>
 			</div>
-			<div class="layui-row layui-col-space15">
+			<!-- <div class="layui-row layui-col-space15">
 				<div class="layui-col-md2">
 					<div class="statisticsB">
 						<p class="huizongTit x-red">会员总数</p>
@@ -168,7 +171,7 @@
 						</ul>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
 		<script type="text/html" id="tool">
@@ -215,7 +218,8 @@
 					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers + '?merchantNumber=' +
 						merNumber,
 					method: "get",
-					height: 'full-287',
+					// height: 'full-287',
+					height: 'full-87',
 					page: true,
 					id: 'vipList',
 					response: {
@@ -227,7 +231,7 @@
 						}
 						return {
 							"code": res.code,
-							"count": res.data.count,
+							"count": res.data.memberCount,
 							"data": res.data.memberList,
 						}
 					},
@@ -237,9 +241,10 @@
 							title: '头像',
 							align: 'center',
 							width: 70,
+							fixed: 'left',
 							templet: function(data) {
-								if (data.headImg == '') {
-									return '<img src="../../public/images/vip-img.jpg" class="vipImg">'
+								if (!data.headImg) {
+									return '<img src="../../public/images/huiyuan.png" class="vipImg">'
 								} else {
 									return '<img src="' + data.headImg + '" class="vipImg">'
 								}
@@ -248,6 +253,7 @@
 							field: 'name',
 							title: '姓名',
 							align: 'center',
+							fixed: 'left',
 							width: 150
 						}, {
 							field: 'nickName',
@@ -258,7 +264,7 @@
 							field: 'memberNo',
 							title: '会员卡号',
 							align: 'center',
-							width: 220
+							width: 160
 						}, {
 							field: 'cell',
 							title: '手机号',
@@ -302,9 +308,9 @@
 						}, {
 							field: 'operation',
 							title: '操作',
-							align: 'center',
+							align: 'left',
 							toolbar: "#tool",
-							minWidth: 300
+							minWidth: 250
 						}]
 					],
 					done: function(res, curr, count) {
@@ -330,7 +336,7 @@
 							type: 2,
 							title: false,
 							offset: 'r',
-							area: ['70%', '100%'],
+							area: ['700px', '100%'],
 							shade: 0.6,
 							shadeClose: true,
 							anim: 2,
@@ -362,7 +368,7 @@
 						layer.open({
 							type: 2,
 							title: '资金变更',
-							area: ['600px', '600px'],
+							area: ['650px', '650px'],
 							content: 'vipList-Detail-c.html',
 							success: function(layero, index) {
 								// 获取父页面的iframe

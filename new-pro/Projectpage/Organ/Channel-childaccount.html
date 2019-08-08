@@ -40,6 +40,12 @@
 				height: 28px;
 				border: none;
 			}
+		.copyInput{
+			position: absolute;
+			left: 0;
+			top: 0;
+			opacity: 0
+		}
 		</style>
 	</head>
 
@@ -88,6 +94,9 @@
 			
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
+		<script type="text/html" id="subNumber">
+			<div class="layui-table-cell " }})" lay-event="copy">{{d.subaccountNumber}}</div>
+		</script>
 		<script src="../../common/config-organ.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
@@ -101,7 +110,26 @@
 			    }
 			    return temp;
 			}
-			
+			function copyText(text) {
+		        var textarea = document.createElement("input");//创建input对象
+		         textarea.className="copyInput"
+		        var currentFocus = document.activeElement;//当前获得焦点的元素
+		        document.body.appendChild(textarea);//添加元素
+		        textarea.value = text;
+		        textarea.focus();
+		        if(textarea.setSelectionRange)
+		            textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
+		        else
+		            textarea.select();
+		        try {
+		            var flag = document.execCommand("copy");//执行复制
+		        } catch(eo) {
+		            var flag = false;
+		        }
+		        document.body.removeChild(textarea);//删除元素
+		        currentFocus.focus();
+		        return flag;
+		    }
 			var table1 = '费率'
 			function subPage(data,data1){
 				var jgData = data
@@ -215,7 +243,8 @@
 									align: 'center',
 									field: 'subaccountNumber',
 									width: 150,
-									title: '子商户编号'
+									title: '子商户编号',
+									toolbar: '#subNumber',
 								}, {
 									align: 'center',
 									field: 'rate',
@@ -398,6 +427,11 @@
 									iframe.subPage(data, userNumber)
 								}
 							});
+						}else if(obj.event == 'copy'){
+							console.log(data)
+							var ssrsss = data.subaccountNumber
+					        var flag = copyText(ssrsss); //传递文本
+					        layer.msg(flag ? "复制成功！" : "复制失败！");
 						}else if(obj.event === 'rate'){
 								// layer.msg('rate')
 								layer.open({

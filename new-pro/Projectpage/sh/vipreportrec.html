@@ -25,16 +25,16 @@
 		<div class="x-body iframe_index_1_con">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员昵称" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="会员昵称" name="name" id="mebname">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="充值订单号" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="充值订单号" name="name" id="recNum">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员手机号" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="会员手机号" name="name" id="cell">
 				</div>
 				<div class="layui-input-inline">
-					<select name="quiz3">
+					<select name="quiz3" id="allMd">
 						<option value="">全部门店</option>
 						<option value="00010">书香门店</option>
 						<option value="00011">文文便利店</option>
@@ -42,16 +42,15 @@
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<select name="quiz3">
+					<select name="payType" id="payType">
 						<option value="">支付方式</option>
-						<option value="0">支付宝</option>
+						<option value="0">现金</option>
 						<option value="1">微信</option>
-						<option value="2">云闪付</option>
-						<option value="3">京东支付</option>
+						<option value="2">支付宝</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<select name="quiz3">
+					<select name="quiz3" id="shouyiny">
 						<option value="">收银员</option>
 						<option value="0001001">李烈</option>
 						<option value="0001002">王胖</option>
@@ -65,7 +64,7 @@
 					<input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
 				</div>
 				<div class="layui-input-inline">
-					<button class="layui-btn" id="search">
+					<button class="layui-btn" id="search" data-type="reload">
 						<i class="layui-icon">&#xe615;</i>
 					</button>
 				</div>
@@ -276,7 +275,7 @@
 								field: 'rechrgeNo',
 								title: '充值单号',
 								align: 'center',
-								width: 380,
+								width: 200,
 							}, {
 								field: 'name',
 								title: '会员姓名',
@@ -313,19 +312,22 @@
 								templet: function(data) {
 									switch (data.orderSource) {
 										case 0:
-											return 'PC收银台'
+											return '商户后台'
 											break;
 										case 1:
 											return '安卓'
 											break;
 										case 2:
-											return 'IOS'
+											return 'PC收银台'
 											break;
 										case 3:
-											return '商户后台'
+											return '小程序收银'
 											break;
 										case 4:
 											return '营销赠送'
+											break;
+										case 5:
+											return '开卡赠送'
 											break;
 									}
 								}
@@ -423,24 +425,38 @@
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {
-						// reload: function() {
-						// 	// 获取上面查询框的值
-						// 	var shopName = $('#shopName');
-						// 	var startTime = $('#startTime');
-						// 	var endTime = $('#endTime');
-
-						// 	//执行重载
-						// 	table.reload('billlist', {
-						// 		page: {
-						// 			curr: 1 //重新从第 1 页开始
-						// 		},
-						// 		where: {
-						// 			startTime: startTime.val(),
-						// 			endTime: endTime.val(),
-						// 			shopName: shopName.val(),
-						// 		}
-						// 	});
-						// }
+						reload: function() {
+							layer.load(2, {
+								shade: [0.4, '#393D49']
+							})
+							// 获取上面查询框的值
+							var mebname = $('#mebname')
+							var recNum = $('#recNum')
+							var cell = $('#cell')
+							var allMd = $('#allMd')
+							var payType = $('#payType')
+							var shouyiny = $('#shouyiny')
+							var startTime = $('#startTime');
+							var endTime = $('#endTime');
+							// console.log(payType.val())
+							//执行重载
+							table.reload('billlist', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									name: mebname.val(),
+									rechrgeNo: recNum.val(),
+									cell: cell.val(),
+									shopName: allMd.val(),
+									payType: payType.val(),
+									clerkName: shouyiny.val(),
+									startTime: startTime.val(),
+									endTime: endTime.val(),
+								}
+							});
+							layer.closeAll()
+						}
 					};
 
 				$('.demoTable .layui-btn').on('click', function() {

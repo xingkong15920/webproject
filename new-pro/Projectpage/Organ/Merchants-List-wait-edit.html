@@ -137,7 +137,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">身份证是否长期</label>
-                    <div class="layui-input-inline widthauto">
+                    <div class="layui-input-inline widthauto" style="margin-left:15px;">
                         <input type="radio" name="juridicalPersonIDType" value="0" title="是" lay-filter="jurIsLong" checked=''>
                         <input type="radio" name="juridicalPersonIDType" value="1" title="否" lay-filter="jurIsLong">
                     </div>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="layui-form-item" id="paymentType2">
                     <label class="layui-form-label">经营范围</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-block">
                         <select name="oneOperate" id="chOne" lay-filter="chOne" lay-verify="title">
                             <!-- <option value="">一级类目</option>
                                 <option value="1">互联网</option>
@@ -188,7 +188,7 @@
                 </div>
                 <div class="layui-form-item" id="paymentType3">
                     <label class="layui-form-label">经营范围</label>
-                    <div class="layui-input-inline" style="width:400px">
+                    <div class="layui-input-block" style="width:400px">
                         <select name="oneOperate1" id="chOne1" lay-filter="chOne1" lay-verify="title">
                             <!-- <option value="">一级类目</option>
                                 <option value="1">互联网</option>
@@ -198,7 +198,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">商户所在地</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline" style="margin-left:15px;">
                         <select name="province" id="provice" lay-filter="provice">
                             <option value="">请选择省</option>
                         </select>
@@ -264,11 +264,10 @@
                  <div class="layui-form-item" id="rate3">
                     <label class="layui-form-label">费率</label>
                     <div class="layui-input-inline">
-                        <select name="rate" id="rate" lay-filter="rate" lay-verify="title">
-                            <!-- <option value="">一级类目</option>
-                                <option value="1">互联网</option>
-                                <option value="2">科技</option> -->
-                        </select>
+                        <!-- <select name="rate" id="rate" lay-filter="rate" lay-verify="title">
+                           
+                        </select> -->
+                        <input type="text" name="rate" id="rate" lay-filter="rate" lay-verify="title" class="layui-input" placeholder="请输入费率">
                     </div>
                     
                 </div>
@@ -511,32 +510,32 @@
             },
             function(data) {
                 if (data.code == 1000) {
-                    var saleInfo = JSON.parse(sessionStorage.getItem('rate'))
-                    console.log(saleInfo)
-                    rateD0 = saleInfo.productSwitch.split('&');
-                    rateD1 = saleInfo.productSwitchD1.split('&');
+                    // var saleInfo = JSON.parse(sessionStorage.getItem('rate'))
+                    // console.log(saleInfo)
+                    // rateD0 = saleInfo.productSwitch.split('&');
+                    // rateD1 = saleInfo.productSwitchD1.split('&');
                     
-                    if (saleInfo.productSwitchD1.indexOf('|') > -1) {
-                        for (var i = 0; i < rateD1.length; i++) {
-                            rate1.push(rateD1[i].split('|')[1])
-                            rateId1.push(rateD1[i].split('|')[0])
-                        }
-                    } else {
-                        for (var i = 0; i < rateD1.length; i++) {
-                            rate1.push(rateD1[i])
-                        }
-                    }
-                    if (saleInfo.productSwitch.indexOf('|') > -1) {
-                        for (var i = 0; i < rateD0.length; i++) {
-                            rate2.push(rateD0[i].split('|')[1])
-                            rateId2.push(rateD0[i].split('|')[0])
-                        }
-                    } else {
-                        for (var i = 0; i < rateD0.length; i++) {
-                            rate2.push(rateD0[i])
-                        }
-                    }
-                    console.log(rate1,rate2,rateId1,rateId2)
+                    // if (saleInfo.productSwitchD1.indexOf('|') > -1) {
+                    //     for (var i = 0; i < rateD1.length; i++) {
+                    //         rate1.push(rateD1[i].split('|')[1])
+                    //         rateId1.push(rateD1[i].split('|')[0])
+                    //     }
+                    // } else {
+                    //     for (var i = 0; i < rateD1.length; i++) {
+                    //         rate1.push(rateD1[i])
+                    //     }
+                    // }
+                    // if (saleInfo.productSwitch.indexOf('|') > -1) {
+                    //     for (var i = 0; i < rateD0.length; i++) {
+                    //         rate2.push(rateD0[i].split('|')[1])
+                    //         rateId2.push(rateD0[i].split('|')[0])
+                    //     }
+                    // } else {
+                    //     for (var i = 0; i < rateD0.length; i++) {
+                    //         rate2.push(rateD0[i])
+                    //     }
+                    // }
+                    // console.log(rate1,rate2,rateId1,rateId2)
                     var bankData = data.data.merchantBankCardInfo
                     
                     sessionStorage.setItem("bankData", JSON.stringify(bankData));
@@ -664,30 +663,30 @@
                                 console.log(jgData)
                                 bankData = JSON.parse(sessionStorage.getItem("bankData"))
                                 var ssstr = ''
-                                if(jgData.rateType == 'D1'){
-                                    console.log(rate1)
-                                    if(rateId1.length == 0){
-                                        for(var g = 0 ; g < rate1.length;g++){
-                                            ssstr +='<option value="'+ rate1[g] + '">'+ rate1[g]+'</option>'
-                                        }
-                                    }else{
-                                        console.log(132)
-                                        for(var g = 0 ; g < rate1.length;g++){
-                                            ssstr +='<option value="'+ rateId1[g] + '">'+ rate1[g]+'</option>'
-                                        }
-                                    }
-                                }else{
-                                    console.log('123')
-                                   if(rateId2.length == 0){
-                                        for(var g = 0 ; g < rate2.length;g++){
-                                            ssstr +='<option value="'+ rate2[g] + '">'+ rate2[g]+'</option>'
-                                        }
-                                    }else{
-                                        for(var g = 0 ; g < rate2.length;g++){
-                                            ssstr +='<option value="'+ rateId2[g] + '">'+ rate2[g]+'</option>'
-                                        }
-                                    } 
-                                }
+                                // if(jgData.rateType == 'D1'){
+                                //     console.log(rate1)
+                                //     if(rateId1.length == 0){
+                                //         for(var g = 0 ; g < rate1.length;g++){
+                                //             ssstr +='<option value="'+ rate1[g] + '">'+ rate1[g]+'</option>'
+                                //         }
+                                //     }else{
+                                //         console.log(132)
+                                //         for(var g = 0 ; g < rate1.length;g++){
+                                //             ssstr +='<option value="'+ rateId1[g] + '">'+ rate1[g]+'</option>'
+                                //         }
+                                //     }
+                                // }else{
+                                //     console.log('123')
+                                //    if(rateId2.length == 0){
+                                //         for(var g = 0 ; g < rate2.length;g++){
+                                //             ssstr +='<option value="'+ rate2[g] + '">'+ rate2[g]+'</option>'
+                                //         }
+                                //     }else{
+                                //         for(var g = 0 ; g < rate2.length;g++){
+                                //             ssstr +='<option value="'+ rateId2[g] + '">'+ rate2[g]+'</option>'
+                                //         }
+                                //     } 
+                                // }
                                 console.log(ssstr)
                                 $('#rate').html(ssstr)
                                 var zhiHang = '<option value="">请搜索选择开户支行</option>'
@@ -720,7 +719,7 @@
                                     "openingBankBranch": bankData.openingBankBranchID,
                                     "bankCardNo": bankData.bankCardNo,
                                     "rateType": jgData.rateType,
-                                    "rate": jgData.rate1,
+                                    "rate": (jgData.rate*100).toFixed(2) + '%',
                                     "mailbox": jgData.mailbox,
                                     "quaType": jgData.qualityClient,
                                 })
@@ -736,9 +735,15 @@
                                 }else{
                                      $('#rateType3').show()
                                 }
-                                if (jgData.juridicalPersonIDType == 0) {
+                                //营业执照装啊提
+                                if (jgData.businessLicenseType == 0) {
+                                    $('#busIsLong').hide()
+                                } else{
+                                    $('#busIsLong').show()
+                                }
+                                if(jgData.juridicalPersonIDType == 0){
                                     $('#jurIsLong').hide()
-                                } else if (data.value == 1) {
+                                }else{
                                     $('#jurIsLong').show()
                                 }
                                 CmsUtility.postAjaxCall(

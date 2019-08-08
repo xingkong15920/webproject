@@ -40,6 +40,12 @@
     td {
         overflow: hidden
     }
+    .copyInput{
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0
+        }
     </style>
 </head>
 
@@ -64,8 +70,8 @@
         
                  
                     <input type="checkbox" name="child" value="{{d.subaccountNumber}}" {{d.checkOut == 0?'checked':''}} title="{{d.subaccountNumber}}" data-checkOut="{{d.checkOut}}" data-id="{{d.subaccountNumber}}" data-pid="{{d.paymentTypeID}}" data-ch="{{d.paymentTypeName}}" data-na="{{d.paymentName}}" lay-filter="child">
-                
-			
+                     <button style="margin-left:40px;" type="button" class="layui-btn layui-btn-sm" lay-event="copy">复制编号</button>
+			 
 		</script>
     <script type="text/html" id="toolAdd">
         <a class="layui-btn layui-btn-xs" id="rate" lay-event="add">绑定子商户</a>
@@ -78,7 +84,26 @@
     $('#quxiao').click(function() {
         setTimeout(function() { parent.layer.close(index) }, 16);
     })
-
+    function copyText(text) {
+                var textarea = document.createElement("input");//创建input对象
+                 textarea.className="copyInput"
+                var currentFocus = document.activeElement;//当前获得焦点的元素
+                document.body.appendChild(textarea);//添加元素
+                textarea.value = text;
+                textarea.focus();
+                if(textarea.setSelectionRange)
+                    textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
+                else
+                    textarea.select();
+                try {
+                    var flag = document.execCommand("copy");//执行复制
+                } catch(eo) {
+                    var flag = false;
+                }
+                document.body.removeChild(textarea);//删除元素
+                currentFocus.focus();
+                return flag;
+            }
     function changeRes(res) {
         console.log(res)
         for (var i = 0; i < res.length; i++) {
@@ -289,8 +314,13 @@
                             // iframe.subPage(data, userNumber)
                         }
                     });
+                }else if(obj.event == 'copy'){
+                   var ssrsss = data.subaccountNumber
+                            var flag = copyText(ssrsss); //传递文本
+                            layer.msg(flag ? "复制成功！" : "复制失败！");
                 }
             })
+
             /*---------- 监听提交 ----------*/
             form.on('submit(add1)', function(data, index) {
 
