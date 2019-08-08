@@ -215,7 +215,7 @@
 							<div class="layui-form-item max600">
 								<label class="layui-form-label"><span class="redC">* </span>卡副标题</label>
 								<div class="layui-input-block">
-									<input type="text" name="subtitle" class="layui-input" lay-verify="ltName" id="ltName" value="让收银更简单">
+									<input type="text" name="subtitle" class="layui-input" lay-verify="ltName" id="ltName">
 								</div>
 							</div>
 							<div class="layui-form-item">
@@ -247,27 +247,12 @@
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label">图文介绍</label>
+								<div class="layui-input-block">
+									<div class="layui-form-mid layui-word-aux">图片建议尺寸：900像素 * 500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
+									<ul class="layui-form-item max400 iwList" id="iwList"></ul>
+								</div>
 								<div class="layui-input-block" style="display: flex;justify-content: flex-start;align-items: center;margin-bottom: 15px;">
 									<button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">增加图文</button>
-									<div class="layui-form-mid layui-word-aux">图片建议尺寸：900像素 * 500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
-								</div>
-								<div class="layui-input-block">
-									<ul class="layui-form-item max400 iwList" id="iwList">
-										<!-- <li>
-											<div class="layui-upload-list">
-												<div class="layui-upload-img" id="">
-													<img src="./images/cardBg_default.png">
-													<div class="upTips" style="display: block;">
-														+ 上传图片
-													</div>
-												</div>
-												<div class="imgDel" data-id="cardLo" style="display: none;">
-													<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
-												</div>
-											</div>
-											<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" class="layui-textarea"></textarea>
-										</li> -->
-									</ul>
 								</div>
 							</div>
 						</div>
@@ -534,20 +519,21 @@
 					laytpl = layui.laytpl;
 				var tableSelect = layui.tableSelect;
 
+				layer.load(2, {
+					shade: 0.5
+				});
 
 				//查询有无会员卡
 				getCardCon()
 
 				function getCardCon() {
-					layer.load(2, {
-						shade: 0.5
-					});
 					$.ajax({
 						type: "get",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard,
 						data: {
 							"merchantNumber": merNumber
 						},
+						async: false,
 						dataType: "json",
 						headers: {
 							"Content-Type": "application/json"
@@ -556,10 +542,11 @@
 							if (data.code === 1000) {
 								$('.ltN').text(data.data.cardName)
 								$('#ppLogopv').attr('src', data.data.logoUrl)
-								if (data.data.localImgUrl) {
+								$('.card_b').css('background-color', data.data.color)
+								if (data.data.localImgUrl != null) {
 									$('.card_b_bg').attr('src', data.data.localImgUrl)
 								} else {
-									$('#cardBimg').hide()
+									$('.card_b_bg').remove()
 								}
 							} else {
 								layer.closeAll('loading');
@@ -573,20 +560,19 @@
 						data: {
 							"merchantNumber": merNumber
 						},
+						async: false,
 						dataType: "json",
 						headers: {
 							"Content-Type": "application/json"
 						},
 						success: function(data) {
 							if (data.code === 1000) {
-								layer.closeAll('loading');
 								cardCon = data.data
 								wxCardNo = data.data.wxCardNo
 								$('.ltNamepv').text(data.data.subtitle)
 								$('#cardBimg').show();
 								$('#cardBimg').attr('src', data.data.localImgUrl);
 								$('#ppLogopv').attr('src', data.data.logoUrl);
-								console.log(data.data.columnDisplay)
 								// 栏位展示
 								var strL = ''
 								var columnD = data.data.columnDisplay.split('||')
@@ -641,13 +627,17 @@
 								$('.merservices').html(strS)
 
 								// 适用门店
-								var applyShopsList = []
-								for (i = 0; i < data.data.applyShops.length; i++) {
-									applyShopsList.push(data.data.applyShops[i].split('||')[0])
+								if (data.data.applyShops.length > 0) {
+									var applyShopsList = []
+									for (i = 0; i < data.data.applyShops.length; i++) {
+										applyShopsList.push(data.data.applyShops[i].split('||')[0])
+										shopNumbers.push(data.data.applyShops[i].split('||')[0])
+									}
+									$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
+									$('#symd').attr('ts-selected', applyShopsList.join(','))
+								} else {
+									layer.msg('未查询到适用门店！')
 								}
-								console.log(applyShopsList)
-								$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
-								$('#symd').attr('ts-selected', applyShopsList.join(','))
 
 
 								//图文列表
@@ -788,7 +778,6 @@
 							} else if (data.code === -2) {
 								layer.closeAll('loading');
 								layer.msg(data.msg + '，请添加')
-								console.log(columnDVal)
 								// 栏位展示
 								var strL = ''
 								for (let i = 0; i < columnDVal.length; i++) {
@@ -1018,7 +1007,6 @@
 						layer.msg("最多只能选择3个标签", function() {});
 					} else {
 						var checkNum = columnDVal.indexOf(data.elem.value)
-						console.log(checkNum)
 						if (data.elem.checked) {
 							$('.card_qListli').eq(checkNum).addClass('lishow');
 						} else {
@@ -1260,7 +1248,6 @@
 				//表单初始赋值
 				setTimeout(function() {
 					if (cardCon != '') {
-						console.log(cardCon)
 						form.val('basic', {
 							"subtitle": cardCon.subtitle,
 							"codeType": '' + cardCon.codeType + '',
@@ -1283,6 +1270,7 @@
 							"custom3mPInput": cardCon.customs[2].appletId,
 							"custom3mYInput": cardCon.customs[2].leadingInfo,
 						})
+						ltname()
 						layer.closeAll('loading');
 					}
 				}, 500)
@@ -1388,15 +1376,15 @@
 					data.merchantNumber = merNumber
 					data.applyShops = shopNumbers
 					if (shopNumbers != '') {
-						data.shopJurisdiction = 0
-					} else {
 						data.shopJurisdiction = 1
+					} else {
+						data.shopJurisdiction = 0
 					}
 					console.log(data)
 					layer.load(2, {
 						shade: 0.5
 					});
-
+					// return
 					// 发送请求
 					$.ajax({
 						type: "post",

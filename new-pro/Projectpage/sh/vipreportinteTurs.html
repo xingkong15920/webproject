@@ -263,47 +263,83 @@
 								field: 'changeTime',
 								title: '变动时间',
 								align: 'center',
-								width: 180
+								minWidth: 180
 							}, {
 								field: 'shopName',
 								title: '积分门店',
 								align: 'center',
-								width: 120,
+								minWidth: 180,
 							}, {
 								field: 'integralType',
 								title: '积分类型',
 								align: 'center',
-								width: 220,
+								minWidth: 100,
+								templet: function(data) { //0后台增加、1后台减少、2积分抵现、3充值赠送、4消费赠送
+									switch (data.changeType) {
+										case 0:
+											return '后台增加'
+											break;
+										case 1:
+											return '后台减少'
+											break;
+										case 2:
+											return '积分抵现'
+											break;
+										case 3:
+											return '充值赠送'
+											break;
+										case 4:
+											return '消费赠送'
+											break;
+									}
+								}
 							}, {
 								field: 'changeType',
 								title: '操作类型',
 								align: 'center',
-								width: 150,
+								minWidth: 100,
+								templet: function(data) {
+									switch (data.changeType) {
+										case 0:
+											return '增加'
+											break;
+										case 1:
+											return '减少'
+											break;
+									}
+								}
 							}, {
 								field: 'name',
 								title: '会员名称',
 								align: 'center',
-								width: 120,
+								minWidth: 120,
 							}, {
 								field: 'cell',
 								title: '会员电话',
 								align: 'center',
-								width: 120,
+								minWidth: 120,
 							}, {
 								field: 'changeIntegral',
 								title: '积分',
 								align: 'center',
-								width: 120,
+								minWidth: 120,
 							}, {
 								field: 'clerkName',
 								title: '操作员',
 								align: 'center',
-								width: 180,
+								minWidth: 100,
+								templet: function(data) {
+									if (data.clerkName == null) {
+										return 'Admin'
+									} else {
+										return data.clerkName
+									}
+								}
 							}, {
 								field: 'remarks',
 								title: '备注',
 								align: 'center',
-								width: 120,
+								minWidth: 120,
 							}]
 						],
 						done: function(res, curr, count) {
