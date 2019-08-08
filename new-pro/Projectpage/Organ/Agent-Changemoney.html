@@ -29,8 +29,8 @@
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
 		        <a href="">首页</a>
-		        <a href="">代理管理</a>
-		        <a><cite>代理账单</cite></a>
+		        <a href="">服务商管理</a>
+		        <a><cite>服务商账单</cite></a>
 		      </span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
@@ -39,7 +39,7 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="agentName" id="agentName" placeholder="代理名称" autocomplete="off" class="layui-input">
+						<input type="text" name="agentName" id="agentName" placeholder="服务商名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="" id="orederNumber" placeholder="账单号"  class="layui-input">
@@ -169,7 +169,7 @@
 								align: 'center',
 								field: 'agentName',
 								width: 200,
-								title: '代理名称'
+								title: '服务商名称'
 							}, {
 								align: 'center',
 								field: 'typesAccountChanges',
@@ -180,18 +180,36 @@
 								align: 'center',
 								field: 'agentLevel',
 								width: 250,
-								title: '代理类型',
+								title: '服务商类型',
 								templet:function(data){
-									if(data.agentLevel == 0){
-										return '全国代理商'
-									}
-									if(data.agentLevel == 1){
-										return '省级代理商'
-									}
+									if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
+											
+											if(data.agentLevel == 0){
+												return '城市合伙人'
+											}
+											if(data.agentLevel == 1){
+												return '区域运营商'
+											}
+											
+											if(data.agentLevel == 2){
+												return  '代理加盟商'
+											}
+											if(data.agentLevel == 3){
+												return  '股东合伙人'
+											}
+										}else{
+											if(data.agentLevel == 0){
+												return '全国服务商'
+											}
+											if(data.agentLevel == 1){
+												return '省级服务商'
+											}
+											
+											if(data.agentLevel == 2){
+												return  '市级服务商'
+											}
+										}
 									
-									if(data.agentLevel == 2){
-										return  '市级代理商'
-									}
 								}
 							}, {
 								align: 'center',

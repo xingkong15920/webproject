@@ -80,18 +80,18 @@
                 <!--基本信息-->
                 <blockquote class="layui-elem-quote">基本信息</blockquote>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">代理类型</label>
-                    <div class="layui-input-block">
-                        <input type="radio" name="agentType" value="0" title="全国代理商" lay-filter="cardvalid" checked="">
-                        <input type="radio" name="agentType" value="1" title="省级代理商" lay-filter="cardvalid">
-                        <input type="radio" name="agentType" value="2" title="市级代理商" lay-filter="cardvalid">
+                    <label class="layui-form-label">服务商类型</label>
+                    <div class="layui-input-block" id="typeBox">
+                        <input type="radio" name="agentType" value="0" title="全国服务商" lay-filter="cardvalid" checked="">
+                        <input type="radio" name="agentType" value="1" title="省级服务商" lay-filter="cardvalid">
+                        <input type="radio" name="agentType" value="2" title="市级服务商" lay-filter="cardvalid">
                         <input type="radio"  id="dlNum1027" style="display:none"  name="agentType" value="3" title="股权服务商" lay-filter="cardvalid">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">代理名称</label>
+                    <label class="layui-form-label">服务商名称</label>
                     <div class="layui-input-block">
-                        <input type="text" name="agentName" lay-verify="title" autocomplete="off" placeholder="请输入代理名称" class="layui-input">
+                        <input type="text" name="agentName" lay-verify="title" autocomplete="off" placeholder="请输入服务商名称" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -351,6 +351,53 @@
                 element = layui.element,
                 layer = layui.layer;
             var tableSelect = layui.tableSelect;
+            var dlList = [
+            {
+                "name":'全国服务商',
+                "type":'0'
+            },
+            {
+                "name":'省级服务商',
+                "type":'1'
+            },
+            {
+                "name":'市级服务商',
+                "type":'2'
+            },
+        ]
+        var dlList1 = [
+            {
+                "name":'城市合伙人',
+                "type":'0'
+            },
+            {
+                "name":'区域运营商',
+                "type":'1'
+            },
+            {
+                "name":'代理加盟商',
+                "type":'2'
+            },
+            {
+                "name":'股东合伙人',
+                "type":'3'
+            },
+        ]
+if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
+                var str = '<input type="radio" name="agentType" value="'+ dlList1[0].type +'" title="'+ dlList1[0].name +'" lay-filter="cardvalid" checked="">'
+                 for(var i = 1 ; i < dlList1.length;i++){
+                    str += '<input type="radio" name="agentType" value="'+ dlList1[i].type +'" title="'+ dlList1[i].name +'" lay-filter="cardvalid" >'
+                 }
+                 $('#typeBox').html(str)
+                 form.render()
+            }else{
+                var str = '<input type="radio" name="agentType" value="'+ dlList[0].type +'" title="'+ dlList[0].name +'" lay-filter="cardvalid" checked="">'
+                 for(var i = 1 ; i < dlList.length;i++){
+                    str += '<input type="radio" name="agentType" value="'+ dlList[i].type +'" title="'+ dlList[i].name +'" lay-filter="cardvalid" >'
+                 }
+                 $('#typeBox').html(str)
+                  form.render()
+            }
             CmsUtility.postAjaxCall(
                         //系统设置
                 CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("organUser")).institutionNumber,

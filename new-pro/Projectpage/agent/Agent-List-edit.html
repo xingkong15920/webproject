@@ -308,7 +308,7 @@
             </div>
         </div>
     </div>
-    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
         if(JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber == '1027'){
@@ -353,7 +353,7 @@
             var tableSelect = layui.tableSelect;
             CmsUtility.postAjaxCall(
                         //系统设置
-                CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber,
+               CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
                 {
                     "page":1,
                     "limit":10
@@ -512,7 +512,7 @@
             var rateList = []
             CmsUtility.postAjaxCall(
                 //系统设置
-                CmsConfig.addressUrl.Mechanism.getAgentRateNew, 
+                CmsConfig.addressUrl.Agent.getAgentRate, 
                 {
                     "agentNumber":jgData.agentNumber
                 },
@@ -766,23 +766,14 @@
             });
             /*---------- 监听提交 ----------*/
             form.on('submit(add)', function(data, index) {
+                var index = layer.load(2, {shade: [0.4, '#393D49']})
                 var addData = data.field
                 addData.institutionNumber = userNumber
                 addData.deletionFlag = '0'
-                addData.agentNumber = agentNumber
-                addData.pAgentNumber = jgData.pAgentNumber == '--'?'':jgData.pAgentNumber
-                if(jgData.pAgentLevel == '--'){
-                    addData.agentLevel = 'A'
-                }
-                if(jgData.pAgentLevel == 'A'){
-                    addData.agentLevel = 'B'
-                }
-                if(jgData.pAgentLevel == 'B'){
-                    addData.agentLevel = 'C'
-                }
-                if(jgData.pAgentLevel == 'C'){
-                    addData.agentLevel = 'D'
-                }
+                addData.agentLevel = jgData.agentLevel
+                addData.agentNumber = jgData.agentNumber
+                addData.pAgentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
+                addData.pAgentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
                 addData.aliRate  = (addData.aliRate/10000*100).toFixed(5)
                 addData.wecharRate = (addData.wecharRate/10000*100).toFixed(5)
                 addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(5)
@@ -797,12 +788,12 @@
                 addData.sxfRateD0 = (addData.sxfRateD0/10000*100).toFixed(5)
                 addData.sxfRateD1 = (addData.sxfRateD1/10000*100).toFixed(5)
                 addData.sxfRateT1 = (addData.sxfRateT1/10000*100).toFixed(5)
-                addData.pAgentLevel = jgData.pAgentLevel == '--'?'':jgData.pAgentLevel
+                
                 console.log(addData)
                 // 发送请求
                 CmsUtility.postAjaxCall(
                     //系统设置
-                    CmsConfig.addressUrl.Mechanism.updateAgentRegister,
+                    'agentManage/updateAgentRegister',
                     addData,
                     function(data) {
                         if (data.code == 1000) {
@@ -810,7 +801,7 @@
                                 $('#quxiao').click()
                             }, 16);
                             parent.layer.msg('更改成功')
-                            parent.layui.table.reload('vip_cardList')
+                            parent.layui.table.reload('salesmanList')
                         } else {
                             layer.msg(data.msg)
                         }

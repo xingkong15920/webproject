@@ -32,8 +32,8 @@
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
 		        <a href="">首页</a>
-		        <a href="">代理管理</a>
-		        <a><cite>代理管理</cite></a>
+		        <a href="">服务商管理</a>
+		        <a><cite>服务商管理</cite></a>
 		      </span>
 			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
@@ -42,10 +42,10 @@
 			<div class="layui-row">
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="agName" id="userName" placeholder="代理商名称" autocomplete="off" class="layui-input">
+						<input type="text" name="agName" id="userName" placeholder="服务商名称" autocomplete="off" class="layui-input">
 					</div>
 					<!-- <div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="上级代理号或用户名" autocomplete="off" class="layui-input">
+						<input type="text" name="couponName" id="couponName" placeholder="上级服务商号或用户名" autocomplete="off" class="layui-input">
 					</div> -->
 					<!-- <div class="layui-input-inline">
 						<select name="cardVoucherName" id="cardVoucherName">
@@ -57,11 +57,11 @@
 					</div> -->
 					<div class="layui-input-inline">
 						<select name="type" id="agentType">
-							<option value="">代理商类型</option>
+							<!-- <option value="">服务商类型</option>
 							<option value="0">全国服务商</option>
 							<option value="1">省级服务商</option>
 							<option value="2">市级服务商</option>
-							<option id="dlNum1027" style="display:none" value="3">市级服务商</option>
+							<option id="dlNum1027" style="display:none" value="3">市级服务商</option> -->
 						</select>
 					</div>
 					<div class="layui-input-inline coupons_screen">
@@ -70,7 +70,7 @@
 				</div>
 			</div>
 			<xblock>
-				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加代理</button>
+				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加服务商</button>
 			</xblock>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
@@ -99,27 +99,40 @@
 		<script>
 			// <a class="layui-btn layui-btn-xs" id="rate" lay-event="rate">费率</a>
 			// 
-			if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
-				$("#dlNum1027").show()
-			}
+			// if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
+			// 	$("#dlNum1027").show()
+			// }
 			function changeRes(res){
 				if(res == null){
 					return
 				}
 				var res = res.agentRegisterlist
 				for(var i = 0 ; i < res.length;i++){
-					if(res[i].agentType == 0){
-						res[i].agentType1 = '全国服务商'
+					if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
+						if(res[i].agentType == 0){
+							res[i].agentType1 = '城市合伙人'
+						}
+						if(res[i].agentType == 1){
+							res[i].agentType1 = '区域运营商'
+						}
+						if(res[i].agentType == 2){
+							res[i].agentType1 = '代理加盟商'
+						}
+						if(res[i].agentType == 3){
+							res[i].agentType1 = '股东合伙人'
+						}
+					}else{
+						if(res[i].agentType == 0){
+							res[i].agentType1 = '全国服务商'
+						}
+						if(res[i].agentType == 1){
+							res[i].agentType1 = '省级服务商'
+						}
+						if(res[i].agentType == 2){
+							res[i].agentType1 = '市级服务商'
+						}
 					}
-					if(res[i].agentType == 1){
-						res[i].agentType1 = '省级服务商'
-					}
-					if(res[i].agentType == 2){
-						res[i].agentType1 = '市级服务商'
-					}
-					if(res[i].agentType == 3){
-						res[i].agentType1 = '股权服务商'
-					}
+					
 				}				
 				return res
 			}
@@ -173,7 +186,53 @@
 				var laydate = layui.laydate,
 					table = layui.table,
 					form = layui.form;
-
+				var dlList = [
+			{
+				"name":'全国服务商',
+				"type":'0'
+			},
+			{
+				"name":'省级服务商',
+				"type":'1'
+			},
+			{
+				"name":'市级服务商',
+				"type":'2'
+			},
+		]
+		var dlList1 = [
+			{
+				"name":'城市合伙人',
+				"type":'0'
+			},
+			{
+				"name":'区域运营商',
+				"type":'1'
+			},
+			{
+				"name":'代理加盟商',
+				"type":'2'
+			},
+			{
+				"name":'股东合伙人',
+				"type":'3'
+			},
+		]
+if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
+					var str = '<option value="">服务商类型</option>'
+				 for(var i = 0 ; i < dlList1.length;i++){
+				 	str += '<option value="'+ dlList1[i].type +'">'+ dlList1[i].name +'</option>'
+				 }
+				 $('#agentType').html(str)
+				 form.render()
+			}else{
+				var str = '<option value="">服务商类型</option>'
+				 for(var i = 0 ; i < dlList.length;i++){
+				 	str += '<option value="'+ dlList[i].type +'">'+ dlList[i].name +'</option>'
+				 }
+				 $('#agentType').html(str)
+				  form.render()
+			}
 				//方法级渲染  
 				function tableRender(){
 					table.render({
@@ -212,13 +271,13 @@
 							align: 'center',
 							field: 'agentNumber',
 							width: 180,
-							title: '代理编号',
+							title: '服务商编号',
 						}, {
 							align: 'center',
 							field: 'agentName',
 							toolbar: '#ageName',
 							width: 150,
-							title: '代理名称'
+							title: '服务商名称'
 						}, {
 							align: 'center',
 							field: 'userName',
@@ -228,13 +287,13 @@
 							align: 'center',
 							field: 'agentType1',
 							width: 150,
-							title: '代理类型',
+							title: '服务商类型',
 						}, {
 							align: 'center',
 							field: 'dbAgentName',
 							toolbar:'#pageName',
 							width: 150,
-							title: '上级代理',
+							title: '上级服务商',
 							
 						}, {
 							align: 'center',
@@ -272,23 +331,13 @@
 							field: 'insertTime',
 							width: 150,
 							title: '注册时间',
-							templet:function(data){
-								if(data.insertTime){
-									return data.insertTime.split('.')[0]
-								}
-							}
+							
 						}, {
 							align: 'center',
 							field: 'loginTime',
 							width: 150,
 							title: '最后登录时间',
-							templet:function(data){
-								if(!!data.loginTime){
-									return data.loginTime.split('.')[0].split('T')[0] + ' ' +  data.loginTime.split('.')[0].split('T')[1] 
-								}else{
-									return ''
-								}
-							}
+							
 							
 						} ,{
 							align: 'center',
@@ -389,7 +438,7 @@
 				$('#addA').click(function(){
 					layer.open({
 						type: 2,
-						title: '添加代理',
+						title: '添加服务商',
 						shade: 0.5,
 						area: [$(window).width() * 0.7+'px', '90%'],
 						maxmin: false,
@@ -481,7 +530,7 @@
 						});
 					} else if(obj.event === 'logout') { //注销
 						
-						layer.confirm('真的删除此代理商么', {
+						layer.confirm('真的删除此服务商么', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
