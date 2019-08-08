@@ -87,7 +87,7 @@
 		$('.cardB').width(_w - 60)
 		$('.cardB').height(_h)
 
-		var cardCon, applystore, subtitle, wxCardNo, showQrcodeUrl, shareDescribeText
+		var cardCon, applystore, subtitle, showQrcodeUrl, shareDescribeText
 		var deliveryNo
 		var insNumber
 		var merNumber
@@ -107,7 +107,7 @@
 		}
 
 		$.ajax({
-			url: "http://192.168.1.66/shanhe-member/server/getMerAppId?merchantNumber=" + merNumber,
+			url: "http://hstest123.natapp1.cc/shanhe-member/server/getMerAppId?merchantNumber=" + merNumber,
 			type: "GET",
 			async: false,
 			headers: {
@@ -116,7 +116,7 @@
 			success: function(data) {
 				// alert(data)
 				if (data.code != 1000) {
-					alert(data.msg)
+					//alert(data.msg)
 				}
 				weixinCode = data.data.appId;
 				comId = data.data.componentAppid;
@@ -139,7 +139,7 @@
 
 			code = window.location.href.split('code=')[1].split('&')[0];
 			$.ajax({
-				url: "http://192.168.1.66/shanhe-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
+				url: "http://hstest123.natapp1.cc/shanhe-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
 					weixinCode + '&code=' + code,
 				type: "GET",
 				async: false,
@@ -147,17 +147,16 @@
 					"Content-Type": "application/x-www-form-urlencoded"
 				},
 				success: function(data) {
-					alert(JSON.stringify(data))
 					getdeliveryCon()
-					mebInfo = data.data
 					if (data.code == '-2') {
+						mebInfo = ''
 						getCardWxCon()
-						setTimeout(function() {
-							getshareCard()
-						}, 1000);
 					} else if (data.code == '1000') {
 						$('#getCardB').show()
+						mebInfo = JSON.stringify(data.data)
+						getCardWxCon()
 					}
+					// alert(mebInfo)
 				}
 			})
 		}
@@ -180,7 +179,6 @@
 						applystore = data.data.shopNumbers
 						getshareCon()
 						getCardCon()
-						getCardWxCon()
 					} else {
 						console.log(data.msg)
 						swal({
@@ -284,15 +282,15 @@
 				data: {
 					"merchantNumber": merNumber
 				},
-				async: true,
+				async: false,
 				dataType: "json",
 				headers: {
 					"Content-Type": "application/json"
 				},
 				success: function(data) {
 					if (data.code === 1000) {
-						wxCardNo = data.data.wxCardNo
 						subtitle = data.data.subtitle
+						getshareCard(data.data.wxCardNo)
 					} else {
 						console.log(data.msg)
 						swal({
@@ -308,8 +306,7 @@
 			});
 		}
 
-		function getshareCard() {
-			alert(wxCardNo)
+		function getshareCard(wxCardNo) {
 			$.ajax({
 				type: "get",
 				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Card.shareCard,
@@ -319,6 +316,7 @@
 					"wxCardId": wxCardNo,
 					"institutionNumber": insNumber,
 					"deliveryNo": deliveryNo,
+					"memberInfo": mebInfo,
 				},
 				async: true,
 				dataType: "json",
@@ -326,10 +324,11 @@
 					"Content-Type": "application/json"
 				},
 				success: function(data) {
-
 					if (data.code === 1000) {
+						if (mebInfo == '') {
+							window.location.href = data.data.getCardUrl
+						}
 						shareLink = data.data.getCardUrl
-						window.location.href = data.data.getCardUrl
 					} else {
 						console.log(data.msg, 1111)
 						swal({
@@ -356,7 +355,8 @@
 				},
 				methods: {
 					takeCard: function() {
-						getshareCard()
+						// alert(shareLink)
+						window.location.href = shareLink
 					}
 				},
 				mounted() {
