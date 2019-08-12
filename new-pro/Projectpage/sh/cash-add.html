@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    #codeInfo {
+        line-height: 38px;
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 5px
+    }
+
+    .layui-input-block {
+        margin-left: 90px;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form"  lay-filter="cardAdd">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:85px">可提现金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="number" lay-verify="number||two" autocomplete="off" placeholder="请输入数字" class="layui-input" id="number">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:85px">金额</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="ketixian" lay-verify="title||two" autocomplete="off" placeholder="请输入提现金额" class="layui-input" id="input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:85px"></label>
+                    <div class="layui-input-block">
+                        <span style="line-height:36px;color:red;display:block" id="rateText">请输入提现金额</span>
+                        <span style="line-height:36px;color:red" id="">提现手续费最低为0.5元</span>
+                    </div>
+                </div>
+                <div class="layui-input-block">
+                    <input type="button" class="layui-btn" lay-submit="" lay-filter="create" value="发起提现" id="sub">
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-sh.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var type111 = 0
+    var code1 = ''
+    var pageNum
+    var serverUrl = 'http://192.168.1.190:5002/'
+    var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+    var rate
+    var money
+   
+    layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+        layui.$.support.cors = true; //允许ajax跨域
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            laytpl = layui.laytpl;
+        CmsUtility.postAjaxCall(
+                        //系统设置
+            'WithdrawDeposit/theQueryRate?merchantNumber='+userNumber,
+            '',
+            function(data){
+                if(data.code == 1000){
+                     rate = data.data  
+                    
+                    // tableRender()
+                }else{
+                    layer.msg(data.msg)
+                }
+            },
+            function(data){
+                console.log('222')
+            },
+            "GET"
+        )
+        var timer
+        $('#input').bind('input propertychange',function () {
+            if(this.value == ''){
+                $('#rateText').html('请输入提现金额')
+                return
+            }
+            
+               var money = (Math.ceil(parseFloat(this.value)*parseFloat(rate)*100)/100).toFixed(2)
+                clearTimeout(timer)
+                timer = setTimeout(function(){
+                    if(money < 0.5){
+                        money = 0.5
+                    }
+                    $('#rateText').html('预估手续费为'+ money  +'元')
+                },500)
+               
+            });   
+        CmsUtility.postAjaxCall(
+                        //系统设置
+            'WithdrawDeposit/getWithdrawalInformation?merchantNumber='+userNumber,
+            '',
+            function(data){
+                if(data.code == 1000){
+                
+                 form.val('cardAdd', {
+                    "number": data.data.txNamt
+                })  
+                 money = data.data.txNamt
+                    // tableRender()
+                }else{
+                    layer.msg(data.msg)
+                }
+            },
+            function(data){
+                console.log('222')
+            },
+            "GET"
+        )
+        //表单初始赋值
+        // $('#sub').click(function(){
+        //  console.log(code1)
+        // })
+        form.verify({
+            
+            title: function(value) {
+                console.log(value)
+                if (value == '') {
+                    return '不能为空';
+                }
+            },
+            two: function(value) {
+                console.log(value)
+                if(value > money){
+                    layer.msg('提现金额超出，请重新输入')
+                    return 
+                }
+            }
+        });
+        var cip
+       $.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
+            console.log(returnCitySN)
+
+            cip = returnCitySN.cip
+            console.log(cip)
+        });
+        form.on('submit(create)', function(data) {
+            var index = layer.load(2, {shade: [0.4, '#393D49']})
+            console.log(data)
+           var tjData = new Object()
+           tjData.txNamt = money
+           tjData.merchantNumber = userNumber
+           tjData.ip = cip
+           tjData.utxNamt = $('#input').val()
+            console.log(tjData)
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'WithdrawDeposit/beganToWithdraw',
+                tjData,
+                function(data) {
+                    layer.closeAll()
+                    if (data.code == 1000) {
+                        // type111 = 2
+
+
+                        x_admin_close()
+                        parent.layer.msg('提交成功')
+                        parent.layui.table.reload('merchantlist')
+
+
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            return false
+        });
+
+    });
+
+    function createCode() {
+        code1 = ''
+        for (var i = 0; i < 4; i++) {
+            code1 += Math.floor(Math.random() * 10)
+        }
+        console.log($('#codeInfo'))
+        $('#codeInfo').html(code1)
+    }
+    createCode()
+    $(function() {
+        $("#codeInfo").click(function() {
+            createCode()
+        });
+    });
+    </script>
+</body>
+
+</html>

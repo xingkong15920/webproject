@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="./js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script type="text/javascript" src="./js/tableSelect.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .widthauto {
+                width: auto !important;
+            }
+            
+            .tips_red {
+                color: red;
+            }
+            
+            .layui-form-label {
+                padding-left: 0;
+                width: 100px;
+            }
+            
+            .layui-input-block {
+                margin-left: 115px;
+            }
+            
+            .layui-elem-quote {
+                font-size: 18px;
+            }
+            
+            .layui-elem-field legend {
+                font-size: 16px;
+            }
+            
+            .layui-upload-img {
+                width: 92px;
+                height: 92px;
+                margin: 0 10px 10px 0;
+            }
+            
+            .Since_inline {
+                display: inline-block;
+                width: auto !important;
+                line-height: 38px;
+            }
+            
+            .layui-elem-quote .layui-form-switch {
+                margin: 0 15px;
+                margin-top: 0;
+            }
+        </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form" action="" lay-filter="cardAdd">
+                <!--隐藏-->
+                <blockquote class="layui-elem-quote">
+                    提现管理
+                    <input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="开|关">
+                    <span class="tips_red">此提现功能目前仅限于新大陆D0商户</span>
+                </blockquote>
+                <div id="Consumer" style="display: none;">
+                    <xblock>
+                        <div class="layui-btn" id="txsq" href="javascript:;"><i class="layui-icon"></i>发起提现</div>
+                    </xblock>
+                    
+                </div>
+                <table class="layui-hide" id="LAY_table_Withdrawal" lay-filter="Withdrawal"></table>
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-sh.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var txNumt
+    var d0Type;
+    function changeRes(res) {
+        var res = res
+        if (res.length == 0) {
+            return
+        }
+        for (var i = 0; i < res.length; i++) {
+            if (res[i].type == 0) {
+                res[i].typea = '可用'
+            } else {
+                res[i].typea = '不可用'
+            }
+            if (res[i].startTime && res[i].endTime != "") {
+                res[i].startTime = res[i].startTime.split(' ')[0]
+                res[i].endTime = res[i].endTime.split(' ')[0]
+            }
+            if (res[i].couponMoney != "") {
+                res[i].couponMoneya = parseFloat(res[i].couponMoney).toFixed(2)
+            }
+            if (res[i].couponMoney == 0) {
+                res[i].couponMoneya = res[i].discount + ' 折'
+            }
+            if (res[i].useTimePeriod == 0) {
+                res[i].useTimePeriod = "长期"
+            } else if (res[i].useTimePeriod == 1) {
+                res[i].useTimePeriod = res[i].startTime + ' ~ ' + res[i].endTime
+            }
+
+        }
+        return res
+    }
+    var serverUrl = window.parent.serverUrl
+    var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+    layui.use(['laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        var tableSelect = layui.tableSelect;
+
+        //表单初始赋值
+        form.val('cardAdd', {
+            "userNumber": userNumber
+        })
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'WithdrawDeposit/getWithdrawalInformation?merchantNumber=' + userNumber,
+            '',
+            function(data) {
+                if (data.code == 1000) {
+                    txNumt = data.data.txNamt
+                    form.val('cardAdd', {
+                        "consumptionPreferences": data.data.flag == 0 ? true : false
+                    })
+                    d0Type = data.data.flag
+                    if (data.data.flag == 0 ? true : false) {
+                        $('#Consumer').show()
+                    } else {
+                        $('#Consumer').hide()
+                    }
+                   
+                     tableRender()
+                } else {
+                    layer.msg(data.msg)
+                }
+            },
+            function(data) {
+                console.log('222')
+            },
+            "GET"
+        )
+
+        function tableRender() {
+            var index = layer.load(2, { shade: [0.4, '#393D49'] })
+            table.render({
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'WithdrawDeposit/withdrawalHistory' + '?merchantNumber=' + userNumber,
+                // where: {
+                //     "merchantName": "",
+                //     "saleName": "",
+                //     "merchantStatus": "",
+                //     "agentLevel": agentLevel
+                // },
+                elem: '#LAY_table_merchant',
+                height: 'full-140',
+                method: "post",
+                page: true,
+                id: 'merchantlist',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                parseData: function(res) {
+                    //res 即为原始返回的数据
+                    if (res.data == null) {
+                        return
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data.list, //解析数据列表
+                    };
+                },
+                elem: '#LAY_table_Withdrawal',
+                page: true,
+                cellMinWidth: 80,
+                height: 'full-200',
+                cols: [
+                    [{
+                        field: 'presentationbatch',
+                        title: '提现单号',
+                        align: 'center',
+
+                    }, {
+                        field: 'withdrawCashAmount',
+                        title: '提现金额',
+                        align: 'center',
+                        templet: function(data) {
+                            return '￥ ' + data.presentationamount 
+                        }
+                    }, {
+                        field: 'bankCardNo',
+                        title: '手续费',
+                        align: 'center',
+                        templet: function(data) {
+                            return '￥ ' + data.presentationpoundage
+                        }
+                    }, {
+                        field: 'name',
+                        title: '实际到账金额',
+                        align: 'center',
+                        templet: function(data) {
+                            return '￥ ' + data.arrivalamount
+                        }
+                    }, {
+                        field: 'openingBankBranch',
+                        title: '处理状态',
+                        align: 'center',
+                        templet: function(data) {
+                            if (data.orderstate == '0') {
+                                return '提现中'
+                            } else if (data.sts == '1') {
+                                return '提现成功'
+                            } else {
+                                return '提现失败'
+                            }
+
+                        }
+                    }, {
+                        field: 'openingbankbranch',
+                        title: '银行名称',
+                        align: 'center',
+
+                    }, {
+                        field: 'bankcardno',
+                        title: '结算卡号',
+                        align: 'center',
+                      
+                    }, {
+                        field: 'inserttime',
+                        title: '订单时间',
+                        align: 'center',
+                        
+
+                    }, {
+                        field: 'completetime',
+                        title: '成功时间',
+                        align: 'center',
+                        // templet: function(data) {
+                        //     var time = data.upt_tm
+                        //     return data.ord_tm.substr(0, 4) + "-" + data.ord_tm.substr(4, 2) + '-' + data.ord_tm.substr(6, 2) + ' ' + data.ord_tm.substr(8, 2) + ':' + data.ord_tm.substr(10, 2) + ':' + data.ord_tm.substr(12, 2)
+                        // }
+                    }]
+                ],
+                done: function() {
+                    layer.closeAll()
+                }
+            });
+        }
+
+        
+        /*---------- 下拉表格选择器 ----------*/
+
+        $('#txsq').click(function() {
+            console.log(txNumt)
+            // if(txNumt < 1){
+            //     layer.msg('可提现余额小于1元')
+            //     return 
+            // }
+            layer.open({
+                type: 2,
+                title: '提现申请',
+                shade: 0.5,
+                area: ['40%', '50%'],
+                maxmin: false,
+                resize: false,
+                content: ['cash-add.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+
+                }
+            });
+        })
+        /*---------- 优惠设置 ----------*/
+        form.on('select(youhuiSelect)', function(data) {
+            if (data.value == "") {
+                $('#fullsubtraction').hide()
+                $('#discount').hide()
+            } else if (data.value == "0") {
+                $('#fullsubtraction').show()
+                $('#discount').hide()
+            } else if (data.value == "1") {
+                $('#fullsubtraction').hide()
+                $('#discount').show()
+            }
+        });
+
+        /*---------- 生日 ----------*/
+        laydate.render({ //当前卡有效期开始时间
+            elem: '#startTime',
+            value: new Date()
+        });
+        laydate.render({ //当前卡有效期结束时间
+            elem: '#endTime',
+            value: new Date()
+        });
+        laydate.render({ //积分的清零日期
+            elem: '#integralZerotime'
+        });
+
+        /*---------- 普通图片上传 ----------*/
+        var uploadInst = upload.render({
+            elem: '#logoupload',
+            url: '/upload/',
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#logoimg').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                if (res.code > 0) {
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function() {
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        /*---------- 自定义验证规则 ----------*/
+
+
+        /*---------- 监听开关 ----------*/
+        //form.on('switch(level)', function(data) { //等级开关
+        //  layer.tips('等级开关：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+        //});
+        form.on('switch(consumptionPreferences)', function(data) { 
+            var index = layer.load(2, {shade: [0.4, '#393D49']})//消费优惠开关
+            var type;
+            if (data.elem.checked == true) {
+                type = "0"
+
+            } else if (data.elem.checked == false) {
+                type = "1"
+            }
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'WithdrawDeposit/withdrawalSwitch?merchantNumber=' + userNumber + '&switchLogo=' + type,
+                '',
+                function(data) {
+                    layer.closeAll()
+                    if (data.code == 1000) {
+                        if (data.elem.checked == true) {
+                            $('#Consumer').show()
+
+                        } else if (data.elem.checked == false) {
+                            $('#Consumer').hide()
+                        }
+                        // tableRender()
+                    } else {
+                        layer.msg(data.msg)
+                        form.val('cardAdd', {
+                            "consumptionPreferences": type == 1 ? true : false
+                        })
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                },
+                "post"
+            )
+        });
+
+        /*---------- 监听提交 ----------*/
+        form.on('submit(add)', function(data, index) {
+            return false
+
+            // 发送请求
+            $.ajax({
+                type: "post",
+                url: serverUrl + "memberCard/addMemberCard",
+                async: true,
+                dataType: "json",
+                contentType: "application/json",
+                data: addData,
+                success: function(data) {
+                    if (data.code == "0") {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                        parent.layer.msg(data.msg);
+                        parent.layui.table.reload('vip_cardList');
+                    } else if (data.code == "1") {
+                        layer.msg("添加会员卡失败");
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+    </script>
+</body>
+
+</html>

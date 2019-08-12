@@ -77,18 +77,20 @@
         <div class="layui-form layui-row">
             <div class="layui-input-inline text">
                 <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                <input id="shopName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
+                <input id="merchantName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-input-inline text">
                 <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                <input id="orderNumber" type="text" name="orderId" placeholder="系统订单号" autocomplete="off" class="layui-input">
+                <input id="shopName" type="text" name="" placeholder="店铺名称" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline text">
+                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                <input id="orderNumber" type="text" name="orderId" placeholder="订单号" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
+                <input type="text" class="layui-input" placeholder="创建时间" name="startTime" id="startTime">
             </div>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" placeholder="结束" name="endTime" id="endTime">
-            </div>
+            
             <div class="layui-input-inline">
                 <select id="oneTransactionType" name="transactionType">
                     <option value="">支付方式</option>
@@ -97,16 +99,31 @@
                 </select>
             </div>
             <div class="layui-input-inline">
+                        <select name="type" id="transactionPassageway">
+                            <option value="">支付通道</option>
+                            <option value="0">支付宝</option>
+                            <option value="1">微信</option>
+                            <option value="2">富友</option>
+                            <option value="3">易融码</option>
+                            <option value="4">新大陆</option>
+                            <option value="5">随行付</option>
+                        </select>
+                    </div>
+            <div class="layui-input-inline text">
+                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                <input id="subaccountNumber" type="text" name="orderId" placeholder="子商户号" autocomplete="off" class="layui-input">
+            </div>
+            <!-- <div class="layui-input-inline">
                 <select id="orderState" name="orderState">
-                    <option value="10">订单状态</option>
+                    <option value="10">订单类型</option>
                     <option value="1">交易成功</option>
                     <option value="5">部分退款</option>
                     <option value="4">全部退款</option>
                 </select>
-            </div>
+            </div> -->
             <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
-        <div class="baobiao" style="width:100%;height:143px">
+       <!--  <div class="baobiao" style="width:100%;height:143px">
             <div class="baobiao-col-1" style="padding-left: 0;">
                 <div class="baobiaoK">
                     <div class="baobiaolist" style="line-height:52px;font-size:16px">
@@ -166,11 +183,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <table class="layui-hide" id="LAY_table_bill" lay-filter="bill" style="font-size:14px"></table>
     </div>
     <script type="text/html" id="tool">
-        <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" id="Toview" lay-event="Toview">同步</a>
 			
 		</script>
     <script src="../../common/config-agent.js"></script>
@@ -262,11 +279,14 @@
                     where: {
                         "agentLevel": agentLevel,
                         "batch": $('#orderNumber').val().trim(),
-                        "merchantName": $('#shopName').val().trim(),
+                        "merchantName": $('#merchantName').val().trim(),
+                        "shopName": $('#shopName').val().trim(),
                         "startTime": $('#startTime').val() + ' ' + '00:00:00',
-                        "endTime": $('#endTime').val() + ' ' + '23:59:59',
+                        // "endTime": $('#endTime').val() + ' ' + '23:59:59',
+                        "transactionPassageway":$('#transactionPassageway').val(),
+                        "subaccountNumber":$('#subaccountNumber').val().trim(),
                         "oneTransactionType": $('#oneTransactionType').val(),
-                        "orderState": $('#orderState').val(),
+                        "orderState": '3',
                     },
                     elem: '#LAY_table_bill',
                     page: true,
@@ -293,54 +313,53 @@
                             templet: function(data) {
                                 return data.merchantNumber + ' <br /> ' + data.merchantName
                             },
-                            width: 200
                         }, {
-                            templet: function(data) {
-                                return data.batch  + '<br />' + data.paymentOrderNumber
-                            },
-                            title: '订单号/通道订单号',
+                            field: 'shopName',
+                            title: '店铺名称',
                             align: 'center',
-                            width: 300
                         }, {
-                            field: 'transactionAmount',
-                            title: '交易金额',
+                            field:'batch',
+                            title: '订单号',
+                            align: 'center',
+                        }, {
+                            field: 'paymentType',
+                            title: '交易通道',
                             align: 'center',
 
-                            width: 100,
                             templet: function(data) {
-                                return '￥' + data.transactionAmount
+                                switch (data.paymentType) {
+                                    case 0:
+                                        return '支付宝'
+                                        break;
+                                    case 1:
+                                        return '微信'
+                                        break;
+                                    case 2:
+                                        return '富友'
+                                        break;
+                                    case 4:
+                                        return '新大陆'
+                                        break;
+                                    case 3:
+                                        return '易融码'
+                                        break;
+                                    case 5:
+                                        return '随行付'
+                                        break;
+                                 
+                                }
                             }
                         }, {
-                            field: 'shopPoundage',
-                            title: '手续费',
+                            field: 'subaccountNumber',
+                            title: '子商户号',
                             align: 'center',
-                            width: 100,
-                            templet: function(data) {
-                                return '￥' + data.shopPoundage
-                            }
-                        }, {
-                            field: 'settlementAmount',
-                            title: '实收金额',
-                            align: 'center',
-                            width: 100,
-                            templet: function(data) {
-                                return '￥' + data.settlementAmount
-                            }
-                        }, {
-                            templet: function(data) {
-                                return data.orderTime + '</br>' + data.transactionTime
-                            },
-                            title: '提交时间/成功时间',
-                            align: 'center',
-                            width: 200
                         }, {
                             field: 'subaccountNumber',
                             title: '支付方式',
                             align: 'center',
-                            width: 200,
                             templet: function(data) {
-                                var oneZ, twoZ
-                                switch (data.onePaymentTypeName) {
+                                var oneZ
+                                switch (data.transactionType) {
                                     case '0':
                                         oneZ = '支付宝'
                                         break;
@@ -357,45 +376,25 @@
                                         oneZ = '--'
                                         break;
                                 }
-                                switch (data.twoPaymentTypeName) {
-                                    case '0':
-                                        twoZ = '条码支付'
-                                        break;
-                                    case '1':
-                                        twoZ = '动态二维码支付'
-                                        break;
-                                    case '2':
-                                        twoZ = '小程序支付'
-                                        break;
-                                    case '3':
-                                        twoZ = 'APP支付'
-                                        break;
-                                    case '4':
-                                        twoZ = 'H5支付'
-                                        break;
-                                    case '5':
-                                        twoZ = '公众号支付'
-                                        break;
-                                    case '6':
-                                        twoZ = '服务窗支付'
-                                        break;
-                                    case '7':
-                                        twoZ = '预授权'
-                                        break;
-                                    default:
-                                        twoZ = '--'
-                                        break;
-                                }
-                                return oneZ + '</br>' + twoZ
+                                
+                                return oneZ 
                             }
                         }, {
-                            field: 'orderState1',
-                            title: '订单状态',
+                            templet: function(data) {
+                                return data.insertTime 
+                            },
+                            title: '创建时间',
                             align: 'center',
-
                         }, {
-                            field: 'remark',
-                            title: '订单描述',
+                            field: 'settlementAmount',
+                            title: '订单金额',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + data.transactionAmount
+                            }
+                        }, {
+                            field: 'errorDescribe',
+                            title: '异常信息',
                             align: 'center',
 
                         }, {
@@ -409,17 +408,9 @@
                         // console.log(newData)
                         // console.log(curr)
                          if(res.code != 1000){
-                             $("#count").html('0')
-                            $("#transactionAmount").html('0元')
-                            $("#refundAmount").html('0元')
-                            $("#shopPoundage").html('0元')
-                            $("#settlementAmount").html('0元')
+                           
                         }else{
-                            $("#count").html(newData.count)
-                            $("#transactionAmount").html(newData.transactionAmount + '元')
-                            $("#refundAmount").html(newData.refundAmount + '元')
-                            $("#shopPoundage").html(newData.shopPoundage + '元')
-                            $("#settlementAmount").html(newData.settlementAmount + '元')
+                            
                         }
                            
                         
@@ -485,14 +476,64 @@
                             iframe.subPagebill(data)
                         }
                     });
-                } else if (obj.event === 'instep') {
-                    // 同步流水
-                    layer.confirm('确定要同步流水吗', {
-                        btn: ['确定', '取消'] //按钮
-                    }, function() {
-                        console.log(data)
-                    })
-                }
+                }else if(obj.event == 'Toview'){
+                    $.ajax({
+                            type: "get",
+                            url: 'https://api.51shanhe.com/p-order/sync/order',
+                            async: true,
+                            dataType: "json",
+                            data: {
+                                "batch":data.batch,
+                                "insNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+                                "merchantNumber":data.merchantNumber,
+                                "orderState":'3'
+                            },
+                            success: function(data) {
+                                if(data.code == 1000){
+                                     layer.msg(data.msg)
+                                    // parent.layer.msg('更改成功')
+                                }else{
+                                    layer.msg(data.msg)
+                                    
+                                }
+                            },
+
+                        });
+                } else if(obj.event === 'Sync') { //同步
+                        var zhuxiaoData = {
+                            card: data.card,
+                            cardType: 5
+                        }
+                        layer.confirm('确定要同步吗', {
+                            icon: 3,
+                            title: '提示'
+                        }, function(index) {
+                            // 发送请求
+                            $.ajax({
+                                type: "post",
+                                url: serverUrl + "memberCard/updateAssociatorCard",
+                                async: true,
+                                dataType: "json",
+                                contentType: "application/json",
+                                data: JSON.stringify(zhuxiaoData),
+                                success: function(data) {
+                                    if(data.code == 0) {
+                                        layer.close(index);
+                                        layer.msg("会员卡已注销");
+                                        // 刷新页面
+                                        var curr = $("#curr").val();
+                                        layui.table.reload('vip_cardList', {
+                                            page: {
+                                                curr: curr
+                                            }
+                                        });
+                                    } else if(data.code == 1) {
+                                        layer.msg("会员卡注销失败");
+                                    }
+                                }
+                            });
+                        });
+                    }
             });
 
             $('.layui-row .layui-btn').on('click', function() {

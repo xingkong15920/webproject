@@ -247,10 +247,41 @@
                                 $('.rate').html(str)
                             }
 
-                        } else {
-                            var rateL = data.data[0].channelRate.split('&')
-                            console.log(data.data[0].channelRate.indexOf('|'))
-                            if (data.data[0].channelD1Rate.indexOf('|') >= 0) {
+                        } else if(jgData.rateType == 'D0') {
+                            var rateL = data.data[0].channelD0Rate.split('&')
+                            console.log(data.data[0].channelD0Rate.indexOf('|'))
+                            if (data.data[0].channelD0Rate.indexOf('|') >= 0) {
+                                var str = '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'
+                                    if(jgData.alipayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#zhifubao').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.weChatRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#weixin').attr('data-num',rateL[i].split('|')[0])
+                                        $('#jingdong').attr('data-num')
+                                        $('#yinlian').attr('data-num')
+                                    }
+                                    if(jgData.jingdongRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#jingdong').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                    if(jgData.unionPayRate == ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4)){
+                                        $('#yinlian').attr('data-num',rateL[i].split('|')[0])
+                                    }
+                                }
+                                $('.rate').html(str)
+
+                            } else {
+                                var str =  '<option value="">请选择费率</option>'
+                                for (var i = 0; i < rateL.length; i++) {
+                                    str += '<option data-num="' + rateL[i] + '" value="' + ((rateL[i].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i] + '</option>'
+                                }
+                                $('.rate').html(str)
+                            }
+                        }else if(jgData.rateType == 'T1') {
+                            var rateL = data.data[0].channelT1Rate.split('&')
+                            console.log(data.data[0].channelT1Rate.indexOf('|'))
+                            if (data.data[0].channelT1Rate.indexOf('|') >= 0) {
                                 var str = '<option value="">请选择费率</option>'
                                 for (var i = 0; i < rateL.length; i++) {
                                     str += '<option data-num="' + rateL[i].split('|')[0] + '" value="' + ((rateL[i].split('|')[1].split('%')[0]) / 10000 * 100).toFixed(4) + '">' + rateL[i].split('|')[1] + '</option>'

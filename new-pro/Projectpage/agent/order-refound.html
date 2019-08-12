@@ -81,7 +81,7 @@
             </div>
             <div class="layui-input-inline text">
                 <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                <input id="orderNumber" type="text" name="orderId" placeholder="系统订单编号" autocomplete="off" class="layui-input">
+                <input id="orderNumber" type="text" name="orderId" placeholder="订单号" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-input-inline">
                 <input type="text" class="layui-input" placeholder="创建时间" name="startTime" id="startTime">
@@ -91,7 +91,7 @@
             </div>
             <div class="layui-input-inline">
                 <select id="oneTransactionType" name="transactionType">
-                    <option value="">方式</option>
+                    <option value="">方式方式</option>
                     <option value="Alipay_Pay">支付宝支付</option>
                     <option value="WeChat_Pay">微信支付</option>
                 </select>
@@ -293,38 +293,25 @@
                             templet: function(data) {
                                 return data.merchantNumber + ' <br /> ' + data.merchantName
                             },
-                            width: 200
                         }, {
                             templet: function(data) {
-                                return data.paymentOrderNumber + '<br />' + data.batch
+                                return  data.batch
                             },
-                            title: '通道订单号/系统订单号',
+                            title: '订单号',
                             align: 'center',
-                            width: 300
+                        }, {
+                            templet: function(data) {
+                                return data.batch + '<br />' + data.paymentOrderNumber
+                            },
+                            title: '退款订单号/通道订单号',
+                            align: 'center',
                         }, {
                             field: 'transactionAmount',
-                            title: '交易金额',
+                            title: '退款金额',
                             align: 'center',
 
-                            width: 100,
                             templet: function(data) {
                                 return '￥' + data.transactionAmount
-                            }
-                        }, {
-                            field: 'shopPoundage',
-                            title: '手续费',
-                            align: 'center',
-                            width: 100,
-                            templet: function(data) {
-                                return '￥' + data.shopPoundage
-                            }
-                        }, {
-                            field: 'settlementAmount',
-                            title: '实收金额',
-                            align: 'center',
-                            width: 100,
-                            templet: function(data) {
-                                return '￥' + data.settlementAmount
                             }
                         }, {
                             templet: function(data) {
@@ -332,12 +319,10 @@
                             },
                             title: '提交时间/成功时间',
                             align: 'center',
-                            width: 200
                         }, {
                             field: 'subaccountNumber',
                             title: '支付方式',
                             align: 'center',
-                            width: 200,
                             templet: function(data) {
                                 var oneZ, twoZ
                                 switch (data.onePaymentTypeName) {
@@ -389,11 +374,14 @@
                                 return oneZ + '</br>' + twoZ
                             }
                         }, {
-                            field: 'orderState1',
+                            field: 'remark',
                             title: '订单描述',
                             align: 'center',
+                        }, {
+                            field: 'orderState1',
+                            title: '状态',
+                            align: 'center',
 
-                            width: 200
                         }, {
                             field: 'operation',
                             title: '操作',
@@ -474,7 +462,7 @@
                         type: 2,
                         title: '订单详情',
                         area: ['40%', '80%'], //宽高
-                        content: 'dealersBillDetail.html',
+                        content: 'dealersBillFailDetail.html',
                         success: function(layero, index) {
                             // 获取子页面的iframe
                             var iframe = window['layui-layer-iframe' + index];

@@ -34,7 +34,7 @@
 						<td><span id="batch"></span></td>
 					</tr>
 					<tr>
-						<td>上游订单号</td>
+						<td>通道订单号</td>
 						<td><span id="paymentOrderNumber"></span></td>
 					</tr>
 					
@@ -105,6 +105,53 @@
 			// $('#paymentChannelName').html(data.paymentChannelName)
 			// $('#oneTransactionType').html(data.oneTransactionType)
 			// $('#orderState').html(os)
+			var oneZ,twoZ
+        switch (data.onePaymentTypeName) {
+            case '0':
+                oneZ = '支付宝'
+                break;
+            case '1':
+            oneZ = '微信'
+                break;
+            case '2':
+            oneZ = '京东钱包'
+                break;
+            case '3':
+            oneZ = '云闪付'
+                break;
+            default:
+                oneZ = '--'
+                break;
+        }
+        switch (data.twoPaymentTypeName) {
+            case '0':
+                twoZ = '条码支付'
+                break;
+            case '1':
+                twoZ = '动态二维码支付'
+                break;
+            case '2':
+                twoZ = '小程序支付'
+                break;
+            case '3':
+                twoZ = 'APP支付'
+                break;
+            case '4':
+                twoZ = 'H5支付'
+                break;
+            case '5':
+                twoZ = '公众号支付'
+                break;
+            case '6':
+                twoZ = '服务窗支付'
+                break;
+            case '7':
+                twoZ = '预授权'
+                break;
+            default:
+                twoZ = '--'
+                break;
+        }
 			$('#merchantNumber').html(data.merchantNumber)
 			$('#merchantName').html(data.merchantName)
 			$('#paymentOrderNumber').html(data.paymentOrderNumber)
@@ -116,7 +163,7 @@
 			$('#orderTime').html(data.orderTime)
 			$('#transactionTime').html(data.transactionTime)
 			$('#paymentChannelName').html(data.paymentChannelName)
-			$('#oneTransactionType').html(data.onePaymentTypeName + '/' + data.twoPaymentTypeName)
+			$('#oneTransactionType').html(oneZ + '/' + twoZ)
 		}
 	</script>
 

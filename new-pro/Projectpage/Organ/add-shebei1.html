@@ -55,7 +55,7 @@
                 </label>
                 <div class="layui-input-inline">
                     <div class="layui-input-inline">
-                        <input type="text" id="name" name="shebei" lay-verify="" class="layui-input"  disabled="disabled"  value="" autocomplete="off">
+                        <input type="text" id="name" name="shebei" lay-verify="" class="layui-input" value=""  disabled="disabled" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                 </label>
                 <div class="layui-input-inline">
                     <div class="layui-input-inline">
-                        <input type="text" id="yongtu" name="shebei" lay-verify="" class="layui-input"  disabled="disabled" value="" autocomplete="off">
+                        <input type="text" id="yongtu" name="shebei" lay-verify="" class="layui-input" value=""  disabled="disabled" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -121,12 +121,11 @@
         </div>
     </div>
     <script src="../../common/config-agent.js"></script>
-    <script src="../../common/utility.js"></script>
+    <script src="../../common/utility.js?v=1.2"></script>
     <script>
     var merchantNumber
     var jgData
-    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
-    var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+    var userNumber ;
     var tableList = [
                     {
                         img:'../../public/images/yunlaba.png',
@@ -208,8 +207,10 @@
     }
     function clickS1(e) {
         $('#search1').val(e.getAttribute('data-name'))
-        
         $('#search1').attr('shopNumber', e.getAttribute('data-id'))
+        console.log('123')
+        $('#search').val('')
+        $('#search').removeAttr('shopNumber')
         $('#searchBox1').hide()
     }
     function bl() {
@@ -306,12 +307,21 @@
         if(data.type == 2){
             $('#face123').hide()
         }
-       
+        userNumber = data.agentNumber
         jgData = data
         $('#img').attr('src', tableList[jgData.equipmentClass].img)
         $('#name').val(jgData.equipmentName)
         $('#yongtu').val(jgData.equipmentPurpose)
         $('#equipmentNumber').val(jgData.equipmentNumber)
+        if(jgData.binds == 0){
+            $('#search1').val(jgData.merchantName)
+        
+        $('#search1').attr('shopNumber', jgData.merchantNumber)
+        $('#search').val(jgData.shopName)
+        
+        $('#search').attr('shopNumber', jgData.shopNumber)
+        }
+        
         console.log(data)
         layui.use(['form', 'layer'], function() {
             var form = layui.form,
@@ -421,13 +431,16 @@
                 ajData.cipher = data.field.cipher
 
                 ajData.shopNumber = $('#search').attr('shopnumber')
-                ajData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                ajData.institutionNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
                
-                ajData.agentNumber = userNumber
+                ajData.agentNumber = jgData.agentNumber
+                ajData.volume = '100'
+                ajData.id = jgData.id
+                ajData.binds = jgData.binds
                  console.log(ajData)
-                CmsUtility.postAjaxCall(
+                CmsUtility.postAjaxCall2(
                     //系统设置
-                    CmsConfig.addressUrl.Agent.addAgEquipment,
+                    'http://192.168.1.167:6005/shanhe-admin/' + 'equipment/updateEquipment',
                     ajData,
                     function(data) {
                         if (data.code == 1000) {
@@ -446,58 +459,7 @@
                         console.log('222')
                     }
                 )
-                //发异步，把数据提交给后台
-                // $.ajax({
-                //  type: "post",
-                //  url: ".yunlb/addylb",
-                //  async: true,
-                //  data: mydata,
-                //  success: function(data) {
-                //      if(data.result == "success") {
-                //          // 绑定云喇叭
-                //          $.ajax({
-                //              type: "post",
-                //              url: ".yunlb/addylbdata",
-                //              async: true,
-                //              data: mydata,
-                //              success: function(datas) {
-                //                  if(datas.code == 0) {
-                //                      layer.alert("添加成功!", {
-                //                          icon: 6
-                //                      }, function() {
-                //                          // 刷新父页面
-                //                          window.parent.location.reload();
-                //                          // 获得frame索引
-                //                          var index = parent.layer.getFrameIndex(window.name);
-                //                          //关闭当前frame
-                //                          parent.layer.close(index);
-                //                      });
-                //                  } else if(datas.code == 1) {
-                //                      layer.alert("未知错误");
-                //                  } else if(datas.code == 2) {
-                //                      layer.alert("绑定失败，设备码不存在");
-                //                  } else if(datas.code == 3) {
-                //                      layer.alert("绑定失败，设备码已经被其它用户绑定");
-                //                  } else if(datas.code == 4) {
-                //                      layer.alert("绑定失败，设备码已经被同一用户绑定");
-                //                  } else if(datas.code == 5) {
-                //                      layer.alert("解绑失败，设备码被任何用户绑定");
-                //                  } else if(datas.code == 6) {
-                //                      layer.alert("失败，未提供设备码");
-                //                  } else if(datas.code == 8) {
-                //                      layer.alert("失败，此Token无此设备权限");
-                //                  } else if(datas.code == 9) {
-                //                      layer.alert("失败，无效的Token");
-                //                  } else if(datas.code == 17) {
-                //                      layer.alert("错误，重复的请求");
-                //                  }
-                //              }
-                //          });
-                //      } else {
-                //          layer.alert(data.desc);
-                //      }
-                //  }
-                // });
+                
                 return false;
             });
         });

@@ -167,17 +167,14 @@
 								field: 'merchantNumber',
 								title: '商户编号',
 								align: 'center',
-								width: 200
 							}, {
 								field: 'merchantName',
 								title: '商户名称',
 								align: 'center',
-								width: 200
 							}, {
 								field: 'agentLevel',
 								title: '所属服务商(服务商/销售)',
 								align: 'center',
-								width: 250,
 								templet:function(data){
 									return data.agentName + '/' + data.saleName
 								}
@@ -185,32 +182,33 @@
 								field: 'merchantType',
 								title: '类型',
 								align: 'center',
-								width: 80
 							}, {
 								field: 'insertTime',
 								title: '创建时间',
 								align: 'center',
-								width: 150
 							}, {
 								toolbar: '#toolbar_switch1',
 								title: '广告权限',
 								align: 'center',
-								width: 120
+								field:'adv'
 							}, {
 								toolbar: '#toolbar_switch',
 								title: '状态',
 								align: 'center',
-								width: 80
 							}, {
 								field: 'operation',
 								title: '操作',
 								toolbar: "#tool",
-								minWidth: 500
+								width:500
 							}]
 						],
 						done: function(res, curr, count) {
 							console.log(res)
 							layer.closeAll()
+							if (JSON.parse(sessionStorage.getItem("agentUser")).advertJurisdiction == 1) {
+       $("[data-field='adv']").css('display','none');
+    }
+							 
 						}
 					});
 				}

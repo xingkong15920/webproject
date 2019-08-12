@@ -41,7 +41,7 @@
                         //系统设置
                         CmsConfig.addressUrl.Login.Automaticlist, {
                             "loginClass": '1',
-                            "number": number,
+                            "Number": number,
                             "institutionNumber": ins,
                             "address": cname,
                             "IP": cip
@@ -50,7 +50,7 @@
                             if (data.code == '1000') {
                                 sessionStorage.setItem("agentUser", JSON.stringify(data.data));
                                 $('#userName').html(JSON.parse(sessionStorage.getItem("agentUser")).login)
-                                window.location.href = decodeURIComponent(window.location).split('?')[0]
+                                // window.location.href = decodeURIComponent(window.location).split('?')[0]
                                 // layer.msg('登录成功')
                                 // setTimeout(function() {
                                 //  window.location.href = 'index.html'
@@ -180,6 +180,12 @@
                                 <cite>退款订单</cite>
                             </a>
                         </li>
+                        <li>
+                            <a lay-href="order-error.html">
+                                <i class="icon icon icon-caiwufenxi"></i>
+                                <cite>异常订单</cite>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="layui-nav-item">
@@ -203,7 +209,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="layui-nav-item">
+                <li class="layui-nav-item" id="adv" style="display:none">
                     <a lay-href="Adware-List.html">
                         <i class="icon icon icon-xiaoshouguanli"></i>
                         <cite>广告管理</cite>
@@ -384,7 +390,12 @@
     } else {
         $('#levA').show()
     }
-
+    
+    if (JSON.parse(sessionStorage.getItem("agentUser")).advertJurisdiction == 0) {
+        $('#adv').show()
+    } else {
+        $('#adv').hide()
+    }
     $(function() {
         $('#logout').click(function() {
             var ajjData = new Object()
