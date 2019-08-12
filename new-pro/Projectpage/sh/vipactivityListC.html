@@ -19,28 +19,13 @@
 
 	<body>
 		<ul class="actList" id="activityInfos">
-			<li class="actListli" v-cloak v-for="item in actList" v-on:click="jumpAdd(item.activityType)">
+			<li class="actListli" v-cloak v-for="item in actList" v-on:click="jumpAdd(item)">
 				<div class="actBody">
-					<img src="./images/21.png" class="actBtop">
+					<img :src="item.activityImage" class="actBtop" :class="item.activityClass">
 					<div class="actdown">
 						<h3>{{item.activityName}}</h3>
-						<p>{{item.activityName}}</p>
+						<p>{{item.activityTips}}</p>
 					</div>
-				</div>
-			</li>
-			<!-- <li class="actListli">
-					<div class="actBody">
-						<img src="./images/21.png" class="actBtop">
-						<div class="actdown">
-							<h3>支付即会员</h3>
-							<p>快速招募新会员，微信支付成功后可领取会员卡</p>
-						</div>
-					</div>
-				</li> -->
-			<li class="actListli actListadd">
-				<div class="actBody">
-					<span>+</span>
-					<p>添加支付场景</p>
 				</div>
 			</li>
 		</ul>
@@ -51,12 +36,46 @@
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var actlist = [{
 				'activityType': 0,
+				'activityClass': 'avt_zfjhy',
+				'activityImage': '../../public/images/meb/avt_zfjhy.png',
 				'activityName': '支付即会员',
-				'activityTips': '快速招募新会员，微信支付成功后可领取会员卡'
+				'activityTips': '快速招募新会员，微信支付成功后可领取会员卡',
+				'addLink': 'vipactivityadd-zfjhy.html'
 			}, {
 				'activityType': 1,
+				'activityClass': 'avt_chuz',
+				'activityImage': '../../public/images/meb/avt_chuz.png',
 				'activityName': '储值有礼',
-				'activityTips': '顾客沉淀，对于充值达到金额的会员进行奖励'
+				'activityTips': '顾客沉淀，对于充值达到金额的会员进行奖励',
+				'addLink': 'vipactivityadd-chuz.html'
+			}, {
+				'activityType': 2,
+				'activityClass': 'avt_xf',
+				'activityImage': '../../public/images/meb/avt_xf.png',
+				'activityName': '消费有礼',
+				'activityTips': '顾客沉淀，对于消费达到金额的会员进行奖励',
+				'addLink': 'vipactivityadd-xf.html'
+			}, {
+				'activityType': 3,
+				'activityClass': 'avt_fx',
+				'activityImage': '../../public/images/meb/avt_fx.png',
+				'activityName': '分享有礼',
+				'activityTips': '拉新营销，分享推荐，邀请好友开卡可获取会员奖励',
+				'addLink': 'vipactivityadd-fx.html'
+			}, {
+				'activityType': 4,
+				'activityClass': 'avt_kk',
+				'activityImage': '../../public/images/meb/avt_kk.png',
+				'activityName': '开卡有礼',
+				'activityTips': '顾客沉淀，对于领取激活会员卡的会员进行奖励',
+				'addLink': 'vipactivityadd-kk.html'
+			}, {
+				'activityType': 5,
+				'activityClass': 'avt_sr',
+				'activityImage': '../../public/images/meb/avt_sr.png',
+				'activityName': '生日有礼',
+				'activityTips': '老顾客关怀，生日会员关心和祝福，提高归属感',
+				'addLink': 'vipactivityadd-sr.html'
 			}]
 			layui.use(['table', 'laydate', 'element'], function() {
 				var table = layui.table,
@@ -65,12 +84,12 @@
 					form = layui.form,
 					element = layui.element;
 
+				parent.layer.load(2, {
+					shade: 0.5
+				});
 				setActInof(actlist)
 
 				function setActInof(obj) {
-					parent.layer.load(2, {
-						shade: 0.5
-					});
 					new Vue({
 						el: '#activityInfos',
 						data: {
@@ -78,42 +97,24 @@
 						},
 						methods: {
 							jumpAdd: function(e) {
-								switch (e) {
-									case 0:
-										parent.layer.open({
-											type: 2,
-											title: '支付即会员 - 添加活动',
-											area: ['600px', '650px'],
-											content: 'vipactivityadd.html',
-											success: function(layero, index) {
-												// 获取父页面的iframe
-												var iframe = parent.window['layui-layer-iframe' + index];
-												// 向父页面的全局函数child传参
-												iframe.subPageCon(e)
-											}
-										});
-										break;
-									case 1:
-										parent.layer.open({
-											type: 2,
-											title: '储值有礼 - 添加活动',
-											area: ['600px', '650px'],
-											content: 'vipactivityadd.html',
-											success: function(layero, index) {
-												// 获取父页面的iframe
-												var iframe = parent.window['layui-layer-iframe' + index];
-												// 向父页面的全局函数child传参
-												iframe.subPageCon(e)
-											}
-										});
-										break;
-								}
+								parent.layer.open({
+									type: 2,
+									title: '添加活动 - ' + e.activityName,
+									area: ['700px', '90%'],
+									content: e.addLink,
+									success: function(layero, index) {
+										// 获取父页面的iframe
+										// var iframe = parent.window['layui-layer-iframe' + index];
+										// 向父页面的全局函数child传参
+										// iframe.subPageCon(e)
+									}
+								});
 							}
 						},
 						mounted() {
-							setTimeout(function() {
-								parent.layer.closeAll('loading');
-							}, 500);
+							// setTimeout(function() {
+							parent.layer.closeAll('loading');
+							// }, 500);
 						}
 					})
 				}

@@ -104,6 +104,29 @@
 			.layui-btn+.layui-btn {
 				margin: 0;
 			}
+
+			.publicF {
+				color: #5d9cec;
+				background-color: #f4f8fb;
+				border-radius: 4px;
+				padding: 3px;
+				font-size: 12px;
+			}
+
+			.layui-icon-female {
+				color: rgb(240, 140, 90);
+			}
+
+			.layui-icon-male {
+				color: rgb(110, 200, 220);
+			}
+
+			.mebColor {
+				border-radius: 4px;
+				padding: 5px;
+				color: #fff;
+				font-weight: 600;
+			}
 		</style>
 	</head>
 
@@ -233,7 +256,7 @@
 						return {
 							"code": res.code,
 							"count": res.data.memberCount,
-							"data": res.data.memberList,
+							"data": changeData(res.data.memberList),
 						}
 					},
 					cols: [
@@ -255,7 +278,11 @@
 								title: '姓名',
 								align: 'center',
 								fixed: 'left',
-								width: 90
+								width: 150,
+								templet: function(data) {
+									return data.name + '  <i class="layui-icon ' + [data.sex == 0 ? "layui-icon-female" : "layui-icon-male"] +
+										'"></i>' + [data.publicFollow == 0 ? '' : '  <span class="publicF">已关注</span>']
+								}
 							}, {
 								field: 'nickName',
 								title: '昵称',
@@ -267,7 +294,7 @@
 								title: '会员卡号',
 								align: 'center',
 								width: 160
-							}, 
+							},
 							{
 								field: 'cell',
 								title: '手机号',
@@ -277,12 +304,16 @@
 								field: 'gradeName',
 								title: '会员等级',
 								align: 'center',
-								width: 100
+								width: 100,
+								templet: function(data) {
+									return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.gradeName + '</span>'
+								}
 							}, {
 								field: 'allBalance',
 								title: '会员总余额',
 								align: 'center',
-								width: 100,
+								width: 110,
+								sort: true,
 								templet: function(data) {
 									return '¥ ' + data.allBalance
 								}
@@ -291,6 +322,7 @@
 								title: '实充余额',
 								align: 'center',
 								width: 100,
+								sort: true,
 								templet: function(data) {
 									return '¥ ' + data.accountBalance
 								}
@@ -299,6 +331,7 @@
 								title: '赠送余额',
 								align: 'center',
 								width: 100,
+								sort: true,
 								templet: function(data) {
 									return '¥ ' + data.giveMoney
 								}
@@ -306,6 +339,7 @@
 								field: 'integral',
 								title: '会员积分',
 								align: 'center',
+								sort: true,
 								width: 100
 							}, {
 								field: 'registerTime',
@@ -350,7 +384,7 @@
 							type: 2,
 							title: false,
 							offset: 'r',
-							area: ['700px', '100%'],
+							area: ['900px', '100%'],
 							shade: 0.6,
 							shadeClose: true,
 							anim: 2,
@@ -488,6 +522,10 @@
 					active[type] ? active[type].call(this) : '';
 				});
 			});
+
+			function changeData(res) {
+				return res
+			}
 
 			function top3Height() {
 				$('.statisticsBList li').eq(0).find('span').css('height', '50%')

@@ -21,7 +21,7 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		ApiRootUrlMeb: 'http://192.168.1.66:80/shanhe-member/',
+		ApiRootUrlMeb: 'http://hstest123.natapp1.cc/shanhe-member/',
 		ApiRootUrl: server
 		// imgUrl:imgAdd
 	},

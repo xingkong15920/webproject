@@ -73,7 +73,8 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">领卡链接</label>
 						<div class="layui-input-inline">
-							<input type="text" lay-verify="mdSelect" autocomplete="off" placeholder="请选择领卡链接" id="mdSelect" class="layui-input">
+							<input type="text" lay-verify="linkSelect" autocomplete="off" readonly="readonly" placeholder="请选择领卡链接" id="linkSelect"
+							 class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -89,7 +90,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">微信子商户</label>
 						<div class="layui-input-inline">
-							<textarea class="layui-textarea" name="subMerchant" lay-verify="subMerchant" placeholder="可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开"></textarea>
+							<textarea class="layui-textarea" id="subMerchant" name="subMerchant" lay-verify="subMerchant" placeholder="可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开"></textarea>
 						</div>
 						<label class="layui-form-label"></label>
 						<div class="layui-input-inline-inline">可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开</div>
@@ -111,15 +112,14 @@
 		<script>
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var shopNumbers = []
+			var getLink = ''
 			$('#quxiao').click(function() {
 				setTimeout(function() {
 					parent.layer.close(index)
 				}, 16);
 			})
 
-			function subPageCon(actType) {
-				console.log(actType)
+			function subPageCon() {
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
 					var $ = layui.jquery,
 						upload = layui.upload,
@@ -143,12 +143,12 @@
 
 
 					tableSelect.render({
-						elem: '#mdSelect',
-						searchKey: 'shopName',
-						checkedKey: 'shopNumber',
-						searchPlaceholder: '门店名称',
+						elem: '#linkSelect',
+						searchKey: 'channelName',
+						checkedKey: 'deliveryNo',
+						searchPlaceholder: '渠道名称',
 						table: {
-							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getChannels + '?merchantNumber=' +
 								merNumber,
 							response: {
 								"statusCode": "1000", //解析接口状态
@@ -160,29 +160,44 @@
 								return {
 									"code": res.code,
 									"count": res.data.count,
-									"data": res.data.result,
+									"data": res.data.deliveryChannels,
 								}
 							},
 							cols: [
 								[{
-									type: 'checkbox'
+									type: 'radio'
 								}, {
-									field: 'shopName',
-									title: '门店名称',
+									field: 'channelName',
+									title: '渠道名称',
 									align: 'center',
+									width: 150
+								}, {
+									field: 'getCardUrl',
+									title: '领取链接',
+									align: 'left',
+									width: 400
 								}]
 							]
 						},
 						done: function(elem, data) {
-							shopNumbers.splice(0)
-							var shopname = []
 							layui.each(data.data, function(index, item) {
-								shopNumbers.push(item.shopNumber)
-								shopname.push(item.shopName)
+								getLink = item.getCardUrl
 							})
-							elem.val(shopname.join('||'))
+							elem.val(getLink)
 						}
 					})
+
+					// $("#subMerchant").keyup(function() {
+					// 	var val = $(this).val()
+					// 	console.log(val)
+					// 	// $(this).val($(this).val().replace(/[^0-9]/g, ''));
+					// 	if (val == '，') {
+					// 		console.log(111)
+					// 	} else {
+					// 		console.log(222)
+					// 	}
+					// 	// $(this).val($(this).val().replace('，', ','));
+					// })
 
 					/*---------- 自定义验证规则 ----------*/
 					form.verify({
@@ -201,9 +216,9 @@
 								return '请选择活动结束时间！';
 							}
 						},
-						mdSelect: function(value) {
+						linkSelect: function(value) {
 							if (value.length == "") {
-								return '请选择适用门店！';
+								return '请选择领卡链接！';
 							}
 						},
 						activityConditional: function(value) {
@@ -215,17 +230,16 @@
 
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add)', function(data, index) {
+						var data = data.field
+						data.merchantNumber = merNumber
+						data.getCardUrl = getLink
+						data.startTime = data.startTime + ' 00:00:00'
+						data.endTime = data.endTime + ' 23:59:59'
+						console.log(data.subMerchant)
+						return
 						layer.load(2, {
 							shade: 0.5
 						});
-						var data = data.field
-						data.merchantNumber = merNumber
-						data.shopNumbers = shopNumbers
-						data.startTime = data.startTime + ' 00:00:00'
-						data.endTime = data.endTime + ' 23:59:59'
-						data.activityType = actType
-						data.activityState = 0
-						console.log(data)
 						$.ajax({
 							type: "post",
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addActivity,

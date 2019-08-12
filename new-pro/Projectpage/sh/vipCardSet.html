@@ -120,6 +120,7 @@
 							</blockquote>
 							<input type="file" class="input_img layui-input" style="display: none;" id="upLogo" />
 							<input type="file" class="input_img layui-input" style="display: none;" id="upBg" />
+							<input type="file" class="input_img layui-input" style="display: none;" id="upSysImgBtn" />
 							<div class="layui-form-item max600">
 								<label class="layui-form-label"><span class="redC">* </span>品牌名称 :</label>
 								<div class="layui-input-block">
@@ -177,24 +178,15 @@
 										</div>
 									</div>
 								</div>
+								<div class="layui-input-block layui-word-aux">
+									<div class="chooseSysImg" data-type="chSysImg">选择系统图库</div>
+									<!-- <div class="chooseSysImg" id="upSysImg">上传系统图库</div> -->
+								</div>
 								<div class="layui-input-block layui-word-aux">建议尺寸1080px*675px，选择与卡内容相关的图片，仅支持JPG、JPEG、PNG图片文件，且文件小于1M</div>
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label"><span class="redC">* </span>开卡设置 :</label>
 								<div class="layui-input-block" style="max-width: 650px;" id="cardsetList">
-									<!-- <input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="姓名" title="姓名" checked="" disabled="">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="手机号" title="手机号" checked=""
-									 disabled="">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="性别" title="性别" checked="" disabled="">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="生日" title="生日" checked="" disabled="">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="邮箱" title="邮箱">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="地址" title="地址">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="会员名称" title="会员名称">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="头像" title="头像">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="称谓" title="称谓">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="分组" title="分组">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="标签" title="标签">
-									<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="备注信息" title="备注信息"> -->
 								</div>
 							</div>
 							<div class="layui-form-item">
@@ -440,6 +432,9 @@
 				$('#cardBg').click(function() {
 					$('#upBg').click()
 				})
+				$('#upSysImg').click(function() {
+					$('#upSysImgBtn').click()
+				})
 				$('.layui-upload-img').on({
 					mouseover: function() {
 						var cardId = $(this).attr("id")
@@ -494,9 +489,9 @@
 					setTimeout(function() {
 						var datas = {
 							"imgBaseStr": Imgbase,
-							"institutionNumber": "1004",
+							"institutionNumber": insNumber,
 							"imgType": "0",
-							"merchantNumber": "180913174959827"
+							"merchantNumber": merNumber
 						}
 						// 发送请求
 						$.ajax({
@@ -530,9 +525,9 @@
 					setTimeout(function() {
 						var datas = {
 							"imgBaseStr": Imgbase,
-							"institutionNumber": "1004",
+							"institutionNumber": insNumber,
 							"imgType": "1",
-							"merchantNumber": "180913174959827"
+							"merchantNumber": merNumber
 						}
 						// 发送请求
 						$.ajax({
@@ -551,6 +546,41 @@
 									$('#cardBimg').append('<img src="' + data.data.localImgUrl + '">');
 									$('#cardBg').append('<img src="' + data.data.localImgUrl + '" id="cardBgImg">');
 									$('#cardBg').find('.upTips').hide();
+								}
+							}
+						});
+					}, 300)
+				});
+				$("#upSysImgBtn").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						Imgbase = data
+					});
+					setTimeout(function() {
+						var datas = {
+							"imgBaseStr": Imgbase,
+							"institutionNumber": insNumber,
+							"imgType": "4",
+							"merchantNumber": merNumber
+						}
+						// 发送请求
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+							data: JSON.stringify(datas),
+							dataType: "json",
+							async: false,
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								layer.closeAll('loading');
+								if (data.code === 1000) {
+									layer.msg('上传系统图库成功')
+								} else {
+									layer.msg('上传系统图库失败')
 								}
 							}
 						});
@@ -622,12 +652,34 @@
 						}
 					},
 				});
+
+				var $ = layui.$,
+					active = {
+						chSysImg: function() {
+							layer.open({
+								type: 2,
+								title: '选择系统图库',
+								area: ['600px', '400px'],
+								content: './vipSysImg.html?SysImgType=4',
+								success: function(layero, index) {}
+							});
+						},
+					};
+
+				$('.chooseSysImg').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+
+				function changeImgId(id) {
+					console.log(id)
+					image_id = id
+				}
+				window._changeImgId = changeImgId;
+
 				//监听提交-添加
 				form.on('submit(add)', function(data) {
 					var data = data.field
-					layer.load(2, {
-						shade: 0.5
-					});
 					if (logo_id == '') {
 						layer.msg('请上传logo图片')
 						return false
@@ -652,6 +704,9 @@
 
 					// return
 					// 发送请求
+					layer.load(2, {
+						shade: 0.5
+					});
 					$.ajax({
 						type: "post",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addCard,
@@ -675,9 +730,6 @@
 				//监听提交-更新
 				form.on('submit(update)', function(data) {
 					var data = data.field
-					layer.load(2, {
-						shade: 0.5
-					});
 					if (logo_id == '') {
 						layer.msg('请上传logo图片')
 						return false
@@ -701,8 +753,12 @@
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
 					data.cardNo = merNumber
-
+					console.log(image_id)
+					// return
 					// 发送请求
+					layer.load(2, {
+						shade: 0.5
+					});
 					$.ajax({
 						type: "post",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateCard,

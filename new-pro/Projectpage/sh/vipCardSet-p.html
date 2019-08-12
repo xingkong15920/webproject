@@ -47,7 +47,11 @@
 			}
 
 			.setSP {
-				background-size: cover;
+				background-size: 100% auto;
+			}
+
+			.layui-upload-img img {
+				height: auto;
 			}
 
 			.postTit {
@@ -111,6 +115,14 @@
 				width: 50px;
 				height: 24px;
 			}
+
+			.shareD {
+				border: none;
+			}
+
+			.layui-icon.layui-icon-ok {
+				color: #e5e5e5 !important;
+			}
 		</style>
 	</head>
 
@@ -159,30 +171,30 @@
 								立即领取
 							</div>
 							<div class="detaili shareD">
-								<label>分享说明</label>
-								<p class="postrxplain">分享说明</p>
+								<label class="setColor_Tit">分享说明</label>
+								<p class="setColor_Con postrxplain">分享说明</p>
 							</div>
 							<ul class="cardDul">
-								<div class="cardDulTit">[会员卡详情]</div>
+								<div class="cardDulTit setColor_Tit">[会员卡详情]</div>
 								<li>
 									<div class="detaili">
-										<label>特权说明</label>
-										<p>激活赠送10积分+100 等级经验+代金券+会员钱包买单享受五折特权</p>
+										<label class="setColor_Tit">特权说明</label>
+										<p class="setColor_Con">激活赠送10积分+100 等级经验+代金券+会员钱包买单享受五折特权</p>
 									</div>
 								</li>
 								<li>
 									<div class="detaili">
-										<label>使用须知</label>
-										<p>每人限领一张 该卡仅作为体验使用</p>
+										<label class="setColor_Tit">使用须知</label>
+										<p class="setColor_Con">每人限领一张 该卡仅作为体验使用</p>
 									</div>
 								</li>
 							</ul>
 							<ul class="cardDul cardDulmd">
-								<div class="cardDulTit">[适用门店]</div>
+								<div class="cardDulTit setColor_Tit">[适用门店]</div>
 								<li v-for="item in store">
 									<div class="detaili">
-										<label>门店名称</label>
-										<p>门店名称</p>
+										<label class="setColor_Tit">门店名称</label>
+										<p class="setColor_Con">门店名称</p>
 									</div>
 								</li>
 							</ul>
@@ -197,10 +209,11 @@
 								<span class="tips_red">设置后即刻生效，关闭或不设置值则会按照默认会员卡信息生成分享文案</span>
 							</blockquote>
 							<input type="file" class="input_img layui-input" style="display: none;" id="upBg" />
+							<input type="file" class="input_img layui-input" style="display: none;" id="upSysImgBtn" />
 							<div class="layui-form-item widthauto">
 								<label class="layui-form-label"><span class="redC">* </span>海报标题 :</label>
 								<div class="layui-input-inline max360">
-									<input type="text" name="posterTitle" class="layui-input" id="posterTitle" lay-verify="posterTitle" value="海报标题">
+									<input type="text" name="posterTitle" class="layui-input" id="posterTitle" lay-verify="posterTitle" value="送您一张会员卡">
 								</div>
 							</div>
 							<div class="layui-form-item">
@@ -218,8 +231,10 @@
 									<span data-color="colorC9" class="card_bc9"></span>
 									<span data-color="colorC10" class="card_bc10"></span>
 									<span data-color="colorC11" class="card_bc11"></span>
-									<span data-color="colorC11" class="card_bc12"></span>
-									<span data-color="colorC11" class="card_bc13"></span>
+									<span data-color="colorC12" class="card_bc12"></span>
+									<span data-color="colorC13" class="card_bc13"></span>
+									<span data-color="colorC14" class="card_bc14"></span>
+									<span data-color="colorC15" class="card_bc15"></span>
 								</div>
 							</div>
 							<div class="layui-form-item max600">
@@ -237,12 +252,16 @@
 										</div>
 									</div>
 								</div>
+								<div class="layui-input-block layui-word-aux">
+									<div class="chooseSysImg" data-type="chSysImg">选择系统图库</div>
+									<div class="chooseSysImg" id="upSysImg">上传系统图库</div>
+								</div>
 								<div class="layui-input-block layui-word-aux">建议尺寸1080px*675px，选择与卡内容相关的图片，仅支持JPG、JPEG、PNG图片文件，且文件小于1M</div>
 							</div>
 							<div class="layui-form-item widthauto">
 								<label class="layui-form-label"><span class="redC">* </span>分享说明 :</label>
 								<div class="layui-input-inline max360">
-									<input type="text" name="posterShareExplain" class="layui-input" id="posterShareExplain" value="分享说明"
+									<input type="text" name="posterShareExplain" class="layui-input" id="posterShareExplain" value="送您一份会员权益,请领卡享受"
 									 lay-verify="posterShareExplain">
 								</div>
 							</div>
@@ -276,6 +295,25 @@
 											<input type="number" name="posButtOpacity" autocomplete="off" class="layui-input" lay-verify="btnopacity" id="btnopacity"
 											 value="100">
 										</div>
+									</div>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>详情排版 :</label>
+								<div class="layui-input-inline sysBtn" style="width: calc(100% - 115px);">
+									<div class="layui-input-inline">
+										<label class="layui-form-label">标题颜色 :</label>
+										<div class="layui-input-inline widthauto">
+											<div id="color_Tit"></div>
+										</div>
+										<div class="layui-input-inline colorChoose colorChooseTit" style="width: 120px;"></div>
+									</div>
+									<div class="layui-input-inline">
+										<label class="layui-form-label">正文颜色 :</label>
+										<div class="layui-input-inline widthauto">
+											<div id="color_Con"></div>
+										</div>
+										<div class="layui-input-inline colorChoose colorChooseCon" style="width: 120px;"></div>
 									</div>
 								</div>
 							</div>
@@ -317,8 +355,9 @@
 				// var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 				var postCon
 				var colorListIndex
-				var colorList = ["63b359", "2c9f67", "509fc9", "5885cf", "9062c0", "d09a45", "e4b138", "ee903c", "f08500",
-					"a9d92d", "dd6549", "cc463d", "cf3e36", "5E6671"
+				var colorList = ["63b359", "2c9f67", "509fc9", "5885cf", "9062c0", "d09a45", "e4b138",
+					"ee903c", "f08500",
+					"a9d92d", "dd6549", "cc463d", "cf3e36", "5E6671", "ffffff", "000000"
 				]
 				var cardsetVal = ["姓名", "手机号", "性别", "生日", "身份证", "邮箱", "详细地址", "教育背景", "行业", "收入", "兴趣爱好"]
 				var cardsetC = ["姓名", "手机号", "性别", "生日"]
@@ -327,8 +366,10 @@
 				var colorC
 				var logo_id = '';
 				var poster_imgId = ''
-				var posButtcolor = ''
-				var posButtTextColor = ''
+				var posButtcolor = '#E57F12'
+				var posButtTextColor = '#ffffff'
+				var posConTitcolor = '#666666'
+				var posConConColor = '#000000'
 				var Imgbase
 				var chooseCnum = 0
 
@@ -361,12 +402,19 @@
 								}
 								postCon = data.data
 								poster_imgId = data.data.posterImgId
+								colorListIndex = $.inArray(data.data.posterColor.split('#')[1], colorList)
+								$('.chooseColor span').eq(colorListIndex).attr('class', 'card_bc' + colorListIndex +
+									' chooseCC layui-icon layui-icon-ok')
 								posButtcolor = data.data.posButtcolor
 								posButtTextColor = data.data.posButtTextColor
+								posConTitcolor = data.data.titleColor
+								posConConColor = data.data.textColor
 								$('.cardBtn').css('border-radius', data.data.posButtRadius + 'px')
 								$('.cardBtn').css('opacity', data.data.posButtOpacity / 100)
 								$('.cardBtn').css('background', data.data.posButtcolor)
 								$('.cardBtn').css('color', data.data.posButtTextColor)
+								$('.setColor_Tit').css('color', data.data.titleColor)
+								$('.setColor_Con').css('color', data.data.textColor)
 								$('.colorChooseBtn').text(data.data.posButtcolor)
 								$('.colorChooseText').text(data.data.posButtTextColor)
 								$('#cardBgImg').attr('src', data.data.posterImgUrl)
@@ -439,18 +487,17 @@
 					});
 				}
 
-
-
-
 				setTimeout(function() {
-					console.log(posButtcolor, posButtTextColor)
+					$('.colorChooseBtn').text(posButtcolor);
+					$('.colorChooseText').text(posButtTextColor);
+					$('.colorChooseTit').text(posConTitcolor);
+					$('.colorChooseCon').text(posConConColor);
 					//颜色选择器
 					colorpicker.render({
 						elem: '#color_btn',
 						color: posButtcolor,
 						predefine: true, // 开启预定义颜色
 						done: function(color) {
-							console.log(color)
 							posButtcolor = color
 							$('.colorChooseBtn').text(color);
 							$('.cardBtn').css('background', color)
@@ -461,14 +508,32 @@
 						color: posButtTextColor,
 						predefine: true, // 开启预定义颜色
 						done: function(color) {
-							console.log(color)
 							posButtTextColor = color
 							$('.colorChooseText').text(color);
 							$('.cardBtn').css('color', color)
 						}
 					});
+					colorpicker.render({
+						elem: '#color_Tit',
+						color: posConTitcolor,
+						predefine: true, // 开启预定义颜色
+						done: function(color) {
+							posConTitcolor = color
+							$('.colorChooseTit').text(color);
+							$('.setColor_Tit').css('color', color)
+						}
+					});
+					colorpicker.render({
+						elem: '#color_Con',
+						color: posConConColor,
+						predefine: true, // 开启预定义颜色
+						done: function(color) {
+							posConConColor = color
+							$('.colorChooseCon').text(color);
+							$('.setColor_Con').css('color', color)
+						}
+					});
 				}, 500);
-
 
 				$('#btnradius').on("input", function(e) {
 					$('.cardBtn').css('border-radius', e.delegateTarget.value + 'px')
@@ -508,13 +573,15 @@
 					});
 				});
 
-
 				/*---------- Input监听 ----------*/
 				ltname()
 
 				/*---------- 品牌logo，卡背景上传 ----------*/
 				$('#cardBg').click(function() {
 					$('#upBg').click()
+				})
+				$('#upSysImg').click(function() {
+					$('#upSysImgBtn').click()
 				})
 				$('.layui-upload-img').on({
 					mouseover: function() {
@@ -583,6 +650,47 @@
 						});
 					}, 300)
 				});
+				$("#upSysImgBtn").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						Imgbase = data
+					});
+					setTimeout(function() {
+						var datas = {
+							"imgBaseStr": Imgbase,
+							"institutionNumber": insNumber,
+							"imgType": "5",
+							"merchantNumber": merNumber
+						}
+						// 发送请求
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+							data: JSON.stringify(datas),
+							dataType: "json",
+							async: false,
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								layer.closeAll('loading');
+								if (data.code === 1000) {
+									layer.msg('上传系统图库成功')
+								} else {
+									layer.msg('上传系统图库失败')
+								}
+							}
+						});
+					}, 300)
+				});
+
+				function changeImgId(id) {
+					console.log(id)
+					poster_imgId = id
+				}
+				window._changeImgId = changeImgId;
 
 				//表单初始赋值
 				setTimeout(function() {
@@ -635,6 +743,25 @@
 						}
 					},
 				});
+
+				var $ = layui.$,
+					active = {
+						chSysImg: function() {
+							layer.open({
+								type: 2,
+								title: '选择系统图库',
+								area: ['600px', '400px'],
+								content: './vipSysImg.html?SysImgType=5',
+								success: function(layero, index) {}
+							});
+						},
+					};
+
+				$('.chooseSysImg').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+
 				//监听提交-添加
 				form.on('submit(add)', function(data) {
 					var data = data.field
@@ -655,6 +782,8 @@
 					}
 					data.posButtcolor = posButtcolor
 					data.posButtTextColor = posButtTextColor
+					data.titleColor = posConTitcolor
+					data.textColor = posConConColor
 					data.posterColor = "#" + colorList[chooseCnum]
 					data.posterImgId = poster_imgId
 					data.merchantNumber = merNumber
@@ -703,6 +832,8 @@
 					}
 					data.posButtcolor = posButtcolor
 					data.posButtTextColor = posButtTextColor
+					data.titleColor = posConTitcolor
+					data.textColor = posConConColor
 					data.posterColor = "#" + colorList[chooseCnum]
 					data.posterImgId = poster_imgId
 					data.merchantNumber = merNumber
@@ -745,7 +876,7 @@
 				ccolor()
 
 				function ccolor() {
-					$('.chooseColor span').eq(0).addClass('chooseCC layui-icon layui-icon-ok');
+					// $('.chooseColor span').eq(0).addClass('chooseCC layui-icon layui-icon-ok');
 					$('.chooseColor span').click(function(e) {
 						chooseCnum = $('.chooseColor span').index(this)
 						$(this).addClass('chooseCC layui-icon layui-icon-ok');

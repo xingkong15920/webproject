@@ -35,7 +35,7 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.enable==0 ? 'checked' : ''}}  data-shopNumber="{{d.shopNumber}}" value="{{d.enable}}">
 		</script>
 		<script type="text/html" id="shareBar">
-			<a class="layui-btn layui-btn-xs" lay-event="wxlink">微信卡券</a>
+			<a class="layui-btn layui-btn-xs" lay-event="wxlink">微信卡券</a><br />
 			<a class="layui-btn layui-btn-xs" lay-event="shlink">领取链接</a>
 		</script>
 		<script type="text/html" id="tool">
@@ -51,6 +51,9 @@
 				var table = layui.table,
 					form = layui.form;
 
+				parent.layer.load(2, {
+					shade: 0.5
+				});
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_shop',
@@ -78,17 +81,17 @@
 							field: 'deliveryNo',
 							title: 'ID',
 							align: 'center',
-							width: 200,
+							width: 170,
 						}, {
 							field: 'channelName',
 							title: '渠道名称',
 							align: 'center',
-							width: 200,
+							width: 150,
 						}, {
 							field: 'shopNumber',
 							title: '关联门店',
 							align: 'center',
-							width: 250,
+							width: 180,
 							templet: function(data) {
 								if (data.shopNumbers.length == 1) {
 									return data.shopNumbers[0].split('||')[0] + '<br>' + data.shopNumbers[0].split('||')[1]
@@ -100,7 +103,7 @@
 							field: 'clerkNumbers',
 							title: '关联店员',
 							align: 'center',
-							width: 300,
+							width: 180,
 							templet: function(data) {
 								if (data.clerkNumbers != null) {
 									return data.clerkNumbers[0].split('||')[0] + '<br>' + data.clerkNumbers[0].split('||')[1]
@@ -112,7 +115,7 @@
 							field: 'shopName',
 							title: '链接',
 							align: 'left',
-							width: 400,
+							width: 350,
 							templet: function(data) {
 								return '微信卡券：' + data.wxCardUrl + '<br>领取链接：' + data.getCardUrl
 							}
@@ -120,13 +123,17 @@
 							field: 'insertTime',
 							title: '二维码',
 							align: 'center',
-							width: 180,
+							width: 100,
 							toolbar: "#shareBar"
 						}, {
 							field: 'giveMoney',
 							title: '赠送金额',
 							align: 'center',
 							width: 100,
+							sort: true,
+							templet: function(data) {
+								return '¥ ' + data.giveMoney
+							}
 						}, {
 							field: 'giveIntegral',
 							title: '赠送积分',
@@ -147,6 +154,7 @@
 					],
 					done: function(res, curr, count) {
 						console.log(res)
+						parent.layer.closeAll('loading');
 						if (res.data == null) {
 							// layer.msg(res.msg)
 						} else {

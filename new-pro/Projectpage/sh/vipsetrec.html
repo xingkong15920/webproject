@@ -44,6 +44,9 @@
 				var table = layui.table,
 					form = layui.form;
 
+				parent.layer.load(2, {
+					shade: 0.5
+				});
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_shop',
@@ -82,7 +85,7 @@
 							templet: function(data) {
 								var str = ''
 								for (var i = 0; i < data.preferentialRecharges.length; i++) {
-									str += "充值金额" + data.preferentialRecharges[i].rechargeMoney + " / 赠送金额" + data.preferentialRecharges[i]
+									str += "充值 ¥ " + data.preferentialRecharges[i].rechargeMoney + " / 赠送 ¥ " + data.preferentialRecharges[i]
 										.giveMoney +
 										" / 赠送积分" + data.preferentialRecharges[i].giveIntegral + "<br>"
 								}
@@ -126,6 +129,7 @@
 					],
 					done: function(res, curr, count) {
 						console.log(res)
+						parent.layer.closeAll('loading');
 						if (res.data == null) {
 							// layer.msg(res.msg)
 						} else {

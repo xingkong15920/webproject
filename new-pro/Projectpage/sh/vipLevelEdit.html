@@ -177,18 +177,37 @@
 					<div class="conBlock">
 						<blockquote class="layui-elem-quote consumeTit">
 							<i class="leftline"></i>
-							会员卡背景
+							等级背景
 							<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
 								<span class="tips_red">设置目前卡的有效期</span> -->
 						</blockquote>
 						<div class="layui-form-item max600">
-							<label class="layui-form-label"><span class="redC">* </span>会员卡背景 :</label>
+							<label class="layui-form-label"><span class="redC">* </span>等级颜色 :</label>
+							<div class="layui-input-block chooseColor">
+								<span data-color="colorC0" class="card_bc0"></span>
+								<span data-color="colorC1" class="card_bc1"></span>
+								<span data-color="colorC2" class="card_bc2"></span>
+								<span data-color="colorC3" class="card_bc3"></span>
+								<span data-color="colorC4" class="card_bc4"></span>
+								<span data-color="colorC5" class="card_bc5"></span>
+								<span data-color="colorC6" class="card_bc6"></span>
+								<span data-color="colorC7" class="card_bc7"></span>
+								<span data-color="colorC8" class="card_bc8"></span>
+								<span data-color="colorC9" class="card_bc9"></span>
+								<span data-color="colorC10" class="card_bc10"></span>
+								<span data-color="colorC11" class="card_bc11"></span>
+								<span data-color="colorC12" class="card_bc12"></span>
+								<span data-color="colorC13" class="card_bc13"></span>
+							</div>
+						</div>
+						<div class="layui-form-item max600">
+							<label class="layui-form-label"><span class="redC">* </span>等级背景 :</label>
 							<div class="layui-input-block cardBgimg">
 								<div class="layui-upload-list">
 									<div class="layui-upload-img" id="cardBg">
 										<img src="./images/cardBg_default.png" id="cardBgImg">
 										<div class="upTips">
-											+<br />上传卡背景
+											+<br />上等级背景
 										</div>
 									</div>
 									<div class="imgDel" data-id="cardBg" style="display: none;">
@@ -224,8 +243,8 @@
 					}, 16);
 				})
 
-			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
-			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+				var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+				var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 				var cardCon
 				var cardBackgroundId = ''
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
@@ -238,6 +257,13 @@
 						element = layui.element,
 						layer = layui.layer;
 
+
+					var chooseCnum = 0
+					var colorListIndex
+					var colorList = ["63b359", "2c9f67", "509fc9", "5885cf", "9062c0", "d09a45", "e4b138",
+						"ee903c", "f08500",
+						"a9d92d", "dd6549", "cc463d", "cf3e36", "5E6671"
+					]
 
 					//查询有等级详情
 					function getCardCon() {
@@ -464,6 +490,7 @@
 						data.merchantNumber = merNumber
 						data.cardBackgroundId = cardBackgroundId
 						data.invalidTime = data.invalidTime + ' 23:59:59'
+						data.gradeColor = "#" + colorList[chooseCnum]
 						data.gradeNo = gradeNo
 						if (cardBackgroundId == '') {
 							layer.msg('请上传卡背景图片')
@@ -500,6 +527,19 @@
 						}, 300)
 						return false;
 					});
+
+					ccolor()
+
+					function ccolor() {
+						// $('.chooseColor span').eq(0).addClass('chooseCC layui-icon layui-icon-ok');
+						$('.chooseColor span').click(function(e) {
+							chooseCnum = $('.chooseColor span').index(this)
+							$(this).addClass('chooseCC layui-icon layui-icon-ok');
+							$('.chooseColor span').not($(this)).removeClass('chooseCC layui-icon layui-icon-ok')
+							$('.card_b_bg').attr('class', 'card_b_bg card_bc' + chooseCnum)
+							$('.setSP').css('background-color', '#' + colorList[chooseCnum])
+						})
+					}
 
 				});
 

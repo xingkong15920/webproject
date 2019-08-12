@@ -38,10 +38,14 @@
 				var table = layui.table,
 					form = layui.form;
 
+				parent.layer.load(2, {
+					shade: 0.5
+				});
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_shop',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getZSets + '?merchantNumber=' + merNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getZSets + '?merchantNumber=' +
+						merNumber,
 					method: "get",
 					height: 'full-97',
 					page: true,
@@ -71,7 +75,7 @@
 						}, {
 							title: '可使用支付方式',
 							align: 'center',
-							width: 300,
+							width: 240,
 							templet: function(data) {
 								var str = [],
 									str1, str2, str3, str4
@@ -99,13 +103,17 @@
 							align: 'center',
 							width: 100,
 							templet: function(data) {
-								return data.discount.split('.')[1]
+								return data.discount.split('.')[1] + ' 折'
 							}
 						}, {
 							field: 'minConsumMoney',
 							title: '最低消费',
 							align: 'center',
 							width: 100,
+							sort: true,
+							templet: function(data) {
+								return '¥ ' + data.minConsumMoney
+							}
 						}, {
 							field: 'holidayState',
 							title: '节假日是否可用',
@@ -151,6 +159,7 @@
 					],
 					done: function(res, curr, count) {
 						console.log(res)
+						parent.layer.closeAll('loading');
 						if (res.data == null) {
 							// layer.msg(res.msg)
 						} else {

@@ -270,17 +270,17 @@
 								field: 'shopName',
 								title: '充值门店',
 								align: 'center',
-								width: 220,
+								width: 140,
 							}, {
 								field: 'rechrgeNo',
 								title: '充值单号',
 								align: 'center',
-								width: 200,
+								width: 190,
 							}, {
 								field: 'name',
 								title: '会员姓名',
 								align: 'center',
-								width: 150,
+								width: 90,
 							}, {
 								field: 'cell',
 								title: '会员手机号',
@@ -290,7 +290,7 @@
 								field: 'payType',
 								title: '支付方式',
 								align: 'center',
-								width: 120,
+								width: 90,
 								templet: function(data) {
 									switch (data.payType) {
 										case 0:
@@ -308,7 +308,7 @@
 								field: 'orderSource',
 								title: '订单来源',
 								align: 'center',
-								width: 120,
+								width: 100,
 								templet: function(data) {
 									switch (data.orderSource) {
 										case 0:
@@ -335,7 +335,7 @@
 								field: 'orderState',
 								title: '订单状态',
 								align: 'center',
-								width: 120,
+								width: 90,
 								templet: function(data) {
 									switch (data.orderState) {
 										case 0:
@@ -356,32 +356,56 @@
 								field: 'orderAmount',
 								title: '订单金额',
 								align: 'center',
+								sort: true,
 								width: 120,
+								templet: function(data) {
+									return '¥ ' + changeData(data.orderAmount)
+								}
 							}, {
 								field: 'refundAmount',
 								title: '退款金额',
 								align: 'center',
+								sort: true,
 								width: 120,
+								templet: function(data) {
+									return '¥ ' + data.refundAmount
+								}
 							}, {
 								field: 'realAmount',
 								title: '实充金额',
 								align: 'center',
+								sort: true,
 								width: 120,
+								templet: function(data) {
+									return '¥ ' + data.realAmount
+								}
 							}, {
 								field: 'giveAmount',
 								title: '赠送金额',
 								align: 'center',
+								sort: true,
 								width: 120,
+								templet: function(data) {
+									return '¥ ' + data.giveAmount
+								}
 							}, {
 								field: 'serviceCharge',
 								title: '手续费',
 								align: 'center',
+								sort: true,
 								width: 120,
+								templet: function(data) {
+									return '¥ ' + data.serviceCharge
+								}
 							}, {
 								field: 'settlementAmount',
 								title: '结算金额',
 								align: 'center',
+								sort: true,
 								width: 120,
+								templet: function(data) {
+									return '¥ ' + data.settlementAmount
+								}
 							}, {
 								field: 'clerkName',
 								title: '收银员',
@@ -463,6 +487,10 @@
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});
+				function changeData(res){
+					res = parseFloat(res)
+					return res
+				}
 			});
 		</script>
 	</body>

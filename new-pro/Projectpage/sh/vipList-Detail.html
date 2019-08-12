@@ -17,9 +17,22 @@
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 		<script type="text/javascript" src="../../public/js/data.js"></script>
 		<style type="text/css">
+			.layui-tab-title {
+				height: 45px;
+				line-height: 45px;
+			}
+
 			.layui-tab-title li {
 				width: auto;
+				height: 45px;
+				line-height: 45px;
 				min-width: initial;
+				font-size: 16px;
+				padding: 0 30px;
+			}
+
+			.layui-tab-title .layui-this:after {
+				height: 46px;
 			}
 
 			.layui-tab-title li:first-child {
@@ -95,8 +108,8 @@
 									<p>会员年龄：<span v-cloak>{{memCon.registerTime.split('-')[0] - memCon.birthday.split('-')[0]}}</span></p>
 									<p>会员星座：<span v-cloak>{{memCon.constellation}}</span></p>
 									<p>会员邮箱：<span v-cloak>{{memCon.mailbox}}</span></p>
-									<p>公众账号：<span v-cloak>{{memCon.publicFollow}}</span></p>
-									<p>会员绑定：<span v-cloak>{{memCon.publicFollow}}</span></p>
+									<p>公众账号：<span v-cloak>{{memCon.publicFollow=0?'未关注':'已关注'}}</span></p>
+									<p>会员绑定：<span v-cloak>{{memCon.publicFollow=0?'未绑定':'已绑定'}}</span></p>
 									<p>注册日期：<span v-cloak>{{memCon.registerTime}}</span></p>
 									<p>所在国家：<span v-cloak>{{memCon.country}}</span></p>
 									<p>所在省份：<span v-cloak>{{memCon.province}}</span></p>
@@ -113,9 +126,9 @@
 								<div class="vipdetail_B_D">
 									<p>会员卡ID：<span v-cloak>{{memCon.wxMemberInfo.memberNo}}</span></p>
 									<p>AppId：<span v-cloak>{{memCon.wxMemberInfo.appId}}</span></p>
-									<p>激活状态：<span v-cloak>{{memCon.wxMemberInfo.activation}}</span></p>
-									<p style="width:100%;">Openid：<span v-cloak>{{memCon.wxMemberInfo.openId}}</span></p>
-									<p style="width:100%;">UnionID：<span v-cloak>{{memCon.wxMemberInfo.unionId}}</span></p>
+									<p>激活状态：<span v-cloak>{{memCon.wxMemberInfo.activation=0?'未激活':'已激活'}}</span></p>
+									<p style="width:50%;">Openid：<span v-cloak>{{memCon.wxMemberInfo.openId}}</span></p>
+									<p style="width:50%;">UnionID：<span v-cloak>{{memCon.wxMemberInfo.unionId}}</span></p>
 								</div>
 							</div>
 							<div class="conBlock">
@@ -216,6 +229,7 @@
 
 				//查询会员详情
 				function getDetail() {
+					layer.closeAll();
 					layer.load(2, {
 						shade: 0.5
 					});
@@ -246,6 +260,7 @@
 				}
 				//查询会员详情
 				function getConsumption() {
+					layer.closeAll();
 					layer.load(2, {
 						shade: 0.5
 					});
@@ -299,6 +314,7 @@
 
 					//消费记录
 					function saleList() {
+						layer.closeAll();
 						layer.load(2, {
 							shade: 0.5
 						});
@@ -307,7 +323,7 @@
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCRecord + '?memberNo=' +
 								memberNo,
 							method: "get",
-							height: 'full-230',
+							height: 'full-235',
 							page: true,
 							id: 'vipList',
 							response: {
@@ -328,7 +344,7 @@
 									field: 'headImg',
 									title: '订单号/消费时间',
 									align: 'center',
-									width: 200,
+									width: 185,
 									templet: function(data) {
 										return data.orderNumber + '<br>' + data.orderTime
 									}
@@ -336,27 +352,27 @@
 									field: 'shopName',
 									title: '消费门店',
 									align: 'center',
-									width: 150
+									width: 165
 								}, {
 									field: 'money',
 									title: '订单金额',
 									align: 'center',
-									width: 100
+									width: 90
 								}, {
 									field: 'payMoney',
 									title: '支付金额',
 									align: 'center',
-									width: 100
+									width: 90
 								}, {
 									field: 'discountMoney',
 									title: '优惠金额',
 									align: 'center',
-									width: 100
+									width: 90
 								}, {
 									field: 'payType',
 									title: '支付类型',
 									align: 'center',
-									width: 120,
+									width: 90,
 									templet: function(data) {
 										switch (data.payType) {
 											case 0:
@@ -374,7 +390,7 @@
 									field: 'allBalance',
 									title: '操作人',
 									align: 'center',
-									width: 100,
+									minWidth: 100,
 									templet: function(data) {
 										if (data.clerkName == null) {
 											return 'Admin'
@@ -396,6 +412,7 @@
 					}
 					//充值记录
 					function topupList() {
+						layer.closeAll();
 						layer.load(2, {
 							shade: 0.5
 						});
@@ -404,7 +421,7 @@
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRRecord + '?memberNo=' +
 								memberNo,
 							method: "get",
-							height: 'full-230',
+							height: 'full-235',
 							page: true,
 							id: 'vipList',
 							response: {
@@ -511,6 +528,7 @@
 					}
 					//积分记录
 					function inteList() {
+						layer.closeAll();
 						layer.load(2, {
 							shade: 0.5
 						});
@@ -519,7 +537,7 @@
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getIntegrals + '?memberNo=' +
 								memberNo,
 							method: "get",
-							height: 'full-230',
+							height: 'full-235',
 							page: true,
 							id: 'vipList',
 							response: {
@@ -593,6 +611,7 @@
 					}
 					//退款记录
 					function refundList() {
+						layer.closeAll();
 						layer.load(2, {
 							shade: 0.5
 						});
@@ -601,7 +620,7 @@
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMRefundTurnovers + '?memberNo=' +
 								memberNo + '&merchatNumber=' + merNumber,
 							method: "get",
-							height: 'full-230',
+							height: 'full-235',
 							page: true,
 							id: 'vipList',
 							response: {
