@@ -31,8 +31,12 @@
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="店员名称" name="name" id="name">
-				</div>
+                    <!-- 需要数据对接(完成) -->
+                    <select name="clerkNumber" id="clerkNumber" lay-search>
+                        <option value="">--请选择店员--</option>
+                    </select>
+                </div>
+				
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="签到时间" name="startTime" id="startTime">
 				</div>
@@ -45,8 +49,8 @@
 			</div>
 			<div class="layui-form-item">
 				<div class="layui-inline place">
-					<span style="color:red;display:block">*注:退款金额包含全部退款与部分退款</span>
-					<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）- 手续费=实收金额</span>
+					
+					<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）-手续费=实收金额</span>
 				</div>
 			</div>
 			<xblock>
@@ -145,8 +149,8 @@
 				return a + '-' + b + '-' + c
 			}
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var startDate = fun_date(-6);
-			var endDate = fun_date(0);
+			var startDate = fun_date(-6) + ' 00:00:00';
+			var endDate = fun_date(0)+ ' 23:59:59';
 			var nowTime = new Date().valueOf();
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
@@ -170,12 +174,12 @@
 					//时间插件
 					laydate.render({
 						elem: '#startTime',
-						type: 'date',
+						type: 'datetime',
 						value: startDate
 					});
 				laydate.render({
 					elem: '#endTime',
-					type: 'date',
+					type: 'datetime',
 					max: nowTime,
 					value: endDate
 				});
@@ -191,6 +195,17 @@
 						form.render()
 					}
 				)
+				 CmsUtility.postAjaxCall(
+		            CmsConfig.addressUrl.Merchant.getClerkList,
+		            dataO,
+		            function(data) {
+		                var shopData = data.data
+		                for (var i = 0; i < shopData.length; i++) {
+		                    $("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + "</option>");
+		                }
+		                form.render()
+		            }
+		        )
 				$('#baobiao').click(function() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
 						if (!verTime()) {
@@ -241,13 +256,13 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShopBill + '?merchantNumber=' +
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'connectionBill/getConnectionBill' + '?merchantNumber=' +
 							userNumber,
 						where: {
 							"startTime": $('#startTime').val(),
 							"endTime": $('#endTime').val(),
 							"shopNumber": $('#shopName').val().split('/')[0],
-							"billType": 3
+							"clerkNumber":$('#clerkNumber').val()
 						},
 						method: "post",
 						height: "full-300",

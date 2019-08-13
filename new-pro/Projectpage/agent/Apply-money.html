@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style>
+			.layui-form-item .layui-input-inline {
+				width: calc(75% - 120px);
+			}
+			
+			.kpxx h4 {
+				font-size: 1.6rem;
+				font-weight: 600;
+				margin-bottom: 10px;
+			}
+			
+			.kpxx p {
+				margin-bottom: 10px;
+			}
+			.layui-form-label{
+				width: 150px;
+			}
+			input::-webkit-outer-spin-button,
+
+input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+input[type="number"]{ -moz-appearance: textfield; }
+		</style>
+
+	</head>
+
+	<body>
+		<div class="x-body">
+			<div class="layui-row">
+				<form class="layui-form" lay-filter="basic">
+					<div class="grid-demo">
+						<!--提现申请-->
+						<blockquote class="layui-elem-quote"><i class="iconfont icon-wode"></i>提现申请</blockquote>
+						<div class="layui-row">
+							<div class="layui-col-md8 layui-col-sm8 layui-col-xs8">
+								<div class="layui-form-item">
+								<label class="layui-form-label"><span class="x-red">* </span>发票类型：</label>
+								<div class="layui-input-block" id="typeBox">
+									<input type="radio" name="invoiceType" value="0" title="普通发票" lay-filter="cardvalid" checked="">
+									<input type="radio" name="invoiceType" value="1" title="增值税专用票" lay-filter="cardvalid">
+									
+								</div>
+							</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>发票税点：</label>
+									<div class="layui-input-inline">
+										<input type="text" name="invoiceTax" lay-verify="title" autocomplete="off" class="layui-input" value="6%" disabled="disabled" id="moneyPoint">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>发票金额：</label>
+									<div class="layui-input-inline">
+										<input type="number" name="invoiceAmount" lay-verify="title||money" autocomplete="off" class="layui-input" placeholder="发票金额为实际打款金额" id="fapiao" value="">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red"></span></label>
+									<div class="layui-input-inline">
+										<span>账号余额 <span id="canMoney" style="color:red"></span> 元/最小提现金额1000元</span>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>提现金额：</label>
+									<div class="layui-input-inline">
+										<input type="text" name="withdrawCashAmount" lay-verify="title" autocomplete="off" class="layui-input" placeholder="" value="" disabled="disabled" id="tixian">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red"></span></label>
+									<div class="layui-input-inline">
+										<span>备注:发票金额+税点=提现金额 提现金额不得大于账号余额</span>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>银行卡号：</label>
+									<div class="layui-input-inline">
+										<input type="text" name="bankCardNo" lay-verify="title" autocomplete="off" class="layui-input" disabled="disabled" value="">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>开卡姓名：</label>
+									<div class="layui-input-inline">
+										<input type="text" name="name" lay-verify="title" autocomplete="off" class="layui-input" disabled="disabled" value="">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>银行预留手机号：</label>
+									<div class="layui-input-inline">
+										<input type="text" name="reserveCell" lay-verify="phone" autocomplete="off" class="layui-input" value="">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>提现说明：</label>
+									<div class="layui-input-inline">
+										<textarea class="layui-textarea" name="remarks" autocomplete="off" placeholder="提现说明" lay-verify="title" rows="3"></textarea>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>发票信息：</label>
+									<div class="layui-input-inline">
+										<textarea class="layui-textarea" name="invoiceRemarks" autocomplete="off" placeholder="发票信息" lay-verify="title" rows="3"></textarea>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"></label>
+									<button class="layui-btn formbtn" lay-filter="add" lay-submit="">发起提现</button>
+									<!-- <button class="layui-btn layui-btn-warm formbtn" onclick="x_admin_close()">取消</button> -->
+								</div>
+							</div>
+							
+						</div>
+						<!--提现申请-->
+
+					</div>
+				</form>
+			</div>
+		</div>
+		<script src="../../common/config-agent.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var lostMoney
+			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+				 //允许ajax跨域
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl;
+				var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+				var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+				var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+				var id = '';
+				
+				form.verify({
+					title:function(value){
+						if(!value.length){
+							return "不得为空"
+						}
+					},
+					money:function(value){
+						if(value < 1000){
+							return '最小提现金额为1000元'
+						}
+						if($('#tixian').val() > lostMoney){
+							return '提现金额不得大于账号余额'
+						}
+					}
+				})
+				CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Agent.getBackCard,
+						{
+							"agentNumber":userNumber
+						},
+						function(data){
+							if(data.code == 1000){
+								console.log(data)
+								console.log(data.data.data)
+								id = data.data.data.id
+								form.val('basic', {
+									
+									"bankCardNo": data.data.data.bankCardNo,
+									"name": data.data.data.name,
+									"reserveCell":data.data.data.reserveCell
+								})
+							}else{
+								layer.msg(data.msg)
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+				CmsUtility.postAjaxCall(
+                        //系统设置
+			        CmsConfig.addressUrl.Agent.getAgentBalance,
+			        {
+			            "agentNumber":userNumber
+			        },
+			        function(data){
+			            if(data.code == 1000){
+			            	lostMoney = data.data.data.agentBalance
+			               $('#canMoney').html(data.data.data.agentBalance)
+			            }else{
+			                layer.msg(data.msg)
+			            }
+			            form.render()
+			        },
+			        function(data){
+			            console.log('222')
+			        }
+			    )
+				var timer
+				$("#fapiao").on("input",function(e){
+				    //获取input输入的值
+				    clearInterval(timer)
+				    timer = setTimeout(function(){
+				    	$('#tixian').val(parseFloat(e.delegateTarget.value) + e.delegateTarget.value/100*($('#moneyPoint').val().replace('%','')))
+				    },500)
+				  });
+				form.on('radio(cardvalid)', function(data) { //计次开关
+					console.log(data)
+		            if(data.value == 0){
+		            	$('#moneyPoint').val('6%')
+		            	
+		            }else{
+		            	$('#moneyPoint').val('10%')
+		            	
+		            }
+		            if($('#fapiao').val() != ''){
+		            	$('#tixian').val(parseFloat($('#fapiao').val()) + $('#fapiao').val()/100*($('#moneyPoint').val().replace('%','')))
+		            }
+		            
+		        });
+				//监听提交
+				form.on('submit(add)', function(data) {
+
+					console.log(data.field);
+
+					//发异步，把数据提交给php
+					var addData = data.field
+					if(addData.withdrawCashAmount > lostMoney){
+						layer.msg('提现金额不得大于账号余额')
+						return false 
+					}
+					addData.invoiceTax = addData.invoiceTax.replace('%','')/100 
+					addData.agentNumber = userNumber
+					console.log(addData)
+					// 发送请求
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Agent.insertAgentWithdrawCash,
+						addData,
+						function(data){
+							if(data.code == 1000){
+								layer.msg('申请成功')
+								
+							}else{
+								layer.msg(data.msg)
+							}
+						},
+						function(data){
+							console.log('222')
+						}
+					)
+					return false;
+				});
+
+			});
+		</script>
+
+	</body>
+
+</html>

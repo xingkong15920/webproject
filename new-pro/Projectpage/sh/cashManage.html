@@ -152,9 +152,8 @@
                         $('#Consumer').hide()
                     }
                    
-                     tableRender()
+                    
                 } else {
-                    layer.msg(data.msg)
                 }
             },
             function(data) {
@@ -162,7 +161,7 @@
             },
             "GET"
         )
-
+        tableRender()
         function tableRender() {
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
             table.render({
@@ -231,9 +230,9 @@
                         title: '处理状态',
                         align: 'center',
                         templet: function(data) {
-                            if (data.orderstate == '0') {
+                            if (data.orderstate == 0) {
                                 return '提现中'
-                            } else if (data.sts == '1') {
+                            } else if (data.orderstate == 1) {
                                 return '提现成功'
                             } else {
                                 return '提现失败'
@@ -361,6 +360,7 @@
         form.on('switch(consumptionPreferences)', function(data) { 
             var index = layer.load(2, {shade: [0.4, '#393D49']})//消费优惠开关
             var type;
+            var aData
             if (data.elem.checked == true) {
                 type = "0"
 
@@ -374,10 +374,10 @@
                 function(data) {
                     layer.closeAll()
                     if (data.code == 1000) {
-                        if (data.elem.checked == true) {
+                        if (type == 0) {
                             $('#Consumer').show()
 
-                        } else if (data.elem.checked == false) {
+                        } else if (type == 1) {
                             $('#Consumer').hide()
                         }
                         // tableRender()

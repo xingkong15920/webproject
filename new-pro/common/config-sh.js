@@ -1,9 +1,9 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'prd';
+var Edition = 'qty';
 // var Edition = 'zyh';
 var server;
 if (Edition == 'qty') {
-	server = 'http://192.168.1.167:6007/shanhe-merchant/'
+	server = 'http://192.168.1.124:6007/shanhe-merchant/'
 	publicUrl = 'http://192.168.1.167:5006/shanhe-common/'
 } else if (Edition == 'prd') {
 	server = 'https://nb.51shanhe.com/shanhe-merchant/'

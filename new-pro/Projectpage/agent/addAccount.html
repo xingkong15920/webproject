@@ -40,6 +40,14 @@
 						<div class="layui-row">
 							<div class="layui-col-md8 layui-col-sm8 layui-col-xs8">
 								<div class="layui-form-item">
+								<label class="layui-form-label"><span class="x-red">* </span>账户类型：</label>
+								<div class="layui-input-block" id="typeBox">
+									<input type="radio" name="bankCardtype" value="0" title="个人" lay-filter="cardvalid" checked="">
+									<input type="radio" name="bankCardtype" value="1" title="企业" lay-filter="cardvalid">
+									
+								</div>
+							</div>
+								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red">* </span>银行名称：</label>
 									<div class="layui-input-inline">
 										<input type="text" name="openingBank" lay-verify="title" autocomplete="off" class="layui-input" value="">
@@ -72,7 +80,7 @@
 								<div class="layui-form-item">
 									<label class="layui-form-label"></label>
 									<button class="layui-btn formbtn" lay-filter="add" lay-submit="">提交</button>
-									<button class="layui-btn layui-btn-warm formbtn" onclick="x_admin_close()">取消</button>
+									<!-- <button class="layui-btn layui-btn-warm formbtn" onclick="x_admin_close()">取消</button> -->
 								</div>
 							</div>
 							
@@ -115,6 +123,7 @@
 									"bankCardNo": data.data.data.bankCardNo,
 									"name": data.data.data.name,
 									"reserveCell": data.data.data.reserveCell,
+									"bankCardtype":data.data.data.bankCardtype
 								})
 							}else{
 								layer.msg(data.msg)
@@ -147,9 +156,7 @@
 						addData,
 						function(data){
 							if(data.code == 1000){
-								x_admin_close()
-								parent.layer.msg('保存成功')
-								parent.layui.table.reload('merchantlist')
+								layer.msg('保存成功')
 								
 							}else{
 								layer.msg(data.msg)

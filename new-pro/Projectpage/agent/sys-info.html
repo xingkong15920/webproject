@@ -148,7 +148,7 @@
         <span class="layui-breadcrumb">
             <a href="">首页</a>
             <a><cite>系统设置</cite></a>
-            <a><cite>接口信息</cite></a>
+            <a><cite>基本信息</cite></a>
         </span>
         <!-- <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
              title="刷新">
@@ -189,7 +189,13 @@
                         <input type="text" name="merchantNumber" lay-verify="title" placeholder="企业简称" class="layui-input" id="merchantNumber">
                     </div>
                 </div>
-                
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit="" lay-filter="add" id="sub">修改</button>
+                        <!--  <button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button> -->
+                    </div>
+                    <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                </div>
             </div>
         </div>
     </div>
@@ -218,7 +224,7 @@
             };
         });
     }
-   
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
     layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
         layui.$.support.cors = true; //允许ajax跨域
         var $ = layui.jquery,
@@ -229,27 +235,43 @@
             laytpl = layui.laytpl;
 
 
-        // $.ajax({
-        //     type: 'post',
-        //     url: 'https://nb.51shanhe.com/shanhe-admin/rsa/getRsaSeting',
-        //     data: {
-        //         'institutionNumber': JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-        //     },
-        //     dataType: 'json',
+        CmsUtility.postAjaxCall(
+                //系统设置
+                'system/getAgentInfo',
+                {
+                    "agentNumber":JSON.parse(sessionStorage.getItem('agentUser')).Number
+                },
+                function(data) {
+                    if (data.code == 1000) {
+                       
+                       form.val('basic', {
+            "merchantNumber": data.data
+        })
+                    } else {
+                        layer.msg(data.msg)
 
-        //     success: function(data) {
-
-        //         if (data.code == 1000) {
-        //             form.val('basic', {
-        //                 "rsaPublicKey": data.data.rsaPublicKey,
-
-        //             })
-        //         } else {
-        //             layer.msg(data.msg)
-        //         }
-        //     }
-        // });
-
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                },
+                'get'
+            )
+        var type1
+        if(JSON.parse(sessionStorage.getItem('agentUser')).agentType == 0){
+            type1 = '全国服务商'
+        }
+        if(JSON.parse(sessionStorage.getItem('agentUser')).agentType == 1){
+            type1 = '省级服务商'
+        }
+        if(JSON.parse(sessionStorage.getItem('agentUser')).agentType == 2){
+            type1 = '市级服务商'
+        }
+        form.val('basic', {
+            "type": type1,
+            "name":JSON.parse(sessionStorage.getItem('agentUser')).agentName,
+            "tel": JSON.parse(sessionStorage.getItem('agentUser')).login
+        })
         //会员分组设置
          var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
         // $('#isnNumber').val(JSON.parse(sessionStorage.getItem('userSh')).institutionNumber)
@@ -290,18 +312,13 @@
         });
         form.on('submit(add)', function(data, index) {
             console.log(data)
-            if($('#oldPassword').val() == $('#repassword').val()){
-                layer.msg('新密码与当前密码相同，请确认')
-                return false
-            }
             var tjData = new Object()
             tjData.agentNumber = userNumber
-            tjData.oldPassword = $('#oldPassword').val()
-            tjData.newPassword = $('#repassword').val()
+            tjData.enterpriseJc = data.field.merchantNumber
             // if()
-            CmsUtility.postAjaxCall1(
+            CmsUtility.postAjaxCall(
                 //系统设置
-                CmsConfig.addressUrl.Agent.updatePass,
+                'system/updateAgentInfo',
                 tjData,
                 function(data) {
                     if (data.code == 1000) {
@@ -319,21 +336,7 @@
             return false;
         });
         //表单初始赋值
-        var type1
-        if(JSON.parse(sessionStorage.getItem('agentUser')).agentType == 0){
-            type1 = '全国服务商'
-        }
-        if(JSON.parse(sessionStorage.getItem('agentUser')).agentType == 1){
-            type1 = '省级服务商'
-        }
-        if(JSON.parse(sessionStorage.getItem('agentUser')).agentType == 2){
-            type1 = '市级服务商'
-        }
-        form.val('basic', {
-            "type": type1,
-            "name":JSON.parse(sessionStorage.getItem('agentUser')).agentName,
-            "tel": JSON.parse(sessionStorage.getItem('agentUser')).login
-        })
+        
 
         //监听提交
     })
