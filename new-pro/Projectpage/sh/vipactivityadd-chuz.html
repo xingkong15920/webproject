@@ -19,34 +19,32 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+		<style type="text/css">
+			#saleList {
+				padding: 0;
+			}
+
+			.autoHeight {
+				min-height: 100%;
+			}
+		</style>
 	</head>
 
 	<body id="iosiframe">
-		<div class="x-body" style="background: #f4f8fb;">
+		<div class="x-body autoHeight" style="background: #f4f8fb;">
 			<div class="layui-row">
 				<div class="layui-form" action="" lay-filter="cardAdd">
 					<div class="conBlock">
 						<div class="layui-form-item">
 							<label class="layui-form-label">指定会员等级</label>
-							<div class="layui-input-inline max360">
+							<div class="layui-input-inline">
 								<input type="text" lay-verify="gradeNos" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
 							</div>
-							<div class="layui-form-mid layui-word-aux">可不指定</div>
+							<div class="layui-form-mid layui-word-aux">不选默认为全部</div>
 						</div>
-
-						<div class="layui-form-item">
-							<label class="layui-form-label">充值优惠</label>
-							<div class="layui-input-inline" style="display: flex;justify-content: flex-start;align-items: center;margin-bottom: 15px;width: calc(100% - 115px);">
-								<button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">添加</button>
-								<div class="layui-form-mid layui-word-aux">赠送的金额，积分可为0，0为不优惠</div>
-							</div>
-							<label class="layui-form-label"></label>
-							<ul class="layui-input-inline" id="saleList" style="width: calc(100% - 115px);"></ul>
-						</div>
-
 						<div class="layui-form-item">
 							<label class="layui-form-label">充值次数</label>
-							<div class="layui-input-inline max360" style="width:150px!important">
+							<div class="layui-input-inline">
 								<input type="text" name="rechargeCount" lay-verify="rechargeCount" autocomplete="off" placeholder="请输入充值次数限制"
 								 class="layui-input">
 							</div>
@@ -54,7 +52,7 @@
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">活动时间</label>
-							<div class="layui-input-inline max360" style="max-width: 480px;">
+							<div class="layui-input-inline max360">
 								<div class="layui-input-inline widthauto">
 									<input type="radio" name="timeType" value="0" lay-filter="timeType" title="永久" checked="">
 									<input type="radio" name="timeType" value="1" lay-filter="timeType" title="自定义">
@@ -70,17 +68,31 @@
 								</div>
 							</div>
 						</div>
-						<div class="layui-form-item layui-form-text">
-							<label class="layui-form-label">说明</label>
+						<div class="layui-form-item">
+							<label class="layui-form-label">活动奖品</label>
 							<div class="layui-input-inline max360">
-								<textarea name="explain" placeholder="可以填写会员等级权益、升级规则等信息，非必填项" class="layui-textarea"></textarea>
+								<span class="prizeBox"><input type="checkbox" name="actPrizes" lay-filter="actPrizes" lay-skin="primary" value="0"
+									 title="赠送金额"></span>
+								<div class="prizes prizesM">
+									<ul class="layui-input-inline saleList max360" id="saleListM"></ul>
+									<div class="layui-input-inline" style="display: flex;justify-content: flex-start;align-items: center;width:100%;">
+										<button type="button" class="layui-btn" id="addSaleM" style="margin-right: 15px;">添加</button>
+										<div class="layui-form-mid layui-word-aux">赠送的金额，积分可为0，0为不优惠</div>
+									</div>
+								</div>
+								<span class="prizeBox"><input type="checkbox" name="actPrizes" lay-filter="actPrizes" lay-skin="primary" value="1"
+									 title="赠送积分"></span>
+								<div class="prizes prizesJ">
+									<ul class="layui-input-inline saleList max360" id="saleListJ"></ul>
+									<div class="layui-input-inline" style="display: flex;justify-content: flex-start;align-items: center;width:100%;">
+										<button type="button" class="layui-btn" id="addSaleJ" style="margin-right: 15px;">添加</button>
+										<div class="layui-form-mid layui-word-aux">赠送的金额，积分可为0，0为不优惠</div>
+									</div>
+								</div>
+								<!-- <span class="prizeBox"><input type="checkbox" name="actPrizes" lay-filter="actPrizes" lay-skin="primary" value="2" title="赠送优惠券"></span> -->
 							</div>
-						</div>
-						<div class="layui-form-item layui-form-text">
-							<label class="layui-form-label">备注</label>
-							<div class="layui-input-inline max360">
-								<textarea name="remarks" placeholder="可以填写会员等级权益、升级规则等信息，非必填项" class="layui-textarea"></textarea>
-							</div>
+
+
 						</div>
 					</div>
 
@@ -101,13 +113,17 @@
 		<script>
 			$(".conBlock:last").css("margin-bottom", "0");
 
-			var preferentialRecharges = [{
+			var preferentialRechargesM = [{
 				rechargeMoney: '',
 				giveMoney: '',
+			}]
+			var preferentialRechargesJ = [{
+				rechargeMoney: '',
 				giveIntegral: '',
 			}]
 			var gradeNos = []
 			$('#quxiao').click(function() {
+				var index = parent.layer.getFrameIndex(window.name);
 				setTimeout(function() {
 					parent.layer.close(index)
 				}, 16);
@@ -133,7 +149,8 @@
 					checkedKey: 'gradeNo',
 					searchPlaceholder: '等级名称',
 					table: {
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' + merNumber,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
+							merNumber,
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -159,21 +176,12 @@
 								field: 'gradeType',
 								title: '等级类型',
 								align: 'center',
-								width: 130,
 								templet: function(data) {
 									if (data.gradeType == 0) {
 										return '正常等级'
 									} else if (data.gradeType == 1) {
 										return '锁定等级'
 									}
-								}
-							}, {
-								field: 'termValidity',
-								title: '有效期',
-								align: 'center',
-								width: 180,
-								templet: function(data) {
-									return data.termValidity + '天'
 								}
 							}]
 						]
@@ -199,73 +207,121 @@
 
 
 				/*---------- 优惠设置 ----------*/
-				function saleListFor() {
+				function saleListForM() {
 					var str = ''
-					for (let i = 0; i < preferentialRecharges.length; i++) {
+					for (let i = 0; i < preferentialRechargesM.length; i++) {
 						str +=
-							'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">充值满</label><input type="number" lay-verify="rechargeMoney" placeholder="100" autocomplete="off" class="layui-input charge" value="' +
-							preferentialRecharges[i].rechargeMoney + '"  data-id="' + i +
-							'"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">赠送</label><input type="number" value="' +
-							preferentialRecharges[i].giveMoney + '"  data-id="' + i +
-							'" lay-verify="giveMoney" placeholder="10" autocomplete="off" class="layui-input givem"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">金额，赠送</label><input type="number" value="' +
-							preferentialRecharges[i].giveIntegral + '"  data-id="' + i +
-							'" lay-verify="giveIntegral" placeholder="1000" autocomplete="off" class="layui-input givei"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">积分</label><div class="delBtn delSale" data-id="' +
+							'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">充值满</label><input type="number" lay-verify="rechargeMoney" placeholder="100" autocomplete="off" class="layui-input chargeM" value="' +
+							preferentialRechargesM[i].rechargeMoney + '"  data-id="' + i +
+							'"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">元，赠送</label><input type="number" value="' +
+							preferentialRechargesM[i].giveMoney + '"  data-id="' + i +
+							'" lay-verify="giveMoney" placeholder="10" autocomplete="off" class="layui-input givemM"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">金额</label><div class="delBtn delSale delSaleM" data-id="' +
 							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
 					}
-					$('#saleList').html(str)
+					$('#saleListM').html(str)
 				}
-				saleListFor()
-				$('#addSale').click(function() {
+				saleListForM()
+				$('#addSaleM').click(function() {
 					var newO = new Object()
 					newO.rechargeMoney = ''
 					newO.giveMoney = ''
-					newO.giveIntegral = ''
-					preferentialRecharges.push(newO)
-					saleListFor()
-					cli()
-					char()
-					givem()
-					givei()
+					preferentialRechargesM.push(newO)
+					saleListForM()
+					cliM()
+					charM()
+					givemM()
 				})
 
-				function cli() {
-					$('.delSale').click(function(e) {
-						if (preferentialRecharges.length == 1) {
+				function cliM() {
+					$('.delSaleM').click(function(e) {
+						if (preferentialRechargesM.length == 1) {
 							layer.msg('最少要保留一条充值优惠信息')
 							return
 						}
 						var data = this
 						var num = data.getAttribute('data-id')
-						preferentialRecharges.splice(num, 1)
-						saleListFor()
-						cli()
-						char()
-						givem()
-						givei()
+						preferentialRechargesM.splice(num, 1)
+						saleListForM()
+						cliM()
+						charM()
+						givemM()
 					})
 				}
 
-				function char() {
-					$('.charge').bind("input propertychange", function(event) {
-						preferentialRecharges[this.dataset.id].rechargeMoney = this.value
+				function charM() {
+					$('.chargeM').bind("input propertychange", function(event) {
+						preferentialRechargesM[this.dataset.id].rechargeMoney = this.value
 					})
 				}
 
-				function givem() {
-					$('.givem').bind("input propertychange", function(event) {
-						preferentialRecharges[this.dataset.id].giveMoney = this.value
+				function givemM() {
+					$('.givemM').bind("input propertychange", function(event) {
+						preferentialRechargesM[this.dataset.id].giveMoney = this.value
 					})
 				}
 
-				function givei() {
-					$('.givei').bind("input propertychange", function(event) {
-						preferentialRecharges[this.dataset.id].giveIntegral = this.value
+				givemM()
+				charM()
+				cliM()
+
+
+				/*---------- 优惠设置 ----------*/
+				function saleListForJ() {
+					var str = ''
+					for (let i = 0; i < preferentialRechargesJ.length; i++) {
+						str +=
+							'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">充值满</label><input type="number" lay-verify="rechargeMoney" placeholder="100" autocomplete="off" class="layui-input chargeJ" value="' +
+							preferentialRechargesJ[i].rechargeMoney + '"  data-id="' + i +
+							'"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">元，赠送</label><input type="number" value="' +
+							preferentialRechargesJ[i].giveMoney + '"  data-id="' + i +
+							'" lay-verify="giveMoney" placeholder="10" autocomplete="off" class="layui-input giveiJ"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">积分</label><div class="delBtn delSale delSaleJ" data-id="' +
+							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+					}
+					$('#saleListJ').html(str)
+				}
+				saleListForJ()
+				$('#addSaleJ').click(function() {
+					var newO = new Object()
+					newO.rechargeMoney = ''
+					newO.giveMoney = ''
+					newO.giveIntegral = ''
+					preferentialRechargesJ.push(newO)
+					saleListForJ()
+					cliJ()
+					charJ()
+					giveiJ()
+				})
+
+				function cliJ() {
+					$('.delSaleJ').click(function(e) {
+						if (preferentialRechargesJ.length == 1) {
+							layer.msg('最少要保留一条充值优惠信息')
+							return
+						}
+						var data = this
+						var num = data.getAttribute('data-id')
+						preferentialRechargesJ.splice(num, 1)
+						saleListForJ()
+						cliJ()
+						charJ()
+						giveiJ()
 					})
 				}
-				givem()
-				givei()
-				char()
-				cli()
+
+				function charJ() {
+					$('.chargeJ').bind("input propertychange", function(event) {
+						preferentialRechargesJ[this.dataset.id].rechargeMoney = this.value
+					})
+				}
+
+				function giveiJ() {
+					$('.giveiJ').bind("input propertychange", function(event) {
+						preferentialRechargesJ[this.dataset.id].giveIntegral = this.value
+					})
+				}
+				giveiJ()
+				charJ()
+				cliJ()
 
 
 				/*---------- 时间类型 ----------*/
@@ -277,6 +333,25 @@
 						$('.resetper').show()
 						$('#startTime').attr('lay-verify', 'startTime')
 						$('#endTime').attr('lay-verify', 'endTime')
+					}
+				});
+				/*---------- 时间类型 ----------*/
+				form.on('checkbox(actPrizes)', function(data) {
+					switch (data.elem.value) {
+						case '0':
+							if (data.elem.checked) {
+								$('.prizesM').show()
+							} else {
+								$('.prizesM').hide()
+							}
+							break;
+						case '1':
+							if (data.elem.checked) {
+								$('.prizesJ').show()
+							} else {
+								$('.prizesJ').hide()
+							}
+							break;
 					}
 				});
 

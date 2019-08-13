@@ -61,10 +61,7 @@
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
+					<input type="text" class="layui-input" placeholder="开始日" name="startendTime" id="startendTime">
 				</div>
 				<div class="layui-input-inline">
 					<button class="layui-btn" id="search">
@@ -78,8 +75,8 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			function verTime() {
-				var arr1 = $('#startTime').val().split('-');
-				var arr2 = $('#endTime').val().split('-');
+				var arr1 = $('#startendTime').val().split('-')[0];
+				var arr2 = $('#startendTime').val().split('-')[1];
 				arr1[1] = parseInt(arr1[1]);
 				arr1[2] = parseInt(arr1[2]);
 				arr2[1] = parseInt(arr2[1]);
@@ -180,15 +177,10 @@
 
 				// 选择日期插件  
 				laydate.render({
-					elem: '#startTime',
+					elem: '#startendTime',
 					type: 'date',
-					value: startDate
-				});
-				laydate.render({
-					elem: '#endTime',
-					type: 'date',
-					max: nowTime,
-					value: endDate
+					range: true,
+					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
 				$('#baobiao').click(function() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
@@ -201,8 +193,8 @@
 					newData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
 						newData.merchantNumber = '190221165543361',
 						newData.merchantName = JSON.parse(sessionStorage.getItem('userSh')).merchantName,
-						newData.startTime = $('#startTime').val(),
-						newData.endTime = $('#endTime').val(),
+						newData.startTime = $('#startendTime').val().split(' - ')[0],
+						newData.endTime = $('#startendTime').val().split(' - ')[1],
 						newData.billType = $('#billType').val()
 					layer.open({
 						type: 2,
@@ -408,8 +400,7 @@
 						// reload: function() {
 						// 	// 获取上面查询框的值
 						// 	var shopName = $('#shopName');
-						// 	var startTime = $('#startTime');
-						// 	var endTime = $('#endTime');
+						// 	var startendTime = $('#startendTime');
 
 						// 	//执行重载
 						// 	table.reload('billlist', {
@@ -417,8 +408,8 @@
 						// 			curr: 1 //重新从第 1 页开始
 						// 		},
 						// 		where: {
-						// 			startTime: startTime.val(),
-						// 			endTime: endTime.val(),
+						// 			startTime: startendTime.val().split(' - ')[0],
+						// 			endTime: startendTime.val().split(' - ')[1],
 						// 			shopName: shopName.val(),
 						// 		}
 						// 	});

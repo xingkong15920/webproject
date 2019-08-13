@@ -43,10 +43,7 @@
 				</select>
 			</div>
 			<div class="layui-input-inline">
-				<input type="text" class="layui-input" placeholder="开始日" autocomplete="off" id="startTime">
-			</div>
-			<div class="layui-input-inline">
-				<input type="text" class="layui-input" placeholder="截止日" autocomplete="off" id="endTime">
+				<input type="text" class="layui-input" placeholder="开始日" autocomplete="off" id="startendTime">
 			</div>
 			<div class="layui-input-inline">
 				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
@@ -63,6 +60,24 @@
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
+			}
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use(['table', 'laydate', 'element'], function() {
@@ -74,12 +89,12 @@
 
 				// 选择日期插件  
 				laydate.render({
-					elem: '#startTime',
+					elem: '#startendTime',
 					type: 'date',
-				});
-				laydate.render({
-					elem: '#endTime',
-					type: 'date',
+					range: true,
+					min: fun_date(-30),
+					max: fun_date(0),
+					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
 
 				//方法级渲染
@@ -284,8 +299,7 @@
 							var activityName = $('#activityName')
 							var activityType = $('#activityType')
 							var activityState = $('#activityState')
-							var startTime = $('#startTime')
-							var endTime = $('#endTime')
+							var startendTime = $('#startendTime')
 							//执行重载
 							table.reload('actlist', {
 								page: {
@@ -295,8 +309,8 @@
 									activityName: activityName.val(),
 									activityType: activityType.val(),
 									activityState: activityState.val(),
-									startTime: startTime.val(),
-									endTime: endTime.val(),
+									startTime: startendTime.val().split(' - ')[0],
+									endTime: startendTime.val().split(' - ')[1],
 								}
 							});
 						}

@@ -43,7 +43,8 @@
 				margin-bottom: 35px;
 			}
 
-			.unauthTit,.unauthTit span {
+			.unauthTit,
+			.unauthTit span {
 				font-size: 30px;
 				margin-bottom: 20px;
 			}
@@ -101,6 +102,24 @@
 				var $ = layui.jquery,
 					layer = layui.layer;
 
+				var timer = setInterval(function() {
+					$.ajax({
+						type: 'get',
+						url: 'http://192.168.1.66/shanhe-member/authorize/getAuthorizetInfo',
+						data: {
+							'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
+						},
+						dataType: 'json',
+						success: function(data) {
+							if (data.code == 1000) {
+								window.location.href = './wechat-auth.html'
+							} else {
+								console.log('授权失败！')
+							}
+						}
+					});
+				}, 5000)
+
 				var $ = layui.$,
 					active = {
 						WeChat: function() {
@@ -109,27 +128,6 @@
 							}, function() {
 								layer.closeAll()
 							}, function() {
-								var timer = setInterval(function() {
-									$.ajax({
-										type: 'get',
-										url: 'http://192.168.1.66/shanhe-member/authorize/getAuthorizetInfo',
-										data: {
-											'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
-										},
-										dataType: 'json',
-
-										success: function(data) {
-
-											if (data.code == 1000) {
-												location.reload()
-											} else if (data.code == '-2') {
-
-											} else {
-
-											}
-										}
-									});
-								}, 15000)
 								layer.open({
 									type: 2,
 									title: '微信授权',

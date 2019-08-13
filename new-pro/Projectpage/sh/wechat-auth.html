@@ -401,16 +401,10 @@
 								'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
 							},
 							dataType: 'json',
-
 							success: function(data) {
-
 								if (data.code == 1000) {
 									location.reload()
-								} else if (data.code == '-2') {
-
-								} else {
-
-								}
+								} else if (data.code == '-2') {} else {}
 							}
 						});
 					}, 15000)
@@ -452,14 +446,12 @@
 						layer.closeAll('loading');
 						if (data.code == 1000) {
 							$('#auth').show()
-							if (data.data.openCard == 1) {
+							if (data.data.openCard == 0) {
 								layer.msg('您当前微信未开通卡券功能')
 							}
 							setDetail(data.data)
 						} else if (data.code == '-2') {
-							// new QRCode(document.getElementById("qrcode1"), 'http://api.51shanhe.com/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(sessionStorage.getItem('userSh')).Number);
 							window.location.href = 'unauth.html?authTypt=WeChat'
-							// window.location.href = 'unauth.html?authTypt=AliBa'
 						} else {
 
 						}
@@ -502,18 +494,31 @@
 								}, function() {
 									layer.closeAll()
 								}, function() {
-									layer.open({
-										type: 2,
-										title: false,
-										area: ['100%', '100%'],
-										closeBtn: 0,
-										content: 'http://api.51shanhe.com/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(
-											sessionStorage.getItem('userSh')).Number,
-										success: function(layero, index) {
-											// 获取子页面的iframe
-											// var iframe = window['layui-layer-iframe' + index];
-											// 向子页面的全局函数child传参
-											// iframe.subPageadvert(data, userNumber)
+									var datas = {
+										"merchantNumber": JSON.parse(sessionStorage.getItem('userSh')).Number
+									}
+									// 发送请求
+									$.ajax({
+										type: "post",
+										url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.cancelAuthorizet,
+										data: JSON.stringify(datas),
+										dataType: "json",
+										headers: {
+											"Content-Type": "application/json"
+										},
+										success: function(data) {
+											if (data.code == 1000) {
+												layer.open({
+													type: 2,
+													title: false,
+													area: ['100%', '100%'],
+													closeBtn: 0,
+													content: data.data,
+													success: function(layero, index) {}
+												});
+											} else {
+												layer.msg('更新授权失败！')
+											}
 										}
 									});
 								});

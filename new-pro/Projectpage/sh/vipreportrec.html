@@ -58,10 +58,7 @@
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
+					<input type="text" class="layui-input" placeholder="开始日" name="startendTime" id="startendTime">
 				</div>
 				<div class="layui-input-inline">
 					<button class="layui-btn" id="search" data-type="reload">
@@ -182,15 +179,10 @@
 
 				// 选择日期插件  
 				laydate.render({
-					elem: '#startTime',
+					elem: '#startendTime',
 					type: 'date',
-					value: startDate
-				});
-				laydate.render({
-					elem: '#endTime',
-					type: 'date',
-					max: nowTime,
-					value: endDate
+					range: true,
+					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
 				$('#baobiao').click(function() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
@@ -203,8 +195,8 @@
 					newData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
 						newData.merchantNumber = '190221165543361',
 						newData.merchantName = JSON.parse(sessionStorage.getItem('userSh')).merchantName,
-						newData.startTime = $('#startTime').val(),
-						newData.endTime = $('#endTime').val(),
+						newData.startTime = $('#startendTime').val().split(' - ')[0],
+						newData.endTime = $('#startendTime').val().split(' - ')[1],
 						newData.billType = $('#billType').val()
 					layer.open({
 						type: 2,
@@ -460,8 +452,7 @@
 							var allMd = $('#allMd')
 							var payType = $('#payType')
 							var shouyiny = $('#shouyiny')
-							var startTime = $('#startTime');
-							var endTime = $('#endTime');
+							var startendTime = $('#startendTime');
 							// console.log(payType.val())
 							//执行重载
 							table.reload('billlist', {
@@ -475,8 +466,8 @@
 									shopName: allMd.val(),
 									payType: payType.val(),
 									clerkName: shouyiny.val(),
-									startTime: startTime.val(),
-									endTime: endTime.val(),
+									startTime: startendTime.val().split(' - ')[0],
+									endTime: startendTime.val().split(' - ')[1],
 								}
 							});
 							layer.closeAll()

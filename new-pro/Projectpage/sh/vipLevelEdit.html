@@ -33,7 +33,7 @@
 								<span class="tips_red">设置目前卡的有效期</span> -->
 						</blockquote>
 						<input type="file" class="input_img layui-input" style="display: none;" id="upBg" />
-						<div class="layui-form-item">
+						<div class="layui-form-item gdType">
 							<label class="layui-form-label">等级类型：</label>
 							<div class="layui-input-inline max360">
 								<input type="radio" name="gradeType" value="0" title="正常等级" lay-filter="" checked="true">
@@ -48,14 +48,14 @@
 							<label class="layui-form-label"></label>
 							<div class="layui-form-mid layui-word-aux">等级名称不允许重复</div>
 						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">所需积分：</label>
-							<div class="layui-input-inline widthauto">
-								<input type="radio" name="integralType" value="0" title="累计积分" lay-filter="" checked="true">
-								<input type="radio" name="integralType" value="1" title="剩余积分" lay-filter="">
-							</div>
-							<div class="layui-input-inline" style="width: 134px;">
-								<input type="text" name="integral" lay-verify="integral" autocomplete="off" placeholder="升级所需积分" class="layui-input">
+						<div class="layui-form-item upond">
+							<label class="layui-form-label">升级条件：</label>
+							<div class="layui-input-inline max360">
+								<input type="radio" name="upgradeState" value="0" title="累计积分" lay-filter="upgradeState" checked="true">
+								<input type="radio" name="upgradeState" value="1" title="累计充值" lay-filter="upgradeState">
+								<input type="radio" name="upgradeState" value="2" title="累计消费" lay-filter="upgradeState">
+								<input type="text" name="upgradeConditions" lay-verify="integral" autocomplete="off" placeholder="升级所需条件" class="layui-input"
+								 style="margin-top: 8px;">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -70,7 +70,7 @@
 								<input type="text" name="giveMoney" lay-verify="giveMoney" autocomplete="off" placeholder="请输入赠送金额" class="layui-input">
 							</div>
 						</div>
-						<div class="layui-form-item">
+						<div class="layui-form-item validity">
 							<label class="layui-form-label">有效期：</label>
 							<div class="layui-input-inline max360">
 								<input type="text" name="termValidity" lay-verify="termValidity" autocomplete="off" placeholder="请输入有效期天数"
@@ -233,15 +233,28 @@
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			function subPageCon(gno) {
-				var gradeNo = gno
-				console.log(gradeNo)
+			function subPageCon(gno, gde) {
+				var gradeNo = gno,
+					gdefault = gde,
+					upOldVal
 				$(".conBlock:last").css("margin-bottom", "44px");
 				$('#quxiao').click(function() {
 					setTimeout(function() {
 						parent.layer.close(index)
 					}, 16);
 				})
+
+				if (gdefault === 0) {
+					$('.gdType').show()
+					$('.upond').hide()
+					$('.validity').show()
+					$('.upond').find('input').removeAttr('lay-verify', 'integral')
+				} else {
+					$('.gdType').hide()
+					$('.upond').show()
+					$('.validity').hide()
+					$('.upond').find('input').attr('lay-verify', 'integral')
+				}
 
 				var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 				var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
@@ -276,6 +289,7 @@
 							data: {
 								"gradeNo": gradeNo
 							},
+							async: false,
 							dataType: "json",
 							headers: {
 								"Content-Type": "application/json"
@@ -316,6 +330,19 @@
 						} else if (data.value == 1) {
 							$('.resetper').show()
 						}
+					});
+					/*---------- 升级条件切换 ----------*/
+					form.on('radio(upgradeState)', function(data) {
+						layer.confirm('确认要修改升级条件吗？', {
+							btn: ['取消', '确定'] //按钮
+						}, function() { //取消操作
+							form.val('cardEdit', {
+								"upgradeState": '' + upOldVal + '',
+							})
+							layer.close(layer.index);
+						}, function() { //确定操作
+							upOldVal = data.value
+						});
 					});
 
 
@@ -458,9 +485,9 @@
 
 					/*---------- 初始赋值 ----------*/
 					setTimeout(function() {
-						console.log(cardCon)
 						if (cardCon != '') {
 							$('#cardBgImg').attr('src', cardCon.cardBackgroundUrl);
+							upOldVal = '' + cardCon.upgradeState + ''
 							form.val('cardEdit', {
 								"gradeName": cardCon.gradeName,
 								"initMoney": cardCon.initMoney,
@@ -474,12 +501,17 @@
 								"integralDeduct": cardCon.integralDeduct,
 								"upGetIntegral": cardCon.upGetIntegral,
 								"gradeType": '' + cardCon.gradeType + '',
-								"integralType": '' + cardCon.integralType + '',
+								"upgradeState": '' + cardCon.upgradeState + '',
 								"refundIntegralState": '' + cardCon.refundIntegralState + '',
 								"timeType": '' + cardCon.timeType + '',
-								"invalidTime": cardCon.invalidTime.split(' ')[0],
 								"gradeExplain": cardCon.gradeExplain,
 							})
+
+							if (cardCon.timeType == 1) {
+								form.val('cardEdit', {
+									"invalidTime": cardCon.invalidTime.split(' ')[0],
+								})
+							}
 							layer.closeAll('loading');
 						}
 					}, 300)
@@ -496,34 +528,57 @@
 							layer.msg('请上传卡背景图片')
 							return
 						}
-						layer.load(2, {
-							shade: 0.5
-						});
-						console.log(data.timeType)
 						setTimeout(function() {
-							// 发送请求
-							$.ajax({
-								type: "post",
-								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateGrade,
-								// url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateGrade + "?gradeNo=" + gradeNo,
-								data: JSON.stringify(data),
-								dataType: "json",
-								headers: {
-									"Content-Type": "application/json"
-								},
-								success: function(data) {
-									layer.closeAll('loading');
-									if (data.code == 1000) {
-										var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-										parent.layer.close(index); //再执行关闭
-										parent.layer.msg('编辑成功')
-										parent.layui.table.reload('gradeList')
-									} else {
-										layer.msg(data.msg)
-
-									}
-								}
+							layer.load(2, {
+								shade: 0.5
 							});
+							if (gdefault === 0) {
+								console.log(0)
+								// 发送请求
+								$.ajax({
+									type: "post",
+									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateGrade,
+									data: JSON.stringify(data),
+									dataType: "json",
+									headers: {
+										"Content-Type": "application/json"
+									},
+									success: function(data) {
+										layer.closeAll('loading');
+										if (data.code == 1000) {
+											var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+											parent.layer.close(index); //再执行关闭
+											parent.layer.msg('编辑成功')
+											parent.layui.table.reload('gradeList')
+										} else {
+											layer.msg(data.msg)
+										}
+									}
+								});
+							} else {
+								console.log(111)
+								// 发送请求
+								$.ajax({
+									type: "post",
+									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateDefaultGrade,
+									data: JSON.stringify(data),
+									dataType: "json",
+									headers: {
+										"Content-Type": "application/json"
+									},
+									success: function(data) {
+										layer.closeAll('loading');
+										if (data.code == 1000) {
+											var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+											parent.layer.close(index); //再执行关闭
+											parent.layer.msg('编辑成功')
+											parent.layui.table.reload('gradeList')
+										} else {
+											layer.msg(data.msg)
+										}
+									}
+								});
+							}
 						}, 300)
 						return false;
 					});

@@ -49,6 +49,8 @@ var CmsConfig = {
 			uploadImg: "cardManage/uploadImg",
 			// 查询图片列表
 			getImages: "server/getImages",
+			// 取消授权
+			cancelAuthorizet: "authorize/cancelAuthorizet",
 
 			// 商户会员卡
 			// 添加会员卡
@@ -89,6 +91,10 @@ var CmsConfig = {
 			deleteGrade: "memberGrade/deleteGrade",
 			// 设置默认会员等级
 			setDefault: "memberGrade/setDefault",
+			// 查询默认等级
+			getDefaultGrade: "memberGrade/getDefaultGrade",
+			// 修改默认等级信息
+			updateDefaultGrade: "memberGrade/updateDefaultGrade",
 			// 充值设置
 			// 充值-添加充值设置
 			addSet: "rechargeSet/addSet",
@@ -171,6 +177,8 @@ var CmsConfig = {
 			deleteActivity: "activity/deleteActivity",
 			// 编辑营销活动
 			updateActivity: "activity/updateActivity",
+			// 添加支付即会员
+			addPayMemActivity: "activity/addPayMemActivity",
 
 			// 充值统计
 			getRecahrge: "censusManage/getRecahrge",
