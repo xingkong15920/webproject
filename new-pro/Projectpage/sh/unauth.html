@@ -85,14 +85,20 @@
 				return null;
 			}
 			var authTypt = getQueryString('authTypt')
-			console.log(authTypt)
+			var authType
 			$('.layui-btn').attr('data-type', authTypt)
 			switch (authTypt) {
 				case 'WeChat':
-					$('.authName').text('微信')
+					$('.authName').text('公众号')
+					authType = 1
+					break;
+				case 'MiniApp':
+					$('.authName').text('小程序')
+					authType = 2
 					break;
 				case 'AliBa':
 					$('.authName').text('支付宝')
+					authType = 1
 					break;
 			}
 
@@ -107,6 +113,7 @@
 						type: 'get',
 						url: 'http://192.168.1.66/shanhe-member/authorize/getAuthorizetInfo',
 						data: {
+							'authType': authType,
 							'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
 						},
 						dataType: 'json',
@@ -134,7 +141,7 @@
 									area: ['90%', '90%'],
 									content: 'http://api.51shanhe.com/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(sessionStorage
 										.getItem(
-											'userSh')).Number,
+											'userSh')).Number + '&authType=' + authType,
 									success: function(layero, index) {
 										// 获取子页面的iframe
 										var iframe = window['layui-layer-iframe' + index];
