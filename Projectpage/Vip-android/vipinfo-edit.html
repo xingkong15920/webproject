@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>修改资料</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="vipInfo" id="vipInfoEdit">
+			<ul class="vipInfoul">
+				<li class="vipInfoli">
+					<div class="vipInfoliL">姓名</div>
+					<div class="vipInfoliR">
+						<input type="text" class="vipInput" v-model="memberName" />
+					</div>
+				</li>
+				<li class="vipInfoli">
+					<div class="vipInfoliL">性别</div>
+					<div class="vipInfoliR">
+						<div class="vipInputRB">
+							<input type="radio" name="vipSex" class="vipInputR" id="vipInputR1" value="1" v-model="memberSex" />
+							<label for="vipInputR1"><span>男</span></label>
+						</div>
+						<div class="vipInputRB">
+							<input type="radio" name="vipSex" class="vipInputR" id="vipInputR2" value="0" v-model="memberSex" />
+							<label for="vipInputR2"><span>女</span></label>
+						</div>
+					</div>
+				</li>
+				<li class="vipInfoli">
+					<div class="vipInfoliL">生日</div>
+					<div class="vipInfoliR jiantou">
+						<div class="vipInput" id="vipbir"></div>
+					</div>
+				</li>
+				<li class="vipInfoli">
+					<div class="vipInfoliL">手机号</div>
+					<div class="vipInfoliR">
+						<input type="number" class="vipInput" v-model="memberCell" />
+					</div>
+				</li>
+				<li class="vipInfoli">
+					<div class="vipInfoliL">昵称</div>
+					<div class="vipInfoliR">
+						<input type="text" readonly="readonly" class="vipInput unedit" v-model="memDetails.nickName" />
+					</div>
+				</li>
+				<li class="vipInfoli">
+					<div class="vipInfoliL">卡号</div>
+					<div class="vipInfoliR">
+						<input type="text" readonly="readonly" class="vipInput unedit" v-model="memDetails.memberNo" />
+					</div>
+				</li>
+				<li class="vipInfoli">
+					<div class="vipInfoliL">激活时间</div>
+					<div class="vipInfoliR">
+						<input type="text" readonly="readonly" class="vipInput unedit" v-model="memDetails.activationTime" />
+					</div>
+				</li>
+			</ul>
+			<div class="vipInfosave" @click="vipInfosave()">保 存</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./js/qrcode.min.js"></script>
+	<script src="./js/iScroll.js"></script>
+	<script src="./js/Mdate.js"></script>
+	<script type="text/javascript">
+		var Newyear, Newmonth, Newday, vipData, vipBirth
+
+		new Vue({
+			el: '#vipInfoEdit',
+			data: {
+				memberName: '',
+				memberSex: '',
+				memberBir: '',
+				memberCell: '',
+				memberNo: '',
+				memDetails: {},
+			},
+			methods: {
+				getMemDetails() {
+					var that = this,
+						sendData = new Object()
+					sendData.memberNo = that.memberNo
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Member.getMemDetails,
+						sendData,
+						function(data) {
+							if (data.code === 1000) {
+								that.memDetails = data.data
+								that.memberName = data.data.name
+								that.memberCell = data.data.cell
+								that.memberSex = data.data.sex
+								Newyear = data.data.birthday.split('-')[0]
+								Newmonth = nums(data.data.birthday.split('-')[1])
+								Newday = nums(data.data.birthday.split('-')[2])
+								setdate(Newyear, Newmonth, Newday)
+								new Mdate("vipbir")
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+						'false'
+					)
+				},
+				vipInfosave: function() {
+					var that = this,
+						sendData = new Object()
+					sendData.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).insNumber
+					sendData.name = that.memberName
+					sendData.sex = that.memberSex
+					sendData.birthday = $('#vipbir').html()
+					sendData.cell = that.memberCell
+					sendData.memberNo = that.memberNo
+					console.log(sendData)
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Member.updateMemInfo,
+						JSON.stringify(sendData),
+						function(data) {
+							if (data.code === 1000) {
+								layer.msg(data.msg)
+								// window.opener=null
+								// window.open('','_self')
+								// window.close()
+								open('', '_self').close();
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'post',
+						'false'
+					)
+				}
+			},
+			created() {
+				this.memberNo = window.location.href.split('?memberNo=')[1]
+			},
+			mounted() {
+				this.getMemDetails()
+			}
+		})
+
+		$('input[name=vipSex]').click(function() {
+			radioval = $(this).val();
+		});
+		// $('.vipInfosave').click(function() {
+		// 	vipData.vipNum = $('#vipNum').val()
+		// 	vipData.vipNick = $('#vipNick').val()
+		// 	vipData.vipName = $('#vipName').val()
+		// 	vipData.vipSex = radioval
+		// 	vipData.vipCell = $('#vipCell').val()
+		// 	vipData.vipbir = $('#vipbir').html()
+		// 	vipData.activatime = $('#activatime').val()
+		// 	console.log(radioval)
+		// 	console.log(vipData)
+		// })
+		//日期封装赋值
+		function setdate(Newyear, Newmonth, Newday) {
+			$('#vipbir').get(0).innerHTML = Newyear + "-" + Newmonth + "-" + Newday;
+			$('#vipbir').get(0).setAttribute("data-year", Newyear);
+			$('#vipbir').get(0).setAttribute("data-month", Newmonth);
+			$('#vipbir').get(0).setAttribute("data-day", Newday);
+		}
+		//日期加零
+		function nums(num) {
+			if (num.length == 1) {
+				if (num < 10) {
+					return "0" + num
+				} else {
+					return num
+				}
+			} else {
+				return num
+			}
+		}
+	</script>
+</html>

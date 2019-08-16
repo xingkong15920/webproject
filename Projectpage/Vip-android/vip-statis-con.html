@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员消费统计</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./lib/datepicker/css/datepicker.css">
+		<link rel="stylesheet" type="text/css" href="./lib/mescroll/mescroll.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+
+			.show {
+				display: block;
+			}
+
+			* {
+				touch-action: pan-y;
+				/* transition: none !important; */
+			}
+
+			.mescroll-downwarp .downwarp-content {
+				line-height: 60px;
+				padding: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- <div class="date_title" id="date1" style="width: 200px;height: 50px;background: #0000FF;color: #fff;"></div> -->
+		<div class="statisRec" id="statisRec">
+			<div class="loadingB">
+				<div class="loading"></div>
+			</div>
+			<ul class="billTit">
+				<li class="billTitli" v-for="(item,i) in billTit" :key="i" v-on:click="billTitChoose(i)" :class="[{billTitC: i == billTitC}]"
+				 v-cloak>
+					{{item.billTitname}}
+				</li>
+				<!-- <div class="customtimeDiv">{{startTime}} ~ {{endTime}}</div> -->
+			</ul>
+			<div class="billist mescroll" ref="mescroll">
+				<ul class="billistul" id="billistul">
+					<li class="billistli" v-for="(item,i) in billist" v-cloak>
+						<div class="billistliL">
+							<div class="billavatar">
+								<!-- <img :src="item.vipimg"> -->
+								<img src="./img/vip-img.jpg">
+							</div>
+							<div class="billistliLC">
+								<p>{{item.vipBillicell}}</p>
+								<span>{{item.vipBillitime}}</span>
+							</div>
+						</div>
+						<div class="billistliR">
+							<p>+ ¥ {{item.vipBillimoney}}</p>
+							<span>{{item.vipBillitype1}}</span>
+						</div>
+					</li>
+					<!-- <li class="branches">共计 <span>{{branches}}</span> 条记录</li> -->
+				</ul>
+			</div>
+			<div class="modal-mask" @click="hideModal"></div>
+			<div class="modal-dialog">
+				<div class="datepicker-here" data-range="true" data-date-minRange="2019-06-04" data-date-maxRange="2019-06-10"></div>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./lib/datepicker/js/datepicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var billTit, billist, startTime, endTime, iState
+		billTit = [{
+			billTitname: "当天"
+		}, {
+			billTitname: "昨日"
+		}, {
+			billTitname: "近7天"
+		}, {
+			billTitname: "自定义",
+		}]
+		iState = false
+
+		new Vue({
+			el: '#statisRec',
+			data: {
+				branches: '',
+				billTitC: '',
+				startTime: startTime,
+				endTime: endTime,
+				mask: false,
+				billTit: billTit,
+				billist: [],
+				mescroll: null,
+				newArr: [] // 数据列表
+			},
+			methods: {
+				//请求会员卡列表
+				getListF: function(s, e, page, limit) {
+					var Jdata = new Object,
+						that = this
+					Jdata.startTime = s + ' 00:00:00'
+					Jdata.endTime = e + ' 23:59:59'
+					Jdata.page = page
+					Jdata.limit = limit
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Vip.recList,
+						Jdata,
+						function(data) {
+							that.billist = changeData(data.recList)
+							that.branches = data.recList.length
+							$('.loadingB').hide()
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+						'false'
+					)
+				},
+				spliceF: function() {
+					if (this.billist.length == 0) {
+						return
+					} else {
+						this.billist.splice(0, this.billist.length);
+					}
+				},
+				// 选择列表类型
+				billTitChoose: function(n) {
+					var that = this
+					that.billTitC = n
+					that.startTime = startTime
+					that.endTime = endTime
+					if (n == 0) { //当天
+						that.mask = false
+						that.spliceF()
+						$('.loadingB').show()
+						$('.customtimeDiv').hide()
+						that.getListF(fun_date(0), fun_date(0), 1, 10)
+						that.billist = billist
+
+					}
+					if (n == 1) { //昨日
+						that.mask = false
+						that.spliceF()
+						$('.loadingB').show()
+						$('.customtimeDiv').hide()
+						that.getListF(fun_date(-1), fun_date(-1), 1, 10)
+						that.billist = billist
+					}
+					if (n == 2) { //近7天
+						that.mask = false
+						that.spliceF()
+						$('.loadingB').show()
+						$('.customtimeDiv').hide()
+						that.getListF(fun_date(-6), fun_date(0), 1, 10)
+						that.billist = billist
+					}
+					if (n == 3) { //自定义
+						that.mask = true
+						$('.modal-mask').show()
+						$('.modal-dialog').addClass('maskshow')
+						$('.loadingB').hide()
+					}
+				},
+				hideModal: function() {
+					$('.modal-mask').hide()
+					$('.modal-dialog').removeClass('maskshow')
+				},
+
+				/* 下拉刷新的回调 */
+				downCallback() {
+					console.log('下拉刷新');
+					// 联网加载数据
+					this.getListDataFromNet(0, 1, (data) => {
+						// 添加新数据到列表顶部
+						// this.billist.unshift(data)
+						// 数据渲染成功后,隐藏下拉刷新的状态
+						this.$nextTick(() => {
+							this.mescroll.endSuccess() // 结束下拉刷新,无参
+						})
+					}, () => {
+						// 联网失败的回调,隐藏下拉刷新的状态
+						this.mescroll.endErr()
+					})
+				},
+
+				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
+				upCallback(page) {
+					console.log('上拉加载');
+					// 联网加载数据
+					this.getListDataFromNet(page.num, page.size, (curPageData) => {
+						console.log(curPageData)
+						// 添加列表数据
+						this.billist = this.billist.concat(curPageData)
+						// 数据渲染成功后,隐藏下拉刷新的状态
+						this.$nextTick(() => {
+							this.mescroll.endSuccess(curPageData.length)
+						})
+					}, () => {
+						// 联网失败的回调,隐藏下拉刷新和上拉加载的状态;
+						this.mescroll.endErr()
+					})
+				},
+
+				/* 联网加载列表数据
+				 在您的实际项目中,请参考官方写法: http://www.mescroll.com/api.html#tagUpCallback
+				 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
+				 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
+				* */
+				getListDataFromNet(pageNum, pageSize, successCallback, errorCallback) {
+					console.log(pageNum, pageSize)
+					var that = this
+					// this.getListF()
+					// 延时一秒,模拟联网
+					setTimeout(function() {
+						if (pageNum === 0) {
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Vip.recList,
+								'',
+								function(data) {
+									that.spliceF()
+									that.billist = changeData(data.recList)
+									successCallback && successCallback()
+								},
+								function(data) {
+									console.log('222')
+								},
+								'get',
+								'false'
+							)
+							// 此处模拟下拉刷新返回的数据
+							// var id = new Date().getTime()
+							// var newObj = {
+							// 	title: '【新增新闻】 标题' + id,
+							// 	content: '新增新闻的内容',
+							// 	id: id
+							// }
+							// successCallback && successCallback(newObj)
+						} else {
+							// 此处模拟上拉加载返回的数据
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Vip.recList,
+								'',
+								function(data) {
+									successCallback && successCallback(changeData(data.recList))
+								},
+								function(data) {
+									console.log('222')
+								},
+								'get',
+								'false'
+							)
+							// for (var i = 0; i < pageSize; i++) {
+							// 	var upIndex = (pageNum - 1) * pageSize + i + 1
+							// 	billistTop.push({
+							// 		title: '【新闻' + upIndex + '】 标题标题标题标题标题标题',
+							// 		content: '内容内容内容内容内容内容内容内容内容内容',
+							// 		id: upIndex
+							// 	})
+							// }
+						}
+					}, 300)
+				}
+
+			},
+			mounted() {
+				// 设置页面初始为当天
+				this.billTitChoose(0)
+				// methods里面定义的方法, 需要赋值给window
+				window.getList = this.getListF;
+				window.spliceFC = this.spliceF
+
+				// 创建MeScroll对象:为避免配置的id和父组件id重复,这里使用ref的方式初始化mescroll
+				this.mescroll = new MeScroll(this.$refs.mescroll, { // 在mounted生命周期初始化mescroll,以确保您配置的dom元素能够被找到.
+					down: {
+						offset: 60,
+						auto: false, // 是否在初始化完毕之后自动执行下拉回调callback; 默认true
+						callback: this.downCallback // 下拉刷新的回调
+					},
+					up: {
+						auto: true, // 是否在初始化时以上拉加载的方式自动加载第一页数据; 默认false
+						callback: this.upCallback, // 上拉回调,此处可简写; 相当于 callback: function (page) { upCallback(page); }
+						page: {
+							num: 0, // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
+							size: 10 // 每页数据的数量
+						},
+						htmlNodata: '<p class="upwarp-nodata">-- END --</p>', // 无数据的布局
+						noMoreSize: 5, // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
+						toTop: { // 配置回到顶部按钮
+							src: './img/mescroll-totop.png'
+						}
+					}
+				})
+			},
+			beforeRouteEnter(to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteEnter不用写
+				next(vm => {
+					if (vm.mescroll) {
+						// 恢复到之前设置的isBounce状态
+						if (vm.mescroll.lastBounce != null) vm.mescroll.setBounce(vm.mescroll.lastBounce)
+						// 滚动到之前列表的位置(注意:路由使用keep-alive才生效)
+						if (vm.mescroll.lastScrollTop) {
+							vm.mescroll.setScrollTop(vm.mescroll.lastScrollTop)
+							setTimeout(() => { // 需延时,因为setScrollTop内部会触发onScroll,可能会渐显回到顶部按钮
+								vm.mescroll.setTopBtnFadeDuration(0) // 设置回到顶部按钮显示时无渐显动画
+							}, 16)
+						}
+					}
+				})
+			},
+			beforeRouteLeave(to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteLeave不用写
+				if (this.mescroll) {
+					this.mescroll.lastBounce = this.mescroll.optUp.isBounce // 记录当前是否禁止ios回弹
+					this.mescroll.setBounce(true) // 允许bounce
+					this.mescroll.lastScrollTop = this.mescroll.getScrollTop() // 记录当前滚动条的位置
+					this.mescroll.hideTopBtn(0) // 隐藏回到顶部按钮,无渐隐动画
+				}
+				next()
+			},
+		})
+
+		//自定义时间
+		function Customtime(s, e) {
+			startTime = s
+			endTime = e
+		}
+
+		//格式数据类型
+		function changeData(res) {
+			for (var i = 0; i < res.length; i++) {
+				switch (res[i].vipBillitype) {
+					case 0:
+						res[i].vipBillitype1 = "消费成功"
+						break;
+					case 1:
+						res[i].vipBillitype1 = "消费失败"
+						break;
+					case 2:
+						res[i].vipBillitype1 = "充值成功"
+						break;
+					case 3:
+						res[i].vipBillitype1 = "充值失败"
+						break;
+				}
+			}
+			return res
+		}
+		// 时间格式化
+		function fun_date(aa) {
+			var date1 = new Date(),
+				time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+			var date2 = new Date(date1);
+			date2.setDate(date1.getDate() + aa);
+			var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+			var a = time2.split('-')[0],
+				b = time2.split('-')[1],
+				c = time2.split('-')[2]
+			if (b < 10) {
+				b = 0 + b
+			}
+			if (c < 10) {
+				c = 0 + c
+			}
+			return a + '-' + b + '-' + c
+		}
+	</script>
+
+</html>

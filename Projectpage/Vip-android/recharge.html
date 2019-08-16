@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员充值</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1192462_drvin8iimxr.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			.vipBody {
+				background: #fff;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="vipBody" id="vipBody">
+			<div class="vipBlock memberB">
+				<div class="recordB recorInput">
+					<input type="search" id="" value="" placeholder="请输入手机号/卡号" v-model="cell" @keyup.enter="searchCell()" ng-keypress="search($event)" />
+					<span><i class="icon iconfont iconhuiyuan"></i></span>
+				</div>
+				<div class="recordB recorSum" style="display: none;">
+					账户余额 ￥200.00
+				</div>
+				<div class="recordB recorMon">
+					<div><input type="number" src="" class="recordBinput" placeholder="请填写/选择充值金额" v-model="customM" v-on:keyup="amount(event)" /><i>元</i></div>
+					<ul class="rechargeBul">
+						<li class="rechargeBli" v-for="(item,i) in rechargeBli" :key="i" v-on:click="chooseM(item.rechargeBlim,item.rechargeBlirm,i)"
+						 :class="{chooseMS: i == chooseMS}" v-cloak>
+							<p class="rechargeBlim"><span>{{item.rechargeBlim}}</span>元</p>
+							<p class="rechargeBlirm">实付 <span>{{item.rechargeBlirm}}</span>元</p>
+						</li>
+					</ul>
+					<span class="viprecordsavebtn opacity05" v-on:click="recBtn()">确认充值</span>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.vipInfosave').click(function() {
+
+			})
+		})
+		var customM, rechargeBli
+		rechargeBli = [{ //金额列表
+			rechargeBlim: "10",
+			rechargeBlirm: "9.5"
+		}, {
+			rechargeBlim: "30",
+			rechargeBlirm: "29.5"
+		}, {
+			rechargeBlim: "50",
+			rechargeBlirm: "49.5"
+		}, {
+			rechargeBlim: "100",
+			rechargeBlirm: "98.5"
+		}, {
+			rechargeBlim: "300",
+			rechargeBlirm: "295"
+		}, {
+			rechargeBlim: "500",
+			rechargeBlirm: "485"
+		}]
+		new Vue({
+			el: '#vipBody',
+			data: {
+				cell: '',
+				chooseMS: '',
+				choosePS: '',
+				customM: customM,
+				customRM: '',
+				rechargeBli: rechargeBli,
+			},
+			methods: {
+				// 选择金额
+				chooseM: function(m, rm, i) {
+					this.customM = m
+					this.customRM = rm
+				},
+				// 选择支付方式
+				chooseP: function(d, n) {
+					this.choosePS = n
+				},
+				// 确认按钮
+				recBtn: function() {
+					var that = this
+					if (that.customRM == '') {
+						return alert('请选择或输入充值金额！')
+					} else {
+						// console.log(that.customM)
+						// console.log(that.customRM)
+					}
+				},
+				amount: function(e) {
+					console.log(e.target.value)
+					return this.customM = e.target.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+				},
+				searchCell:function(){
+					console.log(11111)
+				}
+			},
+			watch: {
+				customM: function(e) {
+					var that = this
+					for (var i = 0; i < rechargeBli.length; i++) {
+						if (that.customM == rechargeBli[i].rechargeBlim) {
+							that.chooseMS = i
+							break
+						} else {
+							that.chooseMS = 1000
+						}
+					}
+					// console.log(that.customM)
+					if (that.customM <= 0) {
+						$('.viprecordsavebtn').addClass('opacity05')
+					} else {
+						$('.viprecordsavebtn').removeClass('opacity05')
+					}
+				},
+			},
+			created: function() {
+				var that = this
+				//初始customM为50时列表状态
+				for (var j = 0; j < rechargeBli.length; j++) {
+					if (that.customM == rechargeBli[j].rechargeBlim) {
+						that.chooseMS = j
+						break
+					} else {
+						that.chooseMS = 1000
+					}
+				}
+			}
+		})
+	</script>
+</html>

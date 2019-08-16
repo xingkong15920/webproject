@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>账单明细</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+
+			.show {
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="billCenter" id="billCenter">
+			<ul class="billTit">
+				<li class="billTitli" v-for="(item,i) in billTit" :key="i" v-on:click="billTitChoose(i)" :class="[{billTitC: i == billTitC}]" v-cloak>
+					{{item.billTitname}}
+				</li>
+			</ul>
+			<ul class="billist">
+				<li class="billistli" v-for="(item,i) in billist" v-cloak>
+					<div class="billistliL">
+						<p>{{item.vipBillitime}}</p>
+						<span>{{item.vipBillicell}}</span>
+					</div>
+					<div class="billistliR">
+						<p>- ¥ {{item.vipBillimoney}}</p>
+						<span>{{item.vipBillitype1}}</span>
+					</div>
+				</li>
+				<li class="branches">共计 <span>{{branches}}</span> 条记录</li>
+			</ul>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./js/qrcode.min.js"></script>
+	<script>
+		var billTit, billist
+		billTit = [{
+			billTitname: "消费账单"
+		}, {
+			billTitname: "充值账单"
+		}]
+		billist = [{
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "11.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "161.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "201.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "352.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "1.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "10.00",
+			vipBillicell: "17778261160"
+		}]
+		billistX = [{
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "1010.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "201.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "352.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 0,
+			vipBillimoney: "1.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 1,
+			vipBillimoney: "10.00",
+			vipBillicell: "17778261160"
+		}]
+		billistC = [{
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 3,
+			vipBillimoney: "11.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "161.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 3,
+			vipBillimoney: "201.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "352.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 2,
+			vipBillimoney: "1.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitime: "2019-05-14 00:00:00",
+			vipBillitype: 3,
+			vipBillimoney: "10.00",
+			vipBillicell: "17778261160"
+		}]
+		new Vue({
+			el: '#billCenter',
+			data: {
+				branches: '',
+				billTitC: '',
+				billTit: billTit,
+				billist: billist,
+			},
+			methods: {
+				// 选择列表类型
+				billTitChoose: function(n) {
+					var that = this
+					that.billTitC = n
+					if (n == 0) {
+						that.billist.splice(0, that.billist.length);
+						for (var i = 0; i < billistX.length; i++) {
+							that.billist.push(changeData(billistX[i]));
+						}
+						that.branches = that.billist.length
+					} else if (n == 1) {
+						that.billist.splice(0, that.billist.length);
+						for (var i = 0; i < billistC.length; i++) {
+							that.billist.push(changeData(billistC[i]));
+						}
+						that.branches = that.billist.length
+					}
+				},
+			},
+			created() {
+				this.billTitChoose(0)
+			}
+		})
+
+		function changeData(res) {
+			switch (res.vipBillitype) {
+				case 0:
+					res.vipBillitype1 = "消费成功"
+					break;
+				case 1:
+					res.vipBillitype1 = "消费失败"
+					break;
+				case 2:
+					res.vipBillitype1 = "充值成功"
+					break;
+				case 3:
+					res.vipBillitype1 = "充值失败"
+					break;
+			}
+			return res
+		}
+	</script>
+
+</html>

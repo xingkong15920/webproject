@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员消费</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1192462_drvin8iimxr.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+
+			.vipBody {
+				background: #FEA600;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="loadstart" class="loadzz consumeload">
+			<div class="loading_k">
+				<div class="loading"></div>
+			</div>
+		</div>
+		<div class="vipBody" id="vipBody">
+			<div class="vipBlock consumeB memberB">
+				<div class="recordB ">
+					<div class="consumeBlock">
+						<p class="recordBtit consumeBTit">消费金额</p>
+						<div class="consumeBInp">
+							<i>¥</i>
+							<label id="paymoney" class="recordBinput consumeBInput" type="text"></label>
+							<!-- <input type="number" class="recordBinput consumeBInput" placeholder="请填写消费金额" id="paymoney" /> -->
+						</div>
+					</div>
+					<div class="consumeBlock" @click="showMask()">
+						<p class="recordBtit consumeBTit">余额支付<span class="hide" id="mebBalance"></span></p>
+						<div class="consumeBInp">
+							<span>输入卡号/手机号</span>
+							<p>17778261160(张三)</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 扫码会员号 -->
+			<div class="hiddenbox">
+				<div class="consumermask" @click="hiddenMask()"></div>
+				<div class="consumerbox">
+					<div class="consumerYuan">
+						<p>消费金额</p>
+						<h3>¥ <span>{{customM}}</span></h3>
+					</div>
+					<div class="consumerCellBox">
+						<div>
+							<p :class="[customCellTips?'show':'hide']">请输入正确的手机号</p>
+							<input type="search" placeholder="请输入手机号/卡号" v-model="customCell" @keyup="searchCell(event)" />
+							<span><i class="icon iconfont iconhuiyuan"></i></span>
+						</div>
+						<div class="subLine"></div>
+						<p :class="[mebBalanceTips?'show':'hide']">账户余额 ￥<span>{{mebBalance}}</span></p>
+					</div>
+					<div class="consumerAccount" :class="[customCell.length>5?'':'opacity05']" @click="confirmColl()">确认收款</div>
+				</div>
+			</div>
+			<!-- 数字键盘 -->
+			<div class="keyboardbox">
+				<div class="keyboardkey paynum">1</div>
+				<div class="keyboardkey paynum">4</div>
+				<div class="keyboardkey paynum">7</div>
+				<div class="keyboardkey" id="pay-float">.</div>
+				<div class="keyboardkey paynum">2</div>
+				<div class="keyboardkey paynum">5</div>
+				<div class="keyboardkey paynum">8</div>
+				<div class="keyboardkey payzero" id="pay-zero">0</div>
+				<div class="keyboardkey paynum">3</div>
+				<div class="keyboardkey paynum">6</div>
+				<div class="keyboardkey paynum">9</div>
+				<div class="keyboardkey" id="pay-zeroDub">00</div>
+				<div class="keyboardkey" id="pay-return"><i class="iconfont icon-tuigejian"></i></div>
+				<div class="keyboardkey" id="pay-clear">清空</div>
+				<div class="keyboardkey confirm pay">
+					<div id="payId" @click="payBtn($('#paymoney').text())">
+						<p>确认</p>
+						<p>支付</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./js/fastclick.js"></script>
+	<script type="text/javascript">
+		window.onload = function() {
+			FastClick.attach(document.body)
+		}
+	</script>
+	<script type="text/javascript">
+		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
+		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
+		$('#loadstart').hide()
+		// var bridge = getJsBridge();
+		// var str = bridge.call("testSyn", {
+		// 	msg: "testSyn"
+		// });
+		// bridge.call("testAsyn", {
+		// 	msg: "testAsyn"
+		// }, function(v) {
+		// 	alert(v);
+		// })
+		$(function() {
+			var $paymoney = $("#paymoney");
+			$(".keyboardbox").slideDown();
+			$(".paynum").each(function() {
+				$(this).click(function() {
+					isC = true
+					if (($paymoney.text()).indexOf(".") != -1 && ($paymoney.text()).substring(($paymoney.text()).indexOf(".") +
+							1, ($paymoney.text()).length).length == 2) {
+						return;
+					}
+					if ($.trim($paymoney.text()) == "0") {
+						return;
+					}
+					if (parseInt($paymoney.text()) > 10000 && $paymoney.text().indexOf(".") == -1) {
+						return;
+					}
+					$('.pay').removeClass('pay-disabled');
+					$paymoney.text($paymoney.text() + $(this).text());
+				});
+			});
+
+			$("#pay-return").click(function() {
+				$paymoney.text(($paymoney.text()).substring(0, ($paymoney.text()).length - 1));
+				if (!$paymoney.text()) {
+					$('.pay').addClass('pay-disabled').find('a').attr('href', 'javascript:return false;');
+				}
+			});
+
+			$("#pay-zero").click(function() {
+				if (($paymoney.text()).indexOf(".") != -1 && ($paymoney.text()).substring(($paymoney.text()).indexOf(".") + 1,
+						($paymoney.text()).length).length == 2) {
+					return;
+				}
+				if ($.trim($paymoney.text()) == "0") {
+					return;
+				}
+				if (parseInt($paymoney.text()) > 10000 && $paymoney.text().indexOf(".") == -1) {
+					return;
+				}
+				$paymoney.text($paymoney.text() + $(this).text());
+			});
+			$("#pay-zeroDub").click(function() {
+				if (($paymoney.text()).indexOf(".") != -1 && ($paymoney.text()).substring(($paymoney.text()).indexOf(".") + 1,
+						($paymoney.text()).length).length == 2) {
+					return;
+				}
+				if ($.trim($paymoney.text()) == "00") {
+					return;
+				}
+				if (parseInt($paymoney.text()) > 10000 && $paymoney.text().indexOf(".") == -1) {
+					return;
+				}
+				$paymoney.text($paymoney.text() + $(this).text());
+			});
+
+			$("#pay-float").click(function() {
+				if ($.trim($paymoney.text()) == "") {
+					return;
+				}
+				if (($paymoney.text()).indexOf(".") != -1) {
+					return;
+				}
+				if (($paymoney.text()).indexOf(".") != -1) {
+					return;
+				}
+				$paymoney.text($paymoney.text() + $(this).text());
+			});
+			$('#pay-clear').click(function() {
+				$paymoney.text('');
+				$('.pay').addClass('pay-disabled');
+			})
+			if (!$paymoney.text()) {
+				$('.pay').addClass('pay-disabled');
+			}
+		});
+		new Vue({
+			el: '#vipBody',
+			data: {
+				customM: '',
+				customCell: '',
+				customName: '',
+				mebBalance: '',
+				customCellTips: false,
+				mebBalanceTips: false,
+			},
+			methods: {
+				// 显示弹出框
+				showMask: function() {
+					$('.hiddenbox').show()
+					$('.keyboardbox').hide()
+					setTimeout(function() {
+						$('.consumerbox').css('bottom', '0')
+						$('.keyboardbox').css('bottom', '-100%')
+					}, 100);
+
+				},
+				// 隐藏弹出框
+				hiddenMask: function() {
+					$('.consumerbox').css('bottom', '-100%')
+					$('.keyboardbox').css('bottom', '0')
+					setTimeout(function() {
+						$('.hiddenbox').hide()
+						$('.keyboardbox').show()
+					}, 100);
+				},
+				confirmColl: function() {
+					if (this.customCell.length > 5) {
+						this.hiddenMask()
+						$('.consumeBInp span').hide()
+						$('.consumeBInp p').show()
+						$('.consumeBInp p').text(this.customCell + '(' + this.customName + ')')
+						$('#mebBalance').show()
+						$('#mebBalance').text('¥ ' + this.mebBalance)
+					} else {
+						alert('请填写正确的手机号或卡号')
+					}
+				},
+				searchCell: function(e) {
+					var that = this
+					var rg = new RegExp(/^1[3456789]\d{9}$/)
+					if (!rg.test(e.target.value)) {
+						that.customCellTips = true
+						that.mebBalanceTips = false
+					} else if (e.target.value == '') {
+						that.mebBalanceTips = false
+					} else {
+						that.customCellTips = false
+						$('#loadstart').show()
+						var sendData = new Object()
+						sendData.merchantNumber = merNumber
+						sendData.cell = e.target.value
+						sendData.page = '1'
+						sendData.limit = '10'
+						$.ajax({
+							type: "get",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers,
+							data: sendData,
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								$('#loadstart').hide()
+								that.mebBalanceTips = true
+								that.mebBalance = data.data.memberList[0].allBalance
+								that.customCell = e.target.value
+								that.customName = data.data.memberList[0].name
+							}
+						});
+					}
+				},
+				payBtn: function(m) {
+					if (m == 0) {
+						alert("请输入金额！");
+					} else {
+						alert(m)
+						alert(this.mebBalance)
+						alert(this.customCell.split('(')[0])
+					}
+				}
+			},
+		})
+	</script>
+</html>

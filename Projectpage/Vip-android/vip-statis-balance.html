@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员余额统计</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./lib/datepicker/css/datepicker.css">
+		<style type="text/css">
+			[v-cloak] {
+				display: none;
+			}
+
+			.show {
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- <div class="date_title" id="date1" style="width: 200px;height: 50px;background: #0000FF;color: #fff;"></div> -->
+		<div class="statisBal" id="statisBal">
+			<ul class="billist">
+				<li class="billistli" v-for="(item,i) in billist" v-cloak>
+					<div class="billistliL">
+						<div class="billavatar">
+							<img src="./img/vip-img.jpg">
+						</div>
+						<div class="billistliLC">
+							<span>{{item.vipBilliName}}</span>
+							<p>{{item.vipBillicell}}</p>
+						</div>
+					</div>
+					<div class="billistliR">
+						<span>余额:</span>
+						<p>¥ {{item.vipBillimoney}}</p>
+					</div>
+				</li>
+				<li class="branches">余额共计 ￥ <span>{{branches}}</span></li>
+			</ul>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./lib/datepicker/js/datepicker.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var billist, startTime, endTime
+		billist = [{
+			vipBillitit: 1,
+			vipBillitype: 0,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitype: 1,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitype: 0,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "11.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitype: 1,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "161.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitype: 0,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitype: 1,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "201.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitype: 0,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitype: 1,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "352.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitype: 0,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitype: 1,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "101.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 1,
+			vipBillitype: 0,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "1.00",
+			vipBillicell: "17778261160"
+		}, {
+			vipBillitit: 2,
+			vipBillitype: 1,
+			vipBilliName: "一缕阳光",
+			vipBillimoney: "10.00",
+			vipBillicell: "17778261160"
+		}]
+		
+		recV()
+
+		function recV() {
+			new Vue({
+				el: '#statisBal',
+				data: {
+					branches: '6600.00',
+					startTime: startTime,
+					endTime: endTime,
+					billist: billist,
+				},
+				methods: {
+				},
+			})
+		}
+		
+		//自定义时间
+		function Customtime(s,e){
+			console.log(s,e)
+			startTime = s
+			endTime = e
+		}
+		
+		//格式数据类型
+		function changeData(res) {
+			switch (res.vipBillitype) {
+				case 0:
+					res.vipBillitype1 = "消费成功"
+					break;
+				case 1:
+					res.vipBillitype1 = "消费失败"
+					break;
+				case 2:
+					res.vipBillitype1 = "充值成功"
+					break;
+				case 3:
+					res.vipBillitype1 = "充值失败"
+					break;
+			}
+			return res
+		}
+	</script>
+
+</html>

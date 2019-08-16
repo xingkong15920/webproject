@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员信息</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./lib/mescroll/mescroll.css">
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			* {
+				transition: initial;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="loadstart" class="loadzz">
+			<div class="loading_k">
+				<div class="loading"></div>
+			</div>
+		</div>
+		<div class="vipCenter" id="Vip">
+			<div class="vipBlock vipBill">
+				<div class="vipBlock" :class="[mebsearch?'mebsearch':'']" style="margin: 0; padding: 0;">
+					<div class="seachInput">
+						<label><i class="icon iconfont iconhuiyuan"></i></label>
+						<input type="text" id="seachText" value="" placeholder="姓名/手机号" @focus="inputfocus()" @blur="inputblur()" />
+						<div class="seachBtn">搜索</div>
+					</div>
+				</div>
+				<ul class="vipBillul vipBillultit" v-cloak>
+					<li class="vipBilli vipBilli3" v-for="item in vipBilul">
+						<div class="vipBilliL">
+							{{item.vipBilliL}}
+						</div>
+						<div class="vipBilliC">
+							{{item.vipBilliC}}
+						</div>
+						<div class="vipBilliR">
+							{{item.vipBilliR}}
+						</div>
+					</li>
+				</ul>
+				<div class="vipBillul" v-cloak ref="mescroll" class="mescroll">
+					<ul>
+						<li class="vipBilli vipBilli3" v-for="item in vipBilli">
+							<div class="vipBilliL">
+								<p class="vipBillitit">{{item.name}}</p>
+								<p class="vipBillitime">{{item.cell}}</p>
+							</div>
+							<div class="vipBilliC">
+								<p class="vipBillimoney">{{item.integral}}</span></p>
+							</div>
+							<div class="vipBilliR">
+								<p class="vipBillimoney">¥ {{item.allBalance}}</span></p>
+							</div>
+						</li>
+						<!-- <li class="branches" v-cloak>共计 <span>{{branches}}</span> 条记录</li> -->
+					</ul>
+				</div>
+			</div>
+			<div class="mask mebList" :class="[mebsearch?'show':'hide']"></div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./lib/datepicker/js/datepicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
+		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
+		new Vue({
+			el: '#Vip',
+			data: {
+				page: 1,
+				limit: 10,
+				branches: '',
+				vipBilul: [{
+					'vipBilliL': '信息',
+					'vipBilliC': '积分',
+					'vipBilliR': '余额',
+				}],
+				vipBilli: [],
+				mescroll: null, // mescroll实例对象
+				mebsearch: false,
+			},
+			methods: {
+				inputfocus: function() {
+					this.mebsearch = true
+				},
+				inputblur: function() {
+					this.mebsearch = false
+				},
+				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
+				upCallback(page) {
+					// 模拟联网
+					this.getListDataFromNet(this.pdType, page.num, page.size, (arr) => {
+						// 如果是第一页需手动制空列表
+						if (page.num === 1) this.vipBilli = []
+						// 把请求到的数据添加到列表
+						this.vipBilli = this.vipBilli.concat(arr)
+						// 数据渲染成功后,隐藏下拉刷新的状态
+						this.$nextTick(() => {
+							this.mescroll.endSuccess(arr.length)
+						})
+					}, () => {
+						this.mescroll.endErr()
+					})
+				},
+				/* 联网加载列表数据
+				 * 在您的实际项目中,请参考官方写法: http://www.mescroll.com/api.html#tagUpCallback
+				 * 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
+				 * 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
+				 */
+				getListDataFromNet(pdType, pageNum, pageSize, successCallback, errorCallback) {
+					// 延时一秒,模拟联网
+					setTimeout(() => {
+						// 获取分页数据
+						var that = this,
+							sendData = new Object()
+						sendData.merchantNumber = merNumber
+						sendData.page = pageNum
+						sendData.limit = pageSize
+						$.ajax({
+							type: "get",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers,
+							data: sendData,
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								$('#loadstart').hide()
+								// 回调
+								successCallback(data.data.memberList)
+								that.branches = data.data.memberCount
+							}
+						});
+					}, 1000)
+				}
+
+			},
+			mounted() {
+				// 创建MeScroll对象
+				this.mescroll = new MeScroll(this.$refs.mescroll, { // 在vue的mounted生命周期初始化mescroll,确保此处配置的ref有值
+					up: {
+						callback: this.upCallback,
+						page: {
+							num: 0, // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
+							size: 10 // 每页数据的数量
+						},
+						noMoreSize: 5, // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
+						toTop: { // 配置回到顶部按钮
+							src: './static/mescroll/mescroll-totop.png'
+						},
+						lazyLoad: {
+							use: true // 是否开启懒加载,默认false
+						},
+						htmlNodata: '<p class="upwarp-nodata">-- 无更多数据 --</p>', //无数据的布局
+					}
+				})
+
+			},
+			beforeRouteEnter(to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteEnter不用写
+				next(vm => {
+					if (vm.mescroll) {
+						// 恢复到之前设置的isBounce状态
+						if (vm.mescroll.lastBounce != null) vm.mescroll.setBounce(vm.mescroll.lastBounce)
+						// 滚动到之前列表的位置(注意:路由使用keep-alive才生效)
+						if (vm.mescroll.lastScrollTop) {
+							vm.mescroll.setScrollTop(vm.mescroll.lastScrollTop)
+							setTimeout(() => { // 需延时,因为setScrollTop内部会触发onScroll,可能会渐显回到顶部按钮
+								vm.mescroll.setTopBtnFadeDuration(0) // 设置回到顶部按钮显示时无渐显动画
+							}, 16)
+						}
+					}
+				})
+			},
+			beforeRouteLeave(to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteLeave不用写
+				if (this.mescroll) {
+					this.mescroll.lastBounce = this.mescroll.optUp.isBounce // 记录当前是否禁止ios回弹
+					this.mescroll.setBounce(true) // 允许bounce
+					this.mescroll.lastScrollTop = this.mescroll.getScrollTop() // 记录当前滚动条的位置
+					this.mescroll.hideTopBtn(0) // 隐藏回到顶部按钮,无渐隐动画
+				}
+				next()
+			},
+		})
+	</script>
+
+</html>
