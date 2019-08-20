@@ -19,6 +19,27 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+		<style type="text/css">
+			.layui-layer-btn .layui-layer-btn0 {
+				border-color: #dedede !important;
+				background-color: #fff !important;
+				color: #333 !important;
+			}
+
+			.layui-layer-btn .layui-layer-btn1 {
+				border-color: #1E9FFF;
+				background-color: #1E9FFF;
+				color: #fff;
+			}
+
+			.chooseColor span {
+				margin-bottom: 10px;
+			}
+
+			.upondRadio {
+				margin-bottom: 8px;
+			}
+		</style>
 	</head>
 
 	<body id="iosiframe">
@@ -36,8 +57,8 @@
 						<div class="layui-form-item gdType">
 							<label class="layui-form-label">等级类型：</label>
 							<div class="layui-input-inline max360">
-								<input type="radio" name="gradeType" value="0" title="正常等级" lay-filter="" checked="true">
-								<input type="radio" name="gradeType" value="1" title="锁定等级" lay-filter="">
+								<input type="radio" name="gradeType" value="0" title="正常等级" lay-filter="gradeType" checked="true">
+								<input type="radio" name="gradeType" value="1" title="锁定等级" lay-filter="gradeType">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -48,39 +69,47 @@
 							<label class="layui-form-label"></label>
 							<div class="layui-form-mid layui-word-aux">等级名称不允许重复</div>
 						</div>
-						<div class="layui-form-item upond">
-							<label class="layui-form-label">升级条件：</label>
-							<div class="layui-input-inline max360">
-								<input type="radio" name="upgradeState" value="0" title="累计积分" lay-filter="upgradeState" checked="true">
-								<input type="radio" name="upgradeState" value="1" title="累计充值" lay-filter="upgradeState">
-								<input type="radio" name="upgradeState" value="2" title="累计消费" lay-filter="upgradeState">
-								<input type="text" name="upgradeConditions" lay-verify="integral" autocomplete="off" placeholder="升级所需条件" class="layui-input"
-								 style="margin-top: 8px;">
+						<div class="levellocked">
+							<div class="layui-form-item upond">
+								<label class="layui-form-label">升级条件：</label>
+								<div class="layui-input-inline max360">
+									<div class="layui-input-inline upondRadio max360">
+										<input type="radio" name="upgradeState" value="0" title="累计积分" lay-filter="upgradeState" checked="true">
+										<input type="radio" name="upgradeState" value="1" title="累计充值" lay-filter="upgradeState">
+										<input type="radio" name="upgradeState" value="2" title="累计消费" lay-filter="upgradeState">
+									</div>
+									<div class="layui-form-mid layui-word-aux lvUpcondition1">升级所需</div>
+									<div class="layui-input-inline" style="width: 110px;">
+										<input type="number" name="upgradeConditions" lay-verify="integral" autocomplete="off" placeholder="升级所需条件"
+										 class="layui-input">
+									</div>
+									<div class="layui-form-mid layui-word-aux lvUpcondition2">积分</div>
+								</div>
 							</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">开卡金额：</label>
-							<div class="layui-input-inline max360">
-								<input type="text" name="initMoney" lay-verify="initMoney" autocomplete="off" placeholder="请输入开卡金额" class="layui-input">
+							<div class="layui-form-item">
+								<label class="layui-form-label">开卡金额：</label>
+								<div class="layui-input-inline max360">
+									<input type="text" name="initMoney" lay-verify="initMoney" autocomplete="off" placeholder="请输入开卡金额" class="layui-input">
+								</div>
 							</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">赠送金额：</label>
-							<div class="layui-input-inline max360">
-								<input type="text" name="giveMoney" lay-verify="giveMoney" autocomplete="off" placeholder="请输入赠送金额" class="layui-input">
+							<div class="layui-form-item">
+								<label class="layui-form-label">赠送金额：</label>
+								<div class="layui-input-inline max360">
+									<input type="text" name="giveMoney" lay-verify="giveMoney" autocomplete="off" placeholder="请输入赠送金额" class="layui-input">
+								</div>
 							</div>
-						</div>
-						<div class="layui-form-item validity">
-							<label class="layui-form-label">有效期：</label>
-							<div class="layui-input-inline max360">
-								<input type="text" name="termValidity" lay-verify="termValidity" autocomplete="off" placeholder="请输入有效期天数"
-								 class="layui-input">
+							<div class="layui-form-item validity">
+								<label class="layui-form-label">有效期：</label>
+								<div class="layui-input-inline max360">
+									<input type="text" name="termValidity" lay-verify="termValidity" autocomplete="off" placeholder="请输入有效期天数"
+									 class="layui-input">
+								</div>
+								<label class="layui-form-label"></label>
+								<div class="layui-input-inline max360">
+									<div class="layui-form-mid layui-word-aux">会员有效期设置，可设置限时会员，0为永久。会员过期后会员状态将变更为无会员阶段， 需要重新购买会员或变更会员等级重新成为优惠会员。</div>
+								</div>
+								<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
 							</div>
-							<label class="layui-form-label"></label>
-							<div class="layui-input-inline max360">
-								<div class="layui-form-mid layui-word-aux">会员有效期设置，可设置限时会员，0为永久。会员过期后会员状态将变更为无会员阶段， 需要重新购买会员或变更会员等级重新成为优惠会员。</div>
-							</div>
-							<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
 						</div>
 						<div class="layui-form-item layui-form-text">
 							<label class="layui-form-label">等级说明：</label>
@@ -181,7 +210,7 @@
 							<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
 								<span class="tips_red">设置目前卡的有效期</span> -->
 						</blockquote>
-						<div class="layui-form-item max600">
+						<div class="layui-form-item max400">
 							<label class="layui-form-label"><span class="redC">* </span>等级颜色 :</label>
 							<div class="layui-input-block chooseColor">
 								<span data-color="colorC0" class="card_bc0"></span>
@@ -246,12 +275,12 @@
 
 				if (gdefault === 0) {
 					$('.gdType').show()
-					$('.upond').hide()
+					$('.upondRadio').hide()
 					$('.validity').show()
 					$('.upond').find('input').removeAttr('lay-verify', 'integral')
 				} else {
 					$('.gdType').hide()
-					$('.upond').show()
+					$('.upondRadio').show()
 					$('.validity').hide()
 					$('.upond').find('input').attr('lay-verify', 'integral')
 				}
@@ -285,6 +314,45 @@
 						});
 						$.ajax({
 							type: "get",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades,
+							data: {
+								"merchantNumber": merNumber,
+								"page": 1,
+								"limit": 1,
+							},
+							async: false,
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code === 1000) {
+									layer.closeAll('loading');
+									upgState = data.data.grades[0].upgradeState
+									switch (upgState) {
+										case 0:
+											$('.lvUpcondition1').text('累计积分')
+											$('.lvUpcondition2').text('积分')
+											break;
+										case 1:
+											$('.lvUpcondition1').text('累计充值')
+											$('.lvUpcondition2').text('元')
+											break;
+										case 2:
+											$('.lvUpcondition1').text('累计消费')
+											$('.lvUpcondition2').text('元')
+											break;
+									}
+									if (data.data.timeType == 1) {
+										$('.resetper').show()
+									}
+								} else {
+									layer.msg('查询等级详情失败')
+								}
+							}
+						});
+						$.ajax({
+							type: "get",
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGradeDetails,
 							data: {
 								"gradeNo": gradeNo
@@ -298,8 +366,24 @@
 								if (data.code === 1000) {
 									cardCon = data.data
 									cardBackgroundId = data.data.cardBackgroundId
+									if (data.data.gradeType == 0) {
+										$('.levellocked').show()
+										$('input[name="upgradeConditions"]').attr('lay-verify', 'integral')
+										$('input[name="initMoney"]').attr('lay-verify', 'initMoney')
+										$('input[name="giveMoney"]').attr('lay-verify', 'giveMoney')
+										$('input[name="termValidity"]').attr('lay-verify', 'termValidity')
+									} else if (data.data.gradeType == 1) {
+										$('.levellocked').hide()
+										$('input[name="upgradeConditions"]').removeAttr('lay-verify', 'integral')
+										$('input[name="initMoney"]').removeAttr('lay-verify', 'initMoney')
+										$('input[name="giveMoney"]').removeAttr('lay-verify', 'giveMoney')
+										$('input[name="termValidity"]').removeAttr('lay-verify', 'termValidity')
+									}
 									if (data.data.timeType == 1) {
 										$('.resetper').show()
+									}
+									if (data.data.cardBackgroundId == '') {
+										$('.upTips').show()
 									}
 								} else {
 									layer.msg('查询等级详情失败')
@@ -320,7 +404,22 @@
 						layer.tips('广告状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					});
 
-					/*---------- 优惠设置 ----------*/
+					/*---------- 锁定等级设置 ----------*/
+					form.on('radio(gradeType)', function(data) {
+						if (data.value == 0) {
+							$('.levellocked').show()
+							$('input[name="upgradeConditions"]').attr('lay-verify', 'integral')
+							$('input[name="initMoney"]').attr('lay-verify', 'initMoney')
+							$('input[name="giveMoney"]').attr('lay-verify', 'giveMoney')
+							$('input[name="termValidity"]').attr('lay-verify', 'termValidity')
+						} else if (data.value == 1) {
+							$('.levellocked').hide()
+							$('input[name="upgradeConditions"]').removeAttr('lay-verify', 'integral')
+							$('input[name="initMoney"]').removeAttr('lay-verify', 'initMoney')
+							$('input[name="giveMoney"]').removeAttr('lay-verify', 'giveMoney')
+							$('input[name="termValidity"]').removeAttr('lay-verify', 'termValidity')
+						}
+					});
 
 
 					/*---------- 积分时效 ----------*/
@@ -342,6 +441,12 @@
 							layer.close(layer.index);
 						}, function() { //确定操作
 							upOldVal = data.value
+							$('.lvUpcondition1').text(data.elem.title)
+							if (upOldVal != 0) {
+								$('.lvUpcondition2').text('元')
+							} else {
+								$('.lvUpcondition2').text('积分')
+							}
 						});
 					});
 
@@ -505,6 +610,7 @@
 								"refundIntegralState": '' + cardCon.refundIntegralState + '',
 								"timeType": '' + cardCon.timeType + '',
 								"gradeExplain": cardCon.gradeExplain,
+								"upgradeConditions": cardCon.upgradeConditions,
 							})
 
 							if (cardCon.timeType == 1) {

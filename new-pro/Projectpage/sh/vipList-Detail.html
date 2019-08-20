@@ -102,7 +102,7 @@
 									<p>会员卡号：<span v-cloak>{{memCon.memberNo}}</span></p>
 									<p>手机号码：<span v-cloak>{{memCon.cell}}</span></p>
 									<p>所属门店：<span v-cloak>{{memCon.shopName}}</span></p>
-									<p>会员等级：<span v-cloak>{{memCon.gradeName}}</span></p>
+									<p>会员等级：<span v-cloak>{{memCon.gradeName=='--'?'无':memCon.gradeName}}</span></p>
 									<p>会员性别：<span v-cloak>{{memCon.sex=1?'男':'女'}}</span></p>
 									<p>会员生日：<span v-cloak>{{memCon.birthday}}</span></p>
 									<p>会员年龄：<span v-cloak>{{memCon.registerTime.split('-')[0] - memCon.birthday.split('-')[0]}}</span></p>
@@ -217,7 +217,6 @@
 			var _h = $(window).height();
 			var _h1 = $('.layui-tab-title').outerHeight();
 			var _h2 = _h - _h1 - 150
-			console.log(_h, _h1, _h2)
 			$('.x-iframe').height(_h2)
 			$('.layui-tab-item').height(_h2)
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
@@ -247,10 +246,14 @@
 							if (data.code === 1000) {
 								$('.vipDetailBImg').attr('src', data.data.headImg)
 								$('#memName').text(data.data.name)
-								$('#memLv').text(data.data.gradeName)
+								if (data.data.gradeName) {
+									$('#memLv').text(data.data.gradeName)
+								} else {
+									$('#memLv').text('无')
+								}
 								$('#memCell').text(data.data.cell)
 								$('#memNick').text(data.data.nickName)
-								console.log(data.data.registerTime.split('-')[0] - data.data.birthday.split('-')[0])
+								console.log(changeData(data.data))
 								setDetail(changeData(data.data))
 							} else {
 								layer.msg('查询等级详情失败')
@@ -286,6 +289,7 @@
 
 				function setDetail(obj) {
 					layer.closeAll('loading');
+					console.log(obj)
 					new Vue({
 						el: '#mDetails',
 						data: {
@@ -296,6 +300,7 @@
 
 				function setcpDetail(obj) {
 					layer.closeAll('loading');
+					console.log(obj)
 					new Vue({
 						el: '#cptionDetail',
 						data: {
@@ -691,7 +696,6 @@
 					getDetail()
 					//监听选项卡切换
 					element.on('tab(vipcenter)', function(data) {
-						console.log(data.index)
 						// var src = $(".layui-tab-item.layui-show").find("iframe").attr("src");
 						switch (data.index) {
 							case 0:

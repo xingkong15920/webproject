@@ -126,6 +126,8 @@ var CmsConfig = {
 			addChannel: "delivery/addChannel",
 			// 渠道-查询投放渠道列表
 			getChannels: "delivery/getChannels",
+			// 设置默认投放渠道
+			setDefaultChannel: "delivery/setDefaultChannel",
 			// 渠道-删除投放渠道
 			deleteChannel: "delivery/deleteChannel",
 			// 推荐设置
@@ -142,6 +144,8 @@ var CmsConfig = {
 			getMemDetails: "memberManage/getMemDetails",
 			// 修改会员数据
 			updateMemInfo: "memberManage/updateMemInfo",
+			// 修改会员等级
+			updateMemGrade: "memberManage/updateMemGrade",
 			// 删除会员
 			deleteMember: "memberManage/deleteMember",
 			// 查询资金变动

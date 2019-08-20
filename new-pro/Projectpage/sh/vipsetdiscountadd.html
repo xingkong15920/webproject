@@ -43,9 +43,9 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">会员等级：</label>
 							<div class="layui-input-inline max360" style="width:260px!important">
-								<input type="text" lay-verify="title" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
+								<input type="text" readonly="readonly" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
 							</div>
-							<div class="layui-form-mid layui-word-aux">可不指定</div>
+							<div class="layui-form-mid layui-word-aux">可不指定默认为全部</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">支付方式：</label>
@@ -150,7 +150,8 @@
 					checkedKey: 'gradeNo',
 					searchPlaceholder: '等级名称',
 					table: {
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' + merNumber,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
+							merNumber,
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -280,7 +281,12 @@
 						data.jdPayState = 1
 					}
 					data.merchantNumber = merNumber
-					data.gradeNos = gradeNos
+					if (gradeNos.length > 0) {
+						data.gradeNos = gradeNos
+					} else {
+						getmebLv()
+						data.gradeNos = gradeNos
+					}
 					console.log(data)
 					$.ajax({
 						type: "post",
@@ -305,6 +311,34 @@
 					});
 					return false;
 				});
+
+				function getmebLv() {
+					var dataS = new Object()
+					dataS.merchantNumber = merNumber
+					dataS.page = 1
+					dataS.limit = 1000
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades,
+						data: dataS,
+						dataType: "json",
+						async: false,
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code == 1000) {
+								gradeNos.splice(0)
+								layui.each(data.data.grades, function(index, item) {
+									gradeNos.push(item.gradeNo)
+								})
+							} else {
+								layer.msg(data.msg)
+								return
+							}
+						}
+					});
+				}
 
 			});
 		</script>

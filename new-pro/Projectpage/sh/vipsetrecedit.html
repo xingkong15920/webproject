@@ -29,7 +29,7 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">指定会员等级</label>
 							<div class="layui-input-inline max360">
-								<input type="text" lay-verify="gradeNos" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
+								<input type="text" readonly="readonly" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
 							</div>
 							<div class="layui-form-mid layui-word-aux">可不指定</div>
 						</div>
@@ -107,6 +107,7 @@
 				var preferentialRecharges = []
 				var setCon
 				var gradeNos = []
+				var index = parent.layer.getFrameIndex(window.name);
 				$('#quxiao').click(function() {
 					setTimeout(function() {
 						parent.layer.close(index)
@@ -114,8 +115,8 @@
 				})
 
 
-			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
-			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+				var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+				var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
 					var $ = layui.jquery,
 						upload = layui.upload,
@@ -392,7 +393,12 @@
 						}
 						data.merchantNumber = merNumber
 						data.preferentialRecharges = preferentialRecharges
-						data.gradeNos = gradeNos
+						if (gradeNos.length > 0) {
+							data.gradeNos = gradeNos
+						} else {
+							getmebLv()
+							data.gradeNos = gradeNos
+						}
 						data.rechargeSetNo = rechargeSetNo
 						console.log(data)
 						$.ajax({
@@ -418,6 +424,34 @@
 						});
 						return false;
 					});
+
+					function getmebLv() {
+						var dataS = new Object()
+						dataS.merchantNumber = merNumber
+						dataS.page = 1
+						dataS.limit = 1000
+						$.ajax({
+							type: "get",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades,
+							data: dataS,
+							dataType: "json",
+							async: false,
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code == 1000) {
+									gradeNos.splice(0)
+									layui.each(data.data.grades, function(index, item) {
+										gradeNos.push(item.gradeNo)
+									})
+								} else {
+									layer.msg(data.msg)
+									return
+								}
+							}
+						});
+					}
 
 				});
 			}

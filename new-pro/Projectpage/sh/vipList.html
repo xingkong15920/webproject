@@ -135,7 +135,7 @@
 			<div class="layui-form x-so">
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-					<input class="layui-input" type="text" name="nickname" id="nickname" placeholder="会员昵称" autocomplete="off">
+					<input class="layui-input" type="text" name="name" id="name" placeholder="会员姓名" autocomplete="off">
 				</div>
 				<div class="layui-input-inline text">
 					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
@@ -297,12 +297,12 @@
 								align: 'center',
 								width: 150
 							},
-							{
-								field: 'memberNo',
-								title: '会员卡号',
-								align: 'center',
-								width: 160
-							},
+							// {
+							// 	field: 'memberNo',
+							// 	title: '会员卡号',
+							// 	align: 'center',
+							// 	width: 160
+							// },
 							{
 								field: 'cell',
 								title: '手机号',
@@ -314,7 +314,13 @@
 								align: 'center',
 								width: 100,
 								templet: function(data) {
-									return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.gradeName + '</span>'
+									if (data.gradeName == '') {
+										return '无'
+									} else if (data.gradeName == null) {
+										return '无'
+									} else {
+										return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.gradeName + '</span>'
+									}
 								}
 							}, {
 								field: 'allBalance',
@@ -506,7 +512,7 @@
 					active = {
 						reload: function() {
 							// 获取上面查询框的值
-							var nickname = $('#nickname');
+							var name = $('#name');
 							var cell = $('#cell');
 							var startendTime = $('#startendTime');
 							//执行重载
@@ -515,7 +521,7 @@
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
-									nickName: nickname.val(),
+									name: name.val(),
 									cell: cell.val(),
 									startTime: startendTime.val().split(' - ')[0],
 									endTime: startendTime.val().split(' - ')[1]

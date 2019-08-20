@@ -18,6 +18,12 @@
 				height: auto;
 				overflow-y: auto;
 			}
+
+			.qrcodeBtn {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
 		</style>
 	</head>
 
@@ -29,10 +35,14 @@
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 			<div class="cardQrcode" style="display: none;">
 				<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
+				<div class="qrcodeBtn">
+					<a class="layui-btn" data-type="copyLinkM">复制链接</a>
+					<a class="layui-btn" data-type="downLinkM" id="downLinkM">下载二维码</a>
+				</div>
 			</div>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.enable==0 ? 'checked' : ''}}  data-shopNumber="{{d.shopNumber}}" value="{{d.enable}}">
+			<input type="checkbox" name="discountabled" lay-skin="switch" lay-filter="discountabled" lay-text="开启|关闭" {{d.defaultFlag==1 ? 'checked' : ''}}  data-deliveryno="{{d.deliveryNo}}" value="{{d.defaultFlag}}">
 		</script>
 		<script type="text/html" id="shareBar">
 			<a class="layui-btn layui-btn-xs" lay-event="wxlink">微信卡券</a><br />
@@ -47,6 +57,7 @@
 		<script>
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var copyLinkM, downLinkMTit
 			layui.use('table', function() {
 				var table = layui.table,
 					form = layui.form;
@@ -112,6 +123,12 @@
 								}
 							}
 						}, {
+							field: 'operation',
+							title: '默认渠道',
+							align: 'center',
+							toolbar: "#switchBar",
+							minWidth: 100
+						}, {
 							field: 'shopName',
 							title: '链接',
 							align: 'left',
@@ -163,20 +180,20 @@
 					}
 				});
 				form.on('switch(discountabled)', function(data) {
+					console.log(data)
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					var tjData = new Object();
-					tjData.discountNo = data.elem.dataset.discountno,
-						tjData.enabled = this.checked ? '0' : '1';
+					tjData.deliveryNo = data.elem.dataset.deliveryno,
+						tjData.merchantNumber = merNumber
 					$.ajax({
 						type: "post",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateZEnabled,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.setDefaultChannel,
 						data: JSON.stringify(tjData),
 						dataType: "json",
 						headers: {
 							"Content-Type": "application/json"
 						},
 						success: function(data) {
-							layer.closeAll('loading');
 							if (data.code == 1000) {
 								parent.layer.msg('更改成功')
 								layui.table.reload('putwayList')
@@ -192,23 +209,27 @@
 					var data = obj.data;
 
 					if (obj.event === 'wxlink') {
+						copyLinkM = data.wxCardUrl
+						downLinkMTit = data.deliveryNo
 						qrcode.makeCode(data.wxCardUrl);
 						layer.open({
 							type: 1,
 							shadeClose: true,
 							shade: 0.5,
 							title: false,
-							area: ['380px', '380px'],
+							area: ['380px', '440px'],
 							content: $('.cardQrcode'),
 						});
 					} else if (obj.event === 'shlink') {
+						copyLinkM = data.getCardUrl
+						downLinkMTit = data.deliveryNo
 						qrcode.makeCode(data.getCardUrl);
 						layer.open({
 							type: 1,
 							shadeClose: true,
 							shade: 0.5,
 							title: false,
-							area: ['380px', '380px'],
+							area: ['380px', '440px'],
 							content: $('.cardQrcode'),
 						});
 					} else if (obj.event === 'delete') {
@@ -234,7 +255,6 @@
 										layui.table.reload('putwayList');
 									} else {
 										layer.msg(data.msg)
-
 									}
 								}
 							});
@@ -259,17 +279,55 @@
 									enabled: shopStatus.val().trim()
 								}
 							});
-						}
+						},
+						copyLinkM: function() {
+							var ssrsss = copyLinkM
+							var flag = copyText(ssrsss); //传递文本
+							layer.msg(flag ? "链接复制成功！" : "链接复制失败！", {
+								icon: 1
+							});
+						},
+						downLinkM: function() {
+							downloadImage()
+						},
 					};
-				$('.layui-form .layui-btn').on('click', function() {
+				$('.layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});
-
+				// 生成二维码
 				var qrcode = new QRCode(document.getElementById("qrcode"), {
 					width: 340,
 					height: 340
 				});
+				// 下载图片 
+				function downloadImage() {
+					var imgSrc = $("#qrcode img").attr("src");
+					var a = $("<a></a>").attr("href", imgSrc).attr("download", downLinkMTit + ".png").appendTo("body");
+					a[0].click();
+					a.remove();
+				}
+				// 复制到剪切板
+				function copyText(text) {
+					var textarea = document.createElement("input"); //创建input对象
+					textarea.className = "copyInput"
+					var currentFocus = document.activeElement; //当前获得焦点的元素
+					document.body.appendChild(textarea); //添加元素
+					textarea.value = text;
+					textarea.focus();
+					if (textarea.setSelectionRange)
+						textarea.setSelectionRange(0, textarea.value.length); //获取光标起始位置到结束位置
+					else
+						textarea.select();
+					try {
+						var flag = document.execCommand("copy"); //执行复制
+					} catch (eo) {
+						var flag = false;
+					}
+					document.body.removeChild(textarea); //删除元素
+					currentFocus.focus();
+					return flag;
+				}
 			});
 		</script>
 	</body>

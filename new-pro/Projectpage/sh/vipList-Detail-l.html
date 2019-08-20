@@ -29,23 +29,28 @@
 				max-width: 360px;
 				width: 100% !important;
 			}
+
+			.vipDetailBCon {
+				flex-direction: initial;
+				flex-wrap: wrap;
+				justify-content: flex-start;
+			}
+
+			.vipDetailBCon p {
+				width: 50%;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="x-body vipdetail" style="padding: 0;">
 			<div class="vipDetailB" id="mDetails">
-				<img src="../../public/images/vip-img.jpg" class="vipDetailBImg">
-				<div class="vipDetailBCon vipDetailBCon1">
+				<img :src="headImg" class="vipDetailBImg">
+				<div class="vipDetailBCon vipDetailBCon1" style="width: calc(100% - 110px);margin: 0;">
+					<p>卡号：<span v-cloak>{{memberNo}}</span></p>
 					<p>名称：<span v-cloak>{{name}}</span></p>
-					<p>卡号：<span v-cloak>{{gradeName}}</span></p>
-				</div>
-				<div class="vipDetailBCon vipDetailBCon1">
-					<p>电话：<span v-cloak>{{cell}}</span></p>
-					<p>余额：(充值)<span v-cloak>{{accountBalance}}</span> / (赠送)<span v-cloak>{{giveMoney}}</span></p>
-				</div>
-				<div class="vipDetailBCon vipDetailBCon1">
-					<p style="opacity: 0;">.</p>
+					<p style="width:auto;margin-right:20px;">电话：<span v-cloak>{{cell}}</span></p>
+					<p style="width:auto;margin-right:20px;">余额：(充值)<span v-cloak>{{accountBalance}}</span> / (赠送)<span v-cloak>{{giveMoney}}</span></p>
 					<p>积分：<span v-cloak>{{integral}}</span></p>
 				</div>
 			</div>
@@ -56,13 +61,13 @@
 							<label class="layui-form-label" style="width: 80px;">等级</label>
 							<div class="layui-input-inline max360">
 								<!-- <input type="text" lay-verify="gradeNos" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input"> -->
-								<input type="text" lay-verify="mdSelect" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
+								<input type="text" lay-verify="mdSelect" autocomplete="off" readonly="readonly" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label" style="width: 80px;">备注</label>
 							<div class="layui-input-inline max360">
-								<textarea class="layui-textarea" name="subMerchant" lay-verify="subMerchant" placeholder="可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开"></textarea>
+								<textarea class="layui-textarea" name="remarks" lay-verify="subMerchant" placeholder="备注"></textarea>
 							</div>
 						</div>
 						<div class="layui-form-item" style="text-align: center;">
@@ -88,7 +93,7 @@
 			})
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var gradeNos
+			var gradeNos, mebInfo
 
 			function subPageCon(mNo) {
 				var memberNo = mNo
@@ -178,6 +183,7 @@
 								if (data.code === 1000) {
 									$('#levelSelect').attr('ts-selected', data.data.gradeNo)
 									$('#levelSelect').val(data.data.gradeName)
+									mebInfo = data.data
 									setDetail(changeData(data.data))
 								} else {
 									layer.msg('查询等级详情失败')
@@ -185,6 +191,40 @@
 							}
 						});
 					}
+
+					//监听提交
+					form.on('submit(add)', function(data) {
+						var data = data.field
+						data.memberNo = memberNo
+						data.merchatNumber = merNumber
+						data.institutionNumber = insNumber
+						data.gradeNo = gradeNos
+						data.shopNumber = mebInfo.shopNumber
+						data.integral = mebInfo.integral
+						console.log(data)
+
+						// return
+						layer.load(2, {
+							shade: 0.5
+						});
+						// 发送请求
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateMemGrade,
+							data: JSON.stringify(data),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code === 1000) {
+									layer.closeAll('loading');
+									layer.msg('设置分享海报成功')
+								}
+							}
+						});
+						return false;
+					});
 
 					function setDetail(obj) {
 						console.log(obj)

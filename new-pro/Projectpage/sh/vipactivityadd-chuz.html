@@ -211,11 +211,11 @@
 					var str = ''
 					for (let i = 0; i < preferentialRechargesM.length; i++) {
 						str +=
-							'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">充值满</label><input type="number" lay-verify="rechargeMoney" placeholder="100" autocomplete="off" class="layui-input chargeM" value="' +
+							'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">充值满</label><input type="number" placeholder="100" autocomplete="off" class="layui-input chargeM" value="' +
 							preferentialRechargesM[i].rechargeMoney + '"  data-id="' + i +
 							'"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">元，赠送</label><input type="number" value="' +
 							preferentialRechargesM[i].giveMoney + '"  data-id="' + i +
-							'" lay-verify="giveMoney" placeholder="10" autocomplete="off" class="layui-input givemM"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">金额</label><div class="delBtn delSale delSaleM" data-id="' +
+							'" placeholder="10" autocomplete="off" class="layui-input givemM"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">金额</label><div class="delBtn delSale delSaleM" data-id="' +
 							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
 					}
 					$('#saleListM').html(str)
@@ -270,11 +270,11 @@
 					var str = ''
 					for (let i = 0; i < preferentialRechargesJ.length; i++) {
 						str +=
-							'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">充值满</label><input type="number" lay-verify="rechargeMoney" placeholder="100" autocomplete="off" class="layui-input chargeJ" value="' +
+							'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">充值满</label><input type="number" placeholder="100" autocomplete="off" class="layui-input chargeJ" value="' +
 							preferentialRechargesJ[i].rechargeMoney + '"  data-id="' + i +
 							'"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">元，赠送</label><input type="number" value="' +
 							preferentialRechargesJ[i].giveMoney + '"  data-id="' + i +
-							'" lay-verify="giveMoney" placeholder="10" autocomplete="off" class="layui-input giveiJ"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">积分</label><div class="delBtn delSale delSaleJ" data-id="' +
+							'" placeholder="10" autocomplete="off" class="layui-input giveiJ"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">积分</label><div class="delBtn delSale delSaleJ" data-id="' +
 							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
 					}
 					$('#saleListJ').html(str)
@@ -339,14 +339,14 @@
 				form.on('checkbox(actPrizes)', function(data) {
 					switch (data.elem.value) {
 						case '0':
-							if (data.elem.checked) {
+							if (data.elem.checked) { //lay-verify="rechargeMoney"
 								$('.prizesM').show()
 							} else {
 								$('.prizesM').hide()
 							}
 							break;
 						case '1':
-							if (data.elem.checked) {
+							if (data.elem.checked) { //lay-verify="rechargeMoney"  lay-verify="giveMoney"
 								$('.prizesJ').show()
 							} else {
 								$('.prizesJ').hide()
@@ -402,30 +402,38 @@
 
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
+					layer.load(2, {
+						shade: 0.5
+					});
 					var data = data.field
 					if (data.timeType == 1) {
 						data.startTime = $('#startTime').val() + ' 00:00:00'
 						data.endTime = $('#endTime').val() + ' 23:59:59'
 					}
 					data.merchantNumber = merNumber
-					data.preferentialRecharges = preferentialRecharges
-					data.gradeNos = gradeNos
+					data.preferentialRechargesM = preferentialRechargesM
+					data.preferentialRechargesJ = preferentialRechargesJ
+					if (gradeNos.length > 0) {
+						data.gradeNos = gradeNos
+					} else {
+						getmebLv()
+						data.gradeNos = gradeNos
+					}
 					console.log(data)
+					return
 					$.ajax({
 						type: "post",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addSet,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addActivity,
 						data: JSON.stringify(data),
 						dataType: "json",
 						headers: {
 							"Content-Type": "application/json"
 						},
 						success: function(data) {
-							layer.closeAll('loading');
 							if (data.code == 1000) {
 								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 								parent.layer.close(index); //再执行关闭
-								parent.layer.msg('添加充值设置成功')
-								parent.layui.table.reload('rechargeSetList')
+								parent.layer.msg('添加营销活动成功')
 							} else {
 								layer.msg(data.msg)
 
@@ -434,6 +442,34 @@
 					});
 					return false;
 				});
+
+				function getmebLv() {
+					var dataS = new Object()
+					dataS.merchantNumber = merNumber
+					dataS.page = 1
+					dataS.limit = 1000
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades,
+						data: dataS,
+						dataType: "json",
+						async: false,
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code == 1000) {
+								gradeNos.splice(0)
+								layui.each(data.data.grades, function(index, item) {
+									gradeNos.push(item.gradeNo)
+								})
+							} else {
+								layer.msg(data.msg)
+								return
+							}
+						}
+					});
+				}
 
 			});
 		</script>

@@ -103,16 +103,20 @@
 							align: 'center',
 							width: 200,
 							templet: function(data) {
-								switch (data.upgradeState) {
-									case 0:
-										return '累计积分(' + data.upgradeConditions + ')'
-										break;
-									case 1:
-										return '累计充值(' + data.upgradeConditions + ')'
-										break;
-									case 2:
-										return '累计消费(' + data.upgradeConditions + ')'
-										break;
+								if (data.gradeType == 0) {
+									switch (data.upgradeState) {
+										case 0:
+											return '累计积分(' + data.upgradeConditions + ')'
+											break;
+										case 1:
+											return '累计充值(' + data.upgradeConditions + ')'
+											break;
+										case 2:
+											return '累计消费(' + data.upgradeConditions + ')'
+											break;
+									}
+								} else if (data.gradeType == 1) {
+									return '--'
 								}
 							}
 						}, {
@@ -122,7 +126,11 @@
 							width: 120,
 							sort: true,
 							templet: function(data) {
-								return '¥ ' + data.initMoney
+								if (data.gradeType == 0) {
+									return '¥ ' + data.initMoney
+								} else if (data.gradeType == 1) {
+									return '--'
+								}
 							}
 						}, {
 							field: 'giveMoney',
@@ -131,7 +139,11 @@
 							width: 120,
 							sort: true,
 							templet: function(data) {
-								return '¥ ' + data.giveMoney
+								if (data.gradeType == 0) {
+									return '¥ ' + data.giveMoney
+								} else if (data.gradeType == 1) {
+									return '--'
+								}
 							}
 						}, {
 							field: 'termValidity',

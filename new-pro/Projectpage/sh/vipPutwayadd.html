@@ -35,13 +35,14 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">关联门店：</label>
 							<div class="layui-input-inline max360">
-								<input type="text" lay-verify="mdSelect" autocomplete="off" placeholder="请选择关联门店" id="mdSelect" class="layui-input">
+								<input type="text" lay-verify="mdSelect" readonly="readonly" autocomplete="off" placeholder="请选择关联门店" id="mdSelect"
+								 class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item dySelect" style="display: none;">
 							<label class="layui-form-label">关联店员：</label>
 							<div class="layui-input-inline max360">
-								<input type="text" autocomplete="off" placeholder="请选择关联店员" id="dySelect" class="layui-input">
+								<input type="text" autocomplete="off" readonly="readonly" placeholder="请选择关联店员" id="dySelect" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -225,11 +226,11 @@
 							return '渠道名称最大为10个字符！';
 						}
 					},
-					mdSelect: function(value) {
-						if (value == '') {
-							return '请选择关联门店！';
-						}
-					},
+					// mdSelect: function(value) {
+					// 	if (value == '') {
+					// 		return '请选择关联门店！';
+					// 	}
+					// },
 					dySelect: function(value) {
 						if (value == '') {
 							return '请选择关联门店店员！';
@@ -258,6 +259,9 @@
 
 				/*---------- 监听提交 ----------*/
 				form.on('submit(add)', function(data, index) {
+					layer.load(2, {
+						shade: 0.5
+					});
 					var data = data.field
 					data.merchantNumber = merNumber
 					data.shopNumbers = shopNumber

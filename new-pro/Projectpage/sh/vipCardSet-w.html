@@ -116,7 +116,7 @@
 						<div class="layui-input-inline" style="display: flex;justify-content: space-between;align-items: center;width: calc(100% - 340px);margin: 0;">
 							<div class="layui-block" style="display: flex;justify-content: space-between;align-items: center;">
 								<label class="layui-form-label widthauto">会员卡状态 :</label>
-								<div class="layui-btn layui-btn-normal layui-btn-sm">已同步微信</div>
+								<div class="layui-btn layui-btn-normal layui-btn-sm synchronous"></div>
 							</div>
 						</div>
 					</div>
@@ -197,10 +197,14 @@
 							</div>
 							<i class="iconfont"></i>
 						</li>
-						<!-- <li class="card_fListli">
-							<p>会员充值</p>
+						<li class="card_fListli">
+							<p>会员卡详情</p>
 							<i class="iconfont"></i>
-						</li> -->
+						</li>
+						<li class="card_fListli">
+							<p>公众号</p>
+							<i class="iconfont"></i>
+						</li>
 					</ul>
 				</div>
 				<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet" style="margin-bottom: 44px;">
@@ -543,6 +547,8 @@
 								$('.ltN').text(data.data.cardName)
 								$('#ppLogopv').attr('src', data.data.logoUrl)
 								$('.card_b').css('background-color', data.data.color)
+								$('.synchronous').text(data.data.wechatSynchronism == 0 ? '未同步微信' : '已同步微信')
+								console.log(data.data.wechatSynchronism)
 								if (data.data.localImgUrl != null) {
 									$('.card_b_bg').attr('src', data.data.localImgUrl)
 								} else {
