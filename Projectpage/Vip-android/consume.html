@@ -10,6 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1192462_drvin8iimxr.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
 		<style type="text/css">
 			[v-cloak] {
@@ -59,7 +60,7 @@
 						<div>
 							<p :class="[customCellTips?'show':'hide']">请输入正确的手机号</p>
 							<input type="search" placeholder="请输入手机号/卡号" v-model="customCell" @keyup="searchCell(event)" />
-							<span><i class="icon iconfont iconhuiyuan"></i></span>
+							<span @click="AD_scan(1,'')"><i class="icon iconfont iconhuiyuan"></i></span>
 						</div>
 						<div class="subLine"></div>
 						<p :class="[mebBalanceTips?'show':'hide']">账户余额 ￥<span>{{mebBalance}}</span></p>
@@ -95,7 +96,9 @@
 	<script src="./js/jquery.min.js"></script>
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
+	<script src="./js/sweetalert.min.js"></script>
 	<script src="./js/vue.min.js"></script>
+	<script src="./js/dsbridge.js"> </script>
 	<script src="./js/fastclick.js"></script>
 	<script type="text/javascript">
 		window.onload = function() {
@@ -106,15 +109,6 @@
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
 		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
 		$('#loadstart').hide()
-		// var bridge = getJsBridge();
-		// var str = bridge.call("testSyn", {
-		// 	msg: "testSyn"
-		// });
-		// bridge.call("testAsyn", {
-		// 	msg: "testAsyn"
-		// }, function(v) {
-		// 	alert(v);
-		// })
 		$(function() {
 			var $paymoney = $("#paymoney");
 			$(".keyboardbox").slideDown();
@@ -225,11 +219,15 @@
 						this.hiddenMask()
 						$('.consumeBInp span').hide()
 						$('.consumeBInp p').show()
-						$('.consumeBInp p').text(this.customCell + '(' + this.customName + ')')
+						$('.consumeBInp p').text(this.customCell)
 						$('#mebBalance').show()
 						$('#mebBalance').text('¥ ' + this.mebBalance)
 					} else {
-						alert('请填写正确的手机号或卡号')
+						swal({
+							title: "",
+							text: "请填写正确的手机号或卡号！",
+							type: "error"
+						});
 					}
 				},
 				searchCell: function(e) {
@@ -243,37 +241,74 @@
 					} else {
 						that.customCellTips = false
 						$('#loadstart').show()
-						var sendData = new Object()
-						sendData.merchantNumber = merNumber
-						sendData.cell = e.target.value
-						sendData.page = '1'
-						sendData.limit = '10'
-						$.ajax({
-							type: "get",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers,
-							data: sendData,
-							dataType: "json",
-							headers: {
-								"Content-Type": "application/json"
-							},
-							success: function(data) {
-								$('#loadstart').hide()
-								that.mebBalanceTips = true
-								that.mebBalance = data.data.memberList[0].allBalance
-								that.customCell = e.target.value
-								that.customName = data.data.memberList[0].name
-							}
-						});
+						that.getMenInfo(e.target.value, '')
 					}
 				},
 				payBtn: function(m) {
+					var that = this
 					if (m == 0) {
-						alert("请输入金额！");
-					} else {
-						alert(m)
-						alert(this.mebBalance)
-						alert(this.customCell.split('(')[0])
+						swal({
+							title: "",
+							text: "请输入金额！",
+							type: "error",
+						});
 					}
+					//  else if (that.customCell == '') {
+					// 	swal({
+					// 		title: "",
+					// 		text: "请输入或选择会员卡号！",
+					// 		type: "error",
+					// 	});
+					// }
+					else {
+						that.AD_scan(2, m)
+					}
+				},
+				AD_scan: function(scanType, paymoney) {
+					var that = this
+					//调用Native提供的callProgress
+					dsBridge.call("takeScan", scanType, paymoney)
+					dsBridge.register('scanCallBack', function(res) {
+						// that.customCell = res
+						if (scanType == 1) {
+							that.getMenInfo('', res)
+						} else if (scanType == 2) {
+							swal({
+								title: "",
+								text: scanType + ' , ' + paymoney,
+								type: "error",
+							});
+						}
+					});
+				},
+				getMenInfo: function(cell, mebNo) {
+					var sendData = new Object(),
+						that = this
+					sendData.merchantNumber = merNumber
+					sendData.memberNo = mebNo
+					sendData.cell = cell
+					sendData.page = '1'
+					sendData.limit = '10'
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers,
+						data: sendData,
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							$('#loadstart').hide()
+							that.mebBalanceTips = true
+							that.mebBalance = data.data.memberList[0].allBalance
+							that.customName = data.data.memberList[0].name
+							if (cell != '') {
+								that.customCell = data.data.memberList[0].cell + '(' + data.data.memberList[0].name + ')'
+							} else {
+								that.customCell = data.data.memberList[0].memberNo + '(' + data.data.memberList[0].name + ')'
+							}
+						}
+					});
 				}
 			},
 		})
