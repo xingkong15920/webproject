@@ -171,7 +171,7 @@
 							<cite>门店管理</cite>
 						</a>
 					</li>
-					<li class="layui-nav-item">
+					<li class="layui-nav-item" id="adv" style="display:none">
 						<a lay-href="Adware-List.html">
 							<i class="icon icon icon-guanggao-"></i>
 							<cite>广告管理</cite>
@@ -380,7 +380,11 @@
 	<script type="text/javascript">
 		$('#userName').html(JSON.parse(sessionStorage.getItem("userSh")).merchantName + '/' + JSON.parse(sessionStorage.getItem(
 			"userSh")).Number)
-
+		if (JSON.parse(sessionStorage.getItem("userSh")).AdvertJurisdiction == 0) {
+		        $('#adv').show()
+		    } else {
+		        $('#adv').hide()
+		    }
 		CmsUtility.postAjaxCall(
 			//系统设置
 			CmsConfig.addressUrl.Public.getSitePath, {

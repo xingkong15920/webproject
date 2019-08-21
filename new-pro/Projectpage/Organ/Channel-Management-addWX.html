@@ -30,10 +30,12 @@
     <div class="x-body">
         <div class="layui-row">
             <form class="layui-form" action="" lay-filter="tongdao">
-                <div class="layui-form-item">
+                 <div class="layui-form-item">
                     <label class="layui-form-label">公众号APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid">
+                        <input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid" style="width:200px;display:inline-block"  disabled="disable">
+                        <input type="text" name="weChatAuthorizeT" autocomplete="off" placeholder="公众号授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                        <div class="layui-btn" id="shouquan" style="margin-left:30px;display:inline-block">授权</div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -45,7 +47,9 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">小程序APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid">
+                        <input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid" style="width:200px;display:inline-block" disabled="disable">
+                        <input type="text" name="smallRoutineAuthorizeT" autocomplete="off" placeholder="小程序授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                         <div class="layui-btn" id="shouquan1" style="margin-left:30px;display:inline-block">授权</div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -159,6 +163,7 @@
         }
         return res
     }
+    var gzhAuthId,gzhAuthTime,gzhNo,xcxAuthId,xcxAuthTime,xcxNo;
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     var merchantCa = true;
@@ -173,7 +178,7 @@
             layer = layui.layer;
 
         /*---------- 自定义验证规则 ----------*/
-        // form.verify({
+        form.verify({
         // 	wechatName: function(value) {
         // 		if(value.length == "") {
         // 			return '支付通道不能为空！';
@@ -188,16 +193,16 @@
         //                   return '通道英文名称只能为英文或数字'
         //               }
         // 	},
-        // 	wechatAppid: function(value) {
-        // 		if(value.length == "") {
-        // 			return '公众号AppID不能为空！';
-        // 		}
-        // 	},
-        // 	smallroutineAppid: function(value) {
-        // 		if(value.length == "") {
-        // 			return '微信小程序AppID不能为空！';
-        // 		}
-        // 	},
+        	wechatAppid: function(value) {
+        		if(value.length == "") {
+        			return '请扫码授权公众号AppId';
+        		}
+        	},
+        	smallroutineAppid: function(value) {
+        		if(value.length == "") {
+        			return '请扫码授权小程序AppId';
+        		}
+        	},
         // 	paymentSecretkey: function(value) {
         // 		if(value.length == "") {
         // 			return '微信支付秘钥不能为空！';
@@ -228,8 +233,103 @@
         // 			return '微笑小程序AppSecret不能为空'
         // 		}
         // 	}
-        // });
+        });
 
+        var time1,timr2
+        $('#shouquan').click(function(){
+            var strTime = new Date().getTime();
+            console.log(strTime)
+            sessionStorage.setItem('jgGzhStr',strTime)
+            layer.open({
+                type: 2, //此处以iframe举例
+                title: '授权',
+                area: ['90%', '90%'],
+                shade: 0.5,
+                resize: false,
+                content: 'http://api.51shanhe.com/wechatAuth/authBack.html?authType=3&institutionNumber='+userNumber + '&str=' + strTime,
+                success: function(layero) {
+                    layer.setTop(layero); //重点2
+                }
+            });
+            
+            
+            time1 = setInterval(function(){
+                $.ajax({
+                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                    url:"http://192.168.1.66/shanhe-member/authorize/getInsAuthorizetInfo",
+                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                    type: "GET",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    data: {
+                      "authorizationNo": sessionStorage.getItem('jgGzhStr')
+                    },
+                    success: function(data) {
+                        if(data.code == 1000){
+                            clearInterval(time1)
+                            gzhAuthId = data.data.authorizationAppId
+                            gzhAuthTime = data.data.authorizationTime
+                            gzhNo = data.data.authorizationNo
+                            form.val('tongdao', {
+                                "wechatAppid": data.data.authorizationAppId,
+                                "weChatAuthorizeT":'授权时间:' + data.data.authorizationTime,
+                                })
+                            }
+                        
+                        }
+                })  
+            },15000)
+        })
+        $('#shouquan1').click(function(){
+            var strTime = new Date().getTime();
+            console.log(strTime)
+            sessionStorage.setItem('jgXcxStr',strTime)
+            layer.open({
+                type: 2, //此处以iframe举例
+                title: '授权',
+                area: ['90%', '90%'],
+                shade: 0.5,
+                resize: false,
+                content: 'http://api.51shanhe.com/wechatAuth/authBack.html?authType=4&institutionNumber='+userNumber+'&str=' + strTime,
+                success: function(layero) {
+                    layer.setTop(layero); //重点2
+                }
+            });
+            time2 = setInterval(function(){
+                $.ajax({
+                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                    url:"http://192.168.1.66/shanhe-member/authorize/getInsAuthorizetInfo",
+                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                    type: "GET",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    data: {
+                      "authorizationNo": sessionStorage.getItem('jgXcxStr')
+                    },
+                    success: function(data) {
+                       
+                        if(data.code == 1000){
+                            clearInterval(time2)
+                            xcxAuthTime = data.data.authorizationTime
+                            xcxNo = data.data.authorizationNo
+                            form.val('GF_wx', {
+                               
+                                "smallRoutineAuthorizeT":'授权时间：' + data.data.xcxAuthTime,
+                                "smallroutineAppid": datad.data.authorizationAppId,
+                                
+                            })
+                        }
+                        // xcxAuthTime = data.data.authorizationTime
+                        // xcxNo = data.data.authorizationNo
+                       
+                    }
+                })  
+            },15000)
+        })
         form.on('switch(GFwxswitch)', function(data) { //计次开关
             // layer.tips('支付宝官方通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
             merchantCa = this.checked
@@ -247,9 +347,13 @@
                 addData.wechatDisable = 0
             }
             addData.institutionNumber = userNumber;
-            addData.refundCertificate = '退款证书';
-            addData.domainValidation = '验证文件';
+            addData.refundCertificate = '';
+            addData.domainValidation = '';
             addData.paymentType = 1;
+            addData.authorizationNo = gzhNo
+            addData.weChatAuthorizeT = gzhAuthTime
+            addData.authorizationNo2 = xcxNo
+            addData.smallRoutineAuthorizeT = xcxAuthTime
             // 发送请求
             console.log(addData)
             CmsUtility.postAjaxCall(

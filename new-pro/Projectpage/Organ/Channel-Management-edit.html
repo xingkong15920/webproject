@@ -36,19 +36,24 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">公众号APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid">
+                        <input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid" style="width:200px;display:inline-block"  disabled="disable">
+                        <input type="text" name="weChatAuthorizeT" autocomplete="off" placeholder="公众号授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                        <div class="layui-btn" id="shouquan" style="margin-left:30px;display:inline-block">重新授权</div>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">公众号APPScrect</label>
                     <div class="layui-input-block">
-                        <textarea class="layui-textarea" name="paymentSecretkey" autocomplete="off" placeholder="公众号APPScrect" lay-verify="paymentSecretkey" rows="3"></textarea>
+                        
+                         <input type="text" name="paymentSecretkey" autocomplete="off" placeholder="公众号APPScrect" class="layui-input" lay-verify="paymentSecretkey">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">小程序APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid">
+                        <input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid" style="width:200px;display:inline-block" disabled="disable">
+                        <input type="text" name="smallRoutineAuthorizeT" autocomplete="off" placeholder="小程序授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                         <div class="layui-btn" id="shouquan1" style="margin-left:30px;display:inline-block">重新授权</div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -897,7 +902,7 @@
 
         setTimeout(function() { parent.layer.close(index) }, 16);
     })
-
+    var gzhAuthId,gzhAuthTime,gzhNo,xcxAuthId,xcxAuthTime,xcxNo;
     function subPage(data, data1) {
         console.log(data)
         var serverUrl = window.parent.serverUrl
@@ -974,10 +979,16 @@
                             console.log(data)
                             sjData = data.data
                             $('#GF_wx').show()
+                            gzhAuthTime = sjData.weChatAuthorizeT
+                            gzhNo = sjData.authorizationNo
+                            xcxAuthTime = sjData.smallRoutineAuthorizeT
+                            xcxNo = sjData.authorizationNo2
                             form.val('GF_wx', {
                                 "wechatName": sjData.wechatName,
                                 "wechatSpell": sjData.wechatSpell,
                                 "wechatAppid": sjData.wechatAppid,
+                                "weChatAuthorizeT":'授权时间:' + sjData.weChatAuthorizeT,
+                                "smallRoutineAuthorizeT":'授权时间：' + sjData.smallRoutineAuthorizeT,
                                 "smallroutineAppid": sjData.smallroutineAppid,
                                 "paymentSecretkey": sjData.paymentSecretkey,
                                 "facilitatorId": sjData.facilitatorId,
@@ -1381,8 +1392,18 @@
                 // addData.wechatDisable = type?0:1
                 addData.paymentChannelType = 1
                 addData.wechatNumber = jgData.id
+                addData.authorizationNo = gzhNo
+                addData.weChatAuthorizeT = gzhAuthTime
+                addData.authorizationNo2 = xcxNo
+                addData.smallRoutineAuthorizeT = xcxAuthTime
+                // gzhAuthTime
+                // gzhNo
+                // xcxAuthTime
+                // authorizationNo: "1565857689504"
+                // authorizationTime: "2019-08-15 16:28:36"
+                // xcxNo
                 console.log(addData)
-                CmsUtility.postAjaxCall(
+                CmsUtility.postAjaxCall1(
                     //系统设置
                     CmsConfig.addressUrl.Mechanism.updateWeChat,
                     addData,
@@ -1937,7 +1958,159 @@
                     return '微笑小程序AppSecret不能为空'
                 }
             }
-        });form.on('submit(add)', function(data, index) {
+        });
+            
+            var time1,time2;
+        $('#shouquan').click(function(){
+            layer.confirm('如需重新授权，请先去公众号平台解除对应授权！', {icon: 3,btn: ['已解除', '取消'], title:'重新授权'}, function(index){
+              //do something
+                console.log('queding')
+                var qxObj = new Object()
+                qxObj.authorizationNo = gzhNo
+                $.ajax({
+                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                    url:"http://192.168.1.66/shanhe-member/authorize/cancelInsAuthorizet",
+                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                    type: "POST",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(qxObj),
+                    dataType:'json',
+                    success: function(data) {
+                        if(data.code == 1000){
+                            var strTime = new Date().getTime();
+                            console.log(strTime)
+                            sessionStorage.setItem('jgGzhStr',strTime)
+                            layer.open({
+                                type: 2, //此处以iframe举例
+                                title: '授权',
+                                area: ['90%', '90%'],
+                                shade: 0.5,
+                                resize: false,
+                                content: 'http://api.51shanhe.com/wechatAuth/authBack.html?authType=3&institutionNumber='+userNumber + '&str=' + strTime,
+                                success: function(layero) {
+                                    layer.setTop(layero); //重点2
+                                }
+                            });
+                             time1 = setInterval(function(){
+                                $.ajax({
+                                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                                    url:"http://192.168.1.66/shanhe-member/authorize/getInsAuthorizetInfo",
+                                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                                    type: "GET",
+                                    async: false,
+                                    headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    data: {
+                                      "authorizationNo": sessionStorage.getItem('jgGzhStr')
+                                    },
+                                    success: function(data) {
+                                        if(data.code == '1000'){
+                                             clearInterval(time1)
+                                            gzhAuthId = data.data.authorizationAppId
+                                            gzhAuthTime = data.data.authorizationTime
+                                            gzhNo = data.data.authorizationNo
+                                            form.val('GF_wx', {
+                                                "wechatAppid": data.data.authorizationAppId,
+                                                "weChatAuthorizeT":'授权时间:' + data.data.authorizationTime,
+                                            })
+                                        }
+                                       
+                                    }
+                                })  
+                            },15000)
+                        }else{
+                            layer.msg(data.msg)
+                        }             
+                    }
+                })  
+            },function(index){
+                console.log('quxiao')
+                layer.close(index);
+            }
+            );
+           
+        })
+        $('#shouquan1').click(function(){
+            layer.confirm('如需重新授权，请先去小程序平台解除对应授权！', {icon: 3,btn: ['已解除', '取消'], title:'重新授权'}, function(index){
+              //do something
+                console.log('queding')
+                var qxObj = new Object()
+                qxObj.authorizationNo = xcxNo
+                $.ajax({
+                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                    url:"http://192.168.1.66/shanhe-member/authorize/cancelInsAuthorizet",
+                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                    type: "POST",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(qxObj),
+                    dataType:'json',
+                    success: function(data) {
+                        if(data.code == 1000){
+                            var strTime = new Date().getTime();
+                            console.log(strTime)
+                            sessionStorage.setItem('jgXcxStr',strTime)
+                            layer.open({
+                                type: 2, //此处以iframe举例
+                                title: '授权',
+                                area: ['90%', '90%'],
+                                shade: 0.5,
+                                resize: false,
+                                content: 'http://api.51shanhe.com/wechatAuth/authBack.html?authType=4&institutionNumber='+userNumber+'&str=' + strTime,
+                                success: function(layero) {
+                                    layer.setTop(layero); //重点2
+                                }
+                            });
+                             time2 = setInterval(function(){
+                                $.ajax({
+                                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                                    url:"http://192.168.1.66/shanhe-member/authorize/getInsAuthorizetInfo",
+                                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                                    type: "GET",
+                                    async: false,
+                                    headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    data: {
+                                      "authorizationNo": sessionStorage.getItem('jgXcxStr')
+                                    },
+                                    success: function(data) {
+                                       
+                                        if(data.code = 1000){
+                                            clearInterval(time2)
+                                            xcxAuthTime = data.data.authorizationTime
+                                            xcxNo = data.data.authorizationNo
+                                            form.val('GF_wx', {
+                                               
+                                                "smallRoutineAuthorizeT":'授权时间：' + data.data.xcxAuthTime,
+                                                "smallroutineAppid": datad.data.authorizationAppId,
+                                                
+                                            })
+                                        }
+                                        
+                                        
+                                    }
+                                })  
+                            },15000)
+                        }else{
+                            layer.msg(data.msg)
+                        }             
+                    }
+                })  
+            },function(index){
+                console.log('quxiao')
+                layer.close(index);
+            }
+            );
+            
+        })
+        form.on('submit(add)', function(data, index) {
 
             var addData = data.field
             // addData.paymentType = 5
