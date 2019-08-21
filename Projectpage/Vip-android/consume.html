@@ -264,10 +264,13 @@
 						that.AD_scan(2, m)
 					}
 				},
-				AD_scan: function(scanType, paymoney) {
+				AD_scan: function(scanType, payMoney) {
 					var that = this
 					//调用Native提供的callProgress
-					dsBridge.call("takeScan", scanType, paymoney)
+					dsBridge.call("takeScan", {
+						scanType: scanType,
+						payMoney: payMoney
+					})
 					dsBridge.register('scanCallBack', function(res) {
 						// that.customCell = res
 						if (scanType == 1) {
@@ -275,7 +278,7 @@
 						} else if (scanType == 2) {
 							swal({
 								title: "",
-								text: scanType + ' , ' + paymoney,
+								text: scanType + ' , ' + payMoney,
 								type: "error",
 							});
 						}

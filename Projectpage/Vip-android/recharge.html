@@ -29,7 +29,7 @@
 				<div class="recordB recorInput">
 					<p :class="[customCellTips?'show':'hide']">请输入正确的手机号</p>
 					<input type="search" placeholder="请输入手机号/卡号" v-model="cell" @keyup="searchCell(event)" />
-					<span @click="AD_scan(1,'')"><i class="icon iconfont iconhuiyuan"></i></span>
+					<span @click="AD_scan('1','')"><i class="icon iconfont iconhuiyuan"></i></span>
 				</div>
 				<div class="recordB recorSum" :class="[mebInfoTips?'show':'hide']">
 					账户余额 ￥{{mebInfoBalance}}
@@ -113,7 +113,7 @@
 						});
 						return
 					} else {
-						that.AD_scan(2, that.customM)
+						that.AD_scan('2', that.customM)
 					}
 				},
 				amount: function(e) {
@@ -133,10 +133,13 @@
 						that.getMenInfo(e.target.value, '')
 					}
 				},
-				AD_scan: function(scanType, paymoney) {
+				AD_scan: function(scanType, payMoney) {
 					var that = this
 					//调用Native提供的callProgress
-					dsBridge.call("takeScan", scanType, paymoney)
+					dsBridge.call("takeScan", {
+						scanType: scanType,
+						payMoney: payMoney
+					})
 					dsBridge.register('scanCallBack', function(res) {
 						// that.customCell = res
 						if (scanType == 1) {
@@ -144,7 +147,7 @@
 						} else if (scanType == 2) {
 							swal({
 								title: "",
-								text: scanType + ' , ' + paymoney,
+								text: scanType + ' , ' + payMoney,
 								type: "error",
 							});
 						}

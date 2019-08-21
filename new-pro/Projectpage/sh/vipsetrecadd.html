@@ -102,7 +102,7 @@
 			$(".conBlock:last").css("margin-bottom", "44px");
 
 			var preferentialRecharges = [{
-				
+
 			}]
 			var gradeNos = []
 			var index = parent.layer.getFrameIndex(window.name);
@@ -303,10 +303,25 @@
 						}
 					},
 					rechargeMoney: function(value) {
+						var newAry = [],
+							repetition = false
+						for (var i = 0; i < preferentialRecharges.length; i++) {
+							newAry.push(preferentialRecharges[i].rechargeMoney)
+						}
+						var nary = newAry.reverse();
+						console.log(nary)
+						for (var i = 0; i < newAry.length; i++) {
+							if (nary[i] == newAry[i + 1]) {
+								repetition = true
+								break
+							}
+						}
 						if (value == '') {
 							return '充值金额不能为空！';
 						} else if (value < 10) {
 							return '充值金额最低为10元！';
+						} else if (repetition) {
+							return '充值金额不能重复！';
 						}
 					},
 					giveMoney: function(value) {
