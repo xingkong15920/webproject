@@ -396,7 +396,7 @@
 					var timer = setInterval(function() {
 						$.ajax({
 							type: 'get',
-							url: 'http://192.168.1.66/shanhe-member/authorize/getAuthorizetInfo',
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getAuthorizetInfo,
 							data: {
 								'authType': 1,
 								'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
@@ -438,7 +438,7 @@
 
 				$.ajax({
 					type: 'get',
-					url: 'http://192.168.1.66/shanhe-member/authorize/getAuthorizetInfo',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getAuthorizetInfo,
 					data: {
 						'authType': 1,
 						'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
@@ -491,50 +491,50 @@
 								});
 							},
 							updateAuth: function() {
-								
-									layer.open({
-										type: 2,
-										title: false,
-										area: ['100%', '100%'],
-										closeBtn: 0,
-										content: 'authSuccess.html',
-										success: function(layero, index) {}
-									});
-								
-								// layer.confirm('更改授权公众号会导致现有的卡券不可用，确认更新授权吗？', {
-								// 	btn: ['取消', '确定'] //按钮
-								// }, function() {
-								// 	layer.closeAll()
-								// }, function() {
-								// 	var datas = {
-								// 		'authType': 1,
-								// 		"merchantNumber": JSON.parse(sessionStorage.getItem('userSh')).Number
-								// 	}
-								// 	// 发送请求
-								// 	$.ajax({
-								// 		type: "post",
-								// 		url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.cancelAuthorizet,
-								// 		data: JSON.stringify(datas),
-								// 		dataType: "json",
-								// 		headers: {
-								// 			"Content-Type": "application/json"
-								// 		},
-								// 		success: function(data) {
-								// 			if (data.code == 1000) {
-								// 				layer.open({
-								// 					type: 2,
-								// 					title: false,
-								// 					area: ['100%', '100%'],
-								// 					closeBtn: 0,
-								// 					content: data.data,
-								// 					success: function(layero, index) {}
-								// 				});
-								// 			} else {
-								// 				layer.msg('更新授权失败！')
-								// 			}
-								// 		}
-								// 	});
+
+								// layer.open({
+								// 	type: 2,
+								// 	title: false,
+								// 	area: ['100%', '100%'],
+								// 	closeBtn: 0,
+								// 	content: 'authSuccess.html',
+								// 	success: function(layero, index) {}
 								// });
+
+								layer.confirm('更改授权公众号会导致现有的卡券不可用，确认更新授权吗？', {
+									btn: ['取消', '确定'] //按钮
+								}, function() {
+									layer.closeAll()
+								}, function() {
+									var datas = {
+										'authType': 1,
+										"merchantNumber": JSON.parse(sessionStorage.getItem('userSh')).Number
+									}
+									// 发送请求
+									$.ajax({
+										type: "post",
+										url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.cancelAuthorizet,
+										data: JSON.stringify(datas),
+										dataType: "json",
+										headers: {
+											"Content-Type": "application/json"
+										},
+										success: function(data) {
+											if (data.code == 1000) {
+												layer.open({
+													type: 2,
+													title: false,
+													area: ['100%', '100%'],
+													closeBtn: 0,
+													content: data.data,
+													success: function(layero, index) {}
+												});
+											} else {
+												layer.msg('更新授权失败！')
+											}
+										}
+									});
+								});
 							}
 						}
 					})

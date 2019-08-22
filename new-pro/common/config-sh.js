@@ -1,5 +1,5 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty';
+var Edition = 'prd';
 // var Edition = 'zyh';
 var server;
 if (Edition == 'qty') {
@@ -24,7 +24,8 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		ApiRootUrlMeb: 'http://192.168.1.66:80/shanhe-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
+		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		ApiRootUrl: server,
 		PubUrl: publicUrl
 		// imgUrl:imgAdd
@@ -57,6 +58,14 @@ var CmsConfig = {
 			updateCard: "cardManage/updateCard",
 			// 取消授权
 			cancelAuthorizet: "authorize/cancelAuthorizet",
+
+			// 微信授权
+			// 获取授权信息
+			getAuthorizetInfo: "authorize/getAuthorizetInfo",
+			// 获取授权链接
+			geAuthorizetUrl: "authorize/geAuthorizetUrl",
+			// 获取机构授权信息
+			getInsAuthorizetInfo: "authorize/getInsAuthorizetInfo",
 
 			// 微信会员卡
 			// 添加微信会员卡

@@ -24,7 +24,7 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		// ApiRootUrlMeb: 'http://192.168.1.66:80/shanhe-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
 		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		ApiRootUrl: server,
 		PubUrl: publicUrl
@@ -60,6 +60,14 @@ var CmsConfig = {
 			getCard: "cardManage/getCard",
 			// 修改商户会员卡
 			updateCard: "cardManage/updateCard",
+
+			// 微信授权
+			// 获取授权信息
+			getAuthorizetInfo: "authorize/getAuthorizetInfo",
+			// 获取授权链接
+			geAuthorizetUrl: "authorize/geAuthorizetUrl",
+			// 获取机构授权信息
+			getInsAuthorizetInfo: "authorize/getInsAuthorizetInfo",
 
 			// 微信会员卡
 			// 添加微信会员卡
