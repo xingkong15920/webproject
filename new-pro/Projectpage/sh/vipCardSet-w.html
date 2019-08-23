@@ -111,7 +111,7 @@
 					<div class="layui-form-item consumeCard">
 						<div class="layui-input-inline widthauto">
 							<label class="layui-form-label widthauto">会员卡ID :</label>
-							<div class="layui-form-mid">pHucvv9_7VbjAJflf8jy51X_egHE</div>
+							<div class="layui-form-mid clubcardId"></div>
 						</div>
 						<div class="layui-input-inline" style="display: flex;justify-content: space-between;align-items: center;width: calc(100% - 340px);margin: 0;">
 							<div class="layui-block" style="display: flex;justify-content: space-between;align-items: center;">
@@ -526,6 +526,28 @@
 				layer.load(2, {
 					shade: 0.5
 				});
+				$.ajax({
+					type: 'get',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getAuthorizetInfo,
+					data: {
+						'authType': 1,
+						'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
+					},
+					dataType: 'json',
+					success: function(data) {
+						layer.closeAll('loading');
+						if (data.code == 1000) {
+
+						} else if (data.code == '-2') {
+							layer.closeAll();
+							layer.msg('微信未授权，请先授权', function() {
+								window.location.href = 'unauth.html?authTypt=WeChat'
+							})
+						} else {
+
+						}
+					}
+				});
 
 				//查询有无会员卡
 				getCardCon()
@@ -556,7 +578,8 @@
 								}
 							} else {
 								layer.closeAll('loading');
-								parent.layer.msg(data.msg)
+								$('.synchronous').text('无会员卡')
+								// parent.layer.msg(data.msg)
 							}
 						}
 					});
@@ -575,6 +598,7 @@
 							if (data.code === 1000) {
 								cardCon = data.data
 								wxCardNo = data.data.wxCardNo
+								$('.clubcardId').text(data.data.wxCardNo)
 								$('.ltNamepv').text(data.data.subtitle)
 								$('#cardBimg').show();
 								$('#cardBimg').attr('src', data.data.localImgUrl);
@@ -784,6 +808,7 @@
 							} else if (data.code === -2) {
 								layer.closeAll('loading');
 								layer.msg(data.msg + '，请添加')
+								$('.clubcardId').text('无')
 								// 栏位展示
 								var strL = ''
 								for (let i = 0; i < columnDVal.length; i++) {
