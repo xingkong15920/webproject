@@ -180,13 +180,13 @@
 								<li>
 									<div class="detaili">
 										<label class="setColor_Tit">特权说明</label>
-										<p class="setColor_Con">激活赠送10积分+100 等级经验+代金券+会员钱包买单享受五折特权</p>
+										<p class="setColor_Con tqsm">激活赠送10积分+100 等级经验+代金券+会员钱包买单享受五折特权</p>
 									</div>
 								</li>
 								<li>
 									<div class="detaili">
 										<label class="setColor_Tit">使用须知</label>
-										<p class="setColor_Con">每人限领一张 该卡仅作为体验使用</p>
+										<p class="setColor_Con syxz">每人限领一张 该卡仅作为体验使用</p>
 									</div>
 								</li>
 							</ul>
@@ -195,7 +195,7 @@
 								<li v-for="item in store">
 									<div class="detaili">
 										<label class="setColor_Tit">门店名称</label>
-										<p class="setColor_Con">门店名称</p>
+										<p class="setColor_Con symd">门店名称</p>
 									</div>
 								</li>
 							</ul>
@@ -328,7 +328,8 @@
 							</div>
 						</div>
 					</div>
-					<!-- <div class="chooseSysImg" id="upSysImg">上传系统图库</div> -->
+					<!-- <div class="chooseSysImg" id="upSysImg">上传系统图库</div>
+					<div class="chooseSysImg" id="delSysImg" data-type="delSysImg">删除系统图片</div> -->
 				</div>
 			</div>
 		</div>
@@ -461,6 +462,8 @@
 									$('.cardBbg').remove()
 								}
 								$('.cardB').css('background-color', data.data.color)
+								$('.tqsm').text(data.data.privilegeState)
+								$('.syxz').text(data.data.useInstructions)
 							} else {
 								layer.msg(data.msg)
 								$('.cardB_lt_img').attr('src', './images/card_logo.png')
@@ -758,6 +761,32 @@
 								area: ['600px', '400px'],
 								content: './vipSysImg.html?SysImgType=5',
 								success: function(layero, index) {}
+							});
+						},
+						delSysImg: function() {
+							layer.prompt({
+								title: '输入图片ID，并确认',
+								formType: 3
+							}, function(text, index) {
+								layer.close(index);
+								var datas = new Object()
+								datas.imageId = text
+								// 发送请求
+								$.ajax({
+									type: "post",
+									url: 'http://api.51shanhe.com/p-member/server/deleteImage',
+									// url: 'http://192.168.1.66:6019/p-member/server/deleteImage',
+									data: JSON.stringify(datas),
+									dataType: "json",
+									headers: {
+										"Content-Type": "application/json"
+									},
+									success: function(data) {
+										if (data.code === 1000) {
+											layer.msg(data.msg)
+										}
+									}
+								});
 							});
 						},
 					};
