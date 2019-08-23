@@ -270,6 +270,10 @@ var CmsConfig = {
 			addVideo: "advert/addVideo",
 			//广告更新
 			updateAdvert: "advert/updateAdvert",
+
+			// 预授权流水
+			// 获取预授权流水订单列表
+			getDepositList: "deposit/getDepositList",
 		},
 		//公共
 		Public: {
