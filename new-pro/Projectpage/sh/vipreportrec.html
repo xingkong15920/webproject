@@ -263,6 +263,13 @@
 								title: '充值门店',
 								align: 'center',
 								width: 140,
+								templet: function(data) {
+									if (data.shopName) {
+										return data.shopName
+									} else {
+										return '--'
+									}
+								}
 							}, {
 								field: 'rechrgeNo',
 								title: '充值单号',
@@ -400,6 +407,13 @@
 								title: '收银员',
 								align: 'center',
 								width: 120,
+								templet: function(data) {
+									if (data.clerkName) {
+										return data.clerkName
+									} else {
+										return '--'
+									}
+								}
 							}]
 						],
 						done: function(res, curr, count) {
@@ -475,7 +489,8 @@
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});
-				function changeData(res){
+
+				function changeData(res) {
 					res = parseFloat(res)
 					return res
 				}
