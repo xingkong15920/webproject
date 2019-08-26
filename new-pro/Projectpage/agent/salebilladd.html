@@ -26,7 +26,7 @@
     	letter-spacing:5px
     }
     .layui-input-block{
-        margin-left: 80px;
+        margin-left: 75px;
     }
     </style>
 </head>
@@ -36,7 +36,7 @@
         <div class="layui-row">
             <form class="layui-form">
                 <div class="layui-form-item">
-                    <label class="layui-form-label" style="width:65px">选择销售</label>
+                    <label class="layui-form-label" style="width:75px">选择销售</label>
                     <div class="layui-input-block">
                         <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择销售" class="layui-input" id="agName"   onblur="bl()" onfocus="fc()">
                         <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:55px;z-index:9999">类型</label>
+                    <label class="layui-form-label"  style="width:75px;z-index:9999">类型</label>
                     <div class="layui-input-block">
                         <select name="type" id="importExportIdentification" lay-verify="type">
                             <option value="">类型</option>
@@ -59,15 +59,22 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:55px">金额</label>
+                    <label class="layui-form-label"  style="width:75px">金额</label>
                     <div class="layui-input-block">
                         <input type="text" name="number" lay-verify="number||two" autocomplete="off" placeholder="请输入数字" class="layui-input" id="number">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:55px">备注</label>
+                    <label class="layui-form-label"  style="width:75px">备注</label>
                     <div class="layui-input-block">
                         <input type="text" name="mark" lay-verify="" autocomplete="off" placeholder="请输入备注" class="layui-input" id="number">
+                    </div>
+                </div>
+                 <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:75px">验证码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="code" lay-verify="code" placeholder="请输入验证码" autocomplete="off" class="layui-input" style="width:50%;display:inline-block;vertical-align:top" id="code">
+                        <div class="layui-input" style="width:30%;display:inline-block;margin-left:10%" id="codeInfo"></div>
                     </div>
                 </div>
                 <div class="layui-input-block">
@@ -172,6 +179,11 @@
                             return '小数点后最多两位'
                         }
                     }
+                },
+                code:function(value){
+                    if(value != code1){
+                        return '请输入正确的验证码'
+                    }
                 }
             });
              $("#agName").bind('input propertychange', function() {
@@ -257,7 +269,6 @@
                 tjData.remark = data.field.mark
                 
                 console.log(tjData)
-                
                 CmsUtility.postAjaxCall(
                     //系统设置
                     CmsConfig.addressUrl.Agent.addSaleLocal,

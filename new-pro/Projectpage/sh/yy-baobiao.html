@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.layui-tab-title {
+				background: #e5e5e5 !important;
+			}
+
+			.layui-tab-title li {
+				position: relative;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				overflow: hidden;
+			}
+
+			.layui-tab-title .layui-this {
+				background: #fff !important;
+			}
+
+			.layui-tab-title .layui-this:after {
+				/* display: none; */
+				position: absolute;
+				width: 100%;
+				height: 3px;
+				border: none !important;
+				background: #009688;
+			}
+		</style>
+	</head>
+
+	<body class="iframe_index_1 autoHeight">
+		<div class="layui-tab layui-tab-brief iframe_index_1_con" lay-filter="vipcenter">
+			<ul class="layui-tab-title">
+				<li class="layui-this">营业统计</li>
+				<li>门店统计</li>
+				<li>员工统计</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<iframe frameborder="0" src="yyCount-index.html" scrolling="no" class="x-iframe"></iframe>
+				</div>
+				<div class="layui-tab-item">
+					<iframe frameborder="0" scrolling="no" class="x-iframe"></iframe>
+				</div>
+				<div class="layui-tab-item">
+					<iframe frameborder="0" scrolling="no" class="x-iframe"></iframe>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var _h = $(window).height();
+			var _h1 = $('.layui-tab-title').height() + 1;
+			var _h2 = _h - _h1 - 40
+			console.log(_h, _h1, _h2)
+			$('.x-iframe').height(_h2)
+			$('.layui-tab-item').height(_h2)
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					element = layui.element,
+					laydate = layui.laydate,
+					form = layui.form;
+
+				//监听选项卡切换
+				element.on('tab(vipcenter)', function(data) {
+					console.log(data.index)
+					// var src = $(".layui-tab-item.layui-show").find("iframe").attr("src");
+					switch (data.index) {
+						case 0:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'yyCount-index.html');
+							break;
+						case 1:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'yyCount-shop.html');
+							break;
+						case 2:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'yyCount-clerk.html');
+							break;
+						case 3:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipPutway.html');
+							break;
+						case 4:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipFollow.html');
+							break;
+						case 5:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipList.html');
+							break;
+						default:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipLevelList.html');
+							break;
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

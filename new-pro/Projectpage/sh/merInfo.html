@@ -175,21 +175,29 @@
                     <div class="layui-input-block">
                         <input type='text' style='display:none'>
                         <!--  <input type="text" name="merchantNumber" lay-verify="title"  placeholder="商户编号" class="layui-input" id="merchantNumber"> -->
-                        <input type="text" name="CustomerServiceTell" lay-verify="title" placeholder="商户编号" class="layui-input" id="CustomerServiceTell" disabled="disabled">
+                        <input type="text" name="CustomerServiceTell" lay-verify="title" placeholder="客服电话" class="layui-input" id="CustomerServiceTell" disabled="disabled">
                     </div>
                 </div>
                 <div class="layui-form-item" style="width:60%">
                     <label class="layui-form-label">企业简称</label>
                     <div class="layui-input-block" style="position:relative;left:0;top:0">
-                        <input type="text" name="Merchant_Abbreviation" lay-verify="title" autocomplete='new-password' placeholder="企业简称" class="layui-input" id="Merchant_Abbreviation" disabled="disabled">
-                       
+                        <input type="text" name="Merchant_Abbreviation" lay-verify="title" autocomplete='new-password' placeholder="企业简称" class="layui-input" id="Merchant_Abbreviation" style="width:200px;display:inline-block">
+                        <span class="layui-btn" id="changeName" style="vertical-align:top;margin-left:30px">修改</span>
                     </div>
                 </div>
                 <div class="layui-form-item" style="width:60%">
                     <label class="layui-form-label">企业logo</label>
-                    <div class="layui-input-block" style="position:relative;left:0;top:0">
-                        <input type="text" name="logo" lay-verify="title" autocomplete='new-password' placeholder="商户秘钥" class="layui-input" id="logo" disabled="disabled">
-                       
+                    <div class="layui-input-inline" style="margin-left:20px;">
+                        <div class="layui-upload-img" id="">
+                            <img src="" id="demo1" style="max-width: 100%;height: 152px;" lay-filter="logo">
+                            </div>
+                            <p id="demoText"></p>
+                            <!--<button type="button" class="layui-btn">上传图片</button>-->
+                        </div>
+                        <!-- <div class="layui-input-inline uploadimgbtn">
+                            <p id="demoText" class="block"></p>
+                            <button type="button" class="layui-btn block" id="test1">上传图片</button>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -242,7 +250,10 @@
                 if (data.code == 1000) {
                     
                 	form.val('basic', {
-                        "miyao": data.data.Merkey,
+                        "MerchantType":data.data.MerchantType,
+                        "MerchantName":data.data.MerchantName,
+                        "CustomerServiceTell":data.data.CustomerServiceTell,
+                        "Merchant_Abbreviation":data.data.Merchant_Abbreviation,
 
                     })
                 } else {
@@ -255,7 +266,32 @@
             "get"
         )
         //会员分组设置
-
+        $('#changeName').click(function(){
+            if($('#Merchant_Abbreviation').val() == ''){
+                layer.msg('企业简称不能为空')
+                return
+            }
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'rsaInfo/modificationOfMerchantAbbreviation',
+                {
+                    
+                    merchantNumber:JSON.parse(sessionStorage.getItem('userSh')).Number,
+                    changedname:$('#Merchant_Abbreviation').val()
+                },
+                function(data) {
+                    if (data.code == 1000) {
+                        
+                       layer.msg(data.msg)
+                    } else {
+                        layer.msg(data.msg)
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                },
+            ) 
+        })
         // $('#isnNumber').val(JSON.parse(sessionStorage.getItem('userSh')).institutionNumber)
         // $('#merchangtNumber').val(JSON.parse(sessionStorage.getItem('userSh')).Number)
         // form.render()

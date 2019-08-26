@@ -66,10 +66,10 @@
 
 <body>
     <div class="x-nav">
-        <span class="layui-breadcrumb">
+       <!--  <span class="layui-breadcrumb">
 				<a href="">首页</a>
 				<a><cite>订单管理</cite></a>
-			</span>
+			</span> -->
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
 				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
@@ -79,98 +79,28 @@
                 <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
                 <input id="shopName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
             </div>
-            <div class="layui-input-inline text">
-                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                <input id="orderNumber" type="text" name="orderId" placeholder="订单号" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline text">
-                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                <input id="refundOrderNumber" type="text" name="orderId" placeholder="退款订单号" autocomplete="off" class="layui-input">
+            
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
             </div>
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" placeholder="创建时间" name="startTime" id="startTime">
+                <input type="text" class="layui-input" placeholder="结束" name="endTime" id="endTime">
             </div>
             <div class="layui-input-inline">
-                <input type="text" class="layui-input" placeholder="成功时间" name="endTime" id="endTime">
-            </div>
-            <div class="layui-input-inline">
-                <select id="oneTransactionType" name="transactionType">
-                    <option value="">支付方式</option>
-                    <option value="Alipay_Pay">支付宝支付</option>
-                    <option value="WeChat_Pay">微信支付</option>
-                </select>
-            </div>
-            <!-- <div class="layui-input-inline">
-                <select id="orderState" name="orderState">
-                    <option value="10">订单类型</option>
-                    <option value="1">交易成功</option>
-                    <option value="5">部分退款</option>
-                    <option value="4">全部退款</option>
-                </select>
-            </div> -->
+                        <select name="type" id="transactionPassageway">
+                            <option value="">支付通道</option>
+                            <option value="0">支付宝</option>
+                            <option value="1">微信</option>
+                            <option value="2">富友</option>
+                            <option value="3">易融码</option>
+                            <option value="4">新大陆</option>
+                            <option value="5">随行付</option>
+                        </select>
+                    </div>
+           
             <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
-       <!--  <div class="baobiao" style="width:100%;height:143px">
-            <div class="baobiao-col-1" style="padding-left: 0;">
-                <div class="baobiaoK">
-                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
-                        笔数汇总
-                    </div>
-                    <div style="line-height:50px;font-size:16px" id="count">
-                        0
-                    </div>
-                </div>
-            </div>
-            <div class="baobiao-col-1 jianhao" style="padding-right:0;position:relative">
-                <div class="baobiaoK">
-                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
-                        交易金额
-                    </div>
-                    <div style="line-height:50px;font-size:16px" id="transactionAmount">
-                        0元
-                    </div>
-                </div>
-            </div>
-            <div style="width:20px;height:143px;float:left;margin-left:15px;font-size: 50px;
-    line-height: 154px;
-    text-align: center;">-</div>
-            <div class="baobiao-col-1 jianhao" style="padding-right: 0;">
-                <div class="baobiaoK">
-                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
-                        退款额
-                    </div>
-                    <div style="line-height:50px;font-size:16px" id="refundAmount">
-                        0元
-                    </div>
-                </div>
-            </div>
-            <div style="width:20px;height:143px;float:left;margin-left:15px;font-size: 50px;
-    line-height: 154px;
-    text-align: center;">-</div>
-            <div class="baobiao-col-1 jianhao" style="padding-right: 0;">
-                <div class="baobiaoK">
-                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
-                        手续费
-                    </div>
-                    <div style="line-height:50px;font-size:16px" id="shopPoundage">
-                        0元
-                    </div>
-                </div>
-            </div>
-            <div style="width:20px;height:143px;float:left;margin-left:15px;font-size: 50px;
-    line-height: 154px;
-    text-align: center;">=</div>
-            <div class="baobiao-col-1 denghao" style="padding-right: 0;">
-                <div class="baobiaoK">
-                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
-                        实收金额
-                    </div>
-                    <div style="line-height:50px;font-size:16px" id="settlementAmount">
-                        0元
-                    </div>
-                </div>
-            </div>
-        </div> -->
+        
         <table class="layui-hide" id="LAY_table_bill" lay-filter="bill" style="font-size:14px"></table>
     </div>
     <script type="text/html" id="tool">
@@ -262,16 +192,13 @@
             function tableRender() {
                 var index = layer.load(2, { shade: [0.4, '#393D49'] })
                 table.render({
-                    url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectOrderList + '?agentNumber=' + userNumber,
+                    url: CmsConfig.ServiceUrl.ApiRootUrl + 'agMerchant/getMerAccountArrival' + '?agentNumber=' + userNumber,
                     where: {
-                        "agentLevel": agentLevel,
-                        "batch": $('#orderNumber').val().trim(),
-                        "shopName": $('#shopName').val().trim(),
-                        "startTime": $('#startTime').val() + ' ' + '00:00:00',
-                        "endTime": $('#endTime').val() + ' ' + '23:59:59',
-                        "oneTransactionType": $('#oneTransactionType').val(),
-                        "orderState": '4',
-                        "refundOrderNumber":$('#refundOrderNumber').val().trim()
+                        
+                        "merchantName": $('#shopName').val().trim(),
+                        "startTime": $('#startTime').val(),
+                        "endTime": $('#endTime').val() ,
+                        "payMentType":$('#payMentType').val()
                     },
                     elem: '#LAY_table_bill',
                     page: true,
@@ -288,129 +215,96 @@
                             "msg": res.msg,
                             "code": res.code,
                             "count": res.data.count,
-                            "data": changeList(res.data),
+                            "data": res.data.resultList,
                         }
                     },
                     cols: [
                         [{
-                            title: '商户编号/商户名称',
+                            title: '交易日期',
                             align: 'center',
-                            templet: function(data) {
-                                return data.merchantNumber + ' <br /> ' + data.merchantName
-                            },
+                            field:'settleDt'
                         }, {
-                            templet: function(data) {
-                                return  data.batch
-                            },
-                            title: '订单号',
+                            
+                            title: '商户名称',
                             align: 'center',
+                            field:'merchantName'
                         }, {
-                            templet: function(data) {
-                                return data.refundOrderNumber + '<br />' + data.paymentOrderNumber
-                            },
-                            title: '退款订单号/通道订单号',
+                            field: 'payMentType',
+                            title: '通道类型',
                             align: 'center',
-                        }, {
-                            field: 'transactionAmount',
-                            title: '退款金额',
-                            align: 'center',
-
-                            templet: function(data) {
-                                return '￥' + data.transactionAmount
-                            }
-                        }, {
-                            templet: function(data) {
-                                return data.orderTime + '</br>' + data.transactionTime
-                            },
-                            title: '提交时间/成功时间',
-                            align: 'center',
-                        }, {
-                            field: 'subaccountNumber',
-                            title: '支付方式',
-                            align: 'center',
-                            templet: function(data) {
-                                var oneZ, twoZ
-                                switch (data.onePaymentTypeName) {
+                            templet:function(data){
+                                switch (data.payMentType) {
                                     case '0':
-                                        oneZ = '支付宝'
+                                        return '支付宝'
                                         break;
                                     case '1':
-                                        oneZ = '微信'
+                                        return '微信'
                                         break;
                                     case '2':
-                                        oneZ = '京东钱包'
+                                        return '富友'
                                         break;
                                     case '3':
-                                        oneZ = '银联支付'
-                                        break;
-                                    default:
-                                        oneZ = '--'
-                                        break;
-                                }
-                                switch (data.twoPaymentTypeName) {
-                                    case '0':
-                                        twoZ = '条码支付'
-                                        break;
-                                    case '1':
-                                        twoZ = '动态二维码支付'
-                                        break;
-                                    case '2':
-                                        twoZ = '小程序支付'
-                                        break;
-                                    case '3':
-                                        twoZ = 'APP支付'
+                                        return '易融码'
                                         break;
                                     case '4':
-                                        twoZ = 'H5支付'
+                                        return '新大陆'
                                         break;
                                     case '5':
-                                        twoZ = '公众号支付'
-                                        break;
-                                    case '6':
-                                        twoZ = '服务窗支付'
-                                        break;
-                                    case '7':
-                                        twoZ = '预授权'
+                                        return '随行付'
                                         break;
                                     default:
-                                        twoZ = '--'
+                                        // statements_def
                                         break;
                                 }
-                                return oneZ + '</br>' + twoZ
+                            }
+
+                        }, {
+                            field: 'shopPoundage',
+                            title: '结算信息',
+                            align: 'center',
+                            templet:function(data){
+                                return data.settleAcntNm + '</br>' + data.settleAcntNo
                             }
                         }, {
-                            field: 'remark',
-                            title: '订单描述',
+                            field: 'merchantType',
+                            title: '结算类型',
                             align: 'center',
                         }, {
-                            field: 'orderState1',
-                            title: '状态',
+                           
+                            title: '结算金额',
+                            align: 'center',
+                            field:'payAmt',
+                            templet:function(data){
+                                return '￥' + (data.payAmt/100).toFixed(2)
+                            }
+                        }, {
+                            field: 'serviceCharge',
+                            title: '手续费',
+                            align: 'center',
+                            templet:function(data){
+                                return '￥' + (data.serviceCharge/100).toFixed(2)
+                            }
+                           
+                        }, {
+                            field: 'payStDesc',
+                            title: '结算状态',
                             align: 'center',
 
                         }, {
-                            field: 'operation',
-                            title: '操作',
-                            toolbar: "#tool",
+                            field: 'remark',
+                            title: '结束失败原因',
                             align: 'center',
-                            minWidth: 120
+
+                        }, {
+                            field: 'insertTime',
+                            title: '结束日期',
+                            align:'center'
                         }]
                     ],
                     done: function(res, curr, count) {
                         // console.log(newData)
                         // console.log(curr)
-                         if(res.code != 1000){
-                             $("#count").html('0')
-                            $("#transactionAmount").html('0元')
-                            $("#refundAmount").html('0元')
-                            $("#shopPoundage").html('0元')
-                            $("#settlementAmount").html('0元')
-                        }else{
-                            $("#count").html(newData.count)
-                            $("#transactionAmount").html(newData.transactionAmount + '元')
-                            $("#refundAmount").html(newData.refundAmount + '元')
-                            $("#shopPoundage").html(newData.shopPoundage + '元')
-                            $("#settlementAmount").html(newData.settlementAmount + '元')
-                        }
+                        
                            
                         
 
@@ -467,7 +361,7 @@
                         type: 2,
                         title: '订单详情',
                         area: ['40%', '80%'], //宽高
-                        content: 'dealersBillFailDetail.html',
+                        content: 'dealersBillDetail.html',
                         success: function(layero, index) {
                             // 获取子页面的iframe
                             var iframe = window['layui-layer-iframe' + index];

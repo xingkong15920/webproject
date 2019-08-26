@@ -34,11 +34,27 @@
 			</a>
 		</div>-->
 		<div class="x-body">
+			<div class="demoTable">
+            <div class="layui-form x-so">
+                
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="店员姓名" autocomplete="off" name="clerkerName" id="clerkerName">
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="店员手机号" autocomplete="off" name="clerkerTel" id="clerkerTel">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </div>
+        </div>
 			<xblock>
 				<button class="layui-btn" id="layerSubpage"><i class="layui-icon"></i>添加</button>
 			</xblock>
+
 			<table class="layui-hide" id="LAY_table_Assistant" lay-filter="Assistant"></table>
 		</div>
+
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="weixinPush">微信推送</a>
@@ -171,10 +187,14 @@
 						}
 					)
 				});
-					//方法级渲染
-					table.render({
+					function tableRender(){
+						table.render({
 						elem: '#LAY_table_Assistant',
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' + userNumber + '&shopNumber=' + shopNumber,
+						where:{
+							"clerkerName":$('#clerkerName').val().trim(),
+							"clerkerTel":$('#clerkerTel').val().trim(),
+						},
 						method: "post",
 						height: 'full-120',
 						page: true,
@@ -253,6 +273,12 @@
 							}]
 						]
 					});
+					}
+					//方法级渲染
+					tableRender()
+					$('#search').click(function(){
+						tableRender()
+					})
 
 					//监听工具条
 					table.on('tool(Assistant)', function(obj) {

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../public/css/style-baobiao.css">
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+</head>
+<style type="text/css">
+.layui-table-cell {
+    height: auto;
+}
+
+.baobiao-col-4 {
+    width: 20%;
+    padding: 0 15px;
+    display: inline-block;
+}
+</style>
+
+<body>
+    <div class="x-nav">
+        <!-- <span class="layui-breadcrumb"> <a href="">流水</a> <a> <cite>交易数据明细</cite></a>
+        </span> -->
+        <a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);" title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <div class="demoTable">
+            <div class="layui-form x-so">
+                
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="开始时间" autocomplete="off" name="startTime" id="startTime">
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" placeholder="截止时间" autocomplete="off" name="endTime" id="endTime">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </div>
+        </div>
+        <xblock>
+            <button class="layui-btn" id="baobiao">
+                <i class="layui-icon"></i>报表
+            </button>
+        </xblock>
+        <div class="layui-form" lay-filter="basic" style="">
+            <div class="layui-form-item" style="margin-bottom:3px">
+                <div class="layui-inline place">
+                    <span style="color:red">*注：到账详情 = 收银+充值+成为会员+付费卡券+次/月（不计会员钱包）
+                    </span>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline place">
+                    <span style="color:red">*注：营业额 = 收银+成为会员+付费卡券+次/月卡</span>
+                </div>
+            </div>
+        </div>
+        <table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
+    </div>
+    <script type="text/html" id="tool">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看</a>
+
+        </script>
+    <script src="../../common/config-sh.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+    var startDate = new Date(new Date().setHours(0, 0, 0, 0));
+    var endDate = new Date();
+    var nowTime = new Date().valueOf();
+    var dataO = new Object();
+    dataO.merchantNumber = userNumber
+
+    function verTime() {
+        var arr1 = $('#startTime').val().split(' ')[0].split('-');
+        var arr2 = $('#endTime').val().split(' ')[0].split('-');
+        console.log(arr1, arr2)
+        arr1[1] = parseInt(arr1[1]);
+        arr1[2] = parseInt(arr1[2]);
+        arr2[1] = parseInt(arr2[1]);
+        arr2[2] = parseInt(arr2[2]);
+        var flag = true;
+        if (arr1[0] == arr2[0]) { //同年
+            if (arr2[1] - arr1[1] > 3) { //月间隔超过3个月
+                flag = false;
+            } else if (arr2[1] - arr1[1] == 3) { //月相隔3个月，比较日
+                if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+                    flag = false;
+                }
+            }
+        } else { //不同年
+            if (arr2[0] - arr1[0] > 1) {
+                flag = false;
+            } else if (arr2[0] - arr1[0] == 1) {
+                if (arr1[1] < 10) { //开始年的月份小于10时，不需要跨年
+                    flag = false;
+                } else if (arr1[1] + 3 - arr2[1] < 12) { //月相隔大于3个月
+                    flag = false;
+                } else if (arr1[1] + 3 - arr2[1] == 12) { //月相隔3个月，比较日
+                    if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+                        flag = false;
+                    }
+                }
+            }
+        }
+        if (!flag) {
+
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+        var a = time2.split('-')[0],
+            b = time2.split('-')[1],
+            c = time2.split('-')[2]
+        if (b < 10) {
+            b = 0 + b
+        }
+        if (c < 10) {
+            c = 0 + c
+        }
+        return a + '-' + b + '-' + c
+    }
+    $('#startTime').val(fun_date(-6) + ' ' + '00:00:00')
+    $('#endTime').val(fun_date(0) + ' ' + '23:59:59')
+    //获取商户下门店名称
+    // CmsUtility.postAjaxCall(
+    //  CmsConfig.addressUrl.Merchant.getShopNames,
+    //  dataO,
+    //  function(data) {
+    //      var shopData = data.data
+    //      for(var i = 0; i < shopData.length; i++) {
+    //          $("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+    //      }
+    //      form.render()
+    //  }
+    // )
+    layui.use(['laydate', 'table', 'form'], function() {
+        var laydate = layui.laydate,
+            table = layui.table;
+        form = layui.form
+        //选择日期插件
+        laydate.render({
+            elem: '#startTime',
+            type: 'datetime',
+            max: nowTime,
+            // value: startDate
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'datetime',
+            max: nowTime,
+            // value: endDate
+        });
+        CmsUtility.postAjaxCall(
+            CmsConfig.addressUrl.Merchant.getClerkList,
+            dataO,
+            function(data) {
+                var shopData = data.data
+                for (var i = 0; i < shopData.length; i++) {
+                    $("#shopNumber").append("<option value='" + shopData[i].clerkNumber + '/' + shopData[i].clerkName + "'>" + shopData[i].clerkName + "</option>");
+                }
+                form.render()
+            }
+        )
+        $('#baobiao').click(function() {
+
+            if (!verTime()) {
+                layer.msg('只能查询三个月以内数据')
+                return
+            }
+            var newData = new Object()
+            newData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+                newData.merchantNumber = userNumber,
+                newData.merchantName = JSON.parse(sessionStorage.getItem('userSh')).merchantName,
+                newData.shopNumber = $('#shopName').val().split('/')[0],
+                newData.shopName = $('#shopName').val().split('/')[1],
+                newData.clerkerName = $('#shopNumber').val().split('/')[1],
+                newData.clerkerNumber = $('#shopNumber').val().split('/')[0],
+                newData.batch = $('#orderCode').val().trim(),
+                newData.oneTransactionType = $('#payment').val().trim(),
+                newData.orderState = $('#orderStatus').val().trim(),
+                newData.startTime = $('#startTime').val().split(' ')[0],
+                newData.endTime = $('#endTime').val().split(' ')[0],
+                newData.billType = $('#billType').val()
+            layer.open({
+                type: 2,
+                title: '下载报表',
+                shade: 0.5,
+                area: ['30%', '30%'],
+                maxmin: false,
+                resize: false,
+                content: ['down-excel.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                    iframe.subPage(newData, '3')
+                }
+            });
+            return
+
+        })
+        CmsUtility.postAjaxCall(
+            CmsConfig.addressUrl.Merchant.getShopNames,
+            dataO,
+            function(data) {
+                var shopData = data.data
+                for (var i = 0; i < shopData.length; i++) {
+                    $("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" + shopData[i].shopName + "</option>");
+                }
+                form.render()
+            }
+        )
+
+        //方法级渲染
+        function tableRender() {
+            if (!verTime()) {
+                layer.msg('只能查询三个月以内数据')
+                return
+            }
+            var index = layer.load(2, { shade: [0.4, '#393D49'] })
+            table.render({
+                elem: '#LAY_table_bill',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'statistics/getbusinessStatistics' + '?merchantNumber=' + userNumber,
+                where: {
+                    
+                    type: '2',
+
+                    startTime: $('#startTime').val().trim(),
+                    endTime: $('#endTime').val().trim(),
+                },
+                method: "post",
+                page: true,
+                async: true,
+                id: 'shoplist',
+                 height:"full-250",
+                response: {
+                    "statusCode": "1000", //解析接口状态
+                },
+                parseData: function(res) {
+                    if (res.data == null) {
+                        return
+                    }
+                    return {
+                        "code": res.code,
+                        "count": res.data.count,
+                        "data": res.data.list,
+
+                    }
+                },
+                cols: [
+                    [{
+                        field: 'shopName',
+                        title: '门店名称/店员',
+                        align: 'center',
+                        templet:function(data){
+                            return data.shopName + '</br>' + data.clerkName
+
+                        },
+                        width: 120
+                    }, {
+                        field: 'shopName',
+                        title: '到账详情',
+                        align: 'center',
+                        templet: function(data) {
+                            return '微信支付:' + data.weChatTotalMoney + '</br>' +
+                                '微信代金券:' + data.weChatVouchers + '</br>' +
+                                '支付宝:' + data.alipayTotalMoney + '</br>' +
+                                '云闪付:' + data.unionTotalMoney + '</br>' +
+                                '银行卡:' + data.bankCardTotalMoney + '</br>' +
+                                '现金充值:' + data.cashRechargeTotalMoney + '</br>' +
+                                '合计:' + data.totalMoney
+                        },
+                        width: 300
+                    }, {
+                        field: 'shopName',
+                        title: '收银详情',
+                        align: 'center',
+                        templet: function(data) {
+                            return '微信支付:' + data.weChatPayMoney + '</br>' +
+
+                                '支付宝:' + data.alipayPayMoney + '</br>' +
+                                '云闪付:' + data.unionPayMoney + '</br>' +
+                                '银行卡:' + data.bankCardPayMoney + '</br>' +
+                                '会员钱包:' + data.walletAmount + '</br>' +
+                                '合计:' + data.totalMoney1
+                        }
+                    }, {
+                        field: 'shopName',
+                        title: '成为会员',
+                        align: 'center',
+                        templet: function(data) {
+                            return '合计:' + data.openCardMoney
+                        }
+                    }, {
+                        field: 'shopName',
+                        title: '付费卡券',
+                        align: 'center',
+                        templet: function(data) {
+                            return '合计:' + data.cardVoucherMoney
+                        }
+                    }, {
+                        field: 'shopName',
+                        title: '次/月卡',
+                        align: 'center',
+                        templet: function(data) {
+                            return '合计:' + data.nextCardMoney
+                        }
+                    }, {
+                        field: 'shopName',
+                        title: '营业额',
+                        align: 'center',
+                        templet: function(data) {
+                            return '合计:' + data.totalMoney2
+                        }
+                    }, {
+                        field: 'shopName',
+                        title: '充值详情',
+                        align: 'center',
+                        templet: function(data) {
+                            return '微信支付:' + data.weChatRechargeMoney + '</br>' +
+
+                                '支付宝:' + data.alipayRechargeMoney + '</br>' +
+                                '云闪付:' + data.unionRechargeMoney + '</br>' +
+                                '银行卡:' + data.bankCardRechargeMoney + '</br>' +
+                                '现金充值:' + data.cashRechargeMoney + '</br>' +
+                                '合计:' + data.totalMoney3
+                        }
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    console.log(res)
+                    layer.closeAll()
+                    if (res.data == null) {
+                        // layer.msg(res.msg)
+                        $("#ACollect").text('0 元');
+                        $("#Ocount").text('0 笔');
+                    } else {
+                        $("#ACollect").text(res.transactionAmount + ' 元');
+                        $("#Ocount").text(res.transactionCount + ' 笔');
+                    }
+                }
+            });
+        }
+        tableRender()
+        $('#search').click(function() {
+            tableRender()
+            getHuizong()
+        })
+        // 根據條件重载表格
+        // var $ = layui.$,
+        //  active = {
+        //      reload: function() {
+        //          // 获取上面查询框的值
+        //          var Assistant = $('#Assistant');
+        //          var orderCode = $('#orderCode');
+        //          var shopName = $('#shopName');
+        //          var payment = $('#payment');
+        //          var startTime = $('#startTime');
+        //          var endTime = $('#endTime');
+        //          var orderStatus = $('#orderStatus');
+
+        //          //执行重载
+        //          table.reload('shoplist', {
+        //              where: {
+        //                  clerkName: Assistant.val(),
+        //                  batch: orderCode.val(),
+        //                  shopNumber: shopName.val(),
+        //                  oneTransactionType: payment.val(),
+        //                  startTime: startTime.val(),
+        //                  endTime: endTime.val(),
+        //                  orderState: orderStatus.val(),
+        //              }
+        //          });
+        //      }
+        //  };
+
+        //监听工具条
+        table.on('tool(bill)', function(obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                // 跳转流水详情页面
+                layer.open({
+                    type: 2,
+                    title: '订单详情',
+                    area: ['40%', '80%'], //宽高
+                    content: 'BillDetailsPage.html',
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data)
+                    }
+                });
+            }
+        });
+
+        $('.demoTable .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+    </script>
+</body>
+
+</html>

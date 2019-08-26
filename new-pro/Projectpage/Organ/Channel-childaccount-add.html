@@ -215,7 +215,12 @@
                         if (data.code == 1000) {
                             console.log(data)
                             sjData = data.data
-                             var jumphref = 'https://api.51shanhe.com/h5-pay/alioauth/oauth.html?institutionNumber=' + userNumber + '&merchantNumber='+e.getAttribute('data-name') + '&paymentChannel='+channel
+                            if(!sjData.notifyUrl){
+                                layer.msg('获取授权地址为空')
+                                return 
+                            }
+                             var jumphref = sjData.notifyUrl + '?institutionNumber=' + userNumber + '&merchantNumber='+e.getAttribute('data-name') + '&paymentChannel='+channel
+                           
                             qrcode.clear(); 
                             qrcode.makeCode('https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id='+sjData.alipayAppid+'&redirect_uri=' + jumphref); 
             
