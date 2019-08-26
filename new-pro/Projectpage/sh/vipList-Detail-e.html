@@ -34,7 +34,7 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">归属门店：</label>
 							<div class="layui-input-inline max360" style="width:260px!important">
-								<input type="text" lay-verify="shopNumber" autocomplete="off" placeholder="请选择归属门店" id="mdSelect" class="layui-input">
+								<input type="text" lay-verify="shopNumberList" autocomplete="off" readonly="readonly" placeholder="请选择归属门店" id="mdSelect" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -103,7 +103,8 @@
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var memDetails
 			var gradeNos
-			var shopNumber
+			var shopNumberList
+			var shopNumberName
 
 			function subPageCon(mNo) {
 				var memberNo = mNo
@@ -142,11 +143,9 @@
 								if (data.code === 1000) {
 									memDetails = data.data
 									gradeNos = data.data.gradeNo
-									shopNumber = data.data.gradeName
-									$('#mdSelect').attr('ts-selected', data.data.gradeNo)
-									$('#mdSelect').val(data.data.gradeName)
-									$('#levelSelect').attr('ts-selected', data.data.gradeNo)
-									$('#levelSelect').val(data.data.gradeName)
+									shopNumber = data.data.shopNumber
+									$('#mdSelect').attr('ts-selected', data.data.shopNumber)
+									$('#mdSelect').val(data.data.shopName)
 								} else {
 									layer.msg('查询等级详情失败')
 								}
@@ -157,71 +156,48 @@
 
 					tableSelect.render({
 						elem: '#mdSelect',
-						searchKey: 'gradeName',
-						checkedKey: 'gradeNo',
+						searchKey: 'shopName',
+						checkedKey: 'shopNumber',
 						searchPlaceholder: '门店名称',
 						table: {
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
-								merNumber,
-							response: {
-								"statusCode": "1000", //解析接口状态
-							},
-							parseData: function(res) {
-								if (res.data == null) {
-									return
-								}
-								return {
-									"code": res.code,
-									"count": res.data.count,
-									"data": res.data.grades,
-								}
-							},
-							cols: [
-								[{
-									type: 'radio'
-								}, {
-									field: 'gradeName',
-									title: '等级名称',
-									align: 'center',
-									width: 200,
-								}, {
-									field: 'gradeType',
-									title: '等级类型',
-									align: 'center',
-									width: 130,
-									templet: function(data) {
-										if (data.gradeType == 0) {
-											return '正常等级'
-										} else if (data.gradeType == 1) {
-											return '锁定等级'
-										}
-									}
-								}, {
-									field: 'termValidity',
-									title: '有效期',
-									align: 'center',
-									width: 180,
-									templet: function(data) {
-										return data.termValidity + '天'
-									}
-								}]
-							]
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+							merNumber,
+						response: {
+							"statusCode": "1000", //解析接口状态
 						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.result,
+							}
+						},
+						cols: [
+							[{
+								type: 'radio'
+							}, {
+								field: 'shopName',
+								title: '门店名称',
+								align: 'center',
+							}]
+						]
+					},
 						done: function(elem, data) {
-							gradeNos = ''
-							gradeNames = ''
 							layui.each(data.data, function(index, item) {
-								gradeNos = item.gradeNo
-								gradeNames = item.gradeName
+								shopNumberList = item.shopNumber
+								shopNumberName = item.shopName
 							})
-							elem.val(gradeNames)
+							elem.val(shopNumberName)
 						}
 					})
 
 					/*---------- 自定义验证规则 ----------*/
 					form.verify({
-						shopNumber: function() {
-							if (!gradeNos) {
+						shopNumberList: function() {
+							if (!shopNumberList) {
 								return '请选择门店'
 							}
 						},
@@ -270,7 +246,7 @@
 					form.on('submit(add)', function(data, index) {
 						var data = data.field
 						data.gradeNos = gradeNos
-						data.shopNumber = shopNumber
+						data.shopNumber = shopNumberList
 						data.memberNo = memberNo
 						console.log(data)
 						// return
