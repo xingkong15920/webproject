@@ -9,6 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
@@ -19,88 +20,79 @@
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 		<style type="text/css">
-			.max360 {
-				max-width: 360px;
-				width: 100% !important;
+			#saleList {
+				padding: 0;
 			}
 
-			.width80 {
-				width: 80px;
-			}
-
-			.layui-input-inline-inline {
-				line-height: 36px;
-				margin-right: 5px;
-				display: inline-block;
-			}
-
-			.layui-form-item {
-				margin-bottom: 20px;
-			}
-
-			.layui-form-item .layui-input-inline {
-				width: 350px;
+			.autoHeight {
+				min-height: 100%;
 			}
 		</style>
 	</head>
 
 	<body id="iosiframe">
-		<div class="x-body">
+		<div class="x-body autoHeight" style="background: #f4f8fb;">
 			<div class="layui-row">
-				<div class="layui-form" action="" lay-filter="cardAdd">
-
-					<div class="layui-form-item">
-						<label class="layui-form-label">活动名称</label>
-						<div class="layui-input-inline">
-							<input type="text" name="activityName" lay-verify="activityName" autocomplete="off" placeholder="请输入活动名称" class="layui-input">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">活动时间</label>
-						<!-- <div class="layui-input-inline">
-							<input type="text" name="name" lay-verify="title" id="resetper" autocomplete="off" placeholder="请输入活动起止时间" class="layui-input">
-						</div> -->
-						<div class="layui-input-inline" style="width: 162px;">
-							<input type="text" name="startTime" id="startTime" lay-verify="startTime" autocomplete="off" class="layui-input"
-							 placeholder="开始时间">
-						</div>
-						<div class="layui-form-mid">-</div>
-						<div class="layui-input-inline" style="width: 162px;">
-							<input type="text" name="endTime" id="endTime" lay-verify="endTime" autocomplete="off" class="layui-input"
-							 placeholder="截止时间">
-						</div>
-					</div>
-						<div class="layui-form-item layui-form-text">
-							<label class="layui-form-label">备注</label>
+				<div class="layui-form" action="" lay-filter="activity">
+					<div class="conBlock">
+						<div class="layui-form-item">
+							<label class="layui-form-label">活动名称</label>
 							<div class="layui-input-inline max360">
-								<textarea name="remarks" placeholder="可以填写会员等级权益、升级规则等信息，非必填项" class="layui-textarea"></textarea>
+								<input type="text" name="activityName" lay-verify="activityName" autocomplete="off" placeholder="请输入活动名称" class="layui-input">
 							</div>
 						</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">领卡链接</label>
-						<div class="layui-input-inline">
-							<input type="text" lay-verify="linkSelect" autocomplete="off" readonly="readonly" placeholder="请选择领卡链接" id="linkSelect"
-							 class="layui-input">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">活动条件</label>
-						<div class="layui-input-inline widthauto">
-							<div class="layui-input-inline-inline">消费满</div>
-							<div class="layui-input-inline-inline width80">
-								<input type="number" name="activityConditional" class="layui-input" lay-verify="activityConditional">
+						<div class="layui-form-item">
+							<label class="layui-form-label">活动时间</label>
+							<div class="layui-input-inline max360">
+								<div class="layui-input-inline widthauto">
+									<input type="radio" name="activityTime" value="0" lay-filter="activityTime" title="永久" checked="">
+									<input type="radio" name="activityTime" value="1" lay-filter="activityTime" title="自定义">
+								</div>
+								<div class="layui-input-inline widthauto resetper" style="margin-top: 10px;">
+									<div class="layui-input-inline" style="width: 106px;">
+										<input type="text" id="startTime" autocomplete="off" placeholder="活动开始时间" class="layui-input">
+									</div>
+									<div class="layui-form-mid">-</div>
+									<div class="layui-input-inline" style="width: 106px;">
+										<input type="text" id="endTime" autocomplete="off" placeholder="活动结束时间" class="layui-input">
+									</div>
+								</div>
 							</div>
-							<div class="layui-input-inline-inline">元，送会员卡</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">活动详情</label>
+							<div class="layui-input-inline max360">
+								<textarea name="activityDetails" placeholder="可以填写会员等级权益、升级规则等信息，非必填项" class="layui-textarea"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label hdjp">活动奖品</label>
+							<div class="layui-input-inline max360">
+								<span class="prizeBox"><input type="checkbox" name="prizesM" lay-filter="actPrizes" lay-skin="primary" value="0"
+									 title="赠送金额"></span>
+								<div class="prizes prizesM">
+									<ul class="layui-input-inline saleList max360" id="saleListM"></ul>
+									<div class="layui-input-inline" style="display: flex;justify-content: flex-start;align-items: center;width:100%;">
+										<button type="button" class="layui-btn" id="addSaleM" style="margin-right: 15px;">添加</button>
+										<div class="layui-form-mid layui-word-aux">赠送的金额，积分可为0，0为不优惠</div>
+									</div>
+								</div>
+								<span class="prizeBox"><input type="checkbox" name="prizesJ" lay-filter="actPrizes" lay-skin="primary" value="1"
+									 title="赠送积分"></span>
+								<div class="prizes prizesJ">
+									<ul class="layui-input-inline saleList max360" id="saleListJ"></ul>
+									<div class="layui-input-inline" style="display: flex;justify-content: flex-start;align-items: center;width:100%;">
+										<button type="button" class="layui-btn" id="addSaleJ" style="margin-right: 15px;">添加</button>
+										<div class="layui-form-mid layui-word-aux">赠送的金额，积分可为0，0为不优惠</div>
+									</div>
+								</div>
+								<!-- <span class="prizeBox"><input type="checkbox" name="actPrizes" lay-filter="actPrizes" lay-skin="primary" value="2" title="赠送优惠券"></span> -->
+							</div>
+
+
 						</div>
 					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">微信子商户</label>
-						<div class="layui-input-inline">
-							<textarea class="layui-textarea" id="subMerchant" name="subMerchant" lay-verify="subMerchant" placeholder="可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开"></textarea>
-						</div>
-						<label class="layui-form-label"></label>
-						<div class="layui-input-inline-inline">可添加多个，多商户号用多单号用英文逗号或enter(回车)隔开</div>
-					</div>
+
 					<div class="layui-form-item layui-layout-admin">
 						<div class="layui-input-block">
 							<div class="layui-footer" style="left: 0;text-align: center;">
@@ -116,17 +108,22 @@
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
-			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var getLink = ''
-			$('#quxiao').click(function() {
-				var index = parent.layer.getFrameIndex(window.name);
-				setTimeout(function() {
-					parent.layer.close(index)
-				}, 16);
-			})
+			$(".conBlock:last").css("margin-bottom", "0");
 
-			function subPageCon() {
+			function subPageCon(actNo, actCl) {
+				console.log(actNo, actCl)
+				var preferentialRechargesM = []
+				var preferentialRechargesJ = []
+				$('#quxiao').click(function() {
+					var index = parent.layer.getFrameIndex(window.name);
+					setTimeout(function() {
+						parent.layer.close(index)
+					}, 16);
+				})
+
+
+				var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+				var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
 					var $ = layui.jquery,
 						upload = layui.upload,
@@ -138,119 +135,315 @@
 						layer = layui.layer;
 					var tableSelect = layui.tableSelect;
 
-					// 选择日期插件  
-					laydate.render({
-						elem: '#startTime',
-						type: 'date',
-					});
-					laydate.render({
-						elem: '#endTime',
-						type: 'date',
-					});
+					//查询有等级详情
+					if (actNo != '') {
+						getCardCon()
+						state = 1
+					} else {
+						state = 0
+					}
 
-
-					tableSelect.render({
-						elem: '#linkSelect',
-						searchKey: 'channelName',
-						checkedKey: 'deliveryNo',
-						searchPlaceholder: '渠道名称',
-						table: {
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getChannels + '?merchantNumber=' +
-								merNumber,
-							response: {
-								"statusCode": "1000", //解析接口状态
-							},
-							parseData: function(res) {
-								if (res.data == null) {
-									return
-								}
-								return {
-									"code": res.code,
-									"count": res.data.count,
-									"data": res.data.deliveryChannels,
-								}
-							},
-							cols: [
-								[{
-									type: 'radio'
-								}, {
-									field: 'channelName',
-									title: '渠道名称',
-									align: 'center',
-									width: 150
-								}, {
-									field: 'getCardUrl',
-									title: '领取链接',
-									align: 'left',
-									width: 400
-								}]
-							]
-						},
-						done: function(elem, data) {
-							layui.each(data.data, function(index, item) {
-								getLink = item.getCardUrl
-							})
-							elem.val(getLink)
-						}
-					})
-
-					// $("#subMerchant").keyup(function() {
-					// 	var val = $(this).val()
-					// 	console.log(val)
-					// 	// $(this).val($(this).val().replace(/[^0-9]/g, ''));
-					// 	if (val == '，') {
-					// 		console.log(111)
-					// 	} else {
-					// 		console.log(222)
-					// 	}
-					// 	// $(this).val($(this).val().replace('，', ','));
-					// })
-
-					/*---------- 自定义验证规则 ----------*/
-					form.verify({
-						activityName: function(value) {
-							if (value == "") {
-								return '活动名称不能为空！';
-							}
-						},
-						startTime: function(value) {
-							if (value.length == "") {
-								return '请选择活动开始时间！';
-							}
-						},
-						endTime: function(value) {
-							if (value.length == "") {
-								return '请选择活动结束时间！';
-							}
-						},
-						linkSelect: function(value) {
-							if (value.length == "") {
-								return '请选择领卡链接！';
-							}
-						},
-						activityConditional: function(value) {
-							if (value.length == "") {
-								return '请示如活动条件！';
-							}
-						},
-					});
-
-					/*---------- 监听提交 ----------*/
-					form.on('submit(add)', function(data, index) {
-						var data = data.field
-						data.merchantNumber = merNumber
-						data.getCardUrl = getLink
-						data.startTime = data.startTime + ' 00:00:00'
-						data.endTime = data.endTime + ' 23:59:59'
-						console.log(data.subMerchant)
-						return
+					function getCardCon() {
 						layer.load(2, {
 							shade: 0.5
 						});
 						$.ajax({
 							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addActivity,
-							data: JSON.stringify(data),
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.selAllMarketingCourtesyTable +
+								'?activityNo=' + actNo,
+							async: false,
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code === 1000) {
+									setActVal(data.data)
+								} else {
+									layer.msg('查询活动详情失败')
+								}
+							}
+						});
+					}
+
+					//执行一个laydate实例
+					laydate.render({
+						elem: '#startTime',
+					});
+					laydate.render({
+						elem: '#endTime',
+					});
+
+
+					/*---------- 优惠设置 ----------*/
+					function saleListForM() {
+						var str = ''
+						for (let i = 0; i < preferentialRechargesM.length; i++) {
+							str +=
+								'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">消费满</label><input type="number" placeholder="100" autocomplete="off" lay-verify="prizesM" class="layui-input chargeM" value="' +
+								preferentialRechargesM[i].fullConsumption + '"  data-id="' + i +
+								'"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">元，赠送</label><input type="number" value="' +
+								preferentialRechargesM[i].giveIntegral + '"  data-id="' + i +
+								'" lay-verify="prizesM" placeholder="10" autocomplete="off" class="layui-input givemM"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">金额</label><div class="delBtn delSale delSaleM" data-id="' +
+								i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+						}
+						$('#saleListM').html(str)
+					}
+					saleListForM()
+					$('#addSaleM').click(function() {
+						var newO = new Object()
+						newO.fullConsumption = ''
+						newO.prizeType = 0
+						newO.giveIntegral = ''
+						preferentialRechargesM.push(newO)
+						saleListForM()
+						cliM()
+						charM()
+						givemM()
+						form.render()
+					})
+
+					function cliM() {
+						$('.delSaleM').click(function(e) {
+							if (preferentialRechargesM.length == 1) {
+								layer.msg('最少要保留一条消费优惠信息')
+								return
+							}
+							var data = this
+							var num = data.getAttribute('data-id')
+							preferentialRechargesM.splice(num, 1)
+							saleListForM()
+							cliM()
+							charM()
+							givemM()
+						})
+					}
+
+					function charM() {
+						$('.chargeM').bind("input propertychange", function(event) {
+							preferentialRechargesM[this.dataset.id].fullConsumption = this.value
+						})
+					}
+
+					function givemM() {
+						$('.givemM').bind("input propertychange", function(event) {
+							preferentialRechargesM[this.dataset.id].giveIntegral = this.value
+						})
+					}
+
+					givemM()
+					charM()
+					cliM()
+
+
+					/*---------- 优惠设置 ----------*/
+					function saleListForJ() {
+						var str = ''
+						for (let i = 0; i < preferentialRechargesJ.length; i++) {
+							str +=
+								'<li class="clearfix"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px">消费满</label><input type="number" placeholder="100" autocomplete="off" lay-verify="prizesJ" class="layui-input chargeJ" value="' +
+								preferentialRechargesJ[i].fullConsumption + '"  data-id="' + i +
+								'"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">元，赠送</label><input type="number" value="' +
+								preferentialRechargesJ[i].giveIntegral + '"  data-id="' + i +
+								'" lay-verify="prizesJ" placeholder="10" autocomplete="off" class="layui-input giveiJ"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">积分</label><div class="delBtn delSale delSaleJ" data-id="' +
+								i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+						}
+						$('#saleListJ').html(str)
+					}
+					saleListForJ()
+					$('#addSaleJ').click(function() {
+						var newO = new Object()
+						newO.fullConsumption = ''
+						newO.prizeType = 1
+						newO.giveIntegral = ''
+						preferentialRechargesJ.push(newO)
+						saleListForJ()
+						cliJ()
+						charJ()
+						giveiJ()
+						form.render()
+					})
+
+					function cliJ() {
+						$('.delSaleJ').click(function(e) {
+							if (preferentialRechargesJ.length == 1) {
+								layer.msg('最少要保留一条消费优惠信息')
+								return
+							}
+							var data = this
+							var num = data.getAttribute('data-id')
+							preferentialRechargesJ.splice(num, 1)
+							saleListForJ()
+							cliJ()
+							charJ()
+							giveiJ()
+						})
+					}
+
+					function charJ() {
+						$('.chargeJ').bind("input propertychange", function(event) {
+							preferentialRechargesJ[this.dataset.id].fullConsumption = this.value
+						})
+					}
+
+					function giveiJ() {
+						$('.giveiJ').bind("input propertychange", function(event) {
+							preferentialRechargesJ[this.dataset.id].giveIntegral = this.value
+						})
+					}
+					giveiJ()
+					charJ()
+					cliJ()
+
+
+					/*---------- 单选复选监听 ----------*/
+					form.on('radio(activityTime)', function(data) {
+						if (data.value == 0) {
+							$('.resetper').hide()
+							$('.resetper').find('input').removeAttr('lay-verify')
+						} else if (data.value == 1) {
+							$('.resetper').show()
+							$('#startTime').attr('lay-verify', 'startTime')
+							$('#endTime').attr('lay-verify', 'endTime')
+						}
+					});
+					/*---------- 时间类型 ----------*/
+					form.on('checkbox(actPrizes)', function(data) {
+						switch (data.elem.value) {
+							case '0':
+								if (data.elem.checked) {
+									$('.prizesM').show()
+								} else {
+									$('.prizesM').hide()
+									preferentialRechargesM.splice(0)
+								}
+								break;
+							case '1':
+								if (data.elem.checked) {
+									$('.prizesJ').show()
+								} else {
+									$('.prizesJ').hide()
+									preferentialRechargesJ.splice(0)
+								}
+								break;
+						}
+					});
+
+
+					/*---------- 普通图片上传 ----------*/
+
+					/*---------- 自定义验证规则 ----------*/
+					form.verify({
+						activityName: function(value) {
+							if (value == '') {
+								return '活动名称不能为空！';
+							} else if (value.length > 16) {
+								return '活动名称最长不能超过16个字！';
+							}
+						},
+						startTime: function(value) {
+							if (value == '') {
+								return '请选择活动开始时间！';
+							}
+						},
+						endTime: function(value) {
+							if (value == '') {
+								return '请选择活动结束时间！';
+							}
+						},
+						rechargeMoney: function(value) {
+							if (value == '') {
+								return '消费金额不能为空！';
+							} else if (value < 10) {
+								return '消费金额最低为10元！';
+							}
+						},
+						giveMoney: function(value) {
+							if (value == '') {
+								return '消费金额不能为空！';
+							} else if (value <= 1) {
+								return '消费金额最低为1！';
+							}
+						},
+						giveIntegral: function(value) {
+							if (value == '') {
+								return '消费积分不能为空！';
+							} else if (value <= 1) {
+								return '消费积分最低为1！';
+							}
+						},
+						prizesM: function(value) {
+							if ($("input:checkbox[name='prizesM']:checked")) {
+								if (value == '') {
+									return '消费金额不能为空！';
+								} else if (value <= 1) {
+									return '消费金额最低为1！';
+								}
+							}
+						},
+						prizesJ: function(value) {
+							if ($("input:checkbox[name='prizesJ']:checked")) {
+								if (value == '') {
+									return '消费金额不能为空！';
+								} else if (value <= 1) {
+									return '消费金额最低为1！';
+								}
+							}
+						},
+					});
+
+					function setActVal(val) {
+						if (val.activityTime == 1) {
+							$('.resetper').show()
+							$('#startTime').attr('lay-verify', 'startTime')
+							$('#startTime').val(val.startTime.split(' ')[0])
+							$('#endTime').attr('lay-verify', 'endTime')
+							$('#endTime').val(val.endTime.split(' ')[0])
+						}
+						var actList = val.activityPrizeIntegral
+						for (var i = 0; i < actList.length; i++) {
+							if (actList[i].prizeType == 0) {
+								$('.prizesM').show()
+								preferentialRechargesM.push(actList[i])
+							} else if (actList[i].prizeType == 1) {
+								$('.prizesJ').show()
+								preferentialRechargesJ.push(actList[i])
+							}
+						}
+						form.val('activity', {
+							"activityName": val.activityName,
+							"activityTime": val.activityTime,
+							"activityDetails": val.activityDetails,
+							"prizesM": preferentialRechargesM.length > 0 ? true : false,
+							"prizesJ": preferentialRechargesJ.length > 0 ? true : false,
+						})
+						layer.closeAll('loading');
+					}
+
+					/*---------- 监听提交 ----------*/
+					form.on('submit(add)', function(data, index) {
+						var dataXF = data.field
+						dataXF.state = state
+						dataXF.activityClass = actCl
+						if (state == 1) {
+							dataXF.activityNo = actNo
+						}
+						if (dataXF.activityTime == 1) {
+							dataXF.startTime = $('#startTime').val() + ' 00:00:00'
+							dataXF.endTime = $('#endTime').val() + ' 23:59:59'
+						}
+						dataXF.merchantNumber = merNumber
+						dataXF.activityPrizeIntegral = preferentialRechargesM.concat(preferentialRechargesJ)
+						dataXF.activityType = 0
+						if (dataXF.activityPrizeIntegral.length < 1) {
+							return layer.tips('最少选择一种消费优惠！', '.hdjp');
+						}
+						console.log(dataXF)
+						// return
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.share,
+							data: JSON.stringify(dataXF),
 							dataType: "json",
 							headers: {
 								"Content-Type": "application/json"
@@ -258,9 +451,15 @@
 							success: function(data) {
 								layer.closeAll('loading');
 								if (data.code == 1000) {
-									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-									parent.layer.close(index); //再执行关闭
-									parent.layer.msg('添加活动成功')
+									if (state == 1) {
+										var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+										parent.layer.close(index); //再执行关闭
+										parent.layer.msg('编辑活动成功！')
+									} else if (state == 0) {
+										var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+										parent.layer.close(index); //再执行关闭
+										parent.layer.msg('添加活动成功！')
+									}
 								} else {
 									layer.msg(data.msg)
 								}

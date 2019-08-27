@@ -29,21 +29,15 @@
 				<input type="text" class="layui-input" autocomplete="off" placeholder="活动名称" id="activityName">
 			</div>
 			<div class="layui-input-inline">
-				<select name="activityType" id="activityType">
+				<select name="activityClass" id="activityClass">
 					<option value="">活动类型</option>
-					<option value="0">支付即会员</option>
+					<!-- <option value="0">支付即会员</option> -->
+					<option value="0">储值有礼</option>
+					<option value="1">消费有礼</option>
+					<option value="2">分享有礼</option>
+					<option value="3">开卡有礼</option>
+					<option value="4">生日有礼</option>
 				</select>
-			</div>
-			<div class="layui-input-inline">
-				<select name="activityState" id="activityState">
-					<option value="">活动状态</option>
-					<option value="0">进行中</option>
-					<option value="1">已终止</option>
-					<option value="2">未开始</option>
-				</select>
-			</div>
-			<div class="layui-input-inline">
-				<input type="text" class="layui-input" placeholder="开始日" autocomplete="off" id="startendTime">
 			</div>
 			<div class="layui-input-inline">
 				<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
@@ -101,19 +95,16 @@
 				getactivityList()
 
 				function getactivityList() {
-					parent.layer.load(2, {
-						shade: 0.5
-					});
 					table.render({
 						elem: '#actlisttable',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getActivitys + '?merchantNumber=' +
-							merNumber,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getActivityList + '?merchantNumber=' +
+							merNumber + '&activityType=0',
 						method: "get",
 						height: 'full-48',
 						page: true,
-						id: 'actlist',
-						skin: 'line',
-						even: true,
+						id: 'actlistD',
+						// skin: 'line',
+						// even: true,
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -124,79 +115,84 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.activityInfos,
+								"data": res.data.list,
 							}
 						},
 						cols: [
 							[{
-								field: 'activityName',
-								title: '活动名称',
-								align: 'center',
-								width: 250,
-							}, {
-								field: 'insertTime',
-								title: '活动时间',
-								align: 'center',
-								width: 200,
-								templet: function(data) {
-									return data.startTime.split(' ')[0] + ' ~ ' + data.endTime.split(' ')[0]
-								}
-							}, {
-								field: 'activityType',
-								title: '活动类型',
-								align: 'center',
-								width: 180,
-								templet: function(data) {
-									switch (data.activityType) {
-										case 0:
-											return '支付即会员'
-											break;
-										case 1:
-											return '储值有礼'
-											break;
+									field: 'activityName',
+									title: '活动名称',
+									align: 'center',
+									width: 250,
+								}, {
+									field: 'insertTime',
+									title: '活动时间',
+									align: 'center',
+									width: 200,
+									templet: function(data) {
+										if (data.activityTimeType == 0) {
+											return '永久'
+										} else {
+											return data.startTime.split(' ')[0] + ' ~ ' + data.endTime.split(' ')[0]
+										}
 									}
-								}
-							}, {
-								field: 'activityState',
-								title: '活动状态',
-								align: 'center',
-								width: 180,
-								templet: function(data) {
-									switch (data.activityState) {
-										case 0:
-											return '进行中'
-											break;
-										case 1:
-											return '已终止'
-											break;
-										case 2:
-											return '未开始'
-											break;
+								}, {
+									field: 'activityType',
+									title: '活动类型',
+									align: 'center',
+									width: 180,
+									templet: function(data) {
+										switch (data.activityClass) {
+											case 0:
+												return '储值有礼'
+												break;
+											case 1:
+												return '消费有礼'
+												break;
+											case 2:
+												return '分享有礼'
+												break;
+											case 3:
+												return '开卡有礼'
+												break;
+											case 4:
+												return '生日有礼'
+												break;
+										}
 									}
-								}
-							}, {
-								title: '适用门店',
-								align: 'center',
-								width: 180,
-								templet: function(data) {
-									if (data.shopNumbers.length > 1) {
-										return '已选 ' + data.shopNumbers.length + ' 个门店'
-									} else if (data.shopNumbers.length == 1) {
-										return data.shopNumbers[0].split('||')[0] + '<br>' + data.shopNumbers[0].split('||')[1]
+								}, {
+									field: 'activityState',
+									title: '活动状态',
+									align: 'center',
+									width: 180,
+									templet: function(data) {
+										return '进行中'
 									}
+								},
+								{
+									title: '适用门店',
+									align: 'center',
+									width: 180,
+									templet: function(data) {
+										if (data.shopNumber != '') {
+											return '已选 ' + data.shopNumber.split(',').length + ' 个门店'
+										} else {
+											return '--'
+										}
+									}
+								}, {
+									field: 'insertTime',
+									title: '创建时间',
+									align: 'center',
+									width: 180,
+								}, {
+									field: 'operation',
+									title: '操作',
+									align: 'center',
+									toolbar: "#tool",
+									minWidth: 150
 								}
-							}, {
-								field: 'insertTime',
-								title: '创建时间',
-								align: 'center',
-								width: 180,
-							}, {
-								field: 'operation',
-								title: '操作',
-								align: 'center',
-								toolbar: "#tool",
-								minWidth: 150
-							}]
+							]
 						],
 						done: function(res, curr, count) {
 							parent.layer.closeAll('loading');
@@ -225,7 +221,7 @@
 							if (data.code == 1000) {
 
 								parent.layer.msg('更改成功')
-								layui.table.reload('actlist')
+								layui.table.reload('actlistD')
 							} else {
 								layer.msg(data.msg)
 
@@ -239,53 +235,75 @@
 				//监听工具条
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
-					console.log(data.activityType)
+					console.log(data.activityClass)
 					if (obj.event === 'edit') {
+						var avtDetailTit, avtDetailLink
 						// 跳转编辑详情页面
-						switch (data.activityType) {
+						switch (data.activityClass) {
 							case 0:
-								layer.open({
-									type: 2,
-									title: '活动编辑',
-									area: ['600px', '650px'],
-									content: 'vipactivityedit.html',
-									success: function(layero, index) {
-										// 获取子页面的iframe
-										var iframe = window['layui-layer-iframe' + index];
-										// 向子页面的全局函数child传参
-										iframe.subPageCon(data)
-									}
-								});
+								avtDetailTypt = data.activityClass
+								avtDetailTit = '储值有礼'
+								avtDetailLink = 'vipactivityadd-chuz.html'
+								break;
+							case 1:
+								avtDetailTypt = data.activityClass
+								avtDetailTit = '消费有礼'
+								avtDetailLink = 'vipactivityadd-xf.html'
+								break;
+							case 2:
+								avtDetailTypt = data.activityClass
+								avtDetailTit = '分享有礼'
+								avtDetailLink = 'vipactivityadd-fx.html'
+								break;
+							case 3:
+								avtDetailTypt = data.activityClass
+								avtDetailTit = '开卡有礼'
+								avtDetailLink = 'vipactivityadd-kk.html'
+								break;
+							case 4:
+								avtDetailTypt = data.activityClass
+								avtDetailTit = '生日有礼'
+								avtDetailLink = 'vipactivityadd-sr.html'
 								break;
 						}
+						layer.open({
+							type: 2,
+							title: '活动编辑 - ' + avtDetailTit,
+							area: ['600px', '650px'],
+							content: avtDetailLink,
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageCon(data.activityNo, data.activityClass)
+							}
+						});
 					} else if (obj.event === 'delete') {
-						// layer.msg('删除会员卡')
-						// return
-						// 弹出是否要删除门店
-						layer.confirm('确定要删除(' + data.title + ')活动？', function(index) {
+						layer.confirm('确定要删除(' + data.activityName + ')活动？', function(index) {
 							var mydata = {
-								"merchantNumber": insNumber,
-								"shopNumber": data.shopNumber,
-								"deletionFlag": 1
+								"merchantNumber": merNumber,
+								"activityNo": data.activityNo,
 							}
 							// 发送请求
-							CmsUtility.postAjaxCall(
-								//系统设置
-								CmsConfig.addressUrl.Merchant.modifyShop,
-								mydata,
-								function(data) {
+							$.ajax({
+								type: "post",
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.delActivityList,
+								data: JSON.stringify(mydata),
+								dataType: "json",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								success: function(data) {
+									layer.closeAll('loading');
 									if (data.code == 1000) {
-										layer.close(index);
-										layer.msg('删除成功！')
-										layui.table.reload('actlist');
+										layer.close(index); //再执行关闭
+										layer.msg('删除活动成功！')
+										layui.table.reload('actlistD')
 									} else {
 										layer.msg(data.msg)
 									}
-								},
-								function(data) {
-									console.log('222')
 								}
-							)
+							});
 							layer.close(index);
 						});
 					}
@@ -297,20 +315,15 @@
 						reload: function() {
 							// 获取上面查询框的值
 							var activityName = $('#activityName')
-							var activityType = $('#activityType')
-							var activityState = $('#activityState')
-							var startendTime = $('#startendTime')
+							var activityClass = $('#activityClass')
 							//执行重载
-							table.reload('actlist', {
+							table.reload('actlistD', {
 								page: {
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
 									activityName: activityName.val(),
-									activityType: activityType.val(),
-									activityState: activityState.val(),
-									startTime: startendTime.val().split(' - ')[0],
-									endTime: startendTime.val().split(' - ')[1],
+									activityClass: activityClass.val(),
 								}
 							});
 						}
