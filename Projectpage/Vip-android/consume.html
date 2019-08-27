@@ -60,7 +60,7 @@
 						<div>
 							<p :class="[customCellTips?'show':'hide']">请输入正确的手机号</p>
 							<input type="search" placeholder="请输入手机号/卡号" v-model="customCell" @keyup="searchCell(event)" />
-							<span @click="AD_scan(1,'')"><i class="icon iconfont iconhuiyuan"></i></span>
+							<span @click="AD_scan(1,'')"><i class="icon iconfont iconsaoyisao"></i></span>
 						</div>
 						<div class="subLine"></div>
 						<p :class="[mebBalanceTips?'show':'hide']">账户余额 ￥<span>{{mebBalance}}</span></p>
@@ -196,7 +196,7 @@
 			},
 			methods: {
 				// 显示弹出框
-				showMask: function() {
+				showMask: function showMask() {
 					$('.hiddenbox').show()
 					$('.keyboardbox').hide()
 					setTimeout(function() {
@@ -206,7 +206,7 @@
 
 				},
 				// 隐藏弹出框
-				hiddenMask: function() {
+				hiddenMask: function hiddenMask() {
 					$('.consumerbox').css('bottom', '-100%')
 					$('.keyboardbox').css('bottom', '0')
 					setTimeout(function() {
@@ -214,7 +214,7 @@
 						$('.keyboardbox').show()
 					}, 100);
 				},
-				confirmColl: function() {
+				confirmColl: function confirmColl() {
 					if (this.customCell.length > 5) {
 						this.hiddenMask()
 						$('.consumeBInp span').hide()
@@ -230,7 +230,7 @@
 						});
 					}
 				},
-				searchCell: function(e) {
+				searchCell: function searchCell(e) {
 					var that = this
 					var rg = new RegExp(/^1[3456789]\d{9}$/)
 					if (!rg.test(e.target.value)) {
@@ -244,7 +244,7 @@
 						that.getMenInfo(e.target.value, '')
 					}
 				},
-				payBtn: function(m) {
+				payBtn: function payBtn(m) {
 					var that = this
 					if (m == 0) {
 						swal({
@@ -264,7 +264,7 @@
 						that.AD_scan(2, m)
 					}
 				},
-				AD_scan: function(scanType, payMoney) {
+				AD_scan: function AD_scan(scanType, payMoney) {
 					var that = this
 					//调用Native提供的callProgress
 					dsBridge.call("takeScan", {
@@ -284,7 +284,7 @@
 						}
 					});
 				},
-				getMenInfo: function(cell, mebNo) {
+				getMenInfo: function getMenInfo(cell, mebNo) {
 					var sendData = new Object(),
 						that = this
 					sendData.merchantNumber = merNumber

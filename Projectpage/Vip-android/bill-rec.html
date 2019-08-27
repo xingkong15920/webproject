@@ -47,7 +47,7 @@
 					</li>
 				</ul>
 				<div class="vipBillul" v-cloak ref="mescroll" class="mescroll">
-					<ul>
+					<ul id="vipBillulB">
 						<li class="vipBilli vipBilli3" v-for="item in vipBilli">
 							<div class="vipBilliL">
 								<p class="vipBillitit">{{item.name}}</p>
@@ -85,42 +85,48 @@
 				vipBilul: [{
 					'vipBilliL': '充值信息',
 					'vipBilliC': '充值金额',
-					'vipBilliR': '赠送金额',
+					'vipBilliR': '赠送金额'
 				}],
 				vipBilli: [],
-				mescroll: null, // mescroll实例对象
+				mescroll: null // mescroll实例对象
+
 			},
 			methods: {
 				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
-				upCallback(page) {
+				upCallback: function upCallback(page) {
+					var _this = this;
+
 					// 模拟联网
-					this.getListDataFromNet(this.pdType, page.num, page.size, (arr) => {
+					this.getListDataFromNet(this.pdType, page.num, page.size, function(arr) {
 						// 如果是第一页需手动制空列表
-						if (page.num === 1) this.vipBilli = []
-						// 把请求到的数据添加到列表
-						this.vipBilli = this.vipBilli.concat(arr)
-						// 数据渲染成功后,隐藏下拉刷新的状态
-						this.$nextTick(() => {
-							this.mescroll.endSuccess(arr.length)
-						})
-					}, () => {
-						this.mescroll.endErr()
-					})
+						if (page.num === 1) _this.vipBilli = []; // 把请求到的数据添加到列表
+
+						_this.vipBilli = _this.vipBilli.concat(arr); // 数据渲染成功后,隐藏下拉刷新的状态
+
+						_this.$nextTick(function() {
+							_this.mescroll.endSuccess(arr.length);
+						});
+					}, function() {
+						_this.mescroll.endErr();
+					});
 				},
+
 				/* 联网加载列表数据
 				 * 在您的实际项目中,请参考官方写法: http://www.mescroll.com/api.html#tagUpCallback
 				 * 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
 				 * 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
 				 */
-				getListDataFromNet(pdType, pageNum, pageSize, successCallback, errorCallback) {
+				getListDataFromNet: function getListDataFromNet(pdType, pageNum, pageSize, successCallback, errorCallback) {
+					var _this2 = this;
+
 					// 延时一秒,模拟联网
-					setTimeout(() => {
+					setTimeout(function() {
 						// 获取分页数据
-						var that = this,
-							sendData = new Object()
-						sendData.merchantNumber = merNumber
-						sendData.page = pageNum
-						sendData.limit = pageSize
+						var that = _this2,
+							sendData = new Object();
+						sendData.merchantNumber = merNumber;
+						sendData.page = pageNum;
+						sendData.limit = pageSize;
 						$.ajax({
 							type: "get",
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getTurnovers,
@@ -129,63 +135,81 @@
 							headers: {
 								"Content-Type": "application/json"
 							},
-							success: function(data) {
-								$('#loadstart').hide()
-								// 回调
-								successCallback(data.data.rechargeTurnovers)
-								that.branches = data.data.count
+							success: function success(data) {
+								$('#loadstart').hide(); // 回调
+								if (data.code === 1000) {
+									if (data.data.rechargeTurnovers.length > 0) {
+										successCallback(data.data.rechargeTurnovers);
+										that.branches = data.data.count;
+									} else {
+										successCallback([]);
+									}
+								} else {
+									successCallback([]);
+								}
 							}
 						});
-					}, 1000)
+					}, 1000);
 				}
-
 			},
-			mounted() {
+			mounted: function mounted() {
 				// 创建MeScroll对象
-				this.mescroll = new MeScroll(this.$refs.mescroll, { // 在vue的mounted生命周期初始化mescroll,确保此处配置的ref有值
+				this.mescroll = new MeScroll(this.$refs.mescroll, {
+					// 在vue的mounted生命周期初始化mescroll,确保此处配置的ref有值
 					up: {
 						callback: this.upCallback,
 						page: {
 							num: 0, // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
 							size: 10 // 每页数据的数量
 						},
-						noMoreSize: 5, // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
+						noMoreSize: 1, // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
+						empty: {
+							warpId: 'vipBillulB', // 父布局的id;
+							icon: './images/mescroll-empty.png', // 图标,默认null
+							tip: '暂无消费数据~', // 提示
+						},
 						toTop: { // 配置回到顶部按钮
-							src: './static/mescroll/mescroll-totop.png'
+							src: './images/mescroll-totop.png'
 						},
 						lazyLoad: {
 							use: true // 是否开启懒加载,默认false
 						},
-						htmlNodata: '<p class="upwarp-nodata">-- 无更多数据 --</p>', //无数据的布局
+						htmlNodata: '<p class="upwarp-nodata">-- 无更多数据 --</p>' //无数据的布局
 					}
-				})
-
+				});
 			},
-			beforeRouteEnter(to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteEnter不用写
-				next(vm => {
+			beforeRouteEnter: function beforeRouteEnter(to, from, next) {
+				// 如果没有配置回到顶部按钮或isBounce,则beforeRouteEnter不用写
+				next(function(vm) {
 					if (vm.mescroll) {
 						// 恢复到之前设置的isBounce状态
-						if (vm.mescroll.lastBounce != null) vm.mescroll.setBounce(vm.mescroll.lastBounce)
-						// 滚动到之前列表的位置(注意:路由使用keep-alive才生效)
+						if (vm.mescroll.lastBounce != null) vm.mescroll.setBounce(vm.mescroll.lastBounce); // 滚动到之前列表的位置(注意:路由使用keep-alive才生效)
+
 						if (vm.mescroll.lastScrollTop) {
-							vm.mescroll.setScrollTop(vm.mescroll.lastScrollTop)
-							setTimeout(() => { // 需延时,因为setScrollTop内部会触发onScroll,可能会渐显回到顶部按钮
-								vm.mescroll.setTopBtnFadeDuration(0) // 设置回到顶部按钮显示时无渐显动画
-							}, 16)
+							vm.mescroll.setScrollTop(vm.mescroll.lastScrollTop);
+							setTimeout(function() {
+								// 需延时,因为setScrollTop内部会触发onScroll,可能会渐显回到顶部按钮
+								vm.mescroll.setTopBtnFadeDuration(0); // 设置回到顶部按钮显示时无渐显动画
+							}, 16);
 						}
 					}
-				})
+				});
 			},
-			beforeRouteLeave(to, from, next) { // 如果没有配置回到顶部按钮或isBounce,则beforeRouteLeave不用写
+			beforeRouteLeave: function beforeRouteLeave(to, from, next) {
+				// 如果没有配置回到顶部按钮或isBounce,则beforeRouteLeave不用写
 				if (this.mescroll) {
-					this.mescroll.lastBounce = this.mescroll.optUp.isBounce // 记录当前是否禁止ios回弹
-					this.mescroll.setBounce(true) // 允许bounce
-					this.mescroll.lastScrollTop = this.mescroll.getScrollTop() // 记录当前滚动条的位置
-					this.mescroll.hideTopBtn(0) // 隐藏回到顶部按钮,无渐隐动画
+					this.mescroll.lastBounce = this.mescroll.optUp.isBounce; // 记录当前是否禁止ios回弹
+
+					this.mescroll.setBounce(true); // 允许bounce
+
+					this.mescroll.lastScrollTop = this.mescroll.getScrollTop(); // 记录当前滚动条的位置
+
+					this.mescroll.hideTopBtn(0); // 隐藏回到顶部按钮,无渐隐动画
 				}
-				next()
-			},
-		})
+
+				next();
+			}
+		});
 	</script>
 
 </html>

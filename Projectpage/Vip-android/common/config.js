@@ -21,7 +21,8 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		ApiRootUrlMeb: 'http://hstest123.natapp1.cc/shanhe-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
+		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		ApiRootUrl: server
 		// imgUrl:imgAdd
 	},
@@ -160,6 +161,8 @@ var CmsConfig = {
 			getRefcardTurs: "turnover/getRefcardTurs",
 			// 查询积分流水
 			getIntegralTurs: "turnover/getIntegralTurs",
+			// 查询消费流水
+			getConTurnovers: "turnover/getConTurnovers",
 
 			// 营销活动
 			// 添加营销活动

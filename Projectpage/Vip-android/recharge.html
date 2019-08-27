@@ -29,7 +29,7 @@
 				<div class="recordB recorInput">
 					<p :class="[customCellTips?'show':'hide']">请输入正确的手机号</p>
 					<input type="search" placeholder="请输入手机号/卡号" v-model="cell" @keyup="searchCell(event)" />
-					<span @click="AD_scan('1','')"><i class="icon iconfont iconhuiyuan"></i></span>
+					<span @click="AD_scan('1','')"><i class="icon iconfont iconsaoyisao"></i></span>
 				</div>
 				<div class="recordB recorSum" :class="[mebInfoTips?'show':'hide']">
 					账户余额 ￥{{mebInfoBalance}}
@@ -55,6 +55,13 @@
 	<script src="./js/vue.min.js"></script>
 	<script src="./js/dsbridge.js"> </script>
 	<script type="text/javascript">
+		if (getQueryString('merNo')) {
+			var userInfo = {
+				"Number": getQueryString('merNo'),
+				"institutionNumber": getQueryString('insNo'),
+			}
+			sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
+		} else {}
 		var rechargeBli
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
 		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
@@ -94,16 +101,16 @@
 			},
 			methods: {
 				// 选择金额
-				chooseM: function(m, rm, i) {
+				chooseM: function chooseM(m, rm, i) {
 					this.customM = m
 					this.customRM = rm
 				},
 				// 选择支付方式
-				chooseP: function(d, n) {
+				chooseP: function chooseP(d, n) {
 					this.choosePS = n
 				},
 				// 确认按钮
-				recBtn: function() {
+				recBtn: function recBtn() {
 					var that = this
 					if (that.customM == '') {
 						swal({
@@ -116,10 +123,10 @@
 						that.AD_scan('2', that.customM)
 					}
 				},
-				amount: function(e) {
+				amount: function amount(e) {
 					this.customM = e.target.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
 				},
-				searchCell: function(e) {
+				searchCell: function searchCell(e) {
 					var that = this
 					var rg = new RegExp(/^1[3456789]\d{9}$/)
 					if (!rg.test(e.target.value)) {
@@ -133,7 +140,8 @@
 						that.getMenInfo(e.target.value, '')
 					}
 				},
-				AD_scan: function(scanType, payMoney) {
+				AD_scan: function AD_scan(scanType, payMoney) {
+					alert(123)
 					var that = this
 					//调用Native提供的callProgress
 					dsBridge.call("takeScan", {
@@ -153,7 +161,7 @@
 						}
 					});
 				},
-				getMenInfo: function(cell, mebNo) {
+				getMenInfo: function getMenInfo(cell, mebNo) {
 					var sendData = new Object(),
 						that = this
 					sendData.merchantNumber = merNumber
@@ -171,20 +179,28 @@
 						},
 						success: function(data) {
 							$('#loadstart').hide()
-							that.mebBalanceTips = true
-							that.mebInfoTips = true
-							that.mebInfoBalance = data.data.memberList[0].allBalance
-							if (cell != '') {
-								that.cell = data.data.memberList[0].cell + '(' + data.data.memberList[0].name + ')'
+							if (data.code === 1000) {
+								that.mebBalanceTips = true
+								that.mebInfoTips = true
+								that.mebInfoBalance = data.data.memberList[0].allBalance
+								if (cell != '') {
+									that.cell = data.data.memberList[0].cell + '(' + data.data.memberList[0].name + ')'
+								} else {
+									that.cell = data.data.memberList[0].memberNo + '(' + data.data.memberList[0].name + ')'
+								}
 							} else {
-								that.cell = data.data.memberList[0].memberNo + '(' + data.data.memberList[0].name + ')'
+								swal({
+									title: "",
+									text: data.msg,
+									type: "error",
+								});
 							}
 						}
 					});
 				}
 			},
 			watch: {
-				customM: function(e) {
+				customM: function customM(e) {
 					var that = this
 					for (var i = 0; i < rechargeBli.length; i++) {
 						if (that.customM == rechargeBli[i].rechargeBlim) {
@@ -202,7 +218,7 @@
 					}
 				},
 			},
-			created: function() {
+			created: function created() {
 				var that = this
 				//初始customM为50时列表状态
 				for (var j = 0; j < rechargeBli.length; j++) {
@@ -215,5 +231,14 @@
 				}
 			}
 		})
+
+		function getQueryString(name) {
+			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		}
 	</script>
 </html>

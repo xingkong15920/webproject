@@ -10,6 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
 		<style type="text/css">
 			.vipBillul {
@@ -77,18 +78,15 @@
 	<script src="./js/jquery.min.js"></script>
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
+	<script src="./js/sweetalert.min.js"></script>
 	<script src="./lib/layer/layer.js"></script>
 	<script src="./js/vue.min.js"></script>
 	<script src="./js/qrcode.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			// var userInfo = {
-			// 	"Number": getQueryString('merNo'),
-			// 	"institutionNumber": getQueryString('insNo'),
-			// }
 			var userInfo = {
-				"Number": "171226165145437",
-				"institutionNumber": 1003,
+				"Number": getQueryString('merNo'),
+				"institutionNumber": getQueryString('insNo'),
 			}
 			sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
 			var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
@@ -99,8 +97,6 @@
 			$(".datastatis").click(function() {
 				window.location.href = "data-statis.html"
 			})
-
-
 
 			new Vue({
 				el: '#Vip',
@@ -133,7 +129,7 @@
 				},
 				methods: {
 					// 查询会员汇总
-					getMemSummary: function() {
+					getMemSummary: function getMemSummary() {
 						var that = this,
 							sendData = new Object()
 						sendData.merchantNumber = merNumber
@@ -147,23 +143,35 @@
 							headers: {
 								"Content-Type": "application/json"
 							},
-							success: function(data) {
-								$('#loadstart').hide()
-								that.vipBilli = data.data.memberList
-								that.memberTodCount = data.data.memberTodCount
-								that.memberCount = data.data.memberCount
-								that.memberYesdCount = data.data.memberTodCount
+							success: function success(data) {
+								if (data.code === 1000) {
+									$('#loadstart').hide()
+									that.vipBilli = data.data.memberList
+									that.memberTodCount = data.data.memberTodCount
+									that.memberCount = data.data.memberCount
+									that.memberYesdCount = data.data.memberTodCount
+								} else {
+									$('#loadstart').hide()
+									swal({
+										title: "",
+										text: data.msg,
+										type: "error"
+									});
+									that.memberTodCount = '--'
+									that.memberCount = '--'
+									that.memberYesdCount = '--'
+								}
 							}
 						});
 					},
-					jump: function(data) {
+					jump: function jump(data) {
 						window.location.href = data
 					}
 				},
-				created() {
+				created: function created() {
 					this.memberNo = window.location.href.split('?memberNo=')[1]
 				},
-				mounted() {
+				mounted: function mounted() {
 					this.getMemSummary()
 				}
 			})
