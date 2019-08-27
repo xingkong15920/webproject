@@ -61,7 +61,8 @@
 							<label class="layui-form-label" style="width: 80px;">等级</label>
 							<div class="layui-input-inline max360">
 								<!-- <input type="text" lay-verify="gradeNos" autocomplete="off" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input"> -->
-								<input type="text" lay-verify="mdSelect" autocomplete="off" readonly="readonly" placeholder="请选择指定会员等级" id="levelSelect" class="layui-input">
+								<input type="text" lay-verify="mdSelect" autocomplete="off" readonly="readonly" placeholder="请选择指定会员等级" id="levelSelect"
+								 class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -148,7 +149,11 @@
 									align: 'center',
 									width: 100,
 									templet: function(data) {
-										return data.termValidity + '天'
+										if (data.termValidity > 0) {
+											return data.termValidity + '天'
+										} else {
+											return '永久'
+										}
 									}
 								}]
 							]
@@ -196,7 +201,7 @@
 					form.on('submit(add)', function(data) {
 						var data = data.field
 						data.memberNo = memberNo
-						data.merchatNumber = merNumber
+						data.merchantNumber = merNumber
 						data.institutionNumber = insNumber
 						data.gradeNo = gradeNos
 						data.shopNumber = mebInfo.shopNumber
