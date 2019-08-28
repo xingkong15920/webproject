@@ -100,9 +100,7 @@
 					this.getListDataFromNet(this.pdType, page.num, page.size, function(arr) {
 						// 如果是第一页需手动制空列表
 						if (page.num === 1) _this.vipBilli = []; // 把请求到的数据添加到列表
-
 						_this.vipBilli = _this.vipBilli.concat(arr); // 数据渲染成功后,隐藏下拉刷新的状态
-
 						_this.$nextTick(function() {
 							_this.mescroll.endSuccess(arr.length);
 						});
@@ -199,14 +197,10 @@
 				// 如果没有配置回到顶部按钮或isBounce,则beforeRouteLeave不用写
 				if (this.mescroll) {
 					this.mescroll.lastBounce = this.mescroll.optUp.isBounce; // 记录当前是否禁止ios回弹
-
 					this.mescroll.setBounce(true); // 允许bounce
-
 					this.mescroll.lastScrollTop = this.mescroll.getScrollTop(); // 记录当前滚动条的位置
-
 					this.mescroll.hideTopBtn(0); // 隐藏回到顶部按钮,无渐隐动画
 				}
-
 				next();
 			}
 		});

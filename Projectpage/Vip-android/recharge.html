@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1192462_drvin8iimxr.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
 		<style type="text/css">
@@ -40,9 +40,10 @@
 						<li class="rechargeBli" v-for="(item,i) in rechargeBli" :key="i" v-on:click="chooseM(item.rechargeBlim,item.rechargeBlirm,i)"
 						 :class="{chooseMS: i == chooseMS}" v-cloak>
 							<p class="rechargeBlim"><span>{{item.rechargeBlim}}</span>元</p>
-							<p class="rechargeBlirm">实付 <span>{{item.rechargeBlirm}}</span>元</p>
+							<p class="rechargeBlirm">赠送 <span>{{item.rechargeBlirm}}</span>元</p>
 						</li>
 					</ul>
+					<p class="openMore on" v-show="rechargeBli.length>6" @click="openMore()">展开更多充值优惠<i class="icon iconfont iconiconfontjiantouzuo"></i></p>
 					<span class="viprecordsavebtn opacity05" v-on:click="recBtn()">确认充值</span>
 				</div>
 			</div>
@@ -65,30 +66,46 @@
 		var rechargeBli
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
 		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
+		var mebNumber
+		if (getQueryString('number')) {
+			mebNumber = getQueryString('number')
+		}
 		$('#loadstart').hide()
 		rechargeBli = [{ //金额列表
 			rechargeBlim: "10",
-			rechargeBlirm: "9.5"
+			rechargeBlirm: "1"
 		}, {
 			rechargeBlim: "30",
-			rechargeBlirm: "29.5"
+			rechargeBlirm: "3"
 		}, {
 			rechargeBlim: "50",
-			rechargeBlirm: "49.5"
+			rechargeBlirm: "2"
 		}, {
 			rechargeBlim: "100",
-			rechargeBlirm: "98.5"
+			rechargeBlirm: "10"
 		}, {
 			rechargeBlim: "300",
-			rechargeBlirm: "295"
+			rechargeBlirm: "50"
 		}, {
 			rechargeBlim: "500",
-			rechargeBlirm: "485"
+			rechargeBlirm: "100"
+		}, {
+			rechargeBlim: "100",
+			rechargeBlirm: "10"
+		}, {
+			rechargeBlim: "100",
+			rechargeBlirm: "10"
+		}, {
+			rechargeBlim: "300",
+			rechargeBlirm: "50"
+		}, {
+			rechargeBlim: "500",
+			rechargeBlirm: "100"
 		}]
 		new Vue({
 			el: '#vipBody',
 			data: {
-				cell: '',
+				cell: mebNumber ? mebNumber : '',
 				chooseMS: '',
 				choosePS: '',
 				customM: '',
@@ -98,6 +115,7 @@
 				mebBalanceTips: false,
 				mebInfoTips: false,
 				mebInfoBalance: '',
+				openMoreType: false,
 			},
 			methods: {
 				// 选择金额
@@ -108,6 +126,13 @@
 				// 选择支付方式
 				chooseP: function chooseP(d, n) {
 					this.choosePS = n
+				},
+				// 展开更多支付优惠
+				openMore: function openMore() {
+					if(){
+						
+					}
+					this.openMoreType = true
 				},
 				// 确认按钮
 				recBtn: function recBtn() {
@@ -141,7 +166,6 @@
 					}
 				},
 				AD_scan: function AD_scan(scanType, payMoney) {
-					alert(123)
 					var that = this
 					//调用Native提供的callProgress
 					dsBridge.call("takeScan", {
@@ -216,7 +240,7 @@
 					} else {
 						$('.viprecordsavebtn').removeClass('opacity05')
 					}
-				},
+				}
 			},
 			created: function created() {
 				var that = this
@@ -228,6 +252,9 @@
 					} else {
 						that.chooseMS = 1000
 					}
+				}
+				if (that.cell != '') {
+					that.getMenInfo('', that.cell)
 				}
 			}
 		})

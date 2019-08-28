@@ -8,7 +8,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./css/style-gc.css" media="all">
 	</head>
 	<body>
 		<div id="loadstart" class="loadzz">
@@ -96,7 +96,8 @@
 		var mebInfo
 		var weixinCode
 		var comId
-		if (window.location.href.indexOf('code=') == -1) {
+		var appSecret
+		if (window.location.href.indexOf('&code=') == -1) {
 			deliveryNo = getQueryString('deliveryNo')
 			insNumber = getQueryString('institutionNumber')
 			merNumber = getQueryString('merchantNumber')
@@ -107,7 +108,7 @@
 		}
 
 		$.ajax({
-			url: "http://hstest123.natapp1.cc/shanhe-member/server/getMerAppId?merchantNumber=" + merNumber,
+			url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + merNumber,
 			type: "GET",
 			async: false,
 			headers: {
@@ -120,10 +121,11 @@
 				}
 				weixinCode = data.data.appId;
 				comId = data.data.componentAppid;
+				appSecret = data.data.appSecret
 			}
 		})
 		var code;
-		if (window.location.href.indexOf('code=') == -1) {
+		if (window.location.href.indexOf('&code=') == -1) {
 
 			var num = {
 				"deliveryNo": getQueryString('deliveryNo'),
@@ -133,14 +135,15 @@
 			sessionStorage.setItem("num", JSON.stringify(num));
 			var scope = "snsapi_userinfo";
 			var redirect_uri = window.location.href;
-			window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + weixinCode + '&redirect_uri=' +
-				redirect_uri + '&response_type=code&scope=' + scope + '&state=STATE&component_appid=' + comId + '#wechat_redirect'
+
+			window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixinCode + "&redirect_uri=" +
+				encodeURIComponent(redirect_uri) + "&response_type=code&scope=" + scope + "&state=start#wechat_redirect"
 		} else {
 
 			code = window.location.href.split('code=')[1].split('&')[0];
 			$.ajax({
-				url: "http://hstest123.natapp1.cc/shanhe-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
-					weixinCode + '&code=' + code,
+				url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
+					weixinCode + '&code=' + code + '&appSecret=' + appSecret,
 				type: "GET",
 				async: false,
 				headers: {

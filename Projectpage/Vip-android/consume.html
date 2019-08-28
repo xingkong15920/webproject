@@ -9,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1192462_drvin8iimxr.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
 		<style type="text/css">
@@ -65,7 +65,7 @@
 						<div class="subLine"></div>
 						<p :class="[mebBalanceTips?'show':'hide']">账户余额 ￥<span>{{mebBalance}}</span></p>
 					</div>
-					<div class="consumerAccount" :class="[customCell.length>5?'':'opacity05']" @click="confirmColl()">确认收款</div>
+					<div class="consumerAccount" :class="[customCellTips?'opacity05':'']" @click="confirmColl()">确认收款</div>
 				</div>
 			</div>
 			<!-- 数字键盘 -->
@@ -233,7 +233,10 @@
 				searchCell: function searchCell(e) {
 					var that = this
 					var rg = new RegExp(/^1[3456789]\d{9}$/)
-					if (!rg.test(e.target.value)) {
+					if (e.target.value.length === 20) {
+						$('#loadstart').show()
+						that.getMenInfo(e.target.value, '')
+					} else if (!rg.test(e.target.value)) {
 						that.customCellTips = true
 						that.mebBalanceTips = false
 					} else if (e.target.value == '') {
@@ -252,16 +255,40 @@
 							text: "请输入金额！",
 							type: "error",
 						});
-					}
-					//  else if (that.customCell == '') {
-					// 	swal({
-					// 		title: "",
-					// 		text: "请输入或选择会员卡号！",
-					// 		type: "error",
-					// 	});
-					// }
-					else {
-						that.AD_scan(2, m)
+					} else if (that.customCell == '') {
+						swal({
+							title: "",
+							text: "请输入或选择会员卡号！",
+							type: "error",
+						});
+					} else {
+						var sendData = new Object()
+						sendData.merchantNumber = merNumber
+						sendData.memberNo = mebNo
+						sendData.cell = cell
+						sendData.changeType = '0'
+						sendData.consumMoney = m
+						// 发送请求
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateAccount,
+							data: JSON.stringify(data),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code == 1000) {
+									swal({
+										title: "",
+										text: '消费成功!',
+										type: "success",
+									});
+								} else {
+									layer.msg(data.msg)
+								}
+							}
+						});
 					}
 				},
 				AD_scan: function AD_scan(scanType, payMoney) {
