@@ -25,23 +25,27 @@
 		<div class="x-body iframe_index_1_con">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="退款订单号" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="会员姓名" name="name" id="mebname">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员昵称" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="会员手机号" name="name" id="cell">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员手机号" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="原充值订单号" name="name" id="recNum">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="原充值订单号" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="退款订单号" name="name" id="refNum">
 				</div>
 				<div class="layui-input-inline">
-					<select name="quiz3">
-						<option value="">全部门店</option>
-						<option value="00010">书香门店</option>
-						<option value="00011">文文便利店</option>
-						<option value="00012">王胖子杂货店</option>
+					<!-- 需要数据对接(完成) -->
+					<select name="shopName" id="shopName" lay-search>
+						<option value="">--请选择门店--</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<!-- 需要数据对接(完成) -->
+					<select name="clerkNumber" id="clerkNumber" lay-search>
+						<option value="">--请选择店员--</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -53,18 +57,10 @@
 					</select>
 				</div>
 				<div class="layui-input-inline">
-					<select name="quiz3">
-						<option value="">操作员</option>
-						<option value="0001001">李烈</option>
-						<option value="0001002">王胖</option>
-						<option value="0001003">张洲</option>
-					</select>
-				</div>
-				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="开始日" name="startendTime" id="startendTime">
 				</div>
 				<div class="layui-input-inline">
-					<button class="layui-btn" id="search">
+					<button class="layui-btn" id="search" data-type="reload">
 						<i class="layui-icon">&#xe615;</i>
 					</button>
 				</div>
@@ -170,9 +166,12 @@
 			var startDate = fun_date(-6);
 			var endDate = fun_date(0);
 			var nowTime = new Date().valueOf();
-			layui.use(['table', 'laydate'], function() {
+			var dataO = new Object();
+			dataO.merchantNumber = merNumber
+			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
 					$ = layui.$,
+					form = layui.form,
 					laydate = layui.laydate;
 
 				// 选择日期插件  
@@ -182,6 +181,30 @@
 					range: true,
 					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getShopNames,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
+								shopData[i].shopName + '/' + shopData[i].shopNumber + "</option>");
+						}
+						form.render()
+					}
+				)
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getClerkList,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName +
+								"</option>");
+						}
+						form.render()
+					}
+				)
 				$('#baobiao').click(function() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
 						if (!verTime()) {
@@ -215,219 +238,273 @@
 
 				})
 				//方法级渲染
-				function tableRender() {
-					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
-						if (!verTime()) {
-							layer.msg('只能查询三个月以内数据')
+				// function tableRender() {
+				if ($('#billType').val() == 0 || $('#billType').val() == 3) {
+					if (!verTime()) {
+						layer.msg('只能查询三个月以内数据')
+						return
+					}
+				}
+				var index = layer.load(2, {
+					shade: [0.4, '#393D49']
+				})
+				table.render({
+					elem: '#LAY_table_bill',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRefundTurnovers + '?merchantNumber=' +
+						merNumber,
+					method: "get",
+					height: "full-200",
+					page: true,
+					id: 'billlist',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+
+						if (res.data == null) {
 							return
 						}
-					}
-					var index = layer.load(2, {
-						shade: [0.4, '#393D49']
-					})
-					table.render({
-						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRefundTurnovers + '?merchantNumber=' +
-							merNumber,
-						method: "get",
-						height: "full-200",
-						page: true,
-						id: 'billlist',
-						response: {
-							"statusCode": "1000", //解析接口状态
-						},
-						parseData: function(res) {
-
-							if (res.data == null) {
-								return
-							}
-							if (res.data == '查询数据为空') {
-								return
-							}
-							console.log('123')
-							for (var i = 0; i < res.data.result.length; i++) {
-								if (res.data.result[i] == null) {
-									res.data.result.splice(i, 1)
-								}
-							}
-							return {
-								"code": res.code,
-								"count": res.data.count,
-								"data": res.data.result,
-							}
-						},
-						cols: [
-							[{
-								field: 'insertTime',
-								title: '退款时间',
-								align: 'center',
-								width: 180
-							}, {
-								field: 'shopName',
-								title: '退款门店',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									if (data.shopName) {
-										return data.shopName
-									} else {
-										return '--'
-									}
-								}
-							}, {
-								field: 'shopNumber',
-								title: '退款订单号',
-								align: 'center',
-								width: 220,
-							}, {
-								field: 'statementDate',
-								title: '会员姓名',
-								align: 'center',
-								width: 150,
-								templet: function(data) {
-									return '会员' + Math.round(Math.random() * 100)
-								}
-							}, {
-								field: 'shopNumber',
-								title: '会员手机号',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return '13081058585'
-								}
-							}, {
-								field: 'shopNumber',
-								title: '退款方式',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return '微信'
-								}
-							}, {
-								field: 'shopNumber',
-								title: '退款类型',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return '手动退款'
-								}
-							}, {
-								field: 'statementDate',
-								title: '退款状态',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return '已完成'
-								}
-							}, {
-								field: 'statementDate',
-								title: '退款金额',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 100)
-								}
-							}, {
-								field: 'statementDate',
-								title: '实充退款金额',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 50)
-								}
-							}, {
-								field: 'statementDate',
-								title: '赠送退款金额',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return Math.round(Math.random() * 30)
-								}
-							}, {
-								field: 'statementDate',
-								title: '手续费',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									return '支: ' + Math.round(Math.random() * 10) + '<br>微: ' + Math.round(Math.random() * 10)
-								}
-							}, {
-								field: 'shopNumber',
-								title: '原充值订单号',
-								align: 'center',
-								width: 180,
-							}, {
-								field: 'shopNumber',
-								title: '原支付单号',
-								align: 'center',
-								width: 180,
-							}, {
-								field: 'shopName',
-								title: '操作员',
-								align: 'center',
-								width: 120,
-								templet: function(data) {
-									if (data.clerkName == null) {
-										return 'Admin'
-									} else {
-										return data.clerkName
-									}
-								}
-							}]
-						],
-						done: function(res, curr, count) {
-							console.log(res)
-							layer.closeAll()
+						if (res.data == '查询数据为空') {
+							return
 						}
+						console.log('123')
+						for (var i = 0; i < res.data.result.length; i++) {
+							if (res.data.result[i] == null) {
+								res.data.result.splice(i, 1)
+							}
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.result,
+						}
+					},
+					cols: [
+						[{
+							field: 'refundTime',
+							title: '退款时间',
+							align: 'center',
+							width: 180
+						}, {
+							field: 'shopName',
+							title: '退款门店',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								if (data.shopName) {
+									return data.shopName
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'refundNo',
+							title: '退款订单号',
+							align: 'center',
+							width: 220,
+						}, {
+							field: 'name',
+							title: '会员姓名',
+							align: 'center',
+							width: 150,
+						}, {
+							field: 'cell',
+							title: '会员手机号',
+							align: 'center',
+							width: 120,
+						}, {
+							field: 'shopNumber',
+							title: '退款方式',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								switch (data.refundMode) {
+									case 0:
+										return '现金'
+										break;
+									case 1:
+										return '微信'
+										break;
+									case 2:
+										return '支付宝'
+										break;
+								}
+							}
+						}, {
+							field: 'shopNumber',
+							title: '退款类型',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								switch (data.refundType) {
+									case 0:
+										return '充值退款'
+										break;
+									case 1:
+										return '手动退款'
+										break;
+								}
+							}
+						}, {
+							field: 'statementDate',
+							title: '退款状态',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								switch (data.refundType) {
+									case 0:
+										return '已退款'
+										break;
+									case 1:
+										return '退款中'
+										break;
+									case 1:
+										return '退款失败'
+										break;
+								}
+							}
+						}, {
+							field: 'statementDate',
+							title: '退款金额',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								if (data.opCardRefAmount) {
+									return '¥ ' + data.opCardRefAmount
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'statementDate',
+							title: '实充退款金额',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								if (data.opCardRefAmount) {
+									return '¥ ' + data.opCardRefAmount
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'statementDate',
+							title: '赠送退款金额',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								if (data.opCardRefAmount) {
+									return '¥ ' + data.opCardRefAmount
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'statementDate',
+							title: '手续费',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								if (data.opCardRefAmount) {
+									return '¥ ' + data.opCardRefAmount
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'shopNumber',
+							title: '原充值订单号',
+							align: 'center',
+							width: 180,
+						}, {
+							field: 'shopNumber',
+							title: '原支付单号',
+							align: 'center',
+							width: 180,
+						}, {
+							field: 'shopName',
+							title: '操作员',
+							align: 'center',
+							width: 120,
+							templet: function(data) {
+								if (data.clerkName == null) {
+									return 'Admin'
+								} else {
+									return data.clerkName
+								}
+							}
+						}]
+					],
+					done: function(res, curr, count) {
+						console.log(res)
+						layer.closeAll()
+					}
+				});
+				$(".layui-table-header .laytable-cell-1-0-10").hover(function() {
+					layer.tips('用户实际充值金额 = 订单金额 - 退款金额', '.layui-table-header .laytable-cell-1-0-10', {
+						tips: 3
 					});
-					$(".layui-table-header .laytable-cell-1-0-10").hover(function() {
-						layer.tips('用户实际充值金额 = 订单金额 - 退款金额', '.layui-table-header .laytable-cell-1-0-10', {
-							tips: 3
-						});
+				});
+				$(".layui-table-header .laytable-cell-1-0-11").hover(function() {
+					layer.tips('用户实际充值赠送金额', '.layui-table-header .laytable-cell-1-0-11', {
+						tips: 3
 					});
-					$(".layui-table-header .laytable-cell-1-0-11").hover(function() {
-						layer.tips('用户实际充值赠送金额', '.layui-table-header .laytable-cell-1-0-11', {
-							tips: 3
-						});
+				});
+				$(".layui-table-header .laytable-cell-1-0-12").hover(function() {
+					layer.tips('微信、支付宝交易手续费', '.layui-table-header .laytable-cell-1-0-12', {
+						tips: 3
 					});
-					$(".layui-table-header .laytable-cell-1-0-12").hover(function() {
-						layer.tips('微信、支付宝交易手续费', '.layui-table-header .laytable-cell-1-0-12', {
-							tips: 3
-						});
+				});
+				$(".layui-table-header .laytable-cell-1-0-13").hover(function() {
+					layer.tips('商户微信、支付宝实际到账金额 = 实充金额 - 手续费', '.layui-table-header .laytable-cell-1-0-13', {
+						tips: 3
 					});
-					$(".layui-table-header .laytable-cell-1-0-13").hover(function() {
-						layer.tips('商户微信、支付宝实际到账金额 = 实充金额 - 手续费', '.layui-table-header .laytable-cell-1-0-13', {
-							tips: 3
-						});
-					});
-				}
-
-				setTimeout(function() {
-					tableRender()
-				}, 500)
-				$('#search').click(function() {
-					tableRender()
-				})
+				});
+				// 				}
+				// 
+				// 				setTimeout(function() {
+				// 					tableRender()
+				// 				}, 500)
+				// 				$('#search').click(function() {
+				// 					tableRender()
+				// 				})
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {
-						// reload: function() {
-						// 	// 获取上面查询框的值
-						// 	var shopName = $('#shopName');
-						// 	var startendTime = $('#startendTime');
-
-						// 	//执行重载
-						// 	table.reload('billlist', {
-						// 		page: {
-						// 			curr: 1 //重新从第 1 页开始
-						// 		},
-						// 		where: {
-						// 			startTime: startendTime.val().split(' - ')[0],
-						// 			endTime: startendTime.val().split(' - ')[1],
-						// 			shopName: shopName.val(),
-						// 		}
-						// 	});
-						// }
+						reload: function() {
+							layer.load(2, {
+								shade: [0.4, '#393D49']
+							})
+							// 获取上面查询框的值
+							var mebname = $('#mebname')
+							var recNum = $('#recNum')
+							var refNum = $('#refNum')
+							var cell = $('#cell')
+							var clerkNumber = $('#clerkNumber')
+							var shopName = $('#shopName')
+							var payType = $('#payType')
+							var shouyiny = $('#shouyiny')
+							var startendTime = $('#startendTime');
+							// console.log(payType.val())
+							//执行重载
+							table.reload('billlist', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									name: mebname.val(),
+									rechrgeNo: recNum.val(),
+									refundNo: refNum.val(),
+									cell: cell.val(),
+									clerkNumber: clerkNumber.val(),
+									shopNumber: shopName.val(),
+									refundMode: payType.val(),
+									startTime: startendTime.val().split(' - ')[0],
+									endTime: startendTime.val().split(' - ')[1],
+								}
+							});
+							layer.closeAll()
+						}
 					};
 
 				$('.demoTable .layui-btn').on('click', function() {

@@ -25,7 +25,7 @@
 		<div class="x-body iframe_index_1_con">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员昵称" name="name" id="mebname">
+					<input type="text" class="layui-input" placeholder="会员姓名" name="name" id="mebname">
 				</div>
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="充值订单号" name="name" id="recNum">
@@ -34,11 +34,15 @@
 					<input type="text" class="layui-input" placeholder="会员手机号" name="name" id="cell">
 				</div>
 				<div class="layui-input-inline">
-					<select name="quiz3" id="allMd">
-						<option value="">全部门店</option>
-						<option value="00010">书香门店</option>
-						<option value="00011">文文便利店</option>
-						<option value="00012">王胖子杂货店</option>
+					<!-- 需要数据对接(完成) -->
+					<select name="shopName" id="shopName" lay-search>
+						<option value="">--请选择门店--</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<!-- 需要数据对接(完成) -->
+					<select name="clerkNumber" id="clerkNumber" lay-search>
+						<option value="">--请选择店员--</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -47,14 +51,6 @@
 						<option value="0">现金</option>
 						<option value="1">微信</option>
 						<option value="2">支付宝</option>
-					</select>
-				</div>
-				<div class="layui-input-inline">
-					<select name="quiz3" id="shouyiny">
-						<option value="">收银员</option>
-						<option value="0001001">李烈</option>
-						<option value="0001002">王胖</option>
-						<option value="0001003">张洲</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -172,9 +168,12 @@
 			var startDate = fun_date(-6);
 			var endDate = fun_date(0);
 			var nowTime = new Date().valueOf();
-			layui.use(['table', 'laydate'], function() {
+			var dataO = new Object();
+			dataO.merchantNumber = merNumber
+			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
 					$ = layui.$,
+					form = layui.form,
 					laydate = layui.laydate;
 
 				// 选择日期插件  
@@ -184,6 +183,30 @@
 					range: true,
 					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getShopNames,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
+								shopData[i].shopName + '/' + shopData[i].shopNumber + "</option>");
+						}
+						form.render()
+					}
+				)
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getClerkList,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName +
+								"</option>");
+						}
+						form.render()
+					}
+				)
 				$('#baobiao').click(function() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
 						if (!verTime()) {
@@ -217,7 +240,7 @@
 
 				})
 				//方法级渲染
-				function tableRender() {
+				// function tableRender() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
 						if (!verTime()) {
 							layer.msg('只能查询三个月以内数据')
@@ -465,14 +488,14 @@
 							tips: 3
 						});
 					});
-				}
+				// }
 
-				setTimeout(function() {
-					tableRender()
-				}, 500)
-				$('#search').click(function() {
-					tableRender()
-				})
+				// setTimeout(function() {
+				// 	tableRender()
+				// }, 500)
+				// $('#search').click(function() {
+				// 	tableRender()
+				// })
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {
@@ -484,7 +507,8 @@
 							var mebname = $('#mebname')
 							var recNum = $('#recNum')
 							var cell = $('#cell')
-							var allMd = $('#allMd')
+							var clerkNumber = $('#clerkNumber')
+							var shopName = $('#shopName')
 							var payType = $('#payType')
 							var shouyiny = $('#shouyiny')
 							var startendTime = $('#startendTime');
@@ -498,9 +522,9 @@
 									name: mebname.val(),
 									rechrgeNo: recNum.val(),
 									cell: cell.val(),
-									shopName: allMd.val(),
+									clerkNumber:clerkNumber.val(),
+									shopNumber: shopName.val(),
 									payType: payType.val(),
-									clerkName: shouyiny.val(),
 									startTime: startendTime.val().split(' - ')[0],
 									endTime: startendTime.val().split(' - ')[1],
 								}
@@ -509,7 +533,7 @@
 						}
 					};
 
-				$('.demoTable .layui-btn').on('click', function() {
+				$('.layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});

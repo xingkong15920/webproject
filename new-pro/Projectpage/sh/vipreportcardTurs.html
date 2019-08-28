@@ -25,39 +25,32 @@
 		<div class="x-body iframe_index_1_con">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="退款订单号" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="退卡订单号" name="name" id="name">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员昵称" name="name" id="name">
+					<input type="text" class="layui-input" placeholder="会员姓名" name="name" id="name">
 				</div>
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="会员手机号" name="name" id="name">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="原充值订单号" name="name" id="name">
+					<!-- 需要数据对接(完成) -->
+					<select name="shopName" id="shopName" lay-search>
+						<option value="">--请选择门店--</option>
+					</select>
 				</div>
 				<div class="layui-input-inline">
-					<select name="quiz3">
-						<option value="">全部门店</option>
-						<option value="00010">书香门店</option>
-						<option value="00011">文文便利店</option>
-						<option value="00012">王胖子杂货店</option>
+					<!-- 需要数据对接(完成) -->
+					<select name="clerkNumber" id="clerkNumber" lay-search>
+						<option value="">--请选择操作员--</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
 					<select name="quiz3">
 						<option value="">退款方式</option>
-						<option value="0">支付宝</option>
+						<option value="0">现金</option>
 						<option value="1">微信</option>
-						<option value="2">现金</option>
-					</select>
-				</div>
-				<div class="layui-input-inline">
-					<select name="quiz3">
-						<option value="">操作员</option>
-						<option value="0001001">李烈</option>
-						<option value="0001002">王胖</option>
-						<option value="0001003">张洲</option>
+						<option value="2">支付宝</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -170,9 +163,12 @@
 			var startDate = fun_date(-6);
 			var endDate = fun_date(0);
 			var nowTime = new Date().valueOf();
-			layui.use(['table', 'laydate'], function() {
+			var dataO = new Object();
+			dataO.merchantNumber = merNumber
+			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
 					$ = layui.$,
+					form = layui.form,
 					laydate = layui.laydate;
 
 				// 选择日期插件  
@@ -182,6 +178,30 @@
 					range: true,
 					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getShopNames,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
+								shopData[i].shopName + '/' + shopData[i].shopNumber + "</option>");
+						}
+						form.render()
+					}
+				)
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getClerkList,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName +
+								"</option>");
+						}
+						form.render()
+					}
+				)
 				$('#baobiao').click(function() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
 						if (!verTime()) {
@@ -284,41 +304,77 @@
 								align: 'center',
 								width: 120,
 								templet: function(data) {
-									return '13081058585'
+									if (data.cell) {
+										return data.cell
+									} else {
+										return '--'
+									}
 								}
 							}, {
 								field: 'cell',
 								title: '退卡方式',
 								align: 'center',
 								width: 120,
+								templet: function(data) {
+									switch (data.refundMode) {
+										case 0:
+											return '现金'
+											break;
+										case 1:
+											return '微信'
+											break;
+										case 2:
+											return '支付宝'
+											break;
+									}
+								}
 							}, {
 								field: 'refundAmount',
 								title: '退卡金额',
 								align: 'center',
 								width: 120,
+								templet: function(data) {
+									if (data.refundAmount) {
+										return '¥ ' + data.refundAmount
+									} else {
+										return '--'
+									}
+								}
 							}, {
-								field: 'statementDate',
+								field: 'rechRefAmount',
 								title: '实充退款金额',
 								align: 'center',
 								width: 120,
 								templet: function(data) {
-									return Math.round(Math.random() * 50)
+									if (data.rechRefAmount) {
+										return '¥ ' + data.rechRefAmount
+									} else {
+										return '--'
+									}
 								}
 							}, {
-								field: 'statementDate',
+								field: 'givRefAmount',
 								title: '赠送退款金额',
 								align: 'center',
 								width: 120,
 								templet: function(data) {
-									return Math.round(Math.random() * 30)
+									if (data.givRefAmount) {
+										return '¥ ' + data.givRefAmount
+									} else {
+										return '--'
+									}
 								}
 							}, {
-								field: 'statementDate',
+								field: 'opCardRefAmount',
 								title: '开卡退款金额',
 								align: 'center',
 								width: 120,
 								templet: function(data) {
-									return Math.round(Math.random() * 100)
+									if (data.opCardRefAmount) {
+										return '¥ ' + data.opCardRefAmount
+									} else {
+										return '--'
+									}
 								}
 							}, {
 								field: 'shopName',
