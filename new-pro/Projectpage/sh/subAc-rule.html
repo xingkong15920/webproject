@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.hide {
+				display: none;
+			}
+
+			.show {
+				display: block;
+			}
+
+			.layui-table-cell {
+				height: auto;
+			}
+
+			.vipdetail {
+				height: 100%;
+				background: #f4f8fb;
+			}
+
+			.vipdetail .vipdetail_B {
+				height: auto;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				flex-wrap: wrap;
+			}
+
+			.vipdetail_B_D {
+				width: 100%;
+				overflow: hidden;
+			}
+
+			.layui-table-view {
+				width: 100%;
+			}
+
+			.widthHalf .consumeTit {
+				justify-content: space-between;
+			}
+
+			.subAcFullright {
+				margin-left: auto;
+			}
+
+			.widthHalf {
+				margin: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-body vipdetail layui-form" style="padding: 0;">
+			<div class="vipdetail_B" id="mDetails">
+				<div class="conBlock widthAll">
+					<blockquote class="layui-elem-quote consumeTit">
+						<i class="leftline"></i>
+						分账基础设置
+					</blockquote>
+					<div class="vipdetail_B_D">
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">微信分账比例</label>
+								<div class="layui-input-inline">
+									<input type="text" name="number" lay-verify="required|number" autocomplete="off" class="layui-input">
+								</div>
+								<div class="layui-form-mid layui-word-aux">%</div>
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label">微信手续费</label>
+								<div class="layui-input-inline">
+									<input type="text" name="date" id="date" lay-verify="date" placeholder="" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-inline widthauto">
+								<label class="layui-form-label">活动时间</label>
+								<div class="layui-input-inline" style="width:220px">
+									<input type="radio" name="timeType" value="0" title="永久有效" lay-filter="timeType" checked="">
+									<input type="radio" name="timeType" value="1" title="自定义" lay-filter="timeType">
+								</div>
+								<div class="layui-input-inline resetper">
+									<input type="text" name="invalidTime" id="invalidTime" class="layui-input" lay-verify="invalidTime"
+									 placeholder="请选择时间">
+								</div>
+							</div>
+						</div>
+					</div>
+					<blockquote class="layui-elem-quote consumeTit">
+						<i class="leftline"></i>
+						分账类型设置
+					</blockquote>
+					<div class="vipdetail_B_D">
+						<div class="layui-form-item">
+							<div class="layui-input-inline widthauto">
+								<input type="checkbox" name="like1" lay-skin="primary" title="会员买卡" checked="">
+								<input type="checkbox" name="like1" lay-skin="primary" title="会员充值">
+								<input type="checkbox" name="like1" lay-skin="primary" title="付费买券">
+								<input type="checkbox" name="like1" lay-skin="primary" title="付费次/月卡">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="conBlock widthHalf">
+					<blockquote class="layui-elem-quote consumeTit">
+						<i class="leftline"></i>
+						固定分账账户
+						<div class="layui-btn layui-btn-xs subAcFullright" data-type="addDisP">
+							添加分销人
+						</div>
+					</blockquote>
+					<div class="vipdetail_B_D">
+						<table class="layui-hide" id="Fixedaccount" lay-filter="shop"></table>
+					</div>
+				</div>
+				<div class="conBlock widthHalf">
+					<blockquote class="layui-elem-quote consumeTit">
+						<i class="leftline"></i>
+						分账规则设置
+						<div class="layui-btn layui-btn-xs subAcFullright" data-type="addDisL">
+							添加分销人等级
+						</div>
+					</blockquote>
+					<div class="vipdetail_B_D">
+						<table class="layui-hide" id="Separaterules" lay-filter="shop"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/html" id="switchBar">
+			<input type="checkbox" name="recEnabled" lay-skin="switch" lay-filter="recEnabled" lay-text="启用|禁用" {{d.defaultFlag==1 ? 'checked' : ''}}  data-gradeNo="{{d.gradeNo}}" value="{{d.defaultFlag}}">
+		</script>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.defaultFlag==1 ? 'hide' : ''}}" lay-event="delete">删除</a>
+		</script>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					element = layui.element,
+					laydate = layui.laydate,
+					form = layui.form;
+
+
+				/*---------- 积分时效 ----------*/
+				form.on('radio(timeType)', function(data) {
+					if (data.value == 0) {
+						$('.resetper').css('display', 'none')
+					} else if (data.value == 1) {
+						$('.resetper').css('display', 'inline-block')
+					}
+				});
+
+
+				//方法级渲染
+				table.render({
+					elem: '#Fixedaccount',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers + '?merchantNumber=' +
+						merNumber,
+					method: "get",
+					height: 'full-350',
+					page: true,
+					id: 'gradeList',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if (res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.memberList,
+						}
+					},
+					cols: [
+						[{
+							field: 'name',
+							title: '姓名',
+							align: 'center',
+							width: 100,
+							templet: function(data) {
+								return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.name + '</span>'
+							}
+						}, {
+							field: 'cell',
+							title: '手机号',
+							align: 'center',
+							width: 120,
+						}, {
+							field: 'shopName',
+							title: '分账比例(%)<br>(会员买卡 / 会员充值 / 付费买券 / 付费次/月卡)',
+							align: 'center',
+							width: 320,
+							templet: function(data) {
+								return data.integral + ' / ' + data.integral + ' / ' + data.integral + ' / ' + data.integral
+							}
+						}, {
+							field: 'operation',
+							title: '操作',
+							align: 'left',
+							toolbar: "#tool",
+							minWidth: 150
+						}]
+					],
+					done: function(res, curr, count) {
+						parent.layer.closeAll('loading');
+						if (res.data == null) {
+							// layer.msg(res.msg)
+						} else {
+
+						}
+					}
+				});
+
+				//消费记录
+				table.render({
+					elem: '#Separaterules',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers + '?merchantNumber=' +
+						merNumber,
+					method: "get",
+					height: 'full-350',
+					page: true,
+					id: 'gradeList',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if (res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.memberList,
+						}
+					},
+					cols: [
+						[{
+							field: 'name',
+							title: '分销人等级',
+							align: 'center',
+							width: 100,
+							templet: function(data) {
+								return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.name + '</span>'
+							}
+						}, {
+							field: 'shopName',
+							title: '升级规则<br>(累计分账(元) / 累计交易(元) / 累计客户数(天))',
+							align: 'center',
+							width: 320,
+							templet: function(data) {
+								return data.integral + ' / ' + data.integral + ' / ' + data.integral
+							}
+						}, {
+							field: 'shopName',
+							title: '分账规则(%)<br>(会员买卡 / 会员充值 / 付费买券 / 付费次/月卡)',
+							align: 'center',
+							width: 320,
+							templet: function(data) {
+								return data.integral + ' / ' + data.integral + ' / ' + data.integral + ' / ' + data.integral
+							}
+						}]
+					],
+					done: function(res, curr, count) {
+						parent.layer.closeAll('loading');
+						if (res.data == null) {
+							// layer.msg(res.msg)
+						} else {
+
+						}
+					}
+				});
+
+				var $ = layui.$,
+					active = {
+						addDisP: function() {
+							layer.open({
+								type: 2,
+								title: '添加分销人',
+								area: ['700px', '450px'],
+								fixed: true, //不固定
+								maxmin: false,
+								content: 'test/iframe.html'
+							});
+						},
+						addDisL: function() {
+							layer.open({
+								type: 2,
+								title: '添加分销人等级',
+								area: ['700px', '450px'],
+								fixed: true, //不固定
+								maxmin: false,
+								content: 'test/iframe.html'
+							});
+						}
+					};
+				$('.layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+			});
+		</script>
+	</body>
+
+</html>
