@@ -142,8 +142,15 @@
 										// iframe.subPageadvert(data, userNumber)
 									}
 								});
-
+								var num = 0
 								var timer = setInterval(function() {
+									if(num > 15){
+										clearInterval(timer)
+										layer.closeAll()
+										layer.msg('授权失败')
+										
+									}
+									num ++
 									$.ajax({
 										type: 'get',
 										url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getAuthorizetInfo,

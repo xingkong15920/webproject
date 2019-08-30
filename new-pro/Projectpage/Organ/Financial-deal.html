@@ -56,7 +56,7 @@
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
                 <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
     </div>
-    <div class="x-body">
+    <div class="x-body" style="height:85%">
         <div class="layui-form x-so">
             <div class="layui-input-inline">
                 <input type="text" name="couponName" id="startTime" placeholder="开始日期" autocomplete="off" class="layui-input">
@@ -155,7 +155,18 @@
         </div>
     </div>
     <div class="x-body">
+        
         <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this qiehuan" style="width:90px" onclick="tab(0)">交易金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(1)">退款金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(2)">手续费</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(3)">实收金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(4)">交易笔数</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(5)">退款笔数</li>
+            </ul>
+        </div>
             <div class="grid-demo border" style="width:100%;overflow:auto">
                 <div id="main" style="height: 500px;width:100%"></div>
             </div>
@@ -182,6 +193,14 @@
     var ddData = []
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var Statement_Date = []
+    var orderTotalMoney = []
+    var orderCount = []
+    var orderMoney = []
+    var refundMoney = []
+    var shouxuMoney = []
+    var shishou = []
+    var tuikuanbishu = []
     var myDate = new Date();
     var nowY = myDate.getFullYear();
     var nowM = myDate.getMonth() + 1;
@@ -423,16 +442,32 @@
                 },
                 function(data) {
                     if (data.code == 1000) {
-                        var res = data.data.orderAmountList
-
-                        for (var j = 0; j < res.length; j++) {
-                            ddDate.push(res[j].date)
-                            ddData.push(res[j].orderTotalMoney)
+                        var data = data.data.orderAmountList
+                        CmsUtility.clearListArr(Statement_Date)
+                        CmsUtility.clearListArr(orderTotalMoney)
+                        CmsUtility.clearListArr(orderCount)
+                        CmsUtility.clearListArr(orderMoney)
+                        CmsUtility.clearListArr(refundMoney)
+                        CmsUtility.clearListArr(shouxuMoney)
+                        CmsUtility.clearListArr(shishou)
+                        CmsUtility.clearListArr(tuikuanbishu)
+                        for (var j = 0; j < data.length; j++) {
+                            Statement_Date.push(data[j].date)
+                            orderTotalMoney.push(data[j].orderTotalMoney)
+                            orderCount.push(data[j].refundOrderAmount)
+                            orderMoney.push(data[j].orderTotalMoney)
+                            refundMoney.push(data[j].poundageAmount)
+                            shouxuMoney.push(data[j].shishouAmount)
+                            shishou.push(data[j].successOrderNumber)
+                            tuikuanbishu.push(data[j].refundOrderNumber)
                         }
-                        ddDate.sort()
+                        // for (var j = 0; j < res.length; j++) {
+                        //     ddDate.push(res[j].date)
+                        //     orderTotalMoney.push(res[j].orderTotalMoney)
+                        // }
+                        // ddDate.sort()
                         // 为echarts对象加载数据
                         myChart.clear()
-                        console.log(ddData, ddDate)
                         myChart.setOption(option, 'true');
                     } else {
                         layer.msg(data.msg)
@@ -454,7 +489,78 @@
         })
     });
 
+    function tab(id) {
+    switch (id) {
+        case 0:
 
+            CmsUtility.clearListArr(orderTotalMoney)
+            for (let i = 0; i < orderMoney.length; i++) {
+                orderTotalMoney.push(orderMoney[i])
+            }
+
+            myChart.clear()
+            myChart.setOption(option);
+            // statements_1
+            break;
+        case 1:
+            CmsUtility.clearListArr(orderTotalMoney)
+            for (let i = 0; i < orderCount.length; i++) {
+                orderTotalMoney.push(orderCount[i])
+            }
+
+            myChart.clear()
+            myChart.setOption(option);
+            // statements_1
+            break;
+        case 2:
+
+            CmsUtility.clearListArr(orderTotalMoney)
+            for (let i = 0; i < refundMoney.length; i++) {
+                orderTotalMoney.push(refundMoney[i])
+            }
+
+            myChart.clear()
+            myChart.setOption(option);
+            // statements_1
+            break;
+        case 3:
+
+            CmsUtility.clearListArr(orderTotalMoney)
+            for (let i = 0; i < shouxuMoney.length; i++) {
+                orderTotalMoney.push(shouxuMoney[i])
+            }
+
+            myChart.clear()
+            myChart.setOption(option);
+            // statements_1
+            break;
+        case 4:
+
+            CmsUtility.clearListArr(orderTotalMoney)
+            for (let i = 0; i < shishou.length; i++) {
+                orderTotalMoney.push(shishou[i])
+            }
+
+            myChart.clear()
+            myChart.setOption(option);
+            // statements_1
+            break;
+        case 5:
+
+            CmsUtility.clearListArr(orderTotalMoney)
+            for (let i = 0; i < tuikuanbishu.length; i++) {
+                orderTotalMoney.push(tuikuanbishu[i])
+            }
+
+            myChart.clear()
+            myChart.setOption(option);
+            // statements_1
+            break;
+        default:
+            // statements_def
+            break;
+    }
+}
 
     var option = {
         grid: {
@@ -476,7 +582,7 @@
             }
         },
         legend: {
-            data: ['金额']
+            data: ''
         },
         calculable: true,
         xAxis: [{
@@ -487,7 +593,7 @@
             axisLine: {
                 onZero: false
             },
-            data: ddDate
+            data: Statement_Date
         }],
         yAxis: [{
             splitLine: {
@@ -506,7 +612,7 @@
             type: 'value'
         }],
         series: [{
-            name: '金额',
+            name: '',
             type: 'line',
             smooth: true,
             itemStyle: {
@@ -532,7 +638,7 @@
                     color: '#6e94ff'
                 }
             },
-            data: ddData
+            data: orderTotalMoney
         }]
     };
     </script>

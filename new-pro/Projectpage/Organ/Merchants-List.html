@@ -100,7 +100,7 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.merchantStatus==0 ? 'checked' : ''}}  orderNumber="{{d.orderNumber}}" value="{{d.merchantNumber}}">
 		</script>
 		<script type="text/html" id="switchBar1">
-			<input type="checkbox" name="consumptionPreferences1" lay-skin="switch" lay-filter="consumptionPreferences1" lay-text="启用|禁用" {{d.preLicensing==0 ? 'checked' : ''}}  orderNumber="{{d.orderNumber}}" value="{{d.merchantNumber}}">
+			<input type="checkbox" name="consumptionPreferences1" lay-skin="switch" lay-filter="consumptionPreferences1" lay-text="启用|禁用" {{d.openId==0 ? 'checked' : ''}}  orderNumber="{{d.orderNumber}}" value="{{d.merchantNumber}}">
 		</script>
 		<script type="text/html" id="switchBar2">
 			<input type="checkbox" name="consumptionPreferences2" lay-skin="switch" lay-filter="consumptionPreferences2" lay-text="启用|禁用" {{d.huaBai==0 ? 'checked' : ''}}  orderNumber="{{d.orderNumber}}" value="{{d.merchantNumber}}">
@@ -127,6 +127,7 @@
 			<a class="layui-btn layui-btn-xs" id="pass" lay-event="pass">密码</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" id="secretkey" lay-event="secretkey">秘钥</a>
+			<a class="layui-btn layui-btn-xs" id="model" lay-event="model">模块</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
 		<script src="../../common/config-organ.js"></script>
@@ -312,14 +313,14 @@
 								align: 'center',
 								toolbar: '#switchBar1',
 								width: 100,
-								title: '预授权',
+								title: '商户openId',
 							}
-							, {
-								align: 'center',
-								toolbar: '#switchBar2',
-								width: 100,
-								title: '花呗分期',
-							}
+							// , {
+							// 	align: 'center',
+							// 	toolbar: '#switchBar2',
+							// 	width: 100,
+							// 	title: '花呗分期',
+							// }
 							// , {
 							// 	align: 'center',
 							// 	toolbar: '#selectBar_rz',
@@ -393,10 +394,10 @@
 					var tjData = new Object();
 					tjData.institutionNumber = userNumber
 					tjData.merchantNumber = data.value;
-					tjData.preLicensing =this.checked?'0':'1';
+					tjData.openId =this.checked?'0':'1';
 					CmsUtility.postAjaxCall(
 						//系统设置
-						'VeMerchant/updateMerchanthuaBai',
+						'VeMerchant/updateMerchantOpenId',
 						tjData,
 						function(data){
 							if(data.code == 1000){
@@ -636,6 +637,23 @@
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
 								iframe.subPage(data, userNumber)
+							}
+						});
+					}else if(obj.event == 'model'){
+						layer.open({
+							type: 2,
+							title: '模块-' + data.merchantName,
+							shade: 0.5,
+							area: ['700px', '570px'],
+							maxmin: false,
+							resize: false,
+							content: ['Merchants-model.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data, userNumber)
+								sessionStorage.setItem(data.merchantNumber, JSON.stringify(data));
 							}
 						});
 					} else if(obj.event === 'logout') { //注销

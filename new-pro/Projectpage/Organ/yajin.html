@@ -48,46 +48,43 @@
 						<input type="text" name="couponName" id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
+						<input type="text" name="couponName" id="batch" placeholder="订单编号" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="couponName" id="paymentOrderNumber" placeholder="通道订单号" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="shopName" placeholder="门店名称" autocomplete="off" class="layui-input">
 					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="clerkName" placeholder="店员名称" autocomplete="off" class="layui-input">
 					</div>
-					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="orderNumber" placeholder="订单编号" autocomplete="off" class="layui-input">
-					</div>
-					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="batch" placeholder="支付单号" autocomplete="off" class="layui-input">
-					</div>
 					
-					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
-					</div>
-					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
-					</div>
+					
+					
+					
 					
 					
 				</div>
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="paymentOrderNumber" placeholder="通道订单号" autocomplete="off" class="layui-input">
-					</div>
-					<div class="layui-input-inline">
 						<select name="cardVoucherName" id="orderState">
 							<option value="">订单状态</option>
 							<option value="0">支付中</option>
 							<option value="1">成功未回调下游</option>
-							<option value="2">成功未回调下游</option>
-							<option value="3">成功未回调下游</option>
-							<option value="4">成功未回调下游</option>
-							<option value="5">成功未回调下游</option>
-							<option value="6">成功未回调下游</option>
-							<option value="7">成功未回调下游</option>
-							<option value="8">成功未回调下游</option>
+							<option value="3">失败</option>
+							<option value="4">全部退款</option>
+							<option value="5">部分退款</option>
+							<option value="6">异常订单</option>
+							<option value="7">退款中</option>
+							<option value="8">已撤销</option>
+							<option value="9">已消费押金</option>
 
 						</select>
 					</div>
+					<!-- <div class="layui-input-inline">
+						<input type="text" name="couponName" id="orderNumber" placeholder="支付单号" autocomplete="off" class="layui-input">
+					</div> -->
 					<div class="layui-input-inline">
 						<select name="type" id="orderSource">
 							<option value="">订单来源</option>
@@ -95,7 +92,12 @@
 							<option value="2">安卓</option>
 						</select>
 					</div>
-					
+					<div class="layui-input-inline">
+						<input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
+					</div>
 					
 					<div class="layui-input-inline coupons_screen">
 						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
@@ -175,20 +177,19 @@
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						//url: './json/vip-card.json',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=' + userNumber ,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'deposit/getDepositList' + '?institutionNumber=' + userNumber ,
 						// + userNumber ,
 						where:{
 							"merchantName":$('#merchantName').val().trim(),
 							"shopName":$('#shopName').val().trim(),
+							"clerkName":$('#clerkName').val().trim(),
 							"startTime":$('#startTime').val().trim(),
 							"endTime":$('#endTime').val().trim(),
 							"batch":$('#batch').val().trim(),
-							"orderNumber":$('#orderNumber').val().trim(),
-							"oneTransactionType":$('#oneTransactionType').val().trim(),
-							"transactionPassageway":$('#transactionPassageway').val(),
-							"subaccountNumber":$('#subaccountNumber').val(),
-
-							"orderState":3,
+							"orderNumber":'',
+							"paymentOrderNumber":$('#paymentOrderNumber').val().trim(),
+							"orderState":$('#orderState').val().trim(),
+							"orderSource":$('#orderSource').val().trim(),
 						},
 						elem: '#members',
 						height: 'full-210',
@@ -206,65 +207,86 @@
 								"count":res.data.count,
 								"code":res.code,
 								"msg":res.msg,
-							 	"data": changeRes(res.data.transactionReceiptResultBeanList)
+							 	"data": res.data.list
 							}
 						},
 						cols: [
 							[{
 								align: 'center',
-								field: 'batchordernumber',
-								width: 200,
-								title: '商户编号/商户名称',
-								templet:function(data){
-									return data.merchantNumber + '</br>' + data.merchantName
-								}
-
+								field: 'transactiontime',
+								title: '授权时间',
+								width:180
 							}, {
 								align: 'center',
 								field: 'shopName',
-								width: 200,
-								title: '店铺名称',
+								title: '商户名称/门店名称',
+								templet:function(data){
+									return data.merchantName + '</br>' + data.shopname
+								}
 								
 							}, {
 								align: 'center',
 								field: 'batch',
-								width: 200,
-								title: '订单号',
-								// templet:function(data){
-								// 	return  data.paymentOrderNumber + '</br>' +   data.batch + '</br>' + data.orderNumber
-								// }
+								title: '订单编号/通道订单号',
+								templet:function(data){
+									return  data.batch + '</br>'  + data.paymentOrderNumber
+								},
+								width:250
 							}, {
 								align: 'center',
 								field: 'paymentOrderNumber',
-								width: 200,
-								title: '通道订单号',
-								// templet:function(data){
-								// 	return  data.paymentOrderNumber + '</br>' +   data.batch + '</br>' + data.orderNumber
-								// }
+								title: '支付方式',
+								templet:function(data){
+									if(data.onetransactiontype == '0'){
+										return '支付宝'
+									}else{
+										return '微信'
+									}
+								},
+								width:100
 							}, {
 								align: 'center',
-								field: 'transactionPassageway',
-								width: 120,
-								title: '交易通道',
+								field: 'orderstate',
+								title: '订单状态',
+								width:200,
 								templet:function(data){
-									switch (data.paymentType) {
+									console.log(data.orderstate)
+									switch (data.orderstate) {
 										case 0:
-										return '支付宝'
+											return "支付中"
+											// statements_1
 											break;
 										case 1:
-										return '微信'
-											break;
-										case 2:
-										return '富友'
+											return "成功未回调下游"
+											// statements_1
 											break;
 										case 3:
-										return '易融码'
+											return "失败"
+											// statements_1
 											break;
 										case 4:
-										return '新大陆'
+											return "全部退款"
+											// statements_1
 											break;
-											case 5:
-										return '随行付'
+										case 5:
+											return "部分退款"
+											// statements_1
+											break;
+										case 6:
+											return "异常订单"
+											// statements_1
+											break;
+										case 7:
+											return "退款中"
+											// statements_1
+											break;
+										case 8:
+											return "已撤销"
+											// statements_1
+											break;
+										case 9:
+											return "已消费押金"
+											// statements_1
 											break;
 										default:
 											// statements_def
@@ -273,49 +295,28 @@
 								}
 							}, {
 								align: 'center',
-								field: 'subaccountNumber',
-								title: '子商户号',
-							}, {
-								align: 'center',
-								field: 'appid',
-								title: 'APPID',
-							}, {
-								align: 'center',
-								field: 'appid',
-								title: '支付方式',
+								field: 'batch',
+								title: '订单来源/订单金额',
 								templet:function(data){
-									if(data.transactionType == 0){
-										return '支付宝'
-									}else{
-										return '微信'
-									}
-								}
-							},  {
-								align: 'center',
-								field: 'experience',
-								title: '创建时间',
-								templet:function(data){
-									var ot = data.insertTime || ''
-									var tt = data.transactionTime || ''
-									return ot + '</br>' + tt
+									var os = data.orderSource == '1' ? '安卓':'PC插件'
+									return '订单来源：' +  os + '</br>' +  '订单金额：' +  data.transactionamount 
 								}
 							}, {
 								align: 'center',
-								field: 'transactionAmount',
-								title: '订单金额',
+								field: 'batch',
+								title: '授权金额/顾客消费/顾客退回',
 								templet:function(data){
-									return '￥' + data.transactionAmount
+									return '授权金额：' +  data.settlementamount + '</br>' + '顾客消费：' +   data.monetary + '</br>' + '顾客退回：' +   data.refundamount 
 								}
 							}, {
 								align: 'center',
-								field: 'errorDescribe',
-								title: '异常信息',
-							}, {
-								align: 'center',
-								field: 'errorDescribe',
-								toolbar:'#toolbar',
-								title: '操作',
-							}]
+								field: 'batch',
+								title: '完成时间/店员名称',
+								templet:function(data){
+									return  data.consumeTime + '</br>' +   data.clerkName 
+								}
+							}
+							]
 						],
 						page: true,
 						done: function(res, curr, count) {
