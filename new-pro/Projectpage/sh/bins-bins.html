@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.layui-tab-title {
+				background: #e5e5e5 !important;
+			}
+
+			.layui-tab-title li {
+				position: relative;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				overflow: hidden;
+			}
+
+			.layui-tab-title .layui-this {
+				background: #fff !important;
+			}
+
+			.layui-tab-title .layui-this:after {
+				/* display: none; */
+				position: absolute;
+				width: 100%;
+				height: 3px;
+				border: none !important;
+				background: #009688;
+			}
+
+			.vipdetail .vipdetail_B {
+				background: #fff;
+			}
+
+			.layui-form-switch {
+				width: 62px;
+			}
+
+			.layui-table-page select {
+				height: auto;
+			}
+
+			.layui-table-cell {
+				height: auto;
+			}
+
+			thead {
+				background-color: #f2f2f2;
+			}
+		</style>
+	</head>
+
+	<body class="iframe_index_1">
+		<div class="x-body vipdetail" style="padding: 0;">
+			<div class="layui-tab layui-tab-brief" lay-filter="vipcenter">
+				<ul class="layui-tab-title">
+					<li class="layui-this">营业统计</li>
+					<li>门店统计</li>
+					<li>员工统计</li>
+				</ul>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<div class="vipdetail_B" id="mDetails">
+							<div class="demoTable layui-form x-so">
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" placeholder="签到时间" name="startTime" id="startTime">
+								</div>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" placeholder="签退时间" name="endTime" id="endTime">
+								</div>
+								<div class="layui-input-inline">
+									<!-- 需要数据对接(完成) -->
+									<select name="clerkNumber" id="clerkNumber" lay-search>
+										<option value="">--请选择店员--</option>
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+									<button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
+								</div>
+							</div>
+							<table class="layui-hide" id="bins_stat" lay-filter="bins_stat"></table>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="vipdetail_B" id="cptionDetail">
+							<div class="demoTable layui-form x-so">
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" placeholder="签到时间" name="startTime" id="startTime">
+								</div>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" placeholder="签退时间" name="endTime" id="endTime">
+								</div>
+								<div class="layui-input-inline">
+									<!-- 需要数据对接(完成) -->
+									<select name="clerkNumber" id="clerkNumber" lay-search>
+										<option value="">--请选择店员--</option>
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+									<button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
+								</div>
+							</div>
+							<table class="layui-hide" id="bins_store" lay-filter="bins_store"></table>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="vipdetail_B">
+							<div class="demoTable layui-form x-so">
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" placeholder="签到时间" name="startTime" id="startTime">
+								</div>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" placeholder="签退时间" name="endTime" id="endTime">
+								</div>
+								<div class="layui-input-inline">
+									<!-- 需要数据对接(完成) -->
+									<select name="clerkNumber" id="clerkNumber" lay-search>
+										<option value="">--请选择店员--</option>
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+									<button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
+								</div>
+							</div>
+							<table class="layui-hide" id="bins_staff" lay-filter="bins_staff"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var _h = $(window).height();
+			var _h1 = $('.layui-tab-title').height() + 1;
+			var _h2 = _h - _h1 - 40
+			console.log(_h, _h1, _h2)
+			$('.x-iframe').height(_h2)
+			$('.layui-tab-item').height(_h2)
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					element = layui.element,
+					laydate = layui.laydate,
+					form = layui.form;
+
+
+				//营业统计
+				function bins_stat() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#bins_stat',
+						// url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
+						// 	merNumber,
+						url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+						method: "get",
+						height: 'full-170',
+						page: true,
+						id: 'vipList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.result,
+							}
+						},
+						cols: [
+							[{
+								title: '时间',
+								align: 'center',
+								field: 'insertTime',
+								width: 160,
+								rowspan: 2
+							}, {
+								title: '到账详情(收银+充值+成为会员+付费卡券+次/月卡) (不计会员钱包)',
+								align: 'center',
+								colspan: 7
+							}, {
+								title: '收银详情',
+								align: 'center',
+								colspan: 6
+							}, {
+								title: '成为会员<br>合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '付费卡券<br>合计',
+								field: 'cityb',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '次/月卡<br>合计',
+								field: 'city',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '营业额(收银+成为会员+付费卡券+次/月卡)<br>合计',
+								field: 'cityz',
+								align: 'center',
+								width: 295,
+								rowspan: 2
+							}, {
+								title: '充值详情',
+								align: 'center',
+								colspan: 6
+							}],
+							[{
+								title: '微信支付',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信代金券',
+								field: 'cityb',
+								align: 'center',
+								width: 100
+							}, {
+								title: '支付宝',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'vipBillitype',
+								align: 'center',
+								width: 90
+							}, {
+								title: '现金充值',
+								field: 'vipCardbgC',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信支付',
+								field: 'cityb',
+								align: 'center',
+								width: 90
+							}, {
+								title: '支付宝',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '会员钱包',
+								field: 'cityb',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信支付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '支付宝',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '现金充值',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+				//门店统计
+				function bins_store() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#bins_store',
+						// url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
+						// 	merNumber,
+						url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+						method: "get",
+						height: 'full-170',
+						page: true,
+						id: 'vipList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.result,
+							}
+						},
+						cols: [
+							[{
+								title: '时间',
+								align: 'center',
+								field: 'insertTime',
+								width: 160,
+								rowspan: 2
+							}, {
+								title: '到账详情(收银+充值+成为会员+付费卡券+次/月卡) (不计会员钱包)',
+								align: 'center',
+								colspan: 7
+							}, {
+								title: '收银详情',
+								align: 'center',
+								colspan: 6
+							}, {
+								title: '成为会员<br>合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '付费卡券<br>合计',
+								field: 'cityb',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '次/月卡<br>合计',
+								field: 'city',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '营业额(收银+成为会员+付费卡券+次/月卡)<br>合计',
+								field: 'cityz',
+								align: 'center',
+								width: 295,
+								rowspan: 2
+							}, {
+								title: '充值详情',
+								align: 'center',
+								colspan: 6
+							}],
+							[{
+								title: '微信支付',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信代金券',
+								field: 'cityb',
+								align: 'center',
+								width: 100
+							}, {
+								title: '支付宝',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'vipBillitype',
+								align: 'center',
+								width: 90
+							}, {
+								title: '现金充值',
+								field: 'vipCardbgC',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信支付',
+								field: 'cityb',
+								align: 'center',
+								width: 90
+							}, {
+								title: '支付宝',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '会员钱包',
+								field: 'cityb',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信支付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '支付宝',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '现金充值',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+				//员工统计
+				function bins_staff() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#bins_staff',
+						// url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades + '?merchantNumber=' +
+						// 	merNumber,
+						url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+						method: "get",
+						height: 'full-170',
+						page: true,
+						id: 'vipList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.result,
+							}
+						},
+						cols: [
+							[{
+								title: '时间',
+								align: 'center',
+								field: 'insertTime',
+								width: 160,
+								rowspan: 2
+							}, {
+								title: '到账详情(收银+充值+成为会员+付费卡券+次/月卡) (不计会员钱包)',
+								align: 'center',
+								colspan: 7
+							}, {
+								title: '收银详情',
+								align: 'center',
+								colspan: 6
+							}, {
+								title: '成为会员<br>合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '付费卡券<br>合计',
+								field: 'cityb',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '次/月卡<br>合计',
+								field: 'city',
+								align: 'center',
+								width: 90,
+								rowspan: 2
+							}, {
+								title: '营业额(收银+成为会员+付费卡券+次/月卡)<br>合计',
+								field: 'cityz',
+								align: 'center',
+								width: 295,
+								rowspan: 2
+							}, {
+								title: '充值详情',
+								align: 'center',
+								colspan: 6
+							}],
+							[{
+								title: '微信支付',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信代金券',
+								field: 'cityb',
+								align: 'center',
+								width: 100
+							}, {
+								title: '支付宝',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'vipBillitype',
+								align: 'center',
+								width: 90
+							}, {
+								title: '现金充值',
+								field: 'vipCardbgC',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信支付',
+								field: 'cityb',
+								align: 'center',
+								width: 90
+							}, {
+								title: '支付宝',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'cityz',
+								align: 'center',
+								width: 90
+							}, {
+								title: '会员钱包',
+								field: 'cityb',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '微信支付',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '支付宝',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '云闪付',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '银行卡',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}, {
+								title: '现金充值',
+								field: 'city',
+								align: 'center',
+								width: 90
+							}, {
+								title: '合计',
+								field: 'vipBillimoney',
+								align: 'center',
+								width: 90
+							}]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+
+				bins_stat()
+				//监听选项卡切换
+				element.on('tab(vipcenter)', function(data) {
+					// var src = $(".layui-tab-item.layui-show").find("iframe").attr("src");
+					switch (data.index) {
+						case 0:
+							bins_stat()
+							break;
+						case 1:
+							bins_store()
+							break;
+						case 2:
+							bins_staff()
+							break;
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>
