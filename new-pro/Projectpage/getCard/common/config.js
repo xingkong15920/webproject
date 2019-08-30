@@ -21,7 +21,8 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
+		ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
+		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
 		ApiRootUrl: server
 		// imgUrl:imgAdd
 	},
@@ -48,6 +49,12 @@ var CmsConfig = {
 		Mervip: {
 			// 上传图片
 			uploadImg: "cardManage/uploadImg",
+			// 查询图片列表
+			getImages: "server/getImages",
+			// 取消授权
+			cancelAuthorizet: "authorize/cancelAuthorizet",
+			// 会员充值
+			apppay: "recharge/pay",
 
 			// 商户会员卡
 			// 添加会员卡
@@ -56,6 +63,14 @@ var CmsConfig = {
 			getCard: "cardManage/getCard",
 			// 修改商户会员卡
 			updateCard: "cardManage/updateCard",
+
+			// 微信授权
+			// 获取授权信息
+			getAuthorizetInfo: "authorize/getAuthorizetInfo",
+			// 获取授权链接
+			geAuthorizetUrl: "authorize/geAuthorizetUrl",
+			// 获取机构授权信息
+			getInsAuthorizetInfo: "authorize/getInsAuthorizetInfo",
 
 			// 微信会员卡
 			// 添加微信会员卡
@@ -86,6 +101,15 @@ var CmsConfig = {
 			updateGrade: "memberGrade/updateGrade",
 			// 等级-删除等级
 			deleteGrade: "memberGrade/deleteGrade",
+			// 设置默认会员等级
+			setDefault: "memberGrade/setDefault",
+			// 查询默认等级
+			getDefaultGrade: "memberGrade/getDefaultGrade",
+			// 修改默认等级信息
+			updateDefaultGrade: "memberGrade/updateDefaultGrade",
+			// 根据手机号查询会员详情
+			getMemDetailsByPhone: "memberManage/getMemDetailsByPhone",
+
 			// 充值设置
 			// 充值-添加充值设置
 			addSet: "rechargeSet/addSet",
@@ -99,6 +123,13 @@ var CmsConfig = {
 			updateSet: "rechargeSet/updateSet",
 			// 充值-删除充值设置
 			deleteSet: "rechargeSet/deleteSet",
+
+			// 消费设置
+			// 消费-查询消费记录
+			getRecord: "consumption/getRecord",
+			// 消费-查询消费汇总
+			consumption: "census/consumption",
+
 			// 折扣设置
 			// 折扣-添加折扣设置
 			addZSet: "discountSet/addSet",
@@ -119,6 +150,8 @@ var CmsConfig = {
 			getChannels: "delivery/getChannels",
 			// 查询投放渠道详情
 			getChannelDetails: "delivery/getChannelDetails",
+			// 设置默认投放渠道
+			setDefaultChannel: "delivery/setDefaultChannel",
 			// 渠道-删除投放渠道
 			deleteChannel: "delivery/deleteChannel",
 			// 推荐设置
@@ -135,10 +168,25 @@ var CmsConfig = {
 			getMemDetails: "memberManage/getMemDetails",
 			// 修改会员数据
 			updateMemInfo: "memberManage/updateMemInfo",
+			// 修改会员等级
+			updateMemGrade: "memberManage/updateMemGrade",
 			// 删除会员
 			deleteMember: "memberManage/deleteMember",
 			// 查询资金变动
 			getCapitals: "memberManage/getCapitals",
+			// 资金变动
+			updateAccount: "memberManage/updateAccount",
+			// 查询消费记录
+			getCRecord: "consumption/getRecord",
+			// 查询充值记录
+			getRRecord: "recharge/getRecord",
+			// 查询积分变动
+			getIntegrals: "memberManage/getIntegrals",
+			// 查询退款流水
+			getMRefundTurnovers: "memberManage/getRefundTurnovers",
+			// 查询消费信息统计
+			getConsumInfo: "memberManage/getConsumInfo",
+
 			// 流水明细
 			// 查询充值流水
 			getTurnovers: "turnover/getTurnovers",
@@ -148,6 +196,9 @@ var CmsConfig = {
 			getRefcardTurs: "turnover/getRefcardTurs",
 			// 查询积分流水
 			getIntegralTurs: "turnover/getIntegralTurs",
+			// 查询消费流水
+			getConTurnovers: "turnover/getConTurnovers",
+
 			// 营销活动
 			// 添加营销活动
 			addActivity: "activity/addActivity",
@@ -157,6 +208,23 @@ var CmsConfig = {
 			deleteActivity: "activity/deleteActivity",
 			// 编辑营销活动
 			updateActivity: "activity/updateActivity",
+			// 添加支付即会员
+			addPayMemActivity: "activity/addPayMemActivity",
+
+			// 添加消费有礼
+			addconsumption: "activity/addconsumption",
+			// 添加分享有礼
+			share: "activity/share",
+			// 添加开卡有礼
+			openTheCard: "activity/openTheCard",
+			// 添加生日有礼
+			birthday: "activity/birthday",
+			// 查询活动列表
+			getActivityList: "activity/getActivityList",
+			// 查询全部活动信息
+			selAllMarketingCourtesyTable: "activity/selAllMarketingCourtesyTable",
+			// 删除活动
+			delActivityList: "activity/delActivityList",
 
 			// 充值统计
 			getRecahrge: "censusManage/getRecahrge",

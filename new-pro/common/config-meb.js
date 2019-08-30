@@ -9,7 +9,7 @@ if (Edition == 'qty') {
 	server = 'https://nb.51shanhe.com/shanhe-merchant/'
 	publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 } else if (Edition == 'zyh') {
-	server = 'http://192.168.1.66:80/shanhe-member/'
+	server = 'http://192.168.1.124:6007/shanhe-merchant/'
 	publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }
 /* 
@@ -24,8 +24,10 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.110:8088/shanhe-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
 		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
+		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
 		ApiRootUrl: server,
 		PubUrl: publicUrl
 		// imgUrl:imgAdd
@@ -76,6 +78,19 @@ var CmsConfig = {
 			getWCard: "wechat/getCard",
 			// 修改微信会员卡
 			updateWCard: "wechat/updateCard",
+
+			// 支付宝授权
+			getIsAuthorization: "aliCard/getIsAuthorization",
+			// 获取商户授权链接
+			getAppAuthUrl: "aliCard/getAppAuthUrl",
+			// 商户授权回调
+			memberChantCallBack: "aliCard/memberChantCallBack",
+			// 查询卡模板信息
+			getCradTemplateData: "aliCard/getCradTemplateData",
+			// 创建支付宝卡模板
+			createCardTemplate: "aliCard/createCardTemplate",
+			// 修改支付宝卡模板
+			updateCardTemplate: "aliCard/updateCardTemplate",
 
 			// 分享海报
 			// 查询分享海报
@@ -171,6 +186,8 @@ var CmsConfig = {
 			getMRefundTurnovers: "memberManage/getRefundTurnovers",
 			// 查询消费信息统计
 			getConsumInfo: "memberManage/getConsumInfo",
+			// 查询消费流水
+			getConTurnovers: "turnover/getConTurnovers",
 
 			// 流水明细
 			// 查询充值流水
@@ -181,6 +198,7 @@ var CmsConfig = {
 			getRefcardTurs: "turnover/getRefcardTurs",
 			// 查询积分流水
 			getIntegralTurs: "turnover/getIntegralTurs",
+
 			// 营销活动
 			// 添加营销活动
 			addActivity: "activity/addActivity",
@@ -192,6 +210,21 @@ var CmsConfig = {
 			updateActivity: "activity/updateActivity",
 			// 添加支付即会员
 			addPayMemActivity: "activity/addPayMemActivity",
+
+			// 添加消费有礼
+			addconsumption: "activity/addconsumption",
+			// 添加分享有礼
+			share: "activity/share",
+			// 添加开卡有礼
+			openTheCard: "activity/openTheCard",
+			// 添加生日有礼
+			birthday: "activity/birthday",
+			// 查询活动列表
+			getActivityList: "activity/getActivityList",
+			// 查询全部活动信息
+			selAllMarketingCourtesyTable: "activity/selAllMarketingCourtesyTable",
+			// 删除活动
+			delActivityList: "activity/delActivityList",
 
 			// 充值统计
 			getRecahrge: "censusManage/getRecahrge",

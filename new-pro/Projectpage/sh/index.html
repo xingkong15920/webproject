@@ -98,6 +98,12 @@
 				iframe.height(dh)
 			}
 		</script>
+		<style type="text/css">
+			.vipshow,
+			.subAcshow {
+				display: none;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -186,7 +192,7 @@
 							</li>
 						</ul>
 					</li>
-					<!-- <li class="layui-nav-item">
+					<li class="layui-nav-item subAcshow">
 						<a lay-href="sy-liushui.html">
 							<i class="icon icon icon-dingdanguanli"></i>
 							<cite>分账管理</cite>
@@ -212,7 +218,7 @@
 								</a>
 							</li>
 						</ul>
-					</li> -->
+					</li>
 					<!-- <li class="layui-nav-item">
 						<a lay-href="sy-yajin.html">
 							<i class="icon icon icon-mendianguanli"></i>
@@ -334,10 +340,10 @@
 							</li>
 						</ul>
 					</li>
-					<div class="layui-nav-item1">
+					<div class="layui-nav-item1 vipshow">
 						会员管理
 					</div>
-					<li class="layui-nav-item">
+					<li class="layui-nav-item vipshow">
 						<a href="javascript:;">
 							<i class="icon icon icon-ziyuan"></i>
 							<cite>会员卡管理</cite>
@@ -356,12 +362,12 @@
 									<cite>微信会员卡</cite>
 								</a>
 							</li>
-							<!-- <li>
+							<li>
 								<a lay-href="vipCardSet-ali.html">
 									<i class="icon icon icon-weixinhuiyuanqia"></i>
 									<cite>支付宝会员卡</cite>
 								</a>
-							</li> -->
+							</li>
 							<li>
 								<a lay-href="vipCardSet-p.html">
 									<i class="icon icon icon-fenxiangqia" style="font-size:20px;padding-right: 6px;"></i>
@@ -370,13 +376,13 @@
 							</li>
 						</ul>
 					</li>
-					<li class="layui-nav-item">
+					<li class="layui-nav-item vipshow">
 						<a lay-href="vipCenter.html">
 							<i class="icon icon icon-huiyuanguanli"></i>
 							<cite>会员管理</cite>
 						</a>
 					</li>
-					<li class="layui-nav-item">
+					<li class="layui-nav-item vipshow">
 						<a href="javascript:;">
 							<i class="icon icon icon-gongzibiao-liushuimingxi"></i>
 							<cite>流水明细</cite>
@@ -409,13 +415,13 @@
 							</li>
 						</ul>
 					</li>
-					<li class="layui-nav-item">
+					<li class="layui-nav-item vipshow_yx">
 						<a lay-href="vipactivity.html">
 							<i class="icon icon icon-yingxiao"></i>
 							<cite>营销活动</cite>
 						</a>
 					</li>
-					<li class="layui-nav-item">
+					<li class="layui-nav-item vipshow">
 						<a href="javascript:;">
 							<i class="icon icon icon-hy-tongji"></i>
 							<cite>会员统计</cite>
@@ -472,11 +478,38 @@
 		} else {
 			$('#adv').hide()
 		}
-		console.log($('.preLicensing'))
-		if (JSON.parse(sessionStorage.getItem("userSh")).preLicensing == "0") {
-			$('#preLicensing').show()
-		} else {
-			$('#preLicensing').hide()
+		var vipList = JSON.parse(sessionStorage.getItem("userSh")).list
+		for (let i = 0; i < vipList.length; i++) {
+			switch (vipList[i].type) {
+				case 3:
+					if (vipList[i].status == 0) {
+						$('.vipshow').show()
+					} else {
+						$('.vipshow').hide()
+					}
+					break;
+				case 6:
+					if (vipList[i].status == 0) {
+						$('.vipshow_yx').show()
+					} else {
+						$('.vipshow_yx').hide()
+					}
+					break;
+				case 8:
+					if (vipList[i].status == 0) {
+						$('.subAcshow').show()
+					} else {
+						$('.subAcshow').hide()
+					}
+					break;
+				case 13:
+					if (vipList[i].status == 0) {
+						$('#preLicensing').show()
+					} else {
+						$('#preLicensing').hide()
+					}
+					break;
+			}
 		}
 		CmsUtility.postAjaxCall(
 			//系统设置
