@@ -32,6 +32,19 @@
 			.layui-form-checkbox span {
 				width: 75px;
 			}
+
+			.mLines {
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+				padding: 5px 15px;
+				padding-left: 0;
+			}
+
+			.mLines span {
+				margin-right: 5px;
+				line-height: 1;
+			}
 		</style>
 	</head>
 
@@ -198,15 +211,18 @@
 									<input type="radio" name="cardLimit" value="2" title="支付宝领取">
 								</div>
 							</div>
-							<!-- <div class="layui-form-item max600">
-								<label class="layui-form-label">适用门店 :</label>
-								<div class="layui-input-block">
-									<input type="text" name="applyShops" class="layui-input" lay-verify="" id="symd" autocomplete="off"
-									 ts-selected="" placeholder="请选择适用门店">
+							<div class="layui-form-item max600">
+								<label class="layui-form-label mLines"><span><span class="redC">* </span>默认门店<br>默认店员</span> :</label>
+								<div class="layui-input-block" style="display: flex;justify-content: space-between;align-items: center;">
+									<input type="text" name="applyShops" class="layui-input" lay-verify="defaultMd" id="symd" readonly="readonly"
+									 autocomplete="off" ts-selected="" placeholder="请选择适用门店" style="width: 48%;">
+									<input type="text" name="applyShops" class="layui-input" lay-verify="" id="sydy" readonly="readonly"
+									 autocomplete="off" ts-selected="" placeholder="请选择适用门店" style="width: 48%;">
 								</div>
-								<label class="layui-form-label"></label>
-								<div class="layui-form-mid layui-word-aux">空为不限制，门店核销或会员到店消费前，需要效验此项</div>
-							</div> -->
+								<div class="layui-input-block">
+									<div class="layui-form-mid layui-word-aux">如投放渠道不选择对应门店和店员，那么注册门店则为默认门店，充值，消费同取默认门店</div>
+								</div>
+							</div>
 							<div class="layui-form-item max600">
 								<label class="layui-form-label"><span class="redC">* </span>操作提示 :</label>
 								<div class="layui-input-block">
@@ -296,6 +312,8 @@
 				var cardsetC = ["姓名", "手机号", "性别", "生日"]
 				var symdName = []
 				var symdList = []
+				var clerkNumbers = ''
+				var shopNumbers = ''
 				var colorC
 				var logo_id = '';
 				var image_id = ''
@@ -320,7 +338,13 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								cardCon = data.data
-								console.log(cardCon)
+								setcardCon()
+								$('#symd').attr('ts-selected', data.data.defaultShop)
+								$('#symd').val(data.data.defaultShop)
+								if (data.data.defaultClerk) {
+									$('#sydy').attr('ts-selected', data.data.defaultShop)
+									$('#sydy').val(data.data.defaultShop)
+								}
 								logo_id = data.data.logo
 								image_id = data.data.imageId
 								colorListIndex = $.inArray(data.data.color.split('#')[1], colorList)
@@ -392,7 +416,8 @@
 					checkedKey: 'shopNumber',
 					searchPlaceholder: '门店名称',
 					table: {
-						url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/moni',
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+							merNumber,
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -408,22 +433,82 @@
 						},
 						cols: [
 							[{
-								type: 'checkbox'
+								type: 'radio'
 							}, {
 								field: 'shopName',
 								title: '门店名称',
+								align: 'center',
 							}]
 						]
 					},
 					done: function(elem, data) {
-						var NEWJSON = []
+						shopNumbers = ''
+						var shopname = [],
+							shopNum = ''
 						layui.each(data.data, function(index, item) {
-							NEWJSON.push(item.title)
-							symdList.push(item.shopNumber)
+							shopNumbers = item.shopNumber
+							shopname.push(item.shopName)
+							newVal = item.shopNumber
+							shopNumber = item.shopNumber
 						})
-						elem.val("<span>" + NEWJSON.join("</span><span>") + "</span>")
-						console.log(symdList)
-					},
+						elem.val(shopname.join('||'))
+					}
+				});
+
+				$('#sydy').focus(function() {
+					if (shopNumbers == '') {
+						layer.msg('请先选择默认门店', function() {})
+						return
+					} else {
+						tableSelect.render({
+							elem: '#sydy',
+							searchKey: 'clerkName',
+							checkedKey: 'clerkNumber',
+							searchPlaceholder: '店员名称',
+							table: {
+								url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' +
+									merNumber + '&shopNumber=' + shopNumbers,
+								response: {
+									"statusCode": "1000", //解析接口状态
+								},
+								parseData: function(res) {
+									if (res.data == null) {
+										return
+									}
+									return {
+										"code": res.code,
+										"count": res.data.count,
+										"data": res.data.result,
+									}
+								},
+								cols: [
+									[{
+										type: 'radio'
+									}, {
+										field: 'clerkName',
+										title: '店员名称',
+										align: 'center',
+										width: 150,
+									}, {
+										field: 'shopName',
+										title: '所属门店',
+										align: 'center',
+										width: 200,
+									}]
+								]
+							},
+							done: function(elem, data) {
+								clerkNumbers = ''
+								var clerkName = ''
+								layui.each(data.data, function(index, item) {
+									clerkNumbers = item.clerkNumber
+									clerkName = item.clerkName
+									clerkNumber = item.clerkNumber
+								})
+								elem.val(clerkName)
+							}
+						})
+					}
 				})
 
 				/*---------- Input监听 ----------*/
@@ -604,22 +689,20 @@
 					}
 				});
 				//表单初始赋值   15629212743071660    15638668467844936
-				setTimeout(function() {
-					if (cardCon != '') {
-						form.val('basic', {
-							"cardName": cardCon.cardName,
-							"cardLimit": '' + cardCon.cardLimit + '',
-							"applyShops": cardCon.applyShops,
-							"operationalTips": cardCon.operationalTips,
-							"privilegeState": cardCon.privilegeState,
-							"useInstructions": cardCon.useInstructions,
-							"servicePhone": cardCon.servicePhone,
-							"shareTitle": cardCon.shareTitle,
-							"shareDescribe": cardCon.shareDescribe,
-						})
-						layer.closeAll('loading');
-					}
-				}, 500)
+				function setcardCon() {
+					form.val('basic', {
+						"cardName": cardCon.cardName,
+						"cardLimit": '' + cardCon.cardLimit + '',
+						"applyShops": cardCon.applyShops,
+						"operationalTips": cardCon.operationalTips,
+						"privilegeState": cardCon.privilegeState,
+						"useInstructions": cardCon.useInstructions,
+						"servicePhone": cardCon.servicePhone,
+						"shareTitle": cardCon.shareTitle,
+						"shareDescribe": cardCon.shareDescribe,
+					})
+					layer.closeAll('loading');
+				}
 				//表单验证
 				form.verify({
 					ltName: function(value) {
@@ -655,6 +738,11 @@
 							return '分享描述不能为空！';
 						}
 					},
+					defaultMd: function() {
+						if (shopNumbers == '') {
+							return '请选择默认门店'
+						}
+					}
 				});
 
 				var $ = layui.$,
@@ -704,6 +792,8 @@
 					data.applyShops = symdList
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
+					data.defaultShop = shopNumbers
+					data.defaultClerk = clerkNumbers
 					console.log(data)
 
 					// return
@@ -757,7 +847,9 @@
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
 					data.cardNo = merNumber
-					console.log(image_id)
+					data.defaultShop = shopNumbers
+					data.defaultClerk = clerkNumbers
+					console.log(data)
 					// return
 					// 发送请求
 					layer.load(2, {
