@@ -518,24 +518,24 @@
 				});
 
 				// 查询是否授权支付宝
-// 				$.ajax({
-// 					type: 'get',
-// 					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getIsAuthorization,
-// 					data: {
-// 						'authType': 2,
-// 						'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
-// 					},
-// 					dataType: 'json',
-// 					success: function(data) {
-// 						layer.closeAll('loading');
-// 						if (data.code === 1000) {} else if (data.code == '-2') {
-// 							layer.msg('未授权！')
-// 							window.location.href = 'unauth.html?authTypt=AliBa'
-// 						} else {
-// 
-// 						}
-// 					}
-// 				});
+				// 				$.ajax({
+				// 					type: 'get',
+				// 					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getIsAuthorization,
+				// 					data: {
+				// 						'authType': 2,
+				// 						'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
+				// 					},
+				// 					dataType: 'json',
+				// 					success: function(data) {
+				// 						layer.closeAll('loading');
+				// 						if (data.code === 1000) {} else if (data.code == '-2') {
+				// 							layer.msg('未授权！')
+				// 							window.location.href = 'unauth.html?authTypt=AliBa'
+				// 						} else {
+				// 
+				// 						}
+				// 					}
+				// 				});
 
 				//查询有无会员卡
 				getCardCon()
@@ -584,6 +584,7 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								cardCon = data.data
+								setcardCon(data.data)
 								wxCardNo = data.data.wxCardNo
 								$('.ltNamepv').text(data.data.subtitle)
 								$('#cardBimg').show();
@@ -1037,8 +1038,8 @@
 					} else if (data.value == 1) {
 						$('.card_cListli').eq(0).hide()
 						$('.card_cListli').eq(1).show()
-					// } else if (data.value == 2) {
-					// 	$('.card_cListli').hide()
+						// } else if (data.value == 2) {
+						// 	$('.card_cListli').hide()
 					}
 				});
 
@@ -1262,34 +1263,32 @@
 				});
 
 				//表单初始赋值
-				setTimeout(function() {
-					if (cardCon != '') {
-						form.val('basic', {
-							"subtitle": cardCon.subtitle,
-							"codeType": '' + cardCon.codeType + '',
-							"custom1": '' + cardCon.customs[0].customState + '',
-							"custom1lNInput": cardCon.customs[0].customName,
-							"custom1lLInput": cardCon.customs[0].customLink,
-							"custom1mIInput": cardCon.customs[0].appletLink,
-							"custom1mPInput": cardCon.customs[0].appletId,
-							"custom1mYInput": cardCon.customs[0].leadingInfo,
-							"custom2": '' + cardCon.customs[1].customState + '',
-							"custom2lNInput": cardCon.customs[1].customName,
-							"custom2lLInput": cardCon.customs[1].customLink,
-							"custom2mIInput": cardCon.customs[1].appletLink,
-							"custom2mPInput": cardCon.customs[1].appletId,
-							"custom2mYInput": cardCon.customs[1].leadingInfo,
-							"custom3": '' + cardCon.customs[2].customState + '',
-							"custom3lNInput": cardCon.customs[2].customName,
-							"custom3lLInput": cardCon.customs[2].customLink,
-							"custom3mIInput": cardCon.customs[2].appletLink,
-							"custom3mPInput": cardCon.customs[2].appletId,
-							"custom3mYInput": cardCon.customs[2].leadingInfo,
-						})
-						ltname()
-						layer.closeAll('loading');
-					}
-				}, 500)
+				function setcardCon() {
+					form.val('basic', {
+						"subtitle": cardCon.subtitle,
+						"codeType": '' + cardCon.codeType + '',
+						"custom1": '' + cardCon.customs[0].customState + '',
+						"custom1lNInput": cardCon.customs[0].customName,
+						"custom1lLInput": cardCon.customs[0].customLink,
+						"custom1mIInput": cardCon.customs[0].appletLink,
+						"custom1mPInput": cardCon.customs[0].appletId,
+						"custom1mYInput": cardCon.customs[0].leadingInfo,
+						"custom2": '' + cardCon.customs[1].customState + '',
+						"custom2lNInput": cardCon.customs[1].customName,
+						"custom2lLInput": cardCon.customs[1].customLink,
+						"custom2mIInput": cardCon.customs[1].appletLink,
+						"custom2mPInput": cardCon.customs[1].appletId,
+						"custom2mYInput": cardCon.customs[1].leadingInfo,
+						"custom3": '' + cardCon.customs[2].customState + '',
+						"custom3lNInput": cardCon.customs[2].customName,
+						"custom3lLInput": cardCon.customs[2].customLink,
+						"custom3mIInput": cardCon.customs[2].appletLink,
+						"custom3mPInput": cardCon.customs[2].appletId,
+						"custom3mYInput": cardCon.customs[2].leadingInfo,
+					})
+					ltname()
+					layer.closeAll('loading');
+				}
 				//监听提交
 				form.on('submit(update)', function(data) {
 					customs = []

@@ -365,6 +365,7 @@
 							success: function(data) {
 								if (data.code === 1000) {
 									cardCon = data.data
+									setcardCon(data.data)
 									cardBackgroundId = data.data.cardBackgroundId
 									if (data.data.gradeType == 0) {
 										$('.levellocked').show()
@@ -589,38 +590,36 @@
 
 
 					/*---------- 初始赋值 ----------*/
-					setTimeout(function() {
-						if (cardCon != '') {
-							$('#cardBgImg').attr('src', cardCon.cardBackgroundUrl);
-							upOldVal = '' + cardCon.upgradeState + ''
-							form.val('cardEdit', {
-								"gradeName": cardCon.gradeName,
-								"initMoney": cardCon.initMoney,
-								"giveMoney": cardCon.giveMoney,
-								"termValidity": cardCon.termValidity,
-								"consumeMoney": cardCon.consumeMoney,
-								"getIntegral": cardCon.getIntegral,
-								"singleGetIntegral": cardCon.singleGetIntegral,
-								"integral": cardCon.integral,
-								"initIntegral": cardCon.initIntegral,
-								"integralDeduct": cardCon.integralDeduct,
-								"upGetIntegral": cardCon.upGetIntegral,
-								"gradeType": '' + cardCon.gradeType + '',
-								"upgradeState": '' + cardCon.upgradeState + '',
-								"refundIntegralState": '' + cardCon.refundIntegralState + '',
-								"timeType": '' + cardCon.timeType + '',
-								"gradeExplain": cardCon.gradeExplain,
-								"upgradeConditions": cardCon.upgradeConditions,
-							})
+					function setcardCon(cardCon) {
+						$('#cardBgImg').attr('src', cardCon.cardBackgroundUrl);
+						upOldVal = '' + cardCon.upgradeState + ''
+						form.val('cardEdit', {
+							"gradeName": cardCon.gradeName,
+							"initMoney": cardCon.initMoney,
+							"giveMoney": cardCon.giveMoney,
+							"termValidity": cardCon.termValidity,
+							"consumeMoney": cardCon.consumeMoney,
+							"getIntegral": cardCon.getIntegral,
+							"singleGetIntegral": cardCon.singleGetIntegral,
+							"integral": cardCon.integral,
+							"initIntegral": cardCon.initIntegral,
+							"integralDeduct": cardCon.integralDeduct,
+							"upGetIntegral": cardCon.upGetIntegral,
+							"gradeType": '' + cardCon.gradeType + '',
+							"upgradeState": '' + cardCon.upgradeState + '',
+							"refundIntegralState": '' + cardCon.refundIntegralState + '',
+							"timeType": '' + cardCon.timeType + '',
+							"gradeExplain": cardCon.gradeExplain,
+							"upgradeConditions": cardCon.upgradeConditions,
+						})
 
-							if (cardCon.timeType == 1) {
-								form.val('cardEdit', {
-									"invalidTime": cardCon.invalidTime.split(' ')[0],
-								})
-							}
-							layer.closeAll('loading');
+						if (cardCon.timeType == 1) {
+							form.val('cardEdit', {
+								"invalidTime": cardCon.invalidTime.split(' ')[0],
+							})
 						}
-					}, 300)
+						layer.closeAll('loading');
+					}
 
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add)', function(data, index) {

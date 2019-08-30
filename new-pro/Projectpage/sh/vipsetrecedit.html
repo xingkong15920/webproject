@@ -147,6 +147,7 @@
 							success: function(data) {
 								if (data.code === 1000) {
 									setCon = data.data
+									setcardCon(data.data)
 									preferentialRecharges = data.data.preferentialRecharges
 									gradeNos = data.data.gradeNos
 									$('#levelSelect').val('已选 ' + data.data.gradeNos.length + ' 个等级')
@@ -166,10 +167,6 @@
 					}
 
 					getSetCon()
-					setTimeout(function() {
-						console.log(setCon)
-						console.log(preferentialRecharges)
-					}, 300)
 
 					tableSelect.render({
 						elem: '#levelSelect',
@@ -329,18 +326,15 @@
 
 
 					/*---------- 初始赋值 ----------*/
-					setTimeout(function() {
-						console.log(setCon)
-						if (setCon != '') {
-							form.val('setEdit', {
-								"rechargeCount": '' + setCon.rechargeCount + '',
-								"explain": '' + setCon.explain + '',
-								"remarks": '' + setCon.remarks + '',
-								"timeType": '' + setCon.timeType + ''
-							})
-							layer.closeAll('loading');
-						}
-					}, 300)
+					function setcardCon(setCon) {
+						form.val('setEdit', {
+							"rechargeCount": '' + setCon.rechargeCount + '',
+							"explain": '' + setCon.explain + '',
+							"remarks": '' + setCon.remarks + '',
+							"timeType": '' + setCon.timeType + ''
+						})
+						layer.closeAll('loading');
+					}
 
 					/*---------- 自定义验证规则 ----------*/
 					form.verify({

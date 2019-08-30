@@ -34,7 +34,8 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">归属门店：</label>
 							<div class="layui-input-inline max360" style="width:260px!important">
-								<input type="text" lay-verify="shopNumberList" autocomplete="off" readonly="readonly" placeholder="请选择归属门店" id="mdSelect" class="layui-input">
+								<input type="text" lay-verify="shopNumberList" autocomplete="off" readonly="readonly" placeholder="请选择归属门店" id="mdSelect"
+								 class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -142,6 +143,7 @@
 							success: function(data) {
 								if (data.code === 1000) {
 									memDetails = data.data
+									setcardCon(data.data)
 									gradeNos = data.data.gradeNo
 									shopNumber = data.data.shopNumber
 									$('#mdSelect').attr('ts-selected', data.data.shopNumber)
@@ -160,31 +162,31 @@
 						checkedKey: 'shopNumber',
 						searchPlaceholder: '门店名称',
 						table: {
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
-							merNumber,
-						response: {
-							"statusCode": "1000", //解析接口状态
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+								merNumber,
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.result,
+								}
+							},
+							cols: [
+								[{
+									type: 'radio'
+								}, {
+									field: 'shopName',
+									title: '门店名称',
+									align: 'center',
+								}]
+							]
 						},
-						parseData: function(res) {
-							if (res.data == null) {
-								return
-							}
-							return {
-								"code": res.code,
-								"count": res.data.count,
-								"data": res.data.result,
-							}
-						},
-						cols: [
-							[{
-								type: 'radio'
-							}, {
-								field: 'shopName',
-								title: '门店名称',
-								align: 'center',
-							}]
-						]
-					},
 						done: function(elem, data) {
 							layui.each(data.data, function(index, item) {
 								shopNumberList = item.shopNumber
@@ -224,18 +226,15 @@
 					});
 
 					/*---------- 初始赋值 ----------*/
-					setTimeout(function() {
-						console.log(memDetails)
-						if (memDetails != '') {
-							form.val('memdetail', {
-								"name": '' + memDetails.name + '',
-								"cell": '' + memDetails.cell + '',
-								"sex": '' + memDetails.sex + '',
-								"birthday": '' + memDetails.birthday + '',
-							})
-							layer.closeAll('loading');
-						}
-					}, 300)
+					function setcardCon(memDetails) {
+						form.val('memdetail', {
+							"name": '' + memDetails.name + '',
+							"cell": '' + memDetails.cell + '',
+							"sex": '' + memDetails.sex + '',
+							"birthday": '' + memDetails.birthday + '',
+						})
+						layer.closeAll('loading');
+					}
 
 					/*---------- 监听开关 ----------*/
 					//form.on('switch(level)', function(data) { //等级开关

@@ -114,6 +114,7 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								flwCon = data.data
+								setcardCon(data.data)
 								recommendNo = data.data.recommendNo
 								$('.addBtn').text('更新跟随推荐')
 								$('.addBtn').attr('lay-filter', 'update')
@@ -169,17 +170,15 @@
 				});
 
 				//表单初始赋值
-				setTimeout(function() {
-					if (flwCon != '') {
-						form.val('follow', {
-							"enabled": flwCon.enabled == 0 ? true : false,
-							"jumpUrl": flwCon.jumpUrl,
-							"text": flwCon.text,
-							"endTime": flwCon.endTime.split(' ')[0],
-						})
-						layer.closeAll('loading');
-					}
-				}, 300)
+				function setcardCon(flwCon) {
+					form.val('follow', {
+						"enabled": flwCon.enabled == 0 ? true : false,
+						"jumpUrl": flwCon.jumpUrl,
+						"text": flwCon.text,
+						"endTime": flwCon.endTime.split(' ')[0],
+					})
+					layer.closeAll('loading');
+				}
 
 				//监听提交-添加
 				form.on('submit(add)', function(data) {

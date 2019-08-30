@@ -405,6 +405,7 @@
 									$('#getCardBg').attr('src', data.data.posterImgUrl)
 								}
 								postCon = data.data
+								setcardCon(data.data)
 								poster_imgId = data.data.posterImgId
 								colorListIndex = $.inArray(data.data.posterColor.split('#')[1], colorList)
 								$('.chooseColor span').eq(colorListIndex).attr('class', 'card_bc' + colorListIndex +
@@ -701,20 +702,17 @@
 				window._changeImgId = changeImgId;
 
 				//表单初始赋值
-				setTimeout(function() {
-					if (postCon != '') {
-						console.log(postCon.posterTitle)
-						form.val('basic', {
-							"posterTitle": postCon.posterTitle,
-							"posterShareExplain": postCon.posterShareExplain,
-							"posButtRadius": postCon.posButtRadius,
-							"posButtOpacity": postCon.posButtOpacity,
-							"posterEnabled": postCon.posterEnabled == 0 ? true : false,
-						})
-						ltname()
-						layer.closeAll('loading');
-					}
-				}, 500)
+				function setcardCon(postCon) {
+					form.val('basic', {
+						"posterTitle": postCon.posterTitle,
+						"posterShareExplain": postCon.posterShareExplain,
+						"posButtRadius": postCon.posButtRadius,
+						"posButtOpacity": postCon.posButtOpacity,
+						"posterEnabled": postCon.posterEnabled == 0 ? true : false,
+					})
+					ltname()
+					layer.closeAll('loading');
+				}
 				//表单验证
 				form.verify({
 					ltName: function(value) {

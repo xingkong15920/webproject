@@ -156,6 +156,7 @@
 							success: function(data) {
 								if (data.code === 1000) {
 									diacountCon = data.data
+									setcardCon(data.data)
 									gradeNos = data.data.gradeNos
 									$('#levelSelect').val('已选 ' + data.data.gradeNos.length + ' 个等级')
 									$('#levelSelect').attr('ts-selected', data.data.gradeNos.join(','))
@@ -286,22 +287,19 @@
 					});
 
 					/*---------- 初始赋值 ----------*/
-					setTimeout(function() {
-						console.log(diacountCon)
-						if (diacountCon != '') {
-							form.val('disCountEdit', {
-								"wxPayState": !diacountCon.wxPayState,
-								"aliPayState": !diacountCon.aliPayState,
-								"cloudPayState": !diacountCon.cloudPayState,
-								"jdPayState": !diacountCon.jdPayState,
-								"discount": diacountCon.discount,
-								"minConsumMoney": diacountCon.minConsumMoney,
-								"holidayState": '' + diacountCon.holidayState + '',
-								"timeType": '' + diacountCon.timeType + ''
-							})
-							layer.closeAll('loading');
-						}
-					}, 300)
+					function setcardCon(diacountCon) {
+						form.val('disCountEdit', {
+							"wxPayState": !diacountCon.wxPayState,
+							"aliPayState": !diacountCon.aliPayState,
+							"cloudPayState": !diacountCon.cloudPayState,
+							"jdPayState": !diacountCon.jdPayState,
+							"discount": diacountCon.discount,
+							"minConsumMoney": diacountCon.minConsumMoney,
+							"holidayState": '' + diacountCon.holidayState + '',
+							"timeType": '' + diacountCon.timeType + ''
+						})
+						layer.closeAll('loading');
+					}
 
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add)', function(data, index) {
