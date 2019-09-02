@@ -24,6 +24,14 @@
 				justify-content: center;
 				align-items: center;
 			}
+			.shareBarBtn{
+				display: block;
+				margin: 5px 0 !important;
+			}
+
+			.hide {
+				display: none;
+			}
 		</style>
 	</head>
 
@@ -45,13 +53,14 @@
 			<input type="checkbox" name="discountabled" lay-skin="switch" lay-filter="discountabled" lay-text="开启|关闭" {{d.defaultFlag==1 ? 'checked' : ''}}  data-deliveryno="{{d.deliveryNo}}" value="{{d.defaultFlag}}">
 		</script>
 		<script type="text/html" id="shareBar">
-			<a class="layui-btn layui-btn-xs" lay-event="wxlink">微信卡券</a><br />
-			<a class="layui-btn layui-btn-xs" lay-event="shlink">领取链接</a>
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.aliGetCardUrl?'':'hide'}}" lay-event="zfblink">支付宝卡券</a>
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.wxCardUrl?'':'hide'}}" lay-event="wxlink">微信卡券</a>
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.getCardUrl?'':'hide'}}" lay-event="shlink">领取链接</a>
 		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
-		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/config-meb.js?v=1.0.3"></script>
 		<script src="../../common/utility.js"></script>
 		<script src="../../public/js/qrcode.js"></script>
 		<script>
@@ -134,7 +143,23 @@
 							align: 'left',
 							width: 350,
 							templet: function(data) {
-								return '微信卡券：' + data.wxCardUrl + '<br>领取链接：' + data.getCardUrl
+								var zfbUrl, wxUrl, cardUrl
+								if (data.aliGetCardUrl) {
+									zfbUrl = '支付宝卡券：' + data.aliGetCardUrl
+								} else {
+									zfbUrl = '支付宝卡券：无'
+								}
+								if (data.wxCardUrl) {
+									wxUrl = '<br>微信卡券：' + data.wxCardUrl
+								} else {
+									wxUrl = '<br>微信卡券：无'
+								}
+								if (data.getCardUrl) {
+									cardUrl = '<br>领取链接：' + data.getCardUrl
+								} else {
+									cardUrl = '<br>领取链接：无'
+								}
+								return zfbUrl + wxUrl + cardUrl
 							}
 						}, {
 							field: 'insertTime',
@@ -208,7 +233,19 @@
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
 
-					if (obj.event === 'wxlink') {
+					if (obj.event === 'zfblink') {
+						copyLinkM = data.aliGetCardUrl
+						downLinkMTit = data.deliveryNo
+						qrcode.makeCode(data.aliGetCardUrl);
+						layer.open({
+							type: 1,
+							shadeClose: true,
+							shade: 0.5,
+							title: false,
+							area: ['380px', '440px'],
+							content: $('.cardQrcode'),
+						});
+					} else if (obj.event === 'wxlink') {
 						copyLinkM = data.wxCardUrl
 						downLinkMTit = data.deliveryNo
 						qrcode.makeCode(data.wxCardUrl);

@@ -84,6 +84,10 @@
 			.layui-form-switch i {
 				top: 2px;
 			}
+
+			.hide {
+				display: none;
+			}
 		</style>
 	</head>
 
@@ -111,9 +115,9 @@
 					<div class="layui-form-item consumeCard">
 						<div class="layui-input-inline widthauto">
 							<label class="layui-form-label widthauto">会员卡ID :</label>
-							<div class="layui-form-mid">pHucvv9_7VbjAJflf8jy51X_egHE</div>
+							<div class="layui-form-mid clubcardId"></div>
 						</div>
-						<div class="layui-input-inline" style="display: flex;justify-content: space-between;align-items: center;width: calc(100% - 340px);margin: 0;">
+						<div class="layui-input-inline" style="display: flex;justify-content: space-between;align-items: center;margin-right:auto;">
 							<div class="layui-block" style="display: flex;justify-content: space-between;align-items: center;">
 								<label class="layui-form-label widthauto">会员卡状态 :</label>
 								<div class="layui-btn layui-btn-normal layui-btn-sm synchronous"></div>
@@ -130,7 +134,7 @@
 								<img src="./images/card_logo.png" id="ppLogopv">
 								<div class="">
 									<p class="ltN"></p>
-									<p class="ltNamepv"></p>
+									<!-- <p class="ltNamepv">123</p> -->
 								</div>
 							</div>
 							<div class="card_b_ld card_posi">
@@ -147,17 +151,13 @@
 							</div> -->
 						</div>
 						<ul class="card_qList">
-							<li class="card_qListli lishow">
+							<li class="card_qListli">
 								<h3>积分</h3>
 								<p>1200</p>
 							</li>
 							<li class="card_qListli">
 								<h3>余额</h3>
 								<p>1200<span>(元)</span></p>
-							</li>
-							<li class="card_qListli">
-								<h3>优惠券</h3>
-								<p>12<span>(张)</span></p>
 							</li>
 							<li class="card_qListli">
 								<h3>等级</h3>
@@ -201,10 +201,13 @@
 							<p>会员权益</p>
 							<i class="iconfont"></i>
 						</li>
-						<!-- <li class="card_fListli">
-							<p>公众号</p>
+						<li class="card_fListli" style="display: none;">
+							<div class="card_fListliDiv">
+								<p>联系电话</p>
+								<span class="lxCell"></span>
+							</div>
 							<i class="iconfont"></i>
-						</li> -->
+						</li>
 					</ul>
 				</div>
 				<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet" style="margin-bottom: 44px;">
@@ -219,7 +222,7 @@
 							<div class="layui-form-item max600">
 								<label class="layui-form-label"><span class="redC">* </span>卡标题</label>
 								<div class="layui-input-block">
-									<input type="text" name="subtitle" class="layui-input" lay-verify="ltName" id="ltName">
+									<input type="text" name="cardName" class="layui-input" lay-verify="ltName" id="ltName">
 								</div>
 							</div>
 							<div class="layui-form-item">
@@ -230,8 +233,8 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label"><span class="redC">* </span>条码展示</label>
 								<div class="layui-input-block barcodeshow">
-									<input type="radio" name="codeType" lay-filter="barcodeshow" value="0" title="二维码" checked="">
-									<input type="radio" name="codeType" lay-filter="barcodeshow" value="1" title="条形码">
+									<input type="radio" name="qrType" lay-filter="barcodeshow" value="0" title="二维码" checked="">
+									<input type="radio" name="qrType" lay-filter="barcodeshow" value="1" title="条形码">
 									<!-- <input type="radio" name="codeType" lay-filter="barcodeshow" value="2" title="不展示"> -->
 								</div>
 							</div>
@@ -239,15 +242,6 @@
 								<label class="layui-form-label">商户服务</label>
 								<div class="layui-input-block merservices">
 								</div>
-							</div>
-							<div class="layui-form-item max600">
-								<label class="layui-form-label">适用门店 :</label>
-								<div class="layui-input-block">
-									<input type="text" name="applyShops" class="layui-input" lay-verify="" id="symd" autocomplete="off"
-									 ts-selected="" placeholder="请选择适用门店">
-								</div>
-								<label class="layui-form-label"></label>
-								<div class="layui-form-mid layui-word-aux">空为不限制，门店核销或会员到店消费前，需要效验此项</div>
 							</div>
 						</div>
 						<!-- 自定义入口一 -->
@@ -269,6 +263,7 @@
 									<div class="layui-input-block">
 										<input type="text" name="custom1lNInput" class="layui-input customNameInput" id="custom1lNInput" value="推荐给朋友"
 										 placeholder="入口名称">
+										<input type="hidden" name="custom1lNId" class="hide" lay-ignore>
 									</div>
 								</div>
 								<div class="custom1-link">
@@ -321,6 +316,7 @@
 									<div class="layui-input-block">
 										<input type="text" name="custom2lNInput" class="layui-input customNameInput" id="custom2lNInput" value="会员卡详情"
 										 placeholder="入口名称">
+										<input type="hidden" name="custom2lNId" class="hide" lay-ignore>
 									</div>
 								</div>
 								<div class="custom2-link">
@@ -373,6 +369,7 @@
 									<div class="layui-input-block">
 										<input type="text" name="custom3lNInput" class="layui-input customNameInput" id="custom3lNInput" value="适用门店"
 										 placeholder="入口名称">
+										<input type="hidden" name="custom3lNId" class="hide" lay-ignore>
 									</div>
 								</div>
 								<div class="custom3-link">
@@ -476,7 +473,7 @@
 						<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
 							<div class="layui-block">
 								<div class="layui-footer" style="left: 0;text-align: center;">
-									<button class="layui-btn addBtn" lay-submit="" lay-filter="add">同步到微信</button>
+									<button class="layui-btn addBtn" lay-submit="" lay-filter="add">同步到支付宝</button>
 								</div>
 							</div>
 						</div>
@@ -495,9 +492,9 @@
 
 			var cardCon;
 			var chooseCnum
-			var wxCardNo
+			var templateId
 			var shopNumbers = []
-			var columnDVal = ["积分", "余额", "等级"]
+			var columnDVal = ["积分", "余额", "等级", "联系电话"]
 			var merchantSL = ["口碑店铺页"]
 			var imageTexts = []
 			var imgNum = 0
@@ -554,11 +551,9 @@
 						},
 						success: function(data) {
 							if (data.code === 1000) {
-								$('.ltN').text(data.data.cardName)
 								$('#ppLogopv').attr('src', data.data.logoUrl)
 								$('.card_b').css('background-color', data.data.color)
-								$('.synchronous').text(data.data.wechatSynchronism == 0 ? '未同步支付宝' : '已同步支付宝')
-								console.log(data.data.wechatSynchronism)
+								$('.lxCell').text(data.data.servicePhone)
 								if (data.data.localImgUrl != null) {
 									$('.card_b_bg').attr('src', data.data.localImgUrl)
 								} else {
@@ -584,9 +579,11 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								cardCon = data.data
+								$('.synchronous').text(data.data.wechatSynchronism == 0 ? '未同步支付宝' : '已同步支付宝')
 								setcardCon(data.data)
-								wxCardNo = data.data.wxCardNo
-								$('.ltNamepv').text(data.data.subtitle)
+								templateId = data.data.templateId
+								$('.clubcardId').text(data.data.alipayCardNo)
+								$('.ltN').text(data.data.cardSubtitle)
 								$('#cardBimg').show();
 								$('#cardBimg').attr('src', data.data.localImgUrl);
 								$('#ppLogopv').attr('src', data.data.logoUrl);
@@ -594,12 +591,7 @@
 								var strL = ''
 								var columnD = data.data.columnDisplay.split('||')
 								for (let i = 0; i < columnDVal.length; i++) {
-									if (columnD[0].indexOf(columnDVal[i]) >= 0) {
-										$('.card_qListli').eq(i).addClass('lishow');
-										strL +=
-											'<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" lay-filter="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '" checked="" disabled="">'
-									} else if (columnD.indexOf(columnDVal[i]) >= 0) {
+									if (columnD.indexOf(columnDVal[i]) >= 0) {
 										$('.card_qListli').eq(i).addClass('lishow');
 										strL +=
 											'<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" lay-filter="columnDisplay" value="' +
@@ -610,10 +602,15 @@
 											columnDVal[i] + '" title="' + columnDVal[i] + '">'
 									}
 								}
+								if (data.data.columnDisplay.indexOf('联系电话')) {
+									$('.card_fListli:last').show()
+								} else {
+									$('.card_fListli:last').hide()
+								}
 								$('.columnshow').html(strL)
 
 								//条码展示
-								switch (data.data.codeType) {
+								switch (data.data.qrType) {
 									case 0:
 										$('.card_cListli').eq(0).show()
 										$('.card_cListli').eq(1).hide()
@@ -629,14 +626,14 @@
 
 								// 商户服务
 								var strS = ''
-								var merchantS = data.data.merchantService.split('||')
+								var merchantS = data.data.deliveryChannel.split('||')
 								for (let i = 0; i < merchantSL.length; i++) {
 									if (merchantS.indexOf(merchantSL[i]) >= 0) {
-										strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
+										strS += '<input type="checkbox" class="set" lay-skin="primary" name="deliveryChannel" value="' +
 											merchantSL[i] +
 											'" title="' + merchantSL[i] + '" checked="">'
 									} else {
-										strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
+										strS += '<input type="checkbox" class="set" lay-skin="primary" name="deliveryChannel" value="' +
 											merchantSL[i] +
 											'" title="' + merchantSL[i] + '">'
 									}
@@ -644,48 +641,50 @@
 								$('.merservices').html(strS)
 
 								// 适用门店
-								if (data.data.applyShops.length > 0) {
-									var applyShopsList = []
-									for (i = 0; i < data.data.applyShops.length; i++) {
-										applyShopsList.push(data.data.applyShops[i].split('||')[0])
-										shopNumbers.push(data.data.applyShops[i].split('||')[0])
-									}
-									$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
-									$('#symd').attr('ts-selected', applyShopsList.join(','))
-								} else {
-									layer.msg('未查询到适用门店！')
-								}
+								// if (data.data.applyShops.length > 0) {
+								// 	var applyShopsList = []
+								// 	for (i = 0; i < data.data.applyShops.length; i++) {
+								// 		applyShopsList.push(data.data.applyShops[i].split('||')[0])
+								// 		shopNumbers.push(data.data.applyShops[i].split('||')[0])
+								// 	}
+								// 	$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
+								// 	$('#symd').attr('ts-selected', applyShopsList.join(','))
+								// } else {
+								// 	layer.msg('未查询到适用门店！')
+								// }
 
 
 								//图文列表
-								var strTW = ''
-								imageTexts = data.data.imageTexts
-								for (let i = 0; i < imageTexts.length; i++) {
-									strTW += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i +
-										'" />' +
-										'<div class="layui-input-block pinpaiLogo' + i + '">' +
-										'<div class="layui-upload-list">' +
-										'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
-										')">' +
-										'<img id="cardLoImg' + i + '" src="' + imageTexts[i].localImgUrl + '">' +
-										'<div class="upTips">+<br />上传图片</div></div>' +
-										'<div class="imgDel" data-id="cardLo' + i + '" style="display: none;">' +
-										'<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' +
-										'</div></div></div>' +
-										'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
-										'" class="layui-textarea" onclick="textIn(' + i + ')">' + imageTexts[i].text +
-										'</textarea><div class="delBtn delSale" data-id="' +
-										i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
-								}
-								$('#iwList').html(strTW)
+								// var strTW = ''
+								// imageTexts = data.data.imageTexts
+								// for (let i = 0; i < imageTexts.length; i++) {
+								// 	strTW += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i +
+								// 		'" />' +
+								// 		'<div class="layui-input-block pinpaiLogo' + i + '">' +
+								// 		'<div class="layui-upload-list">' +
+								// 		'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
+								// 		')">' +
+								// 		'<img id="cardLoImg' + i + '" src="' + imageTexts[i].localImgUrl + '">' +
+								// 		'<div class="upTips">+<br />上传图片</div></div>' +
+								// 		'<div class="imgDel" data-id="cardLo' + i + '" style="display: none;">' +
+								// 		'<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' +
+								// 		'</div></div></div>' +
+								// 		'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
+								// 		'" class="layui-textarea" onclick="textIn(' + i + ')">' + imageTexts[i].text +
+								// 		'</textarea><div class="delBtn delSale" data-id="' +
+								// 		i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+								// }
+								// $('#iwList').html(strTW)
 
 								//自定义显示
-								var cus1 = cardCon.customs[0].customState
-								switch (cardCon.customs[0].customState) {
+								var cus1 = cardCon.customs[0].settingType
+								var cus2 = cardCon.customs[1].settingType
+								var cus3 = cardCon.customs[2].settingType
+								switch (cus1) {
 									case 0:
 										$('.custom1B').hide()
 										$('#custom1lNInput').val('')
-										$('.card_fListli').eq(0).find('p').html('自定义入口一')
+										$('.card_fListli').eq(0).hide()
 										$('#custom1lNInput').removeAttr('lay-verify')
 										$('#custom1lLInput').removeAttr('lay-verify')
 										$('#custom1mIInput').removeAttr('lay-verify')
@@ -696,8 +695,8 @@
 										$('.custom1B').show()
 										$('.custom1-link').show()
 										$('.custom1-miniapp').hide()
-										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].customName)
-										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingInfo)
+										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].entryName)
+										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingWords)
 										$('#custom1lNInput').attr('lay-verify', 'entryname')
 										$('#custom1lLInput').attr('lay-verify', 'customlLInput')
 										$('#custom1mIInput').removeAttr('lay-verify')
@@ -708,8 +707,8 @@
 										$('.custom1B').show()
 										$('.custom1-link').hide()
 										$('.custom1-miniapp').show()
-										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].customName)
-										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingInfo)
+										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].entryName)
+										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingWords)
 										$('#custom1lNInput').attr('lay-verify', 'entryname')
 										$('#custom1lLInput').removeAttr('lay-verify')
 										$('#custom1mIInput').attr('lay-verify', 'custommIInput')
@@ -717,11 +716,11 @@
 										$('#custom1mYInput').attr('lay-verify', 'guideTips')
 										break;
 								}
-								switch (cardCon.customs[1].customState) {
+								switch (cus2) {
 									case 0:
 										$('.custom2B').hide()
 										$('#custom2lNInput').val('')
-										$('.card_fListli').eq(1).find('p').html('自定义入口二')
+										$('.card_fListli').eq(1).hide()
 										$('#custom2lNInput').removeAttr('lay-verify')
 										$('#custom2lLInput').removeAttr('lay-verify')
 										$('#custom2mIInput').removeAttr('lay-verify')
@@ -732,8 +731,8 @@
 										$('.custom2B').show()
 										$('.custom2-link').show()
 										$('.custom2-miniapp').hide()
-										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].customName)
-										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingInfo)
+										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].entryName)
+										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingWords)
 										$('#custom2lNInput').attr('lay-verify', 'entryname')
 										$('#custom2lLInput').attr('lay-verify', 'customlLInput')
 										$('#custom2mIInput').removeAttr('lay-verify')
@@ -744,8 +743,8 @@
 										$('.custom2B').show()
 										$('.custom2-link').hide()
 										$('.custom2-miniapp').show()
-										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].customName)
-										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingInfo)
+										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].entryName)
+										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingWords)
 										$('#custom2lNInput').attr('lay-verify', 'entryname')
 										$('#custom2lLInput').removeAttr('lay-verify')
 										$('#custom2mIInput').attr('lay-verify', 'custommIInput')
@@ -753,11 +752,11 @@
 										$('#custom2mYInput').attr('lay-verify', 'guideTips')
 										break;
 								}
-								switch (cardCon.customs[2].customState) {
+								switch (cus3) {
 									case 0:
 										$('.custom3B').hide()
 										$('#custom3lNInput').val('')
-										$('.card_fListli').eq(2).find('p').html('自定义入口三')
+										$('.card_fListli').eq(2).hide()
 										$('#custom3lNInput').removeAttr('lay-verify')
 										$('#custom3lLInput').removeAttr('lay-verify')
 										$('#custom3mIInput').removeAttr('lay-verify')
@@ -768,8 +767,8 @@
 										$('.custom3B').show()
 										$('.custom3-link').show()
 										$('.custom3-miniapp').hide()
-										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].customName)
-										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingInfo)
+										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].entryName)
+										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingWords)
 										$('#custom3lNInput').attr('lay-verify', 'entryname')
 										$('#custom3lLInput').attr('lay-verify', 'customlLInput')
 										$('#custom3mIInput').removeAttr('lay-verify')
@@ -780,8 +779,8 @@
 										$('.custom3B').show()
 										$('.custom3-link').hide()
 										$('.custom3-miniapp').show()
-										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].customName)
-										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingInfo)
+										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].entryName)
+										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingWords)
 										$('#custom3lNInput').attr('lay-verify', 'entryname')
 										$('#custom3lLInput').removeAttr('lay-verify')
 										$('#custom3mIInput').attr('lay-verify', 'custommIInput')
@@ -794,18 +793,13 @@
 								$('.addBtn').attr('lay-filter', 'update')
 							} else if (data.code === -2) {
 								layer.closeAll('loading');
+								$('.clubcardId').text('无')
 								layer.msg('商户未添加支付宝会员卡，请添加')
 								// 栏位展示
 								var strL = ''
 								for (let i = 0; i < columnDVal.length; i++) {
-									if (i == 0) {
-										strL += '<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] +
-											'" lay-filter="columnDisplay" checked="" disabled="">'
-									} else {
-										strL += '<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '" lay-filter="columnDisplay">'
-									}
+									strL += '<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" value="' +
+										columnDVal[i] + '" title="' + columnDVal[i] + '" lay-filter="columnDisplay">'
 								}
 								$('.columnshow').html(strL)
 
@@ -813,7 +807,7 @@
 								// 商户服务
 								var strS = ''
 								for (let i = 0; i < merchantSL.length; i++) {
-									strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
+									strS += '<input type="checkbox" class="set" lay-skin="primary" name="deliveryChannel" value="' +
 										merchantSL[i] +
 										'" title="' + merchantSL[i] + '">'
 								}
@@ -831,205 +825,211 @@
 					});
 				}
 
-				tableSelect.render({
-					elem: '#symd',
-					searchKey: 'shopName',
-					checkedKey: 'shopNumber',
-					searchPlaceholder: '门店名称',
-					table: {
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
-							merNumber,
-						response: {
-							"statusCode": "1000", //解析接口状态
-						},
-						parseData: function(res) {
-							if (res.data == null) {
-								return
-							}
-							return {
-								"code": res.code,
-								"count": res.data.count,
-								"data": res.data.result,
-							}
-						},
-						cols: [
-							[{
-								type: 'checkbox'
-							}, {
-								field: 'shopName',
-								title: '门店名称',
-								align: 'center',
-							}]
-						]
-					},
-					done: function(elem, data) {
-						shopNumbers.splice(0)
-						var shopname = []
-						layui.each(data.data, function(index, item) {
-							shopNumbers.push(item.shopNumber)
-							shopname.push(item.shopName)
-						})
-						elem.val('已选 ' + shopNumbers.length + ' 个门店')
-					}
-				})
+				// tableSelect.render({
+				// 	elem: '#symd',
+				// 	searchKey: 'shopName',
+				// 	checkedKey: 'shopNumber',
+				// 	searchPlaceholder: '门店名称',
+				// 	table: {
+				// 		url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+				// 			merNumber,
+				// 		response: {
+				// 			"statusCode": "1000", //解析接口状态
+				// 		},
+				// 		parseData: function(res) {
+				// 			if (res.data == null) {
+				// 				return
+				// 			}
+				// 			return {
+				// 				"code": res.code,
+				// 				"count": res.data.count,
+				// 				"data": res.data.result,
+				// 			}
+				// 		},
+				// 		cols: [
+				// 			[{
+				// 				type: 'checkbox'
+				// 			}, {
+				// 				field: 'shopName',
+				// 				title: '门店名称',
+				// 				align: 'center',
+				// 			}]
+				// 		]
+				// 	},
+				// 	done: function(elem, data) {
+				// 		shopNumbers.splice(0)
+				// 		var shopname = []
+				// 		layui.each(data.data, function(index, item) {
+				// 			shopNumbers.push(item.shopNumber)
+				// 			shopname.push(item.shopName)
+				// 		})
+				// 		elem.val('已选 ' + shopNumbers.length + ' 个门店')
+				// 	}
+				// })
 
 
 				/*---------- 图文添加 ----------*/
-				function saleListFor() {
-					var str = ''
-					for (let i = 0; i < imageTexts.length; i++) {
-						str += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i + '" />' +
-							'<div class="layui-input-block pinpaiLogo' + i + '">' +
-							'<div class="layui-upload-list">' +
-							'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
-							')">' +
-							'<img id="cardLoImg' + i + '" src="' + imageTexts[i].localImgUrl + '">' +
-							'<div class="upTips">+<br />上传图片</div></div>' +
-							'<div class="imgDel" data-id="cardLo' + i + '" style="display: none;">' +
-							'<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' +
-							'</div></div></div>' +
-							'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
-							'" class="layui-textarea" onclick="textIn(' + i + ')">' + imageTexts[i].text +
-							'</textarea><div class="delBtn delSale" data-id="' +
-							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
-					}
-					$('#iwList').html(str)
+				// 				function saleListFor() {
+				// 					var str = ''
+				// 					for (let i = 0; i < imageTexts.length; i++) {
+				// 						str += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i + '" />' +
+				// 							'<div class="layui-input-block pinpaiLogo' + i + '">' +
+				// 							'<div class="layui-upload-list">' +
+				// 							'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
+				// 							')">' +
+				// 							'<img id="cardLoImg' + i + '" src="' + imageTexts[i].localImgUrl + '">' +
+				// 							'<div class="upTips">+<br />上传图片</div></div>' +
+				// 							'<div class="imgDel" data-id="cardLo' + i + '" style="display: none;">' +
+				// 							'<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' +
+				// 							'</div></div></div>' +
+				// 							'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
+				// 							'" class="layui-textarea" onclick="textIn(' + i + ')">' + imageTexts[i].text +
+				// 							'</textarea><div class="delBtn delSale" data-id="' +
+				// 							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+				// 					}
+				// 					$('#iwList').html(str)
+				// 
+				// 					/*---------- 图文设置 ----------*/
+				// 					window.textIn = function(i) {
+				// 						$('#imgText' + i).on("input", function(e) {
+				// 							imageTexts[i].text = e.delegateTarget.value
+				// 						});
+				// 					}
+				// 					window.imgUp = function(i) {
+				// 						$('#upLogo' + i).click()
+				// 						imgNum = i
+				// 						$('.input_img').change(function() {
+				// 							layer.load(2, {
+				// 								shade: 0.5
+				// 							});
+				// 							uploadImg(this, function(data) {
+				// 								Imgbase = data
+				// 							});
+				// 							setTimeout(function() {
+				// 								var datas = {
+				// 									"imgBaseStr": Imgbase,
+				// 									"institutionNumber": "1004",
+				// 									"imgType": "0",
+				// 									"merchantNumber": "180913174959827"
+				// 								}
+				// 								// 发送请求
+				// 								$.ajax({
+				// 									type: "post",
+				// 									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+				// 									data: JSON.stringify(datas),
+				// 									dataType: "json",
+				// 									headers: {
+				// 										"Content-Type": "application/json"
+				// 									},
+				// 									success: function(data) {
+				// 										layer.closeAll('loading');
+				// 										if (data.code === 1000) {
+				// 											imageTexts[imgNum].imageId = data.data.imageId
+				// 											imageTexts[imgNum].localImgUrl = data.data.localImgUrl
+				// 											$('#cardLoImg' + imgNum).attr('src', data.data.localImgUrl);
+				// 											$('#cardLo' + imgNum).find('.upTips').hide();
+				// 										}
+				// 									}
+				// 								});
+				// 							}, 300)
+				// 						});
+				// 					}
+				// 					window.imgDel = function(i) {
+				// 						$('.layui-upload-img').on({
+				// 							mouseover: function() {
+				// 								var cardId = $(this).attr("id")
+				// 								var cardSrc = $('#' + cardId + 'Img' + i).attr("src")
+				// 								if (cardId === 'cardLo' && cardSrc) {
+				// 									$('.pinpaiLogo .imgDel').css({
+				// 										"display": "block",
+				// 										"opacity": 1
+				// 									})
+				// 								}
+				// 							}
+				// 						})
+				// 						$('.imgDel').on({
+				// 							mouseleave: function() {
+				// 								$('.imgDel').css({
+				// 									"display": "none",
+				// 									"opacity": 0
+				// 								})
+				// 							}
+				// 						})
+				// 						$('.imgDel').click(function(e) {
+				// 							var delId = e.currentTarget.dataset.id
+				// 							if (delId == 'cardLo' + i) {
+				// 								$('#cardLo' + i).find('img').remove()
+				// 								$(this).prev().find(".upTips").show()
+				// 							}
+				// 							$(this).hide()
+				// 						})
+				// 					}
+				// 				}
+				// saleListFor()
 
-					/*---------- 图文设置 ----------*/
-					window.textIn = function(i) {
-						$('#imgText' + i).on("input", function(e) {
-							imageTexts[i].text = e.delegateTarget.value
-						});
-					}
-					window.imgUp = function(i) {
-						$('#upLogo' + i).click()
-						imgNum = i
-						$('.input_img').change(function() {
-							layer.load(2, {
-								shade: 0.5
-							});
-							uploadImg(this, function(data) {
-								Imgbase = data
-							});
-							setTimeout(function() {
-								var datas = {
-									"imgBaseStr": Imgbase,
-									"institutionNumber": "1004",
-									"imgType": "0",
-									"merchantNumber": "180913174959827"
-								}
-								// 发送请求
-								$.ajax({
-									type: "post",
-									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
-									data: JSON.stringify(datas),
-									dataType: "json",
-									headers: {
-										"Content-Type": "application/json"
-									},
-									success: function(data) {
-										layer.closeAll('loading');
-										if (data.code === 1000) {
-											imageTexts[imgNum].imageId = data.data.imageId
-											imageTexts[imgNum].localImgUrl = data.data.localImgUrl
-											$('#cardLoImg' + imgNum).attr('src', data.data.localImgUrl);
-											$('#cardLo' + imgNum).find('.upTips').hide();
-										}
-									}
-								});
-							}, 300)
-						});
-					}
-					window.imgDel = function(i) {
-						$('.layui-upload-img').on({
-							mouseover: function() {
-								var cardId = $(this).attr("id")
-								var cardSrc = $('#' + cardId + 'Img' + i).attr("src")
-								if (cardId === 'cardLo' && cardSrc) {
-									$('.pinpaiLogo .imgDel').css({
-										"display": "block",
-										"opacity": 1
-									})
-								}
-							}
-						})
-						$('.imgDel').on({
-							mouseleave: function() {
-								$('.imgDel').css({
-									"display": "none",
-									"opacity": 0
-								})
-							}
-						})
-						$('.imgDel').click(function(e) {
-							var delId = e.currentTarget.dataset.id
-							if (delId == 'cardLo' + i) {
-								$('#cardLo' + i).find('img').remove()
-								$(this).prev().find(".upTips").show()
-							}
-							$(this).hide()
-						})
-					}
-				}
-				saleListFor()
+				// $('#addSale').click(function() {
+				// 	var newO = new Object()
+				// 	newO.text = ''
+				// 	newO.imageId = ''
+				// 	newO.localImgUrl = '../../public/images/default.png'
+				// 	imageTexts.push(newO)
+				// 	saleListFor()
+				// 	cli()
+				// 	char()
+				// 	give()
+				// })
 
-				$('#addSale').click(function() {
-					var newO = new Object()
-					newO.text = ''
-					newO.imageId = ''
-					newO.localImgUrl = '../../public/images/default.png'
-					imageTexts.push(newO)
-					saleListFor()
-					cli()
-					char()
-					give()
-				})
+				// function cli() {
+				// 	$('.delSale').click(function(e) {
+				// 		if (imageTexts.length == 1) {
+				// 			layer.msg('最少要保留一条图文信息')
+				// 			return
+				// 		}
+				// 		var data = this
+				// 		var num = data.getAttribute('data-id')
+				// 		imageTexts.splice(num, 1)
+				// 		saleListFor()
+				// 		cli()
+				// 		char()
+				// 		give()
+				// 	})
+				// }
 
-				function cli() {
-					$('.delSale').click(function(e) {
-						if (imageTexts.length == 1) {
-							layer.msg('最少要保留一条图文信息')
-							return
-						}
-						var data = this
-						var num = data.getAttribute('data-id')
-						imageTexts.splice(num, 1)
-						saleListFor()
-						cli()
-						char()
-						give()
-					})
-				}
-
-				function char() {
-					$('.charge').bind("input propertychange", function(event) {
-						imageTexts[this.dataset.id].text = this.value
-					})
-				}
-
-				function give() {
-					$('.give').bind("input propertychange", function(event) {
-						imageTexts[this.dataset.id].imageId = this.value
-					})
-				}
-				give()
-				char()
-				cli()
+				// 				function char() {
+				// 					$('.charge').bind("input propertychange", function(event) {
+				// 						imageTexts[this.dataset.id].text = this.value
+				// 					})
+				// 				}
+				// 
+				// 				function give() {
+				// 					$('.give').bind("input propertychange", function(event) {
+				// 						imageTexts[this.dataset.id].imageId = this.value
+				// 					})
+				// 				}
+				// 				give()
+				// 				char()
+				// 				cli()
 
 				/*---------- 单选复选监听 ----------*/
 				form.on('checkbox(columnDisplay)', function(data) {
-					if ($("input[name='columnDisplay']:checked").length > 3) {
-						$(this).prop("checked", false);
-						form.render('checkbox');
-						layer.msg("最多只能选择3个标签", function() {});
+					// if ($("input[name='columnDisplay']:checked").length > 3) {
+					// 	$(this).prop("checked", false);
+					// 	form.render('checkbox');
+					// 	layer.msg("最多只能选择3个标签", function() {});
+					// } else {
+					var checkNum = columnDVal.indexOf(data.elem.value)
+					if (data.elem.checked) {
+						$('.card_qListli').eq(checkNum).addClass('lishow');
+						if (checkNum == 3) {
+							$('.card_fListli:last').show()
+						}
 					} else {
-						var checkNum = columnDVal.indexOf(data.elem.value)
-						if (data.elem.checked) {
-							$('.card_qListli').eq(checkNum).addClass('lishow');
-						} else {
-							$('.card_qListli').eq(checkNum).removeClass('lishow')
+						$('.card_qListli').eq(checkNum).removeClass('lishow')
+						if (checkNum == 3) {
+							$('.card_fListli:last').hide()
 						}
 					}
+					// }
 				});
 				form.on('radio(barcodeshow)', function(data) {
 					if (data.value == 0) {
@@ -1060,7 +1060,7 @@
 						$('#custom1mIInput').removeAttr('lay-verify')
 						$('#custom1mPInput').removeAttr('lay-verify')
 						$('#custom1mYInput').removeAttr('lay-verify')
-						$('.card_fListli').eq(0).children('p').html('自定义入口一')
+						$('.card_fListli').eq(0).hide()
 					} else if (data.value == 1) {
 						$('.custom1B').show()
 						$('.custom1-link').show()
@@ -1112,7 +1112,7 @@
 						$('#custom2mIInput').removeAttr('lay-verify')
 						$('#custom2mPInput').removeAttr('lay-verify')
 						$('#custom2mYInput').removeAttr('lay-verify')
-						$('.card_fListli').eq(1).children('p').html('自定义入口二')
+						$('.card_fListli').eq(1).hide()
 					} else if (data.value == 1) {
 						$('.custom2B').show()
 						$('.custom2-link').show()
@@ -1164,7 +1164,7 @@
 						$('#custom3mIInput').removeAttr('lay-verify')
 						$('#custom3mPInput').removeAttr('lay-verify')
 						$('#custom3mYInput').removeAttr('lay-verify')
-						$('.card_fListli').eq(2).children('p').html('自定义入口三')
+						$('.card_fListli').eq(2).hide()
 					} else if (data.value == 1) {
 						$('.custom3B').show()
 						$('.custom3-link').show()
@@ -1230,6 +1230,11 @@
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
+					ltName: function(value) {
+						if (value == '') {
+							return '卡标题不能为空！'
+						}
+					},
 					guideTips: function(value) {
 						if (value != '') {
 							if (value.length > 5) {
@@ -1265,26 +1270,23 @@
 				//表单初始赋值
 				function setcardCon() {
 					form.val('basic', {
-						"subtitle": cardCon.subtitle,
-						"codeType": '' + cardCon.codeType + '',
-						"custom1": '' + cardCon.customs[0].customState + '',
-						"custom1lNInput": cardCon.customs[0].customName,
-						"custom1lLInput": cardCon.customs[0].customLink,
-						"custom1mIInput": cardCon.customs[0].appletLink,
-						"custom1mPInput": cardCon.customs[0].appletId,
-						"custom1mYInput": cardCon.customs[0].leadingInfo,
-						"custom2": '' + cardCon.customs[1].customState + '',
-						"custom2lNInput": cardCon.customs[1].customName,
-						"custom2lLInput": cardCon.customs[1].customLink,
-						"custom2mIInput": cardCon.customs[1].appletLink,
-						"custom2mPInput": cardCon.customs[1].appletId,
-						"custom2mYInput": cardCon.customs[1].leadingInfo,
-						"custom3": '' + cardCon.customs[2].customState + '',
-						"custom3lNInput": cardCon.customs[2].customName,
-						"custom3lLInput": cardCon.customs[2].customLink,
-						"custom3mIInput": cardCon.customs[2].appletLink,
-						"custom3mPInput": cardCon.customs[2].appletId,
-						"custom3mYInput": cardCon.customs[2].leadingInfo,
+						"cardName": cardCon.cardName,
+						"qrType": '' + cardCon.qrType + '',
+						"custom1": '' + cardCon.customs[0].settingType + '',
+						"custom1lNInput": cardCon.customs[0].entryName,
+						"custom1lNId": cardCon.customs[0].id,
+						"custom1lLInput": cardCon.customs[0].customLinks,
+						"custom1mYInput": cardCon.customs[0].leadingWords,
+						"custom2": '' + cardCon.customs[1].settingType + '',
+						"custom2lNInput": cardCon.customs[1].entryName,
+						"custom2lNId": cardCon.customs[1].id,
+						"custom2lLInput": cardCon.customs[1].customLinks,
+						"custom2mYInput": cardCon.customs[1].leadingWords,
+						"custom3": '' + cardCon.customs[2].settingType + '',
+						"custom3lNInput": cardCon.customs[2].entryName,
+						"custom3lNId": cardCon.customs[2].id,
+						"custom3lLInput": cardCon.customs[2].customLinks,
+						"custom3mYInput": cardCon.customs[2].leadingWords,
 					})
 					ltname()
 					layer.closeAll('loading');
@@ -1298,37 +1300,36 @@
 					// })
 					for (var i = 1; i < 4; i++) {
 						var customNamel = new Object()
-						customNamel.customNo = i
-						customNamel.customState = data['custom' + i]
-						customNamel.customName = data['custom' + i + 'lNInput']
-						customNamel.customLink = data['custom' + i + 'lLInput']
-						customNamel.leadingInfo = data['custom' + i + 'mYInput']
-						customNamel.appletId = data['custom' + i + 'mIInput']
-						customNamel.appletLink = data['custom' + i + 'mPInput']
+						customNamel.settingType = data['custom' + i]
+						customNamel.entryName = data['custom' + i + 'lNInput']
+						customNamel.customLinks = data['custom' + i + 'lLInput']
+						customNamel.leadingWords = data['custom' + i + 'mYInput']
+						customNamel.leadingWords = data['custom' + i + 'mYInput']
+						customNamel.id = data['custom' + i + 'lNId']
 						customs.push(customNamel)
 					}
 					data.customs = customs
-					data.imageTexts = imageTexts
+					// data.imageTexts = imageTexts
 
 					var arrc = new Array();
 					var arrm = new Array();
 					$("input:checkbox[name='columnDisplay']:checked").each(function(i) {
 						arrc[i] = $(this).val();
 					});
-					$("input:checkbox[name='merchantService']:checked").each(function(i) {
+					$("input:checkbox[name='deliveryChannel']:checked").each(function(i) {
 						arrm[i] = $(this).val();
 					});
 					data.columnDisplay = arrc.join('||');
-					data.merchantService = arrm.join('||');
+					data.deliveryChannel = arrm.join('||');
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
-					data.wxCardNo = wxCardNo
-					data.applyShops = shopNumbers
-					if (shopNumbers != '') {
-						data.shopJurisdiction = 1
-					} else {
-						data.shopJurisdiction = 0
-					}
+					data.templateId = templateId
+					// data.applyShops = shopNumbers
+					// if (shopNumbers != '') {
+					// 	data.shopJurisdiction = 1
+					// } else {
+					// 	data.shopJurisdiction = 0
+					// }
 					console.log(data)
 					layer.load(2, {
 						shade: 0.5
@@ -1337,7 +1338,7 @@
 					// 发送请求
 					$.ajax({
 						type: "post",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateWCard,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateCardTemplate,
 						data: JSON.stringify(data),
 						dataType: "json",
 						headers: {
@@ -1365,36 +1366,34 @@
 					// })
 					for (var i = 1; i < 4; i++) {
 						var customNamel = new Object()
-						customNamel.customNo = i
-						customNamel.customState = data['custom' + i]
-						customNamel.customName = data['custom' + i + 'lNInput']
-						customNamel.customLink = data['custom' + i + 'lLInput']
-						customNamel.leadingInfo = data['custom' + i + 'mYInput']
-						customNamel.appletId = data['custom' + i + 'mIInput']
-						customNamel.appletLink = data['custom' + i + 'mPInput']
+						customNamel.settingType = data['custom' + i]
+						customNamel.entryName = data['custom' + i + 'lNInput']
+						customNamel.customLinks = data['custom' + i + 'lLInput']
+						customNamel.leadingWords = data['custom' + i + 'mYInput']
+						customNamel.id = data['custom' + i + 'lNId']
 						customs.push(customNamel)
 					}
 					data.customs = customs
-					data.imageTexts = imageTexts
+					// data.imageTexts = imageTexts
 
 					var arrc = new Array();
 					var arrm = new Array();
 					$("input:checkbox[name='columnDisplay']:checked").each(function(i) {
 						arrc[i] = $(this).val();
 					});
-					$("input:checkbox[name='merchantService']:checked").each(function(i) {
+					$("input:checkbox[name='deliveryChannel']:checked").each(function(i) {
 						arrm[i] = $(this).val();
 					});
 					data.columnDisplay = arrc.join('||');
-					data.merchantService = arrm.join('||');
+					data.deliveryChannel = arrm.join('||');
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
-					data.applyShops = shopNumbers
-					if (shopNumbers != '') {
-						data.shopJurisdiction = 1
-					} else {
-						data.shopJurisdiction = 0
-					}
+					// data.applyShops = shopNumbers
+					// if (shopNumbers != '') {
+					// 	data.shopJurisdiction = 1
+					// } else {
+					// 	data.shopJurisdiction = 0
+					// }
 					console.log(data)
 					layer.load(2, {
 						shade: 0.5
@@ -1403,7 +1402,7 @@
 					// 发送请求
 					$.ajax({
 						type: "post",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addWCard,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.createCardTemplate,
 						data: JSON.stringify(data),
 						dataType: "json",
 						headers: {
@@ -1435,10 +1434,10 @@
 			})
 
 			function ltname() {
-				$('.ltNamepv').text($("#ltName").val())
+				$('.ltN').text($("#ltName").val())
 				$("#ltName").on("input", function(e) {
 					//获取input输入的值
-					$('.ltNamepv').text(e.delegateTarget.value)
+					$('.ltN').text(e.delegateTarget.value)
 				});
 			}
 
