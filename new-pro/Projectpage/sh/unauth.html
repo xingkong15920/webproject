@@ -75,7 +75,12 @@
 				<i class="layui-icon layui-icon-face-cry unauthIcon"></i>
 				<h3 class="unauthTit"><span class="authName"></span>配置未授权</h3>
 				<p class="unauthTip">使用此功能需要授权<span class="authName"></span>配置(<strong>仅限官方通道商户使用</strong>)，如有问题请联系代理商处理。</p>
-				<div class="layui-btn unauthBtn" data-type="reload">点击授权</div>
+				<div>
+					<div class="layui-btn"  id="useIns">代制会员卡</div>
+				
+					<div class="layui-btn unauthBtn" data-type="reload">点击授权</div>
+				</div>
+				
 				<div class="cardQrcode" style="display: none;">
 					<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
 				</div>
@@ -114,8 +119,37 @@
 					break;
 			}
 
+			
 			var recommendNo, flwCon
-
+			$('#useIns').click(function(){
+				layer.confirm('确定要使用代制模式吗', {
+								btn: ['取消', '确定'] //按钮
+							}, function() {
+								layer.closeAll()
+							},function(){
+								var ob = new Object()
+								ob.cardType = 1
+								ob.merchantNumber = JSON.parse(sessionStorage.getItem('userSh')).Number
+								$.ajax({
+									type: 'post',
+									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'cardManage/setMerCardType',
+									data:JSON.stringify(ob),
+									dataType: 'json',
+									headers:{
+						                "Content-Type":"application/json"
+						            },
+									success: function(data) {
+										layer.msg(data.msg)
+										if(data.code == 1000){
+											setTimeout(function(){
+												window.history.go(-1)
+											},500)
+										}
+									}
+								});
+							})
+				
+			})
 			layui.use(['layer'], function() {
 				var $ = layui.jquery,
 					layer = layui.layer;
@@ -128,6 +162,18 @@
 							}, function() {
 								layer.closeAll()
 							}, function() {
+								$.ajax({
+									type: 'get',
+									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'cardManage/setMerCardType',
+									data: {
+										'cardType': '0',
+										'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
+									},
+									dataType: 'json',
+									success: function(data) {
+										
+									}
+								});
 								layer.open({
 									type: 2,
 									title: '微信授权',

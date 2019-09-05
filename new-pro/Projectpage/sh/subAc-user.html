@@ -28,22 +28,35 @@
 					<button class="layui-btn" data-type="reload" id="search"><i class="layui-icon">&#xe615;</i></button>
 				</div>
 			</div>
-			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
+			<xblock>
+				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加分销人</button>
+			</xblock>
+			<table class="layui-hide" id="LAY_table_bill" lay-filter="shop"></table>
+		</div>
+		<div class="cardQrcode" style="display: none;">
+			<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="recEnabled" lay-skin="switch" lay-filter="recEnabled" lay-text="启用|禁用" {{d.defaultFlag==1 ? 'checked' : ''}}  data-gradeNo="{{d.gradeNo}}" value="{{d.defaultFlag}}">
+			<input type="checkbox" name="recEnabled" lay-skin="switch" lay-filter="recEnabled" lay-text="启用|禁用" {{d.disable==0 ? 'checked' : ''}}  data-gradeNo="{{d.gradeNo}}" value="{{d.defaultFlag}}">
 		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.defaultFlag==1 ? 'hide' : ''}}" lay-event="delete">删除</a>
 		</script>
+		<script type="text/html" id="twoCode">
+			<a class="ewmBtn" onclick='ewm("{{d.distributionNumber}}")' style="cursor:pointer;color:rgb(62, 132, 233)">查看</a>
+		</script>
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
+		<script src="../../public/js/qrcode.js"></script>
 		<script>
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
-
+			var qrcode = new QRCode(document.getElementById("qrcode"), {
+				width: 340,
+				height: 340
+			});
 			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
 					laydate = layui.laydate,
@@ -60,11 +73,14 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getTransactionList + '?merchantNumber=' +
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'AccountManage/getDistributorInfo?merchantNumber=' +
 							userNumber,
 						where: {
-							"startTime": '2019-08-01',
-							"endTime": '2019-08-21',
+							
+							"fixedAccount":0,
+							"institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+							"name":"",
+							"tell":"",
 						},
 						method: "post",
 						height: "full-124",
@@ -80,7 +96,7 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": changeRes(res.data.result),
+								"data":res.data.distributorInfos,
 							}
 						},
 						cols: [
@@ -88,71 +104,52 @@
 								field: 'orderTime',
 								title: '二维码',
 								align: 'center',
-								minWidth: 160
+								minWidth: 160,
+								toolbar: "#twoCode",
+
 							}, {
-								field: 'clerkName',
+								field: 'name',
 								title: '分销人姓名',
 								align: 'center',
 								minWidth: 200
 							}, {
-								field: 'batch',
-								title: '分销人手机号',
+								field: 'tell',
+								title:'分销人手机号',
 								align: 'center',
-								minWidth: 220,
-								templet: function(data) {
-									return '13081058585'
-								}
+								minWidth: 220
 							}, {
-								field: 'batch',
+								field: 'gradeName',
 								title: '分销人等级',
 								align: 'center',
 								minWidth: 220,
-								templet: function(data) {
-									switch (data.onePaymentTypeName) {
-										case '0':
-											return '特级分销'
-											break;
-										case '1':
-											return '高级分销'
-											break;
-									}
-								}
+								
 							}, {
 								field: 'clerkName',
 								title: '分销人类型',
 								align: 'center',
 								minWidth: 100,
 								templet: function(data) {
-									switch (data.onePaymentTypeName) {
-										case '0':
+									switch (data.distributionType) {
+										case 1:
 											return '商户'
 											break;
-										case '1':
+										case 0:
 											return '个人'
 											break;
 									}
 								}
 							}, {
-								field: 'onePaymentTypeName',
-								title: '邀请会员数',
+								field: 'memberCount',
+								title: '邀请会员人数',
 								align: 'center',
-								minWidth: 120,
 							}, {
-								field: 'onePaymentTypeName',
-								title: '累计销售金额',
+								field: 'transactionAmount',
+								title: '累计交易金额',
 								align: 'center',
-								minWidth: 100,
-								templet: function(data) {
-									return '¥ ' + data.transactionAmount
-								}
 							}, {
-								field: 'onePaymentTypeName',
-								title: '累计提成金额',
+								field: 'amount',
+								title: '累计分账金额',
 								align: 'center',
-								minWidth: 100,
-								templet: function(data) {
-									return '¥ ' + data.transactionAmount
-								}
 							}, {
 								field: 'onePaymentTypeName',
 								title: '分销人状态',
@@ -160,7 +157,7 @@
 								minWidth: 100,
 								toolbar: "#switchBar",
 							}, {
-								field: 'orderTime',
+								field: 'insertTime',
 								title: '创建时间',
 								align: 'center',
 								minWidth: 160,
@@ -181,6 +178,16 @@
 						}
 					});
 				}
+				$('#addA').click(function(){
+					layer.open({
+						type: 2,
+						title: '添加分销人',
+						area: ['700px', '450px'],
+						fixed: true, //不固定
+						maxmin: false,
+						content: 'add-fxMan1.html'
+					});
+				})
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {
@@ -207,6 +214,59 @@
 				$('.layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
+				});
+				table.on('tool(shop)', function(obj) {
+					var data = obj.data;
+					console.log(data)
+					if(obj.event === 'edit') { //编辑
+						layer.open({
+							type: 2,
+							title: '编辑',
+							shade: 0.5,
+							area: ['700px', '450px'],
+							maxmin: false,
+							resize: false,
+							content: ['edit-fxMan1.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data)
+							}
+						});
+					} else if(obj.event == 'delete'){
+						layer.confirm('确定删除此（'+ data.name +'）分销人吗？', {
+							icon: 3,
+							title: '提示'
+						}, function(index) {
+							// 发送请求
+							console.log(data)
+							var addData = new Object()
+							addData.id = data.id
+							addData.gradeNumber = data.gradeNumber
+							addData.fixedAccount = data.fixedAccount
+
+							console.log(addData)
+							// 发送请求
+							CmsUtility.postAjaxCall(
+								//系统设置
+								'AccountManage/updatefixedAccount',
+								addData,
+								function(data){
+									if(data.code == 1000){
+										
+										layer.msg('删除成功')
+										layui.table.reload('gradeList');
+									}else{
+										layer.msg(data.msg)
+									}
+								},
+								function(data){
+									console.log('222')
+								}
+							)
+						});
+					}
 				});
 			});
 
@@ -238,7 +298,18 @@
 				}
 				return data
 			}
-
+			window.ewm = function (url){
+				console.log(123)
+				qrcode.makeCode(url);
+					layer.open({
+						type: 1,
+						shadeClose: true,
+						shade: 0.5,
+						title: false,
+						area: ['380px', '380px'],
+						content: $('.cardQrcode'),
+					});
+			}
 			function fun_date(aa) {
 				var date1 = new Date(),
 					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
@@ -257,6 +328,7 @@
 				}
 				return a + '-' + b + '-' + c
 			}
+
 		</script>
 	</body>
 

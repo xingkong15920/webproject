@@ -334,7 +334,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="conBlock">
+		<div class="conBlock" id="shouquan" style="display:none">
 			<blockquote class="layui-elem-quote consumeTit">
 				<i class="leftline"></i>
 				授权条件
@@ -354,6 +354,18 @@
 				<li>
 					如需使用小程序功能，在进行公众号授权时，请务必确认已勾选【开放平台账号管理权限】，再进行授权。<br />
 					<span class="auth_tips">公众号只可将此权限授权给一个第三方平台，如已绑定其它第三方平台，请到微信公众平台 -> 添加功能插件 -> 授权管理，手动解绑其它第三方，再进行授权。</span>
+				</li>
+				<li></li>
+			</ul>
+		</div>
+		<div class="conBlock" id="daizhi" style="display:none">
+			<blockquote class="layui-elem-quote consumeTit">
+				<i class="leftline"></i>
+				会员卡模式
+			</blockquote>
+			<ul class="auth_conditions">
+				<li>
+					已选择使用代制模式
 				</li>
 			</ul>
 		</div>
@@ -448,15 +460,17 @@
 						layer.closeAll('loading');
 						if (data.code == 1000) {
 							$('#auth').show()
+							$('#shouquan').show()
 							if (data.data.openCard == 0) {
 								layer.msg('您当前微信未开通卡券功能')
 							}
 							setDetail(data.data)
 						} else if (data.code == '-2') {
 							window.location.href = 'unauth.html?authTypt=WeChat'
-						} else {
-
-						}
+						} else if(data.code == '500'){
+							
+							$('#daizhi').show()
+						}	
 					}
 				});
 

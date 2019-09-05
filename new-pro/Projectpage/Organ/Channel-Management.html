@@ -68,12 +68,12 @@
 				</div>
 			</div> -->
         <xblock>
-            <button class="layui-btn" id="zfb"><i class="layui-icon"></i>官方-支付宝</button>
-            <button class="layui-btn" id="wx"><i class="layui-icon"></i>官方-微信</button>
-            <button class="layui-btn" id="fy"><i class="layui-icon"></i>富友</button>
-            <button class="layui-btn" id="yrm"><i class="layui-icon"></i>易融码</button>
-            <button class="layui-btn" id="xdl"><i class="layui-icon"></i>新大陆</button>
-            <button class="layui-btn" id="sxf"><i class="layui-icon"></i>随行付</button>
+            <button class="layui-btn" id="zfb" style="display:none"><i class="layui-icon"></i>官方-支付宝</button>
+            <button class="layui-btn" id="wx" style="display:none"><i class="layui-icon"></i>官方-微信</button>
+            <button class="layui-btn" id="fy" style="display:none"><i class="layui-icon"></i>富友</button>
+            <button class="layui-btn" id="yrm" style="display:none"><i class="layui-icon"></i>易融码</button>
+            <button class="layui-btn" id="xdl" style="display:none"><i class="layui-icon"></i>新大陆</button>
+            <button class="layui-btn" id="sxf" style="display:none"><i class="layui-icon"></i>随行付</button>
         </xblock>
         <table class="layui-hide" id="members" lay-filter="members"></table>
     </div>
@@ -100,6 +100,60 @@
             form = layui.form;
         var index = layer.load(2, { shade: [0.4, '#393D49'] })
         //方法级渲染 
+        CmsUtility.postAjaxCall(
+                        //系统设置
+                    'bcrmIns/getInsAuthoritys',
+                    {
+                        "institutionNumber":userNumber
+                    },
+                    function(data){
+                        if(data.code == 1000){
+                            var paymentChannel = data.data.paymentChannel
+                            for(var i = 0 ; i < paymentChannel.length;i++){
+                                switch (paymentChannel[i].type) {
+                                    case 0:
+                                        if(paymentChannel[i].status == 0){
+                                             $('#zfb').show()
+                                        }
+                                        break;
+                                    case 1:
+                                        if(paymentChannel[i].status == 0){
+                                             $('#wx').show()
+                                        }
+                                        break;
+                                    case 2:
+                                        if(paymentChannel[i].status == 0){
+                                             $('#fy').show()
+                                        }
+                                        break;
+                                    case 3:
+                                        if(paymentChannel[i].status == 0){
+                                             $('#yrm').show()
+                                        }
+                                        break;
+                                    case 4:
+                                        if(paymentChannel[i].status == 0){
+                                             $('#xdl').show()
+                                        }
+                                        break;
+                                    case 5:
+                                        if(paymentChannel[i].status == 0){
+                                             $('#sxf').show()
+                                        }
+                                        break;
+                                    default:
+                                        // statements_def
+                                        break;
+                                }
+                            }
+                        }else{
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function(data){
+                        console.log('222')
+                    }
+                )
         function tableRender() {
             table.render({
                 //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,

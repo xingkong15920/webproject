@@ -62,12 +62,16 @@
 			.widthHalf {
 				margin: 0;
 			}
+			.layui-block{
+				height: 40px;
+				margin-bottom: 10px;
+			}
 		</style>
 	</head>
 
 	<body>
-		<div class="x-body vipdetail layui-form" style="padding: 0;">
-			<div class="vipdetail_B" id="mDetails">
+		<div class="x-body vipdetail layui-form" style="padding: 0;" lay-filter="cardAdd">
+			<div class="vipdetail_B " id="mDetails" >
 				<div class="conBlock widthAll">
 					<blockquote class="layui-elem-quote consumeTit">
 						<i class="leftline"></i>
@@ -75,27 +79,28 @@
 					</blockquote>
 					<div class="vipdetail_B_D">
 						<div class="layui-form-item">
-							<div class="layui-inline">
+							<div class="layui-block">
 								<label class="layui-form-label">微信分账比例</label>
 								<div class="layui-input-inline">
-									<input type="text" name="number" lay-verify="required|number" autocomplete="off" class="layui-input">
+									<input type="text" name="separateAccountsBill" lay-verify="required|number" autocomplete="off" class="layui-input" id="fenzhang">
 								</div>
 								<div class="layui-form-mid layui-word-aux">%</div>
 							</div>
-							<div class="layui-inline">
+							<div class="layui-block">
 								<label class="layui-form-label">微信手续费</label>
 								<div class="layui-input-inline">
-									<input type="text" name="date" id="date" lay-verify="date" placeholder="" autocomplete="off" class="layui-input">
+									<input type="text" name="poundage" id="shouxufei" lay-verify="number" placeholder="" autocomplete="off" class="layui-input">
 								</div>
+								<div class="layui-form-mid layui-word-aux">%</div>
 							</div>
-							<div class="layui-inline widthauto">
+							<div class="layui-block widthauto">
 								<label class="layui-form-label">活动时间</label>
 								<div class="layui-input-inline" style="width:220px">
-									<input type="radio" name="timeType" value="0" title="永久有效" lay-filter="timeType" checked="">
-									<input type="radio" name="timeType" value="1" title="自定义" lay-filter="timeType">
+									<input type="radio" name="activityType" value="0" title="永久有效" lay-filter="timeType" checked="">
+									<input type="radio" name="activityType" value="1" title="自定义" lay-filter="timeType">
 								</div>
 								<div class="layui-input-inline resetper">
-									<input type="text" name="invalidTime" id="invalidTime" class="layui-input" lay-verify="invalidTime"
+									<input type="text" name="invalidTime" id="invalidTime" class="layui-input" lay-verify=""
 									 placeholder="请选择时间">
 								</div>
 							</div>
@@ -107,15 +112,27 @@
 					</blockquote>
 					<div class="vipdetail_B_D">
 						<div class="layui-form-item">
-							<div class="layui-input-inline widthauto">
-								<input type="checkbox" name="like1" lay-skin="primary" title="会员买卡" checked="">
-								<input type="checkbox" name="like1" lay-skin="primary" title="会员充值">
-								<input type="checkbox" name="like1" lay-skin="primary" title="付费买券">
-								<input type="checkbox" name="like1" lay-skin="primary" title="付费次/月卡">
+							<div class="layui-input-inline widthauto" id="setList">
+								<!-- <input type="checkbox" name="like1" lay-skin="primary" title="会员买卡" value="1" checked="">
+								<input type="checkbox" name="like1" lay-skin="primary" title="会员充值" value="2">
+								<input type="checkbox" name="like1" lay-skin="primary" title="付费买券" value="3">
+								<input type="checkbox" name="like1" lay-skin="primary" title="付费次/月卡" value="4">
+								<input type="checkbox" name="like1" lay-skin="primary" title="会员消费" value="5">
+								<input type="checkbox" name="like1" lay-skin="primary" title="门店收银" value="6"> -->
 							</div>
 						</div>
 					</div>
+					<div class="layui-form-item" style="width:100%">
+                    <div class="layui-input-block" style="margin-left:0;margin-top:15px">
+                        <div class="layui-footer" style="">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">提交</button>
+                            
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
 				</div>
+
 				<div class="conBlock widthHalf">
 					<blockquote class="layui-elem-quote consumeTit">
 						<i class="leftline"></i>
@@ -137,7 +154,7 @@
 						</div>
 					</blockquote>
 					<div class="vipdetail_B_D">
-						<table class="layui-hide" id="Separaterules" lay-filter="shop"></table>
+						<table class="layui-hide" id="Separaterules" lay-filter="shop123"></table>
 					</div>
 				</div>
 			</div>
@@ -149,9 +166,47 @@
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.defaultFlag==1 ? 'hide' : ''}}" lay-event="delete">删除</a>
 		</script>
-		<script src="../../common/config-meb.js"></script>
+		<script type="text/html" id="tool1">
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.defaultFlag==1 ? 'hide' : ''}}" lay-event="delete">删除</a>
+		</script>
+		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			var setList = [
+				{
+					name:'会员买卡',
+					num:1
+				},
+				{
+					name:'会员充值',
+					num:2
+				},
+				{
+					name:'付费买券',
+					num:3
+				},
+				{
+					name:'付费次/月卡',
+					num:4
+				},
+				{
+					name:'会员消费',
+					num:5
+				},
+				{
+					name:'门店收银',
+					num:6
+				},
+			]
+			function fun_date(aa){
+		        var date1 = new Date(),
+		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
+		        var date2 = new Date(date1);
+		        date2.setDate(date1.getDate()+aa);
+		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
+		        return time2
+		    }
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use(['table', 'laydate', 'element'], function() {
@@ -160,9 +215,12 @@
 					element = layui.element,
 					laydate = layui.laydate,
 					form = layui.form;
-
-
-				/*---------- 积分时效 ----------*/
+					laydate.render({
+					  elem: '#invalidTime'
+					  ,range: true,
+					  value:fun_date(-30) + ' - ' + fun_date(0)
+					});
+					/*---------- 积分时效 ----------*/
 				form.on('radio(timeType)', function(data) {
 					if (data.value == 0) {
 						$('.resetper').css('display', 'none')
@@ -170,13 +228,68 @@
 						$('.resetper').css('display', 'inline-block')
 					}
 				});
+				var setStr = ''
+				for(var i = 0 ; i < setList.length;i++){
+					setStr +='<input type="checkbox" name="like1" lay-skin="primary" title="'+ setList[i].name +'" value="'+ setList[i].num +'" >'
+				}
+				$('#setList').html(setStr)
+				form.render()
+				CmsUtility.postAjaxCall1(
+		                //系统设置
+		               	'AccountManage/getAccountRole',
+		                {
+		                	"merchantNumber":merNumber,
+							"institutionNumber":insNumber,
+		                },
+		                function(data) {
+		                    if (data.code == 1000) {
+		                    	console.log(data.data.separateAccountsBill)
+		                        form.val('cardAdd', {
+					                "separateAccountsBill": data.data.separateAccountsBill*100,
+					                "poundage":data.data.poundage*100,
+					                "activityType":data.data.activityType,
+					                "invalidTime":data.data.startTime.split(' ')[0] + ' - ' + data.data.endTime.split(' ')[0],
 
+					            })
+					            if (data.data.activityType == 0) {
+									$('.resetper').css('display', 'none')
+								} else if (data.data.activityType == 1) {
+									$('.resetper').css('display', 'inline-block')
+								}
+					            var setStr = ''
+								for(var i = 0 ; i < setList.length;i++){
+									
+									if(data.data.accountType.indexOf(setList[i].num) >=0){
+										setStr +='<input type="checkbox" name="like1" lay-skin="primary" title="'+ setList[i].name +'" value="'+ setList[i].num +'" checked="">'
+									}else{
+										setStr +='<input type="checkbox" name="like1" lay-skin="primary" title="'+ setList[i].name +'" value="'+ setList[i].num +'" >'
+									}
+									
+								}
+								$('#setList').html(setStr)
+								form.render()
+		                    } else {
+		                        layer.msg(data.msg)
+
+		                    }
+		                },
+		                function(data) {
+		                    console.log('222')
+		                },
+		                'get'
+		            )
 
 				//方法级渲染
 				table.render({
 					elem: '#Fixedaccount',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers + '?merchantNumber=' +
+					url: CmsConfig.ServiceUrl.ApiRootUrl + 'AccountManage/getDistributorInfo?merchantNumber=' +
 						merNumber,
+					where:{
+						"institutionNumber":insNumber,
+						"fixedAccount":1,
+						"name":'',
+						"tell":''
+						},
 					method: "get",
 					height: 'full-350',
 					page: true,
@@ -191,7 +304,7 @@
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.memberList,
+							"data": res.data.distributorInfos,
 						}
 					},
 					cols: [
@@ -204,7 +317,7 @@
 								return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.name + '</span>'
 							}
 						}, {
-							field: 'cell',
+							field: 'tell',
 							title: '手机号',
 							align: 'center',
 							width: 120,
@@ -214,7 +327,7 @@
 							align: 'center',
 							width: 320,
 							templet: function(data) {
-								return data.integral + ' / ' + data.integral + ' / ' + data.integral + ' / ' + data.integral
+								return data.memberCard + ' / ' + data.memberRecharge + ' / ' + data.payVouchers + ' / ' + data.payNext
 							}
 						}, {
 							field: 'operation',
@@ -237,12 +350,18 @@
 				//消费记录
 				table.render({
 					elem: '#Separaterules',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers + '?merchantNumber=' +
+					url: CmsConfig.ServiceUrl.ApiRootUrl + 'AccountManage/getDistributionLevel?merchantNumber=' +
 						merNumber,
+					where:{
+						"institutionNumber":insNumber,
+						"fixedAccount":0,
+						"name":'',
+						"tell":''
+						},
 					method: "get",
 					height: 'full-350',
 					page: true,
-					id: 'gradeList',
+					id: 'Separaterules',
 					response: {
 						"statusCode": "1000", //解析接口状态
 					},
@@ -253,7 +372,7 @@
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.memberList,
+							"data": res.data.resultMap,
 						}
 					},
 					cols: [
@@ -261,26 +380,32 @@
 							field: 'name',
 							title: '分销人等级',
 							align: 'center',
-							width: 100,
 							templet: function(data) {
-								return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.name + '</span>'
-							}
+								return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.gradeName + '</span>'
+							},
+							width:110
 						}, {
 							field: 'shopName',
 							title: '升级规则<br>(累计分账(元) / 累计交易(元) / 累计客户数(天))',
 							align: 'center',
-							width: 320,
 							templet: function(data) {
-								return data.integral + ' / ' + data.integral + ' / ' + data.integral
-							}
+								return data.separateAmount + ' / ' + data.transactionAmount + ' / ' + data.extensionCount
+							},
+							width:280
 						}, {
 							field: 'shopName',
 							title: '分账规则(%)<br>(会员买卡 / 会员充值 / 付费买券 / 付费次/月卡)',
 							align: 'center',
-							width: 320,
 							templet: function(data) {
-								return data.integral + ' / ' + data.integral + ' / ' + data.integral + ' / ' + data.integral
-							}
+								return data.memberCard + ' / ' + data.memberRecharge + ' / ' + data.payVouchers	 + ' / ' + data.payNext
+							},
+							width:280
+						}, {
+							field: 'operation',
+							title: '操作',
+							align: 'left',
+							toolbar: "#tool1",
+							width:120
 						}]
 					],
 					done: function(res, curr, count) {
@@ -292,7 +417,153 @@
 						}
 					}
 				});
+				form.on('submit(add)', function(data, index) {
+					console.log(data,index)
+					var arr = new Array();
+		            $("input:checkbox[name='like1']:checked").each(function(i){
+		                arr[i] = $(this).val();
+		            });
+					console.log(arr)
+					var tjData = new Object()
+					tjData.merchantNumber = merNumber
+					tjData.institutionNumber = insNumber
+					tjData.paymentType = '1'
+					//分账比例
+					tjData.separateAccountsBill = ($('#fenzhang').val().trim()/100)
+					//手续费比例
+					tjData.poundage = ($('#shouxufei').val().trim()/100)
+					//活动标识
+					tjData.activityType = data.field.activityType
+					tjData.startTime = data.field.invalidTime.split(' - ')[0] + ' 00:00:00'
+					tjData.endTime = data.field.invalidTime.split(' - ')[1] + ' 23:59:59'
+					tjData.accountType = arr.join('&')
+					CmsUtility.postAjaxCall1(
+		                //系统设置
+		               	'AccountManage/setAccountRole',
+		                tjData,
+		                function(data) {
+		                	layer.msg(data.msg)
+		                    if (data.code == 1000) {
+		                        
+		                    } else {
+		                        // layer.msg(data.msg)
 
+		                    }
+		                },
+		                function(data) {
+		                    console.log('222')
+		                },
+		                'get'
+		            )
+		            return false;
+		        
+				})
+				table.on('tool(shop)', function(obj) {
+					var data = obj.data;
+					console.log(data)
+					if(obj.event === 'edit') { //编辑
+						layer.open({
+							type: 2,
+							title: '编辑',
+							shade: 0.5,
+							area: ['700px', '450px'],
+							maxmin: false,
+							resize: false,
+							content: ['edit-fxMan.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data)
+							}
+						});
+					} else if(obj.event == 'delete'){
+						layer.confirm('确定删除此（'+ data.name +'）分销人吗？', {
+							icon: 3,
+							title: '提示'
+						}, function(index) {
+							// 发送请求
+							console.log(data)
+							var addData = new Object()
+							addData.id = data.id
+							addData.gradeNumber = data.gradeNumber
+							addData.fixedAccount = data.fixedAccount
+
+							console.log(addData)
+							// 发送请求
+							CmsUtility.postAjaxCall(
+								//系统设置
+								'AccountManage/updatefixedAccount',
+								addData,
+								function(data){
+									if(data.code == 1000){
+										
+										layer.msg('删除成功')
+										layui.table.reload('gradeList');
+									}else{
+										layer.msg(data.msg)
+									}
+								},
+								function(data){
+									console.log('222')
+								}
+							)
+						});
+					}
+				});
+				table.on('tool(shop123)', function(obj) {
+					var data = obj.data;
+					console.log(data)
+					if(obj.event === 'edit') { //编辑
+						layer.open({
+							type: 2,
+							title: '编辑',
+							shade: 0.5,
+							area: ['600px', '80%'],
+							maxmin: true,
+							resize: false,
+							content: ['edit-fxLevel.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPage(data)
+							}
+						});
+					} else if(obj.event == 'delete'){
+						layer.confirm('确定删除此（'+ data.gradeName +'）等级规则吗？', {
+							icon: 3,
+							title: '提示'
+						}, function(index) {
+							// 发送请求
+							console.log(data)
+							var addData = new Object()
+							addData.id = data.id
+							addData.gradeNumber = data.gradeNumber
+							addData.fixedAccount = data.fixedAccount
+
+							console.log(addData)
+							// 发送请求
+							CmsUtility.postAjaxCall(
+								//系统设置
+								'AccountManage/updatefixedAccount',
+								addData,
+								function(data){
+									if(data.code == 1000){
+										
+										layer.msg('删除成功')
+										layui.table.reload('gradeList');
+									}else{
+										layer.msg(data.msg)
+									}
+								},
+								function(data){
+									console.log('222')
+								}
+							)
+						});
+					}
+				});
 				var $ = layui.$,
 					active = {
 						addDisP: function() {
@@ -302,17 +573,17 @@
 								area: ['700px', '450px'],
 								fixed: true, //不固定
 								maxmin: false,
-								content: 'test/iframe.html'
+								content: 'add-fxMan.html'
 							});
 						},
 						addDisL: function() {
 							layer.open({
 								type: 2,
 								title: '添加分销人等级',
-								area: ['700px', '450px'],
+								area: ['600px', '80%'],
 								fixed: true, //不固定
 								maxmin: false,
-								content: 'test/iframe.html'
+								content: 'add-fxLevel.html'
 							});
 						}
 					};

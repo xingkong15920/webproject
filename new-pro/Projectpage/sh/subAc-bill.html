@@ -37,8 +37,11 @@
 					<!-- 需要数据对接(完成) -->
 					<select name="orderSource" id="orderSource" lay-search>
 						<option value="">--分账状态--</option>
-						<option value="0">APP</option>
-						<option value="1">PC插件</option>
+						<option value="0">待分账</option>
+						<option value="1">已分账</option>
+						<option value="1">处理中</option>
+						<option value="1">已关闭</option>
+						<option value="1">分账失败</option>
 					</select>
 				</div>
 				<div class="layui-input-inline">
@@ -89,30 +92,6 @@
 					value: fun_date(0)
 				});
 
-				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getShopNames,
-					dataO,
-					function(data) {
-						var shopData = data.data
-						for (var i = 0; i < shopData.length; i++) {
-							$("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
-								shopData[i].shopName + '/' + shopData[i].shopNumber + "</option>");
-						}
-						form.render()
-					}
-				)
-				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getClerkList,
-					dataO,
-					function(data) {
-						var shopData = data.data
-						for (var i = 0; i < shopData.length; i++) {
-							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName +
-								"</option>");
-						}
-						form.render()
-					}
-				)
 				//方法级渲染
 				tableRender()
 
@@ -123,11 +102,11 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getTransactionList + '?merchantNumber=' +
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'AccountManage/getFzOrderList?merchantNumber=' +
 							userNumber,
 						where: {
-							"startTime": fun_date(-6),
-							"endTime": fun_date(0),
+							"startTime":$('#startTime').val() ,
+							"endTime":$('#endTime').val() ,
 							"clerkNumber": $('#clerkNumber').val(),
 							"orderState": $('#orderState').val(),
 							"orderSource": $('#orderSource').val(),
@@ -154,32 +133,26 @@
 								field: 'orderTime',
 								title: '创建时间',
 								align: 'center',
-								minWidth: 160
 							}, {
 								field: 'shopName',
 								title: '分账单编号',
 								align: 'center',
-								minWidth: 200
 							}, {
 								field: 'batch',
 								title: '原订单编号',
 								align: 'center',
-								minWidth: 220
 							}, {
 								field: 'batch',
 								title: '门店',
 								align: 'center',
-								minWidth: 220
 							}, {
 								field: 'clerkName',
 								title: '分销人姓名',
 								align: 'center',
-								minWidth: 100,
 							}, {
 								field: 'onePaymentTypeName',
 								title: '分销人手机号',
 								align: 'center',
-								minWidth: 120,
 								templet: function(data) {
 									return '13081058585'
 								}
@@ -187,7 +160,6 @@
 								field: 'onePaymentTypeName',
 								title: '分销人等级',
 								align: 'center',
-								minWidth: 100,
 								templet: function(data) {
 									switch (data.onePaymentTypeName) {
 										case '0':
@@ -202,7 +174,6 @@
 								field: 'onePaymentTypeName',
 								title: '分销人类型',
 								align: 'center',
-								minWidth: 100,
 								templet: function(data) {
 									switch (data.onePaymentTypeName) {
 										case '0':
@@ -217,7 +188,6 @@
 								field: 'onePaymentTypeName',
 								title: '分账类型',
 								align: 'center',
-								minWidth: 100,
 								templet: function(data) {
 									switch (data.onePaymentTypeName) {
 										case '0':
@@ -238,7 +208,6 @@
 								field: 'transactionAmount',
 								title: '订单金额',
 								align: 'center',
-								minWidth: 100,
 								templet: function(data) {
 									return '¥ ' + data.transactionAmount
 								}
@@ -246,7 +215,6 @@
 								field: 'transactionAmount',
 								title: '分账金额',
 								align: 'center',
-								minWidth: 100,
 								templet: function(data) {
 									return '¥ ' + data.transactionAmount
 								}
@@ -254,7 +222,6 @@
 								field: 'onePaymentTypeName',
 								title: '分账状态',
 								align: 'center',
-								minWidth: 100,
 								templet: function(data) {
 									switch (data.onePaymentTypeName) {
 										case '0':
@@ -278,7 +245,6 @@
 								field: 'clerkName',
 								title: '分账时间',
 								align: 'center',
-								width: 120
 							}]
 						],
 						done: function(res, curr, count) {
