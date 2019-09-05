@@ -45,34 +45,6 @@
 				border-bottom-right-radius: 6px;
 			}
 
-			.iwList li {
-				margin-bottom: 20px;
-				position: relative;
-			}
-
-			.iwList img {
-				height: 222px;
-			}
-
-			.iwList .layui-input-block {
-				margin: 0;
-			}
-
-			.iwList .imgDel {
-				line-height: 222px;
-			}
-
-			.iwList .delBtn {
-				position: absolute;
-				right: -20px;
-				top: -20px;
-			}
-
-			.iwList .layui-upload-list {
-				border: 1px solid #e6e6e6;
-				border-bottom: none;
-			}
-
 			.layui-elem-quote .layui-form-switch {
 				width: 50px;
 			}
@@ -83,6 +55,29 @@
 
 			.layui-form-switch i {
 				top: 2px;
+			}
+			.card_b_lt{
+				justify-content: flex-start;
+				flex-wrap: wrap;
+			}
+
+			.card_b_lt img {
+				width: 30px;
+				height: 30px;
+			}
+			
+			.cardLvshowhide{
+				width: 100%;
+			}
+			
+			.cardLvshowhide p{
+				width: auto;
+				margin-right: auto;
+				margin-left: 40px;
+				font-size: 12px;
+				padding:1px 3px;
+				background: rgba(0,0,0,0.5);
+				display: inline-block;
 			}
 
 			.hide {
@@ -136,6 +131,7 @@
 									<p class="ltN"></p>
 									<!-- <p class="ltNamepv">123</p> -->
 								</div>
+								<div class="cardLvshowhide hide"><p>等级展示</p></div>
 							</div>
 							<div class="card_b_ld card_posi">
 								<!-- <p><i class="icon icon icon-dailiguanli1"></i>黄金会员</p> -->
@@ -159,7 +155,7 @@
 								<h3>余额</h3>
 								<p>1200<span>(元)</span></p>
 							</li>
-							<li class="card_qListli">
+							<li class="card_qListli" style="display: none;">
 								<h3>等级</h3>
 								<p>Lv.12</p>
 							</li>
@@ -178,29 +174,29 @@
 					<ul class="card_fList" style="border-top: 1px solid #e6e6e6;">
 						<li class="card_fListli">
 							<div class="card_fListliDiv">
-								<p>推荐给朋友</p>
+								<p>自定义入口一</p>
 								<span></span>
 							</div>
 							<i class="iconfont"></i>
 						</li>
 						<li class="card_fListli">
 							<div class="card_fListliDiv">
-								<p>会员卡详情</p>
+								<p>自定义入口二</p>
 								<span></span>
 							</div>
 							<i class="iconfont"></i>
 						</li>
 						<li class="card_fListli">
 							<div class="card_fListliDiv">
-								<p>适用门店</p>
+								<p>自定义入口三</p>
 								<span></span>
 							</div>
 							<i class="iconfont"></i>
 						</li>
-						<li class="card_fListli">
+						<!-- <li class="card_fListli">
 							<p>会员权益</p>
 							<i class="iconfont"></i>
-						</li>
+						</li> -->
 						<li class="card_fListli" style="display: none;">
 							<div class="card_fListliDiv">
 								<p>联系电话</p>
@@ -579,7 +575,7 @@
 						success: function(data) {
 							if (data.code === 1000) {
 								cardCon = data.data
-								$('.synchronous').text(data.data.wechatSynchronism == 0 ? '未同步支付宝' : '已同步支付宝')
+								$('.synchronous').text(data.data.synchronism == 0 ? '未同步支付宝' : '已同步支付宝')
 								setcardCon(data.data)
 								templateId = data.data.templateId
 								$('.clubcardId').text(data.data.alipayCardNo)
@@ -602,10 +598,16 @@
 											columnDVal[i] + '" title="' + columnDVal[i] + '">'
 									}
 								}
-								if (data.data.columnDisplay.indexOf('联系电话')) {
+								if (data.data.columnDisplay.indexOf('联系电话') != -1) {
 									$('.card_fListli:last').show()
 								} else {
 									$('.card_fListli:last').hide()
+								}
+								if (data.data.columnDisplay.indexOf('等级') != -1) {
+									$('.cardLvshowhide').show()
+									$('.cardLvshowhide').find('p').text(data.data.gradename)
+								} else {
+									$('.cardLvshowhide').hide()
 								}
 								$('.columnshow').html(strL)
 
@@ -695,6 +697,7 @@
 										$('.custom1B').show()
 										$('.custom1-link').show()
 										$('.custom1-miniapp').hide()
+										$('.card_fListli').eq(0).show()
 										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].entryName)
 										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingWords)
 										$('#custom1lNInput').attr('lay-verify', 'entryname')
@@ -707,6 +710,7 @@
 										$('.custom1B').show()
 										$('.custom1-link').hide()
 										$('.custom1-miniapp').show()
+										$('.card_fListli').eq(0).show()
 										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].entryName)
 										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingWords)
 										$('#custom1lNInput').attr('lay-verify', 'entryname')
@@ -731,6 +735,7 @@
 										$('.custom2B').show()
 										$('.custom2-link').show()
 										$('.custom2-miniapp').hide()
+										$('.card_fListli').eq(1).show()
 										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].entryName)
 										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingWords)
 										$('#custom2lNInput').attr('lay-verify', 'entryname')
@@ -743,6 +748,7 @@
 										$('.custom2B').show()
 										$('.custom2-link').hide()
 										$('.custom2-miniapp').show()
+										$('.card_fListli').eq(1).show()
 										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].entryName)
 										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingWords)
 										$('#custom2lNInput').attr('lay-verify', 'entryname')
@@ -767,6 +773,7 @@
 										$('.custom3B').show()
 										$('.custom3-link').show()
 										$('.custom3-miniapp').hide()
+										$('.card_fListli').eq(2).show()
 										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].entryName)
 										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingWords)
 										$('#custom3lNInput').attr('lay-verify', 'entryname')
@@ -779,6 +786,7 @@
 										$('.custom3B').show()
 										$('.custom3-link').hide()
 										$('.custom3-miniapp').show()
+										$('.card_fListli').eq(2).show()
 										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].entryName)
 										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingWords)
 										$('#custom3lNInput').attr('lay-verify', 'entryname')
@@ -1020,11 +1028,17 @@
 					var checkNum = columnDVal.indexOf(data.elem.value)
 					if (data.elem.checked) {
 						$('.card_qListli').eq(checkNum).addClass('lishow');
+						if (checkNum == 2) {
+							$('.cardLvshowhide').show()
+						}
 						if (checkNum == 3) {
 							$('.card_fListli:last').show()
 						}
 					} else {
 						$('.card_qListli').eq(checkNum).removeClass('lishow')
+						if (checkNum == 2) {
+							$('.cardLvshowhide').hide()
+						}
 						if (checkNum == 3) {
 							$('.card_fListli:last').hide()
 						}
@@ -1065,6 +1079,7 @@
 						$('.custom1B').show()
 						$('.custom1-link').show()
 						$('.custom1-miniapp').hide()
+						$('.card_fListli').eq(0).show()
 						$('#custom1lNInput').attr('lay-verify', 'entryname')
 						$('#custom1lLInput').attr('lay-verify', 'customlLInput')
 						$('#custom1mIInput').removeAttr('lay-verify')
@@ -1074,6 +1089,7 @@
 						$('.custom1B').show()
 						$('.custom1-link').hide()
 						$('.custom1-miniapp').show()
+						$('.card_fListli').eq(0).show()
 						$('#custom1lNInput').attr('lay-verify', 'entryname')
 						$('#custom1lLInput').removeAttr('lay-verify')
 						$('#custom1mIInput').attr('lay-verify', 'custommIInput')
@@ -1083,16 +1099,16 @@
 				});
 				$("#custom1lNInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(0).find('p').html('自定义入口二')
+						$('.card_fListli').eq(0).find('p').text('自定义入口二')
 					} else {
-						$('.card_fListli').eq(0).find('p').html(e.delegateTarget.value)
+						$('.card_fListli').eq(0).find('p').text(e.delegateTarget.value)
 					}
 				});
 				$("#custom1mYInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(0).find('span').html('')
+						$('.card_fListli').eq(0).find('span').text('')
 					} else {
-						$('.card_fListli').eq(0).find('span').html(e.delegateTarget.value)
+						$('.card_fListli').eq(0).find('span').text(e.delegateTarget.value)
 					}
 				});
 				// 自定义入口二
@@ -1117,6 +1133,7 @@
 						$('.custom2B').show()
 						$('.custom2-link').show()
 						$('.custom2-miniapp').hide()
+						$('.card_fListli').eq(1).show()
 						$('#custom2lNInput').attr('lay-verify', 'entryname')
 						$('#custom2lLInput').attr('lay-verify', 'customlLInput')
 						$('#custom2mIInput').removeAttr('lay-verify')
@@ -1126,6 +1143,7 @@
 						$('.custom2B').show()
 						$('.custom2-link').hide()
 						$('.custom2-miniapp').show()
+						$('.card_fListli').eq(1).show()
 						$('#custom2lNInput').attr('lay-verify', 'entryname')
 						$('#custom2lLInput').removeAttr('lay-verify')
 						$('#custom2mIInput').attr('lay-verify', 'custommIInput')
@@ -1135,16 +1153,16 @@
 				});
 				$("#custom2lNInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(1).find('p').html('自定义入口二')
+						$('.card_fListli').eq(1).find('p').text('自定义入口二')
 					} else {
-						$('.card_fListli').eq(1).find('p').html(e.delegateTarget.value)
+						$('.card_fListli').eq(1).find('p').text(e.delegateTarget.value)
 					}
 				});
 				$("#custom2mYInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(1).find('span').html('')
+						$('.card_fListli').eq(1).find('span').text('')
 					} else {
-						$('.card_fListli').eq(1).find('span').html(e.delegateTarget.value)
+						$('.card_fListli').eq(1).find('span').text(e.delegateTarget.value)
 					}
 				});
 				// 自定义入口三
@@ -1156,6 +1174,7 @@
 					}
 				});
 				form.on('radio(custom3)', function(data) {
+					console.log(data.value)
 					if (data.value == 0) {
 						$('.custom3B').hide()
 						$('#custom3lNInput').val('')
@@ -1169,6 +1188,7 @@
 						$('.custom3B').show()
 						$('.custom3-link').show()
 						$('.custom3-miniapp').hide()
+						$('.card_fListli').eq(2).show()
 						$('#custom3lNInput').attr('lay-verify', 'entryname')
 						$('#custom3lLInput').attr('lay-verify', 'customlLInput')
 						$('#custom3mIInput').removeAttr('lay-verify')
@@ -1178,6 +1198,7 @@
 						$('.custom3B').show()
 						$('.custom3-link').hide()
 						$('.custom3-miniapp').show()
+						$('.card_fListli').eq(2).show()
 						$('#custom3lNInput').attr('lay-verify', 'entryname')
 						$('#custom3lLInput').removeAttr('lay-verify')
 						$('#custom3mIInput').attr('lay-verify', 'custommIInput')
@@ -1187,16 +1208,16 @@
 				});
 				$("#custom3lNInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(2).find('p').html('自定义入口三')
+						$('.card_fListli').eq(2).find('p').text('自定义入口三')
 					} else {
-						$('.card_fListli').eq(2).find('p').html(e.delegateTarget.value)
+						$('.card_fListli').eq(2).find('p').text(e.delegateTarget.value)
 					}
 				});
 				$("#custom3mYInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(2).find('span').html('')
+						$('.card_fListli').eq(2).find('span').text('')
 					} else {
-						$('.card_fListli').eq(2).find('span').html(e.delegateTarget.value)
+						$('.card_fListli').eq(2).find('span').text(e.delegateTarget.value)
 					}
 				});
 				// 自定义入口四
