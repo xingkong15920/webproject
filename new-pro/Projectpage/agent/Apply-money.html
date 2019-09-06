@@ -100,7 +100,7 @@ input[type="number"]{ -moz-appearance: textfield; }
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red">* </span>银行预留手机号：</label>
 									<div class="layui-input-inline">
-										<input type="text" name="reserveCell" lay-verify="phone" autocomplete="off" class="layui-input" value="">
+										<input type="text" name="reserveCell" lay-verify="phone" autocomplete="off" class="layui-input" disabled="disabled" value="">
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -112,7 +112,7 @@ input[type="number"]{ -moz-appearance: textfield; }
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red">* </span>发票信息：</label>
 									<div class="layui-input-inline">
-										<textarea class="layui-textarea" name="invoiceRemarks" autocomplete="off" placeholder="发票信息" lay-verify="title" rows="3"></textarea>
+										<textarea class="layui-textarea" name="invoiceRemarks" autocomplete="off" placeholder="发票信息" lay-verify="title" rows="7" id="fapiaoInfo"></textarea>
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -161,6 +161,38 @@ input[type="number"]{ -moz-appearance: textfield; }
 						}
 					}
 				})
+				CmsUtility.postAjaxCall2(
+						//系统设置
+					'https://nb.51shanhe.com/shanhe-admin/insAgentWith/getInsReceiptSetting',
+					{
+						"institutionNumber":insNumber
+					},
+					function(data){
+						if(data.code == 1000){
+							if(data.data == null){
+								layer.msg(data.msg)
+							}else{
+								var str = '户名：' + data.data.institutionName + '\r\n' + 
+								'识别号：' + data.data.identifier + '\r\n' +
+								'开票内容：' + data.data.invoiceContent + '\r\n' +
+								'开户行：' + data.data.openingBankBranch + '\r\n' +
+								'账号：' + data.data.bankCardNo + '\r\n' +
+								'地址：' + data.data.address + '\r\n' +
+								'电话：' + data.data.tell 
+
+							$('#fapiaoInfo').html(str)
+							
+							// 河北鸿搜网络科技有限公司911130105590967608J技术服务费工商银行石家庄建华支行0402022409300450513河北省石家庄市长安区瀚科大厦512室0311-89643782
+							}
+							
+						}else{
+							layer.msg(data.msg)
+						}
+					},
+					function(data){
+						console.log('222')
+					}
+				)
 				CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Agent.getBackCard,
@@ -249,6 +281,9 @@ input[type="number"]{ -moz-appearance: textfield; }
 						function(data){
 							if(data.code == 1000){
 								layer.msg('申请成功')
+								setTimeout(function(){
+									window.location.reload()
+								},800)
 								
 							}else{
 								layer.msg(data.msg)
