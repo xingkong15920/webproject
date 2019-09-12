@@ -267,6 +267,7 @@
 					gdefault = gde,
 					upOldVal
 				$(".conBlock:last").css("margin-bottom", "44px");
+				var index = parent.layer.getFrameIndex(window.name);
 				$('#quxiao').click(function() {
 					setTimeout(function() {
 						parent.layer.close(index)
@@ -366,7 +367,19 @@
 								if (data.code === 1000) {
 									cardCon = data.data
 									setcardCon(data.data)
-									cardBackgroundId = data.data.cardBackgroundId
+									if (data.data.cardBackgroundId) {
+										cardBackgroundId = data.data.cardBackgroundId
+									} else {
+										$('.upTips').show()
+									}
+									gradeColor = data.data.gradeColor.split('#')[1]
+									console.log(gradeColor)
+									for (let i = 0; i < colorList.length; i++) {
+										if (colorList[i] == gradeColor) {
+											$('.chooseColor span').eq(i).addClass('chooseCC layui-icon layui-icon-ok');
+											chooseCnum = i
+										}
+									}
 									if (data.data.gradeType == 0) {
 										$('.levellocked').show()
 										$('input[name="upgradeConditions"]').attr('lay-verify', 'integral')

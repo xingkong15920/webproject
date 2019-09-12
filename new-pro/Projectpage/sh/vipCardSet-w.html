@@ -500,8 +500,6 @@
 		<script>
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			// var insNumber = '1004'
-			// var merNumber = '180913174959827'
 
 			var cardCon;
 			var chooseCnum
@@ -535,9 +533,9 @@
 					},
 					dataType: 'json',
 					success: function(data) {
-						layer.closeAll('loading');
 						if (data.code == 1000) {
-
+							//查询有无会员卡
+							getCardCon()
 						} else if (data.code == '-2') {
 							layer.closeAll();
 							layer.msg('微信未授权，请先授权', function() {
@@ -548,9 +546,6 @@
 						}
 					}
 				});
-
-				//查询有无会员卡
-				getCardCon()
 
 				function getCardCon() {
 					$.ajax({
@@ -595,6 +590,11 @@
 						},
 						success: function(data) {
 							if (data.code === 1000) {
+								// 设置不可编辑项
+								$('#ltName').attr('disabled', 'disabled')
+								$('#addSale').parent('div').hide()
+								// 设置不可编辑项
+
 								cardCon = data.data
 								setcardCon(data.data)
 								wxCardNo = data.data.wxCardNo
@@ -616,11 +616,11 @@
 										$('.card_qListli').eq(i).addClass('lishow');
 										strL +=
 											'<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" lay-filter="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '" checked="">'
+											columnDVal[i] + '" title="' + columnDVal[i] + '" checked="" disabled="">'
 									} else {
 										strL +=
 											'<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" lay-filter="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '">'
+											columnDVal[i] + '" title="' + columnDVal[i] + '" disabled="">'
 									}
 								}
 								$('.columnshow').html(strL)
@@ -647,11 +647,11 @@
 									if (merchantS.indexOf(merchantSL[i]) >= 0) {
 										strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
 											merchantSL[i] +
-											'" title="' + merchantSL[i] + '" checked="">'
+											'" title="' + merchantSL[i] + '" checked="" disabled="">'
 									} else {
 										strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
 											merchantSL[i] +
-											'" title="' + merchantSL[i] + '">'
+											'" title="' + merchantSL[i] + '" disabled="">'
 									}
 								}
 								$('.merservices').html(strS)
@@ -678,17 +678,12 @@
 										'" />' +
 										'<div class="layui-input-block pinpaiLogo' + i + '">' +
 										'<div class="layui-upload-list">' +
-										'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
-										')">' +
-										'<img id="cardLoImg' + i + '" src="' + imageTexts[i].localImgUrl + '">' +
-										'<div class="upTips">+<br />上传图片</div></div>' +
-										'<div class="imgDel" data-id="cardLo' + i + '" style="display: none;">' +
-										'<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' +
+										'<div class="layui-upload-img" id="cardLo' + i + '">' +
+										'<img src="' + imageTexts[i].localImgUrl + '">' + '</div>' +
 										'</div></div></div>' +
 										'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
-										'" class="layui-textarea" onclick="textIn(' + i + ')">' + imageTexts[i].text +
-										'</textarea><div class="delBtn delSale" data-id="' +
-										i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+										'" class="layui-textarea" disabled="">' + imageTexts[i].text +
+										'</textarea></li>'
 								}
 								$('#iwList').html(strTW)
 
@@ -812,7 +807,7 @@
 										break;
 								}
 
-								form.render('checkbox')
+								form.render()
 								$('.addBtn').attr('lay-filter', 'update')
 							} else if (data.code === -2) {
 								layer.closeAll('loading');

@@ -200,7 +200,7 @@
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="capital">资金</a>
 			<a class="layui-btn layui-btn-xs" lay-event="level">等级</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">退卡</a>
+			<!-- <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">退卡</a> -->
 		</script>
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
@@ -288,14 +288,23 @@
 								fixed: 'left',
 								width: 150,
 								templet: function(data) {
-									return data.name + '  <i class="layui-icon ' + [data.sex == 0 ? "layui-icon-female" : "layui-icon-male"] +
+									return data.name ? data.name : '--' + '  <i class="layui-icon ' + [data.sex == 0 ? "layui-icon-female" :
+											"layui-icon-male"
+										] +
 										'"></i>' + [data.publicFollow == 0 ? '' : '  <span class="publicF">已关注</span>']
 								}
 							}, {
 								field: 'nickName',
 								title: '昵称',
 								align: 'center',
-								width: 150
+								width: 150,
+								templet: function(data) {
+									if (data.nickName) {
+										return data.nickName
+									} else {
+										return '--'
+									}
+								}
 							},
 							// {
 							// 	field: 'memberNo',
@@ -307,7 +316,14 @@
 								field: 'cell',
 								title: '手机号',
 								align: 'center',
-								width: 120
+								width: 120,
+								templet: function(data) {
+									if (data.cell) {
+										return data.cell
+									} else {
+										return '--'
+									}
+								}
 							}, {
 								field: 'gradeName',
 								title: '会员等级',
