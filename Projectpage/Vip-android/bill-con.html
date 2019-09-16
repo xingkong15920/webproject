@@ -16,6 +16,10 @@
 			* {
 				transition: initial;
 			}
+
+			.vipBill {
+				margin: 0;
+			}
 		</style>
 	</head>
 
@@ -27,10 +31,11 @@
 		</div>
 		<div class="vipCenter vipRec" id="Vip">
 			<div class="vipBlock vipBill">
-				<div class="vipBlock" style="margin: 0; padding: 0;">
+				<div class="vipBlock" :class="[mebsearch?'mebsearch':'']" style="margin: 0; padding: 0;">
 					<div class="seachInput">
 						<label><i class="icon iconfont iconhuiyuan"></i></label>
-						<input type="text" id="seachText" value="" placeholder="姓名/手机号" />
+						<input type="text" id="seachText" v-model="seachText" placeholder="姓名/手机号" @focus="inputfocus()" />
+						<div class="seachBtn" @click="searchThing()">搜索</div>
 					</div>
 				</div>
 				<ul class="vipBillul vipBillultit" v-cloak>
@@ -55,7 +60,7 @@
 								<p class="vipBillitime">{{item.orderTime}}</p>
 							</div>
 							<div class="vipBilliC">
-								<p class="vipBillimoney">{{item.money}}</span></p>
+								<p class="vipBillimoney">¥ {{item.money}}</span></p>
 							</div>
 							<div class="vipBilliR">
 								<p class="vipBillimoney">¥ {{item.payMoney}}</span></p>
@@ -65,6 +70,7 @@
 					</ul>
 				</div>
 			</div>
+			<div class="mask mebList" :class="[mebsearch?'show':'hide']" @click="inputblur()"></div>
 		</div>
 	</body>
 	<script src="./js/jquery.min.js"></script>
@@ -75,7 +81,7 @@
 	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
-		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
+		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber;
 		new Vue({
 			el: '#Vip',
 			data: {
@@ -88,14 +94,45 @@
 					'vipBilliR': '支付金额'
 				}],
 				vipBilli: [],
-				mescroll: null // mescroll实例对象
+				mescroll: null, // mescroll实例对象
+				mebsearch: false,
+				seachText: '',
+				seachTextN: '',
+				seachTextC: '',
 			},
 			methods: {
+				inputfocus: function inputfocus() {
+					this.mebsearch = true;
+				},
+				inputblur: function inputblur() {
+					this.mebsearch = false;
+				},
+				searchThing: function searchThing() {
+					$('#loadstart').show(); // 回调
+					if (this.isNumber(this.seachText)) {
+						this.seachTextC = this.seachText
+						this.seachTextN = ''
+					} else {
+						this.seachTextC = ''
+						this.seachTextN = this.seachText
+					}
+					seachText = this.seachText; //更新关键词
+					this.mescroll.resetUpScroll(); //重新搜索,重置列表数据
+				},
+				isNumber: function isNumber(val) {
+					var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+					var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+					if (regPos.test(val) || regNeg.test(val)) {
+						return true;
+					} else {
+						return false;
+					}
+				},
 				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
 				upCallback: function upCallback(page) {
 					var _this = this;
 					// 模拟联网
-					this.getListDataFromNet(this.pdType, page.num, page.size, function(arr) {
+					this.getListDataFromNet(this.pdType, page.num, page.size, this.seachText, function(arr) {
 						// 如果是第一页需手动制空列表
 						if (page.num === 1) _this.vipBilli = []; // 把请求到的数据添加到列表
 						_this.vipBilli = _this.vipBilli.concat(arr); // 数据渲染成功后,隐藏下拉刷新的状态
@@ -112,7 +149,8 @@
 				 * 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
 				 * 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
 				 */
-				getListDataFromNet: function getListDataFromNet(pdType, pageNum, pageSize, successCallback, errorCallback) {
+				getListDataFromNet: function getListDataFromNet(pdType, pageNum, pageSize, seachText, successCallback,
+					errorCallback) {
 					var _this2 = this;
 
 					// 延时一秒,模拟联网
@@ -123,6 +161,8 @@
 						sendData.merchantNumber = merNumber;
 						sendData.page = pageNum;
 						sendData.limit = pageSize;
+						sendData.name = that.seachTextN;
+						sendData.cell = that.seachTextC;
 						$.ajax({
 							type: "get",
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getConTurnovers,
@@ -135,12 +175,15 @@
 								$('#loadstart').hide(); // 回调
 								if (data.code === 1000) {
 									if (data.data.consumTurnovers.length > 0) {
+										that.mebsearch = false;
 										successCallback(data.data.consumTurnovers);
 										that.branches = data.data.count;
 									} else {
+										that.mebsearch = false;
 										successCallback([]);
 									}
 								} else {
+									that.mebsearch = false;
 									successCallback([]);
 								}
 							}
@@ -149,6 +192,9 @@
 				}
 			},
 			mounted: function mounted() {
+				if (!seachText) {
+					this.seachText = ''
+				}
 				// 创建MeScroll对象
 				this.mescroll = new MeScroll(this.$refs.mescroll, {
 					// 在vue的mounted生命周期初始化mescroll,确保此处配置的ref有值

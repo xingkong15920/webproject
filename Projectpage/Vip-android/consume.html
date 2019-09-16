@@ -36,7 +36,6 @@
 						<div class="consumeBInp">
 							<i>¥</i>
 							<label id="paymoney" class="recordBinput consumeBInput" type="text"></label>
-							<!-- <input type="number" class="recordBinput consumeBInput" placeholder="请填写消费金额" id="paymoney" /> -->
 						</div>
 					</div>
 					<div class="consumeBlock" @click="showMask()">
@@ -52,9 +51,9 @@
 			<div class="hiddenbox">
 				<div class="consumermask" @click="hiddenMask()"></div>
 				<div class="consumerbox">
-					<div class="consumerYuan">
+					<div class="consumerYuan" :class="[consumerYuanTips?'show':'hide']">
 						<p>消费金额</p>
-						<h3>¥ <span>{{customM}}</span></h3>
+						<h3>¥ <span>{{customMoney}}</span></h3>
 					</div>
 					<div class="consumerCellBox">
 						<div>
@@ -84,8 +83,8 @@
 				<div class="keyboardkey" id="pay-zeroDub">00</div>
 				<div class="keyboardkey" id="pay-return"><i class="iconfont icon-tuigejian"></i></div>
 				<div class="keyboardkey" id="pay-clear">清空</div>
-				<div class="keyboardkey confirm pay">
-					<div id="payId" @click="payBtn($('#paymoney').text())">
+				<div class="keyboardkey confirm pay" @click="payBtn($('#paymoney').text())">
+					<div id="payId">
 						<p>确认</p>
 						<p>支付</p>
 					</div>
@@ -107,7 +106,7 @@
 	</script>
 	<script type="text/javascript">
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
-		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
+		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber;
 		$('#loadstart').hide()
 		$(function() {
 			var $paymoney = $("#paymoney");
@@ -187,6 +186,8 @@
 		new Vue({
 			el: '#vipBody',
 			data: {
+				customMoney: '',
+				consumerYuanTips: false,
 				customM: '',
 				customCell: '',
 				customName: '',
@@ -197,6 +198,12 @@
 			methods: {
 				// 显示弹出框
 				showMask: function showMask() {
+					if ($('#paymoney').text() != 0) {
+						this.consumerYuanTips = true
+						this.customMoney = $('#paymoney').text()
+					} else {
+						this.consumerYuanTips = false
+					}
 					$('.hiddenbox').show()
 					$('.keyboardbox').hide()
 					setTimeout(function() {
@@ -264,15 +271,24 @@
 					} else {
 						var sendData = new Object()
 						sendData.merchantNumber = merNumber
-						sendData.memberNo = mebNo
-						sendData.cell = cell
+						sendData.memberNo = that.memberNo1
 						sendData.changeType = '0'
+						sendData.clerkNumber = JSON.parse(sessionStorage.getItem('userInfo')).clerkNumber
 						sendData.consumMoney = m
+						sendData.shopNumber = JSON.parse(sessionStorage.getItem('userInfo')).shopNumber
+						sendData.institutionNumber = insNumber
+						sendData.remarks = ''
+						sendData.consumptionType = '2'
+						sendData.useIntegral = '0'
+						sendData.longitude = ''
+						sendData.latitude = ''
+						sendData.ip = ''
+						sendData.payType = '0'
 						// 发送请求
 						$.ajax({
 							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateAccount,
-							data: JSON.stringify(data),
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'consumption/consum',
+							data: JSON.stringify(sendData),
 							dataType: "json",
 							headers: {
 								"Content-Type": "application/json"
@@ -284,8 +300,18 @@
 										text: '消费成功!',
 										type: "success",
 									});
+									$('#paymoney').text('')
+									$('#mebBalance').hide()
+									$('.consumeBInp span').show()
+									$('.consumeBInp p').hide()
+									that.customCell = ''
+									that.mebBalanceTips = false
 								} else {
-									layer.msg(data.msg)
+									swal({
+										title: "",
+										text: data.msg,
+										type: "error",
+									});
 								}
 							}
 						});
@@ -293,15 +319,13 @@
 				},
 				AD_scan: function AD_scan(scanType, payMoney) {
 					var that = this
-					//调用Native提供的callProgress
 					dsBridge.call("takeScan", {
 						scanType: scanType,
 						payMoney: payMoney
 					})
 					dsBridge.register('scanCallBack', function(res) {
-						// that.customCell = res
 						if (scanType == 1) {
-							that.getMenInfo('', res)
+							that.getMenInfo(res, '')
 						} else if (scanType == 2) {
 							swal({
 								title: "",
@@ -313,15 +337,14 @@
 				},
 				getMenInfo: function getMenInfo(cell, mebNo) {
 					var sendData = new Object(),
-						that = this
+						that = this;
 					sendData.merchantNumber = merNumber
-					sendData.memberNo = mebNo
-					sendData.cell = cell
-					sendData.page = '1'
-					sendData.limit = '10'
+					sendData.memberNo = cell.length == 20 ? cell : ''
+					sendData.cell = cell.length == 20 ? '' : cell
+					var serverUrl = cell.length == 20 ? CmsConfig.addressUrl.Mervip.getMemDetails : CmsConfig.addressUrl.Mervip.getMemDetailsByPhone
 					$.ajax({
 						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + serverUrl,
 						data: sendData,
 						dataType: "json",
 						headers: {
@@ -330,13 +353,15 @@
 						success: function(data) {
 							$('#loadstart').hide()
 							that.mebBalanceTips = true
-							that.mebBalance = data.data.memberList[0].allBalance
-							that.customName = data.data.memberList[0].name
-							if (cell != '') {
-								that.customCell = data.data.memberList[0].cell + '(' + data.data.memberList[0].name + ')'
+							that.mebBalance = data.data.allBalance
+							that.customName = data.data.name
+							if (cell.length == 20) {
+								that.customCell = data.data.memberNo + '(' + data.data.name + ')'
 							} else {
-								that.customCell = data.data.memberList[0].memberNo + '(' + data.data.memberList[0].name + ')'
+								that.customCell = data.data.cell + '(' + data.data.name + ')'
 							}
+							that.memberNo1 = data.data.memberNo
+							console.log(that)
 						}
 					});
 				}

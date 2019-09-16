@@ -62,13 +62,15 @@
 				</div>
 				<ul class="vipBillul">
 					<li class="vipBilli" v-for="item in vipBilli">
-						<div class="vipBilliL">
-							<p class="vipBillitit">{{item.name}}</p>
-							<p class="vipBillitime">{{item.cell}}</p>
-						</div>
-						<div class="vipBilliR">
-							<p class="vipBillistate">余额</p>
-							<p class="vipBillimoney">¥ {{item.allBalance}}</span></p>
+						<div class="vipBilliBody">
+							<div class="vipBilliL">
+								<p class="vipBillitit">{{item.name?item.name:'--'}}</p>
+								<p class="vipBillitime">{{item.cell?item.cell:'--'}}</p>
+							</div>
+							<div class="vipBilliR">
+								<p class="vipBillistate">余额</p>
+								<p class="vipBillimoney">¥ {{item.allBalance}}</span></p>
+							</div>
 						</div>
 					</li>
 				</ul>
@@ -83,12 +85,24 @@
 	<script src="./js/vue.min.js"></script>
 	<script src="./js/qrcode.min.js"></script>
 	<script>
-		// http://192.168.1.222:8848/webproject-1/Projectpage/Vip-android/index.html?jsonData={"Number":"1004000394","institutionNumber":"1004","memberNo":"1321312312","clerkNumber":"65416184351","authCode":"2614564153415468"}
+		// http://192.168.1.222:8848/webproject-1/Projectpage/Vip-android/index.html?json={"memberNo": "","merchantNumber": "1004000394","institutionNumber": "1004","clerkNumber": "1004000394","ip": "119.248.3.85","alias": "860d6661c62d937aa2efe18c9fbe2ab4","shopNumber": "","source": 1,"equipmentNumber": "860d6661c62d937aa2efe18c9fbe2ab4","equipmentType": 1}
+		// {
+		// 	"memberNo": "",
+		// 	"merchantNumber": "1004000394",
+		// 	"institutionNumber": "1004",
+		// 	"clerkNumber": "1004000394",
+		// 	"ip": "119.248.3.85",
+		// 	"alias": "860d6661c62d937aa2efe18c9fbe2ab4",
+		// 	"shopNumber": "",
+		// 	"source": 1,
+		// 	"equipmentNumber": "860d6661c62d937aa2efe18c9fbe2ab4",
+		// 	"equipmentType": 1
+		// }
 		$(document).ready(function() {
-			var userInfo = getQueryString('jsonData')
+			var userInfo = getQueryString('json')
 			sessionStorage.setItem("userInfo", userInfo)
 			var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
-			var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
+			var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber;
 			$(".vipstatement").click(function() {
 				window.location.href = "bill-list.html"
 			})
@@ -126,6 +140,17 @@
 					vipBilli: []
 				},
 				methods: {
+					changeDatas: function changeDatas(res) {
+						for (let i = 0; i < res.length; i++) {
+							if (res[i].allBalance.split('.')[0].length > 5) {
+								res[i].allBalance = parseInt(res[i].allBalance.split('.')[0] / 10000) + '万'
+							}
+							if (res[i].giveMoney.split('.')[0].length > 5) {
+								res[i].giveMoney = parseInt(res[i].giveMoney.split('.')[0] / 10000) + '万'
+							}
+						}
+						return res
+					},
 					// 查询会员汇总
 					getMemSummary: function getMemSummary() {
 						var that = this,
@@ -144,7 +169,7 @@
 							success: function success(data) {
 								if (data.code === 1000) {
 									$('#loadstart').hide()
-									that.vipBilli = data.data.memberList
+									that.vipBilli = that.changeDatas(data.data.memberList)
 									that.memberTodCount = data.data.memberTodCount
 									that.memberCount = data.data.memberCount
 									that.memberYesdCount = data.data.memberTodCount

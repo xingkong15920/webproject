@@ -21,8 +21,9 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
+		ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
 		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
-		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
+		// ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		ApiRootUrl: server
 		// imgUrl:imgAdd
 	},
@@ -53,6 +54,8 @@ var CmsConfig = {
 			getImages: "server/getImages",
 			// 取消授权
 			cancelAuthorizet: "authorize/cancelAuthorizet",
+			// 会员充值
+			apppay: "recharge/pay",
 
 			// 商户会员卡
 			// 添加会员卡
@@ -77,6 +80,23 @@ var CmsConfig = {
 			getWCard: "wechat/getCard",
 			// 修改微信会员卡
 			updateWCard: "wechat/updateCard",
+
+			// 支付宝授权
+			getIsAuthorization: "aliCard/getIsAuthorization",
+			// 获取商户授权链接
+			getAppAuthUrl: "aliCard/getAppAuthUrl",
+			// 获取APPID
+			getAliAppId: "aliCard/getAliAppId",
+			// 查询用户是否有会员卡
+			userIsGetCard: "aliCard/userIsGetCard",
+			// 商户授权回调
+			memberChantCallBack: "aliCard/memberChantCallBack",
+			// 查询卡模板信息
+			getCradTemplateData: "aliCard/getCradTemplateData",
+			// 创建支付宝卡模板
+			createCardTemplate: "aliCard/createCardTemplate",
+			// 修改支付宝卡模板
+			updateCardTemplate: "aliCard/updateCardTemplate",
 
 			// 分享海报
 			// 查询分享海报
@@ -105,6 +125,9 @@ var CmsConfig = {
 			getDefaultGrade: "memberGrade/getDefaultGrade",
 			// 修改默认等级信息
 			updateDefaultGrade: "memberGrade/updateDefaultGrade",
+			// 根据手机号查询会员详情
+			getMemDetailsByPhone: "memberManage/getMemDetailsByPhone",
+
 			// 充值设置
 			// 充值-添加充值设置
 			addSet: "rechargeSet/addSet",

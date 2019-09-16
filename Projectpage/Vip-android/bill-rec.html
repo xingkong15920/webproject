@@ -16,6 +16,10 @@
 			* {
 				transition: initial;
 			}
+
+			.vipBill {
+				margin: 0;
+			}
 		</style>
 	</head>
 
@@ -27,44 +31,53 @@
 		</div>
 		<div class="vipCenter vipRec" id="Vip">
 			<div class="vipBlock vipBill">
-				<div class="vipBlock" style="margin: 0; padding: 0;">
+				<div class="vipBlock" :class="[mebsearch?'mebsearch':'']" style="margin: 0; padding: 0;">
 					<div class="seachInput">
 						<label><i class="icon iconfont iconhuiyuan"></i></label>
-						<input type="text" id="seachText" value="" placeholder="姓名/手机号" />
+						<input type="text" id="seachText" v-model="seachText" placeholder="姓名/手机号" @focus="inputfocus()" />
+						<div class="seachBtn" @click="searchThing()">搜索</div>
 					</div>
 				</div>
 				<ul class="vipBillul vipBillultit" v-cloak>
 					<li class="vipBilli vipBilli3" v-for="item in vipBilul">
-						<div class="vipBilliL">
-							{{item.vipBilliL}}
-						</div>
-						<div class="vipBilliC">
-							{{item.vipBilliC}}
-						</div>
-						<div class="vipBilliR">
-							{{item.vipBilliR}}
+						<div class="vipBilliBody">
+							<div class="vipBilliL">
+								{{item.vipBilliL}}
+							</div>
+							<div class="vipBilliC">
+								{{item.vipBilliC}}
+							</div>
+							<div class="vipBilliR">
+								{{item.vipBilliR}}
+							</div>
 						</div>
 					</li>
 				</ul>
 				<div class="vipBillul" v-cloak ref="mescroll" class="mescroll">
 					<ul id="vipBillulB">
-						<li class="vipBilli vipBilli3" v-for="item in vipBilli">
-							<div class="vipBilliL">
-								<p class="vipBillitit">{{item.name}}</p>
-								<p class="vipBilliname">{{item.shopName}}</p>
-								<p class="vipBillitime">{{item.rechargeTime}}</p>
+						<li class="vipBilli vipBilli3" v-for="(item,index) in vipBilli" data-type="0">
+							<div class="vipBilliBody" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
+								<div class="vipBilliL">
+									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
+									<p class="vipBillitime">{{item.rechargeTime}}</p>
+								</div>
+								<div class="vipBilliC">
+									{{item.payType1}}
+								</div>
+								<div class="vipBilliR">
+									<p class="vipBillimoney">¥ {{item.orderAmount?item.orderAmount:'0.00'}}</span></p>
+									<p class="vipBillimoneyG">赠送：¥ {{item.giveAmount?item.giveAmount:'0.00'}}</span></p>
+								</div>
 							</div>
-							<div class="vipBilliC">
-								<p class="vipBillimoney">{{item.orderAmount}}</span></p>
-							</div>
-							<div class="vipBilliR">
-								<p class="vipBillimoney">¥ {{item.giveAmount}}</span></p>
-							</div>
+							<ul class="operation">
+								<li @click="undoItem" :data-index="index" :data-cell="item.cell">撤销</li>
+							</ul>
 						</li>
 						<!-- <li class="branches" v-cloak>共计 <span>{{branches}}</span> 条记录</li> -->
 					</ul>
 				</div>
 			</div>
+			<div class="mask mebList" :class="[mebsearch?'show':'hide']" @click="inputblur()"></div>
 		</div>
 	</body>
 	<script src="./js/jquery.min.js"></script>
@@ -75,7 +88,7 @@
 	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
-		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
+		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber;
 		new Vue({
 			el: '#Vip',
 			data: {
@@ -88,16 +101,141 @@
 					'vipBilliR': '赠送金额'
 				}],
 				vipBilli: [],
-				mescroll: null // mescroll实例对象
-
+				mescroll: null, // mescroll实例对象
+				mebsearch: false,
+				seachText: '',
+				seachTextN: '',
+				seachTextC: '',
+				startX: 0,
+				startY: 0,
+				endX: 0,
+				endY: 0,
 			},
 			methods: {
+				//跳转
+				skip() {
+					if (this.checkSlide()) {
+						this.restSlide();
+					}
+				},
+				//滑动开始
+				touchStart(e) {
+					// 记录初始位置
+					this.startX = e.touches[0].clientX;
+					this.startY = e.touches[0].clientY;
+				},
+				//滑动结束
+				touchEnd(e) {
+					// 当前滑动的父级元素
+					let parentElement = e.currentTarget.parentElement;
+					// 记录结束位置
+					this.endX = e.changedTouches[0].clientX;
+					this.endY = e.changedTouches[0].clientY;
+					// 判断上滑偏移量
+					if (this.startY - this.endY < 30) {
+						// 左滑
+						if (parentElement.dataset.type == 0 && this.startX - this.endX > 30) {
+							this.restSlide();
+							parentElement.dataset.type = 1;
+						}
+						// 右滑
+						if (parentElement.dataset.type == 1 && this.startX - this.endX < -30) {
+							this.restSlide();
+							parentElement.dataset.type = 0;
+						}
+					}
+					this.startX = 0;
+					this.endX = 0;
+				},
+				//判断当前是否有滑块处于滑动状态
+				checkSlide() {
+					let listItems = document.querySelectorAll('.vipBilli');
+					for (let i = 0; i < listItems.length; i++) {
+						if (listItems[i].dataset.type == 1) {
+							return true;
+						}
+					}
+					return false;
+				},
+				//复位滑动状态
+				restSlide() {
+					let listItems = document.querySelectorAll('.vipBilli');
+					// 复位
+					for (let i = 0; i < listItems.length; i++) {
+						listItems[i].dataset.type = 0;
+					}
+				},
+				//删除
+				deleteItem(e) {
+					// 当前索引
+					let index = e.currentTarget.dataset.index;
+					// 复位
+					this.restSlide();
+					alert(index)
+				},
+				//撤销
+				undoItem(e) {
+					// 当前索引
+					let cell = e.currentTarget.dataset.cell;
+					// 复位
+					this.restSlide();
+					alert(cell)
+				},
+				inputfocus: function inputfocus() {
+					this.mebsearch = true;
+				},
+				inputblur: function inputblur() {
+					this.mebsearch = false;
+				},
+				searchThing: function searchThing() {
+					$('#loadstart').show(); // 回调
+					if (this.isNumber(this.seachText)) {
+						this.seachTextC = this.seachText
+						this.seachTextN = ''
+					} else {
+						this.seachTextC = ''
+						this.seachTextN = this.seachText
+					}
+					seachText = this.seachText; //更新关键词
+					this.mescroll.resetUpScroll(); //重新搜索,重置列表数据
+				},
+				isNumber: function isNumber(val) {
+					var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+					var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+					if (regPos.test(val) || regNeg.test(val)) {
+						return true;
+					} else {
+						return false;
+					}
+				},
+				changeDatas: function changeDatas(res) {
+					for (let i = 0; i < res.length; i++) {
+						if (res[i].realAmount.split('.')[0].length > 5) {
+							res[i].realAmount = res[i].realAmount.split('.')[0] / 10000 + '万'
+						}
+						if (res[i].orderAmount.split('.')[0].length > 5) {
+							res[i].orderAmount = res[i].orderAmount.split('.')[0] / 10000 + '万'
+						}
+						switch (res[i].payType) {
+							case 0:
+								res[i].payType1 = '现金'
+								break;
+							case 1:
+								res[i].payType1 = '微信'
+								break;
+							case 2:
+								res[i].payType1 = '支付宝'
+								break;
+						}
+					}
+					return res
+				},
 				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
 				upCallback: function upCallback(page) {
 					var _this = this;
 
 					// 模拟联网
-					this.getListDataFromNet(this.pdType, page.num, page.size, function(arr) {
+					this.getListDataFromNet(this.pdType, page.num, page.size, this.seachText, function(arr) {
 						// 如果是第一页需手动制空列表
 						if (page.num === 1) _this.vipBilli = []; // 把请求到的数据添加到列表
 						_this.vipBilli = _this.vipBilli.concat(arr); // 数据渲染成功后,隐藏下拉刷新的状态
@@ -114,7 +252,8 @@
 				 * 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
 				 * 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
 				 */
-				getListDataFromNet: function getListDataFromNet(pdType, pageNum, pageSize, successCallback, errorCallback) {
+				getListDataFromNet: function getListDataFromNet(pdType, pageNum, pageSize, seachText, successCallback,
+					errorCallback) {
 					var _this2 = this;
 
 					// 延时一秒,模拟联网
@@ -125,6 +264,8 @@
 						sendData.merchantNumber = merNumber;
 						sendData.page = pageNum;
 						sendData.limit = pageSize;
+						sendData.name = that.seachTextN;
+						sendData.cell = that.seachTextC;
 						$.ajax({
 							type: "get",
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getTurnovers,
@@ -137,12 +278,15 @@
 								$('#loadstart').hide(); // 回调
 								if (data.code === 1000) {
 									if (data.data.rechargeTurnovers.length > 0) {
-										successCallback(data.data.rechargeTurnovers);
+										that.mebsearch = false;
+										successCallback(that.changeDatas(data.data.rechargeTurnovers));
 										that.branches = data.data.count;
 									} else {
+										that.mebsearch = false;
 										successCallback([]);
 									}
 								} else {
+									that.mebsearch = false;
 									successCallback([]);
 								}
 							}
@@ -151,6 +295,9 @@
 				}
 			},
 			mounted: function mounted() {
+				if (!seachText) {
+					this.seachText = ''
+				}
 				// 创建MeScroll对象
 				this.mescroll = new MeScroll(this.$refs.mescroll, {
 					// 在vue的mounted生命周期初始化mescroll,确保此处配置的ref有值

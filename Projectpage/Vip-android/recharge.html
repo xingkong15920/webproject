@@ -37,14 +37,16 @@
 				<div class="recordB recorMon">
 					<div><input type="number" src="" class="recordBinput" placeholder="请填写/选择充值金额" v-model="customM" v-on:keyup="amount(event)" /><i>元</i></div>
 					<ul class="rechargeBul">
-						<li class="rechargeBli" v-for="(item,i) in rechargeBli" :key="i" v-on:click="chooseM(item.rechargeBlim,item.rechargeBlirm,i)"
+						<li class="rechargeBli" v-for="(item,i) in rechargeBli" :key="i" v-on:click="chooseM(item.rechargeMoney,item.giveMoney,i)"
 						 :class="{chooseMS: i == chooseMS}" v-cloak>
-							<p class="rechargeBlim"><span>{{item.rechargeBlim}}</span>元</p>
-							<p class="rechargeBlirm">赠送 <span>{{item.rechargeBlirm}}</span>元</p>
+							<p class="rechargeBlim"><span>{{item.rechargeMoney}}</span>元</p>
+							<p class="rechargeBlirm">赠送 <span>{{item.giveMoney}}</span>元</p>
 						</li>
 					</ul>
-					<p class="openMore on" v-show="rechargeBli.length>6" @click="openMore()">展开更多充值优惠<i class="icon iconfont iconiconfontjiantouzuo"></i></p>
-					<span class="viprecordsavebtn opacity05" v-on:click="recBtn()">确认充值</span>
+					<p class="openMore" :class="[openMoreType?'on':'']" v-show="rechargeBli.length>6" @click="openMore()">展开更多充值优惠<i
+						 class="icon iconfont iconiconfontjiantouzuo"></i></p>
+					<span class="viprecordsavebtn" :class="[confirmPay?'opacity05':'']" v-on:click="recBtn()">确认充值</span>
+					<span class="viprecordsavebtn" :class="[confirmPay?'opacity05':'']" v-on:click="recBtn_cash()">现金充值</span>
 				</div>
 			</div>
 		</div>
@@ -56,72 +58,43 @@
 	<script src="./js/vue.min.js"></script>
 	<script src="./js/dsbridge.js"> </script>
 	<script type="text/javascript">
-		if (getQueryString('merNo')) {
-			var userInfo = {
-				"Number": getQueryString('merNo'),
-				"institutionNumber": getQueryString('insNo'),
+		var mebNumber
+		if (getQueryString('json')) {
+			var userInfo = getQueryString('json')
+			sessionStorage.setItem("userInfo", userInfo)
+			if (JSON.parse(userInfo).memberNo != '') {
+				mebNumber = JSON.parse(userInfo).memberNo
 			}
-			sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
 		} else {}
 		var rechargeBli
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
-		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).Number;
-		var mebNumber
-		if (getQueryString('number')) {
-			mebNumber = getQueryString('number')
-		}
+		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber;
+
 		$('#loadstart').hide()
-		rechargeBli = [{ //金额列表
-			rechargeBlim: "10",
-			rechargeBlirm: "1"
-		}, {
-			rechargeBlim: "30",
-			rechargeBlirm: "3"
-		}, {
-			rechargeBlim: "50",
-			rechargeBlirm: "2"
-		}, {
-			rechargeBlim: "100",
-			rechargeBlirm: "10"
-		}, {
-			rechargeBlim: "300",
-			rechargeBlirm: "50"
-		}, {
-			rechargeBlim: "500",
-			rechargeBlirm: "100"
-		}, {
-			rechargeBlim: "100",
-			rechargeBlirm: "10"
-		}, {
-			rechargeBlim: "100",
-			rechargeBlirm: "10"
-		}, {
-			rechargeBlim: "300",
-			rechargeBlirm: "50"
-		}, {
-			rechargeBlim: "500",
-			rechargeBlirm: "100"
-		}]
 		new Vue({
 			el: '#vipBody',
 			data: {
 				cell: mebNumber ? mebNumber : '',
+				// cell: '89100415669815081497',
+				mebNoC: '',
 				chooseMS: '',
 				choosePS: '',
 				customM: '',
 				customRM: '',
-				rechargeBli: rechargeBli,
+				rechargeBli: [],
 				customCellTips: false,
 				mebBalanceTips: false,
 				mebInfoTips: false,
 				mebInfoBalance: '',
 				openMoreType: false,
+				confirmPay: false,
 			},
 			methods: {
 				// 选择金额
 				chooseM: function chooseM(m, rm, i) {
 					this.customM = m
 					this.customRM = rm
+					this.confirmPay = false
 				},
 				// 选择支付方式
 				chooseP: function chooseP(d, n) {
@@ -129,15 +102,23 @@
 				},
 				// 展开更多支付优惠
 				openMore: function openMore() {
-					if(){
-						
+					if (this.rechargeBli.length > 6) {
+						this.openMoreType = true
+					} else {
+						this.openMoreType = false
 					}
-					this.openMoreType = true
 				},
-				// 确认按钮
+				// 扫码充值
 				recBtn: function recBtn() {
 					var that = this
-					if (that.customM == '') {
+					if (that.cell == '') {
+						swal({
+							title: "",
+							text: '请选择充值会员！',
+							type: "error",
+						});
+						return
+					} else if (that.customM == '') {
 						swal({
 							title: "",
 							text: '请选择或输入充值金额！',
@@ -148,13 +129,75 @@
 						that.AD_scan('2', that.customM)
 					}
 				},
+				// 现金充值
+				recBtn_cash: function recBtn() {
+					var that = this
+					if (that.cell == '') {
+						swal({
+							title: "",
+							text: '请选择充值会员！',
+							type: "error",
+						});
+						return
+					} else if (that.customM == '') {
+						swal({
+							title: "",
+							text: '请选择或输入充值金额！',
+							type: "error",
+						});
+						return
+					} else {
+						var sendDataR = new Object()
+						sendDataR.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber
+						sendDataR.merchantNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber
+						sendDataR.memberNo = that.mebNoC
+						sendDataR.equipmentNumber = JSON.parse(sessionStorage.getItem('userInfo')).equipmentNumber
+						sendDataR.equipmentType = JSON.parse(sessionStorage.getItem('userInfo')).equipmentType
+						sendDataR.payType = 0
+						sendDataR.codeType = 'Barcode_Pay'
+						sendDataR.source = 1
+						sendDataR.totalMoney = that.customM
+						sendDataR.rechargeClass = 0
+						sendDataR.shopNumber = JSON.parse(sessionStorage.getItem('userInfo')).shopNumber
+						sendDataR.clerkNumber = JSON.parse(sessionStorage.getItem('userInfo')).clerkNumber
+						// 发送请求
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.apppay,
+							data: JSON.stringify(sendDataR),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code == 1000) {
+									swal({
+										title: "",
+										text: '现金充值成功!',
+										type: "success",
+									});
+									that.mebInfoTips = false
+									that.customCellTips = false
+									that.customM = ''
+									that.cell = ''
+									that.rechargeBli = []
+								} else {
+									layer.msg(data.msg)
+								}
+							}
+						});
+					}
+				},
 				amount: function amount(e) {
 					this.customM = e.target.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
 				},
 				searchCell: function searchCell(e) {
 					var that = this
 					var rg = new RegExp(/^1[3456789]\d{9}$/)
-					if (!rg.test(e.target.value)) {
+					if (e.target.value.length === 20) {
+						$('#loadstart').show()
+						that.getMenInfo(e.target.value, '')
+					} else if (!rg.test(e.target.value)) {
 						that.customCellTips = true
 						that.mebBalanceTips = false
 					} else if (e.target.value == '') {
@@ -175,27 +218,89 @@
 					dsBridge.register('scanCallBack', function(res) {
 						// that.customCell = res
 						if (scanType == 1) {
-							that.getMenInfo('', res)
+							that.getMenInfo(res, '')
 						} else if (scanType == 2) {
-							swal({
-								title: "",
-								text: scanType + ' , ' + payMoney,
-								type: "error",
+							var paymentTypeT,
+								payTypeT
+							$('#loadstart').show()
+							if (res.substring(0, 2) == "25" || res.substring(0, 2) == "26" || res.substring(0, 2) == "27" || res.substring(
+									0, 2) == "28" ||
+								res.substring(0, 2) == "29" || res.substring(0, 2) == "30") {
+								// 支付宝
+								payTypeT = 2
+								paymentTypeT = 'Alipay_Pay'
+							} else if (res.substring(0, 2) == "10" || res.substring(0, 2) == "11" || res.substring(0, 2) == "12" || res
+								.substring(
+									0, 2) == "13" ||
+								res.substring(0, 2) == "14" || res.substring(0, 2) == "15") {
+								// 微信
+								payTypeT = 1
+								paymentTypeT = 'WeChat_Pay'
+							} else {
+								$('#loadstart').hide()
+								swal({
+									title: "",
+									text: "请扫描正确的付款码",
+									type: "error",
+								});
+								return
+							}
+							var sendDataR = new Object()
+							sendDataR.institutionNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber
+							sendDataR.merchantNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber
+							sendDataR.memberNo = that.mebNoC
+							sendDataR.equipmentNumber = JSON.parse(sessionStorage.getItem('userInfo')).equipmentNumber
+							sendDataR.equipmentType = JSON.parse(sessionStorage.getItem('userInfo')).equipmentType
+							sendDataR.payType = payTypeT
+							sendDataR.codeType = 'Barcode_Pay'
+							sendDataR.paymentType = paymentTypeT
+							sendDataR.source = 1
+							sendDataR.totalMoney = that.customM
+							sendDataR.authCode = res
+							sendDataR.rechargeClass = 0
+							sendDataR.shopNumber = JSON.parse(sessionStorage.getItem('userInfo')).shopNumber
+							sendDataR.clerkNumber = JSON.parse(sessionStorage.getItem('userInfo')).clerkNumber
+							$.ajax({
+								type: "post",
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.apppay,
+								data: JSON.stringify(sendDataR),
+								dataType: "json",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								success: function(data) {
+									$('#loadstart').hide()
+									if (data.code === 1000) {
+										that.cell = ''
+										that.customM = ''
+										that.mebInfoTips = false
+										swal({
+											title: "充值成功！",
+											text: "",
+											type: "success",
+										});
+									} else {
+										swal({
+											title: "",
+											text: data.msg,
+											type: "error",
+										});
+									}
+								}
 							});
 						}
 					});
 				},
 				getMenInfo: function getMenInfo(cell, mebNo) {
 					var sendData = new Object(),
-						that = this
+						that = this;
 					sendData.merchantNumber = merNumber
-					sendData.memberNo = mebNo
-					sendData.cell = cell
-					sendData.page = '1'
-					sendData.limit = '10'
+					sendData.memberNo = cell.length == 20 ? cell : ''
+					sendData.cell = cell.length == 20 ? '' : cell
+					var serverUrl = cell.length == 20 ? CmsConfig.addressUrl.Mervip.getMemDetails : CmsConfig.addressUrl.Mervip.getMemDetailsByPhone
 					$.ajax({
 						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + serverUrl,
 						data: sendData,
 						dataType: "json",
 						headers: {
@@ -206,12 +311,15 @@
 							if (data.code === 1000) {
 								that.mebBalanceTips = true
 								that.mebInfoTips = true
-								that.mebInfoBalance = data.data.memberList[0].allBalance
-								if (cell != '') {
-									that.cell = data.data.memberList[0].cell + '(' + data.data.memberList[0].name + ')'
+								that.mebInfoBalance = data.data.allBalance
+								that.mebNoC = data.data.memberNo
+								if (cell.length == 20) {
+									that.cell = data.data.memberNo + '(' + data.data.name + ')'
 								} else {
-									that.cell = data.data.memberList[0].memberNo + '(' + data.data.memberList[0].name + ')'
+									that.cell = data.data.cell + '(' + data.data.name + ')'
 								}
+								that.confirmPay = true
+								that.rechargeBli = data.data.preferentialRecharges
 							} else {
 								swal({
 									title: "",
@@ -226,35 +334,26 @@
 			watch: {
 				customM: function customM(e) {
 					var that = this
-					for (var i = 0; i < rechargeBli.length; i++) {
-						if (that.customM == rechargeBli[i].rechargeBlim) {
-							that.chooseMS = i
-							break
-						} else {
-							that.chooseMS = 1000
+					if (that.cell != '') {
+						for (var i = 0; i < that.rechargeBli.length; i++) {
+							if (that.customM == that.rechargeBli[i].rechargeMoney) {
+								that.chooseMS = i
+								break
+							} else {
+								that.chooseMS = 1000
+							}
 						}
-					}
-					// console.log(that.customM)
-					if (that.customM <= 0) {
-						$('.viprecordsavebtn').addClass('opacity05')
+						console.log(that.customM)
+						that.confirmPay = false
 					} else {
-						$('.viprecordsavebtn').removeClass('opacity05')
+						// that.confirmPay = true
 					}
 				}
 			},
 			created: function created() {
 				var that = this
-				//初始customM为50时列表状态
-				for (var j = 0; j < rechargeBli.length; j++) {
-					if (that.customM == rechargeBli[j].rechargeBlim) {
-						that.chooseMS = j
-						break
-					} else {
-						that.chooseMS = 1000
-					}
-				}
 				if (that.cell != '') {
-					that.getMenInfo('', that.cell)
+					that.getMenInfo(that.cell, '')
 				}
 			}
 		})
