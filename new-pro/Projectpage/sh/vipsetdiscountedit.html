@@ -49,11 +49,12 @@
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">支付方式：</label>
-							<div class="layui-input-inline max360">
+							<div class="layui-input-inline" style="width:260px!important">
 								<input type="checkbox" name="wxPayState" lay-skin="primary" title="微信" checked="">
 								<input type="checkbox" name="aliPayState" lay-skin="primary" title="支付宝" checked="">
 								<input type="checkbox" name="cloudPayState" lay-skin="primary" title="云闪付">
 								<input type="checkbox" name="jdPayState" lay-skin="primary" title="京东钱包">
+								<input type="checkbox" name="memberWallet" lay-skin="primary" title="会员钱包">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -293,6 +294,7 @@
 							"aliPayState": !diacountCon.aliPayState,
 							"cloudPayState": !diacountCon.cloudPayState,
 							"jdPayState": !diacountCon.jdPayState,
+							"memberWallet": !diacountCon.memberWallet,
 							"discount": diacountCon.discount,
 							"minConsumMoney": diacountCon.minConsumMoney,
 							"holidayState": '' + diacountCon.holidayState + '',
@@ -327,6 +329,11 @@
 							data.jdPayState = 0
 						} else {
 							data.jdPayState = 1
+						}
+						if (data.memberWallet) {
+							data.memberWallet = 0
+						} else {
+							data.memberWallet = 1
 						}
 						if (data.holidayState == '0') {
 							data.holidayState = 0

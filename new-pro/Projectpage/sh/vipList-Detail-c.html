@@ -82,10 +82,11 @@
 					<div class="layui-form" action="" lay-filter="actEdit">
 						<div class="layui-form-item">
 							<label class="layui-form-label">变更类型：</label>
-							<div class="layui-input-inline max360">
+							<div class="layui-input-inline widthauto">
 								<input type="radio" name="changeType" value="0" title="消费扣款" lay-filter="changeType" checked="true">
 								<input type="radio" name="changeType" value="1" title="现金充值" lay-filter="changeType">
-								<input type="radio" name="changeType" value="2" title="积分变更" lay-filter="changeType">
+								<input type="radio" name="changeType" value="2" title="积分增加" lay-filter="changeType">
+								<input type="radio" name="changeType" value="3" title="积分减少" lay-filter="changeType">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -307,6 +308,13 @@
 							$('#consumMoney').removeAttr('lay-verify')
 							$('#rechargeMoney').removeAttr('lay-verify')
 							$('#integral').attr('lay-verify', 'integral')
+						} else if (data.value == 3) {
+							$('.saleB').hide()
+							$('.rechB').hide()
+							$('.inteB').show()
+							$('#consumMoney').removeAttr('lay-verify')
+							$('#rechargeMoney').removeAttr('lay-verify')
+							$('#integral').attr('lay-verify', 'integral')
 						}
 					});
 					/*---------- 自定义验证规则 ----------*/
@@ -356,6 +364,8 @@
 							data.rechargeMoney = $('#rechargeMoney').val()
 							data.giveMoney = $('#giveMoney').val()
 						} else if (data.changeType == 2) {
+							data.integral = $('#integral').val()
+						} else if (data.changeType == 3) {
 							data.integral = $('#integral').val()
 						}
 						console.log(data)

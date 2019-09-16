@@ -240,7 +240,7 @@
 								<div class="layui-input-block merservices">
 								</div>
 							</div>
-							<div class="layui-form-item max600">
+							<!-- <div class="layui-form-item max600">
 								<label class="layui-form-label">适用门店 :</label>
 								<div class="layui-input-block">
 									<input type="text" name="applyShops" class="layui-input" lay-verify="" id="symd" autocomplete="off"
@@ -248,7 +248,7 @@
 								</div>
 								<label class="layui-form-label"></label>
 								<div class="layui-form-mid layui-word-aux">空为不限制，门店核销或会员到店消费前，需要效验此项</div>
-							</div>
+							</div> -->
 							<div class="layui-form-item">
 								<label class="layui-form-label">图文介绍</label>
 								<div class="layui-input-block">
@@ -657,17 +657,17 @@
 								$('.merservices').html(strS)
 
 								// 适用门店
-								if (data.data.applyShops.length > 0) {
-									var applyShopsList = []
-									for (i = 0; i < data.data.applyShops.length; i++) {
-										applyShopsList.push(data.data.applyShops[i].split('||')[0])
-										shopNumbers.push(data.data.applyShops[i].split('||')[0])
-									}
-									$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
-									$('#symd').attr('ts-selected', applyShopsList.join(','))
-								} else {
-									layer.msg('未查询到适用门店！')
-								}
+								// if (data.data.applyShops.length > 0) {
+								// 	var applyShopsList = []
+								// 	for (i = 0; i < data.data.applyShops.length; i++) {
+								// 		applyShopsList.push(data.data.applyShops[i].split('||')[0])
+								// 		shopNumbers.push(data.data.applyShops[i].split('||')[0])
+								// 	}
+								// 	$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
+								// 	$('#symd').attr('ts-selected', applyShopsList.join(','))
+								// } else {
+								// 	layer.msg('未查询到适用门店！')
+								// }
 
 
 								//图文列表
@@ -1348,7 +1348,8 @@
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
 					data.wxCardNo = wxCardNo
-					data.applyShops = shopNumbers
+					// data.applyShops = shopNumbers
+					data.applyShops = []
 					if (shopNumbers != '') {
 						data.shopJurisdiction = 1
 					} else {
@@ -1414,7 +1415,8 @@
 					data.merchantService = arrm.join('||');
 					data.institutionNumber = insNumber
 					data.merchantNumber = merNumber
-					data.applyShops = shopNumbers
+					// data.applyShops = shopNumbers
+					data.applyShops = []
 					if (shopNumbers != '') {
 						data.shopJurisdiction = 1
 					} else {
