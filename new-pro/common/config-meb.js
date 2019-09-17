@@ -24,7 +24,7 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		// ApiRootUrlMeb: 'http://192.168.1.110:8088/shanhe-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
 		// ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
 		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
@@ -150,8 +150,12 @@ var CmsConfig = {
 			addChannel: "delivery/addChannel",
 			// 渠道-查询投放渠道列表
 			getChannels: "delivery/getChannels",
+			// 查询投放渠道详情
+			getChannelDetails: "delivery/getChannelDetails",
 			// 设置默认投放渠道
 			setDefaultChannel: "delivery/setDefaultChannel",
+			// 修改投放渠道
+			updateChannel: "delivery/updateChannel",
 			// 渠道-删除投放渠道
 			deleteChannel: "delivery/deleteChannel",
 			// 推荐设置
