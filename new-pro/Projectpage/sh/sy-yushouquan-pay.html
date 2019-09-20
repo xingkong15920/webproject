@@ -102,8 +102,8 @@
 					function(data) {
 						var shopData = data.data
 						for (var i = 0; i < shopData.length; i++) {
-							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName +
-								"</option>");
+							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + '/' +
+								shopData[i].clerkNumber + "</option>");
 						}
 						form.render()
 					}
@@ -126,7 +126,7 @@
 						where: {
 							"startTime": fun_date(-6) + ' 00:00:00',
 							"endTime": fun_date(0) + ' 23:59:59',
-							"orderState": '9',
+							"orderState": '1',
 							"equipmentType": $('#equipmentType').val(),
 							"shopName": $('#shopName').val(),
 							"clerkNumber": $('#clerkNumber').val(),
@@ -250,10 +250,10 @@
 								templet: function(data) {
 									switch (data.equipmentType) {
 										case '1':
-											return 'PC插件'
+											return 'APP'
 											break;
 										case '2':
-											return 'APP'
+											return 'PC插件'
 											break;
 										default:
 											return '--'
@@ -300,7 +300,6 @@
 							var shopName = $('#shopName')
 							var startTime = $('#startTime')
 							var batch = $('#batch')
-							var shopName = $('#shopName')
 							var clerkNumber = $('#clerkNumber')
 							var equipmentType = $('#equipmentType')
 
@@ -311,8 +310,8 @@
 								},
 								where: {
 									equipmentType: equipmentType.val(),
-									shopName: shopName.val(),
-									clerkNumber: clerkNumber.val(),
+									shopNumber: shopName.val().split('/')[0],
+									clerkNumber: clerkNumber.val().split('/')[0],
 									batch: batch.val(),
 									startTime: startTime.val().split(' - ')[0],
 									endTime: startTime.val().split(' - ')[1],
