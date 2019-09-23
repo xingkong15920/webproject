@@ -399,43 +399,6 @@
 				});
 			}
 			switchPwd()
-			$('#shouquan').click(function() {
-				layer.confirm('确认有进行授权吗', {
-					btn: ['取消', '确定'] //按钮
-				}, function() {
-					layer.closeAll()
-				}, function() {
-					var timer = setInterval(function() {
-						$.ajax({
-							type: 'get',
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getAuthorizetInfo,
-							data: {
-								'authType': 1,
-								'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
-							},
-							dataType: 'json',
-							success: function(data) {
-								if (data.code == 1000) {
-									location.reload()
-								} else if (data.code == '-2') {} else {}
-							}
-						});
-					}, 15000)
-					layer.open({
-						type: 2,
-						title: '微信授权',
-						area: ['90%', '90%'],
-						content: 'http://api.51shanhe.com/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(sessionStorage.getItem(
-							'userSh')).Number + '&authType=1',
-						success: function(layero, index) {
-							// 获取子页面的iframe
-							var iframe = window['layui-layer-iframe' + index];
-							// 向子页面的全局函数child传参
-							// iframe.subPageadvert(data, userNumber)
-						}
-					});
-				});
-			})
 			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 				layui.$.support.cors = true; //允许ajax跨域
 				var $ = layui.jquery,
