@@ -154,7 +154,13 @@
 				var channel = jgData.id
 				var channelType = jgData.paymentChannelType
 				var arrr = new Array()
-				CmsUtility.postAjaxCall(
+				
+				
+				layui.use(['laydate', 'table', 'form'], function() {
+					var laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form;
+						CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Mechanism.getRate,
 						{
@@ -184,7 +190,7 @@
 									
 								}
 								arrr = uniq(arrr)
-								
+								tableRender()
 							}else{
 								layer.msg(data.msg)
 								
@@ -196,12 +202,6 @@
 						'post',
 						'true'
 					)
-				
-				layui.use(['laydate', 'table', 'form'], function() {
-					var laydate = layui.laydate,
-						table = layui.table,
-						form = layui.form;
-
 					//方法级渲染  
 					function tableRender(){
 						table.render({
@@ -327,7 +327,7 @@
 							}
 						});
 					}
-					tableRender()
+					
 					$('#search').click(function(){
 						tableRender()
 					})

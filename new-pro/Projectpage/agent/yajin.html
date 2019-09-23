@@ -86,7 +86,7 @@
 						<input type="text" name="couponName" id="orderNumber" placeholder="支付单号" autocomplete="off" class="layui-input">
 					</div> -->
 					<div class="layui-input-inline">
-						<select name="type" id="orderSource">
+						<select name="type" id="equipmentType">
 							<option value="">订单来源</option>
 							<option value="1">PC</option>
 							<option value="2">安卓</option>
@@ -110,7 +110,7 @@
 			<a class="layui-btn layui-btn-xs" id="Toview" lay-event="Toview">同步</a>
 			
 		</script>
-		<script src="../../common/config-organ.js"></script>
+		<script src="../../common/config-agent.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
 			//<a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
@@ -143,7 +143,7 @@
 				return data
 			}
 			var serverUrl = window.parent.serverUrl
-			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+			var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 			layui.use(['laydate', 'table', 'form'], function() {
 				var laydate = layui.laydate,
 					table = layui.table,
@@ -177,7 +177,7 @@
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						//url: './json/vip-card.json',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + 'deposit/getDepositList' + '?institutionNumber=' + userNumber ,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'agOrder/getYSQAgOrderList' + '?agentNumber=' + userNumber ,
 						// + userNumber ,
 						where:{
 							"merchantName":$('#merchantName').val().trim(),
@@ -189,7 +189,8 @@
 							"orderNumber":'',
 							"paymentOrderNumber":$('#paymentOrderNumber').val().trim(),
 							"orderState":$('#orderState').val().trim(),
-							"orderSource":$('#orderSource').val().trim(),
+							"equipmentType":$('#equipmentType').val().trim(),
+							"agentLevel":JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
 						},
 						elem: '#members',
 						height: 'full-210',
@@ -299,14 +300,14 @@
 								title: '订单来源/订单金额',
 								templet:function(data){
 									var os = data.orderSource == '1' ? '安卓':'PC插件'
-									return '订单来源：' +  os + '</br>' +  '订单金额：' +  data.settlementamount 
+									return '订单来源：' +  os + '</br>' +  '订单金额：' +  data.transactionamount 
 								}
 							}, {
 								align: 'center',
 								field: 'batch',
 								title: '授权金额/顾客消费/顾客退回',
 								templet:function(data){
-									return '授权金额：' +  data.transactionamount + '</br>' + '顾客消费：' +   data.monetary + '</br>' + '顾客退回：' +   data.refundamount 
+									return '授权金额：' +  data.settlementamount + '</br>' + '顾客消费：' +   data.monetary + '</br>' + '顾客退回：' +   data.refundamount 
 								}
 							}, {
 								align: 'center',

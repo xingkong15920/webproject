@@ -62,15 +62,21 @@ input[type="number"]{ -moz-appearance: textfield; }
 									</div>
 								</div>
 								<div class="layui-form-item">
-									<label class="layui-form-label"><span class="x-red">* </span>发票金额：</label>
+									<label class="layui-form-label"><span class="x-red">* </span>打款金额：</label>
 									<div class="layui-input-inline">
-										<input type="number" name="invoiceAmount" lay-verify="title||money" autocomplete="off" class="layui-input" placeholder="发票金额为实际打款金额" id="fapiao" value="">
+										<input type="number" name="invoiceAmount" lay-verify="title||money" autocomplete="off" class="layui-input" placeholder="打款金额" id="fapiao" value="">
 									</div>
 								</div>
+								<!-- <div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red"></span></label>
+									<div class="layui-input-inline">
+										<span style="color:red">备注:打款金额为实际到账金额</span>
+									</div>
+								</div> -->
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red"></span></label>
 									<div class="layui-input-inline">
-										<span>账号余额 <span id="canMoney" style="color:red"></span> 元/最小提现金额1000元</span>
+										<span>账号余额 <span id="canMoney" style="color:red"></span> 元/最小提现金额100元</span>
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -82,7 +88,8 @@ input[type="number"]{ -moz-appearance: textfield; }
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red"></span></label>
 									<div class="layui-input-inline">
-										<span>备注:发票金额+税点=提现金额 提现金额不得大于账号余额</span>
+										<span style="color:red">备注:打款金额+税点=提现金额,
+										  提现金额不得大于账号余额</span>
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -153,8 +160,8 @@ input[type="number"]{ -moz-appearance: textfield; }
 						}
 					},
 					money:function(value){
-						if(value < 1000){
-							return '最小提现金额为1000元'
+						if(value < 100){
+							return '最小提现金额为100元'
 						}
 						if($('#tixian').val() > lostMoney){
 							return '提现金额不得大于账号余额'
@@ -241,6 +248,10 @@ input[type="number"]{ -moz-appearance: textfield; }
 				$("#fapiao").on("input",function(e){
 				    //获取input输入的值
 				    clearInterval(timer)
+				    if($('#fapiao').val() == ''){
+				    	$('#tixian').val('')
+				    	return 
+				    }
 				    timer = setTimeout(function(){
 				    	$('#tixian').val(parseFloat(e.delegateTarget.value) + e.delegateTarget.value/100*($('#moneyPoint').val().replace('%','')))
 				    },500)

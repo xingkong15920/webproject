@@ -173,7 +173,7 @@
             <div class="layui-fluid">
                 <blockquote class="layui-elem-quote" style="font-size: 20px;">自有应用管理</blockquote>
                 <div class="layui-row layui-col-space1 ThirdBody" style="margin-bottom:20px" id="listTop">
-                    <div class="layui-col-xs4 layui-col-md1 ThirdList">
+                    <!-- <div class="layui-col-xs4 layui-col-md1 ThirdList">
                         <div class="layui-card">
                             <div class="layui-card-body" style="height:180px">
                                 <div class="ThirdListB">
@@ -182,7 +182,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- <div class="layui-col-xs4 layui-col-md1 ThirdList">
                         <div class="layui-card">
                             <div class="layui-card-body">
@@ -363,7 +363,7 @@
                 layer.open({
                     type: 2, //此处以iframe举例
                     title: '第三方管理-极光推送',
-                    area: ['550px', '350px'],
+                    area: ['550px', '550px'],
                     shade: 0.5,
                     resize: false,
                     content: './Third-jgts.html',
@@ -495,24 +495,27 @@
 						if(data.code == 1000){
 							var apps = data.data
                             var strTop='',strBottom=''
-                        for(var i = 0 ; i < 7;i++){
+                        for(var i = 0 ; i < apps.length;i++){
+                            if(apps[i].applyName == '点餐系统' || apps[i].applyName == '扫码点餐'){
+                                continue;
+                            }
                             if(apps[i].status == 0){
-                                strTop += '<div class="layui-col-xs4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
+                                strTop += '<div class="layui-col-xs4 layui-col-sm4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
                             }else{
-                                strTop += '<div class="layui-col-xs4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList1[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
+                                strTop += '<div class="layui-col-xs4 layui-col-sm4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList1[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
                             }
                             
                         }
                         $("#listTop").html(strTop)
-    					for(var i = 7 ; i < apps.length;i++){
-                            if(apps[i].status == 0){
-                                strBottom += '<div class="layui-col-xs4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
-                            }else{
-                                strBottom += '<div class="layui-col-xs4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList1[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
-                            }
+    					// for(var i = 7 ; i < apps.length;i++){
+         //                    if(apps[i].status == 0){
+         //                        strBottom += '<div class="layui-col-xs4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
+         //                    }else{
+         //                        strBottom += '<div class="layui-col-xs4 layui-col-md1 ThirdList"> <div class="layui-card"> <div class="layui-card-body" style="height:180px"> <div class="ThirdListB"> <img src="'+ imgList1[i] +'" style="width:50px;height:50px;margin:25px"><p>' + apps[i].applyName  + '</p></div></div> </div></div>'
+         //                    }
                             
-                        }
-                        $("#listBottom").html(strBottom)		
+         //                }
+         //                $("#listBottom").html(strBottom)		
 						}else{
 							layer.msg(data.msg)
 						}
