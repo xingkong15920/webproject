@@ -18,6 +18,11 @@
 			.layui-table-cell {
 				height: auto;
 			}
+
+			.moneyDown {
+				font-size: 20px;
+				margin-right: 5px;
+			}
 		</style>
 	</head>
 
@@ -181,7 +186,9 @@
 							sort: true,
 							width: 120,
 							templet: function(data) {
-								if (data.money) {
+								if (data.orderState == -2) {
+									return '<span class="moneyDown">-</span>¥ ' + data.money
+								} else if (data.money) {
 									return '¥ ' + data.money
 								} else {
 									return '--'
@@ -194,7 +201,9 @@
 							sort: true,
 							width: 120,
 							templet: function(data) {
-								if (data.discountMoney) {
+								if (data.orderState == -2) {
+									return '<span class="moneyDown">-</span>¥ ' + data.discountMoney
+								} else if (data.discountMoney) {
 									return '¥ ' + data.discountMoney
 								} else {
 									return '--'
@@ -207,7 +216,9 @@
 							sort: true,
 							width: 120,
 							templet: function(data) {
-								if (data.payMoney) {
+								if (data.orderState == -2) {
+									return '<span class="moneyDown">-</span>¥ ' + data.payMoney
+								} else if (data.payMoney) {
 									return '¥ ' + data.payMoney
 								} else {
 									return '--'
@@ -220,7 +231,9 @@
 							sort: true,
 							width: 120,
 							templet: function(data) {
-								if (data.principalMoney) {
+								if (data.orderState == -2) {
+									return '<span class="moneyDown">-</span>¥ ' + data.principalMoney
+								} else if (data.principalMoney) {
 									return '¥ ' + data.principalMoney
 								} else {
 									return '--'
@@ -233,7 +246,9 @@
 							sort: true,
 							width: 120,
 							templet: function(data) {
-								if (data.giveMoney) {
+								if (data.orderState == -2) {
+									return '<span class="moneyDown">-</span>¥ ' + data.giveMoney
+								} else if (data.giveMoney) {
 									return '¥ ' + data.giveMoney
 								} else {
 									return '--'
@@ -250,6 +265,21 @@
 									return data.orderTime
 								} else {
 									return '--'
+								}
+							}
+						}, {
+							field: 'orderState',
+							title: '订单状态',
+							align: 'center',
+							width: 90,
+							templet: function(data) {
+								switch (data.orderState) {
+									case 1:
+										return '已完成'
+										break;
+									case -2:
+										return '已撤销'
+										break;
 								}
 							}
 						}, {
@@ -295,8 +325,8 @@
 									consumOrderNumber: orderNumber.val(),
 									cell: cell.val(),
 									shopNumber: shopName.val().split('/')[0],
-									startTime: startendTime.val().split(' - ')[0] + ' 00:00:00',
-									endTime: startendTime.val().split(' - ')[1] + ' 23:59:59',
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
 								}
 							});
 							layer.closeAll()
