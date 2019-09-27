@@ -45,7 +45,9 @@
                 	<div class="layui-form-item">
                    		<label class="layui-form-label">公众号APPID</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="wechatAppid" autocomplete="off" placeholder="请输入公众号APPID" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="wechatAppid" autocomplete="off" placeholder="请输入公众号APPID" class="layui-input" lay-verify="wxappid" style="width:200px;display:inline-block">
+                        	<input type="text" name="weChatAuthorizeT" autocomplete="off" placeholder="公众号授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                        <div class="layui-btn" id="shouquan" style="margin-left:30px;display:inline-block">授权</div>
                     	</div>
 	                </div>
 	                <div class="layui-form-item">
@@ -57,7 +59,9 @@
 	                <div class="layui-form-item">
                    		<label class="layui-form-label">小程序APPID</label>
                     	<div class="layui-input-block">
-                        	<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="请输入小程序APPID" class="layui-input" lay-verify="wxappid">
+                        	<input type="text" name="smallroutineAppid" autocomplete="off" placeholder="请输入小程序APPID" class="layui-input" lay-verify="wxappid"  style="width:200px;display:inline-block">
+                        	<input type="text" name="smallRoutineAuthorizeT" autocomplete="off" placeholder="小程序授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                         <div class="layui-btn" id="shouquan1" style="margin-left:30px;display:inline-block">授权</div>
                     	</div>
 	                </div>
                 	<div class="layui-form-item">
@@ -142,7 +146,7 @@
 		<script>
 			// $('#user').html(JSON.parse(sessionStorage.getItem("organUser")).login)
 			var institutionNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-			
+			var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 				layui.$.support.cors = true; //允许ajax跨域
 				var $ = layui.jquery,
@@ -162,6 +166,7 @@
 							if(data.data == null){
 								layer.msg(data.msg)
 							}else{
+								console.log(data.data.smallroutineAppid)
 							form.val('basic', {
 								"wechatAppid":data.data.wechatAppid,
 								"wechatappsecret":data.data.wechatappsecret,
@@ -170,35 +175,12 @@
 								"payDasd":data.data.payDasd,
 								"smallroutineAppid":data.data.smallroutineAppid,
 								"alipayPID":data.data.alipayPID,
-
-							})
-
-							}
-							
-						}else{
-							layer.msg(data.msg)
-						}
-					},
-					function(data){
-						console.log('222')
-					}
-				)
-				CmsUtility.postAjaxCall(
-						//系统设置
-					CmsConfig.addressUrl.Mechanism.getTPConf,
-					{
-						"institutionNumber":institutionNumber
-					},
-					function(data){
-						if(data.code == 1000){
-							if(data.data == null){
-								layer.msg(data.msg)
-							}else{
-							form.val('basic', {
 								"aliPrivateKey":data.data.aliPrivateKey,
 								"aliPublicKey":data.data.aliPublicKey,
 								"aliPayPublicKey":data.data.aliPayPublicKey,
-								"aliAppid":data.data.aliAppid
+								"aliAppid":data.data.aliAppid,
+								"weChatAuthorizeT":data.data.weChatAuthorizeT,
+								"smallRoutineAuthorizeT":data.data.smallRoutineAuthorizeT,
 							})
 
 							}
@@ -211,6 +193,129 @@
 						console.log('222')
 					}
 				)
+				var time1,timr2
+        $('#shouquan').click(function(){
+            var strTime = new Date().getTime();
+            console.log(strTime)
+            sessionStorage.setItem('jgGzhStr',strTime)
+            layer.open({
+                type: 2, //此处以iframe举例
+                title: '授权',
+                area: ['90%', '90%'],
+                shade: 0.5,
+                resize: false,
+                content: 'http://api.51shanhe.com/wechatAuth/authBack.html?authType=3&institutionNumber='+userNumber + '&str=' + strTime,
+                success: function(layero) {
+                    layer.setTop(layero); //重点2
+                }
+            });
+            
+            
+            time1 = setInterval(function(){
+                $.ajax({
+                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                    url:"http://192.168.1.66/shanhe-member/authorize/getInsAuthorizetInfo",
+                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                    type: "GET",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    data: {
+                      "authorizationNo": sessionStorage.getItem('jgGzhStr')
+                    },
+                    success: function(data) {
+                        if(data.code == 1000){
+                            clearInterval(time1)
+                            gzhAuthId = data.data.authorizationAppId
+                            gzhAuthTime = data.data.authorizationTime
+                            gzhNo = data.data.authorizationNo
+                            form.val('basic', {
+                                "wechatAppid": data.data.authorizationAppId,
+                                "weChatAuthorizeT":'授权时间:' + data.data.authorizationTime,
+                                })
+                            }
+                        
+                        }
+                })  
+            },15000)
+        })
+        $('#shouquan1').click(function(){
+            var strTime = new Date().getTime();
+            console.log(strTime)
+            sessionStorage.setItem('jgXcxStr',strTime)
+            layer.open({
+                type: 2, //此处以iframe举例
+                title: '授权',
+                area: ['90%', '90%'],
+                shade: 0.5,
+                resize: false,
+                content: 'http://api.51shanhe.com/wechatAuth/authBack.html?authType=4&institutionNumber='+userNumber+'&str=' + strTime,
+                success: function(layero) {
+                    layer.setTop(layero); //重点2
+                }
+            });
+            time2 = setInterval(function(){
+                $.ajax({
+                    //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+                    url:"http://192.168.1.66/shanhe-member/authorize/getInsAuthorizetInfo",
+                    // url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+                    type: "GET",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    data: {
+                      "authorizationNo": sessionStorage.getItem('jgXcxStr')
+                    },
+                    success: function(data) {
+                       
+                        if(data.code == 1000){
+                            clearInterval(time2)
+                            xcxAuthTime = data.data.authorizationTime
+                            xcxNo = data.data.authorizationNo
+                            form.val('basic', {
+                               
+                                "smallRoutineAuthorizeT":'授权时间：' + data.data.xcxAuthTime,
+                                "smallroutineAppid": datad.data.authorizationAppId,
+                                
+                            })
+                        }
+                        // xcxAuthTime = data.data.authorizationTime
+                        // xcxNo = data.data.authorizationNo
+                       
+                    }
+                })  
+            },15000)
+        })
+				// CmsUtility.postAjaxCall(
+				// 		//系统设置
+				// 	CmsConfig.addressUrl.Mechanism.getTPConf,
+				// 	{
+				// 		"institutionNumber":institutionNumber
+				// 	},
+				// 	function(data){
+				// 		if(data.code == 1000){
+				// 			if(data.data == null){
+				// 				layer.msg(data.msg)
+				// 			}else{
+				// 			form.val('basic', {
+				// 				"aliPrivateKey":data.data.aliPrivateKey,
+				// 				"aliPublicKey":data.data.aliPublicKey,
+				// 				"aliPayPublicKey":data.data.aliPayPublicKey,
+				// 				"aliAppid":data.data.aliAppid
+				// 			})
+
+				// 			}
+							
+				// 		}else{
+				// 			layer.msg(data.msg)
+				// 		}
+				// 	},
+				// 	function(data){
+				// 		console.log('222')
+				// 	}
+				// )
 				form.verify({
 					title:function(value){
 						if(!value){

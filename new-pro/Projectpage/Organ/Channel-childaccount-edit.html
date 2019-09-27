@@ -48,6 +48,12 @@
                                 <input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
                             </div>
                         </div>
+                         <div class="layui-form-item " id="sxf" style="display:none">
+                        <label class="layui-form-label">任务单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="sxfTask" autocomplete="off" placeholder="任务单号(仅随行付通道需要)" class="layui-input" lay-verify="sxfTask">
+                        </div>
+                    </div>
                         <div class="layui-form-item xdl" style="display:none">
                             <label class="layui-form-label">终端号</label>
                             <div class="layui-input-inline">
@@ -62,7 +68,7 @@
                         </div> -->
                         <div class="layui-form-item">
                             <label class="layui-form-label">结算类型</label>
-                            <div class="layui-input-block">
+                            <div class="layui-input-inline">
                                 <input type="radio" class="xdl" name="rateType" value="D1" title="D1" checked="">
                                 <input type="radio" class="xdl" name="rateType" value="D0" title="D0">
                                 <input type="radio" class="xdl" name="rateType" value="T1" title="T1" >
@@ -70,7 +76,7 @@
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">类型</label>
-                            <div class="layui-input-block">
+                            <div class="layui-input-inline">
                                 <!-- <input type="radio" name="subsidy" value="1" title="普通商户" checked="">
                           <input type="radio" name="subsidy" value="0" title="补贴商户A"> -->
                                 <select name="subsidyType" id="merchantEnble">
@@ -124,6 +130,7 @@
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
     });
+
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     var index = parent.layer.getFrameIndex(window.name);
     $('#quxiao').click(function() {
@@ -188,6 +195,9 @@
 
         if(jgData.payment == 4){
             $('.xdl').show()
+        }
+         if(jgData.payment == 5){
+            $('#sxf').show()
         }
         if (jgData.payment == 0) {
             CmsUtility.postAjaxCall(
@@ -287,7 +297,8 @@
                 "aliPublicKey": jgData.aliPublicKey,
                 "aliPrivateKey": jgData.aliPrivateKey,
                 "subsidyType":jgData.subsidy,
-                "rateType":jgData.rateType
+                "rateType":jgData.rateType,
+                "sxfTask":jgData.sxfTask
             })
 
             form.on('switch(riskMode)', function(data) { //消费优惠开关
@@ -354,6 +365,7 @@
                 tjData.deletionFlag = 0
                 tjData.channelType = jgData.payment
                 console.log(tjData)
+                var index = layer.load(2, {shade: [0.4, '#393D49']})
                 CmsUtility.postAjaxCall(
                     //系统设置
                     CmsConfig.addressUrl.Mechanism.updateInstitutionSub,

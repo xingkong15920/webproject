@@ -52,6 +52,7 @@
                     <span style="color:red;display:block">*所有费率所用单位为百分制</span>
                 </div>
                 <div class="layui-input-item">
+                    <label class="layui-form-label" style="width: 15%;"></label>
                     <span style="color:red;display:block;">*示例：0.35%</span>
                 </div>
             </div>
@@ -112,6 +113,14 @@
                         <select name="yinlian" class="layui-input  rate" lay-verify=""  id="yinlian"  lay-filter="yinlian"></select>
                     </div>
                 </div>
+                <div class="layui-form-item" id="alibaba" style="display:none">
+                    <label class="layui-form-label">强制更新</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">
+                            <input class="layui-checkbox" type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关" >
+                        </div>
+                    </div>
+                </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" style="width: 15%;"></label>
                     <div class="layui-form-mid x-red">
@@ -133,6 +142,7 @@
     var nnum = 0
     var timer;
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var now = '2'
     function uniq(array){
                 var temp = []; //一个新的临时数组
                 for(var i = 0; i < array.length; i++){
@@ -183,7 +193,11 @@
         $("#merchantNumber").html(jgData.merchantNumber)
         $("#subNumber").html(jgData.subaccountNumber)
         
-
+        if(jgData.paymentChannelType == 0){
+            $('#alibaba').show()
+        }else{
+            $('#alibaba').hide()
+        }
 
         var serverUrl = 'http://192.168.1.190:5002/'
         
@@ -431,6 +445,10 @@
                     
                 // },
             });
+            form.on('switch(disable)', function(data) { //充值优惠开关
+                // layer.tips('充值优惠：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+                now = this.checked ?'1':'2'
+            });
             form.on('select(zhifubao)',function(data){
                 var num = $(data.elem).find("option:selected").attr("data-num");
                 $('#zhifubao').attr('data-num',num)
@@ -570,6 +588,7 @@
                 }
                 tjData.merchantNumber = jgData.merchantNumber
                 tjData.rateType = jgData.rateType
+                tjData.type = now
                 console.log(tjData)
                 CmsUtility.postAjaxCall(
                     //系统设置

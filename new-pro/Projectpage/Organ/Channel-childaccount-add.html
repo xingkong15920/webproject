@@ -54,6 +54,12 @@
                             <input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
                         </div>
                     </div>
+                    <div class="layui-form-item " id="sxf" style="display:none">
+                        <label class="layui-form-label">任务单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="sxfTask" autocomplete="off" placeholder="任务单号(仅随行付通道需要)" class="layui-input" lay-verify="sxfTask">
+                        </div>
+                    </div>
                      <div class="layui-form-item xdl">
                         <label class="layui-form-label">终端号</label>
                         <div class="layui-input-inline">
@@ -75,7 +81,7 @@
                    
                     <div class="layui-form-item">
                         <label class="layui-form-label">结算类型</label>
-                        <div class="layui-input-block">
+                        <div class="layui-input-inline">
                           <input type="radio" name="rateType" value="D1" title="D1" checked="">
                           <input type="radio" name="rateType" value="D0" title="D0">
                             <input id="wxshow" type="radio" name="rateType" value="T1" title="T1">
@@ -83,7 +89,7 @@
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">类型</label>
-                        <div class="layui-input-block">
+                        <div class="layui-input-inline">
                           <!-- <input type="radio" name="subsidy" value="1" title="普通商户" checked="">
                           <input type="radio" name="subsidy" value="0" title="补贴商户A"> -->
                           <select name="subsidyType" id="merchantEnble" >
@@ -187,6 +193,9 @@
     }
     if(payment != 1){
     	$('#wxshow').hide()
+    }
+    if(payment == 5){
+        $('#sxf').show()
     }
     if (type == 1) {
         $('#type1').hide()
@@ -423,6 +432,13 @@
                         return '子商户编号不得为空';
                     }
                 },
+                terminalNumber:function(value){
+                    if(type == 5){
+                       if (value.length == "") {
+                        return '请输入随行付任务单号';
+                    } 
+                    }
+                },
                 // subaccountKey: function(value) {
                 // 	if(value.length == "") {
                 // 		return '商户秘钥不能为空！';
@@ -486,6 +502,7 @@
             tjData.paymentChannel = channel
             tjData.channelType = payment
             tjData.rate = tjData.rate.replace('%','')
+            var index = layer.load(2, {shade: [0.4, '#393D49']})
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.insertInstitutionSub,

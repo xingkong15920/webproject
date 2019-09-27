@@ -75,7 +75,7 @@
                 </label>
                 <div class="layui-input-inline">
                     <div class="layui-input-inline">
-                        <input type="text" name="merchantNumber1" autocomplete="off" placeholder="请搜索并选择商户" class="layui-input" lay-verify="required11" id="search1" onblur="bl1()" onfocus="fc1()" autocomplete="off">
+                        <input type="text" name="merchantNumber1" autocomplete="off" placeholder="请搜索并选择商户" class="layui-input" lay-verify="merchantNumber" id="search1" onblur="bl1()" onfocus="fc1()" autocomplete="off">
                         <div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto" id="searchBox1">
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                 </label>
                 <div class="layui-input-inline">
                     <div class="layui-input-inline">
-                        <input type="text" name="merchantNumber" autocomplete="off" placeholder="请搜索并选择门店" class="layui-input" lay-verify="required1" id="search" onblur="bl()" onfocus="fc()" autocomplete="off">
+                        <input type="text" name="merchantNumber" autocomplete="off" placeholder="请搜索并选择门店" class="layui-input" lay-verify="shopName" id="search" onblur="bl()" onfocus="fc()" autocomplete="off">
                         <div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto" id="searchBox">
                         </div>
                     </div>
@@ -395,18 +395,24 @@
                 )
             })
             form.verify({
-                // required1: function(value) {
-                //     if (!$('#search').attr('shopnumber')) {
-                //         return '请搜索并选择门店'
+                merchantNumber: function(value) {
+                    if (!$('#search1').attr('shopnumber')) {
+                        return '请搜索并选择商户'
 
-                //     }
-                // },
-                // required2: function(value) {
-                //     if ($('#equipmentNumber').val() == '') {
-                //         return '请输入设备编号'
+                    }
+                },
+                shopName: function(value) {
+                    if (!$('#search').attr('shopnumber')) {
+                        return '请搜索并选择门店'
 
-                //     }
-                // }
+                    }
+                },
+                required2: function(value) {
+                    if ($('#equipmentNumber').val() == '') {
+                        return '请输入设备编号'
+
+                    }
+                }
 
             });
             //监听提交
