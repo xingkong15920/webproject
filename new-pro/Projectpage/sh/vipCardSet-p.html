@@ -407,6 +407,7 @@
 								postCon = data.data
 								setcardCon(data.data)
 								poster_imgId = data.data.posterImgId
+								chooseCnum = $.inArray(data.data.posterColor.split('#')[1], colorList)
 								colorListIndex = $.inArray(data.data.posterColor.split('#')[1], colorList)
 								$('.chooseColor span').eq(colorListIndex).attr('class', 'card_bc' + colorListIndex +
 									' chooseCC layui-icon layui-icon-ok')
@@ -559,12 +560,10 @@
 					}
 				})
 				form.on('switch(posterEnabled)', function(data) {
-					console.log(this.checked ? 0 : 1)
 					// layer.tips('分享海报：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					var tjData = new Object()
 					tjData.merchantNumber = merNumber
 					tjData.posterEnabled = this.checked ? 0 : 1
-					console.log(tjData)
 					$.ajax({
 						type: "post",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.setPosterEnabled,
@@ -615,7 +614,6 @@
 				$('.imgDel').click(function(e) {
 					var delId = e.currentTarget.dataset.id
 					if (delId == 'cardBg') {
-						console.log('cardBg')
 						$('#cardBg').find('img').removeAttr("src")
 						$('.setSP').css("background-image", '')
 						$(this).prev().find(".upTips").show()
@@ -696,7 +694,6 @@
 				});
 
 				function changeImgId(id) {
-					console.log(id)
 					poster_imgId = id
 				}
 				window._changeImgId = changeImgId;
@@ -715,11 +712,11 @@
 				}
 				//表单验证
 				form.verify({
-					ltName: function(value) {
+					posterTitle: function(value) {
 						if (value == '') {
-							return '品牌名称不能为空！';
-						} else if (value.length > 5) {
-							return '品牌名称不能超过5个字符'
+							return '海报标题不能为空！';
+						} else if (value.length > 8) {
+							return '海报标题不能超过8个字符'
 						}
 					},
 					operationTips: function(value) {
@@ -819,7 +816,6 @@
 					data.posterColor = "#" + colorList[chooseCnum]
 					data.posterImgId = poster_imgId
 					data.merchantNumber = merNumber
-					console.log(data)
 
 					// return
 					layer.load(2, {
@@ -869,7 +865,6 @@
 					data.posterColor = "#" + colorList[chooseCnum]
 					data.posterImgId = poster_imgId
 					data.merchantNumber = merNumber
-					console.log(data)
 
 					// return
 					layer.load(2, {
@@ -923,12 +918,10 @@
 					$('.postrxplain').text($("#posterShareExplain").val())
 					$("#posterTitle").on("input", function(e) {
 						//获取input输入的值
-						console.log(e.delegateTarget.value);
 						$('.postTit').text(e.delegateTarget.value)
 					});
 					$("#posterShareExplain").on("input", function(e) {
 						//获取input输入的值
-						console.log(e.delegateTarget.value);
 						$('.postrxplain').text(e.delegateTarget.value)
 					});
 				}

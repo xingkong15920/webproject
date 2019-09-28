@@ -234,6 +234,18 @@ var CmsConfig = {
 			getRecahrge: "censusManage/getRecahrge",
 			// 销售统计
 			getConsum: "censusManage/getConsum",
+
+			// 优惠券设置
+			// 添加优惠券
+			addVoucher: "voucher/addVoucher",
+			// 更新优惠券
+			updateVoucher: "voucher/updateVoucher",
+			// 优惠券详情
+			getVoucherDetail: "voucher/getVoucherDetail",
+			// 删除优惠券
+			delVoucher: "voucher/delVoucher",
+			// 获取商户下优惠券列表
+			getVoucherList: "voucher/getVoucherList",
 		},
 		//商户后台
 		Merchant: {

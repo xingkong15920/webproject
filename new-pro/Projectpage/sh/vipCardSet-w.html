@@ -674,17 +674,19 @@
 								//图文列表
 								var strTW = ''
 								imageTexts = data.data.imageTexts
-								for (let i = 0; i < imageTexts.length; i++) {
-									strTW += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i +
-										'" />' +
-										'<div class="layui-input-block pinpaiLogo' + i + '">' +
-										'<div class="layui-upload-list">' +
-										'<div class="layui-upload-img" id="cardLo' + i + '">' +
-										'<img src="' + imageTexts[i].localImgUrl + '">' + '</div>' +
-										'</div></div></div>' +
-										'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
-										'" class="layui-textarea" disabled="">' + imageTexts[i].text +
-										'</textarea></li>'
+								if (imageTexts && imageTexts.length > 0) {
+									for (let i = 0; i < imageTexts.length; i++) {
+										strTW += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i +
+											'" />' +
+											'<div class="layui-input-block pinpaiLogo' + i + '">' +
+											'<div class="layui-upload-list">' +
+											'<div class="layui-upload-img" id="cardLo' + i + '">' +
+											'<img src="' + imageTexts[i].localImgUrl + '">' + '</div>' +
+											'</div></div></div>' +
+											'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
+											'" class="layui-textarea" disabled="">' + imageTexts[i].text +
+											'</textarea></li>'
+									}
 								}
 								$('#iwList').html(strTW)
 
@@ -1256,6 +1258,15 @@
 
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
+					ltName: function(value) {
+						if (value == '') {
+							return '副标题不能为空！'
+						} else if (value != '') {
+							if (value.length > 5) {
+								return '副标题不能超过5个字符！'
+							}
+						}
+					},
 					guideTips: function(value) {
 						if (value != '') {
 							if (value.length > 5) {

@@ -48,9 +48,6 @@
 					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="结束时间" name="endTime" id="endTime">
-				</div>
-				<div class="layui-input-inline">
 					<button class="layui-btn" data-type="reload" id="search"><i class="layui-icon">&#xe615;</i></button>
 				</div>
 			</div>
@@ -82,14 +79,9 @@
 				laydate.render({
 					elem: '#startTime',
 					type: 'date',
+					range: true,
 					max: fun_date(0),
-					value: fun_date(-6)
-				});
-				laydate.render({
-					elem: '#endTime',
-					type: 'date',
-					max: fun_date(0),
-					value: fun_date(0)
+					value: fun_date(-6) + ' - ' + fun_date(0)
 				});
 
 				CmsUtility.postAjaxCall(
@@ -327,8 +319,8 @@
 									shopNumber: shopName.val().split('/')[0],
 									clerkNumber: clerkNumber.val().split('/')[0],
 									batch: batch.val(),
-									startTime: startTime.val().split(' - ')[0],
-									endTime: startTime.val().split(' - ')[1],
+									startTime: startTime.val() ? startTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startTime.val() ? startTime.val().split(' - ')[1] + ' 23:59:59' : '',
 								}
 							});
 						}
