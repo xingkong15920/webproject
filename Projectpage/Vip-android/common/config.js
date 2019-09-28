@@ -22,6 +22,7 @@ var CmsConfig = {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
 		ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
 		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
 		// ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		ApiRootUrl: server
@@ -56,6 +57,10 @@ var CmsConfig = {
 			cancelAuthorizet: "authorize/cancelAuthorizet",
 			// 会员充值
 			apppay: "recharge/pay",
+			// 撤销充值订单
+			updateStateByOrderNo: "recharge/updateStateByOrderNo",
+			// 撤销消费订单
+			updateConStateByOrderNo: "consumption/updateConStateByOrderNo",
 
 			// 商户会员卡
 			// 添加会员卡

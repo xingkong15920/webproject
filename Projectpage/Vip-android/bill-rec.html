@@ -20,6 +20,18 @@
 			.vipBill {
 				margin: 0;
 			}
+
+			.vipBillitype {
+				margin-bottom: 5px;
+			}
+
+			.vipBillistated {
+				color: #999;
+			}
+
+			.operation.disableundo {
+				background: #ccc;
+			}
 		</style>
 	</head>
 
@@ -56,21 +68,43 @@
 				<div class="vipBillul" v-cloak ref="mescroll" class="mescroll">
 					<ul id="vipBillulB">
 						<li class="vipBilli vipBilli3" v-for="(item,index) in vipBilli" data-type="0">
-							<div class="vipBilliBody" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="skip">
+							<div class="vipBilliBody" v-if="item.orderState == 1" @touchstart.capture="touchStart" @touchend.capture="touchEnd"
+							 @click="skip">
 								<div class="vipBilliL">
 									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
 									<p class="vipBillitime">{{item.rechargeTime}}</p>
 								</div>
 								<div class="vipBilliC">
-									{{item.payType1}}
+									<p class="vipBillitype">{{item.payType1}}</p>
+									<p class="vipBillistated">({{item.orderState2}})</p>
 								</div>
-								<div class="vipBilliR">
-									<p class="vipBillimoney">¥ {{item.orderAmount?item.orderAmount:'0.00'}}</span></p>
+								<div class="vipBilliR" v-show="item.orderState == 1">
+									<p class="vipBillimoney">+ ¥ {{item.orderAmount?item.orderAmount:'0.00'}}</span></p>
 									<p class="vipBillimoneyG">赠送：¥ {{item.giveAmount?item.giveAmount:'0.00'}}</span></p>
 								</div>
+								<div class="vipBilliR" v-show="item.orderState == -2">
+									<p class="vipBillimoney">- ¥ {{item.orderAmount?item.orderAmount:'0.00'}}</span></p>
+								</div>
 							</div>
-							<ul class="operation">
-								<li @click="undoItem" :data-index="index" :data-cell="item.cell">撤销</li>
+							<div class="vipBilliBody" v-else="item.orderState != 1">
+								<div class="vipBilliL">
+									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
+									<p class="vipBillitime">{{item.rechargeTime}}</p>
+								</div>
+								<div class="vipBilliC">
+									<p class="vipBillitype">{{item.payType1}}</p>
+									<p class="vipBillistated">({{item.orderState2}})</p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == 1">
+									<p class="vipBillimoney">+ ¥ {{item.orderAmount?item.orderAmount:'0.00'}}</span></p>
+									<p class="vipBillimoneyG">赠送：¥ {{item.giveAmount?item.giveAmount:'0.00'}}</span></p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == -2">
+									<p class="vipBillimoney">- ¥ {{item.orderAmount?item.orderAmount:'0.00'}}</span></p>
+								</div>
+							</div>
+							<ul class="operation" :class="item.revokeState == 1 ? 'disableundo':''">
+								<li @click="undoItem" :data-index="index" :data-state="item.revokeState" :data-recno="item.rechrgeNo">撤销</li>
 							</ul>
 						</li>
 						<!-- <li class="branches" v-cloak>共计 <span>{{branches}}</span> 条记录</li> -->
@@ -84,9 +118,10 @@
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script src="./js/vue.min.js"></script>
-	<script src="./lib/datepicker/js/datepicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
 	<script>
+		/* 1 充值成功  -1充值失败  -2撤销 */
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
 		var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber;
 		new Vue({
@@ -176,10 +211,48 @@
 				//撤销
 				undoItem(e) {
 					// 当前索引
-					let cell = e.currentTarget.dataset.cell;
-					// 复位
-					this.restSlide();
-					alert(cell)
+					let recNo = e.target.dataset.recno;
+					let state = e.target.dataset.state;
+					console.log(state)
+					if (state == 0) {
+						// 复位
+						this.restSlide();
+						$('#loadstart').show();
+						var that = this,
+							sendData = new Object();
+						sendData.rechargeRecordNo = recNo;
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateStateByOrderNo,
+							data: JSON.stringify(sendData),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function success(data) {
+								$('#loadstart').hide();
+								if (data.code === 1000) {
+									that.mebsearch = false;
+									that.upCallback({
+										num: 1,
+										size: 10
+									});
+									layer.msg('撤销成功！')
+								} else {
+									that.mebsearch = false;
+									that.upCallback({
+										num: 1,
+										size: 10
+									});
+									layer.msg(data.msg)
+								}
+							}
+						});
+					} else {
+						// 复位
+						this.restSlide();
+						return layer.msg('该订单已撤销！')
+					}
 				},
 				inputfocus: function inputfocus() {
 					this.mebsearch = true;
@@ -225,6 +298,20 @@
 								break;
 							case 2:
 								res[i].payType1 = '支付宝'
+								break;
+						}
+						switch (res[i].orderState) {
+							case 1:
+								res[i].orderState1 = '+'
+								res[i].orderState2 = '充值成功'
+								break;
+							case -1:
+								res[i].orderState1 = ''
+								res[i].orderState2 = '充值失败'
+								break;
+							case -2:
+								res[i].orderState1 = '-'
+								res[i].orderState2 = '已撤销'
 								break;
 						}
 					}

@@ -20,6 +20,18 @@
 			.vipBill {
 				margin: 0;
 			}
+
+			.vipBillitype {
+				margin-bottom: 5px;
+			}
+
+			.vipBillistated {
+				color: #999;
+			}
+
+			.operation.disableundo {
+				background: #ccc;
+			}
 		</style>
 	</head>
 
@@ -40,32 +52,60 @@
 				</div>
 				<ul class="vipBillul vipBillultit" v-cloak>
 					<li class="vipBilli vipBilli3" v-for="item in vipBilul">
-						<div class="vipBilliL">
-							{{item.vipBilliL}}
-						</div>
-						<div class="vipBilliC">
-							{{item.vipBilliC}}
-						</div>
-						<div class="vipBilliR">
-							{{item.vipBilliR}}
+						<div class="vipBilliBody">
+							<div class="vipBilliL">
+								{{item.vipBilliL}}
+							</div>
+							<div class="vipBilliC">
+								{{item.vipBilliC}}
+							</div>
+							<div class="vipBilliR">
+								{{item.vipBilliR}}
+							</div>
 						</div>
 					</li>
 				</ul>
 				<div class="vipBillul" v-cloak ref="mescroll" class="mescroll">
 					<ul id="vipBillulB">
-						<li class="vipBilli vipBilli3" v-for="item in vipBilli">
-							<div class="vipBilliL">
-								<p class="vipBillitit">{{item.name}}</p>
-								<p class="vipBilliname">{{item.shopName?item.shopName:'--'}}</p>
-								<p class="vipBillitime">{{item.orderTime}}</p>
+						<li class="vipBilli vipBilli3" v-for="(item,index) in vipBilli" data-type="0">
+							<div class="vipBilliBody" v-if="item.orderState == 1" @touchstart.capture="touchStart" @touchend.capture="touchEnd"
+							 @click="skip">
+								<div class="vipBilliL">
+									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
+									<p class="vipBillitime">{{item.orderTime}}</p>
+								</div>
+								<div class="vipBilliC">
+									<p class="vipBillitype">{{item.payType1}}</p>
+									<p class="vipBillistated">({{item.orderState2}})</p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == 1">
+									<p class="vipBillimoney">- ¥ {{item.money}}</span></p>
+									<p class="vipBillimoneyG">优惠: ¥ {{item.discountMoney}}</span></p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == -2">
+									<p class="vipBillimoney">+ ¥ {{item.money?item.money:'0.00'}}</span></p>
+								</div>
 							</div>
-							<div class="vipBilliC">
-								<p class="vipBillimoney">¥ {{item.money}}</span></p>
+							<div class="vipBilliBody" v-else="item.orderState != 1">
+								<div class="vipBilliL">
+									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
+									<p class="vipBillitime">{{item.orderTime}}</p>
+								</div>
+								<div class="vipBilliC">
+									<p class="vipBillitype">{{item.payType1}}</p>
+									<p class="vipBillistated">({{item.orderState2}})</p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == 1">
+									<p class="vipBillimoney">- ¥ {{item.money}}</span></p>
+									<p class="vipBillimoneyG">优惠: ¥ {{item.discountMoney}}</span></p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == -2">
+									<p class="vipBillimoney">+ ¥ {{item.money?item.money:'0.00'}}</span></p>
+								</div>
 							</div>
-							<div class="vipBilliR">
-								<p class="vipBillimoney">¥ {{item.payMoney}}</span></p>
-								<p class="vipBilliyhmoney">优惠: ¥ {{item.discountMoney}}</span></p>
-							</div>
+							<ul class="operation" :class="item.revokeState == 1 ? 'disableundo':''">
+								<li @click="undoItem" :data-index="index" :data-state="item.revokeState" :data-recno="item.orderNumber">撤销</li>
+							</ul>
 						</li>
 					</ul>
 				</div>
@@ -77,7 +117,7 @@
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script src="./js/vue.min.js"></script>
-	<script src="./lib/datepicker/js/datepicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
@@ -101,6 +141,114 @@
 				seachTextC: '',
 			},
 			methods: {
+				//跳转
+				skip() {
+					if (this.checkSlide()) {
+						this.restSlide();
+					}
+				},
+				//滑动开始
+				touchStart(e) {
+					// 记录初始位置
+					this.startX = e.touches[0].clientX;
+					this.startY = e.touches[0].clientY;
+				},
+				//滑动结束
+				touchEnd(e) {
+					// 当前滑动的父级元素
+					let parentElement = e.currentTarget.parentElement;
+					// 记录结束位置
+					this.endX = e.changedTouches[0].clientX;
+					this.endY = e.changedTouches[0].clientY;
+					// 判断上滑偏移量
+					if (this.startY - this.endY < 30) {
+						// 左滑
+						if (parentElement.dataset.type == 0 && this.startX - this.endX > 30) {
+							this.restSlide();
+							parentElement.dataset.type = 1;
+						}
+						// 右滑
+						if (parentElement.dataset.type == 1 && this.startX - this.endX < -30) {
+							this.restSlide();
+							parentElement.dataset.type = 0;
+						}
+					}
+					this.startX = 0;
+					this.endX = 0;
+				},
+				//判断当前是否有滑块处于滑动状态
+				checkSlide() {
+					let listItems = document.querySelectorAll('.vipBilli');
+					for (let i = 0; i < listItems.length; i++) {
+						if (listItems[i].dataset.type == 1) {
+							return true;
+						}
+					}
+					return false;
+				},
+				//复位滑动状态
+				restSlide() {
+					let listItems = document.querySelectorAll('.vipBilli');
+					// 复位
+					for (let i = 0; i < listItems.length; i++) {
+						listItems[i].dataset.type = 0;
+					}
+				},
+				//删除
+				deleteItem(e) {
+					// 当前索引
+					let index = e.currentTarget.dataset.index;
+					// 复位
+					this.restSlide();
+					alert(index)
+				},
+				//撤销
+				undoItem(e) {
+					// 当前索引
+					let recNo = e.target.dataset.recno;
+					let state = e.target.dataset.state;
+					console.log(recNo)
+					console.log(state)
+					if (state == 0) {
+						// 复位
+						this.restSlide();
+						$('#loadstart').show();
+						var that = this,
+							sendData = new Object();
+						sendData.orderNo = recNo;
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateConStateByOrderNo,
+							data: JSON.stringify(sendData),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function success(data) {
+								$('#loadstart').hide();
+								if (data.code === 1000) {
+									that.mebsearch = false;
+									that.upCallback({
+										num: 1,
+										size: 10
+									});
+									layer.msg('撤销成功！')
+								} else {
+									that.mebsearch = false;
+									that.upCallback({
+										num: 1,
+										size: 10
+									});
+									layer.msg(data.msg)
+								}
+							}
+						});
+					} else {
+						// 复位
+						this.restSlide();
+						return layer.msg('该订单已撤销！')
+					}
+				},
 				inputfocus: function inputfocus() {
 					this.mebsearch = true;
 				},
@@ -127,6 +275,38 @@
 					} else {
 						return false;
 					}
+				},
+				changeDatas: function changeDatas(res) {
+					for (let i = 0; i < res.length; i++) {
+						if (res[i].money.split('.')[0].length > 5) {
+							res[i].money = res[i].money.split('.')[0] / 10000 + '万'
+						}
+						if (res[i].discountMoney.split('.')[0].length > 5) {
+							res[i].discountMoney = res[i].discountMoney.split('.')[0] / 10000 + '万'
+						}
+						switch (res[i].payType) {
+							case 0:
+								res[i].payType1 = '现金'
+								break;
+							case 1:
+								res[i].payType1 = '微信'
+								break;
+							case 2:
+								res[i].payType1 = '支付宝'
+								break;
+						}
+						switch (res[i].orderState) {
+							case 1:
+								res[i].orderState1 = '+'
+								res[i].orderState2 = '充值成功'
+								break;
+							case -2:
+								res[i].orderState1 = '-'
+								res[i].orderState2 = '已撤销'
+								break;
+						}
+					}
+					return res
 				},
 				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
 				upCallback: function upCallback(page) {
@@ -176,7 +356,7 @@
 								if (data.code === 1000) {
 									if (data.data.consumTurnovers.length > 0) {
 										that.mebsearch = false;
-										successCallback(data.data.consumTurnovers);
+										successCallback(that.changeDatas(data.data.consumTurnovers));
 										that.branches = data.data.count;
 									} else {
 										that.mebsearch = false;
