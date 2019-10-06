@@ -138,10 +138,10 @@
                 "separateAmount":jgData.separateAmount,
                 "transactionAmount":jgData.transactionAmount,
                 "extensionCount":jgData.extensionCount,
-                "memberCard":jgData.memberCard,
-                "memberRecharge":jgData.memberRecharge,
-                "payVouchers":jgData.payVouchers,
-                "payNext":jgData.payNext,
+                "memberCard":(jgData.memberCard*100).toFixed(2),
+                "memberRecharge":(jgData.memberRecharge*100).toFixed(2),
+                "payVouchers":(jgData.payVouchers*100).toFixed(2),
+                "payNext":(jgData.payNext*100).toFixed(2),
 
 
             })   
@@ -201,9 +201,9 @@
                 addData.memberRecharge = (addData.memberRecharge/100).toFixed(2)
                 addData.payVouchers = (addData.payVouchers/100).toFixed(2)
                 addData.payNext = (addData.payNext/100).toFixed(2)
-                CmsUtility.postAjaxCall(
+                CmsUtility.postAjaxCall2(
                     //系统设置
-                    'AccountManage/updateDistributionLevel',
+                    CmsConfig.ServiceUrl.ApiRootUrlMeb +'accountManage/updateDistributionLevel',
                     addData,
                     function(data) {
                         if (data.code == 1000) {

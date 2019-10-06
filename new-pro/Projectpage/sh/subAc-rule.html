@@ -234,9 +234,9 @@
 				}
 				$('#setList').html(setStr)
 				form.render()
-				CmsUtility.postAjaxCall1(
+				CmsUtility.postAjaxCall2(
 		                //系统设置
-		               	'AccountManage/getAccountRole',
+		               	CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getAccountRole',
 		                {
 		                	"merchantNumber":merNumber,
 							"institutionNumber":insNumber,
@@ -282,7 +282,7 @@
 				//方法级渲染
 				table.render({
 					elem: '#Fixedaccount',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + 'AccountManage/getDistributorInfo?merchantNumber=' +
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributorInfo?merchantNumber=' +
 						merNumber,
 					where:{
 						"institutionNumber":insNumber,
@@ -350,7 +350,7 @@
 				//消费记录
 				table.render({
 					elem: '#Separaterules',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + 'AccountManage/getDistributionLevel?merchantNumber=' +
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributionLevel?merchantNumber=' +
 						merNumber,
 					where:{
 						"institutionNumber":insNumber,
@@ -397,7 +397,7 @@
 							title: '分账规则(%)<br>(会员买卡 / 会员充值 / 付费买券 / 付费次/月卡)',
 							align: 'center',
 							templet: function(data) {
-								return data.memberCard*100 + ' / ' + data.memberRecharge*100 + ' / ' + data.payVouchers*100	 + ' / ' + data.payNext*100
+								return (data.memberCard*100).toFixed(2) + ' / ' + (data.memberRecharge*100).toFixed(2) + ' / ' + (data.payVouchers*100).toFixed(2)	 + ' / ' + (data.payNext*100).toFixed(2)
 							},
 							width:280
 						}, {
@@ -437,9 +437,9 @@
 					tjData.startTime = data.field.invalidTime.split(' - ')[0] + ' 00:00:00'
 					tjData.endTime = data.field.invalidTime.split(' - ')[1] + ' 23:59:59'
 					tjData.accountType = arr.join('&')
-					CmsUtility.postAjaxCall1(
+					CmsUtility.postAjaxCall2(
 		                //系统设置
-		               	'AccountManage/setAccountRole',
+		               	CmsConfig.ServiceUrl.ApiRootUrlMeb+'accountManage/setAccountRole',
 		                tjData,
 		                function(data) {
 		                	layer.msg(data.msg)
@@ -491,9 +491,9 @@
 
 							console.log(addData)
 							// 发送请求
-							CmsUtility.postAjaxCall(
+							CmsUtility.postAjaxCall2(
 								//系统设置
-								'AccountManage/updatefixedAccount',
+								CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/updatefixedAccount',
 								addData,
 								function(data){
 									if(data.code == 1000){
@@ -536,23 +536,25 @@
 							title: '提示'
 						}, function(index) {
 							// 发送请求
-							console.log(data)
+							console.log(data.institutionumber)
 							var addData = new Object()
-							addData.id = data.id
-							addData.gradeNumber = data.gradeNumber
+							addData.gradeNumber = data.gradeNo
 							addData.fixedAccount = data.fixedAccount
-
+							addData.deletionFlag = '1'
+							addData.merchantNumber = data.merchantNumber
+							addData.institutionNumber = data.institutionumber
+							addData.defaultID = data.defaultID
 							console.log(addData)
 							// 发送请求
-							CmsUtility.postAjaxCall(
+							CmsUtility.postAjaxCall2(
 								//系统设置
-								'AccountManage/updatefixedAccount',
+								 CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/updateDistributionLevel',
 								addData,
 								function(data){
 									if(data.code == 1000){
 										
 										layer.msg('删除成功')
-										layui.table.reload('gradeList');
+										layui.table.reload('Separaterules');
 									}else{
 										layer.msg(data.msg)
 									}

@@ -166,7 +166,7 @@
 							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
 							"count": res.data.count, //解析数据长度
-							"data": res.data.getexamining, //解析数据列表
+							"data": res.data.list, //解析数据列表
 						};
 					},
 					cols: [
@@ -184,12 +184,12 @@
 							align: 'center',
 							field: 'registerCell',
 							width: 170,
-							title: '手机号码'
+							title: '服务商电话'
 						}, {
 							align: 'center',
 							field: 'withdrawCashAmount',
 							width: 150,
-							title: '结算金额',
+							title: '打款金额',
 							templet:function(data){
 								if(data.withdrawCashAmount){
 									return '￥' + parseFloat(data.withdrawCashAmount).toFixed(2)
@@ -200,12 +200,12 @@
 							}
 						}, {
 							align: 'center',
-							field: 'arrivalamount',
+							field: 'withdrawCashAmount',
 							width: 150,
-							title: '到账金额',
+							title: '发票金额',
 							templet:function(data){
-								if(data.arrivalamount){
-									return '￥' + parseFloat(data.arrivalamount).toFixed(2)
+								if(data.invoiceAmount){
+									return '￥' + parseFloat(data.invoiceAmount).toFixed(2)
 								}else{
 									return '0'
 								}
@@ -265,10 +265,10 @@
 									return '未处理'
 								}
 								if(data.orderType == 1){
-									return '已打款'
+									return '<span style="color:green;font-weight:bold">已打款</span>'
 								}
 								if(data.orderType == -1){
-									return '已驳回'
+									return '<span style="color:red;font-weight:bold">已驳回</span>'
 								}
 							}
 						}, {

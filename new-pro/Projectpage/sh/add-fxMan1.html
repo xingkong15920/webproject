@@ -48,7 +48,7 @@
                     <input type="text" id="tell" name="tell" required="" lay-verify="title" autocomplete="off" class="layui-input" >
                 </div>
             </div>
-            <div class="layui-form-item">
+            <!-- <div class="layui-form-item">
                 <label for="username" class="layui-form-label">
                     <span class="x-red">*</span> 分销人等级
                 </label>
@@ -58,7 +58,7 @@
                             
                         </select>
                 </div>
-            </div>
+            </div> -->
            <div class="layui-form-item">
                 <label class="layui-form-label">分销人类型</label>
                 <div class="layui-input-block" id="franchiseType">
@@ -103,7 +103,7 @@
             
             CmsUtility.postAjaxCall(
                 //系统设置
-                'AccountManage/getDistributionLevel',
+                CmsConfig.ServiceUrl.ApiRootUrlMeb +'accountManage/getDistributionLevel',
                 {
                     "merchantNumber":userNumber,
                     "institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
@@ -187,16 +187,16 @@
             addData.merchantNumber = userNumber
             addData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
             addData.fixedAccount = '0'
-            CmsUtility.postAjaxCall(
+            CmsUtility.postAjaxCall2(
                 //系统设置
-                'AccountManage/addDistributor',
+                CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/addDistributor',
                 addData,
                 function(data) {
                     if (data.code == 1000) {
                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                         parent.layer.close(index); //再执行关闭
                         parent.layer.msg('新增成功')
-                        parent.layui.table.reload('gradeList');
+                        parent.layui.table.reload('billlist');
 
                     } else {
                         layer.msg(data.msg)

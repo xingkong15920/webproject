@@ -64,7 +64,7 @@ input[type="number"]{ -moz-appearance: textfield; }
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red">* </span>打款金额：</label>
 									<div class="layui-input-inline">
-										<input type="number" name="invoiceAmount" lay-verify="title||money" autocomplete="off" class="layui-input" placeholder="打款金额" id="fapiao" value="">
+										<input type="number" name="withdrawCashAmount" lay-verify="title||money" autocomplete="off" class="layui-input" placeholder="打款金额" id="fapiao" value="">
 									</div>
 								</div>
 								<!-- <div class="layui-form-item">
@@ -80,16 +80,16 @@ input[type="number"]{ -moz-appearance: textfield; }
 									</div>
 								</div>
 								<div class="layui-form-item">
-									<label class="layui-form-label"><span class="x-red">* </span>提现金额：</label>
+									<label class="layui-form-label"><span class="x-red">* </span>发票金额：</label>
 									<div class="layui-input-inline">
-										<input type="text" name="withdrawCashAmount" lay-verify="title" autocomplete="off" class="layui-input" placeholder="" value="" disabled="disabled" id="tixian">
+										<input type="text" name="invoiceAmount" lay-verify="title" autocomplete="off" class="layui-input" placeholder="" value="" disabled="disabled" id="tixian">
 									</div>
 								</div>
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red"></span></label>
 									<div class="layui-input-inline">
-										<span style="color:red">备注:打款金额+税点=提现金额,
-										  提现金额不得大于账号余额</span>
+										<span style="color:red">备注:打款金额+税点=发票金额，
+										发票金额不得大于账号余额</span>
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -207,15 +207,13 @@ input[type="number"]{ -moz-appearance: textfield; }
 							"agentNumber":userNumber
 						},
 						function(data){
-							if(data.code == 1000){
-								console.log(data)
-								console.log(data.data.data)
-								id = data.data.data.id
+							if(data.code == 1000){								
+								id = data.data.id
 								form.val('basic', {
 									
-									"bankCardNo": data.data.data.bankCardNo,
-									"name": data.data.data.name,
-									"reserveCell":data.data.data.reserveCell
+									"bankCardNo": data.data.bankCardNo,
+									"name": data.data.name,
+									"reserveCell":data.data.reserveCell
 								})
 							}else{
 								layer.msg(data.msg)
@@ -233,8 +231,8 @@ input[type="number"]{ -moz-appearance: textfield; }
 			        },
 			        function(data){
 			            if(data.code == 1000){
-			            	lostMoney = data.data.data.agentBalance
-			               $('#canMoney').html(data.data.data.agentBalance)
+			            	lostMoney = data.data.agentBalance
+			               $('#canMoney').html(data.data.agentBalance)
 			            }else{
 			                layer.msg(data.msg)
 			            }

@@ -44,7 +44,7 @@
 			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.defaultFlag==1 ? 'hide' : ''}}" lay-event="delete">删除</a>
 		</script>
 		<script type="text/html" id="twoCode">
-			<a class="ewmBtn" onclick='ewm("{{d.distributionNumber}}")' style="cursor:pointer;color:rgb(62, 132, 233)">查看</a>
+			<a class="ewmBtn" onclick='ewm("{{d.memberLink}}" + "&id={{d.id}}")' style="cursor:pointer;color:rgb(62, 132, 233)">查看</a>
 		</script>
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
@@ -73,7 +73,7 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + 'AccountManage/getDistributorInfo?merchantNumber=' +
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributorInfo?merchantNumber=' +
 							userNumber,
 						where: {
 							
@@ -248,15 +248,15 @@
 
 							console.log(addData)
 							// 发送请求
-							CmsUtility.postAjaxCall(
+							CmsUtility.postAjaxCall2(
 								//系统设置
-								'AccountManage/updatefixedAccount',
+								CmsConfig.ServiceUrl.ApiRootUrlMeb +'accountManage/updatefixedAccount',
 								addData,
 								function(data){
 									if(data.code == 1000){
 										
 										layer.msg('删除成功')
-										layui.table.reload('gradeList');
+										layui.table.reload('billlist');
 									}else{
 										layer.msg(data.msg)
 									}

@@ -139,33 +139,40 @@
 							"code": res.code, //解析接口状态
 							"msg": res.msg, //解析提示文本
 							"count": res.data.count, //解析数据长度
-							"data": res.data.settlements, //解析数据列表
+							"data": res.data.list, //解析数据列表
 						};
 					},
 					cols: [
 						[{
 							align: 'center',
-							field: 'dateTime',
-							width: 200,
+							field: 'insertTime',
 							title: '日期',
 						}, {
 							align: 'center',
 							field: 'agentName',
-							width: 250,
 							title: '服务商名称'
 						}, {
 							align: 'center',
 							field: 'registerCell',
-							width: 200,
 							title: '服务商手机号',
 						}, {
 							align: 'center',
 							field: 'agentBalance',
-							width: 250,
-							title: '提现金额',
+							title: '变动前金额',
 							templet:function(data){
-								if(data.agentBalance){
-									return '￥' +  parseFloat(data.agentBalance).toFixed(2)
+								if(data.earlyStageBalance){
+									return '￥' +  parseFloat(data.earlyStageBalance).toFixed(2)
+								}else{
+									return ''
+								}
+							}
+						}, {
+							align: 'center',
+							field: 'agentBalance',
+							title: '发票金额',
+							templet:function(data){
+								if(data.importExportAmount){
+									return '￥' +  parseFloat(data.importExportAmount).toFixed(2)
 								}else{
 									return ''
 								}
@@ -173,7 +180,6 @@
 						}, {
 							align: 'center',
 							field: 'withdrawCashPoundage',
-							width: 250,
 							title: '手续费',
 							templet:function(data){
 								if(data.withdrawCashPoundage){
@@ -185,7 +191,6 @@
 						}, {
 							align: 'center',
 							field: 'endTermBalance',
-							width: 250,
 							title: '变动后金额',
 							templet:function(data){
 								if(data.endTermBalance){
@@ -197,7 +202,6 @@
 						}, {
 							align: 'center',
 							field: 'insertTime',
-							width: 220,
 							title: '变动时间'
 						}]
 					],

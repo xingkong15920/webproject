@@ -97,20 +97,52 @@
             height: 'full-200',
             cols: [
                 [{
-                    field: 'inserttime',
+                    field: 'orderNumber',
+                    title: '提现编号',
+                    align: 'center'
+                   
+                },{
+                    field: 'insertTime',
                     title: '时间',
-                    align: 'center',
-                    templet:function(data){
-                        if(data.inserttime){
-                            return data.inserttime.split('.')[0]
-                        }
-                    }
+                    align: 'center'
+                   
                 }, {
                     field: 'withdrawCashAmount',
-                    title: '金额',
+                    title: '打款金额',
                     align: 'center',
                     templet:function(data){
                         return '￥' + data.withdrawCashAmount
+                    }
+                }, {
+                    field: 'invoiceAmount',
+                    title: '发票金额',
+                    align: 'center',
+                    templet:function(data){
+                        return '￥' + data.invoiceAmount
+                    }
+                } ,{
+                    field: 'withdrawalCharge',
+                    title: '手续费',
+                    align: 'center',
+                    templet:function(data){
+                        if(data.withdrawalCharge == null){
+                            return '--'
+                        }else{
+                            return '￥' + data.withdrawalCharge
+                        }
+                        
+                    }
+                } ,{
+                    field: 'newMoney',
+                    title: '变动后金额',
+                    align: 'center',
+                    templet:function(data){
+                        if(data.newMoney == null){
+                            return '--'
+                        }else{
+                             return '￥' + data.newMoney
+                        }
+                       
                     }
                 }, {
                     field: 'bankCardNo',
@@ -133,10 +165,10 @@
                             return '审核中'
                         }
                         if(data.orderType == 1){
-                            return '已审核'
+                            return '<span style="color:green;font-weight:bold">已审核</span>'
                         }
                         if(data.orderType == -1){
-                            return '已拒绝'
+                            return '<span style="color:red;font-weight:bold">已拒绝</span>'
                         }
 
                     }
