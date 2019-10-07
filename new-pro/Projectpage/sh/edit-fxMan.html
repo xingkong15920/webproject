@@ -92,13 +92,11 @@
             c = [],
             aa = [],
             cityC = '0'
-       
-
         form.val('advertform', {
-            "memberCard": jgData.memberCard,
-            "memberRecharge": jgData.memberRecharge,
-            "payVouchers": jgData.payVouchers,
-            "payNext": jgData.payNext
+           "memberCard":(jgData.memberCard*100).toFixed(2),
+                "memberRecharge":(jgData.memberRecharge*100).toFixed(2),
+                "payVouchers":(jgData.payVouchers*100).toFixed(2),
+                "payNext":(jgData.payNext*100).toFixed(2),
         })
         //自定义验证规则
         form.verify({
@@ -152,6 +150,10 @@
             addData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
             addData.fixedAccount = '1'
             addData.gradeNumber = jgData.gradeNumber
+             addData.memberCard = (addData.memberCard/100).toFixed(2)
+                addData.memberRecharge = (addData.memberRecharge/100).toFixed(2)
+                addData.payVouchers = (addData.payVouchers/100).toFixed(2)
+                addData.payNext = (addData.payNext/100).toFixed(2)
             CmsUtility.postAjaxCall2(
                 //系统设置
                 CmsConfig.ServiceUrl.ApiRootUrlMeb +'accountManage/updateDistributionLevel',
