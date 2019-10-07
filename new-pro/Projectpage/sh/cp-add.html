@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/card.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+		<style type="text/css">
+			.step1 .layui-form-label {
+				width: 200px;
+				padding-right: 20px;
+			}
+
+			.step2 .layui-form-label {
+				width: 120px;
+			}
+
+			.cardSetpreview {
+				position: initial;
+			}
+
+			.cardSet {
+				padding: 0;
+			}
+
+			.show {
+				display: block;
+			}
+
+			.hide {
+				display: none;
+			}
+
+			.card_b {
+				overflow: initial;
+				height: auto;
+				min-height: 170px;
+				border-radius: 2px;
+			}
+
+			.card_b_lt {
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+				margin-top: -20px;
+			}
+
+			.card_b_lt img {
+				border: 1px solid #ddd;
+				margin-bottom: 10px;
+			}
+
+			.card_b_lt .ltNamepv {
+				color: #333;
+				margin: 0;
+				margin-bottom: 10px;
+				font-size: 12px;
+			}
+
+			.card_b_lt p {
+				margin-left: 0;
+				margin-bottom: 10px;
+			}
+
+			.card_b_lt p.cpNamepv {
+				font-size: 18px;
+				color: #000;
+				margin-bottom: 10px;
+			}
+
+			.useBtn {
+				width: 130px;
+				height: 30px;
+				margin: 0 auto 10px;
+				text-align: center;
+				line-height: 30px;
+				color: #fff;
+				background: rgb(99, 179, 89);
+				border-radius: 3px;
+				font-size: 12px;
+			}
+
+			.card_fList {
+				padding: 0;
+			}
+
+			.card_fListli {
+				padding: 0 10px;
+				font-size: 14px;
+				height: 40px;
+			}
+
+			.pinpaiLogo .layui-upload-list {
+				margin-bottom: 0;
+			}
+
+			.card_boby,
+			.card_fList,
+			.cardSetpreview ul {
+				background: transparent !important;
+			}
+
+			.card_b {
+				background: #fff !important;
+				padding-top: 0.1px;
+				margin-top: 16px;
+			}
+
+			.layui-form-checkbox span {
+				width: auto;
+			}
+
+			.layui-layout-admin .layui-footer {
+				z-index: 900;
+			}
+
+			.timePeriod {
+				padding: 20px;
+			}
+
+			.timePeriod .max300 {
+				width: auto;
+				max-width: 300px;
+			}
+
+			.layui-elem-quote .layui-form-switch {
+				width: 50px;
+			}
+
+			.layui-form-switch em {
+				top: -1px;
+			}
+
+			.layui-form-switch i {
+				top: 2px;
+			}
+
+			.upTips {
+				cursor: pointer;
+			}
+
+			.coverCon {
+				width: 100%;
+				position: relative;
+			}
+
+			.coverCon img {
+				width: 100%;
+				height: auto;
+			}
+
+			.coverCon span {
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				height: 30px;
+				background: rgba(0, 0, 0, 0.7);
+				color: #fff;
+				line-height: 30px;
+				font-size: 12px;
+				padding: 0 10px;
+			}
+
+			.coverCon span i {
+				transform: rotate(-90deg);
+				position: absolute;
+				right: 5px;
+				top: 0;
+			}
+
+			.iwList li {
+				margin-bottom: 20px;
+				position: relative;
+			}
+
+			.iwList img {
+				height: 222px;
+			}
+
+			.iwList .layui-input-block {
+				margin: 0;
+			}
+
+			.iwList .upTips {
+				padding-top: 90px;
+				background: lightgray;
+			}
+
+			.iwList .imgDel {
+				line-height: 222px;
+			}
+
+			.iwList .delBtn {
+				position: absolute;
+				right: -20px;
+				top: -20px;
+			}
+
+			.iwList .layui-upload-list {
+				border: 1px solid #e6e6e6;
+				border-bottom: none;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="timePeriod hide layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span class="redC">* </span>周一至周日 :</label>
+				<div class="layui-input-inline max300">
+					<input type="checkbox" name="timeSlotCollect" value="周一" lay-filter="timeSlotCollect" lay-skin="primary" title="周一">
+					<input type="checkbox" name="timeSlotCollect" value="周二" lay-filter="timeSlotCollect" lay-skin="primary" title="周二">
+					<input type="checkbox" name="timeSlotCollect" value="周三" lay-filter="timeSlotCollect" lay-skin="primary" title="周三">
+					<input type="checkbox" name="timeSlotCollect" value="周四" lay-filter="timeSlotCollect" lay-skin="primary" title="周四">
+					<input type="checkbox" name="timeSlotCollect" value="周五" lay-filter="timeSlotCollect" lay-skin="primary" title="周五">
+					<input type="checkbox" name="timeSlotCollect" value="周六" lay-filter="timeSlotCollect" lay-skin="primary" title="周六">
+					<input type="checkbox" name="timeSlotCollect" value="周日" lay-filter="timeSlotCollect" lay-skin="primary" title="周日">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span class="redC">* </span>每天时段 :</label>
+				<div class="layui-input-inline max300">
+					<div class="layui-input-inline" style="width: 100px;">
+						<input type="text" id="sTime" lay-verify="sTime" placeholder="开始时间" readonly="readonly" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-mid">-</div>
+					<div class="layui-input-inline" style="width: 100px;">
+						<input type="text" id="eTime" lay-verify="eTime" placeholder="截止时间" readonly="readonly" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="x-body autoHeight" style="background: #f4f8fb;">
+			<div class="layui-row">
+				<div class="layui-form" action="" lay-filter="cardAdd">
+
+					<!-- 第一步 -->
+					<div class="step1 show">
+						<div class="conBlock">
+							<blockquote class="layui-elem-quote consumeTit">
+								<i class="leftline"></i>
+								基本设置
+							</blockquote>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>优惠券标题 :</label>
+								<div class="layui-input-inline max360">
+									<input type="text" name="voucherName" id="voucherName" lay-verify="voucherName" autocomplete="off" placeholder="请填写优惠券标题"
+									 class="layui-input" value="">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>优惠券类型 :</label>
+								<div class="layui-input-inline max360">
+									<div class="layui-input-inline widthauto">
+										<input type="radio" name="voucherClass" value="1" lay-filter="voucherClass" title="普通优惠券" checked="">
+										<input type="radio" name="voucherClass" value="0" lay-filter="voucherClass" title="免费优惠券">
+									</div>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>优惠券用途 :</label>
+								<div class="layui-input-inline max360">
+									<div class="layui-input-inline widthauto">
+										<input type="radio" name="voucherUse" value="0" lay-filter="voucherUse" title="折扣劵" checked="">
+										<input type="radio" name="voucherUse" value="1" lay-filter="voucherUse" title="代金劵">
+										<input type="radio" name="voucherUse" value="2" lay-filter="voucherUse" title="兑换劵">
+									</div>
+								</div>
+							</div>
+							<div class="cpUseBzk">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>优惠券折扣 :</label>
+									<div class="layui-input-inline max3180">
+										<input type="text" name="discount" id="discount" autocomplete="off" lay-verify="discount" placeholder="请填写优惠券折扣"
+										 class="layui-input">
+									</div>
+									<div class="layui-form-mid layui-word-aux">输入0.9表示9折</div>
+								</div>
+							</div>
+							<div class="cpUseBdj" style="display:none;">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>优惠金额 :</label>
+									<div class="layui-input-inline max360">
+										<input type="text" name="discountAmount" id="discountAmount" autocomplete="off" placeholder="请填写优惠金额" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>最低消费 :</label>
+									<div class="layui-input-inline max360">
+										<input type="text" name="minimumCharge" id="minimumCharge" autocomplete="off" placeholder="请填写最低消费" class="layui-input">
+									</div>
+									<div class="layui-form-mid layui-word-aux">0代表不限制</div>
+								</div>
+							</div>
+							<div class="cpUseBpay">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>支付方式 :</label>
+									<div class="layui-input-inline widthauto">
+										<input type="checkbox" name="applicablePay" value="0" lay-filter="applicablePay" lay-skin="primary" title="支付宝"
+										 checked="">
+										<input type="checkbox" name="applicablePay" value="1" lay-filter="applicablePay" lay-skin="primary" title="微信">
+										<input type="checkbox" name="applicablePay" value="2" lay-filter="applicablePay" lay-skin="primary" title="云闪付">
+										<input type="checkbox" name="applicablePay" value="3" lay-filter="applicablePay" lay-skin="primary" title="会员钱包">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>适用来源 :</label>
+									<div class="layui-input-inline widthauto">
+										<input type="checkbox" name="applicableSource" value="0" lay-filter="applicableSource" lay-skin="primary"
+										 title="收款码" checked="">
+										<input type="checkbox" name="applicableSource" value="1" lay-filter="applicableSource" lay-skin="primary"
+										 title="APP">
+										<input type="checkbox" name="applicableSource" value="2" lay-filter="applicableSource" lay-skin="primary"
+										 title="PC插件">
+									</div>
+								</div>
+							</div>
+							<div class="cpUseBdh" style="display:none;">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>兑换内容 :</label>
+									<div class="layui-input-inline max360">
+										<textarea name="contentText" id="contentText" placeholder="请输入200字内" class="layui-textarea"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>适用门店 :</label>
+								<div class="layui-input-inline max360">
+									<input type="text" id="mdSelect" autocomplete="off" lay-verify="mdSelect" readonly="readonly" placeholder="请选择适用门店"
+									 class="layui-input">
+								</div>
+							</div>
+							<blockquote class="layui-elem-quote consumeTit">
+								<i class="leftline"></i>
+								使用条件
+								<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
+								<span class="tips_red">设置目前卡的有效期</span> -->
+							</blockquote>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>是否允许收银员送券 :</label>
+								<div class="layui-input-inline max360">
+									<div class="layui-input-inline widthauto">
+										<input type="radio" name="cashierCoupons" value="0" title="是" checked="">
+										<input type="radio" name="cashierCoupons" value="1" title="否">
+									</div>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>是否可叠加使用 :</label>
+								<div class="layui-input-inline max360">
+									<div class="layui-input-inline widthauto">
+										<input type="radio" name="overlapping" value="0" title="是" checked="">
+										<input type="radio" name="overlapping" value="1" title="否">
+									</div>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>限制使用时间 :</label>
+								<div class="layui-input-inline max360">
+									<div class="layui-input-inline widthauto">
+										<input type="radio" name="limitUseTimeType" lay-filter="limitUseTimeType" value="0" title="领取后N天内使用" checked="">
+										<input type="radio" name="limitUseTimeType" lay-filter="limitUseTimeType" value="1" title="指定具体使用时间">
+									</div>
+								</div>
+							</div>
+							<div class="limitUseTimeType0 show">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>领取后多少天后开始生效 :</label>
+									<div class="layui-input-inline widthauto">
+										<input type="text" name="entryForce" id="entryForce" autocomplete="off" lay-verify="entryForce" placeholder="领取后多少天后开始生效"
+										 class="layui-input">
+									</div>
+									<div class="layui-form-mid layui-word-aux">0代表当天生效</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>生效后多少天内有效 :</label>
+									<div class="layui-input-inline widthauto">
+										<input type="text" name="effectiveDay" id="effectiveDay" autocomplete="off" lay-verify="effectiveDay"
+										 placeholder="生效后多少天内有效" class="layui-input">
+									</div>
+								</div>
+							</div>
+							<div class="limitUseTimeType1 hide">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>指定具体使用时间 :</label>
+									<div class="layui-input-inline widthauto">
+										<input type="text" id="limitUseTimeTyperange" autocomplete="off" readonly="readonly" placeholder="请指定具体使用时间"
+										 class="layui-input">
+									</div>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>适用时间段 :</label>
+								<div class="layui-input-inline widthauto">
+									<table class="layui-hide" id="timeS" lay-filter="timeS"></table>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>投放数量 :</label>
+								<div class="layui-input-inline max180">
+									<input type="text" name="putCount" lay-verify="putCount" autocomplete="off" placeholder="请填写投放数量" class="layui-input">
+								</div>
+								<div class="layui-form-mid layui-word-aux">0代表不限制</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>每人可领券的数量限制 :</label>
+								<div class="layui-input-inline max180">
+									<input type="text" name="receiveCount" lay-verify="receiveCount" autocomplete="off" placeholder="请填写每人可领券的数量限制"
+									 class="layui-input">
+								</div>
+								<div class="layui-form-mid layui-word-aux">0代表不限制</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>兑换所需积分 :</label>
+								<div class="layui-input-inline max180">
+									<input type="text" name="exchangeIntegral" lay-verify="exchangeIntegral" autocomplete="off" placeholder="请填写兑换所需积分"
+									 class="layui-input">
+								</div>
+								<div class="layui-form-mid layui-word-aux">0代表不限制</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 第二步 -->
+					<div class="step2 hide">
+						<div class="layui-col-xs3 layui-col-sm3 layui-col-md3 cardSetpreview card_bc0">
+							<img src="./images/topbar.png" class="topbar">
+							<div class="card_boby">
+								<div class="card_b card_bc1">
+									<div class="card_b_lt">
+										<img src="./images/card_logo.png" id="cardLimg">
+										<p class="brandNamepv">--</p>
+										<p class="voucherNamepv">--</p>
+										<div class="useBtn">立即使用</div>
+									</div>
+									<ul class="card_fList">
+										<li class="card_fListli coversys">
+											<p class="coverTit show">详情</p>
+											<p class="coverCon hide">
+												<img src="" id="coverConImg">
+												<span>封面介绍<i class="iconfont"></i></span>
+											</p>
+										</li>
+										<li class="card_fListli">
+											公众号
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet" style="margin-bottom: 20px;">
+							<div class="layui-form-item conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									基本设置
+								</blockquote>
+								<input type="file" accept="image/*" class="input_img layui-input" style="display: none;" id="upLogo" />
+								<input type="file" accept="image/*" class="input_img layui-input" style="display: none;" id="upBg" />
+								<div class="layui-form-item max600">
+									<label class="layui-form-label"><span class="redC">* </span>品牌logo :</label>
+									<div class="layui-input-inline widthauto pinpaiLogo">
+										<div class="layui-upload-list">
+											<div class="layui-upload-img" id="cardLo">
+												<img id="cardLoImg">
+												<div class="upTips show">
+													+<br />上传logo
+												</div>
+											</div>
+											<div class="imgDel" data-id="cardLo" style="display: none;">
+												<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+											</div>
+										</div>
+									</div>
+									<div class="layui-input-block layui-word-aux">建议像素为300*300,大小不能超过2M</div>
+								</div>
+								<div class="layui-form-item max600">
+									<label class="layui-form-label"><span class="redC">* </span>品牌名称 :</label>
+									<div class="layui-input-inline max180">
+										<input type="text" name="brandName" class="layui-input" lay-verify="brandName" id="brandName" value="ltName">
+									</div>
+									<div class="layui-form-mid redC">制劵后,商户名称不能修改</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>会员卡颜色 :</label>
+									<div class="layui-input-block chooseColor">
+										<span data-color="colorC0" class="card_bc0"></span>
+										<span data-color="colorC1" class="card_bc1"></span>
+										<span data-color="colorC2" class="card_bc2"></span>
+										<span data-color="colorC3" class="card_bc3"></span>
+										<span data-color="colorC4" class="card_bc4"></span>
+										<span data-color="colorC5" class="card_bc5"></span>
+										<span data-color="colorC6" class="card_bc6"></span>
+										<span data-color="colorC7" class="card_bc7"></span>
+										<span data-color="colorC8" class="card_bc8"></span>
+										<span data-color="colorC9" class="card_bc9"></span>
+										<span data-color="colorC10" class="card_bc10"></span>
+										<span data-color="colorC11" class="card_bc11"></span>
+										<span data-color="colorC11" class="card_bc12"></span>
+										<span data-color="colorC11" class="card_bc13"></span>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-form-item conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									优惠详情
+								</blockquote>
+								<div class="layui-form-item max600">
+									<label class="layui-form-label">封面图片 :</label>
+									<div class="layui-input-block flexdown">
+										<div class="layui-input-inline cardBgimg widthauto">
+											<div class="layui-upload-list">
+												<div class="layui-upload-img" id="cardBg">
+													<img id="cardBgImg">
+													<div class="upTips show">
+														+<br />上传封面图片
+													</div>
+												</div>
+												<div class="imgDel" data-id="cardBg" style="display: none;">
+													<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="layui-input-block layui-word-aux">图片建议尺寸：850像素*350像素，大小不超过2M；支持jpg、png、jpeg格式</div>
+								</div>
+								<div class="layui-form-item max600">
+									<label class="layui-form-label">封面简介 :</label>
+									<div class="layui-input-inline max360">
+										<input type="text" name="coverProfile" class="layui-input" lay-verify="ltName" id="ltName" value="">
+									</div>
+								</div>
+								<div class="layui-form-item max600">
+									<label class="layui-form-label">使用须知 :</label>
+									<div class="layui-input-block">
+										<textarea class="layui-textarea" name="useNotice" autocomplete="off" placeholder="请输入特权说明" rows="3"></textarea>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">图文介绍</label>
+									<div class="layui-input-block">
+										<div class="layui-form-mid layui-word-aux">图片建议尺寸：900像素 * 500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
+										<ul class="layui-form-item max400 iwList" id="iwList"></ul>
+									</div>
+									<div class="layui-input-block" style="display: flex;justify-content: flex-start;align-items: center;margin-bottom: 15px;">
+										<button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">增加图文</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-form-item conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									品牌介绍（选填）
+								</blockquote>
+								<div class="layui-form-item max600">
+									<label class="layui-form-label">联系电话 :</label>
+									<div class="layui-input-block">
+										<input type="text" name="tell" lay-verify="celltest" class="layui-input" placeholder="请输入联系电话">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">商户服务 :</label>
+									<div class="layui-input-block merservices">
+										<input type="checkbox" name="deliveryService" lay-skin="primary" title="外送服务">
+										<input type="checkbox" name="parking" lay-skin="primary" title="停车位">
+										<input type="checkbox" name="pets" lay-skin="primary" title="可带宠物">
+										<input type="checkbox" name="wifi" lay-skin="primary" title="免费wifi">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-form-item conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									服务场景入口（选填）
+									<input type="checkbox" lay-skin="switch" lay-filter="entrance_S" lay-text="开|关">
+								</blockquote>
+								<div class="entrance_S hide">
+									<div class="layui-form-item max600">
+										<label class="layui-form-label">入口名称 :</label>
+										<div class="layui-input-block">
+											<input type="text" name="entranceName1" class="layui-input" placeholder="请输入服务场景入口名称">
+										</div>
+									</div>
+									<div class="layui-form-item max600">
+										<label class="layui-form-label">引导语 :</label>
+										<div class="layui-input-block">
+											<input type="text" name="entrance1" class="layui-input" placeholder="请输入引导语">
+										</div>
+									</div>
+									<div class="layui-form-item max600">
+										<label class="layui-form-label">网页链接 :</label>
+										<div class="layui-input-block">
+											<input type="text" name="entranceWeblink1" class="layui-input" placeholder="请输入网页链接">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-form-item conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									营销场景入口（选填）
+									<input type="checkbox" lay-skin="switch" lay-filter="entrance_M" lay-text="开|关">
+								</blockquote>
+								<div class="entrance_M hide">
+									<div class="layui-form-item max600">
+										<label class="layui-form-label">入口名称 :</label>
+										<div class="layui-input-block">
+											<input type="text" name="entranceName2" class="layui-input" placeholder="请输入营销场景入口名称">
+										</div>
+									</div>
+									<div class="layui-form-item max600">
+										<label class="layui-form-label">引导语 :</label>
+										<div class="layui-input-block">
+											<input type="text" name="entrance2" class="layui-input" placeholder="请输入引导语">
+										</div>
+									</div>
+									<div class="layui-form-item max600">
+										<label class="layui-form-label">网页链接 :</label>
+										<div class="layui-input-block">
+											<input type="text" name="entranceWeblink2" class="layui-input" placeholder="请输入网页链接">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-form-item conBlock">
+								<blockquote class="layui-elem-quote consumeTit">
+									<i class="leftline"></i>
+									使用设置
+								</blockquote>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>条码类型 :</label>
+									<div class="layui-input-block">
+										<input type="radio" name="barcodeType" value="0" title="不显示">
+										<input type="radio" name="barcodeType" value="1" title="二维码">
+										<input type="radio" name="barcodeType" value="2" title="条形码" checked="">
+										<input type="radio" name="barcodeType" value="3" title="卡券号">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>是否可转赠 :</label>
+									<div class="layui-input-block">
+										<input type="radio" name="giftGiving" value="0" title="是" checked="">
+										<input type="radio" name="giftGiving" value="1" title="否">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>是否自行核销 :</label>
+									<div class="layui-input-block">
+										<input type="radio" name="cancellation" lay-filter="cancellation" value="0" title="是" checked="">
+										<input type="radio" name="cancellation" lay-filter="cancellation" value="1" title="否">
+									</div>
+								</div>
+								<div class="layui-form-item cancellation1 hide">
+									<label class="layui-form-label"><span class="redC">* </span>核销资料 :</label>
+									<div class="layui-input-block">
+										<input type="checkbox" name="noteTransactionAmount" lay-skin="primary" title="是否备注交易金额">
+										<input type="checkbox" name="cancellationCode" lay-skin="primary" title="是否需要核销码(需要自行到微信公众平台设置核销码)">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>适用门店 :</label>
+									<div class="layui-input-inline max360">
+										<input type="text" autocomplete="off" readonly="readonly" placeholder="请选择适用门店" class="layui-input">
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<!-- <div class="chooseSysImg" id="upSysImg">上传系统图库</div>
+								<div class="chooseSysImg" id="delSysImg" data-type="delSysImg">删除系统图片</div> -->
+					</div>
+
+					<div class="layui-form-item layui-layout-admin">
+						<div class="layui-input-block">
+							<div class="layui-footer" style="left: 0;text-align: center;">
+								<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+								<button class="layui-btn" lay-submit="" lay-filter="nextstep" id="nextstep">下一步</button>
+								<button class="layui-btn hide" lay-submit="" lay-filter="laststep" id="laststep">上一步</button>
+								<button class="layui-btn hide" lay-submit="" lay-filter="add" id="add">提交</button>
+							</div>
+							<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/html" id="toolbarDemo">
+			<a class="layui-btn layui-btn-sm" lay-event="timeSAdd">添加时间段</a>
+		</script>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs layui-btn-danger" data-index="{{d.index}}" lay-event="del">删除</a>
+		</script>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			$(".conBlock:last").css("margin-bottom", "44px");
+			var index = parent.layer.getFrameIndex(window.name);
+			$('#quxiao').click(function() {
+				setTimeout(function() {
+					parent.layer.close(index)
+				}, 16);
+			})
+
+
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var shopList = []
+			var chooseCnum = 0
+			var colorListIndex
+			var colorList = ["63b359", "2c9f67", "509fc9", "5885cf", "9062c0", "d09a45", "e4b138",
+				"ee903c", "f08500",
+				"a9d92d", "dd6549", "cc463d", "cf3e36", "5E6671"
+			]
+			var vashierTimes = []
+			var imgNum = 0
+			var imgTexts = []
+			var logo_url, logo_id, coverPhoto, coverPhotoUrl
+			layui.use(['laydate', 'table', 'upload', 'form', 'slider'], function() {
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					admin = layui.admin,
+					element = layui.element,
+					layer = layui.layer,
+					slider = layui.slider;
+				var tableSelect = layui.tableSelect;
+
+
+				// 时段-时分
+				laydate.render({
+					elem: '#limitUseTimeTyperange',
+					range: true
+				});
+				laydate.render({
+					elem: '#sTime',
+					type: 'time',
+					format: 'HH:mm'
+				});
+				laydate.render({
+					elem: '#eTime',
+					type: 'time',
+					format: 'HH:mm'
+				});
+
+				//展示已知数据
+				timeStable()
+
+				function timeStable() {
+					table.render({
+						elem: '#timeS',
+						toolbar: '#toolbarDemo',
+						defaultToolbar: false,
+						id: 'timeSList',
+						cols: [
+							[{
+								type: 'numbers'
+							}, {
+								field: 'timeSlotCollect',
+								title: '使用周',
+								align: 'left',
+								minWidth: 320,
+							}, {
+								field: 'id',
+								title: '使用时间段',
+								align: 'center',
+								minWidth: 110,
+								templet: function(data) {
+									return data.sTime + '~' + data.eTime
+								}
+							}, {
+								field: 'operation',
+								title: '操作',
+								toolbar: "#tool",
+								width: 65,
+							}]
+						],
+						data: vashierTimes,
+					});
+				}
+				//头工具栏事件
+				table.on('toolbar(timeS)', function(obj) {
+					var checkStatus = table.checkStatus(obj.config.id);
+					var arrO = new Object()
+					var arrc = new Array();
+					switch (obj.event) {
+						case 'timeSAdd':
+							layer.open({
+								type: 1,
+								shade: 0.5,
+								area: ['500px', '300px'],
+								title: '添加时间段',
+								content: $('.timePeriod'),
+								btn: ['确定', '取消'],
+								yes: function(index) {
+									$("input:checkbox[name='timeSlotCollect']:checked").each(function(i) {
+										arrc[i] = $(this).val();
+									});
+									if (arrc.length < 1) {
+										return layer.msg('请选择周时间！', function() {})
+									}
+									if ($('#sTime').val() == '') {
+										return layer.msg('请选择开始时间！', function() {})
+									}
+									if ($('#eTime').val() == '') {
+										return layer.msg('请选择结束时间！', function() {})
+									}
+									arrO.timeSlotCollect = arrc.join('#')
+									arrO.sTime = $('#sTime').val()
+									arrO.eTime = $('#eTime').val()
+									vashierTimes.push(arrO)
+									layer.close(index)
+									layer.msg('添加成功')
+									timeStable()
+									$("input:checkbox[name='timeSlotCollect']:checked").each(function(i) {
+										$(this).prop("checked", false);
+										form.render('checkbox');
+									});
+									$('#sTime').val('')
+									$('#eTime').val('')
+								},
+							});
+							break;
+					};
+				});
+
+				//监听行工具事件
+				table.on('tool(timeS)', function(obj) {
+					var data = obj.data;
+					if (obj.event === 'del') {
+						layer.msg('删除成功', function(index) {
+							layer.close(index);
+						});
+					}
+				});
+
+				tableSelect.render({
+					elem: '#mdSelect',
+					searchKey: 'shopName',
+					checkedKey: 'shopNumber',
+					searchPlaceholder: '门店名称',
+					table: {
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+							merNumber,
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.result,
+							}
+						},
+						cols: [
+							[{
+								type: 'checkbox'
+							}, {
+								field: 'shopName',
+								title: '门店名称',
+								align: 'center',
+							}]
+						]
+					},
+					done: function(elem, data) {
+						shopList.splice(0)
+						var shopname = []
+						layui.each(data.data, function(index, item) {
+							shopList.push({
+								'shopNo': item.shopNumber
+							})
+							shopname.push(item.shopName)
+						})
+						elem.val(shopname.join('||'))
+					}
+				});
+
+
+
+				//执行一个laydate实例
+				laydate.render({
+					elem: '#startTime',
+				});
+				laydate.render({
+					elem: '#endTime',
+				});
+
+				/*---------- 图文添加 ----------*/
+				function saleListFor() {
+					var str = ''
+					for (let i = 0; i < imgTexts.length; i++) {
+						str +=
+							'<li><input type="file" accept="image/*" class="input_img layui-input" style="display: none;" id="upLogo' + i +
+							'" />' +
+							'<div class="layui-input-block pinpaiLogo' + i + '">' +
+							'<div class="layui-upload-list">' +
+							'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
+							')">' +
+							'<img id="cardLoImg' + i + '" src="' + imgTexts[i].imgUrl + '">' +
+							'<div class="upTips">+<br />上传图片</div></div>' +
+							'<div class="imgDel" data-id="cardLo' + i + '" style="display: none;">' +
+							'<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' +
+							'</div></div></div>' +
+							'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" lay-verify="graphicText" id="imgText' + i +
+							'" class="layui-textarea" onclick="textIn(' + i + ')">' + imgTexts[i].text +
+							'</textarea><div class="delBtn delSale" data-id="' +
+							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+					}
+					$('#iwList').html(str)
+
+					/*---------- 图文设置 ----------*/
+					window.textIn = function(i) {
+						$('#imgText' + i).on("input", function(e) {
+							imgTexts[i].text = e.delegateTarget.value
+						});
+					}
+					window.imgUp = function(i) {
+						$('#upLogo' + i).click()
+						imgNum = i
+						$('.input_img').change(function() {
+							layer.load(2, {
+								shade: 0.5
+							});
+							uploadImg(this, function(data) {
+								uploadImgajax(data, 6)
+							});
+						});
+					}
+					window.imgDel = function(i) {
+						$('.layui-upload-img').on({
+							mouseover: function() {
+								var cardId = $(this).attr("id")
+								var cardSrc = $('#' + cardId + 'Img' + i).attr("src")
+								if (cardId === 'cardLo' && cardSrc) {
+									$('.pinpaiLogo .imgDel').css({
+										"display": "block",
+										"opacity": 1
+									})
+								}
+							}
+						})
+						$('.imgDel').on({
+							mouseleave: function() {
+								$('.imgDel').css({
+									"display": "none",
+									"opacity": 0
+								})
+							}
+						})
+						$('.imgDel').click(function(e) {
+							var delId = e.currentTarget.dataset.id
+							if (delId == 'cardLo' + i) {
+								$('#cardLo' + i).find('img').remove()
+								$(this).prev().find(".upTips").show()
+							}
+							$(this).hide()
+						})
+					}
+				}
+				saleListFor()
+
+				$('#addSale').click(function() {
+					var newO = new Object()
+					newO.text = ''
+					newO.imageId = ''
+					newO.imgUrl = '../../public/images/default.png'
+					imgTexts.push(newO)
+					console.log(imgTexts)
+					saleListFor()
+					cli()
+					char()
+					give()
+				})
+
+				function cli() {
+					$('.delSale').click(function(e) {
+						// if (imgTexts.length == 1) { //限制图文信息最少一条,不限制注释掉
+						// 	layer.msg('最少要保留一条图文信息')
+						// 	return
+						// }
+						var data = this
+						var num = data.getAttribute('data-id')
+						imgTexts.splice(num, 1)
+						saleListFor()
+						cli()
+						char()
+						give()
+					})
+				}
+
+				function char() {
+					$('.charge').bind("input propertychange", function(event) {
+						imgTexts[this.dataset.id].text = this.value
+					})
+				}
+
+				function give() {
+					$('.give').bind("input propertychange", function(event) {
+						imgTexts[this.dataset.id].imageId = this.value
+					})
+				}
+				give()
+				char()
+				cli()
+
+
+				/*---------- 单选复选监听 ----------*/
+				form.on('switch(entrance_S)', function(data) {
+					if (data.elem.checked == true) {
+						$('.entrance_S').show()
+					} else if (data.elem.checked == false) {
+						$('.entrance_S').hide()
+					}
+				});
+				form.on('switch(entrance_M)', function(data) {
+					if (data.elem.checked == true) {
+						$('.entrance_M').show()
+					} else if (data.elem.checked == false) {
+						$('.entrance_M').hide()
+					}
+				});
+				form.on('radio(limitUseTimeType)', function(data) {
+					if (data.value == 0) {
+						$('.limitUseTimeType0').show()
+						$('.limitUseTimeType1').hide()
+						$('#entryForce').attr('lay-verify', 'entryForce')
+						$('#effectiveDay').attr('lay-verify', 'effectiveDay')
+						$('#limitUseTimeTyperange').removeAttr('lay-verify')
+					} else if (data.value == 1) {
+						$('.limitUseTimeType0').hide()
+						$('.limitUseTimeType1').show()
+						$('#entryForce').removeAttr('lay-verify')
+						$('#effectiveDay').removeAttr('lay-verify')
+						$('#limitUseTimeTyperange').attr('lay-verify', 'specifictime')
+					}
+				});
+				form.on('checkbox(timeSlotCollect)', function(data) {
+					if ($("input[name='timeSlotCollect']:checked").length < 1) {
+						$(this).prop("checked", true);
+						form.render('checkbox');
+						layer.msg("最少选择1个周期", function() {});
+					} else {
+
+					}
+				});
+				form.on('radio(cancellation)', function(data) {
+					if (data.value == 0) {
+						$('.cancellation1').hide()
+					} else if (data.value == 1) {
+						$('.cancellation1').show()
+					}
+				});
+				form.on('radio(voucherUse)', function(data) {
+					if (data.value == 0) {
+						$('.cpUseBzk').show()
+						$('.cpUseBdj').hide()
+						$('.cpUseBdh').hide()
+						$('.cpUseBpay').show()
+						$('#discount').attr('lay-verify', 'discount')
+						$('#discountAmount').removeAttr('lay-verify')
+						$('#minimumCharge').removeAttr('lay-verify')
+						$('#contentText').removeAttr('lay-verify')
+					} else if (data.value == 1) {
+						$('.cpUseBzk').hide()
+						$('.cpUseBdj').show()
+						$('.cpUseBdh').hide()
+						$('.cpUseBpay').show()
+						$('#discount').removeAttr('lay-verify')
+						$('#discountAmount').attr('lay-verify', 'discountAmount')
+						$('#minimumCharge').attr('lay-verify', 'minimumCharge')
+						$('#contentText').removeAttr('lay-verify')
+					} else if (data.value == 2) {
+						$('.cpUseBzk').hide()
+						$('.cpUseBdj').hide()
+						$('.cpUseBdh').show()
+						$('.cpUseBpay').hide()
+						$('#discount').removeAttr('lay-verify')
+						$('#discountAmount').removeAttr('lay-verify')
+						$('#minimumCharge').removeAttr('lay-verify')
+						$('#contentText').attr('lay-verify', 'minimumCharge')
+					}
+				});
+
+
+				/*---------- 品牌logo，卡背景上传 ----------*/
+				$('#cardLo').click(function() {
+					$('#upLogo').click()
+				})
+				$('#cardBg').click(function() {
+					$('#upBg').click()
+				})
+				$('.layui-upload-img').on({
+					mouseover: function() {
+						var cardId = $(this).attr("id")
+						var cardSrc = $('#' + cardId + 'Img').attr("src")
+						if (cardId === 'cardLo' && cardSrc) {
+							$('.pinpaiLogo .imgDel').css({
+								"display": "block",
+								"opacity": 1
+							})
+						}
+						if (cardId === 'cardBg' && cardSrc) {
+							$('.cardBgimg .imgDel').css({
+								"display": "block",
+								"opacity": 1
+							})
+						}
+					}
+				})
+				$('.imgDel').on({
+					mouseleave: function() {
+						$('.imgDel').css({
+							"display": "none",
+							"opacity": 0
+						})
+					}
+				})
+				$('.imgDel').click(function(e) {
+					var delId = e.currentTarget.dataset.id
+					if (delId == 'cardLo') {
+						$('#cardLimg').attr('src', './images/card_logo.png')
+						$('#cardLo').find('img').removeAttr('src')
+						$(this).prev().find(".upTips").show()
+						logo_id = ''
+					}
+					if (delId == 'cardBg') {
+						$('#cardBg').find('img').removeAttr('src')
+						$('#cardBimg').find('img').remove()
+						$(this).prev().find(".upTips").show()
+						image_id = ''
+						$('.coverTit').show()
+						$('.coverCon').hide()
+						$('.coversys').css({
+							'height': '40px',
+							'border-bottom': '1px solid #e6e6e6'
+						})
+					}
+					$(this).hide()
+				})
+
+				$("#upLogo").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						uploadImgajax(data, 1)
+					});
+					$(this).val('')
+				});
+				$("#upBg").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						uploadImgajax(data, 2)
+					});
+					$(this).val('')
+				});
+
+				/*---------- 自定义验证规则 ----------*/
+				step1verify()
+				step2verify()
+				// 第一步验证
+				function step1verify() {
+					form.verify({
+						voucherName: function(value) {
+							if (value == '') {
+								return '优惠券标题不能为空！'
+							}
+						},
+						discount: function(value) {
+							if (value == '') {
+								return '优惠券折扣不能为空！'
+							}
+						},
+						discountAmount: function(value) {
+							if (value == '') {
+								return '优惠金额不能为空！'
+							}
+						},
+						minimumCharge: function(value) {
+							if (value == '') {
+								return '最低消费不能为空！'
+							}
+						},
+						contentText: function(value) {
+							if (value == '') {
+								return '兑换内容不能为空！'
+							}
+						},
+						mdSelect: function(value) {
+							if (shopList.length < 1) {
+								return '最少选择一家适用门店'
+							}
+						},
+						entryForce: function(value) {
+							if (value == '') {
+								return '请设置生效开始时间！'
+							}
+						},
+						effectiveDay: function(value) {
+							if (value == '') {
+								return '请设置有效期！'
+							}
+						},
+						specifictime: function(value) {
+							if (value == '') {
+								return '请设置具体使用时间！'
+							}
+						},
+						putCount: function(value) {
+							if (value == '') {
+								return '请设置投放数量！'
+							}
+						},
+						receiveCount: function(value) {
+							if (value == '') {
+								return '请设置可领限制！'
+							}
+						},
+						exchangeIntegral: function(value) {
+							if (value == '') {
+								return '请设置兑换积分！'
+							}
+						},
+					});
+				}
+				// 第二步验证
+				function step2verify() {
+					form.verify({
+						graphicText: function(value) {
+							if (value == '') {
+								return '图文介绍内容不能为空！'
+							}
+						},
+						celltest: function(value) {
+							var rg = new RegExp(/^1\d{10}$/)
+							if (value != '' && !rg.test(value)) {
+								return '请填写正确手机号！'
+							}
+						},
+					});
+				}
+
+				/*---------- 监听提交 ----------*/
+				form.on('submit(nextstep)', function(data, index) {
+					step1verify()
+					$('.step1').hide()
+					$('.step2').show()
+					$('#quxiao').hide()
+					$('#nextstep').hide()
+					$('#laststep').show()
+					$('#add').show()
+				})
+				form.on('submit(laststep)', function(data, index) {
+					$('.step1').show()
+					$('.step2').hide()
+					$('#quxiao').show()
+					$('#nextstep').show()
+					$('#laststep').hide()
+					$('#add').hide()
+				})
+				form.on('submit(add)', function(data, index) {
+					step2verify()
+					var data = data.field
+					data.userNo = merNumber
+					// 第一步数据
+					if (data.voucherUse != '0') {
+						data.discount = '0'
+					}
+					if (data.limitUseTimeType == '1') {
+						data.startTime = $('#limitUseTimeTyperange').val().split(' - ')[0]
+						data.endTime = $('#limitUseTimeTyperange').val().split(' - ')[1]
+					}
+					data.voucherShops = shopList
+					data.vashierTimes = vashierTimes
+					var arrpay = new Array(),
+						arrsou = new Array();
+					$("input:checkbox[name='applicablePay']:checked").each(function(i) {
+						arrpay[i] = $(this).val();
+					});
+					$("input:checkbox[name='applicableSource']:checked").each(function(i) {
+						arrsou[i] = $(this).val();
+					});
+					data.applicablePay = arrpay.join('#')
+					data.applicableSource = arrsou.join('#')
+					// 第二步数据
+					data.imgTexts = imgTexts
+					data.logo = logo_url
+					data.logoImgID = logo_id
+					data.coverPhoto = coverPhoto
+					data.coverPhotoUrl = coverPhotoUrl
+					data.voucherRGB = '#' + colorList[chooseCnum]
+					if (data.deliveryService) {
+						data.deliveryService = 0
+					} else {
+						data.deliveryService = 1
+					}
+					if (data.parking) {
+						data.parking = 0
+					} else {
+						data.parking = 1
+					}
+					if (data.pets) {
+						data.pets = 0
+					} else {
+						data.pets = 1
+					}
+					if (data.wifi) {
+						data.wifi = 0
+					} else {
+						data.wifi = 1
+					}
+					if (data.noteTransactionAmount) {
+						data.noteTransactionAmount = 0
+					} else {
+						data.noteTransactionAmount = 1
+					}
+					if (data.cancellationCode) {
+						data.cancellationCode = 0
+					} else {
+						data.cancellationCode = 1
+					}
+
+					console.log(data)
+					// return
+					layer.load(2, {
+						shade: 0.5
+					});
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addVoucher,
+						data: JSON.stringify(data),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
+							if (data.code == 1000) {
+								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+								parent.layer.close(index); //再执行关闭
+								parent.layer.msg('添加优惠券成功')
+								parent.layui.table.reload('cplist')
+							} else {
+								layer.msg(data.msg)
+
+							}
+						}
+					});
+					return false;
+				});
+
+				ccolor()
+				ltname()
+
+				function ccolor() {
+					$('.chooseColor span').eq(0).addClass('chooseCC layui-icon layui-icon-ok');
+					$('.chooseColor span').click(function(e) {
+						chooseCnum = $('.chooseColor span').index(this)
+						$(this).addClass('chooseCC layui-icon layui-icon-ok');
+						$('.chooseColor span').not($(this)).removeClass('chooseCC layui-icon layui-icon-ok')
+						$('.cardSetpreview').css('background-color', '#' + colorList[chooseCnum])
+					})
+				}
+
+				function ltname() {
+					$('.brandNamepv').text($("#brandName").val())
+					$('.voucherNamepv').text($("#voucherName").val())
+					$("#brandName").on("input", function(e) {
+						//获取input输入的值
+						$('.brandNamepv').text(e.delegateTarget.value)
+					});
+					$("#voucherName").on("input", function(e) {
+						//获取input输入的值
+						$('.voucherNamepv').text(e.delegateTarget.value)
+					})
+				}
+
+				function uploadImg(input_file, get_data) {
+					var file = input_file.files[0];
+					var reader = new FileReader();
+					var AllowImgFileSize = 2100000;
+					if (file) {
+						reader.readAsDataURL(file);
+						reader.onload = function() {
+							if (AllowImgFileSize != 0 && AllowImgFileSize < this.result.length) {
+								layer.closeAll('loading');
+								layer.msg('上传失败<br>请上传不大于2M的图片！', function() {});
+								return;
+							} else {
+								get_data(this.result)
+							}
+						}
+					} else {
+						layer.closeAll('loading');
+					}
+				}
+
+				function uploadImgajax(Imgbase, upType) {
+					var datas = {
+						"imgBaseStr": Imgbase,
+						"institutionNumber": insNumber,
+						"imgType": upType,
+						"merchantNumber": merNumber
+					}
+					// 发送请求
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+						data: JSON.stringify(datas),
+						dataType: "json",
+						async: false,
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
+							if (data.code === 1000) {
+								switch (upType) {
+									case 1:
+										logo_url = data.data.localImgUrl
+										logo_id = data.data.imageId
+										$('#cardLimg').attr('src', data.data.localImgUrl);
+										$('#cardLoImg').attr('src', data.data.localImgUrl);
+										$('#cardLo').find('.upTips').hide();
+										break;
+									case 2:
+										coverPhoto = data.data.imageId
+										coverPhotoUrl = data.data.localImgUrl
+										$('.coverTit').hide()
+										$('.coverCon').show()
+										$('.coversys').css({
+											'height': 'auto',
+											'border-bottom': 'none'
+										})
+										$('#coverConImg').attr('src', data.data.localImgUrl);
+										$('#cardBgImg').attr('src', data.data.localImgUrl);
+										$('#cardBg').find('.upTips').hide();
+										break
+									case 4:
+										layer.msg('上传系统图库成功')
+										break
+									case 6:
+										imgTexts[imgNum].imageId = data.data.imageId
+										imgTexts[imgNum].imgUrl = data.data.localImgUrl
+										$('#cardLoImg' + imgNum).attr('src', data.data.localImgUrl);
+										$('#cardLo' + imgNum).find('.upTips').hide();
+										break
+								}
+							}
+						}
+					});
+				}
+
+			});
+		</script>
+	</body>
+
+</html>

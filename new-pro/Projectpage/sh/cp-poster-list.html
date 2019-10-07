@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+			.layui-table-cell {
+				height: auto;
+			}
+		</style>
+	</head>
+
+	<body class="iframe_index_1">
+		<div class="x-body iframe_index_1_con">
+			<div class="demoTable layui-form x-so">
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="门店名称" id="mdName">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="海报名称" id="hbName">
+				</div>
+				<div class="layui-input-inline">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+					<button class="layui-btn" data-type="addCP"><i class="layui-icon"></i>添加</button>
+				</div>
+			</div>
+			<table class="layui-hide" id="cpList" lay-filter="cpList"></table>
+		</div>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs" lay-event="channel">渠道</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+		</script>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
+			}
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var startDate = fun_date(-6);
+			var endDate = fun_date(0);
+			var nowTime = new Date().valueOf();
+			var dataO = new Object();
+			dataO.merchantNumber = merNumber
+			layui.use(['table', 'laydate', 'form'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					form = layui.form,
+					laydate = layui.laydate;
+
+				// 选择日期插件  
+				laydate.render({
+					elem: '#startendTime',
+					type: 'date',
+					range: true,
+					value: fun_date(-6) + ' - ' + fun_date(0),
+				});
+
+				//方法级渲染
+				var newO = new Object()
+				newO.merchantNumber = merNumber
+				table.render({
+					elem: '#cpList',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.selPoster,
+					data: JSON.stringify(newO),
+					method: "get",
+					// height: "full-200",
+					page: true,
+					id: 'cplist',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if (res.data == null) {
+							return
+						}
+						if (res.data == '查询数据为空') {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.list,
+						}
+					},
+					cols: [
+						[{
+							title: '序号',
+							type: 'numbers'
+						}, {
+							field: 'title',
+							title: '海报名称',
+							align: 'center',
+							minWidth: 180,
+							templet: function(data) {
+								if (data.title) {
+									return data.title
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'voucherUse',
+							title: '类别数',
+							align: 'center',
+							minWidth: 120,
+							templet: function(data) {
+								switch (data.voucherUse) {
+									case 0:
+										return '折扣卷'
+										break;
+									case 1:
+										return '代金卷'
+										break;
+									case 2:
+										return '兑换卷'
+										break;
+								}
+							}
+						}, {
+							field: 'voucherID',
+							title: '券总数量',
+							align: 'center',
+							minWidth: 280,
+						}, {
+							field: 'scopeCollections',
+							title: '领取范围',
+							align: 'center',
+							minWidth: 120,
+							templet: function(data) {
+								switch (data.scopeCollections) {
+									case 1:
+										return '所有用户'
+										break;
+									case 2:
+										return '会员专享'
+										break;
+								}
+							}
+						}, {
+							field: 'validTimeType',
+							title: '有效期',
+							align: 'center',
+							sort: true,
+							minWidth: 120,
+							templet: function(data) {
+								if (data.validTimeType == 0) {
+									return '永久有效'
+								} else {
+									return data.startTime + ' ~ ' + data.endTime
+								}
+							}
+						}, {
+							field: 'operation',
+							title: '操作',
+							align: 'center',
+							toolbar: "#tool",
+							minWidth: 150
+						}]
+					],
+					done: function(res, curr, count) {
+						// console.log(res)
+						layer.closeAll()
+					}
+				});
+
+				//头工具栏事件
+				table.on('toolbar(cpList)', function(obj) {
+					var checkStatus = table.checkStatus(obj.config.id);
+					switch (obj.event) {
+						case 'syncAll':
+							var data = checkStatus.data;
+							layer.alert(JSON.stringify(data));
+							break;
+					};
+				});
+
+				//监听工具条
+				table.on('tool(cpList)', function(obj) {
+					var data = obj.data;
+					if (obj.event === 'edit') {
+						// 跳转编辑详情页面
+						layer.open({
+							type: 2,
+							title: '优惠券编辑',
+							area: ['90%', '90%'],
+							content: 'cp-poster-edit.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageCon(data.posterId)
+							}
+						});
+					} else if (obj.event === 'channel') {
+						// 跳转编辑详情页面
+						layer.open({
+							type: 2,
+							title: '优惠券渠道',
+							area: ['90%', '90%'],
+							content: 'cp-putway.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageCon(data.voucherID)
+							}
+						});
+					} else if (obj.event === 'delete') {
+						// 弹出是否要删除优惠券
+						layer.confirm('确定要删除此优惠券？', function(index) {
+							var mydata = {
+								"voucherID": data.voucherID
+							}
+							// 发送请求
+							$.ajax({
+								type: "post",
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.delVoucher,
+								data: JSON.stringify(mydata),
+								dataType: "json",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								success: function(data) {
+									layer.closeAll('loading');
+									if (data.code == 1000) {
+										layer.close(index);
+										layer.msg('删除成功！')
+										layui.table.reload('cplist');
+									} else {
+										layer.msg(data.msg)
+									}
+								}
+							});
+							layer.close(index);
+						});
+					}
+				});
+
+				// 根據條件重载表格
+				var $ = layui.$,
+					active = {
+						reload: function() {
+							layer.load(2, {
+								shade: [0.4, '#393D49']
+							})
+							// 获取上面查询框的值
+							var cpName = $('#cpName')
+							//执行重载
+							table.reload('cplist', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									cpName: cpName.val(),
+								}
+							});
+							layer.closeAll()
+						},
+						addCP: function() {
+							layer.open({
+								type: 2,
+								title: '添加优惠券',
+								shadeClose: false,
+								shade: 0.3,
+								move: false,
+								resize: false,
+								area: ['90%', '90%'],
+								content: 'cp-add.html'
+							});
+						},
+						getCP: function() {
+							layer.open({
+								type: 2,
+								title: '拉取优惠券',
+								shadeClose: false,
+								shade: 0.3,
+								move: false,
+								resize: false,
+								area: ['893px', '600px'],
+								content: 'cp-list.html'
+							});
+						}
+					};
+
+				$('.demoTable .layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+			});
+		</script>
+	</body>
+
+</html>

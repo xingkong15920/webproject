@@ -25,8 +25,8 @@ var CmsConfig = {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
 		// ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
-		// ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
-		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
+		ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
+		// ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
 		ApiRootUrl: server,
 		PubUrl: publicUrl
@@ -246,6 +246,14 @@ var CmsConfig = {
 			delVoucher: "voucher/delVoucher",
 			// 获取商户下优惠券列表
 			getVoucherList: "voucher/getVoucherList",
+
+			// 海报设置
+			// 查询海报列表
+			selPoster: "poster/selPoster",
+			// 添加海报
+			addPoster: "poster/addPoster",
+			// 查询海报详情
+			selAllMessage: "poster/selAllMessage",
 		},
 		//商户后台
 		Merchant: {

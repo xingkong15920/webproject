@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.layui-tab-title {
+				background: #e5e5e5 !important;
+			}
+
+			.layui-tab-title li {
+				position: relative;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				overflow: hidden;
+			}
+
+			.layui-tab-title .layui-this {
+				background: #fff !important;
+			}
+
+			.layui-tab-title .layui-this:after {
+				/* display: none; */
+				position: absolute;
+				width: 100%;
+				height: 3px;
+				border: none !important;
+				background: #009688;
+			}
+		</style>
+	</head>
+
+	<body class="iframe_index_1">
+		<div class="layui-tab layui-tab-brief iframe_index_1_con" lay-filter="vipcenter">
+			<ul class="layui-tab-title">
+				<li class="layui-this">门店报表</li>
+				<li>明细日报表</li>
+				<li>汇总日报表</li>
+				<li>明细月报表</li>
+				<li>汇总月报表</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<table class="layui-hide" id="saleRec" lay-filter="saleRec"></table>
+				</div>
+				<div class="layui-tab-item">
+					<table class="layui-hide" id="saleRec1" lay-filter="saleRec1"></table>
+				</div>
+				<div class="layui-tab-item">
+					<table class="layui-hide" id="topupRec" lay-filter="topupRec"></table>
+				</div>
+				<div class="layui-tab-item">
+					<table class="layui-hide" id="inteRec" lay-filter="inteRec"></table>
+				</div>
+				<div class="layui-tab-item">
+					<table class="layui-hide" id="refundRec" lay-filter="refundRec"></table>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var _h = $(window).height();
+			var _h1 = $('.layui-tab-title').height() + 1;
+			var _h2 = _h - _h1 - 40
+			$('.x-iframe').height(_h2)
+			$('.layui-tab-item').height(_h2)
+
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					element = layui.element,
+					laydate = layui.laydate,
+					form = layui.form;
+
+				saleList()
+				//消费记录
+				function saleList() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#saleRec',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCRecord + '?memberNo=' +
+							memberNo,
+						method: "get",
+						height: 'full-235',
+						page: true,
+						id: 'vipList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.orders,
+							}
+						},
+						cols: [
+							[{
+								field: 'headImg',
+								title: '订单号/消费时间',
+								align: 'center',
+								width: 185,
+								templet: function(data) {
+									return data.orderNumber + '<br>' + data.orderTime
+								}
+							}, {
+								field: 'shopName',
+								title: '消费门店',
+								align: 'center',
+								width: 165
+							}, {
+								field: 'money',
+								title: '订单金额',
+								align: 'center',
+								width: 90
+							}, {
+								field: 'payMoney',
+								title: '支付金额',
+								align: 'center',
+								width: 90
+							}, {
+								field: 'discountMoney',
+								title: '优惠金额',
+								align: 'center',
+								width: 90
+							}, {
+								field: 'payType',
+								title: '支付类型',
+								align: 'center',
+								width: 90,
+								templet: function(data) {
+									switch (data.payType) {
+										case 0:
+											return '钱包'
+											break;
+										case 1:
+											return '微信'
+											break;
+										case 2:
+											return '支付宝'
+											break;
+									}
+								}
+							}, {
+								field: 'allBalance',
+								title: '操作人',
+								align: 'center',
+								minWidth: 100,
+								templet: function(data) {
+									if (data.clerkName == null) {
+										return 'Admin'
+									} else {
+										return data.clerkName
+									}
+								}
+							}]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+				//充值记录
+				function topupList() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#topupRec',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRRecord + '?memberNo=' +
+							memberNo,
+						method: "get",
+						height: 'full-235',
+						page: true,
+						id: 'vipList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.orders,
+							}
+						},
+						cols: [
+							[{
+									field: 'headImg',
+									title: '订单号/消费时间',
+									align: 'center',
+									width: 200,
+									templet: function(data) {
+										return data.orderNumber + '<br>' + data.orderTime
+									}
+								}, {
+									field: 'shopName',
+									title: '充值门店',
+									align: 'center',
+									width: 150
+								}, {
+									field: 'money',
+									title: '充值金额',
+									align: 'center',
+									width: 100
+								}, {
+									field: 'giveMoney',
+									title: '赠送金额',
+									align: 'center',
+									width: 100
+								},
+								// {
+								// 	field: 'cell',
+								// 	title: '开卡费',
+								// 	align: 'center',
+								// 	width: 100
+								// }, 
+								{
+									field: 'orderState',
+									title: '充值类型',
+									align: 'center',
+									width: 120,
+									templet: function(data) {
+										switch (data.orderState) {
+											case 0:
+												return '正常充值'
+												break;
+											case 1:
+												return '人工变更'
+												break;
+										}
+									}
+								}, {
+									field: 'orderState',
+									title: '充值方式',
+									align: 'center',
+									width: 120,
+									templet: function(data) {
+										switch (data.payType) {
+											case 0:
+												return '现金'
+												break;
+											case 1:
+												return '微信'
+												break;
+											case 2:
+												return '支付宝'
+												break;
+										}
+									}
+								}, {
+									field: 'clerkName',
+									title: '操作人',
+									align: 'center',
+									width: 100,
+									templet: function(data) {
+										if (data.clerkName == null) {
+											return 'Admin'
+										} else {
+											return data.clerkName
+										}
+									}
+								}
+							]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+				//积分记录
+				function inteList() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#inteRec',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getIntegrals + '?memberNo=' +
+							memberNo,
+						method: "get",
+						height: 'full-235',
+						page: true,
+						id: 'vipList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.integralInfos,
+							}
+						},
+						cols: [
+							[{
+								field: 'changeTime',
+								title: '变动时间',
+								align: 'center',
+								width: 165
+							}, {
+								field: 'changeIntegral',
+								title: '变动积分',
+								align: 'center',
+							}, {
+								field: 'changeType',
+								title: '变动类型',
+								align: 'center',
+								templet: function(data) { //0后台增加、1后台减少、2积分抵现、3充值赠送、4消费赠送
+									switch (data.changeType) {
+										case 0:
+											return '后台增加'
+											break;
+										case 1:
+											return '后台减少'
+											break;
+										case 2:
+											return '积分抵现'
+											break;
+										case 3:
+											return '充值赠送'
+											break;
+										case 4:
+											return '消费赠送'
+											break;
+									}
+								}
+							}, {
+								field: 'clerkName',
+								title: '操作人',
+								align: 'center',
+								templet: function(data) {
+									if (data.clerkName == null) {
+										return 'Admin'
+									} else {
+										return data.clerkName
+									}
+								}
+							}]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+				//退款记录
+				function refundList() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#refundRec',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMRefundTurnovers + '?memberNo=' +
+							memberNo + '&merchatNumber=' + merNumber,
+						method: "get",
+						height: 'full-235',
+						page: true,
+						id: 'vipList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.memberList,
+							}
+						},
+						cols: [
+							[{
+								field: 'headImg',
+								title: '订单号/退款时间',
+								align: 'center',
+								width: 200,
+								templet: function(data) {
+									return data.memberNo + '<br>' + data.registerTime
+								}
+							}, {
+								field: 'name',
+								title: '退款门店',
+								align: 'center',
+								width: 150
+							}, {
+								field: 'nickName',
+								title: '订单金额',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'memberNo',
+								title: '退款金额',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'cell',
+								title: '退款状态',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'allBalance',
+								title: '操作人',
+								align: 'center',
+								width: 100,
+								templet: function(data) {
+									if (data.clerkName == null) {
+										return 'Admin'
+									}
+								}
+							}]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+
+				//监听选项卡切换
+				element.on('tab(vipcenter)', function(data) {
+					switch (data.index) {
+						case 0:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipList.html');
+							break;
+						case 1:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipLevelList.html');
+							break;
+						case 2:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipsetrec.html');
+							break;
+						case 3:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipsetdiscount.html');
+							break;
+						case 4:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipFollow.html');
+							break;
+						case 5:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipPutway.html');
+							break;
+						default:
+							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipList.html');
+							break;
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

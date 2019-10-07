@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.layui-table-cell {
+				height: auto;
+				overflow-y: auto;
+			}
+
+			.qrcodeBtn {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.shareBarBtn {
+				display: block;
+				margin: 5px 0 !important;
+			}
+
+			.hide {
+				display: none;
+			}
+
+			.laytable-cell-1-0-9 .layui-btn-danger {
+				margin: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-body">
+			<xblock>
+				<a class="layui-btn" data-type="addvc">添加渠道</a>
+			</xblock>
+			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
+			<div class="cardQrcode" style="display: none;">
+				<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
+				<div class="qrcodeBtn">
+					<a class="layui-btn" data-type="copyLinkM">复制链接</a>
+					<a class="layui-btn" data-type="downLinkM" id="downLinkM">下载二维码</a>
+				</div>
+			</div>
+		</div>
+		<script type="text/html" id="shareBar">
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.aliGetCardUrl?'':'hide'}}" lay-event="zfblink">支付宝卡券</a>
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.wxCardUrl?'':'hide'}}" lay-event="wxlink">微信卡券</a>
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.getCardUrl?'':'hide'}}" lay-event="shlink">领取链接</a>
+		</script>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+		</script>
+		<script src="../../common/config-meb.js?v=1.0.3"></script>
+		<script src="../../common/utility.js"></script>
+		<script src="../../public/js/qrcode.js"></script>
+		<script>
+			function subPageCon(cpNo) {
+				console.log(cpNo)
+				var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+				var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+				var copyLinkM, downLinkMTit
+				layui.use('table', function() {
+					var table = layui.table,
+						form = layui.form;
+
+					parent.layer.load(2, {
+						shade: 0.5
+					});
+					//方法级渲染
+					table.render({
+						elem: '#LAY_table_shop',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getChannels + '?merchantNumber=' +
+							merNumber,
+						method: "get",
+						height: 'full-97',
+						page: true,
+						id: 'putwayList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.deliveryChannels,
+							}
+						},
+						cols: [
+							[{
+								title: '序号',
+								type: 'numbers'
+							}, {
+								field: 'deliveryNo',
+								title: '渠道编号',
+								align: 'center',
+								width: 150,
+							}, {
+								field: 'channelName',
+								title: '渠道名称',
+								align: 'center',
+								width: 150,
+							}, {
+								field: 'clerkNumbers',
+								title: '关联人员',
+								align: 'center',
+								width: 180,
+								templet: function(data) {
+									if (data.clerkNumbers != null) {
+										return data.clerkNumbers[0].split('||')[0] + '<br>' + data.clerkNumbers[0].split('||')[1]
+									} else {
+										return '--'
+									}
+								}
+							}, {
+								field: 'shopName',
+								title: '链接',
+								align: 'left',
+								width: 350,
+								templet: function(data) {
+									var zfbUrl, wxUrl, cardUrl
+									if (data.aliGetCardUrl) {
+										zfbUrl = '支付宝卡券：' + data.aliGetCardUrl
+									} else {
+										zfbUrl = '支付宝卡券：无'
+									}
+									if (data.wxCardUrl) {
+										wxUrl = '<br>微信卡券：' + data.wxCardUrl
+									} else {
+										wxUrl = '<br>微信卡券：无'
+									}
+									if (data.getCardUrl) {
+										cardUrl = '<br>领取链接：' + data.getCardUrl
+									} else {
+										cardUrl = '<br>领取链接：无'
+									}
+									return zfbUrl + wxUrl + cardUrl
+								}
+							}, {
+								field: 'insertTime',
+								title: '二维码',
+								align: 'center',
+								width: 100,
+								toolbar: "#shareBar"
+							}, {
+								field: 'insertTime',
+								title: '创建时间',
+								align: 'center',
+								width: 180,
+							}, {
+								field: 'operation',
+								title: '操作',
+								align: 'center',
+								toolbar: "#tool",
+								minWidth: 120
+							}]
+						],
+						done: function(res, curr, count) {
+							console.log(res)
+							parent.layer.closeAll('loading');
+							if (res.data == null) {
+								// layer.msg(res.msg)
+							} else {
+
+							}
+						}
+					});
+					form.on('switch(discountabled)', function(data) {
+						console.log(data)
+						// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+						var tjData = new Object();
+						tjData.deliveryNo = data.elem.dataset.deliveryno,
+							tjData.merchantNumber = merNumber
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.setDefaultChannel,
+							data: JSON.stringify(tjData),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code == 1000) {
+									parent.layer.msg('更改成功')
+									layui.table.reload('putwayList')
+								} else {
+									layer.msg(data.msg)
+
+								}
+							}
+						});
+					});
+					//监听工具条
+					table.on('tool(shop)', function(obj) {
+						var data = obj.data;
+
+						if (obj.event === 'zfblink') {
+							copyLinkM = data.aliGetCardUrl
+							downLinkMTit = data.deliveryNo
+							qrcode.makeCode(data.aliGetCardUrl);
+							layer.open({
+								type: 1,
+								shadeClose: true,
+								shade: 0.5,
+								title: false,
+								area: ['380px', '440px'],
+								content: $('.cardQrcode'),
+							});
+						} else if (obj.event === 'wxlink') {
+							copyLinkM = data.wxCardUrl
+							downLinkMTit = data.deliveryNo
+							qrcode.makeCode(data.wxCardUrl);
+							layer.open({
+								type: 1,
+								shadeClose: true,
+								shade: 0.5,
+								title: false,
+								area: ['380px', '440px'],
+								content: $('.cardQrcode'),
+							});
+						} else if (obj.event === 'shlink') {
+							copyLinkM = data.getCardUrl
+							downLinkMTit = data.deliveryNo
+							qrcode.makeCode(data.getCardUrl);
+							layer.open({
+								type: 1,
+								shadeClose: true,
+								shade: 0.5,
+								title: false,
+								area: ['380px', '440px'],
+								content: $('.cardQrcode'),
+							});
+						} else if (obj.event === 'edit') {
+							// 跳转编辑详情页面
+							layer.open({
+								type: 2,
+								title: '渠道编辑',
+								area: ['600px', '90%'],
+								content: 'vipPutwayedit.html',
+								success: function(layero, index) {
+									// 获取子页面的iframe
+									var iframe = window['layui-layer-iframe' + index];
+									// 向子页面的全局函数child传参
+									iframe.subPageCon(data.deliveryNo)
+								}
+							});
+						} else if (obj.event === 'delete') {
+							// 弹出是删除询问框
+							layer.confirm('确定要删除此折扣设置？', function(index) {
+								var mydata = {
+									"deliveryNo": data.deliveryNo,
+								}
+								// 发送请求
+								$.ajax({
+									type: "post",
+									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.deleteChannel,
+									data: JSON.stringify(mydata),
+									dataType: "json",
+									headers: {
+										"Content-Type": "application/json"
+									},
+									success: function(data) {
+										layer.closeAll('loading');
+										if (data.code == 1000) {
+											layer.close(index);
+											layer.msg('删除成功！')
+											layui.table.reload('putwayList');
+										} else {
+											layer.msg(data.msg)
+										}
+									}
+								});
+							});
+						}
+					});
+
+					// 根據條件重载表格
+					var $ = layui.$,
+						active = {
+							reload: function() {
+								// 获取上面查询框的值
+								var shopName = $('#shopName');
+								var shopStatus = $('#shopStatus');
+								//执行重载
+								table.reload('putwayList', {
+									page: {
+										curr: 1 //重新从第 1 页开始
+									},
+									where: {
+										shopName: shopName.val().trim(),
+										enabled: shopStatus.val().trim()
+									}
+								});
+							},
+							copyLinkM: function() {
+								var ssrsss = copyLinkM
+								var flag = copyText(ssrsss); //传递文本
+								layer.msg(flag ? "链接复制成功！" : "链接复制失败！", {
+									icon: 1
+								});
+							},
+							downLinkM: function() {
+								downloadImage()
+							},
+							addvc: function() {
+								// 跳转编辑详情页面
+								layer.open({
+									type: 2,
+									title: '优惠券渠道',
+									area: ['90%', '90%'],
+									content: 'cp-putwayadd.html',
+									success: function(layero, index) {
+										console.log(cpNo)
+										// 获取子页面的iframe
+										var iframe = window['layui-layer-iframe' + index];
+										// 向子页面的全局函数child传参
+										iframe.subPageConsub(cpNo)
+									}
+								});
+							},
+						};
+					$('.layui-btn').on('click', function() {
+						var type = $(this).data('type');
+						active[type] ? active[type].call(this) : '';
+					});
+					// 生成二维码
+					var qrcode = new QRCode(document.getElementById("qrcode"), {
+						width: 340,
+						height: 340
+					});
+					// 下载图片 
+					function downloadImage() {
+						var imgSrc = $("#qrcode img").attr("src");
+						var a = $("<a></a>").attr("href", imgSrc).attr("download", downLinkMTit + ".png").appendTo("body");
+						a[0].click();
+						a.remove();
+					}
+					// 复制到剪切板
+					function copyText(text) {
+						var textarea = document.createElement("input"); //创建input对象
+						textarea.className = "copyInput"
+						var currentFocus = document.activeElement; //当前获得焦点的元素
+						document.body.appendChild(textarea); //添加元素
+						textarea.value = text;
+						textarea.focus();
+						if (textarea.setSelectionRange)
+							textarea.setSelectionRange(0, textarea.value.length); //获取光标起始位置到结束位置
+						else
+							textarea.select();
+						try {
+							var flag = document.execCommand("copy"); //执行复制
+						} catch (eo) {
+							var flag = false;
+						}
+						document.body.removeChild(textarea); //删除元素
+						currentFocus.focus();
+						return flag;
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>
