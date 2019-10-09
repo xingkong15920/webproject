@@ -39,7 +39,7 @@
 		</div>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-xs" lay-event="channel">渠道</a>
+			<a class="layui-btn layui-btn-xs" lay-event="channel">推广</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
 		</script>
 		<script src="../../common/config-meb.js"></script>
@@ -85,16 +85,14 @@
 				});
 
 				//方法级渲染
-				var newO = new Object()
-				newO.merchantNumber = merNumber
 				table.render({
 					elem: '#cpList',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.selPoster,
-					data: JSON.stringify(newO),
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.hb_selPoster +
+						'?merchantNumber=' + merNumber,
 					method: "get",
 					// height: "full-200",
 					page: true,
-					id: 'cplist',
+					id: 'cposterlist',
 					response: {
 						"statusCode": "1000", //解析接口状态
 					},
@@ -128,28 +126,15 @@
 								}
 							}
 						}, {
-							field: 'voucherUse',
+							field: 'category',
 							title: '类别数',
 							align: 'center',
-							minWidth: 120,
-							templet: function(data) {
-								switch (data.voucherUse) {
-									case 0:
-										return '折扣卷'
-										break;
-									case 1:
-										return '代金卷'
-										break;
-									case 2:
-										return '兑换卷'
-										break;
-								}
-							}
+							minWidth: 100,
 						}, {
-							field: 'voucherID',
+							field: 'discountCount',
 							title: '券总数量',
 							align: 'center',
-							minWidth: 280,
+							minWidth: 100,
 						}, {
 							field: 'scopeCollections',
 							title: '领取范围',
@@ -170,12 +155,12 @@
 							title: '有效期',
 							align: 'center',
 							sort: true,
-							minWidth: 120,
+							minWidth: 220,
 							templet: function(data) {
 								if (data.validTimeType == 0) {
 									return '永久有效'
 								} else {
-									return data.startTime + ' ~ ' + data.endTime
+									return data.startTime.split(' ')[0] + ' ~ ' + data.endTime.split(' ')[0]
 								}
 							}
 						}, {
@@ -254,7 +239,7 @@
 									if (data.code == 1000) {
 										layer.close(index);
 										layer.msg('删除成功！')
-										layui.table.reload('cplist');
+										layui.table.reload('cposterlist');
 									} else {
 										layer.msg(data.msg)
 									}
@@ -275,7 +260,7 @@
 							// 获取上面查询框的值
 							var cpName = $('#cpName')
 							//执行重载
-							table.reload('cplist', {
+							table.reload('cposterlist', {
 								page: {
 									curr: 1 //重新从第 1 页开始
 								},
@@ -294,21 +279,9 @@
 								move: false,
 								resize: false,
 								area: ['90%', '90%'],
-								content: 'cp-add.html'
+								content: 'cp-poster-add.html'
 							});
 						},
-						getCP: function() {
-							layer.open({
-								type: 2,
-								title: '拉取优惠券',
-								shadeClose: false,
-								shade: 0.3,
-								move: false,
-								resize: false,
-								area: ['893px', '600px'],
-								content: 'cp-list.html'
-							});
-						}
 					};
 
 				$('.demoTable .layui-btn').on('click', function() {
