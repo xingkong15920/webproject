@@ -15,10 +15,11 @@
 		<script type="text/javascript" src="../../public/js/data.js"></script>
 	</head>
 	<style type="text/css">
-		.layui-table .layui-form-select .layui-input{
-				height: 28px;
-				border: none;
-			}
+		.layui-table .layui-form-select .layui-input {
+			height: 28px;
+			border: none;
+		}
+
 		.laytable-cell-1-0-3 {
 			overflow: visible;
 		}
@@ -35,19 +36,19 @@
 		</div>-->
 		<div class="x-body">
 			<div class="demoTable">
-            <div class="layui-form x-so">
-                
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" placeholder="店员姓名" autocomplete="off" name="clerkerName" id="clerkerName">
-                </div>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" placeholder="店员手机号" autocomplete="off" name="clerkerTel" id="clerkerTel">
-                </div>
-                <div class="layui-input-inline">
-                    <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
-                </div>
-            </div>
-        </div>
+				<div class="layui-form x-so">
+
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" placeholder="店员姓名" autocomplete="off" name="clerkerName" id="clerkerName">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" placeholder="店员手机号" autocomplete="off" name="clerkerTel" id="clerkerTel">
+					</div>
+					<div class="layui-input-inline">
+						<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+					</div>
+				</div>
+			</div>
 			<xblock>
 				<button class="layui-btn" id="layerSubpage"><i class="layui-icon"></i>添加</button>
 			</xblock>
@@ -83,7 +84,7 @@
 					userNumber = userNumber,
 					shopName = data.shopName,
 					shopNumber = data.shopNumber;
-					console.log(data)
+				console.log(data)
 				$('#layerSubpage').click(function() {
 					layer.open({
 						type: 2,
@@ -120,7 +121,7 @@
 							CmsConfig.addressUrl.Merchant.modifyClerk,
 							tjData,
 							function(data) {
-								if(data.code == 1000) {
+								if (data.code == 1000) {
 									parent.layer.msg('更改成功')
 								} else {
 									layer.msg(data.msg)
@@ -147,7 +148,7 @@
 							CmsConfig.addressUrl.Merchant.updateClerkerAuthority,
 							tjData,
 							function(data) {
-								if(data.code == 1000) {
+								if (data.code == 1000) {
 									parent.layer.msg('更改成功')
 								} else {
 									layer.msg(data.msg)
@@ -159,124 +160,133 @@
 						)
 					});
 					form.on('select(shopSel)', function(data) {
-					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					//更改商户类型
-					
-					var tjData = new Object();
-					tjData.clerkerNumber = data.elem.getAttribute("clerkNumber");
-					tjData.refundJurisdiction = data.elem.getAttribute("refundJurisdiction");
-					tjData.deletionFlag = 0;
-					tjData.shopNumber = data.elem.getAttribute("shopNumber")
-					tjData.merchantNumber = userNumber
-					tjData.shopName = shopName
-					tjData.clerkName = data.elem.getAttribute("clerkName")
-					tjData.userKinds = data.value
-					CmsUtility.postAjaxCall(
-						//系统设置
-						CmsConfig.addressUrl.Merchant.updateClerkerType,
-						tjData,
-						function(data) {
-							if(data.code == 1000) {
-								parent.layer.msg('更改成功')
-							} else {
-								layer.msg(data.msg)
+						// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+						//更改商户类型
+
+						var tjData = new Object();
+						tjData.clerkerNumber = data.elem.getAttribute("clerkNumber");
+						tjData.refundJurisdiction = data.elem.getAttribute("refundJurisdiction");
+						tjData.deletionFlag = 0;
+						tjData.shopNumber = data.elem.getAttribute("shopNumber")
+						tjData.merchantNumber = userNumber
+						tjData.shopName = shopName
+						tjData.clerkName = data.elem.getAttribute("clerkName")
+						tjData.userKinds = data.value
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Merchant.updateClerkerType,
+							tjData,
+							function(data) {
+								if (data.code == 1000) {
+									parent.layer.msg('更改成功')
+								} else {
+									layer.msg(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
 							}
-						},
-						function(data) {
-							console.log('222')
-						}
-					)
-				});
-					function tableRender(){
-						table.render({
-						elem: '#LAY_table_Assistant',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' + userNumber + '&shopNumber=' + shopNumber,
-						where:{
-							"clerkerName":$('#clerkerName').val().trim(),
-							"clerkerTel":$('#clerkerTel').val().trim(),
-						},
-						method: "post",
-						height: 'full-120',
-						page: true,
-						id: 'assistantlist',
-						response: {
-							"statusCode": "1000", //解析接口状态
-						},
-						parseData: function(res) {
-							if(res.data == null) {
-								return
-							}
-							return {
-								"code": res.code,
-								"count": res.data.count,
-								"data": res.data.result,
-							}
-						},
-						cols: [
-							[{
-							field: 'clerkNumber',
-							title: '编号',
-							align: 'center',
-						},{
-								field: 'clerkName',
-								title: '姓名',
-								align: 'center',
-							}, {
-								field: 'registeredCell',
-								title: '手机号',
-								align: 'center',
-							}, {
-								field: 'registeredCell',
-								title: '角色',
-								align: 'center',
-								templet:function(data){
-									switch (data.userKinds) {
-										case 4:
-											return '店长'
-											break;
-										case 5:
-											return '店员'
-											break;
-										default:
-											// statements_def
-											break;
-									}
-								},
-								toolbar:"#selectBar_lx"
-							}, {
-								field: 'shopName',
-								title: '所属门店',
-								align: 'center',
-							}, {
-								field: 'insertTime',
-								title: '创建时间',
-								align: 'center',
-							}, {
-								field: 'loginTime',
-								title: '最后登录时间',
-								align: 'center',
-							}, {
-								align: 'center',
-								title: '状态',
-								toolbar: "#zhuangtai",
-								width: 100
-							}, {
-								align: 'center',
-								title: '退款权限',
-								toolbar: "#tuikuan",
-								width: 100
-							}, {
-								field: 'operation',
-								title: '操作',
-								toolbar: "#tool",
-								minWidth: 400,
-							}]
-						]
+						)
 					});
+
+					function tableRender() {
+						table.render({
+							elem: '#LAY_table_Assistant',
+							url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' +
+								userNumber + '&shopNumber=' + shopNumber,
+							where: {
+								"clerkerName": $('#clerkerName').val().trim(),
+								"clerkerTel": $('#clerkerTel').val().trim(),
+							},
+							method: "post",
+							height: 'full-150',
+							page: true,
+							id: 'assistantlist',
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.result,
+								}
+							},
+							cols: [
+								[{
+									field: 'clerkNumber',
+									title: '编号',
+									align: 'center',
+									minWidth: 170,
+								}, {
+									field: 'clerkName',
+									title: '姓名',
+									align: 'center',
+									minWidth: 140,
+								}, {
+									field: 'registeredCell',
+									title: '手机号',
+									align: 'center',
+									minWidth: 120,
+								}, {
+									field: 'registeredCell',
+									title: '角色',
+									align: 'center',
+									templet: function(data) {
+										switch (data.userKinds) {
+											case 4:
+												return '店长'
+												break;
+											case 5:
+												return '店员'
+												break;
+											default:
+												// statements_def
+												break;
+										}
+									},
+									toolbar: "#selectBar_lx",
+									width: 100,
+								}, {
+									field: 'shopName',
+									title: '所属门店',
+									align: 'center',
+									minWidth: 140,
+								}, {
+									field: 'insertTime',
+									title: '创建时间',
+									align: 'center',
+									minWidth: 160,
+								}, {
+									field: 'loginTime',
+									title: '最后登录时间',
+									align: 'center',
+									minWidth: 160,
+								}, {
+									align: 'center',
+									title: '状态',
+									toolbar: "#zhuangtai",
+									width: 80,
+								}, {
+									align: 'center',
+									title: '退款权限',
+									toolbar: "#tuikuan",
+									width: 90,
+								}, {
+									field: 'operation',
+									title: '操作',
+									toolbar: "#tool",
+									minWidth: 400,
+								}]
+							]
+						});
 					}
 					//方法级渲染
 					tableRender()
-					$('#search').click(function(){
+					$('#search').click(function() {
 						tableRender()
 					})
 
@@ -285,7 +295,7 @@
 						var data = obj.data;
 						var logGid = data.LogGid;
 						var shop = data.ShopName;
-						if(obj.event == 'edit') {
+						if (obj.event == 'edit') {
 							layer.open({
 								type: 2,
 								title: '编辑',
@@ -298,7 +308,7 @@
 									iframe.subPageClerkedit(data, userNumber)
 								}
 							});
-						} else if(obj.event == 'resetting') {
+						} else if (obj.event == 'resetting') {
 							layer.open({
 								type: 2,
 								title: '修改密码',
@@ -311,9 +321,9 @@
 									iframe.subPageClerkpass(data, userNumber)
 								}
 							});
-						} else if(obj.event == 'pay') {
+						} else if (obj.event == 'pay') {
 							// 弹出二维码照片
-							
+
 							layer.open({
 								type: 2,
 								title: '一码付',
@@ -326,9 +336,9 @@
 									iframe.subPageClerkpush(data, userNumber)
 								}
 							});
-						}else if(obj.event == 'payNumber') {
+						} else if (obj.event == 'payNumber') {
 							// 弹出二维码照片
-							
+
 							layer.open({
 								type: 2,
 								title: '定额二维码',
@@ -341,7 +351,7 @@
 									iframe.subPageClerkpush(data, userNumber)
 								}
 							});
-						} else if(obj.event == 'weixinPush') {
+						} else if (obj.event == 'weixinPush') {
 							layer.open({
 								type: 2,
 								title: '微信推送',
@@ -354,9 +364,9 @@
 									iframe.subPageClerkpush(data, userNumber)
 								}
 							});
-						} else if(obj.event == 'delete') {
+						} else if (obj.event == 'delete') {
 							console.log(data)
-							layer.confirm('确定要删除('+data.clerkName+')此店员吗?', function(index) {
+							layer.confirm('确定要删除(' + data.clerkName + ')此店员吗?', function(index) {
 								var tjData = new Object();
 								tjData.clerkerNumber = data.clerkNumber;
 								tjData.shopNumber = data.shopNumber
@@ -370,7 +380,7 @@
 									CmsConfig.addressUrl.Merchant.deleteClerker,
 									tjData,
 									function(data) {
-										if(data.code == 1000) {
+										if (data.code == 1000) {
 											layer.close(index);
 											layer.msg('删除成功')
 											layui.table.reload('assistantlist')

@@ -8,15 +8,35 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
 		<meta http-equiv="Cache-Control" content="no-siteapp" />
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="../../public/css/xadmin.css">
 		<link rel="stylesheet" href="../../public/css/vipS.css">
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
 		<style type="text/css">
 			.layui-table-cell {
 				height: auto;
+				overflow-y: auto;
+			}
+
+			.qrcodeBtn {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.shareBarBtn {
+				display: block;
+				margin: 5px 0 !important;
+			}
+
+			.hide {
+				display: none;
+			}
+
+			.laytable-cell-1-0-9 .layui-btn-danger {
+				margin: 0;
 			}
 		</style>
 	</head>
@@ -24,24 +44,48 @@
 	<body class="iframe_index_1">
 		<div class="x-body iframe_index_1_con">
 			<div class="demoTable layui-form x-so">
+				<div class="layui-input-inline text">
+					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+					<input class="layui-input" type="text" id="name" placeholder="优惠券标题" autocomplete="off">
+				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="优惠券标题" name="cpName" id="cpName">
+					<select id="enable">
+						<option value="0">启用</option>
+						<option value="1">禁用</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="开始结束时间" id="startendTime" autocomplete="off">
 				</div>
 				<div class="layui-input-inline">
 					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
-					<button class="layui-btn" data-type="addCP"><i class="layui-icon"></i>添加</button>
-					<button class="layui-btn" data-type="getCP"><i class="layui-icon"></i>拉取优惠券</button>
+					<button class="layui-btn" data-type="addTM"><i class="layui-icon"></i>添加次/月卡</button>
 				</div>
 			</div>
-			<table class="layui-hide" id="cpList" lay-filter="cpList"></table>
+			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
+			<div class="cardQrcode" style="display: none;">
+				<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
+				<div class="qrcodeBtn">
+					<a class="layui-btn" data-type="copyLinkM">复制链接</a>
+					<a class="layui-btn" data-type="downLinkM" id="downLinkM">下载二维码</a>
+				</div>
+			</div>
 		</div>
+		<script type="text/html" id="switchBar">
+			<input type="checkbox" name="discountabled" lay-skin="switch" lay-filter="discountabled" lay-text="上架|下架" {{d.defaultFlag==1 ? 'checked' : ''}}  data-deliveryno="{{d.deliveryNo}}" value="{{d.defaultFlag}}">
+		</script>
+		<script type="text/html" id="shareBar">
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.aliGetCardUrl?'':'hide'}}" lay-event="zfblink">支付宝卡券</a>
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.wxCardUrl?'':'hide'}}" lay-event="wxlink">微信卡券</a>
+			<a class="layui-btn layui-btn-xs shareBarBtn {{d.getCardUrl?'':'hide'}}" lay-event="shlink">领取链接</a>
+		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-xs" lay-event="channel">渠道</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">领取</a>
 		</script>
-		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/config-meb.js?v=1.0.3"></script>
 		<script src="../../common/utility.js"></script>
+		<script src="../../public/js/qrcode.js"></script>
 		<script>
 			function fun_date(aa) {
 				var date1 = new Date(),
@@ -63,34 +107,34 @@
 			}
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var startDate = fun_date(-6);
-			var endDate = fun_date(0);
-			var nowTime = new Date().valueOf();
-			var dataO = new Object();
-			dataO.merchantNumber = merNumber
+			var copyLinkM, downLinkMTit
 			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
-					$ = layui.$,
+					laydate = layui.laydate,
 					form = layui.form,
-					laydate = layui.laydate;
+					$ = layui.jquery;
 
-				// 选择日期插件  
+				layer.load(2, {
+					shade: 0.5
+				});
+
+				//时间插件
 				laydate.render({
 					elem: '#startendTime',
 					type: 'date',
+					max: '',
 					range: true,
 					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
-
 				//方法级渲染
 				table.render({
-					elem: '#cpList',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucherList +
-						'?merchantNumber=' + merNumber,
+					elem: '#LAY_table_shop',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCountingcardList + '?merchantNumber=' +
+						merNumber + '&userNo=' + merNumber,
 					method: "get",
-					// height: "full-200",
+					height: 'full-130',
 					page: true,
-					id: 'cplist',
+					id: 'tmList',
 					response: {
 						"statusCode": "1000", //解析接口状态
 					},
@@ -98,245 +142,186 @@
 						if (res.data == null) {
 							return
 						}
-						if (res.data == '查询数据为空') {
-							return
-						}
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.list,
+							"data": res.data.deliveryChannels,
 						}
 					},
 					cols: [
 						[{
-								title: '序号',
-								type: 'numbers'
-							}, {
-								field: 'voucherName',
-								title: '卡券名称',
-								align: 'center',
-								minWidth: 180,
-								templet: function(data) {
-									if (data.voucherName) {
-										return data.voucherName
-									} else {
-										return '--'
-									}
+							field: 'channelName',
+							title: '卡券名称',
+							align: 'center',
+							width: 150,
+						}, {
+							field: 'shopNumber',
+							title: '卡券类型',
+							align: 'center',
+							width: 180,
+							templet: function(data) {
+								if (data.shopNumbers.length == 1) {
+									return data.shopNumbers[0].split('||')[0] + '<br>' + data.shopNumbers[0].split('||')[1]
+								} else {
+									return '已选 ' + data.shopNumbers.length + ' 个门店'
 								}
-							}, {
-								field: 'voucherUse',
-								title: '卡券类型',
-								align: 'center',
-								minWidth: 120,
-								templet: function(data) {
-									switch (data.voucherUse) {
-										case 0:
-											return '折扣卷'
-											break;
-										case 1:
-											return '代金卷'
-											break;
-										case 2:
-											return '兑换卷'
-											break;
-									}
-								}
-							}, {
-								field: 'voucherID',
-								title: '库存',
-								align: 'center',
-								minWidth: 280,
-							}, {
-								field: 'voucherClass',
-								title: '领取数量',
-								align: 'center',
-								minWidth: 120,
-							}, {
-								field: 'putCount',
-								title: '有效期',
-								align: 'center',
-								sort: true,
-								minWidth: 120,
-								templet: function(data) {
-									if (data.putCount) {
-										return data.putCount
-									} else {
-										return '--'
-									}
-								}
-							},
-							// {
-							// 	field: 'giveAmount',
-							// 	title: '已领取数量',
-							// 	align: 'center',
-							// 	sort: true,
-							// 	minWidth: 120,
-							// 	templet: function(data) {
-							// 		if (data.giveAmount) {
-							// 			return data.giveAmount
-							// 		} else {
-							// 			return '--'
-							// 		}
-							// 	}
-							{
-								field: 'rechargeTime',
-								title: '创建时间',
-								align: 'center',
-								minWidth: 180,
-							}, {
-								field: 'voucherDescribe',
-								title: '二维码',
-								align: 'center',
-								minWidth: 180,
-							}, {
-								field: 'limitUseTimeType',
-								title: '有效期',
-								align: 'center',
-								minWidth: 190,
-								templet: function(data) {
-									switch (data.limitUseTimeType) {
-										case 0:
-											return '领取后' + data.entryForce + '天后开始生效<br>生效后' + data.effectiveDay + '天内有效'
-											break;
-										case 1:
-											return data.startTime + ' ~ ' + data.endTime
-											break;
-									}
-								}
-							}, {
-								field: 'cashierCoupons',
-								title: '是否允许送券',
-								align: 'center',
-								minWidth: 130,
-								templet: function(data) {
-									switch (data.cashierCoupons) {
-										case 0:
-											return '允许'
-											break;
-										case 1:
-											return '不允许'
-											break;
-									}
-								}
-							}, {
-								field: 'overlapping',
-								title: '是否叠加使用',
-								align: 'center',
-								minWidth: 120,
-								templet: function(data) {
-									switch (data.overlapping) {
-										case 0:
-											return '可叠加'
-											break;
-										case 1:
-											return '不可叠加'
-											break;
-									}
-								}
-							}, {
-								field: 'disable',
-								title: '状态',
-								align: 'center',
-								minWidth: 100,
-								templet: function(data) {
-									switch (data.disable) {
-										case 0:
-											return '投放中'
-											break;
-										case 1:
-											return '已下架'
-											break;
-									}
-								}
-							}, {
-								field: 'insertTime',
-								title: '创建时间',
-								align: 'center',
-								minWidth: 180,
-							}, {
-								field: 'operation',
-								title: '操作',
-								align: 'center',
-								toolbar: "#tool",
-								minWidth: 150
 							}
-						]
+						}, {
+							field: 'giveMoney',
+							title: '库存',
+							align: 'center',
+							width: 100,
+							sort: true,
+						}, {
+							field: 'giveIntegral',
+							title: '领取数量',
+							align: 'center',
+							width: 100,
+						}, {
+							field: 'giveIntegral',
+							title: '有效期',
+							align: 'center',
+							width: 100,
+						}, {
+							field: 'insertTime',
+							title: '创建时间',
+							align: 'center',
+							width: 180,
+						}, {
+							field: 'operation',
+							title: '状态',
+							align: 'center',
+							toolbar: "#switchBar",
+							minWidth: 100
+						}, {
+							field: 'insertTime',
+							title: '二维码',
+							align: 'center',
+							width: 100,
+							toolbar: "#shareBar"
+						}, {
+							field: 'operation',
+							title: '操作',
+							align: 'center',
+							toolbar: "#tool",
+							minWidth: 120
+						}]
 					],
 					done: function(res, curr, count) {
-						// console.log(res)
-						layer.closeAll()
+						console.log(res)
+						layer.closeAll('loading');
+						if (res.data == null) {
+							// layer.msg(res.msg)
+						} else {
+
+						}
 					}
 				});
+				form.on('switch(discountabled)', function(data) {
+					console.log(data)
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					tjData.deliveryNo = data.elem.dataset.deliveryno,
+						tjData.merchantNumber = merNumber
+					// $.ajax({
+					// 	type: "post",
+					// 	url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.setDefaultChannel,
+					// 	data: JSON.stringify(tjData),
+					// 	dataType: "json",
+					// 	headers: {
+					// 		"Content-Type": "application/json"
+					// 	},
+					// 	success: function(data) {
+					// 		if (data.code == 1000) {
+					// 			parent.layer.msg('更改成功')
+					// 			layui.table.reload('tmList')
+					// 		} else {
+					// 			layer.msg(data.msg)
 
-				//头工具栏事件
-				table.on('toolbar(cpList)', function(obj) {
-					var checkStatus = table.checkStatus(obj.config.id);
-					switch (obj.event) {
-						case 'syncAll':
-							var data = checkStatus.data;
-							layer.alert(JSON.stringify(data));
-							break;
-					};
+					// 		}
+					// 	}
+					// });
 				});
-
 				//监听工具条
-				table.on('tool(cpList)', function(obj) {
+				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
-					if (obj.event === 'edit') {
-						// 跳转编辑详情页面
+
+					if (obj.event === 'zfblink') {
+						copyLinkM = data.aliGetCardUrl
+						downLinkMTit = data.deliveryNo
+						qrcode.makeCode(data.aliGetCardUrl);
 						layer.open({
-							type: 2,
-							title: '优惠券编辑',
-							area: ['90%', '90%'],
-							content: 'cp-edit.html',
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPageCon(data.voucherID)
-							}
+							type: 1,
+							shadeClose: true,
+							shade: 0.5,
+							title: false,
+							area: ['380px', '440px'],
+							content: $('.cardQrcode'),
 						});
-					} else if (obj.event === 'channel') {
+					} else if (obj.event === 'wxlink') {
+						copyLinkM = data.wxCardUrl
+						downLinkMTit = data.deliveryNo
+						qrcode.makeCode(data.wxCardUrl);
+						layer.open({
+							type: 1,
+							shadeClose: true,
+							shade: 0.5,
+							title: false,
+							area: ['380px', '440px'],
+							content: $('.cardQrcode'),
+						});
+					} else if (obj.event === 'shlink') {
+						copyLinkM = data.getCardUrl
+						downLinkMTit = data.deliveryNo
+						qrcode.makeCode(data.getCardUrl);
+						layer.open({
+							type: 1,
+							shadeClose: true,
+							shade: 0.5,
+							title: false,
+							area: ['380px', '440px'],
+							content: $('.cardQrcode'),
+						});
+					} else if (obj.event === 'edit') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
-							title: '优惠券渠道',
-							area: ['90%', '90%'],
-							content: 'cp-putway.html',
+							title: '渠道编辑',
+							area: ['600px', '90%'],
+							content: 'vipPutwayedit.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPageCon(data.voucherID)
+								iframe.subPageCon(data.deliveryNo)
 							}
 						});
 					} else if (obj.event === 'delete') {
-						// 弹出是否要删除优惠券
-						layer.confirm('确定要删除此优惠券？', function(index) {
+						// 弹出是删除询问框
+						layer.confirm('确定要删除此折扣设置？', function(index) {
 							var mydata = {
-								"voucherID": data.voucherID
+								"deliveryNo": data.deliveryNo,
 							}
 							// 发送请求
-							$.ajax({
-								type: "post",
-								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.delVoucher,
-								data: JSON.stringify(mydata),
-								dataType: "json",
-								headers: {
-									"Content-Type": "application/json"
-								},
-								success: function(data) {
-									layer.closeAll('loading');
-									if (data.code == 1000) {
-										layer.close(index);
-										layer.msg('删除成功！')
-										layui.table.reload('cplist');
-									} else {
-										layer.msg(data.msg)
-									}
-								}
-							});
-							layer.close(index);
+							// $.ajax({
+							// 	type: "post",
+							// 	url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.deleteChannel,
+							// 	data: JSON.stringify(mydata),
+							// 	dataType: "json",
+							// 	headers: {
+							// 		"Content-Type": "application/json"
+							// 	},
+							// 	success: function(data) {
+							// 		layer.closeAll('loading');
+							// 		if (data.code == 1000) {
+							// 			layer.close(index);
+							// 			layer.msg('删除成功！')
+							// 			layui.table.reload('tmList');
+							// 		} else {
+							// 			layer.msg(data.msg)
+							// 		}
+							// 	}
+							// });
 						});
 					}
 				});
@@ -345,52 +330,83 @@
 				var $ = layui.$,
 					active = {
 						reload: function() {
-							layer.load(2, {
-								shade: [0.4, '#393D49']
-							})
 							// 获取上面查询框的值
-							var cpName = $('#cpName')
+							var name = $('#name');
+							var enable = $('#enable');
+							var startendTime = $('#startendTime');
 							//执行重载
-							table.reload('cplist', {
+							table.reload('tmList', {
 								page: {
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
-									cpName: cpName.val(),
+									name: name.val(),
+									enable: enable.val(),
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
 								}
 							});
-							layer.closeAll()
 						},
-						addCP: function() {
+						addTM: function() {
 							layer.open({
 								type: 2,
-								title: '添加优惠券',
+								title: '添加次/月卡',
 								shadeClose: false,
 								shade: 0.3,
 								move: false,
 								resize: false,
 								area: ['90%', '90%'],
-								content: 'cp-add.html'
+								content: 'tm-add.html'
 							});
 						},
-						getCP: function() {
-							layer.open({
-								type: 2,
-								title: '拉取优惠券',
-								shadeClose: false,
-								shade: 0.3,
-								move: false,
-								resize: false,
-								area: ['893px', '600px'],
-								content: 'cp-list.html'
+						copyLinkM: function() {
+							var ssrsss = copyLinkM
+							var flag = copyText(ssrsss); //传递文本
+							layer.msg(flag ? "链接复制成功！" : "链接复制失败！", {
+								icon: 1
 							});
-						}
+						},
+						downLinkM: function() {
+							downloadImage()
+						},
 					};
-
-				$('.demoTable .layui-btn').on('click', function() {
+				$('.layui-btn').on('click', function() {
 					var type = $(this).data('type');
 					active[type] ? active[type].call(this) : '';
 				});
+				// 生成二维码
+				var qrcode = new QRCode(document.getElementById("qrcode"), {
+					width: 340,
+					height: 340
+				});
+				// 下载图片 
+				function downloadImage() {
+					var imgSrc = $("#qrcode img").attr("src");
+					var a = $("<a></a>").attr("href", imgSrc).attr("download", downLinkMTit + ".png").appendTo("body");
+					a[0].click();
+					a.remove();
+				}
+				// 复制到剪切板
+				function copyText(text) {
+					var textarea = document.createElement("input"); //创建input对象
+					textarea.className = "copyInput"
+					var currentFocus = document.activeElement; //当前获得焦点的元素
+					document.body.appendChild(textarea); //添加元素
+					textarea.value = text;
+					textarea.focus();
+					if (textarea.setSelectionRange)
+						textarea.setSelectionRange(0, textarea.value.length); //获取光标起始位置到结束位置
+					else
+						textarea.select();
+					try {
+						var flag = document.execCommand("copy"); //执行复制
+					} catch (eo) {
+						var flag = false;
+					}
+					document.body.removeChild(textarea); //删除元素
+					currentFocus.focus();
+					return flag;
+				}
 			});
 		</script>
 	</body>

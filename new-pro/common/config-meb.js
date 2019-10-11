@@ -256,6 +256,18 @@ var CmsConfig = {
 			hb_addPoster: "poster/addPoster",
 			// 查询海报详情
 			hb_selAllMessage: "poster/selAllMessage",
+
+			// 次月卡设置
+			// 查询次/月卡列表
+			getCountingcardList: "countingcard/getCountingcardList",
+			// 查询次/月卡详情
+			getCountingDetailList: "countingcard/getCountingDetailList",
+			// 添加次/月卡
+			addCountingcard: "countingcard/addCountingcard",
+			// 修改次/月卡
+			updateCountingcard: "countingcard/updateCountingcard",
+			// 删除次/月卡
+			delCountingcard: "countingcard/delCountingcard",
 		},
 		//商户后台
 		Merchant: {

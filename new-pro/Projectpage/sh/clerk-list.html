@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+	</head>
+	<style type="text/css">
+		.layui-table .layui-form-select .layui-input {
+			height: 28px;
+			border: none;
+		}
+
+		.laytable-cell-1-0-3 {
+			overflow: visible;
+		}
+	</style>
+	<body>
+		<!--<div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="">营业员</a>
+				<a><cite>营业员管理</cite></a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height:30px">ဂ</i>
+			</a>
+		</div>-->
+		<div class="x-body">
+			<div class="demoTable">
+				<div class="layui-form x-so">
+					<div class="layui-input-inline">
+						<!-- 需要数据对接(完成) -->
+						<select name="shopName" id="shopName">
+							<option value="">--请选择门店--</option>
+						</select>
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" placeholder="店员姓名" autocomplete="off" name="clerkerName" id="clerkerName">
+					</div>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" placeholder="店员手机号" autocomplete="off" name="clerkerTel" id="clerkerTel">
+					</div>
+					<div class="layui-input-inline">
+						<!-- 需要数据对接(完成) -->
+						<select name="userKinds" id="userKinds">
+							<option value="">--店员角色--</option>
+							<option value="4">店长</option>
+							<option value="5">店员</option>
+						</select>
+					</div>
+					<div class="layui-input-inline">
+						<!-- 需要数据对接(完成) -->
+						<select name="enable" id="enable">
+							<option value="">--店员状态--</option>
+							<option value="0">启用</option>
+							<option value="1">禁用</option>
+						</select>
+					</div>
+					<div class="layui-input-inline">
+						<button class="layui-btn" id="search" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+					</div>
+				</div>
+			</div>
+			<xblock>
+				<button class="layui-btn" id="layerSubpage"><i class="layui-icon"></i>添加</button>
+			</xblock>
+
+			<table class="layui-hide" id="LAY_table_Assistant" lay-filter="Assistant"></table>
+		</div>
+
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="weixinPush">推送</a>
+			<a class="layui-btn layui-btn-xs" lay-event="resetting">密码</a>
+			<a class="layui-btn layui-btn-xs" lay-event="pay">码牌</a>
+			<a class="layui-btn layui-btn-xs" lay-event="payNumber">定额</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+		</script>
+		<script type="text/html" id="selectBar_lx">
+			<select name="type" lay-filter="shopSel" clerkNumber="{{d.clerkNumber}}"   shopNumber="{{d.shopNumber}}" refundJurisdiction="{{d.refundJurisdiction}}" clerkName="{{d.clerkName}}">
+				<option value="5" {{d.userKinds==5 ? 'selected' : ''}}>收银员</option>
+				<option value="4" {{d.userKinds==4 ? 'selected' : ''}}>店长</option>
+			</select>
+		</script>
+		<script type="text/html" id="zhuangtai">
+			<input type="checkbox" name="switch" data-userKinds="{{d.userKinds}}" data-name="{{d.clerkName}}" data-shopnum = "{{d.shopNumber}}" value="{{d.clerkNumber}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="开|关" {{ d.enable=='0' ? 'checked' : '' }}>
+		</script>
+		<script type="text/html" id="tuikuan">
+			<input type="checkbox" name="switch" data-userKinds="{{d.userKinds}}" data-name="{{d.clerkName}}" data-shopnum = "{{d.shopNumber}}" value="{{d.clerkNumber}}" lay-skin="switch" lay-filter="toolbar_switch1" lay-text="开|关" {{ d.refundJurisdiction=='0' ? 'checked' : '' }}>
+		</script>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var dataO = new Object();
+			dataO.merchantNumber = merNumber
+			$('#layerSubpage').click(function() {
+				layer.open({
+					type: 2,
+					title: '添加店员',
+					area: ['500px', '550px'], //宽高
+					content: 'clerk-add.html',
+					success: function(layero, index) {
+						// 获取子页面的iframe
+						// var iframe = window['layui-layer-iframe' + index];
+						// 向子页面的全局函数child传参
+						// iframe.subPageClerkadd(data, merNumber)
+					}
+				});
+			})
+
+			layui.use(['table', 'form'], function() {
+				var table = layui.table,
+					form = layui.form;
+
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getShopNames,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
+								shopData[i].shopNumber + '/' + shopData[i].shopName + "</option>");
+						}
+						form.render()
+					}
+				)
+
+				//监听店员开启关闭操作
+				form.on('switch(toolbar_switch)', function(data) {
+					console.log(data.elem.dataset)
+					var tjData = new Object();
+					tjData.clerkerNumber = data.value;
+					tjData.enable = this.checked ? '0' : '1';
+					tjData.deletionFlag = 0;
+					tjData.shopNumber = data.elem.dataset.shopnum
+					tjData.merchantNumber = merNumber
+					tjData.shopName = shopName
+					tjData.clerkName = data.elem.dataset.name
+					tjData.userKinds = data.elem.dataset.userkinds
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Merchant.modifyClerk,
+						tjData,
+						function(data) {
+							if (data.code == 1000) {
+								layer.msg('更改成功')
+								layui.table.reload('assistantlist')
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				});
+				form.on('switch(toolbar_switch1)', function(data) {
+					console.log(data.elem.dataset)
+					var tjData = new Object();
+					tjData.clerkerNumber = data.value;
+					tjData.refundJurisdiction = this.checked ? '0' : '1';
+					tjData.deletionFlag = 0;
+					tjData.shopNumber = data.elem.dataset.shopnum
+					tjData.merchantNumber = merNumber
+					tjData.shopName = shopName
+					tjData.clerkName = data.elem.dataset.name
+					tjData.userKinds = data.elem.dataset.userkinds
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Merchant.updateClerkerAuthority,
+						tjData,
+						function(data) {
+							if (data.code == 1000) {
+								layer.msg('更改成功')
+								layui.table.reload('assistantlist')
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				});
+				form.on('select(shopSel)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					//更改商户类型
+
+					var tjData = new Object();
+					tjData.clerkerNumber = data.elem.getAttribute("clerkNumber");
+					tjData.refundJurisdiction = data.elem.getAttribute("refundJurisdiction");
+					tjData.deletionFlag = 0;
+					tjData.shopNumber = data.elem.getAttribute("shopNumber")
+					tjData.merchantNumber = merNumber
+					tjData.shopName = shopName
+					tjData.clerkName = data.elem.getAttribute("clerkName")
+					tjData.userKinds = data.value
+					CmsUtility.postAjaxCall(
+						//系统设置
+						CmsConfig.addressUrl.Merchant.updateClerkerType,
+						tjData,
+						function(data) {
+							if (data.code == 1000) {
+								layer.msg('更改成功')
+								layui.table.reload('assistantlist')
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
+				});
+
+				// function tableRender() {
+				table.render({
+					elem: '#LAY_table_Assistant',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' +
+						merNumber,
+					method: "post",
+					height: 'full-150',
+					page: true,
+					id: 'assistantlist',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if (res.data == null) {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.count,
+							"data": res.data.result,
+						}
+					},
+					cols: [
+						[{
+							field: 'clerkNumber',
+							title: '编号',
+							align: 'center',
+							minWidth: 200,
+						}, {
+							field: 'clerkName',
+							title: '姓名',
+							align: 'center',
+							minWidth: 140,
+						}, {
+							field: 'registeredCell',
+							title: '手机号',
+							align: 'center',
+							minWidth: 120,
+						}, {
+							field: 'registeredCell',
+							title: '角色',
+							align: 'center',
+							templet: function(data) {
+								switch (data.userKinds) {
+									case 4:
+										return '店长'
+										break;
+									case 5:
+										return '收银员'
+										break;
+									default:
+										// statements_def
+										break;
+								}
+							},
+							toolbar: "#selectBar_lx",
+							width: 120,
+						}, {
+							field: 'shopName',
+							title: '所属门店',
+							align: 'center',
+							minWidth: 140,
+						}, {
+							field: 'insertTime',
+							title: '创建时间',
+							align: 'center',
+							minWidth: 160,
+						}, {
+							field: 'loginTime',
+							title: '最后登录时间',
+							align: 'center',
+							minWidth: 160,
+						}, {
+							align: 'center',
+							title: '状态',
+							toolbar: "#zhuangtai",
+							width: 80,
+						}, {
+							align: 'center',
+							title: '退款权限',
+							toolbar: "#tuikuan",
+							width: 90,
+						}, {
+							field: 'operation',
+							title: '操作',
+							toolbar: "#tool",
+							minWidth: 260,
+						}]
+					]
+				});
+				// }
+				//方法级渲染
+				// tableRender()
+				// $('#search').click(function() {
+				// 	tableRender()
+				// })
+
+				//监听工具条
+				table.on('tool(Assistant)', function(obj) {
+					var data = obj.data;
+					var logGid = data.LogGid;
+					var shop = data.ShopName;
+					if (obj.event == 'resetting') {
+						layer.open({
+							type: 2,
+							title: '修改密码',
+							area: ['520px', '250px'], //宽高
+							content: 'assistant-pass.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageClerkpass(data, merNumber)
+							}
+						});
+					} else if (obj.event == 'pay') {
+						// 弹出二维码照片
+
+						layer.open({
+							type: 2,
+							title: '一码付',
+							area: ['420px', '80%'], //宽高
+							content: 'onecodeImg.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageClerkpush(data, merNumber)
+							}
+						});
+					} else if (obj.event == 'payNumber') {
+						// 弹出二维码照片
+
+						layer.open({
+							type: 2,
+							title: '定额二维码',
+							area: ['420px', '92%'], //宽高
+							content: 'setNumberimg.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageClerkpush(data, merNumber)
+							}
+						});
+					} else if (obj.event == 'weixinPush') {
+						layer.open({
+							type: 2,
+							title: '微信推送',
+							area: ['420px', '80%'], //宽高
+							content: 'AssistantwxPush.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageClerkpush(data, merNumber)
+							}
+						});
+					} else if (obj.event == 'delete') {
+						console.log(data)
+						layer.confirm('确定要删除(' + data.clerkName + ')此店员吗?', function(index) {
+							var tjData = new Object();
+							tjData.clerkerNumber = data.clerkNumber;
+							tjData.shopNumber = data.shopNumber
+							tjData.merchantNumber = merNumber
+							tjData.deletionFlag = 1;
+							tjData.clerkerName = data.clerkName
+							tjData.shopName = data.shopName
+							tjData.userKinds = data.userKinds
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Merchant.deleteClerker,
+								tjData,
+								function(data) {
+									if (data.code == 1000) {
+										layer.close(index);
+										layer.msg('删除成功')
+										layui.table.reload('assistantlist')
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						});
+					}
+				});
+				// 根據條件重载表格
+				var $ = layui.$,
+					active = {
+						reload: function() {
+							// 获取上面查询框的值
+							var shopName = $('#shopName');
+							var clerkerName = $('#clerkerName');
+							var clerkerTel = $('#clerkerTel');
+							var userKinds = $('#userKinds');
+							var enable = $('#enable');
+
+							//执行重载
+							table.reload('assistantlist', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									shopNumber: shopName.val().split('/')[0],
+									clerkerName: clerkerName.val(),
+									clerkerTel: clerkerTel.val(),
+									userKinds: userKinds.val(),
+									enable: enable.val(),
+								}
+							});
+						}
+					};
+
+				$('.demoTable .layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+			});
+		</script>
+	</body>
+
+</html>
