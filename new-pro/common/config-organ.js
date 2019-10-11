@@ -146,6 +146,8 @@ var CmsConfig = {
             thirdPartyInfo:"InsMer/submitMerchant",
             //商户删除拒绝和修改
             updateMerInfo:"audit/updateMerInfo",
+            //商户-删除待审核商户
+            deleteMerInfo:"audit/deleteMerInfo",
 
 
 

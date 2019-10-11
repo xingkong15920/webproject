@@ -240,23 +240,28 @@
 								align: 'center',
 								field: 'orderNumber',
 								title: '商户流水号',
+								minWidth: 150,
 							}, {
 								align: 'center',
 								field: 'merchantName',
-								title: '商户名称'
+								title: '商户名称',
+								minWidth: 300,
 							}, {
 								align: 'center',
 								field: 'registerCell',
-								title: '商户手机号'
+								title: '商户手机号',
+								minWidth: 150,
 							}, {
 								align: 'center',
 								field: 'agentName',
-								title: '所属服务商'
+								title: '所属服务商',
+								minWidth: 270,
 							}, {
 								align: 'center',
 								field: 'subsidy',
 								// toolbar: '#selectBar_lx',
 								title: '类型',
+								minWidth: 150,
 								templet:function(data){
 									if(data.subsidy == 1){
 										return '普通商户'
@@ -268,17 +273,20 @@
 							}, {
 								align: 'center',
 								field: 'paymentName',
-								title: '进件通道'
+								title: '进件通道',
+								minWidth: 100,
 							}, {
 								align: 'center',
 								field: 'agentName',
 								title: '通道费率',
+								minWidth: 100,
 								templet:function(data){
 									return (data.rate*10000/100).toFixed(2) + '%'
 								}
 							}, {
 								align: 'center',
 								title: '状态',
+								minWidth: 100,
 								templet:function(data){
 									switch (data.auditStatus) {
 										case 0:
@@ -315,15 +323,17 @@
 								align: 'center',
 								field: 'insertTime',
 								title: '注册时间',
+								minWidth: 160,
 							},{
 								align: 'center',
 								field: 'msg',
 								title: '原因',
+								minWidth: 150,
 							}, {
 								align: 'center',
 								title: '操作',
 								toolbar: '#toolbar',
-								width:300
+								minWidth: 300,
 							}]
 						],
 						page: true,
@@ -698,11 +708,10 @@
 							var index = layer.load(2, { shade: [0.4, '#393D49'] })
 							var tjData = new Object();
 								tjData.orderNumber = data.orderNumber;
-								tjData.auditStatus = -1
-								tjData.msg = ''
+								tjData.institutionNumber = userNumber
 								CmsUtility.postAjaxCall(
 									//系统设置
-									CmsConfig.addressUrl.Mechanism.updateMerInfo,
+									CmsConfig.addressUrl.Mechanism.deleteMerInfo,
 									tjData,
 									function(data){
 										if(data.code == 1000){
