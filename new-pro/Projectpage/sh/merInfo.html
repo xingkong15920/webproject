@@ -1,321 +1,471 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="../../public/css/font.css">
-    <link rel="stylesheet" href="../../public/css/xadmin.css">
-    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-    <script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
-    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-    <!--[if lt IE 9]>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
             <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
             <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-    <style type="text/css">
-    .set {
-        width: 110px;
-        margin-right: 10px;
-    }
+		<style type="text/css">
+			.set {
+				width: 110px;
+				margin-right: 10px;
+			}
 
-    .layui-upload-img {
-        width: 150px;
-        height: 150px;
-        border: 1px solid #e6e6e6;
-        border-radius: 2px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+			.layui-upload-img {
+				width: 150px;
+				height: 150px;
+				border-radius: 2px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
 
-    #demoText {
-        width: 150px;
-        height: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+			#demoText {
+				width: 150px;
+				height: auto;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
 
-    #demoText span {
-        margin-top: 10px;
-    }
+			#demoText span {
+				margin-top: 10px;
+			}
 
-    #demoText a {
-        margin-top: 10px;
-    }
+			#demoText a {
+				margin-top: 10px;
+			}
 
-    .layui-tab-title li:first-child {
-        width: 100px;
-    }
+			.layui-tab-title li:first-child {
+				width: 100px;
+			}
 
-    .layui-tab-title li {
-        width: 100px;
-    }
+			.layui-tab-title li {
+				width: 100px;
+			}
 
-    .del {
-        /* position: absolute;
+			.del {
+				/* position: absolute;
 				right: 0;
 				top: 0; */
-        width: 30px;
-        height: 28px;
-        line-height: 26px;
-        margin-right: 10px;
-        top: 1px;
-        text-align: center;
-        color: #c2c2c2;
-        font-size: 20px;
-        text-align: center;
-        vertical-align: middle;
-        display: inline-block;
-        border: 1px solid #d2d2d2;
-        margin-top: 3px;
-        margin-left: -5px;
-        text-indent: 2px;
-        cursor: pointer;
-    }
+				width: 30px;
+				height: 28px;
+				line-height: 26px;
+				margin-right: 10px;
+				top: 1px;
+				text-align: center;
+				color: #c2c2c2;
+				font-size: 20px;
+				text-align: center;
+				vertical-align: middle;
+				display: inline-block;
+				border: 1px solid #d2d2d2;
+				margin-top: 3px;
+				margin-left: -5px;
+				text-indent: 2px;
+				cursor: pointer;
+			}
 
-    .del:hover {
-        background-color: #ff5722;
-    }
+			.del:hover {
+				background-color: #ff5722;
+			}
 
-    .layui-form-checkbox {
-        margin-right: 0;
-    }
+			.layui-form-checkbox {
+				margin-right: 0;
+			}
 
-    .layui-elem-quote {
-        font-size: 18px;
-    }
+			.layui-elem-quote {
+				font-size: 18px;
+			}
 
-    .layui-elem-quote .layui-form-switch {
-        width: 40px;
-        margin: 0 15px;
-        margin-top: 0;
-    }
+			.layui-elem-quote .layui-form-switch {
+				width: 40px;
+				margin: 0 15px;
+				margin-top: 0;
+			}
 
-    .tips_red {
-        color: red;
-    }
+			.tips_red {
+				color: red;
+			}
 
-    .tagsBody {
-        max-width: 800px;
-        border: 1px solid #e6e6e6;
-        padding: 10px;
-    }
+			.tagsBody {
+				max-width: 800px;
+				border: 1px solid #e6e6e6;
+				padding: 10px;
+			}
 
-    .tagsBody .layui-form-item:last-child {
-        margin: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+			.tagsBody .layui-form-item:last-child {
+				margin: 0;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
 
-    .site-demo-active {
-        width: 100px;
-    }
+			.site-demo-active {
+				width: 100px;
+			}
 
-    .newTagsInput {
-        width: calc(100% - 100px);
-        margin-right: 10px;
-    }
+			.newTagsInput {
+				width: calc(100% - 100px);
+				margin-right: 10px;
+			}
 
-    #timing .layui-form-label {
-        width: auto;
-    }
-    .invisible{
-    	background: url('../../public/images/icon-invisible.png') no-repeat;
-    	top: 10px;
-    	height: 19px;
-    }
-    .visible{
-    	background: url('../../public/images/icon-visible.png') no-repeat;
-    	top: 5px;
-    	height: 28px;
-    }
-    </style>
-</head>
+			#timing .layui-form-label {
+				width: auto;
+			}
 
-<body id="iosiframe">
-    <div class="x-nav">
-        <!-- <span class="layui-breadcrumb">
+			.invisible {
+				background: url('../../public/images/icon-invisible.png') no-repeat;
+				top: 10px;
+				height: 19px;
+			}
+
+			.visible {
+				background: url('../../public/images/icon-visible.png') no-repeat;
+				top: 5px;
+				height: 28px;
+			}
+
+			.pinpaiLogo .layui-upload-list {
+				position: relative;
+				margin: 0;
+				border-radius: 6px;
+				overflow: hidden;
+			}
+
+			.upTips {
+				text-align: center;
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border: 1px dashed #e5e5e5;
+				background: #fff;
+			}
+
+			.imgDel {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+				text-align: center;
+				line-height: 150px;
+				color: #fff;
+				background: rgba(0, 0, 0, 0.5);
+			}
+
+			.layui-upload-img img {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-nav">
+			<!-- <span class="layui-breadcrumb">
             <a href="">首页</a>
             <a><cite>系统设置</cite></a>
             <a><cite>接口信息</cite></a>
         </span> -->
-        <!-- <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+			<!-- <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
 			 title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a> -->
-    </div>
-    <div class="x-body">
-        <div class="layui-row">
-            <div class="layui-form" lay-filter="basic">
-                <!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		</div>
+		<div class="x-body">
+			<div class="layui-row">
+				<div class="layui-form" lay-filter="basic">
+					<!-- <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">基本信息</legend>
                 </fieldset> -->
-                <div class="layui-form-item" style="width:60%">
-                    <label class="layui-form-label">商户类型</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="MerchantType" lay-verify="title" placeholder="商户类型" class="layui-input" id="MerchantType" disabled="disabled">
-                    </div>
-                </div>
-                <div class="layui-form-item" style="width:60%">
-                    <label class="layui-form-label">企业名称</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="MerchantName" lay-verify="title" placeholder="机构号" class="layui-input" id="MerchantName" disabled="disabled">
-                    </div>
-                </div>
-                <div class="layui-form-item" style="width:60%">
-                    <label class="layui-form-label">客服电话</label>
-                    <div class="layui-input-block">
-                        <input type='text' style='display:none'>
-                        <!--  <input type="text" name="merchantNumber" lay-verify="title"  placeholder="商户编号" class="layui-input" id="merchantNumber"> -->
-                        <input type="text" name="CustomerServiceTell" lay-verify="title" placeholder="客服电话" class="layui-input" id="CustomerServiceTell" disabled="disabled">
-                    </div>
-                </div>
-                <div class="layui-form-item" style="width:60%">
-                    <label class="layui-form-label">企业简称</label>
-                    <div class="layui-input-block" style="position:relative;left:0;top:0">
-                        <input type="text" name="Merchant_Abbreviation" lay-verify="title" autocomplete='new-password' placeholder="企业简称" class="layui-input" id="Merchant_Abbreviation" style="width:200px;display:inline-block">
-                        <span class="layui-btn" id="changeName" style="vertical-align:top;margin-left:30px">修改</span>
-                    </div>
-                </div>
-                <div class="layui-form-item" style="width:60%">
-                    <label class="layui-form-label">企业logo</label>
-                    <div class="layui-input-inline" style="margin-left:20px;">
-                        <div class="layui-upload-img" id="">
-                            <img src="" id="demo1" style="max-width: 100%;height: 152px;" lay-filter="logo">
-                            </div>
-                            <p id="demoText"></p>
-                            <!--<button type="button" class="layui-btn">上传图片</button>-->
-                        </div>
-                        <!-- <div class="layui-input-inline uploadimgbtn">
-                            <p id="demoText" class="block"></p>
-                            <button type="button" class="layui-btn block" id="test1">上传图片</button>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="../../common/config-sh.js"></script>
-    <script src="../../common/utility.js"></script>
-    <script>
+					<div class="layui-form-item" style="width:60%">
+						<label class="layui-form-label">商户类型</label>
+						<div class="layui-input-block">
+							<input type="text" name="MerchantType" lay-verify="title" placeholder="商户类型" class="layui-input" id="MerchantType"
+							 disabled="disabled">
+						</div>
+					</div>
+					<div class="layui-form-item" style="width:60%">
+						<label class="layui-form-label">企业名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="MerchantName" lay-verify="title" placeholder="机构号" class="layui-input" id="MerchantName"
+							 disabled="disabled">
+						</div>
+					</div>
+					<div class="layui-form-item" style="width:60%">
+						<label class="layui-form-label">客服电话</label>
+						<div class="layui-input-block">
+							<input type='text' style='display:none'>
+							<!--  <input type="text" name="merchantNumber" lay-verify="title"  placeholder="商户编号" class="layui-input" id="merchantNumber"> -->
+							<input type="text" name="CustomerServiceTell" lay-verify="title" placeholder="客服电话" class="layui-input" id="CustomerServiceTell"
+							 disabled="disabled">
+						</div>
+					</div>
+					<div class="layui-form-item" style="width:60%">
+						<label class="layui-form-label">企业简称</label>
+						<div class="layui-input-block" style="position:relative;left:0;top:0">
+							<input type="text" name="Merchant_Abbreviation" lay-verify="title" autocomplete='new-password' placeholder="企业简称"
+							 class="layui-input" id="Merchant_Abbreviation" style="width:200px;display:inline-block">
+						</div>
+					</div>
+					<input type="file" accept="image/*" class="input_img layui-input" style="display: none;" id="upLogo" />
+					<div class="layui-form-item" style="width:60%">
+						<label class="layui-form-label">企业logo :</label>
+						<div class="layui-input-block pinpaiLogo" style="width: 150px;height: 150px;">
+							<div class="layui-upload-list">
+								<div class="layui-upload-img" id="cardLo">
+									<img id="cardLoImg">
+									<div class="upTips show">
+										+<br />上传logo
+									</div>
+								</div>
+								<div class="imgDel" data-id="cardLo" style="display: none;">
+									<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+								</div>
+							</div>
+						</div>
+						<div class="layui-input-block layui-word-aux" style="padding-left: 0 !important;margin-top: 6px;">建议像素为300*300,大小不能超过2M</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<span class="layui-btn" id="changeName">修改</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var code1;
+			var jgData;
+			var merchantca = false;
+			var type;
+			var logoUrl = '';
 
-    // var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
-
-    var code1;
-    var jgData;
-    var merchantca = false;
-    var type;
-    var logoUrl = '';
-    function switchPwd() {
-	   var passwordeye = $('#passwordeye');
-	   var showPwd = $("#miyao");
-	   passwordeye.off('click').on('click',function(){
-	       if(passwordeye.hasClass('invisible')){
-	           passwordeye.removeClass('invisible').addClass('visible');//密码可见
-	           showPwd.prop('type','text');
-	       }else{
-	           passwordeye.removeClass('visible').addClass('invisible');//密码不可见
-	           showPwd.prop('type','password');
-	       };
-	   });     
-	}
-	switchPwd()
-    layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
-        layui.$.support.cors = true; //允许ajax跨域
-        var $ = layui.jquery,
-            upload = layui.upload,
-            laydate = layui.laydate,
-            table = layui.table,
-            form = layui.form,
-            laytpl = layui.laytpl;
+			function switchPwd() {
+				var passwordeye = $('#passwordeye');
+				var showPwd = $("#miyao");
+				passwordeye.off('click').on('click', function() {
+					if (passwordeye.hasClass('invisible')) {
+						passwordeye.removeClass('invisible').addClass('visible'); //密码可见
+						showPwd.prop('type', 'text');
+					} else {
+						passwordeye.removeClass('visible').addClass('invisible'); //密码不可见
+						showPwd.prop('type', 'password');
+					};
+				});
+			}
+			switchPwd()
+			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+				layui.$.support.cors = true; //允许ajax跨域
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					laytpl = layui.laytpl;
 
 
-        
-        CmsUtility.postAjaxCall(
-                //系统设置
-            'rsaInfo/querybasicinformation',
-            {
-            	
-            	merchantNumber:JSON.parse(sessionStorage.getItem('userSh')).Number,
-            },
-            function(data) {
-                if (data.code == 1000) {
-                    
-                	form.val('basic', {
-                        "MerchantType":data.data.MerchantType,
-                        "MerchantName":data.data.MerchantName,
-                        "CustomerServiceTell":data.data.CustomerServiceTell,
-                        "Merchant_Abbreviation":data.data.Merchant_Abbreviation,
 
-                    })
-                } else {
-                    layer.msg(data.msg)
-                }
-            },
-            function(data) {
-                console.log('222')
-            },
-            "get"
-        )
-        //会员分组设置
-        $('#changeName').click(function(){
-            if($('#Merchant_Abbreviation').val() == ''){
-                layer.msg('企业简称不能为空')
-                return
-            }
-            CmsUtility.postAjaxCall(
-                //系统设置
-                'rsaInfo/modificationOfMerchantAbbreviation',
-                {
-                    
-                    merchantNumber:JSON.parse(sessionStorage.getItem('userSh')).Number,
-                    changedname:$('#Merchant_Abbreviation').val()
-                },
-                function(data) {
-                    if (data.code == 1000) {
-                        
-                       layer.msg(data.msg)
-                    } else {
-                        layer.msg(data.msg)
-                    }
-                },
-                function(data) {
-                    console.log('222')
-                },
-            ) 
-        })
-        // $('#isnNumber').val(JSON.parse(sessionStorage.getItem('userSh')).institutionNumber)
-        // $('#merchangtNumber').val(JSON.parse(sessionStorage.getItem('userSh')).Number)
-        // form.render()
-        /*---------- 监听开关 ----------*/
-        form.on('switch(timePreferences)', function(data) { //计时开关
-            if (data.elem.checked == true) {
-                $('#timing').show()
-                data.elem.value = "0"
-                console.log(data.elem.value)
-            } else if (data.elem.checked == false) {
-                data.elem.value = "1"
-                console.log(data.elem.value)
-                $('#timing').hide()
-            }
-        });
-        //表单初始赋值
-        form.val('basic', {
-            "insNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-            "merchantNumber": JSON.parse(sessionStorage.getItem('userSh')).Number
-        })
+				CmsUtility.postAjaxCall(
+					//系统设置
+					'rsaInfo/querybasicinformation', {
+						merchantNumber: JSON.parse(sessionStorage.getItem('userSh')).Number,
+					},
+					function(data) {
+						if (data.code == 1000) {
+							form.val('basic', {
+								"MerchantType": data.data.MerchantType,
+								"MerchantName": data.data.MerchantName,
+								"CustomerServiceTell": data.data.CustomerServiceTell,
+								"Merchant_Abbreviation": data.data.Merchant_Abbreviation,
+							})
+							if (data.data.logo) {
+								logoUrl = data.data.logo
+								$('#cardLoImg').attr('src', data.data.logo)
+								$('.upTips').hide()
+							} else {
+								$('.upTips').show()
+							}
+						} else {
+							layer.msg(data.msg)
+						}
+					},
+					function(data) {
+						console.log('222')
+					},
+					"get"
+				)
+				//会员分组设置
+				$('#changeName').click(function() {
+					if ($('#Merchant_Abbreviation').val() == '') {
+						layer.msg('企业简称不能为空')
+						return
+					}
+					if (logoUrl == '') {
+						layer.msg('企业logo不能为空')
+						return
+					}
+					CmsUtility.postAjaxCall(
+						//系统设置
+						'rsaInfo/modificationOfMerchantAbbreviation', {
+							merchantNumber: JSON.parse(sessionStorage.getItem('userSh')).Number,
+							changedname: $('#Merchant_Abbreviation').val(),
+							logoUrl: logoUrl,
+						},
+						function(data) {
+							if (data.code == 1000) {
+								layer.msg(data.msg)
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+					)
+				})
+				/*---------- 品牌logo，卡背景上传 ----------*/
+				$('#cardLo').click(function() {
+					$('#upLogo').click()
+				})
+				$('.layui-upload-img').on({
+					mouseover: function() {
+						var cardId = $(this).attr("id")
+						var cardSrc = $('#' + cardId + 'Img').attr("src")
+						if (cardId === 'cardLo' && cardSrc) {
+							$('.pinpaiLogo .imgDel').css({
+								"display": "block",
+								"opacity": 1
+							})
+						}
+					}
+				})
+				$('.imgDel').on({
+					mouseleave: function() {
+						$('.imgDel').css({
+							"display": "none",
+							"opacity": 0
+						})
+					}
+				})
+				$('.imgDel').click(function(e) {
+					var delId = e.currentTarget.dataset.id
+					if (delId == 'cardLo') {
+						$('#cardLo').find('img').removeAttr('src')
+						$(this).prev().find(".upTips").show()
+						logo_id = ''
+						logoUrl = ''
+					}
+					$(this).hide()
+				})
 
-        //监听提交
-    })
-    </script>
-</body>
+				$("#upLogo").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						uploadImgajax(data, 1)
+					});
+					$(this).val('')
+				});
+				// $('#isnNumber').val(JSON.parse(sessionStorage.getItem('userSh')).institutionNumber)
+				// $('#merchangtNumber').val(JSON.parse(sessionStorage.getItem('userSh')).Number)
+				// form.render()
+				/*---------- 监听开关 ----------*/
+				form.on('switch(timePreferences)', function(data) { //计时开关
+					if (data.elem.checked == true) {
+						$('#timing').show()
+						data.elem.value = "0"
+						console.log(data.elem.value)
+					} else if (data.elem.checked == false) {
+						data.elem.value = "1"
+						console.log(data.elem.value)
+						$('#timing').hide()
+					}
+				});
+				//表单初始赋值
+				form.val('basic', {
+					"insNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+					"merchantNumber": JSON.parse(sessionStorage.getItem('userSh')).Number
+				})
+
+				function uploadImg(input_file, get_data) {
+					var file = input_file.files[0];
+					var reader = new FileReader();
+					var AllowImgFileSize = 2100000;
+					if (file) {
+						reader.readAsDataURL(file);
+						reader.onload = function() {
+							if (AllowImgFileSize != 0 && AllowImgFileSize < this.result.length) {
+								layer.closeAll('loading');
+								layer.msg('上传失败<br>请上传不大于2M的图片！', function() {});
+								return;
+							} else {
+								get_data(this.result)
+							}
+						}
+					} else {
+						layer.closeAll('loading');
+					}
+				}
+
+				function uploadImgajax(Imgbase, upType) {
+					var datas = {
+						"imgBaseStr": Imgbase,
+						"institutionNumber": insNumber,
+						"imgType": upType,
+						"merchantNumber": merNumber
+					}
+					// 发送请求
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+						data: JSON.stringify(datas),
+						dataType: "json",
+						async: false,
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
+							if (data.code === 1000) {
+								switch (upType) {
+									case 1:
+										logoUrl = data.data.localImgUrl
+										$('#cardLoImg').attr('src', data.data.localImgUrl);
+										$('#cardLo').find('.upTips').hide();
+										break;
+								}
+							}
+						}
+					});
+				}
+			})
+		</script>
+	</body>
 
 </html>

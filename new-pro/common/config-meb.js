@@ -246,14 +246,16 @@ var CmsConfig = {
 			delVoucher: "voucher/delVoucher",
 			// 获取商户下优惠券列表
 			getVoucherList: "voucher/getVoucherList",
+			// 查询优惠券领取记录
+			getVoucherRecord: "record/getRecord",
 
 			// 海报设置
 			// 查询海报列表
-			selPoster: "poster/selPoster",
-			// 添加海报
-			addPoster: "poster/addPoster",
+			hb_selPoster: "poster/selPoster",
+			// 添加/更新海报
+			hb_addPoster: "poster/addPoster",
 			// 查询海报详情
-			selAllMessage: "poster/selAllMessage",
+			hb_selAllMessage: "poster/selAllMessage",
 		},
 		//商户后台
 		Merchant: {

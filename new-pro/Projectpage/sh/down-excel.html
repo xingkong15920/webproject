@@ -1,218 +1,226 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="../../public/css/font.css">
-    <link rel="stylesheet" href="../../public/css/xadmin.css">
-    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
-    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
-    <!--[if lt IE 9]>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <style type="text/css">
-    #codeInfo{
-    	line-height: 38px;
-    	font-size: 24px;
-    	text-align: center;
-    	letter-spacing:5px
-    }
-    .layui-input-block{
-        margin-left: 80px;
-    }
-    </style>
-</head>
+		<style type="text/css">
+			#codeInfo {
+				line-height: 38px;
+				font-size: 24px;
+				text-align: center;
+				letter-spacing: 5px
+			}
 
-<body id="iosiframe">
-    <div class="x-body">
-        <div class="layui-row">
-            <form class="layui-form">
-                <div class="layui-form-item">
-                    <label class="layui-form-label" style="width:75px">输入邮箱</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请输入邮箱" class="layui-input" id="agName"   onblur="bl()" onfocus="fc()">
-                        <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
-                            <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+			.layui-input-block {
+				margin-left: 80px;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-body">
+			<div class="layui-row">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width:75px">输入邮箱</label>
+						<div class="layui-input-block">
+							<input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请输入邮箱" class="layui-input"
+							 id="agName" onblur="bl()" onfocus="fc()">
+							<div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none"
+							 id="searchBox">
+								<!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
                                 <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
                                 <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
                                 <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
                                 <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div> -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="layui-input-block" style="margin-top:100px">
-			      <input type="button" class="layui-btn"  lay-submit="" lay-filter="create"  value="立即提交" id="sub">
-			    </div>
-            </form>
-        </div>
-    </div>
-    <script src="../../common/config-sh.js"></script>
-    <script src="../../common/utility.js"></script>
-    <script>
-    var type111 = 0
-    var code1 = ''
-    var mailList = ['@163.com','@qq.com','@yahoo.com','@hotmail.com','@163.net','@gmail.com']
-    var pageNum
-        var serverUrl = 'http://192.168.1.190:5002/'
-        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
-        function fc(){
-            console.log('123')
-            if($('#agName').val()=='' || $('#agName').val().indexOf('@')>0){
-                return
-            }
-            $('#searchBox').show()
-        }
-        function bl(){
-            console.log('bl')
-            setTimeout(function(){
-                $('#searchBox').hide()
-            },200)
-            
-        }
-        function clickS(e){
-            $('#agName').val(e.getAttribute('data-name'))
-        }
-        function subPage(data,data1){
-            var jgData = data
-            var dataNum = data1
-            console.log(jgData)
-            layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
-            layui.$.support.cors = true; //允许ajax跨域
-            var $ = layui.jquery,
-                upload = layui.upload,
-                laydate = layui.laydate,
-                table = layui.table,
-                form = layui.form,
-                laytpl = layui.laytpl;
+							</div>
+						</div>
+					</div>
 
-            $("#agName").bind('input propertychange', function() {
-                console.log(this.value.indexOf('@')>0)
-                if(this.value.indexOf('@')>0){
-                    $('#searchBox').hide()
-                    return
-                }
-                 $('#searchBox').show()
-                console.log(this.value)
-                document.getElementById('searchBox').innerHTML = ''
-                var str = ''
-                for (var i = 0; i < mailList.length; i++) {
-                    str += '<div class="layui-btn layui-btn-primary"  data-name="' + this.value+mailList[i] + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + this.value+mailList[i] + '</div>'
-                }
-                document.getElementById('searchBox').innerHTML = str
-                
-                
-                
-            })
-            //表单初始赋值
-            // $('#sub').click(function(){
-            //  console.log(code1)
-            // })
-            form.verify({
-                
-            });
-             form.on('submit(create)', function(data) {
-                if($('#agName').val() == '' || $('#agName').val().indexOf('@')<0){
-                    layer.msg('请输入正确的邮箱')
-                    return
-                }
-                console.log(data.field)
-                // if(data.field.nuber)
-                
-                jgData.mailBox = $('#agName').val()
-            console.log(jgData)
-                if(dataNum == 1){
-                    CmsUtility.postAjaxCall(
-                    //系统设置
-                    CmsConfig.addressUrl.Merchant.getShopBillExcel, jgData,
-                    function(data) {
-                        if (data.code == 1000) {
-                            // console.log(data)
-                            // layer.msg('生成成功')
+					<div class="layui-input-block" style="margin-top:100px">
+						<input type="button" class="layui-btn" lay-submit="" lay-filter="create" value="立即提交" id="sub">
+					</div>
+				</form>
+			</div>
+		</div>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var type111 = 0
+			var code1 = ''
+			var mailList = ['@163.com', '@qq.com', '@yahoo.com', '@hotmail.com', '@163.net', '@gmail.com']
+			var pageNum
+			var serverUrl = 'http://192.168.1.190:5002/'
 
-                            // layui.table.reload('billlist')
-                            // layer.closeAll()
-                        } else {
-                            layer.msg(data.msg)
+			function fc() {
+				console.log('123')
+				if ($('#agName').val() == '' || $('#agName').val().indexOf('@') > 0) {
+					return
+				}
+				$('#searchBox').show()
+			}
 
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
-                    console.log(dataNum)
-                
-                }
-                if(dataNum == 2){
-                    CmsUtility.postAjaxCall(
-                    //系统设置
-                    CmsConfig.addressUrl.Merchant.getMerchantBillExcel, jgData,
-                    function(data) {
-                        if (data.code == 1000) {
-                            // console.log(data)
-                            // layer.msg('生成成功')
+			function bl() {
+				console.log('bl')
+				setTimeout(function() {
+					$('#searchBox').hide()
+				}, 200)
 
-                            // layui.table.reload('deviceInfo')
-                            // layer.closeAll()
-                        } else {
-                            layer.msg(data.msg)
+			}
 
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
-                }
-                if(dataNum == 3){
-                    CmsUtility.postAjaxCall(
-                    //系统设置
-                    CmsConfig.addressUrl.Merchant.getTransactionExcel, 
-                    jgData,
-                    function(data) {
-                        if (data.code == 1000) {
-                            // console.log(data)
-                            // layer.msg('生成成功')
+			function clickS(e) {
+				$('#agName').val(e.getAttribute('data-name'))
+			}
 
-                            // layui.table.reload('deviceInfo')
-                            // layer.closeAll()
-                        } else {
-                            layer.msg(data.msg)
+			function subPage(data, data1) {
+				var jgData = data
+				var dataNum = data1
+				console.log(jgData)
+				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+					layui.$.support.cors = true; //允许ajax跨域
+					var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						laytpl = layui.laytpl;
 
-                        }
-                    },
-                    function(data) {
-                        console.log('222')
-                    }
-                )
-                }
-                setTimeout(function(){
-                    layer.msg('邮件已发送,请稍后到邮箱查收')
-                },500)
-                setTimeout(function() {
-                    
-                    var index = parent.layer.getFrameIndex(window.name);
-                    parent.layer.close(index);
-                }, 2000)
-                
-              
-                return false
-            });
-            
-            })
-        }
-    
-   
-    </script>
-</body>
+					$("#agName").bind('input propertychange', function() {
+						console.log(this.value.indexOf('@') > 0)
+						if (this.value.indexOf('@') > 0) {
+							$('#searchBox').hide()
+							return
+						}
+						$('#searchBox').show()
+						console.log(this.value)
+						document.getElementById('searchBox').innerHTML = ''
+						var str = ''
+						for (var i = 0; i < mailList.length; i++) {
+							str += '<div class="layui-btn layui-btn-primary"  data-name="' + this.value + mailList[i] +
+								'" style="width:100%;margin-left:0" onclick="clickS(this)" >' + this.value + mailList[i] + '</div>'
+						}
+						document.getElementById('searchBox').innerHTML = str
+					})
+					//表单初始赋值
+					// $('#sub').click(function(){
+					//  console.log(code1)
+					// })
+					form.verify({});
+					form.on('submit(create)', function(data) {
+						if ($('#agName').val() == '' || $('#agName').val().indexOf('@') < 0) {
+							layer.msg('请输入正确的邮箱')
+							return
+						}
+						console.log(data.field)
+						// if(data.field.nuber)
+						jgData.mailBox = $('#agName').val()
+						console.log(jgData)
+						if (dataNum == 1) {
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Merchant.getShopBillExcel, jgData,
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('billlist')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+							console.log(dataNum)
+						}
+						if (dataNum == 2) { //导出商户账单
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Merchant.getMerchantBillExcel, jgData,
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+						if (dataNum == 3) {
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Merchant.getTransactionExcel,
+								jgData,
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+						if (dataNum == 4) { //导出门店账单
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Merchant.getClerkBillExcel,
+								jgData,
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+						setTimeout(function() {
+							layer.msg('邮件已发送,请稍后到邮箱查收')
+						}, 500)
+						setTimeout(function() {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index);
+						}, 2000)
+						return false
+					});
+				})
+			}
+		</script>
+	</body>
 
 </html>
