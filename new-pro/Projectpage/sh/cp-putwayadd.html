@@ -19,6 +19,11 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+		<style type="text/css">
+			.max360 {
+				max-width: 320px !important;
+			}
+		</style>
 	</head>
 
 	<body id="iosiframe">
@@ -29,7 +34,7 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">渠道名称：</label>
 							<div class="layui-input-inline max360">
-								<input type="text" name="channelName" lay-verify="channelName" autocomplete="off" placeholder="请输入渠道名称" class="layui-input">
+								<input type="text" name="deliveryN" lay-verify="deliveryN" autocomplete="off" placeholder="请输入渠道名称" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -43,27 +48,6 @@
 							<label class="layui-form-label">关联店员：</label>
 							<div class="layui-input-inline max360">
 								<input type="text" autocomplete="off" readonly="readonly" placeholder="请选择关联店员" id="dySelect" class="layui-input">
-							</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">赠送金额：</label>
-							<div class="layui-input-inline max360" style="width:150px!important">
-								<input type="number" name="giveMoney" lay-verify="giveMoney" autocomplete="off" placeholder="请输入赠送金额" class="layui-input">
-							</div>
-							<div class="layui-form-mid layui-word-aux">0代表不赠送</div>
-						</div>
-						<div class="layui-form-item">
-							<label class="layui-form-label">赠送积分：</label>
-							<div class="layui-input-inline max360" style="width:150px!important">
-								<input type="number" name="giveIntegral" lay-verify="giveIntegral" autocomplete="off" placeholder="请输入赠送积分"
-								 class="layui-input">
-							</div>
-							<div class="layui-form-mid layui-word-aux">0代表不赠送</div>
-						</div>
-						<div class="layui-form-item layui-form-text">
-							<label class="layui-form-label">备注：</label>
-							<div class="layui-input-inline max360">
-								<textarea name="remarks" placeholder="可以填写投放渠道的权益、规则等信息，非必填项" class="layui-textarea"></textarea>
 							</div>
 						</div>
 					</div>
@@ -95,8 +79,8 @@
 				var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 				var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 
-				var clerkNumbers = []
-				var shopNumber = []
+				var clerkNumbers = ''
+				var shopNumber = ''
 				layui.use(['laydate', 'table', 'upload', 'form'], function() {
 					var $ = layui.jquery,
 						upload = layui.upload,
@@ -131,7 +115,7 @@
 							},
 							cols: [
 								[{
-									type: 'checkbox'
+									type: 'radio'
 								}, {
 									field: 'shopName',
 									title: '门店名称',
@@ -140,16 +124,16 @@
 							]
 						},
 						done: function(elem, data) {
-							shopNumber.splice(0)
-							var shopname = []
+							shopNumber = ''
+							var shopname = ''
 							layui.each(data.data, function(index, item) {
-								shopNumber.push(item.shopNumber)
-								shopname.push(item.shopName)
+								shopNumber = item.shopNumber
+								shopname = item.shopName
 							})
-							elem.val(shopname.join('||'))
-							console.log(shopNumber.length)
-							console.log(shopNumber[0])
-							if (shopNumber.length == 1) {
+							elem.val(shopname)
+							$('.dySelect').find('input').val('')
+							$('.dySelect').find('input').removeAttr('ts-selected')
+							if (shopNumber != '') {
 								$('.dySelect').show()
 								$('.dySelect').find('input').attr('lay-verify', 'dySelect')
 								dyselect()
@@ -168,7 +152,7 @@
 							searchPlaceholder: '店员名称',
 							table: {
 								url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getClerks + '?merchantNumber=' +
-									merNumber + '&shopNumber=' + shopNumber[0],
+									merNumber + '&shopNumber=' + shopNumber,
 								response: {
 									"statusCode": "1000", //解析接口状态
 								},
@@ -189,20 +173,14 @@
 										field: 'clerkName',
 										title: '店员名称',
 										align: 'center',
-										width: 150,
-									}, {
-										field: 'shopName',
-										title: '所属门店',
-										align: 'center',
-										width: 200,
 									}]
 								]
 							},
 							done: function(elem, data) {
-								clerkNumbers.splice(0)
+								clerkNumbers = ''
 								var clerkName = ''
 								layui.each(data.data, function(index, item) {
-									clerkNumbers.push(item.clerkNumber)
+									clerkNumbers = item.clerkNumber
 									clerkName = item.clerkName
 								})
 								elem.val(clerkName)
@@ -221,35 +199,21 @@
 
 					/*---------- 自定义验证规则 ----------*/
 					form.verify({
-						channelName: function(value) {
+						deliveryN: function(value) {
 							if (value == '') {
 								return '渠道名称不能为空！';
 							} else if (value.length >= 10) {
 								return '渠道名称最大为10个字符！';
 							}
 						},
-						// mdSelect: function(value) {
-						// 	if (value == '') {
-						// 		return '请选择关联门店！';
-						// 	}
-						// },
+						mdSelect: function(value) {
+							if (value == '') {
+								return '请选择关联门店！';
+							}
+						},
 						dySelect: function(value) {
 							if (value == '') {
 								return '请选择关联门店店员！';
-							}
-						},
-						giveMoney: function(value) {
-							if (value == '') {
-								return '赠送金额不能为空！';
-							} else if (value <= -1) {
-								return '赠送金额最低为0！';
-							}
-						},
-						giveIntegral: function(value) {
-							if (value == '') {
-								return '赠送积分不能为空！';
-							} else if (value <= -1) {
-								return '赠送积分最低为0！';
 							}
 						},
 					});
@@ -265,17 +229,18 @@
 							shade: 0.5
 						});
 						var data = data.field
-						data.merchantNumber = merNumber
-						data.shopNumbers = shopNumber
-						data.clerkNumbers = clerkNumbers
+						data.userNo = merNumber
 						data.institutionNumber = insNumber
+						data.voucherId = cpNo
+						data.shopNumber = shopNumber
+						data.clerkNumber = clerkNumbers
 						// data.shopNumbers = ['15638623441493942']
 						// data.clerkNumbers = ['15638623441493942']
 						console.log(data)
 						// return
 						$.ajax({
 							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addChannel,
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.inserNextDelivery,
 							data: JSON.stringify(data),
 							dataType: "json",
 							headers: {

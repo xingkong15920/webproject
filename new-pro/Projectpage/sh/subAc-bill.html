@@ -19,22 +19,21 @@
 		<div class="x-body">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="门店名称" name="batch" id="batch">
+					<input type="text" class="layui-input" placeholder="门店名称" id="merchantName">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="分账单编号" name="batch" id="batch">
+					<input type="text" class="layui-input" placeholder="分账单编号" id="fzOrderNumber">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="原订单编号" name="batch" id="batch">
+					<input type="text" class="layui-input" placeholder="原订单编号" id="orderNumber">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="分销人名称" name="batch" id="batch">
+					<input type="text" class="layui-input" placeholder="分销人名称" id="name">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="分销人手机号" name="batch" id="batch">
+					<input type="text" class="layui-input" placeholder="分销人手机号" id="tell">
 				</div>
-				<div class="layui-input-inline">
-					<!-- 需要数据对接(完成) -->
+				<!-- <div class="layui-input-inline">
 					<select name="orderSource" id="orderSource" lay-search>
 						<option value="">--分账状态--</option>
 						<option value="0">待分账</option>
@@ -43,12 +42,9 @@
 						<option value="1">已关闭</option>
 						<option value="1">分账失败</option>
 					</select>
-				</div>
+				</div> -->
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="结束时间" name="endTime" id="endTime">
+					<input type="text" class="layui-input" placeholder="开始时间" name="startendTime" id="startendTime">
 				</div>
 				<div class="layui-input-inline">
 					<button class="layui-btn" data-type="reload" id="search"><i class="layui-icon">&#xe615;</i></button>
@@ -68,6 +64,7 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
@@ -80,16 +77,11 @@
 
 				//时间插件
 				laydate.render({
-					elem: '#startTime',
+					elem: '#startendTime',
 					type: 'date',
-					max: fun_date(0),
-					value: fun_date(-6)
-				});
-				laydate.render({
-					elem: '#endTime',
-					type: 'date',
-					max: fun_date(0),
-					value: fun_date(0)
+					max: '',
+					range: true,
+					value: fun_date(-6) + ' - ' + fun_date(0),
 				});
 
 				//方法级渲染
@@ -102,14 +94,11 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getFzOrderList?merchantNumber=' +
-							userNumber,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'accountManage/getFzOrderList?merchantNumber=' +
+							userNumber + '&institutionNumber=' + insNumber,
 						where: {
-							"startTime":$('#startTime').val() ,
-							"endTime":$('#endTime').val() ,
-							"clerkNumber": $('#clerkNumber').val(),
-							"orderState": $('#orderState').val(),
-							"orderSource": $('#orderSource').val(),
+							"startTime": fun_date(-6),
+							"endTime": fun_date(0),
 						},
 						method: "post",
 						height: "full-124",
@@ -125,127 +114,117 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": changeRes(res.data.result),
+								"data": res.data.fzOrder,
 							}
 						},
 						cols: [
 							[{
-								field: 'orderTime',
-								title: '创建时间',
-								align: 'center',
-							}, {
-								field: 'shopName',
-								title: '分账单编号',
-								align: 'center',
-							}, {
-								field: 'batch',
-								title: '原订单编号',
-								align: 'center',
-							}, {
-								field: 'batch',
-								title: '门店',
-								align: 'center',
-							}, {
-								field: 'clerkName',
-								title: '分销人姓名',
-								align: 'center',
-							}, {
-								field: 'onePaymentTypeName',
-								title: '分销人手机号',
-								align: 'center',
-								templet: function(data) {
-									return '13081058585'
-								}
-							}, {
-								field: 'onePaymentTypeName',
-								title: '分销人等级',
-								align: 'center',
-								templet: function(data) {
-									switch (data.onePaymentTypeName) {
-										case '0':
-											return '特级分销'
-											break;
-										case '1':
-											return '高级分销'
-											break;
+									field: 'insertTime',
+									title: '创建时间',
+									align: 'center',
+									minWidth: 160,
+								}, {
+									field: 'fzOrderNumber',
+									title: '分账单编号',
+									align: 'center',
+									minWidth: 240,
+								}, {
+									field: 'orderNumber',
+									title: '原订单编号',
+									align: 'center',
+									minWidth: 260,
+								}, {
+									field: 'shopName',
+									title: '门店',
+									align: 'center',
+									minWidth: 160,
+								}, {
+									field: 'name',
+									title: '分销人姓名',
+									align: 'center',
+									minWidth: 130,
+								}, {
+									field: 'tell',
+									title: '分销人手机号',
+									align: 'center',
+									minWidth: 130,
+								}, {
+									field: 'gradeName',
+									title: '分销人等级',
+									align: 'center',
+									minWidth: 130,
+								}, {
+									field: 'dstributionType',
+									title: '分销人类型',
+									align: 'center',
+									minWidth: 130,
+								}, {
+									field: 'orderState',
+									title: '分账类型',
+									align: 'center',
+									minWidth: 130,
+									templet: function(data) {
+										switch (data.orderState) {
+											case 3:
+												return '失败'
+												break;
+											case 11:
+												return '受理成功'
+												break;
+											case 12:
+												return '分账完成'
+												break;
+										}
 									}
-								}
-							}, {
-								field: 'onePaymentTypeName',
-								title: '分销人类型',
-								align: 'center',
-								templet: function(data) {
-									switch (data.onePaymentTypeName) {
-										case '0':
-											return '商户'
-											break;
-										case '1':
-											return '个人'
-											break;
+								}, {
+									field: 'transactionAmount',
+									title: '订单金额',
+									align: 'center',
+									minWidth: 100,
+									templet: function(data) {
+										return '¥ ' + data.transactionAmount
 									}
-								}
-							}, {
-								field: 'onePaymentTypeName',
-								title: '分账类型',
-								align: 'center',
-								templet: function(data) {
-									switch (data.onePaymentTypeName) {
-										case '0':
-											return '会员买卡'
-											break;
-										case '1':
-											return '会员充值'
-											break;
-										case '2':
-											return '付费买券'
-											break;
-										case '3':
-											return '付费次/月卡'
-											break;
+								}, {
+									field: 'amount',
+									title: '分账金额',
+									align: 'center',
+									minWidth: 100,
+									templet: function(data) {
+										return '¥ ' + data.amount
 									}
+								},
+								// {
+								// 	field: 'orderType',
+								// 	title: '分账状态',
+								// 	align: 'center',
+								// 	minWidth: 100,
+								// 	templet: function(data) {
+								// 		switch (data.orderType) {
+								// 			case '0':
+								// 				return '待分账'
+								// 				break;
+								// 			case '1':
+								// 				return '已分账'
+								// 				break;
+								// 			case '2':
+								// 				return '处理中'
+								// 				break;
+								// 			case '3':
+								// 				return '已关闭'
+								// 				break;
+								// 			case '4':
+								// 				return '分账失败'
+								// 				break;
+								// 		}
+								// 	}
+								// }, 
+								{
+									field: 'SeparateAccountsTime',
+									title: '分账时间',
+									align: 'center',
+									minWidth: 160,
 								}
-							}, {
-								field: 'transactionAmount',
-								title: '订单金额',
-								align: 'center',
-								templet: function(data) {
-									return '¥ ' + data.transactionAmount
-								}
-							}, {
-								field: 'transactionAmount',
-								title: '分账金额',
-								align: 'center',
-								templet: function(data) {
-									return '¥ ' + data.transactionAmount
-								}
-							}, {
-								field: 'onePaymentTypeName',
-								title: '分账状态',
-								align: 'center',
-								templet: function(data) {
-									switch (data.onePaymentTypeName) {
-										case '0':
-											return '待分账'
-											break;
-										case '1':
-											return '已分账'
-											break;
-										case '2':
-											return '处理中'
-											break;
-										case '3':
-											return '已关闭'
-											break;
-										case '4':
-											return '分账失败'
-											break;
-									}
-								}
-							}, {
-								field: 'clerkName',
-								title: '分账时间',
-								align: 'center',
-							}]
+							]
 						],
 						done: function(res, curr, count) {
 							console.log(res)
@@ -261,9 +240,16 @@
 					active = {
 						reload: function() {
 							// 获取上面查询框的值
-							var shopName = $('#shopName');
+							var merchantName = $('#merchantName');
 							var startTime = $('#startTime');
 							var endTime = $('#endTime');
+
+							var merchantName = $('#merchantName')
+							var fzOrderNumber = $('#fzOrderNumber')
+							var orderNumber = $('#orderNumber')
+							var name = $('#name')
+							var tell = $('#tell')
+							var startendTime = $('#startendTime')
 
 							//执行重载
 							table.reload('billlist', {
@@ -271,9 +257,13 @@
 									curr: 1 //重新从第 1 页开始
 								},
 								where: {
-									startTime: startTime.val(),
-									endTime: endTime.val(),
-									shopNumber: shopName.val(),
+									merchantName: merchantName.val(),
+									fzOrderNumber: fzOrderNumber.val(),
+									orderNumber: orderNumber.val(),
+									name: name.val(),
+									tell: tell.val(),
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] : '',
 								}
 							});
 						}

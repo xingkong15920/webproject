@@ -70,7 +70,7 @@
 	<script src="./js/sweetalert.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
-	<script src="./common/config.js"></script>
+	<script src="./common/config-cs.js"></script>
 	<script src="./common/utility.js"></script>
 	<script>
 		function getQueryString(name) {
@@ -88,27 +88,32 @@
 		$('.cardB').height(_h)
 
 		var cardCon, applystore, subtitle, showQrcodeUrl, shareDescribeText
-		var deliveryNo
-		var insNumber
-		var merNumber
+		var deliveryNo, insNumber, merNumber, voucherId, weChatCardNo
 		var shareLink = ''
-		var distributionID
 		var tit = true
-		var mebInfo
-		var weixinCode
-		var comId
-		var appSecret
+		var mebInfo, weixinCode, comId, appSecret
+		var num = {
+			"voucherId": getQueryString('voucherId'),
+			"deliveryNo": getQueryString('deliveryCode'),
+			"institutionNumber": getQueryString('institutionNumber'),
+			"merchantNumber": getQueryString('userNo'),
+			"weChatCardNo": getQueryString('weChatCardNo')
+		}
+		sessionStorage.setItem("num", JSON.stringify(num));
+
 		if (/MicroMessenger/.test(window.navigator.userAgent)) {
 			if (window.location.href.indexOf('&code=') == -1) {
-				deliveryNo = getQueryString('deliveryNo')
-				insNumber = getQueryString('institutionNumber')
-				merNumber = getQueryString('merchantNumber')
-				distributionID = getQueryString('id')
+				deliveryNo = JSON.parse(sessionStorage.getItem('num')).deliveryNo
+				insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+				merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+				voucherId = JSON.parse(sessionStorage.getItem('num')).voucherId
+				weChatCardNo = JSON.parse(sessionStorage.getItem('num')).weChatCardNo
 			} else {
 				deliveryNo = JSON.parse(sessionStorage.getItem('num')).deliveryNo
 				insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
 				merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
-				distributionID = JSON.parse(sessionStorage.getItem('num')).id
+				voucherId = JSON.parse(sessionStorage.getItem('num')).voucherId
+				weChatCardNo = JSON.parse(sessionStorage.getItem('num')).weChatCardNo
 			}
 			$.ajax({
 				url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + merNumber,
@@ -129,13 +134,6 @@
 			})
 			var code;
 			if (window.location.href.indexOf('&code=') == -1) {
-				var num = {
-					"deliveryNo": getQueryString('deliveryNo'),
-					"institutionNumber": getQueryString('institutionNumber'),
-					"merchantNumber": getQueryString('merchantNumber'),
-					"id": getQueryString('id'),
-				}
-				sessionStorage.setItem("num", JSON.stringify(num));
 				var scope = "snsapi_userinfo";
 				var redirect_uri = window.location.href;
 
@@ -152,14 +150,16 @@
 						"Content-Type": "application/x-www-form-urlencoded"
 					},
 					success: function(data) {
-						getdeliveryCon()
+						// getdeliveryCon()
 						if (data.code == '-2') {
-							mebInfo = ''
-							getCardWxCon()
-						} else if (data.code == '1000') {
-							$('#getCardB').show()
+							// mebInfo = ''
 							mebInfo = JSON.stringify(data.data)
-							getCardWxCon()
+							// getCardWxCon()
+							getvoucher_w(data.data.memberNo)
+						} else if (data.code == '1000') {
+							// $('#getCardB').show()
+							// mebInfo = JSON.stringify(data.data)
+							// getCardWxCon()
 						}
 					}
 				})
@@ -168,12 +168,6 @@
 			var aliPid, aliauthCode
 			var aliscope = 'auth_user,auth_ecard'
 			var aliredirectUrl = window.location.href
-			var num = {
-				"deliveryNo": getQueryString('deliveryNo'),
-				"institutionNumber": getQueryString('institutionNumber'),
-				"merchantNumber": getQueryString('merchantNumber')
-			}
-			sessionStorage.setItem("num", JSON.stringify(num));
 			deliveryNo = JSON.parse(sessionStorage.getItem('num')).deliveryNo
 			insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
 			merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
@@ -382,6 +376,65 @@
 			});
 		}
 
+		function getvoucher_w(merNo) {
+			var cardIds = []
+			cardIds.push(weChatCardNo)
+			var newO = new Object();
+			newO.deliveryNo = deliveryNo
+			newO.institutionNumber = insNumber
+			newO.merchantNumber = merNumber
+			newO.cardIds = cardIds
+			newO.memberId = merNo
+			$.ajax({
+				type: "post",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucherForWXUp,
+				data: JSON.stringify(newO),
+				async: false,
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					alert(JSON.stringify(data.data))
+					if (data.code === 1000) {
+						wx.config({
+							debug: true,
+							appId: weixinCode,
+							timestamp: data.data.timestamp,
+							nonceStr: data.data.noncestr,
+							signature: data.data.signature,
+							jsApiList: [
+								'addCard'
+							]
+						});
+						wx.ready(function() {
+							//添加卡券
+							wx.addCard({
+								cardList: [{
+									cardId: weChatCardNo,
+									// cardExt: '{"code":"' + data.data.code + '","timestamp":"' + data.data.timestamp + '","signature":"' + data.data.signature + '"}'
+									cardExt: '{"timestamp":"' + data.data.timestamp + '","signature":"' + data.data.signature + '"}'
+								}],
+								success: function(res) {
+									alert('已添加卡券：' + JSON.stringify(res.cardList));
+								}
+							});
+						});
+					} else {
+						// console.log(data.msg)
+						// swal({
+						// 	title: "",
+						// 	text: data.msg,
+						// 	type: "error",
+						// 	showCancelButton: false,
+						// 	closeOnConfirm: false,
+						// 	showConfirmButton: false,
+						// });
+					}
+				}
+			});
+		}
+
 		function getCardAliCon() {
 			$.ajax({
 				type: "get",
@@ -423,7 +476,7 @@
 					"institutionNumber": insNumber,
 					"deliveryNo": deliveryNo,
 					"memberInfo": mebInfo,
-					"distributionNo":distributionID,
+					"distributionNo": distributionID,
 				},
 				async: true,
 				dataType: "json",

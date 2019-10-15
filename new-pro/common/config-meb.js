@@ -248,6 +248,14 @@ var CmsConfig = {
 			getVoucherList: "voucher/getVoucherList",
 			// 查询优惠券领取记录
 			getVoucherRecord: "record/getRecord",
+			// 优惠券同步到微信
+			synVoucherForWx: "synVoucher/synVoucherForWx",
+			// 查询渠道列表
+			getDeliveryList: "voucher/getDeliveryList",
+			// 添加渠道
+			inserNextDelivery: "voucher/inserNextDelivery",
+			// 删除渠道
+			delDelivery: "voucher/delDelivery",
 
 			// 海报设置
 			// 查询海报列表
