@@ -804,10 +804,30 @@
 				//头工具栏事件
 				table.on('toolbar(timeS)', function(obj) {
 					var checkStatus = table.checkStatus(obj.config.id);
-					var arrO = new Object()
-					var arrc = new Array();
+					var arrO = new Object(),
+						arrc = new Array(),
+						arrcold = new Array(),
+						arrcnew = new Array(),
+						arrl = new Array();
 					switch (obj.event) {
 						case 'timeSAdd':
+							var checkval = []
+							$("input:checkbox[name='timeSlotCollect']").each(function(i) {
+								checkval.push($(this).val())
+							});
+							if (vashierTimes.length > 0) {
+								for (let i = 0; i < vashierTimes.length; i++) {
+									console.log(vashierTimes[i].timeSlotCollect.split('#'))
+									arrl = arrl.concat(vashierTimes[i].timeSlotCollect.split('#'))
+								}
+							}
+							for (let i = 0; i < checkval.length; i++) {
+								if (arrl.indexOf(checkval[i]) >= 0) {
+									$("input:checkbox[name='timeSlotCollect']").eq(i).attr('checked', true)
+									$("input:checkbox[name='timeSlotCollect']").eq(i).attr('disabled', 'disabled')
+								}
+								form.render('checkbox')
+							}
 							layer.open({
 								type: 1,
 								shade: 0.5,
@@ -817,16 +837,24 @@
 								btn: ['确定', '取消'],
 								yes: function(index) {
 									$("input:checkbox[name='timeSlotCollect']:checked").each(function(i) {
-										arrc[i] = $(this).val();
+										arrcnew[i] = $(this).val();
 									});
-									if (arrc.length < 1) {
-										return layer.msg('请选择周时间！', function() {})
-									}
 									if ($('#sTime').val() == '') {
 										return layer.msg('请选择开始时间！', function() {})
 									}
 									if ($('#eTime').val() == '') {
 										return layer.msg('请选择结束时间！', function() {})
+									}
+									if ($('#eTime').val() == '00:00') {
+										return layer.msg('结束时间不能为00:00！', function() {})
+									}
+									for (let i = 0; i < arrcnew.length; i++) {
+										if (arrl.indexOf(arrcnew[i]) == -1) {
+											arrc.push(arrcnew[i])
+										}
+									}
+									if (arrc.length < 1) {
+										return layer.msg('请选择周时间！', function() {})
 									}
 									arrO.timeSlotCollect = arrc.join('#')
 									arrO.sTime = $('#sTime').val()
@@ -835,14 +863,11 @@
 									layer.close(index)
 									layer.msg('添加成功')
 									timeStable()
-									$("input:checkbox[name='timeSlotCollect']:checked").each(function(i) {
-										$(this).prop("checked", false);
-										form.render('checkbox');
-									});
 									$('#sTime').val('')
 									$('#eTime').val('')
 								},
 							});
+							// }
 							break;
 					};
 				});

@@ -100,8 +100,9 @@
 			"weChatCardNo": getQueryString('weChatCardNo')
 		}
 		sessionStorage.setItem("num", JSON.stringify(num));
-
+		// alert('进入页面')
 		if (/MicroMessenger/.test(window.navigator.userAgent)) {
+			// alert('wechat')
 			if (window.location.href.indexOf('&code=') == -1) {
 				deliveryNo = JSON.parse(sessionStorage.getItem('num')).deliveryNo
 				insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
@@ -152,14 +153,16 @@
 					success: function(data) {
 						// getdeliveryCon()
 						if (data.code == '-2') {
+							// alert(JSON.stringify(data.data))
 							// mebInfo = ''
-							mebInfo = JSON.stringify(data.data)
+							// mebInfo = JSON.stringify(data.data)
 							// getCardWxCon()
 							getvoucher_w(data.data.memberNo)
 						} else if (data.code == '1000') {
 							// $('#getCardB').show()
 							// mebInfo = JSON.stringify(data.data)
 							// getCardWxCon()
+							window.location.href = data.data.getCardUrl
 						}
 					}
 				})
@@ -377,13 +380,13 @@
 		}
 
 		function getvoucher_w(merNo) {
-			var cardIds = []
-			cardIds.push(weChatCardNo)
+			// alert(weChatCardNo)
+			// alert(weChatCardNo.split('||'))
 			var newO = new Object();
 			newO.deliveryNo = deliveryNo
 			newO.institutionNumber = insNumber
 			newO.merchantNumber = merNumber
-			newO.cardIds = cardIds
+			newO.cardIds = weChatCardNo.split('||')
 			newO.memberId = merNo
 			// alert(JSON.stringify(newO))
 			// alert(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucehrListLink)
@@ -397,7 +400,6 @@
 					"Content-Type": "application/json"
 				},
 				success: function(data) {
-					// alert(typeof data.data.cardList)
 					// alert(JSON.stringify(data.data.cardList[0].cardExt))
 					if (data.code === 1000) {
 						wx.config({
@@ -407,22 +409,16 @@
 							nonceStr: data.data.cardList[0].cardExt.nonce_str,
 							signature: data.data.cardList[0].cardExt.signature,
 							jsApiList: [
-								'addCard'
+								'addCard', 'closeWindow'
 							]
 						});
 						wx.ready(function() {
 							//添加卡券
 							wx.addCard({
-								cardList: [{
-									cardId: data.data.cardList[0].cardId,
-									// cardExt: '{"code":"' + data.data.code + '","timestamp":"' + data.data.timestamp + '","signature":"' +
-									// 	data.data.signature + '"}'
-									cardExt: JSON.stringify(data.data.cardList[0].cardExt)
-								}],
-								success: function(res) {
-									alert('已添加卡券：' + JSON.stringify(res.cardList));
-								}
+								cardList: data.data.cardList,
+								success: function(res) {}
 							});
+							wx.closeWindow();
 						});
 					} else {
 						// console.log(data.msg)
@@ -532,6 +528,26 @@
 					}
 				}
 			})
+		}
+
+		function copyText(text) {
+			var textarea = document.createElement("textarea");
+			var currentFocus = document.activeElement;
+			document.body.appendChild(textarea);
+			textarea.value = text;
+			textarea.focus();
+			if (textarea.setSelectionRange)
+				textarea.setSelectionRange(0, textarea.value.length);
+			else
+				textarea.select();
+			try {
+				var flag = document.execCommand("copy");
+			} catch (eo) {
+				var flag = false;
+			}
+			document.body.removeChild(textarea);
+			currentFocus.focus();
+			return flag;
 		}
 	</script>
 </html>

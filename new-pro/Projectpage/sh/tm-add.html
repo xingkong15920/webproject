@@ -24,6 +24,22 @@
             <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 		<style type="text/css">
+			.show {
+				display: block;
+			}
+
+			.hide {
+				display: none;
+			}
+
+			.layui-form-label {
+				width: 200px;
+			}
+
+			.cardSet {
+				padding: 0;
+			}
+
 			.cardSet .layui-upload-list {
 				border-bottom-left-radius: 0;
 				border-bottom-right-radius: 0;
@@ -54,7 +70,8 @@
 				height: 222px;
 			}
 
-			.iwList .layui-input-block {
+			.iwList .layui-input-inline {
+				width: auto !important;
 				margin: 0;
 			}
 
@@ -83,6 +100,32 @@
 
 			.layui-form-switch i {
 				top: 2px;
+			}
+
+			.tmTab .layui-tab-title {
+				height: 55px;
+				line-height: 55px;
+				border-bottom: 2px solid #e0e0e0;
+			}
+
+			.tmTab .layui-tab-title li {
+				width: auto;
+				height: 55px;
+				line-height: 55px;
+				font-size: 16px;
+				padding: 0 20px;
+			}
+
+			.tmTab .layui-tab-title li.layui-this {
+				border-bottom: 2px solid #63b359;
+			}
+
+			.tmTab .layui-tab-title .layui-this:after {
+				border: none;
+			}
+
+			.tmTab .layui-tab-item {
+				padding: 10px;
 			}
 		</style>
 	</head>
@@ -133,31 +176,11 @@
 							</div> -->
 						</div>
 						<ul class="card_qList">
+							<li class="card_qListli ">
+								<h3>剩余次数：<span>0</span></h3>
+							</li>
 							<li class="card_qListli lishow">
-								<h3>积分</h3>
-								<p>1200</p>
-							</li>
-							<li class="card_qListli">
-								<h3>余额</h3>
-								<p>1200<span>(元)</span></p>
-							</li>
-							<li class="card_qListli">
-								<h3>优惠券</h3>
-								<p>12<span>(张)</span></p>
-							</li>
-							<li class="card_qListli">
-								<h3>等级</h3>
-								<p>Lv.12</p>
-							</li>
-						</ul>
-						<ul class="card_cList">
-							<li class="card_cListli">
-								<img src="./images/code_erwei.png">
-								<p>8888 8888 8888 8888</p>
-							</li>
-							<li class="card_cListli" style="display: none;">
-								<img src="./images/code_yiwei.png" style="width: 80%;">
-								<p>8888 8888 8888 8888</p>
+								<h3>使用时间：2019-10-10 - 2019-20-20</h3>
 							</li>
 						</ul>
 					</div>
@@ -195,287 +218,307 @@
 				</div>
 				<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet" style="margin-bottom: 44px;">
 					<div class="layui-form" lay-filter="basic">
-						<blockquote class="layui-elem-quote consumeTit">
-							<i class="leftline"></i>
-							基本设置
-							<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
-								<span class="tips_red">设置目前卡的有效期</span> -->
-						</blockquote>
-						<div class="layui-form-item sysItem">
-							<div class="layui-form-item max600">
-								<label class="layui-form-label"><span class="redC">* </span>卡副标题</label>
-								<div class="layui-input-block">
-									<input type="text" name="subtitle" class="layui-input" lay-verify="ltName" id="ltName">
+
+						<div class="layui-tab tmTab">
+							<ul class="layui-tab-title">
+								<li class="layui-this">基本设置</li>
+								<li>中心按钮</li>
+								<li>自定义/营销入口</li>
+								<li>次/月卡详情</li>
+							</ul>
+							<div class="layui-tab-content">
+								<!-- tab1 -->
+								<div class="layui-tab-item layui-show">
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>品牌名称 :</label>
+										<div class="layui-input-inline max360">
+											<input type="text" name="subtitle1" value="品牌名称" class="layui-input" autocomplete="off" lay-verify="ltName"
+											 id="ltName">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>次/月卡标题 :</label>
+										<div class="layui-input-inline max360">
+											<input type="text" name="subtitle1" value="次/月卡标题" class="layui-input" autocomplete="off" lay-verify="ltNamefu"
+											 id="ltNamefu">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>品牌logo :</label>
+										<div class="layui-input-inline max360 pinpaiLogo">
+											<div class="layui-upload-list">
+												<div class="layui-upload-img" id="cardLo">
+													<img src="./images/card_logo.png" id="cardLoImg">
+													<div class="upTips">
+														+<br />上传logo
+													</div>
+												</div>
+												<div class="imgDel" data-id="cardLo" style="display: none;">
+													<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+												</div>
+											</div>
+										</div>
+										<div class="layui-input-inline max360 layui-word-aux">尺寸120px*120px，支持JPG、JPEG、PNG图片，文件小于1M</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>次/月卡单位 :</label>
+										<div class="layui-input-inline max360">
+											<input type="text" name="subtitle" class="layui-input" autocomplete="off" lay-verify="ltName">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>库存 :</label>
+										<div class="layui-input-inline max360">
+											<input type="number" name="subtitle" class="layui-input" autocomplete="off" max="10000000" lay-verify="ltName">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>code展示类型 :</label>
+										<div class="layui-input-inline max360">
+											<select name="interest" lay-filter="aihao">
+												<option value="1" selected="">二维码</option>
+											</select>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>卡券类型 :</label>
+										<div class="layui-input-inline max360 tmType">
+											<input type="radio" name="codeType" lay-filter="tmType" value="0" title="次卡" checked="">
+											<input type="radio" name="codeType" lay-filter="tmType" value="1" title="月卡">
+										</div>
+									</div>
+									<div class="tmType0 show">
+										<!-- 次卡 -->
+										<div class="layui-form-item">
+											<label class="layui-form-label"><span class="redC">* </span>次卡规格 :</label>
+											<div class="layui-input-inline widthauto">
+												<input type="text" name="entryForce" autocomplete="off" lay-verify="entryForce" placeholder="领取后多少天后开始生效"
+												 class="layui-input">
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label"><span class="redC">* </span>限制使用时间 :</label>
+											<div class="layui-input-inline max360 barcodeshow">
+												<input type="radio" name="codeType1" lay-filter="barcodeshow" value="0" title="是" checked="">
+												<input type="radio" name="codeType1" lay-filter="barcodeshow" value="0" title="否">
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label"><span class="redC">* </span>领取后多少天后开始生效 :</label>
+											<div class="layui-input-inline widthauto">
+												<input type="text" name="entryForce" id="entryForce" autocomplete="off" lay-verify="entryForce" placeholder="领取后多少天后开始生效"
+												 class="layui-input">
+											</div>
+											<div class="layui-form-mid layui-word-aux">0代表当天生效</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label"><span class="redC">* </span>生效后多少天内有效 :</label>
+											<div class="layui-input-inline widthauto">
+												<input type="text" name="effectiveDay" id="effectiveDay" autocomplete="off" lay-verify="effectiveDay"
+												 placeholder="生效后多少天内有效" class="layui-input">
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label"><span class="redC">* </span>指定具体使用时间 :</label>
+											<div class="layui-input-inline widthauto">
+												<input type="text" id="limitUseTimeTyperange" autocomplete="off" readonly="readonly" placeholder="请指定具体使用时间"
+												 class="layui-input">
+											</div>
+										</div>
+									</div>
+									<div class="tmType1 hide">
+										<!-- 月卡 -->
+										<div class="layui-form-item">
+											<label class="layui-form-label"><span class="redC">* </span>卡券不限次数 :</label>
+											<div class="layui-input-inline max360 barcodeshow">
+												<input type="radio" name="codeType2" lay-filter="barcodeshow" value="0" title="是" checked="">
+												<input type="radio" name="codeType2" lay-filter="barcodeshow" value="0" title="否">
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label"><span class="redC">* </span>指定具体使用时间 :</label>
+											<div class="layui-input-inline widthauto">
+												<input type="text" id="limitUseTimeTyperange" autocomplete="off" readonly="readonly" placeholder="请指定具体使用时间"
+												 class="layui-input">
+											</div>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>是否允许续费 :</label>
+										<div class="layui-input-inline max360 barcodeshow">
+											<input type="radio" name="codeType3" lay-filter="barcodeshow" value="0" title="是" checked="">
+											<input type="radio" name="codeType3" lay-filter="barcodeshow" value="0" title="否">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>是否显示出售 :</label>
+										<div class="layui-input-inline max360 barcodeshow">
+											<input type="radio" name="codeType4" lay-filter="barcodeshow" value="0" title="是" checked="">
+											<input type="radio" name="codeType4" lay-filter="barcodeshow" value="0" title="否">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>每人可购买数量 :</label>
+										<div class="layui-input-inline max360">
+											<input type="text" name="subtitle" class="layui-input" lay-verify="ltName">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>使用限制 :</label>
+										<div class="layui-input-inline max360">
+											<input type="text" name="subtitle" class="layui-input" lay-verify="ltName">
+										</div>
+									</div>
 								</div>
-							</div>
-							<div class="layui-form-item">
-								<label class="layui-form-label"><span class="redC">* </span>栏位展示</label>
-								<div class="layui-input-block columnshow">
+								<!-- tab2 -->
+								<div class="layui-tab-item">内容2</div>
+								<!-- tab3 -->
+								<div class="layui-tab-item">
+									<!-- 自定义入口一 -->
+									<blockquote class="layui-elem-quote consumeTit">
+										<i class="leftline"></i>
+										自定义入口一
+									</blockquote>
+									<div class="layui-form-item custom1Body">
+										<div class="layui-form-item">
+											<div class="layui-input-inline max360 ">
+												<input type="radio" name="custom1" lay-filter="custom1" value="0" title="不设置">
+												<input type="radio" name="custom1" lay-filter="custom1" value="1" title="自定义链接" checked="">
+												<input type="radio" name="custom1" lay-filter="custom1" value="2" title="自定义小程序">
+											</div>
+										</div>
+										<div class="custom1B max600">
+											<div class="layui-form-item">
+												<label class="layui-form-label"><span class="redC">* </span>入口名称 :</label>
+												<div class="layui-input-inline max360">
+													<input type="text" name="custom1lNInput" class="layui-input customNameInput" id="custom1lNInput" value="推荐给朋友"
+													 placeholder="入口名称">
+												</div>
+											</div>
+											<div class="custom1-link">
+												<div class="layui-form-item">
+													<label class="layui-form-label"><span class="redC">* </span>自定义链接 :</label>
+													<div class="layui-input-inline max360">
+														<input type="text" name="custom1lLInput" class="layui-input" lay-verify="customlLInput" id="custom1lLInput"
+														 placeholder="自定义链接地址">
+													</div>
+												</div>
+											</div>
+											<div class="custom1-miniapp" style="display: none;">
+												<div class="layui-form-item">
+													<label class="layui-form-label"><span class="redC">* </span>小程序ID :</label>
+													<div class="layui-input-inline max360">
+														<input type="text" name="custom1mIInput" class="layui-input" id="custom1mIInput" placeholder="小程序ID">
+													</div>
+												</div>
+												<div class="layui-form-item">
+													<label class="layui-form-label"><span class="redC">* </span>小程序页面 :</label>
+													<div class="layui-input-inline max360">
+														<input type="text" name="custom1mPInput" class="layui-input" id="custom1mPInput" placeholder="小程序页面路径path">
+													</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">引导语 :</label>
+												<div class="layui-input-inline max360">
+													<input type="text" name="custom1mYInput" class="layui-input" id="custom1mYInput" placeholder="引导语">
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- 自定义入口二 -->
+									<blockquote class="layui-elem-quote consumeTit">
+										<i class="leftline"></i>
+										自定义入口二
+									</blockquote>
+									<div class="layui-form-item custom2Body">
+										<div class="layui-form-item">
+											<div class="layui-input-inline max360 ">
+												<input type="radio" name="custom2" lay-filter="custom2" value="0" title="不设置">
+												<input type="radio" name="custom2" lay-filter="custom2" value="1" title="自定义链接" checked="">
+												<input type="radio" name="custom2" lay-filter="custom2" value="2" title="自定义小程序">
+											</div>
+										</div>
+										<div class="custom2B max600">
+											<div class="layui-form-item">
+												<label class="layui-form-label"><span class="redC">* </span>入口名称 :</label>
+												<div class="layui-input-inline max360">
+													<input type="text" name="custom2lNInput" class="layui-input customNameInput" id="custom2lNInput" value="会员卡详情"
+													 placeholder="入口名称">
+												</div>
+											</div>
+											<div class="custom2-link">
+												<div class="layui-form-item">
+													<label class="layui-form-label"><span class="redC">* </span>自定义链接 :</label>
+													<div class="layui-input-inline max360">
+														<input type="text" name="custom2lLInput" class="layui-input" lay-verify="customlLInput" id="custom2lLInput"
+														 placeholder="自定义链接地址">
+													</div>
+												</div>
+											</div>
+											<div class="custom2-miniapp" style="display: none;">
+												<div class="layui-form-item">
+													<label class="layui-form-label"><span class="redC">* </span>小程序ID :</label>
+													<div class="layui-input-inline max360">
+														<input type="text" name="custom2mIInput" class="layui-input" id="custom2mIInput" placeholder="小程序ID">
+													</div>
+												</div>
+												<div class="layui-form-item">
+													<label class="layui-form-label"><span class="redC">* </span>小程序页面 :</label>
+													<div class="layui-input-inline max360">
+														<input type="text" name="custom2mPInput" class="layui-input" id="custom2mPInput" placeholder="小程序页面路径path">
+													</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">引导语 :</label>
+												<div class="layui-input-inline max360">
+													<input type="text" name="custom2mYInput" class="layui-input" id="custom2mYInput" placeholder="引导语">
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
-							</div>
-							<div class="layui-form-item">
-								<label class="layui-form-label"><span class="redC">* </span>条码展示</label>
-								<div class="layui-input-block barcodeshow">
-									<input type="radio" name="codeType" lay-filter="barcodeshow" value="0" title="二维码" checked="">
-									<input type="radio" name="codeType" lay-filter="barcodeshow" value="1" title="条形码">
-									<input type="radio" name="codeType" lay-filter="barcodeshow" value="2" title="不展示">
-								</div>
-							</div>
-							<div class="layui-form-item">
-								<label class="layui-form-label">商户服务</label>
-								<div class="layui-input-block merservices">
-								</div>
-							</div>
-							<!-- <div class="layui-form-item max600">
-								<label class="layui-form-label">适用门店 :</label>
-								<div class="layui-input-block">
-									<input type="text" name="applyShops" class="layui-input" lay-verify="" id="symd" autocomplete="off"
-									 ts-selected="" placeholder="请选择适用门店">
-								</div>
-								<label class="layui-form-label"></label>
-								<div class="layui-form-mid layui-word-aux">空为不限制，门店核销或会员到店消费前，需要效验此项</div>
-							</div> -->
-							<div class="layui-form-item">
-								<label class="layui-form-label">图文介绍</label>
-								<div class="layui-input-block">
-									<div class="layui-form-mid layui-word-aux">图片建议尺寸：900像素 * 500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
-									<ul class="layui-form-item max400 iwList" id="iwList"></ul>
-								</div>
-								<div class="layui-input-block" style="display: flex;justify-content: flex-start;align-items: center;margin-bottom: 15px;">
-									<button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">增加图文</button>
+								<!-- tab4 -->
+								<div class="layui-tab-item">
+									<div class="layui-form-item">
+										<label class="layui-form-label">图文介绍 :</label>
+										<div class="layui-input-inline max360">
+											<div class="layui-form-mid layui-word-aux">图片建议尺寸：900像素 * 500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
+											<ul class="layui-form-item max400 iwList" id="iwList"></ul>
+										</div>
+										<div class="layui-input-inline max360" style="display: flex;justify-content: flex-start;align-items: center;margin-bottom: 15px;">
+											<button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">增加图文</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-						<!-- 自定义入口一 -->
-						<blockquote class="layui-elem-quote consumeTit">
-							<i class="leftline"></i>
-							自定义入口一
-						</blockquote>
-						<div class="layui-form-item custom1Body">
-							<div class="layui-form-item">
-								<div class="layui-input-block ">
-									<input type="radio" name="custom1" lay-filter="custom1" value="0" title="不设置">
-									<input type="radio" name="custom1" lay-filter="custom1" value="1" title="自定义链接" checked="">
-									<input type="radio" name="custom1" lay-filter="custom1" value="2" title="自定义小程序">
-								</div>
-							</div>
-							<div class="custom1B max600">
-								<div class="layui-form-item">
-									<label class="layui-form-label"><span class="redC">* </span>入口名称</label>
-									<div class="layui-input-block">
-										<input type="text" name="custom1lNInput" class="layui-input customNameInput" id="custom1lNInput" value="推荐给朋友"
-										 placeholder="入口名称">
-									</div>
-								</div>
-								<div class="custom1-link">
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>自定义链接</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom1lLInput" class="layui-input" lay-verify="customlLInput" id="custom1lLInput"
-											 placeholder="自定义链接地址">
-										</div>
-									</div>
-								</div>
-								<div class="custom1-miniapp" style="display: none;">
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>小程序ID</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom1mIInput" class="layui-input" id="custom1mIInput" placeholder="小程序ID">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>小程序页面</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom1mPInput" class="layui-input" id="custom1mPInput" placeholder="小程序页面路径path">
-										</div>
-									</div>
-								</div>
-								<div class="layui-form-item">
-									<label class="layui-form-label">引导语</label>
-									<div class="layui-input-block">
-										<input type="text" name="custom1mYInput" class="layui-input" id="custom1mYInput" placeholder="引导语">
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- 自定义入口二 -->
-						<blockquote class="layui-elem-quote consumeTit">
-							<i class="leftline"></i>
-							自定义入口二
-						</blockquote>
-						<div class="layui-form-item custom2Body">
-							<div class="layui-form-item">
-								<div class="layui-input-block ">
-									<input type="radio" name="custom2" lay-filter="custom2" value="0" title="不设置">
-									<input type="radio" name="custom2" lay-filter="custom2" value="1" title="自定义链接" checked="">
-									<input type="radio" name="custom2" lay-filter="custom2" value="2" title="自定义小程序">
-								</div>
-							</div>
-							<div class="custom2B max600">
-								<div class="layui-form-item">
-									<label class="layui-form-label"><span class="redC">* </span>入口名称</label>
-									<div class="layui-input-block">
-										<input type="text" name="custom2lNInput" class="layui-input customNameInput" id="custom2lNInput" value="会员卡详情"
-										 placeholder="入口名称">
-									</div>
-								</div>
-								<div class="custom2-link">
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>自定义链接</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom2lLInput" class="layui-input" lay-verify="customlLInput" id="custom2lLInput"
-											 placeholder="自定义链接地址">
-										</div>
-									</div>
-								</div>
-								<div class="custom2-miniapp" style="display: none;">
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>小程序ID</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom2mIInput" class="layui-input" id="custom2mIInput" placeholder="小程序ID">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>小程序页面</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom2mPInput" class="layui-input" id="custom2mPInput" placeholder="小程序页面路径path">
-										</div>
-									</div>
-								</div>
-								<div class="layui-form-item">
-									<label class="layui-form-label">引导语</label>
-									<div class="layui-input-block">
-										<input type="text" name="custom2mYInput" class="layui-input" id="custom2mYInput" placeholder="引导语">
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- 自定义入口三 -->
-						<blockquote class="layui-elem-quote consumeTit">
-							<i class="leftline"></i>
-							自定义入口三
-						</blockquote>
-						<div class="layui-form-item custom3Body">
-							<div class="layui-form-item">
-								<div class="layui-input-block ">
-									<input type="radio" name="custom3" lay-filter="custom3" value="0" title="不设置">
-									<input type="radio" name="custom3" lay-filter="custom3" value="1" title="自定义链接" checked="">
-									<input type="radio" name="custom3" lay-filter="custom3" value="2" title="自定义小程序">
-								</div>
-							</div>
-							<div class="custom3B max600">
-								<div class="layui-form-item">
-									<label class="layui-form-label"><span class="redC">* </span>入口名称</label>
-									<div class="layui-input-block">
-										<input type="text" name="custom3lNInput" class="layui-input customNameInput" id="custom3lNInput" value="适用门店"
-										 placeholder="入口名称">
-									</div>
-								</div>
-								<div class="custom3-link">
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>自定义链接</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom3lLInput" class="layui-input" lay-verify="customlLInput" id="custom3lLInput"
-											 placeholder="自定义链接地址">
-										</div>
-									</div>
-								</div>
-								<div class="custom3-miniapp" style="display: none;">
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>小程序ID</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom3mIInput" class="layui-input" id="custom3mIInput" placeholder="小程序ID">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>小程序页面</label>
-										<div class="layui-input-block">
-											<input type="text" name="custom3mPInput" class="layui-input" id="custom3mPInput" placeholder="小程序页面路径path">
-										</div>
-									</div>
-								</div>
-								<div class="layui-form-item">
-									<label class="layui-form-label">引导语</label>
-									<div class="layui-input-block">
-										<input type="text" name="custom3mYInput" class="layui-input" id="custom3mYInput" placeholder="引导语">
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- 自定义入口四 -->
-						<!-- <blockquote class="layui-elem-quote consumeTit">
-							<i class="leftline"></i>
-							自定义入口四
-							<input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
-							<span class="tips_red">设置目前卡的有效期</span>
-						</blockquote>
-						<div class="layui-form-item sysItem">
-							<div class="layui-form-item">
-								<div class="layui-input-block ">
-									<input type="radio" name="customFour" lay-filter="customFour" value="0" title="不设置">
-									<input type="radio" name="customFour" lay-filter="customFour" value="1" title="自定义链接" checked="">
-									<input type="radio" name="customFour" lay-filter="customFour" value="2" title="自定义小程序">
-								</div>
-							</div>
-							<div class="customFourB max600">
-								<div class="layui-form-item">
-									<label class="layui-form-label">入口名称</label>
-									<div class="layui-input-block">
-										<input type="text" name="customFourlNInput" class="layui-input" lay-verify="" id="customFourlNInput" value="适用门店"
-										 placeholder="入口名称">
-									</div>
-								</div>
-								<div class="customFour-link">
-									<div class="layui-form-item">
-										<label class="layui-form-label">自定义链接</label>
-										<div class="layui-input-block">
-											<input type="text" name="customFourlLInput" class="layui-input" lay-verify="" id="customFourlLInput"
-											 placeholder="自定义链接地址">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label">引导语</label>
-										<div class="layui-input-block">
-											<input type="text" name="customFourlYInput" class="layui-input" lay-verify="" id="customFourlYInput"
-											 placeholder="引导语">
-										</div>
-									</div>
-								</div>
-								<div class="customFour-miniapp" style="display: none;">
-									<div class="layui-form-item">
-										<label class="layui-form-label">小程序ID</label>
-										<div class="layui-input-block">
-											<input type="text" name="customFourmIInput" class="layui-input" lay-verify="" id="customFourmIInput"
-											 placeholder="小程序ID">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label">小程序页面</label>
-										<div class="layui-input-block">
-											<input type="text" name="customFourmPInput" class="layui-input" lay-verify="" id="customFourmPInput"
-											 placeholder="小程序页面路径path">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label">引导语</label>
-										<div class="layui-input-block">
-											<input type="text" name="customFourmYInput" class="layui-input" lay-verify="" id="customFourmYInput"
-											 placeholder="引导语">
-										</div>
-									</div>
-								</div>
-							</div>
-						</div> -->
+
 						<div class="cardQrcode" style="display: none;">
 							<img src="./images/erweima.jpg">
 						</div>
-						<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+						<!-- <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
 							<div class="layui-block">
 								<div class="layui-footer" style="left: 0;text-align: center;">
-									<button class="layui-btn addBtn" lay-submit="" lay-filter="add">同步到微信</button>
+									<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+									<button class="layui-btn" lay-submit="" lay-filter="nextstep" id="nextstep">下一步</button>
+									<button class="layui-btn hide" lay-submit="" lay-filter="laststep" id="laststep">上一步</button>
+									<button class="layui-btn hide" lay-submit="" lay-filter="add" id="add">提交</button>
 								</div>
 							</div>
+						</div> -->
+					</div>
+				</div>
+				<div class="layui-form-item layui-layout-admin">
+					<div class="layui-input-block">
+						<div class="layui-footer" style="left: 0;text-align: center;">
+							<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+							<button class="layui-btn" lay-submit="" lay-filter="nextstep" id="nextstep">下一步</button>
+							<button class="layui-btn hide" lay-submit="" lay-filter="laststep" id="laststep">上一步</button>
+							<button class="layui-btn hide" lay-submit="" lay-filter="add" id="add">提交</button>
 						</div>
+						<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
 					</div>
 				</div>
 			</div>
@@ -507,336 +550,6 @@
 					laytpl = layui.laytpl;
 				var tableSelect = layui.tableSelect;
 
-				layer.load(2, {
-					shade: 0.5
-				});
-				$.ajax({
-					type: 'get',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getAuthorizetInfo,
-					data: {
-						'authType': 1,
-						'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
-					},
-					dataType: 'json',
-					success: function(data) {
-						if (data.code == 1000) {
-							//查询有无会员卡
-							getCardCon()
-						} else if (data.code == 500) {
-							//代制会员卡
-							getCardCon()
-						} else if (data.code == '-2') {
-							layer.closeAll();
-							layer.msg('微信未授权，请先授权', function() {
-								window.location.href = 'unauth.html?authTypt=WeChat'
-							})
-						}
-					}
-				});
-
-				function getCardCon() {
-					$.ajax({
-						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard,
-						data: {
-							"merchantNumber": merNumber
-						},
-						async: false,
-						dataType: "json",
-						headers: {
-							"Content-Type": "application/json"
-						},
-						success: function(data) {
-							if (data.code === 1000) {
-								$('.ltN').text(data.data.cardName)
-								$('#ppLogopv').attr('src', data.data.logoUrl)
-								$('.card_b').css('background-color', data.data.color)
-								$('.synchronous').text(data.data.wechatSynchronism == 0 ? '未同步微信' : '已同步微信')
-								if (data.data.localImgUrl != null) {
-									$('.card_b_bg').attr('src', data.data.localImgUrl)
-								} else {
-									$('.card_b_bg').remove()
-								}
-							} else {
-								layer.closeAll('loading');
-								$('.synchronous').text('无会员卡')
-								// parent.layer.msg(data.msg)
-							}
-						}
-					});
-					$.ajax({
-						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard,
-						data: {
-							"merchantNumber": merNumber
-						},
-						async: false,
-						dataType: "json",
-						headers: {
-							"Content-Type": "application/json"
-						},
-						success: function(data) {
-							if (data.code === 1000) {
-								// 设置不可编辑项
-								$('#ltName').attr('disabled', 'disabled')
-								$('#addSale').parent('div').hide()
-								// 设置不可编辑项
-
-								cardCon = data.data
-								setcardCon(data.data)
-								wxCardNo = data.data.wxCardNo
-								$('.clubcardId').text(data.data.wxCardNo)
-								$('.ltNamepv').text(data.data.subtitle)
-								$('#cardBimg').show();
-								$('#cardBimg').attr('src', data.data.localImgUrl);
-								$('#ppLogopv').attr('src', data.data.logoUrl);
-								// 栏位展示
-								var strL = ''
-								var columnD = data.data.columnDisplay.split('||')
-								for (let i = 0; i < columnDVal.length; i++) {
-									if (columnD[0].indexOf(columnDVal[i]) >= 0) {
-										$('.card_qListli').eq(i).addClass('lishow');
-										strL +=
-											'<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" lay-filter="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '" checked="" disabled="">'
-									} else if (columnD.indexOf(columnDVal[i]) >= 0) {
-										$('.card_qListli').eq(i).addClass('lishow');
-										strL +=
-											'<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" lay-filter="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '" checked="" disabled="">'
-									} else {
-										strL +=
-											'<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" lay-filter="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '" disabled="">'
-									}
-								}
-								$('.columnshow').html(strL)
-
-								//条码展示
-								switch (data.data.codeType) {
-									case 0:
-										$('.card_cListli').eq(0).show()
-										$('.card_cListli').eq(1).hide()
-										break;
-									case 1:
-										$('.card_cListli').eq(0).hide()
-										$('.card_cListli').eq(1).show()
-										break;
-									case 3:
-										$('.card_cListli').hide()
-										break;
-								}
-
-								// 商户服务
-								var strS = ''
-								var merchantS = data.data.merchantService.split('||')
-								for (let i = 0; i < merchantSL.length; i++) {
-									if (merchantS.indexOf(merchantSL[i]) >= 0) {
-										strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
-											merchantSL[i] +
-											'" title="' + merchantSL[i] + '" checked="" disabled="">'
-									} else {
-										strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
-											merchantSL[i] +
-											'" title="' + merchantSL[i] + '" disabled="">'
-									}
-								}
-								$('.merservices').html(strS)
-
-								// 适用门店
-								// if (data.data.applyShops.length > 0) {
-								// 	var applyShopsList = []
-								// 	for (i = 0; i < data.data.applyShops.length; i++) {
-								// 		applyShopsList.push(data.data.applyShops[i].split('||')[0])
-								// 		shopNumbers.push(data.data.applyShops[i].split('||')[0])
-								// 	}
-								// 	$('#symd').val('已选 ' + data.data.applyShops.length + ' 个门店')
-								// 	$('#symd').attr('ts-selected', applyShopsList.join(','))
-								// } else {
-								// 	layer.msg('未查询到适用门店！')
-								// }
-
-
-								//图文列表
-								var strTW = ''
-								imageTexts = data.data.imageTexts
-								if (imageTexts && imageTexts.length > 0) {
-									for (let i = 0; i < imageTexts.length; i++) {
-										strTW += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i +
-											'" />' +
-											'<div class="layui-input-block pinpaiLogo' + i + '">' +
-											'<div class="layui-upload-list">' +
-											'<div class="layui-upload-img" id="cardLo' + i + '">' +
-											'<img src="' + imageTexts[i].localImgUrl + '">' + '</div>' +
-											'</div></div></div>' +
-											'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
-											'" class="layui-textarea" disabled="">' + imageTexts[i].text +
-											'</textarea></li>'
-									}
-								}
-								$('#iwList').html(strTW)
-
-								//自定义显示
-								var cus1 = cardCon.customs[0].customState
-								switch (cardCon.customs[0].customState) {
-									case 0:
-										$('.card_fListli').eq(0).hide()
-										$('.custom1B').hide()
-										$('#custom1lNInput').val('')
-										$('.card_fListli').eq(0).find('p').html('自定义入口一')
-										$('#custom1lNInput').removeAttr('lay-verify')
-										$('#custom1lLInput').removeAttr('lay-verify')
-										$('#custom1mIInput').removeAttr('lay-verify')
-										$('#custom1mPInput').removeAttr('lay-verify')
-										$('#custom1mYInput').removeAttr('lay-verify')
-										break;
-									case 1:
-										$('.card_fListli').eq(0).show()
-										$('.custom1B').show()
-										$('.custom1-link').show()
-										$('.custom1-miniapp').hide()
-										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].customName)
-										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingInfo)
-										$('#custom1lNInput').attr('lay-verify', 'entryname')
-										$('#custom1lLInput').attr('lay-verify', 'customlLInput')
-										$('#custom1mIInput').removeAttr('lay-verify')
-										$('#custom1mPInput').removeAttr('lay-verify')
-										$('#custom1mYInput').attr('lay-verify', 'guideTips')
-										break;
-									case 2:
-										$('.card_fListli').eq(0).show()
-										$('.custom1B').show()
-										$('.custom1-link').hide()
-										$('.custom1-miniapp').show()
-										$('.card_fListli').eq(0).find('p').html(cardCon.customs[0].customName)
-										$('.card_fListli').eq(0).find('span').html(cardCon.customs[0].leadingInfo)
-										$('#custom1lNInput').attr('lay-verify', 'entryname')
-										$('#custom1lLInput').removeAttr('lay-verify')
-										$('#custom1mIInput').attr('lay-verify', 'custommIInput')
-										$('#custom1mPInput').attr('lay-verify', 'custommPInput')
-										$('#custom1mYInput').attr('lay-verify', 'guideTips')
-										break;
-								}
-								switch (cardCon.customs[1].customState) {
-									case 0:
-										$('.card_fListli').eq(1).hide()
-										$('.custom2B').hide()
-										$('#custom2lNInput').val('')
-										$('.card_fListli').eq(1).find('p').html('自定义入口二')
-										$('#custom2lNInput').removeAttr('lay-verify')
-										$('#custom2lLInput').removeAttr('lay-verify')
-										$('#custom2mIInput').removeAttr('lay-verify')
-										$('#custom2mPInput').removeAttr('lay-verify')
-										$('#custom2mYInput').removeAttr('lay-verify')
-										break;
-									case 1:
-										$('.card_fListli').eq(1).show()
-										$('.custom2B').show()
-										$('.custom2-link').show()
-										$('.custom2-miniapp').hide()
-										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].customName)
-										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingInfo)
-										$('#custom2lNInput').attr('lay-verify', 'entryname')
-										$('#custom2lLInput').attr('lay-verify', 'customlLInput')
-										$('#custom2mIInput').removeAttr('lay-verify')
-										$('#custom2mPInput').removeAttr('lay-verify')
-										$('#custom2mYInput').attr('lay-verify', 'guideTips')
-										break;
-									case 2:
-										$('.card_fListli').eq(1).show()
-										$('.custom2B').show()
-										$('.custom2-link').hide()
-										$('.custom2-miniapp').show()
-										$('.card_fListli').eq(1).find('p').html(cardCon.customs[1].customName)
-										$('.card_fListli').eq(1).find('span').html(cardCon.customs[1].leadingInfo)
-										$('#custom2lNInput').attr('lay-verify', 'entryname')
-										$('#custom2lLInput').removeAttr('lay-verify')
-										$('#custom2mIInput').attr('lay-verify', 'custommIInput')
-										$('#custom2mPInput').attr('lay-verify', 'custommPInput')
-										$('#custom2mYInput').attr('lay-verify', 'guideTips')
-										break;
-								}
-								switch (cardCon.customs[2].customState) {
-									case 0:
-										$('.card_fListli').eq(2).hide()
-										$('.custom3B').hide()
-										$('#custom3lNInput').val('')
-										$('.card_fListli').eq(2).find('p').html('自定义入口三')
-										$('#custom3lNInput').removeAttr('lay-verify')
-										$('#custom3lLInput').removeAttr('lay-verify')
-										$('#custom3mIInput').removeAttr('lay-verify')
-										$('#custom3mPInput').removeAttr('lay-verify')
-										$('#custom3mYInput').removeAttr('lay-verify')
-										break;
-									case 1:
-										$('.card_fListli').eq(2).show()
-										$('.custom3B').show()
-										$('.custom3-link').show()
-										$('.custom3-miniapp').hide()
-										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].customName)
-										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingInfo)
-										$('#custom3lNInput').attr('lay-verify', 'entryname')
-										$('#custom3lLInput').attr('lay-verify', 'customlLInput')
-										$('#custom3mIInput').removeAttr('lay-verify')
-										$('#custom3mPInput').removeAttr('lay-verify')
-										$('#custom3mYInput').attr('lay-verify', 'guideTips')
-										break;
-									case 2:
-										$('.card_fListli').eq(2).show()
-										$('.custom3B').show()
-										$('.custom3-link').hide()
-										$('.custom3-miniapp').show()
-										$('.card_fListli').eq(2).find('p').html(cardCon.customs[2].customName)
-										$('.card_fListli').eq(2).find('span').html(cardCon.customs[2].leadingInfo)
-										$('#custom3lNInput').attr('lay-verify', 'entryname')
-										$('#custom3lLInput').removeAttr('lay-verify')
-										$('#custom3mIInput').attr('lay-verify', 'custommIInput')
-										$('#custom3mPInput').attr('lay-verify', 'custommPInput')
-										$('#custom3mYInput').attr('lay-verify', 'guideTips')
-										break;
-								}
-
-								form.render()
-								$('.addBtn').attr('lay-filter', 'update')
-							} else if (data.code === -2) {
-								layer.closeAll('loading');
-								layer.msg(data.msg + '，请添加')
-								$('.clubcardId').text('无')
-								// 栏位展示
-								var strL = ''
-								for (let i = 0; i < columnDVal.length; i++) {
-									if (i == 0) {
-										strL += '<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] +
-											'" lay-filter="columnDisplay" checked="" disabled="">'
-									} else {
-										strL += '<input type="checkbox" class="set" lay-skin="primary" name="columnDisplay" value="' +
-											columnDVal[i] + '" title="' + columnDVal[i] + '" lay-filter="columnDisplay">'
-									}
-								}
-								$('.columnshow').html(strL)
-
-
-								// 商户服务
-								var strS = ''
-								for (let i = 0; i < merchantSL.length; i++) {
-									strS += '<input type="checkbox" class="set" lay-skin="primary" name="merchantService" value="' +
-										merchantSL[i] +
-										'" title="' + merchantSL[i] + '">'
-								}
-								$('.merservices').html(strS)
-
-								form.render('checkbox')
-								cardCon = ''
-								$('.addBtn').attr('lay-filter', 'add')
-							} else {
-								layer.closeAll('loading');
-								parent.layer.msg(data.msg)
-
-							}
-						}
-					});
-				}
 
 				tableSelect.render({
 					elem: '#symd',
@@ -886,7 +599,7 @@
 					var str = ''
 					for (let i = 0; i < imageTexts.length; i++) {
 						str += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i + '" />' +
-							'<div class="layui-input-block pinpaiLogo' + i + '">' +
+							'<div class="layui-input-inline max360 pinpaiLogo' + i + '">' +
 							'<div class="layui-upload-list">' +
 							'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
 							')">' +
@@ -1038,15 +751,13 @@
 						}
 					}
 				});
-				form.on('radio(barcodeshow)', function(data) {
+				form.on('radio(tmType)', function(data) {
 					if (data.value == 0) {
-						$('.card_cListli').eq(0).show()
-						$('.card_cListli').eq(1).hide()
+						$('.tmType0').show()
+						$('.tmType1').hide()
 					} else if (data.value == 1) {
-						$('.card_cListli').eq(0).hide()
-						$('.card_cListli').eq(1).show()
-					} else if (data.value == 2) {
-						$('.card_cListli').hide()
+						$('.tmType0').hide()
+						$('.tmType1').show()
 					}
 				});
 
@@ -1159,85 +870,6 @@
 						$('.card_fListli').eq(1).find('span').html(e.delegateTarget.value)
 					}
 				});
-				// 自定义入口三
-				form.on('switch(custom3Bodysw)', function(data) {
-					if (data.elem.checked == true) {
-						$('.custom3Body').show()
-					} else if (data.elem.checked == false) {
-						$('.custom3Body').hide()
-					}
-				});
-				form.on('radio(custom3)', function(data) {
-					if (data.value == 0) {
-						$('.custom3B').hide()
-						$('#custom3lNInput').val('')
-						$('#custom3lNInput').removeAttr('lay-verify')
-						$('#custom3lLInput').removeAttr('lay-verify')
-						$('#custom3mIInput').removeAttr('lay-verify')
-						$('#custom3mPInput').removeAttr('lay-verify')
-						$('#custom3mYInput').removeAttr('lay-verify')
-						$('.card_fListli').eq(2).hide()
-					} else if (data.value == 1) {
-						$('.card_fListli').eq(2).show()
-						$('.custom3B').show()
-						$('.custom3-link').show()
-						$('.custom3-miniapp').hide()
-						$('#custom3lNInput').attr('lay-verify', 'entryname')
-						$('#custom3lLInput').attr('lay-verify', 'customlLInput')
-						$('#custom3mIInput').removeAttr('lay-verify')
-						$('#custom3mPInput').removeAttr('lay-verify')
-						$('#custom3mYInput').attr('lay-verify', 'guideTips')
-					} else if (data.value == 2) {
-						$('.card_fListli').eq(2).show()
-						$('.custom3B').show()
-						$('.custom3-link').hide()
-						$('.custom3-miniapp').show()
-						$('#custom3lNInput').attr('lay-verify', 'entryname')
-						$('#custom3lLInput').removeAttr('lay-verify')
-						$('#custom3mIInput').attr('lay-verify', 'custommIInput')
-						$('#custom3mPInput').attr('lay-verify', 'custommPInput')
-						$('#custom3mYInput').attr('lay-verify', 'guideTips')
-					}
-				});
-				$("#custom3lNInput").on("input", function(e) {
-					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(2).find('p').html('自定义入口三')
-					} else {
-						$('.card_fListli').eq(2).find('p').html(e.delegateTarget.value)
-					}
-				});
-				$("#custom3mYInput").on("input", function(e) {
-					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(2).find('span').html('')
-					} else {
-						$('.card_fListli').eq(2).find('span').html(e.delegateTarget.value)
-					}
-				});
-				// 自定义入口四
-				form.on('radio(customFour)', function(data) {
-					if (data.value == 0) {
-						$('.customFourB').hide()
-						$('#customFourlNInput').val('')
-						$('.card_fListli').eq(3).children('p').html('自定义入口四')
-					} else if (data.value == 1) {
-						$('.customFourB').show()
-						$('.customFour-link').show()
-						$('.customFour-miniapp').hide()
-						// $('.card_fListli').eq(2).children('p').html()
-					} else if (data.value == 2) {
-						$('.customFourB').show()
-						$('.customFour-link').hide()
-						$('.customFour-miniapp').show()
-						// $('.card_fListli').eq(2).children('p').html()
-					}
-				});
-				$("#customFourlNInput").on("input", function(e) {
-					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(3).children('p').html('自定义入口四')
-					} else {
-						$('.card_fListli').eq(3).children('p').html(e.delegateTarget.value)
-					}
-				});
 
 				/*---------- Input监听 ----------*/
 				ltname()
@@ -1288,98 +920,11 @@
 				//表单初始赋值
 				function setcardCon(cardCon) {
 					form.val('basic', {
-						"subtitle": cardCon.subtitle,
-						"codeType": '' + cardCon.codeType + '',
-						"custom1": '' + cardCon.customs[0].customState + '',
-						"custom1lNInput": cardCon.customs[0].customName,
-						"custom1lLInput": cardCon.customs[0].customLink,
-						"custom1mIInput": cardCon.customs[0].appletLink,
-						"custom1mPInput": cardCon.customs[0].appletId,
-						"custom1mYInput": cardCon.customs[0].leadingInfo,
-						"custom2": '' + cardCon.customs[1].customState + '',
-						"custom2lNInput": cardCon.customs[1].customName,
-						"custom2lLInput": cardCon.customs[1].customLink,
-						"custom2mIInput": cardCon.customs[1].appletLink,
-						"custom2mPInput": cardCon.customs[1].appletId,
-						"custom2mYInput": cardCon.customs[1].leadingInfo,
-						"custom3": '' + cardCon.customs[2].customState + '',
-						"custom3lNInput": cardCon.customs[2].customName,
-						"custom3lLInput": cardCon.customs[2].customLink,
-						"custom3mIInput": cardCon.customs[2].appletLink,
-						"custom3mPInput": cardCon.customs[2].appletId,
-						"custom3mYInput": cardCon.customs[2].leadingInfo,
+
 					})
 					ltname()
 					layer.closeAll('loading');
 				}
-				//监听提交
-				form.on('submit(update)', function(data) {
-					customs = []
-					var data = data.field
-					// layer.alert(JSON.stringify(data.field), {
-					//  title: '最终的提交信息'
-					// })
-					for (var i = 1; i < 4; i++) {
-						var customNamel = new Object()
-						customNamel.customNo = i
-						customNamel.customState = data['custom' + i]
-						customNamel.customName = data['custom' + i + 'lNInput']
-						customNamel.customLink = data['custom' + i + 'lLInput']
-						customNamel.leadingInfo = data['custom' + i + 'mYInput']
-						customNamel.appletId = data['custom' + i + 'mIInput']
-						customNamel.appletLink = data['custom' + i + 'mPInput']
-						customs.push(customNamel)
-					}
-					data.customs = customs
-					data.imageTexts = imageTexts
-
-					var arrc = new Array();
-					var arrm = new Array();
-					$("input:checkbox[name='columnDisplay']:checked").each(function(i) {
-						arrc[i] = $(this).val();
-					});
-					$("input:checkbox[name='merchantService']:checked").each(function(i) {
-						arrm[i] = $(this).val();
-					});
-					data.columnDisplay = arrc.join('||');
-					data.merchantService = arrm.join('||');
-					data.institutionNumber = insNumber
-					data.merchantNumber = merNumber
-					data.wxCardNo = wxCardNo
-					// data.applyShops = shopNumbers
-					data.applyShops = []
-					if (shopNumbers != '') {
-						data.shopJurisdiction = 1
-					} else {
-						data.shopJurisdiction = 0
-					}
-					console.log(data)
-					layer.load(2, {
-						shade: 0.5
-					});
-
-					// 发送请求
-					$.ajax({
-						type: "post",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateWCard,
-						data: JSON.stringify(data),
-						dataType: "json",
-						headers: {
-							"Content-Type": "application/json"
-						},
-						success: function(data) {
-							if (data.code === 1000) {
-								layer.closeAll('loading');
-								parent.layer.msg(data.msg)
-								location.replace(location.href)
-							} else {
-								layer.closeAll('loading');
-								parent.layer.msg(data.msg)
-							}
-						}
-					});
-					return false;
-				});
 				//监听提交
 				form.on('submit(add)', function(data) {
 					customs = []
@@ -1460,8 +1005,13 @@
 			})
 
 			function ltname() {
-				$('.ltNamepv').text($("#ltName").val())
+				$('.ltN').text($("#ltName").val())
+				$('.ltNamepv').text($("#ltNamefu").val())
 				$("#ltName").on("input", function(e) {
+					//获取input输入的值
+					$('.ltN').text(e.delegateTarget.value)
+				});
+				$("#ltNamefu").on("input", function(e) {
 					//获取input输入的值
 					$('.ltNamepv').text(e.delegateTarget.value)
 				});

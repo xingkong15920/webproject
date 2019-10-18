@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+			.layui-table-cell {
+				height: auto;
+			}
+		</style>
+	</head>
+
+	<body class="iframe_index_1">
+		<div class="x-body iframe_index_1_con">
+			<div class="demoTable layui-form x-so">
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="优惠券标题" name="cpName" id="cpName">
+				</div>
+				<div class="layui-input-inline">
+					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
+					<button class="layui-btn" data-type="pullCP"><i class="layui-icon"></i>同步</button>
+				</div>
+			</div>
+			<table class="layui-hide" id="cpList" lay-filter="cpList"></table>
+			<div class="demoTable" style="width: 100%;display: flex;justify-content: flex-end;align-items: center;">
+				<a class="layui-btn" data-type="pullCP">同步</a>
+				<a class="layui-btn layui-btn-primary" data-type="closeIndex" style="margin-left: 10px;">取消</a>
+			</div>
+		</div>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="pullaction">同步</a>
+		</script>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
+			}
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var startDate = fun_date(-6);
+			var endDate = fun_date(0);
+			var nowTime = new Date().valueOf();
+			var dataO = new Object();
+			dataO.merchantNumber = merNumber
+			layui.use(['table', 'laydate', 'form'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					form = layui.form,
+					laydate = layui.laydate;
+
+				layer.load(2, {
+					shade: 0.5
+				});
+
+				// 选择日期插件  
+				laydate.render({
+					elem: '#startendTime',
+					type: 'date',
+					range: true,
+					value: fun_date(-6) + ' - ' + fun_date(0),
+				});
+				//方法级渲染
+				table.render({
+					elem: '#cpList',
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucehrListForWx +
+						'?merchantNumber=' + merNumber,
+					method: "get",
+					height: "full-176",
+					page: {
+						limit: 50,
+					},
+					id: 'cplist_pull',
+					response: {
+						"statusCode": "1000", //解析接口状态
+					},
+					parseData: function(res) {
+						if (res.data == null) {
+							return
+						}
+						if (res.data == '查询数据为空') {
+							return
+						}
+						return {
+							"code": res.code,
+							"count": res.data.total_num,
+							"data": res.data.result,
+						}
+					},
+					cols: [
+						[{
+							type: 'checkbox'
+						}, {
+							field: 'title',
+							title: '优惠券标题',
+							align: 'center',
+							minWidth: 180,
+							templet: function(data) {
+								if (data.title) {
+									return data.title
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'card_type',
+							title: '卡券类型',
+							align: 'center',
+							minWidth: 120,
+						}, {
+							field: 'id',
+							title: '优惠券id',
+							align: 'center',
+							minWidth: 280,
+						}, {
+							field: 'total_quantity',
+							title: '总库存',
+							align: 'center',
+							minWidth: 180,
+						}, {
+							field: 'quantity',
+							title: '剩余库存',
+							align: 'center',
+							minWidth: 180,
+						}, {
+							field: 'date_info',
+							title: '有效期',
+							align: 'center',
+							sort: true,
+							minWidth: 320,
+							templet: function(data) {
+								if (data.date_info) {
+									return data.date_info
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'operation',
+							title: '操作',
+							align: 'center',
+							toolbar: "#tool",
+							minWidth: 150
+						}]
+					],
+					done: function(res, curr, count) {
+						// console.log(res)
+						layer.closeAll()
+					}
+				});
+
+				//监听工具条
+				table.on('tool(cpList)', function(obj) {
+					var data = obj.data;
+					if (obj.event === 'pullaction') {
+						layer.load(2, {
+							shade: 0.5
+						});
+						var newO = new Object(),
+							cardLi = []
+						newO.merchantNumber = merNumber
+						newO.institutionNumber = JSON.stringify(insNumber)
+						newO.cardIds = data.id.split('|||')
+						console.log(JSON.stringify(newO))
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWeChatVtoLocal,
+							data: JSON.stringify(newO),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code === 1000) {
+									var index = parent.layer.getFrameIndex(window.name);
+									parent.layer.close(index)
+									parent.layer.msg('同步成功 ' + data.data.stotal + ' 条！<br>失败 ' + data.data.ftotal + ' 条')
+									parent.layer.table.reload('cplist')
+								} else {
+									layer.msg(data.msg)
+								}
+							}
+						});
+					}
+				});
+
+				// 根據條件重载表格
+				var $ = layui.$,
+					active = {
+						reload: function() {
+							layer.load(2, {
+								shade: [0.4, '#393D49']
+							})
+							// 获取上面查询框的值
+							var cpName = $('#cpName')
+							//执行重载
+							table.reload('cplist_pull', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									cpName: cpName.val(),
+								}
+							});
+							layer.closeAll()
+						},
+						pullCP: function() {
+							layer.load(2, {
+								shade: 0.5
+							});
+							var checkStatus = table.checkStatus('cplist_pull'),
+								data = checkStatus.data,
+								idList = [];
+							layui.each(data, function(index, item) {
+								idList.push(item.id)
+							})
+							console.log(idList)
+							var newO = new Object(),
+								cardLi = []
+							newO.merchantNumber = merNumber
+							newO.institutionNumber = JSON.stringify(insNumber)
+							newO.cardIds = idList
+							$.ajax({
+								type: "post",
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWeChatVtoLocal,
+								data: JSON.stringify(newO),
+								dataType: "json",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								success: function(data) {
+									if (data.code === 1000) {
+										var index = parent.layer.getFrameIndex(window.name);
+										parent.layer.close(index)
+										parent.layer.msg('同步成功 ' + data.data.stotal + ' 条！<br>失败 ' + data.data.ftotal + ' 条')
+										parent.layer.table.reload('cplist')
+									} else {
+										layer.msg(data.msg)
+									}
+								}
+							});
+						},
+						closeIndex: function() {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index)
+						},
+					};
+
+				$('.demoTable .layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
+			});
+		</script>
+	</body>
+
+</html>
