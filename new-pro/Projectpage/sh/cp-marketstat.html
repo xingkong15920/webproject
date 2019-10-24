@@ -211,7 +211,7 @@
 							"statisticalType": 0,
 							"status": 0,
 						},
-						method: "get",
+						method: "post",
 						height: 'full-235',
 						page: true,
 						id: 'report2',
@@ -225,87 +225,49 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.orders,
+								"data": res.data.List,
 							}
 						},
 						cols: [
 							[{
-									field: 'headImg',
-									title: '订单号/消费时间',
-									align: 'center',
-									width: 200,
-									templet: function(data) {
-										return data.orderNumber + '<br>' + data.orderTime
+								field: 'statisticsDate',
+								title: '日期',
+								align: 'center',
+								minWidth: 200,
+							}, {
+								field: 'voucherName',
+								title: '优惠券标题',
+								align: 'center',
+								minWidth: 150
+							}, {
+								field: 'voucheruse',
+								title: '优惠券类型',
+								align: 'center',
+								templet: function(data) {
+									switch (data.voucheruse) {
+										case 0:
+											return '折扣卷'
+											break;
+										case 1:
+											return '代金卷'
+											break;
+										case 2:
+											return '兑换卷'
+											break;
 									}
-								}, {
-									field: 'shopName',
-									title: '充值门店',
-									align: 'center',
-									width: 150
-								}, {
-									field: 'money',
-									title: '充值金额',
-									align: 'center',
-									width: 100
-								}, {
-									field: 'giveMoney',
-									title: '赠送金额',
-									align: 'center',
-									width: 100
 								},
-								// {
-								// 	field: 'cell',
-								// 	title: '开卡费',
-								// 	align: 'center',
-								// 	width: 100
-								// }, 
-								{
-									field: 'orderState',
-									title: '充值类型',
-									align: 'center',
-									width: 120,
-									templet: function(data) {
-										switch (data.orderState) {
-											case 0:
-												return '正常充值'
-												break;
-											case 1:
-												return '人工变更'
-												break;
-										}
-									}
-								}, {
-									field: 'orderState',
-									title: '充值方式',
-									align: 'center',
-									width: 120,
-									templet: function(data) {
-										switch (data.payType) {
-											case 0:
-												return '现金'
-												break;
-											case 1:
-												return '微信'
-												break;
-											case 2:
-												return '支付宝'
-												break;
-										}
-									}
-								}, {
-									field: 'clerkName',
-									title: '操作人',
-									align: 'center',
-									width: 100,
-									templet: function(data) {
-										if (data.clerkName == null) {
-											return 'Admin'
-										} else {
-											return data.clerkName
-										}
-									}
-								}
-							]
+								minWidth: 100
+							}, {
+								field: 'voucherReceive',
+								title: '领取数量',
+								align: 'center',
+								minWidth: 100
+							}, {
+								field: 'voucherVerification',
+								title: '核销数量',
+								align: 'center',
+								minWidth: 100
+							}]
 						],
 						done: function(res, curr, count) {
 							layer.closeAll('loading');
@@ -331,7 +293,7 @@
 							"statisticalType": 0,
 							"status": 2,
 						},
-						method: "get",
+						method: "post",
 						height: 'full-235',
 						page: true,
 						id: 'report3',
@@ -345,53 +307,25 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.integralInfos,
+								"data": res.data.List,
 							}
 						},
 						cols: [
 							[{
-								field: 'changeTime',
-								title: '变动时间',
+								field: 'statisticsDate',
+								title: '日期',
 								align: 'center',
-								width: 165
+								minWidth: 200,
 							}, {
-								field: 'changeIntegral',
-								title: '变动积分',
+								field: 'voucherReceive',
+								title: '领取数量',
 								align: 'center',
+								minWidth: 100
 							}, {
-								field: 'changeType',
-								title: '变动类型',
+								field: 'voucherVerification',
+								title: '核销数量',
 								align: 'center',
-								templet: function(data) { //0后台增加、1后台减少、2积分抵现、3充值赠送、4消费赠送
-									switch (data.changeType) {
-										case 0:
-											return '后台增加'
-											break;
-										case 1:
-											return '后台减少'
-											break;
-										case 2:
-											return '积分抵现'
-											break;
-										case 3:
-											return '充值赠送'
-											break;
-										case 4:
-											return '消费赠送'
-											break;
-									}
-								}
-							}, {
-								field: 'clerkName',
-								title: '操作人',
-								align: 'center',
-								templet: function(data) {
-									if (data.clerkName == null) {
-										return 'Admin'
-									} else {
-										return data.clerkName
-									}
-								}
+								minWidth: 100
 							}]
 						],
 						done: function(res, curr, count) {
@@ -418,7 +352,7 @@
 							"statisticalType": 1,
 							"status": 1,
 						},
-						method: "get",
+						method: "post",
 						height: 'full-235',
 						page: true,
 						id: 'report4',
@@ -432,48 +366,35 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.memberList,
+								"data": res.data.List,
 							}
 						},
 						cols: [
 							[{
-								field: 'headImg',
-								title: '订单号/退款时间',
+								field: 'statisticsDate',
+								title: '日期',
 								align: 'center',
-								width: 200,
-								templet: function(data) {
-									return data.memberNo + '<br>' + data.registerTime
-								}
+								minWidth: 200,
 							}, {
-								field: 'name',
-								title: '退款门店',
+								field: 'voucherName',
+								title: '优惠券标题',
 								align: 'center',
-								width: 150
+								minWidth: 150
 							}, {
-								field: 'nickName',
-								title: '订单金额',
+								field: 'money',
+								title: '优惠券类型',
 								align: 'center',
-								width: 100
+								minWidth: 100
 							}, {
-								field: 'memberNo',
-								title: '退款金额',
+								field: 'voucherReceive',
+								title: '领取数量',
 								align: 'center',
-								width: 100
+								minWidth: 100
 							}, {
-								field: 'cell',
-								title: '退款状态',
+								field: 'voucherVerification',
+								title: '核销数量',
 								align: 'center',
-								width: 100
-							}, {
-								field: 'allBalance',
-								title: '操作人',
-								align: 'center',
-								width: 100,
-								templet: function(data) {
-									if (data.clerkName == null) {
-										return 'Admin'
-									}
-								}
+								minWidth: 100
 							}]
 						],
 						done: function(res, curr, count) {
@@ -500,7 +421,7 @@
 							"statisticalType": 1,
 							"status": 3,
 						},
-						method: "get",
+						method: "post",
 						height: 'full-235',
 						page: true,
 						id: 'report5',
@@ -514,48 +435,25 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.memberList,
+								"data": res.data.List,
 							}
 						},
 						cols: [
 							[{
-								field: 'headImg',
-								title: '订单号/退款时间',
+								field: 'statisticsDate',
+								title: '日期',
 								align: 'center',
-								width: 200,
-								templet: function(data) {
-									return data.memberNo + '<br>' + data.registerTime
-								}
+								minWidth: 200,
 							}, {
-								field: 'name',
-								title: '退款门店',
+								field: 'voucherReceive',
+								title: '领取数量',
 								align: 'center',
-								width: 150
+								minWidth: 100
 							}, {
-								field: 'nickName',
-								title: '订单金额',
+								field: 'voucherVerification',
+								title: '核销数量',
 								align: 'center',
-								width: 100
-							}, {
-								field: 'memberNo',
-								title: '退款金额',
-								align: 'center',
-								width: 100
-							}, {
-								field: 'cell',
-								title: '退款状态',
-								align: 'center',
-								width: 100
-							}, {
-								field: 'allBalance',
-								title: '操作人',
-								align: 'center',
-								width: 100,
-								templet: function(data) {
-									if (data.clerkName == null) {
-										return 'Admin'
-									}
-								}
+								minWidth: 100
 							}]
 						],
 						done: function(res, curr, count) {
