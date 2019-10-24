@@ -45,6 +45,11 @@ var CmsConfig = {
 			//自动登录
 			Automaticlist: "login/automaticLogin",
 		},
+		// 会员卡
+		Card: {
+			// 获取会员卡分享链接
+			shareCard: "card/shareCard",
+		},
 
 		// 商户会员
 		Mervip: {
@@ -54,6 +59,12 @@ var CmsConfig = {
 			getImages: "server/getImages",
 			// 取消授权
 			cancelAuthorizet: "authorize/cancelAuthorizet",
+			// 会员充值
+			apppay: "recharge/pay",
+			// 撤销充值订单
+			updateStateByOrderNo: "recharge/updateStateByOrderNo",
+			// 撤销消费订单
+			updateConStateByOrderNo: "consumption/updateConStateByOrderNo",
 
 			// 商户会员卡
 			// 添加会员卡
@@ -83,6 +94,10 @@ var CmsConfig = {
 			getIsAuthorization: "aliCard/getIsAuthorization",
 			// 获取商户授权链接
 			getAppAuthUrl: "aliCard/getAppAuthUrl",
+			// 获取APPID
+			getAliAppId: "aliCard/getAliAppId",
+			// 查询用户是否有会员卡
+			userIsGetCard: "aliCard/userIsGetCard",
 			// 商户授权回调
 			memberChantCallBack: "aliCard/memberChantCallBack",
 			// 查询卡模板信息
@@ -119,6 +134,9 @@ var CmsConfig = {
 			getDefaultGrade: "memberGrade/getDefaultGrade",
 			// 修改默认等级信息
 			updateDefaultGrade: "memberGrade/updateDefaultGrade",
+			// 根据手机号查询会员详情
+			getMemDetailsByPhone: "memberManage/getMemDetailsByPhone",
+
 			// 充值设置
 			// 充值-添加充值设置
 			addSet: "rechargeSet/addSet",
@@ -132,6 +150,13 @@ var CmsConfig = {
 			updateSet: "rechargeSet/updateSet",
 			// 充值-删除充值设置
 			deleteSet: "rechargeSet/deleteSet",
+
+			// 消费设置
+			// 消费-查询消费记录
+			getRecord: "consumption/getRecord",
+			// 消费-查询消费汇总
+			consumption: "census/consumption",
+
 			// 折扣设置
 			// 折扣-添加折扣设置
 			addZSet: "discountSet/addSet",
@@ -202,6 +227,8 @@ var CmsConfig = {
 			getRefcardTurs: "turnover/getRefcardTurs",
 			// 查询积分流水
 			getIntegralTurs: "turnover/getIntegralTurs",
+			// 查询消费流水
+			getConTurnovers: "turnover/getConTurnovers",
 
 			// 营销活动
 			// 添加营销活动
@@ -246,20 +273,32 @@ var CmsConfig = {
 			delVoucher: "voucher/delVoucher",
 			// 获取商户下优惠券列表
 			getVoucherList: "voucher/getVoucherList",
+			// 优惠券上下架
+			updateVoucherShelf: "voucher/updateVoucherShelf",
 			// 查询优惠券领取记录
 			getVoucherRecord: "record/getRecord",
+			// 查询优惠券核销记录
+			selCancelCerification: "record/selCancelCerification",
 			// 拉取优惠券
 			getVoucehrListForWx: "synVoucher/getVoucehrListForWx",
 			// 优惠券同步到本地
 			getWeChatVtoLocal: "synVoucher/getWeChatVtoLocal",
 			// 优惠券同步到微信
 			synVoucherForWx: "synVoucher/synVoucherForWx",
+			// 获取微信领卡连接
+			getVoucehrListLink: "synVoucher/getVoucehrListLink",
+			// 查询优惠券绑定的店铺列表
+			getVoucherShopList: "voucher/getVoucherShopList",
 			// 查询渠道列表
 			getDeliveryList: "voucher/getDeliveryList",
 			// 添加渠道
 			inserNextDelivery: "voucher/inserNextDelivery",
 			// 删除渠道
 			delDelivery: "voucher/delDelivery",
+			// 门店统计
+			statisticsshop: "statistics/shop",
+			// 优惠券营销统计
+			detailedReports: "statistics/detailedReports",
 
 			// 海报设置
 			// 查询海报列表

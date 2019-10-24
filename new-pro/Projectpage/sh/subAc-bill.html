@@ -123,41 +123,97 @@
 									title: '创建时间',
 									align: 'center',
 									minWidth: 160,
+									templet: function(data) {
+										if (data.insertTime) {
+											return data.insertTime
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'fzOrderNumber',
 									title: '分账单编号',
 									align: 'center',
 									minWidth: 240,
+									templet: function(data) {
+										if (data.fzOrderNumber) {
+											return data.fzOrderNumber
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'orderNumber',
 									title: '原订单编号',
 									align: 'center',
 									minWidth: 260,
+									templet: function(data) {
+										if (data.orderNumber) {
+											return data.orderNumber
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'shopName',
 									title: '门店',
 									align: 'center',
 									minWidth: 160,
+									templet: function(data) {
+										if (data.shopName) {
+											return data.shopName
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'name',
 									title: '分销人姓名',
 									align: 'center',
 									minWidth: 130,
+									templet: function(data) {
+										if (data.name) {
+											return data.name
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'tell',
 									title: '分销人手机号',
 									align: 'center',
 									minWidth: 130,
+									templet: function(data) {
+										if (data.tell) {
+											return data.tell
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'gradeName',
 									title: '分销人等级',
 									align: 'center',
 									minWidth: 130,
+									templet: function(data) {
+										if (data.gradeName) {
+											return data.gradeName
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'dstributionType',
 									title: '分销人类型',
 									align: 'center',
 									minWidth: 130,
+									templet: function(data) {
+										if (data.dstributionType) {
+											return data.dstributionType
+										} else {
+											return '--'
+										}
+									}
 								}, {
 									field: 'orderState',
 									title: '分账类型',
@@ -182,7 +238,11 @@
 									align: 'center',
 									minWidth: 100,
 									templet: function(data) {
-										return '¥ ' + data.transactionAmount
+										if (data.transactionAmount) {
+											return '¥ ' + data.transactionAmount
+										} else {
+											return '--'
+										}
 									}
 								}, {
 									field: 'amount',
@@ -190,7 +250,11 @@
 									align: 'center',
 									minWidth: 100,
 									templet: function(data) {
-										return '¥ ' + data.amount
+										if (data.amount) {
+											return '¥ ' + data.amount
+										} else {
+											return '--'
+										}
 									}
 								},
 								// {
@@ -223,12 +287,21 @@
 									title: '分账时间',
 									align: 'center',
 									minWidth: 160,
+									templet: function(data) {
+										if (data.SeparateAccountsTime) {
+											return data.SeparateAccountsTime
+										} else {
+											return '--'
+										}
+									}
 								}
 							]
 						],
 						done: function(res, curr, count) {
 							console.log(res)
 							layer.closeAll()
+							var tb = $("div [class='layui-form layui-border-box layui-table-view'] table tbody")[0];
+							mc(tb, 0, 0, 0);
 							if (!res.data) {
 								// layer.msg('查询数据为空！')
 							}
@@ -322,6 +395,39 @@
 				}
 				return a + '-' + b + '-' + c
 			}
+
+			function mc(tb, startRow, endRow, col) {
+				///合并表格相同行的内容  
+				///tableId：表格ID（最好是tbody，避免把表尾给合并了)  
+				///startRow：起始行，没有标题就从0开始  
+				///endRow：终止行，此参数是递归时检查的范围，一开始时会自动赋值为最后一行  
+				///col：当前处理的列 
+				if (col >= tb.rows[0].cells.length) {
+					return;
+				}
+				//当检查第0列时检查所有行 
+				if (col == 0) {
+					endRow = tb.rows.length - 1;
+				}
+				for (var i = startRow; i < endRow; i++) {
+					//程序是自左向右合并 
+					if (tb.rows[startRow].cells[col].innerHTML == tb.rows[i + 1].cells[col].innerHTML) {
+						//如果相同则删除下一行的第0列单元格  
+						tb.rows[i + 1].cells[col].style.display = 'none';
+						//更新rowSpan属性  
+						tb.rows[startRow].cells[col].rowSpan = (tb.rows[startRow].cells[col].rowSpan | 0) + 1;
+						//当循环到终止行前一行并且起始行和终止行不相同时递归(因为上面的代码已经检查了i+1行，所以此处只到endRow-1)   
+						if (i == endRow - 1 && startRow != endRow) {
+							mc(tb, startRow, endRow, col + 1);
+						}
+					} else {
+						//起始行，终止行不变，检查下一列
+						mc(tb, startRow, i, col + 1);
+						//增加起始行 
+						startRow = i + 1;
+					}
+				}
+			};
 		</script>
 	</body>
 

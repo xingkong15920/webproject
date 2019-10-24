@@ -39,6 +39,18 @@
 				border: none !important;
 				background: #009688;
 			}
+
+			.layui-form.shai {
+				margin: 20px 20px 0;
+			}
+
+			.reportform {
+				display: none;
+			}
+
+			.layui-tab-item {
+				padding: 0 20px;
+			}
 		</style>
 	</head>
 
@@ -51,21 +63,61 @@
 				<li>明细月报表</li>
 				<li>汇总月报表</li>
 			</ul>
+			<div class="layui-form shai">
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="开始日" id="startendTime" autocomplete="off">
+				</div>
+				<div class="layui-input-inline">
+					<div class="layui-input-inline reportform report1form" style="display: block;">
+						<div class="layui-input-inline">
+							<button class="layui-btn" data-type="reload1"><i class="layui-icon">&#xe615;</i></button>
+						</div>
+					</div>
+					<div class="layui-input-inline reportform report2form">
+						<div class="layui-input-inline text">
+							<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+							<input class="layui-input" type="text" id="voucherName2" placeholder="优惠券标题" autocomplete="off">
+						</div>
+						<div class="layui-input-inline">
+							<button class="layui-btn" data-type="reload2"><i class="layui-icon">&#xe615;</i></button>
+						</div>
+					</div>
+					<div class="layui-input-inline reportform report3form">
+						<div class="layui-input-inline">
+							<button class="layui-btn" data-type="reload3"><i class="layui-icon">&#xe615;</i></button>
+						</div>
+					</div>
+					<div class="layui-input-inline reportform report4form">
+						<div class="layui-input-inline text">
+							<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+							<input class="layui-input" type="text" id="voucherName4" placeholder="优惠券标题" autocomplete="off">
+						</div>
+						<div class="layui-input-inline">
+							<button class="layui-btn" data-type="reload4"><i class="layui-icon">&#xe615;</i></button>
+						</div>
+					</div>
+					<div class="layui-input-inline reportform report5form">
+						<div class="layui-input-inline">
+							<button class="layui-btn" data-type="reload5"><i class="layui-icon">&#xe615;</i></button>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="layui-tab-content">
 				<div class="layui-tab-item layui-show">
-					<table class="layui-hide" id="saleRec" lay-filter="saleRec"></table>
+					<table class="layui-hide" id="report1box" lay-filter="report1box"></table>
 				</div>
 				<div class="layui-tab-item">
-					<table class="layui-hide" id="saleRec1" lay-filter="saleRec1"></table>
+					<table class="layui-hide" id="report2box" lay-filter="report2box"></table>
 				</div>
 				<div class="layui-tab-item">
-					<table class="layui-hide" id="topupRec" lay-filter="topupRec"></table>
+					<table class="layui-hide" id="report3box" lay-filter="report3box"></table>
 				</div>
 				<div class="layui-tab-item">
-					<table class="layui-hide" id="inteRec" lay-filter="inteRec"></table>
+					<table class="layui-hide" id="report4box" lay-filter="report4box"></table>
 				</div>
 				<div class="layui-tab-item">
-					<table class="layui-hide" id="refundRec" lay-filter="refundRec"></table>
+					<table class="layui-hide" id="report5box" lay-filter="report5box"></table>
 				</div>
 			</div>
 		</div>
@@ -88,21 +140,21 @@
 					laydate = layui.laydate,
 					form = layui.form;
 
-				saleList()
+				report1()
 				//消费记录
-				function saleList() {
+				function report1() {
 					layer.closeAll();
 					layer.load(2, {
 						shade: 0.5
 					});
 					table.render({
-						elem: '#saleRec',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCRecord + '?memberNo=' +
-							memberNo,
+						elem: '#report1box',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.statisticsshop + '?merchantNum=' +
+							merNumber,
 						method: "get",
-						height: 'full-235',
+						height: 'full-170',
 						page: true,
-						id: 'vipList',
+						id: 'report1',
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -113,74 +165,32 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.orders,
+								"data": res.data.list,
 							}
 						},
 						cols: [
 							[{
-								field: 'headImg',
-								title: '订单号/消费时间',
-								align: 'center',
-								width: 185,
-								templet: function(data) {
-									return data.orderNumber + '<br>' + data.orderTime
-								}
-							}, {
 								field: 'shopName',
-								title: '消费门店',
+								title: '门店名称',
 								align: 'center',
-								width: 165
+								minWidth: 200,
 							}, {
-								field: 'money',
-								title: '订单金额',
+								field: 'voucherName',
+								title: '优惠券标题',
 								align: 'center',
-								width: 90
+								minWidth: 200,
 							}, {
-								field: 'payMoney',
-								title: '支付金额',
+								field: 'verification',
+								title: '核销数',
 								align: 'center',
-								width: 90
-							}, {
-								field: 'discountMoney',
-								title: '优惠金额',
-								align: 'center',
-								width: 90
-							}, {
-								field: 'payType',
-								title: '支付类型',
-								align: 'center',
-								width: 90,
-								templet: function(data) {
-									switch (data.payType) {
-										case 0:
-											return '钱包'
-											break;
-										case 1:
-											return '微信'
-											break;
-										case 2:
-											return '支付宝'
-											break;
-									}
-								}
-							}, {
-								field: 'allBalance',
-								title: '操作人',
-								align: 'center',
-								minWidth: 100,
-								templet: function(data) {
-									if (data.clerkName == null) {
-										return 'Admin'
-									} else {
-										return data.clerkName
-									}
-								}
+								minWidth: 200,
 							}]
 						],
 						done: function(res, curr, count) {
 							layer.closeAll('loading');
 							if (res.code == 1000) {
-								console.log(res.data)
+								// console.log(res.data)
+								alarmTableRowSpan('shopName', 1)
 							} else {
 								layer.msg(res.msg)
 							}
@@ -188,19 +198,23 @@
 					});
 				}
 				//充值记录
-				function topupList() {
+				function report2() {
 					layer.closeAll();
 					layer.load(2, {
 						shade: 0.5
 					});
 					table.render({
-						elem: '#topupRec',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getRRecord + '?memberNo=' +
-							memberNo,
+						elem: '#report2box',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.detailedReports + '?merchantNumber=' +
+							merNumber,
+						where: {
+							"statisticalType": 0,
+							"status": 0,
+						},
 						method: "get",
 						height: 'full-235',
 						page: true,
-						id: 'vipList',
+						id: 'report2',
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -296,7 +310,7 @@
 						done: function(res, curr, count) {
 							layer.closeAll('loading');
 							if (res.code == 1000) {
-								console.log(res.data)
+								// console.log(res.data)
 							} else {
 								layer.msg(res.msg)
 							}
@@ -304,19 +318,23 @@
 					});
 				}
 				//积分记录
-				function inteList() {
+				function report3() {
 					layer.closeAll();
 					layer.load(2, {
 						shade: 0.5
 					});
 					table.render({
-						elem: '#inteRec',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getIntegrals + '?memberNo=' +
-							memberNo,
+						elem: '#report3box',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.detailedReports + '?merchantNum=' +
+							merNumber,
+						where: {
+							"statisticalType": 0,
+							"status": 2,
+						},
 						method: "get",
 						height: 'full-235',
 						page: true,
-						id: 'vipList',
+						id: 'report3',
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -379,7 +397,7 @@
 						done: function(res, curr, count) {
 							layer.closeAll('loading');
 							if (res.code == 1000) {
-								console.log(res.data)
+								// console.log(res.data)
 							} else {
 								layer.msg(res.msg)
 							}
@@ -387,19 +405,23 @@
 					});
 				}
 				//退款记录
-				function refundList() {
+				function report4() {
 					layer.closeAll();
 					layer.load(2, {
 						shade: 0.5
 					});
 					table.render({
-						elem: '#refundRec',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMRefundTurnovers + '?memberNo=' +
-							memberNo + '&merchatNumber=' + merNumber,
+						elem: '#report4box',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.detailedReports + '?merchantNum=' +
+							merNumber,
+						where: {
+							"statisticalType": 1,
+							"status": 1,
+						},
 						method: "get",
 						height: 'full-235',
 						page: true,
-						id: 'vipList',
+						id: 'report4',
 						response: {
 							"statusCode": "1000", //解析接口状态
 						},
@@ -457,7 +479,89 @@
 						done: function(res, curr, count) {
 							layer.closeAll('loading');
 							if (res.code == 1000) {
-								console.log(res.data)
+								// console.log(res.data)
+							} else {
+								layer.msg(res.msg)
+							}
+						}
+					});
+				}
+				//退款记录
+				function report5() {
+					layer.closeAll();
+					layer.load(2, {
+						shade: 0.5
+					});
+					table.render({
+						elem: '#report5box',
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.detailedReports + '?merchantNum=' +
+							merNumber,
+						where: {
+							"statisticalType": 1,
+							"status": 3,
+						},
+						method: "get",
+						height: 'full-235',
+						page: true,
+						id: 'report5',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.memberList,
+							}
+						},
+						cols: [
+							[{
+								field: 'headImg',
+								title: '订单号/退款时间',
+								align: 'center',
+								width: 200,
+								templet: function(data) {
+									return data.memberNo + '<br>' + data.registerTime
+								}
+							}, {
+								field: 'name',
+								title: '退款门店',
+								align: 'center',
+								width: 150
+							}, {
+								field: 'nickName',
+								title: '订单金额',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'memberNo',
+								title: '退款金额',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'cell',
+								title: '退款状态',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'allBalance',
+								title: '操作人',
+								align: 'center',
+								width: 100,
+								templet: function(data) {
+									if (data.clerkName == null) {
+										return 'Admin'
+									}
+								}
+							}]
+						],
+						done: function(res, curr, count) {
+							layer.closeAll('loading');
+							if (res.code == 1000) {
+								// console.log(res.data)
 							} else {
 								layer.msg(res.msg)
 							}
@@ -469,29 +573,172 @@
 				element.on('tab(vipcenter)', function(data) {
 					switch (data.index) {
 						case 0:
-							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipList.html');
+							report1()
+							$('.report1form').show()
+							$('.report2form').hide()
+							$('.report3form').hide()
+							$('.report4form').hide()
+							$('.report5form').hide()
 							break;
 						case 1:
-							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipLevelList.html');
+							report2()
+							$('.report1form').hide()
+							$('.report2form').show()
+							$('.report3form').hide()
+							$('.report4form').hide()
+							$('.report5form').hide()
 							break;
 						case 2:
-							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipsetrec.html');
+							report3()
+							$('.report1form').hide()
+							$('.report2form').hide()
+							$('.report3form').show()
+							$('.report4form').hide()
+							$('.report5form').hide()
 							break;
 						case 3:
-							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipsetdiscount.html');
+							report4()
+							$('.report1form').hide()
+							$('.report2form').hide()
+							$('.report3form').hide()
+							$('.report4form').show()
+							$('.report5form').hide()
 							break;
 						case 4:
-							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipFollow.html');
-							break;
-						case 5:
-							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipPutway.html');
-							break;
-						default:
-							$(".layui-tab-item.layui-show").find("iframe").attr("src", 'vipList.html');
+							report5()
+							$('.report1form').hide()
+							$('.report2form').hide()
+							$('.report3form').hide()
+							$('.report4form').hide()
+							$('.report5form').show()
 							break;
 					}
 				});
+
+				// 根據條件重载表格
+				var $ = layui.$,
+					active = {
+						reload1: function() {
+							// 获取上面查询框的值
+							var startendTime = $('#startendTime');
+							//执行重载
+							table.reload('report1', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+								}
+							});
+						},
+						reload2: function() {
+							// 获取上面查询框的值
+							var voucherName = $('#voucherName2');
+							var startendTime = $('#startendTime');
+							//执行重载
+							table.reload('report2', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									voucherName: voucherName.val(),
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+								}
+							});
+						},
+						reload3: function() {
+							// 获取上面查询框的值
+							var startendTime = $('#startendTime');
+							//执行重载
+							table.reload('report3', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+								}
+							});
+						},
+						reload4: function() {
+							// 获取上面查询框的值
+							var voucherName = $('#voucherName4');
+							var startendTime = $('#startendTime');
+							//执行重载
+							table.reload('report4', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									voucherName: voucherName.val(),
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+								}
+							});
+						},
+						reload5: function() {
+							// 获取上面查询框的值
+							var startendTime = $('#startendTime');
+							//执行重载
+							table.reload('report5', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								},
+								where: {
+									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+								}
+							});
+						},
+					};
+				$('.layui-form .layui-btn').on('click', function() {
+					var type = $(this).data('type');
+					active[type] ? active[type].call(this) : '';
+				});
 			});
+
+			function alarmTableRowSpan(fieldName, index) {
+				var fixedNode = document.getElementsByClassName("layui-table-body")[index - 1];
+				if (!fixedNode) {
+					return false;
+				}
+				var child = fixedNode.getElementsByTagName("td");
+				var childFilterArr = [];
+				// 获取data-field属性为fieldName的td
+				for (var i = 0; i < child.length; i++) {
+					if (child[i].getAttribute("data-field") == fieldName) {
+						childFilterArr.push(child[i]);
+					}
+				}
+				// 获取td的个数和种类
+				var childFilterTextObj = {};
+				for (var i = 0; i < childFilterArr.length; i++) {
+					var childText = childFilterArr[i].textContent;
+					if (childFilterTextObj[childText] == undefined) {
+						childFilterTextObj[childText] = 1;
+					} else {
+						var num = childFilterTextObj[childText];
+						childFilterTextObj[childText] = num * 1 + 1;
+					}
+				}
+				// 给获取到的td设置合并单元格属性
+				for (var key in childFilterTextObj) {
+					var tdNum = childFilterTextObj[key];
+					var canRowSpan = true;
+					for (var i = 0; i < childFilterArr.length; i++) {
+						if (childFilterArr[i].textContent == key) {
+							if (canRowSpan) {
+								childFilterArr[i].setAttribute("rowspan", tdNum);
+								canRowSpan = false;
+							} else {
+								childFilterArr[i].style.display = "none";
+							}
+						}
+					}
+				}
+			}
 		</script>
 	</body>
 

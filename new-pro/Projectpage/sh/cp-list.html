@@ -18,6 +18,18 @@
 			.layui-table-cell {
 				height: auto;
 			}
+
+			.layui-form-switch {
+				width: 58px;
+			}
+
+			.layui-form-switch em {
+				top: -1px;
+			}
+
+			.layui-form-switch i {
+				top: 2px;
+			}
 		</style>
 	</head>
 
@@ -35,6 +47,15 @@
 			</div>
 			<table class="layui-hide" id="cpList" lay-filter="cpList"></table>
 		</div>
+		<script type="text/html" id="switchBar1">
+			<input type="checkbox" name="cashierCoupons" lay-skin="switch" lay-filter="cashierCoupons" lay-text="是|否" {{d.cashierCoupons==0 ? 'checked' : ''}}  data-voucherid="{{d.voucherID}}" value="{{d.cashierCoupons}}">
+		</script>
+		<script type="text/html" id="switchBar2">
+			<input type="checkbox" name="overlapping" lay-skin="switch" lay-filter="overlapping" lay-text="是|否" {{d.overlapping==0 ? 'checked' : ''}}  data-voucherid="{{d.voucherID}}" value="{{d.overlapping}}">
+		</script>
+		<script type="text/html" id="switchBar3">
+			<input type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="上架|下架" {{d.disable==0 ? 'checked' : ''}}  data-voucherid="{{d.voucherID}}" value="{{d.disable}}">
+		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="channel">渠道</a>
@@ -141,12 +162,14 @@
 											break;
 									}
 								}
-							}, {
-								field: 'voucherID',
-								title: '优惠券id',
-								align: 'center',
-								minWidth: 280,
-							}, {
+							},
+							// {
+							// 	field: 'voucherID',
+							// 	title: '优惠券id',
+							// 	align: 'center',
+							// 	minWidth: 280,
+							// }, 
+							{
 								field: 'voucherClass',
 								title: '卡券类型',
 								align: 'center',
@@ -169,7 +192,7 @@
 								minWidth: 120,
 								templet: function(data) {
 									if (data.putCount) {
-										return data.putCount
+										return data.putCount + ' / 张'
 									} else {
 										return '--'
 									}
@@ -194,12 +217,13 @@
 							// 	align: 'center',
 							// 	minWidth: 180,
 							// }, 
+							// {
+							// 	field: 'voucherDescribe',
+							// 	title: '内容',
+							// 	align: 'center',
+							// 	minWidth: 180,
+							// }, 
 							{
-								field: 'voucherDescribe',
-								title: '内容',
-								align: 'center',
-								minWidth: 180,
-							}, {
 								field: 'limitUseTimeType',
 								title: '有效期',
 								align: 'center',
@@ -207,58 +231,33 @@
 								templet: function(data) {
 									switch (data.limitUseTimeType) {
 										case 0:
-											return '领取后' + data.entryForce + '天后开始生效<br>生效后' + data.effectiveDay + '天内有效'
+											return '领取后' + data.effectiveDay + '天内有效'
 											break;
 										case 1:
 											return data.startTime + ' ~ ' + data.endTime
 											break;
 									}
 								}
-							}, {
-								field: 'cashierCoupons',
-								title: '是否允许送券',
-								align: 'center',
-								minWidth: 130,
-								templet: function(data) {
-									switch (data.cashierCoupons) {
-										case 0:
-											return '允许'
-											break;
-										case 1:
-											return '不允许'
-											break;
-									}
-								}
-							}, {
-								field: 'overlapping',
-								title: '是否叠加使用',
-								align: 'center',
-								minWidth: 120,
-								templet: function(data) {
-									switch (data.overlapping) {
-										case 0:
-											return '可叠加'
-											break;
-										case 1:
-											return '不可叠加'
-											break;
-									}
-								}
-							}, {
+							},
+							// {
+							// 	field: 'cashierCoupons',
+							// 	title: '是否允许送券',
+							// 	align: 'center',
+							// 	minWidth: 130,
+							// 	toolbar: "#switchBar1",
+							// }, {
+							// 	field: 'overlapping',
+							// 	title: '是否叠加使用',
+							// 	align: 'center',
+							// 	minWidth: 120,
+							// 	toolbar: "#switchBar2",
+							// }, 
+							{
 								field: 'disable',
 								title: '状态',
 								align: 'center',
 								minWidth: 100,
-								templet: function(data) {
-									switch (data.disable) {
-										case 0:
-											return '投放中'
-											break;
-										case 1:
-											return '已下架'
-											break;
-									}
-								}
+								toolbar: "#switchBar3",
 							}, {
 								field: 'insertTime',
 								title: '创建时间',
@@ -277,6 +276,83 @@
 						// console.log(res)
 						layer.closeAll()
 					}
+				});
+
+				form.on('switch(cashierCoupons)', function(data) {
+					console.log(data)
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					tjData.deliveryNo = data.elem.dataset.deliveryno,
+						tjData.merchantNumber = merNumber
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.setDefaultChannel,
+						data: JSON.stringify(tjData),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code == 1000) {
+								parent.layer.msg('更改成功')
+								layui.table.reload('putwayList')
+							} else {
+								layer.msg(data.msg)
+							}
+						}
+					});
+				});
+
+				form.on('switch(overlapping)', function(data) {
+					console.log(data)
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					tjData.deliveryNo = data.elem.dataset.deliveryno,
+						tjData.merchantNumber = merNumber
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.setDefaultChannel,
+						data: JSON.stringify(tjData),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code == 1000) {
+								parent.layer.msg('更改成功')
+								layui.table.reload('putwayList')
+							} else {
+								layer.msg(data.msg)
+							}
+						}
+					});
+				});
+
+				form.on('switch(disable)', function(data) {
+					console.log(data.elem.dataset.voucherid)
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					var tjData = new Object();
+					tjData.voucherIds = data.elem.dataset.voucherid.split('||')
+					tjData.institutionNumber = insNumber
+					tjData.merchantNumber = merNumber
+					tjData.disable = this.checked ? 0 : 1
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateVoucherShelf,
+						data: JSON.stringify(tjData),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code == 1000) {
+								parent.layer.msg('更改成功')
+								layui.table.reload('cplist')
+							} else {
+								layer.msg(data.msg)
+							}
+						}
+					});
 				});
 
 				//头工具栏事件
@@ -304,7 +380,7 @@
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPageCon(data.voucherID,data.weChatCardNo)
+								iframe.subPageCon(data.voucherID, data.weChatCardNo)
 							}
 						});
 					} else if (obj.event === 'channel') {

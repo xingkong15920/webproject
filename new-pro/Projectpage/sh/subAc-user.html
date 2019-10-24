@@ -37,7 +37,7 @@
 			<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="recEnabled" lay-skin="switch" lay-filter="recEnabled" lay-text="启用|禁用" {{d.disable==0 ? 'checked' : ''}}  data-gradeNo="{{d.gradeNo}}" value="{{d.defaultFlag}}">
+			<input type="checkbox" name="recEnabled" lay-skin="switch" lay-filter="recEnabled" lay-text="启用|禁用" {{d.disable==0 ? 'checked' : ''}}  data-gradeNo="{{d.gradeNo}}"  data-distributionNo="{{d.id}}" value="{{d.defaultFlag}}">
 		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -73,14 +73,13 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributorInfo?merchantNumber=' +
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributorList?merchantNumber=' +
 							userNumber,
 						where: {
-							
-							"fixedAccount":0,
-							"institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-							"name":"",
-							"tell":"",
+							"fixedAccount": 0,
+							"institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
+							"name": "",
+							"tell": "",
 						},
 						method: "post",
 						height: "full-124",
@@ -96,7 +95,7 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data":res.data.distributorInfos,
+								"data": res.data.distributorInfos,
 							}
 						},
 						cols: [
@@ -114,7 +113,7 @@
 								minWidth: 200
 							}, {
 								field: 'tell',
-								title:'分销人手机号',
+								title: '分销人手机号',
 								align: 'center',
 								minWidth: 220
 							}, {
@@ -122,7 +121,7 @@
 								title: '分销人等级',
 								align: 'center',
 								minWidth: 220,
-								
+
 							}, {
 								field: 'clerkName',
 								title: '分销人类型',
@@ -178,7 +177,7 @@
 						}
 					});
 				}
-				$('#addA').click(function(){
+				$('#addA').click(function() {
 					layer.open({
 						type: 2,
 						title: '添加分销人',
@@ -188,6 +187,33 @@
 						content: 'add-fxMan1.html'
 					});
 				})
+
+				form.on('switch(recEnabled)', function(data) {
+					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+					// var tjData = new Object();
+					// tjData.distributionNo = 
+					// tjData.disable = this.checked ? 0 : 1
+					var disableVal = this.checked ? 0 : 1
+					console.log(disableVal)
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/isDisdisable?distributionNo=' + data.elem.dataset.distributionno +
+							'&disable=' + disableVal,
+						// data: JSON.stringify(tjData),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code == 1000) {
+								parent.layer.msg('更改成功')
+								layui.table.reload('billlist')
+							} else {
+								layer.msg(data.msg)
+							}
+						}
+					});
+				});
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {
@@ -218,7 +244,7 @@
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
 					console.log(data)
-					if(obj.event === 'edit') { //编辑
+					if (obj.event === 'edit') { //编辑
 						layer.open({
 							type: 2,
 							title: '编辑',
@@ -234,8 +260,8 @@
 								iframe.subPage(data)
 							}
 						});
-					} else if(obj.event == 'delete'){
-						layer.confirm('确定删除此（'+ data.name +'）分销人吗？', {
+					} else if (obj.event == 'delete') {
+						layer.confirm('确定删除此（' + data.name + '）分销人吗？', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
@@ -250,18 +276,18 @@
 							// 发送请求
 							CmsUtility.postAjaxCall2(
 								//系统设置
-								CmsConfig.ServiceUrl.ApiRootUrlMeb +'accountManage/updatefixedAccount',
+								CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/updatefixedAccount',
 								addData,
-								function(data){
-									if(data.code == 1000){
-										
+								function(data) {
+									if (data.code == 1000) {
+
 										layer.msg('删除成功')
 										layui.table.reload('billlist');
-									}else{
+									} else {
 										layer.msg(data.msg)
 									}
 								},
-								function(data){
+								function(data) {
 									console.log('222')
 								}
 							)
@@ -298,18 +324,19 @@
 				}
 				return data
 			}
-			window.ewm = function (url){
+			window.ewm = function(url) {
 				console.log(123)
 				qrcode.makeCode(url);
-					layer.open({
-						type: 1,
-						shadeClose: true,
-						shade: 0.5,
-						title: false,
-						area: ['380px', '380px'],
-						content: $('.cardQrcode'),
-					});
+				layer.open({
+					type: 1,
+					shadeClose: true,
+					shade: 0.5,
+					title: false,
+					area: ['380px', '380px'],
+					content: $('.cardQrcode'),
+				});
 			}
+
 			function fun_date(aa) {
 				var date1 = new Date(),
 					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
@@ -328,7 +355,6 @@
 				}
 				return a + '-' + b + '-' + c
 			}
-
 		</script>
 	</body>
 
