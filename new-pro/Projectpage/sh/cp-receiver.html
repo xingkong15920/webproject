@@ -47,104 +47,8 @@
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			function verTime() {
-				var arr1 = $('#startendTime').val().split('-')[0];
-				var arr2 = $('#startendTime').val().split('-')[1];
-				arr1[1] = parseInt(arr1[1]);
-				arr1[2] = parseInt(arr1[2]);
-				arr2[1] = parseInt(arr2[1]);
-				arr2[2] = parseInt(arr2[2]);
-				var flag = true;
-				if (arr1[0] == arr2[0]) { //同年
-					if (arr2[1] - arr1[1] > 3) { //月间隔超过3个月
-						flag = false;
-					} else if (arr2[1] - arr1[1] == 3) { //月相隔3个月，比较日
-						if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
-							flag = false;
-						}
-					}
-				} else { //不同年
-					if (arr2[0] - arr1[0] > 1) {
-						flag = false;
-					} else if (arr2[0] - arr1[0] == 1) {
-						if (arr1[1] < 10) { //开始年的月份小于10时，不需要跨年
-							flag = false;
-						} else if (arr1[1] + 3 - arr2[1] < 12) { //月相隔大于3个月
-							flag = false;
-						} else if (arr1[1] + 3 - arr2[1] == 12) { //月相隔3个月，比较日
-							if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
-								flag = false;
-							}
-						}
-					}
-				}
-				if (!flag) {
-
-					return false;
-				} else {
-					return true;
-				}
-
-			}
-
-			function changeRes(data) {
-				return
-				if (data == null) {
-					return
-				}
-				if (res.data == '查询数据为空') {
-					return
-				}
-				for (var i = 0; i < data.length; i++) {
-					if (!data[i].weChatOrderTotalMoney) {
-						data[i].weChatOrderTotalMoneya = "-"
-					} else {
-						data[i].weChatOrderTotalMoneya = data[i].weChatOrderTotalMoney
-					}
-					if (!data[i].weChatTotalOrder) {
-						data[i].weChatTotalOrdera = "-"
-					} else {
-						data[i].weChatTotalOrdera = data[i].weChatTotalOrder
-					}
-					if (!data[i].alipayOrderTotalMoney) {
-						data[i].alipayOrderTotalMoneya = "-"
-					} else {
-						data[i].alipayOrderTotalMoneya = data[i].alipayOrderTotalMoney
-					}
-					if (!data[i].alipayTotalOrder) {
-						data[i].alipayTotalOrdera = "-"
-					} else {
-						data[i].alipayTotalOrdera = data[i].alipayTotalOrder
-					}
-				}
-				return data
-			}
-
-			function fun_date(aa) {
-				var date1 = new Date(),
-					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
-				var date2 = new Date(date1);
-				date2.setDate(date1.getDate() + aa);
-				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
-
-				var a = time2.split('-')[0],
-					b = time2.split('-')[1],
-					c = time2.split('-')[2]
-				if (b < 10) {
-					b = 0 + b
-				}
-				if (c < 10) {
-					c = 0 + c
-				}
-				return a + '-' + b + '-' + c
-			}
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var startDate = fun_date(-6);
-			var endDate = fun_date(0);
-			var nowTime = new Date().valueOf();
-			var dataO = new Object();
-			dataO.merchantNumber = merNumber
 			layui.use(['table', 'laydate', 'form'], function() {
 				var table = layui.table,
 					$ = layui.$,
@@ -158,70 +62,8 @@
 					range: true,
 					// value: fun_date(-6) + ' - ' + fun_date(0),
 				});
-				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getShopNames,
-					dataO,
-					function(data) {
-						var shopData = data.data
-						for (var i = 0; i < shopData.length; i++) {
-							$("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
-								shopData[i].shopName + '/' + shopData[i].shopNumber + "</option>");
-						}
-						form.render()
-					}
-				)
-				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getClerkList,
-					dataO,
-					function(data) {
-						var shopData = data.data
-						for (var i = 0; i < shopData.length; i++) {
-							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName +
-								"</option>");
-						}
-						form.render()
-					}
-				)
-				$('#baobiao').click(function() {
-					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
-						if (!verTime()) {
-							layer.msg('只能查询三个月以内数据')
-							return
-						}
-					}
-					var newData = new Object()
-					newData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-						newData.merchantNumber = '190221165543361',
-						newData.merchantName = JSON.parse(sessionStorage.getItem('userSh')).merchantName,
-						newData.startTime = $('#startendTime').val().split(' - ')[0],
-						newData.endTime = $('#startendTime').val().split(' - ')[1],
-						newData.billType = $('#billType').val()
-					layer.open({
-						type: 2,
-						title: '下载报表',
-						shade: 0.5,
-						area: ['30%', '30%'],
-						maxmin: false,
-						resize: false,
-						content: ['down-excel.html'],
-						success: function(layero, index) {
-							// 获取子页面的iframe
-							var iframe = window['layui-layer-iframe' + index];
-							// 向子页面的全局函数child传w参
-							iframe.subPage(newData, '2')
-						}
-					});
-					return
 
-				})
 				//方法级渲染
-				// function tableRender() {
-				if ($('#billType').val() == 0 || $('#billType').val() == 3) {
-					if (!verTime()) {
-						layer.msg('只能查询三个月以内数据')
-						return
-					}
-				}
 				var index = layer.load(2, {
 					shade: [0.4, '#393D49']
 				})
@@ -282,26 +124,26 @@
 								}
 							}
 						}, {
-							field: 'applicableSource',
+							field: 'channelSources',
 							title: '领取渠道',
 							align: 'center',
 							minWidth: 150,
 							templet: function(data) {
-								switch (data.voucherClass) { //0购买1生日有礼2分享有礼3消费有礼4开卡有礼
+								switch (data.channelSources) { //0支付即会员；1消费有礼；2分享有礼；3开卡有礼；4生日有礼
 									case 0:
-										return '购买'
+										return '支付即会员'
 										break;
 									case 1:
-										return '生日有礼'
+										return '消费有礼'
 										break;
 									case 2:
 										return '分享有礼'
 										break;
 									case 3:
-										return '消费有礼'
+										return '开卡有礼'
 										break;
 									case 4:
-										return '开卡有礼'
+										return '生日有礼'
 										break;
 								}
 							}
@@ -368,6 +210,25 @@
 					active[type] ? active[type].call(this) : '';
 				});
 			});
+
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
+			}
 		</script>
 	</body>
 
