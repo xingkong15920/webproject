@@ -161,19 +161,22 @@
 				var $ = layui.$,
 					active = {
 						WeChat: function() {
-							layer.confirm('确认有进行授权吗', {
+							layer.confirm('确认进行授权吗', {
 								btn: ['取消', '确定'] //按钮
 							}, function() {
 								layer.closeAll()
 							}, function() {
+								var ob = new Object()
+								ob.cardType = 0
+								ob.merchantNumber = JSON.parse(sessionStorage.getItem('userSh')).Number
 								$.ajax({
-									type: 'get',
+									type: 'post',
 									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'cardManage/setMerCardType',
-									data: {
-										'cardType': '0',
-										'merchantNumber': JSON.parse(sessionStorage.getItem('userSh')).Number,
-									},
+									data: JSON.stringify(ob),
 									dataType: 'json',
+									headers: {
+										"Content-Type": "application/json"
+									},
 									success: function(data) {
 
 									}
@@ -183,8 +186,7 @@
 									title: '微信授权',
 									area: ['90%', '90%'],
 									content: 'http://api.51shanhe.com/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(sessionStorage
-										.getItem(
-											'userSh')).Number + '&authType=' + authType,
+										.getItem('userSh')).Number + '&authType=' + authType,
 									success: function(layero, index) {
 										// 获取子页面的iframe
 										var iframe = window['layui-layer-iframe' + index];
