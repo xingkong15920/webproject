@@ -48,6 +48,9 @@
 				
 			</xblock>
 		</div>
+		<script type="text/html" id="shopName">
+			<span onclick="clickMer(this)" data-id="{{d.merchantNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.merchantName}}</span>
+		</script>
 		<script type="text/html" id="tool">
 			<a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
 			<a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
@@ -101,6 +104,32 @@
                 'post',
                 'false'
             )
+            function clickMer(id){
+				var id = id.dataset.id
+					var shHref = ''
+						CmsUtility.postAjaxCall2(
+								//系统设置
+							 'https://nb.51shanhe.com/shanhe-admin/basicSetting/getInsRegInfo', {
+                                'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+                            },
+							function(data){
+								if(data.code == 1000){
+									shHref = data.data[0].merchantRoute 
+									if(shHref==''){
+							layer.msg('未获取到商户路径')
+						}
+			var merHref = shHref + '/index.html?number='+id + '&ins=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+						window.open(merHref)
+								}else{
+									layer.msg(data.msg)
+									
+								}
+							},
+							function(data){
+								console.log('222')
+							}
+						)
+				}
 			// 			// 选择日期插件  
 			layui.use(['form', 'table', 'laytpl'], function() {
 				var table = layui.table,
@@ -126,6 +155,7 @@
                 'post',
                 'false'
             )
+
 				//方法级渲染
 				console.log($('#merchantName').val())
 				function tableRender(){
@@ -168,9 +198,11 @@
 								title: '商户编号',
 								align: 'center',
 							}, {
-								field: 'merchantName',
-								title: '商户名称',
 								align: 'center',
+								field: 'merchantName',
+								width: 200,
+								toolbar: '#shopName',
+								title: '商户名称'
 							}, {
 								field: 'agentLevel',
 								title: '所属服务商(服务商/销售)',

@@ -70,13 +70,13 @@
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<select name="type" id="merchantType">
 							<option value="">类型</option>
 							<option value="1">普通商户</option>
 							<option value="0">补贴商户</option>
 						</select>
-					</div>
+					</div> -->
 					<!-- <div class="layui-input-inline">
 						<select name="cardVoucherName" id="auditStatus">
 							<option value="">审核状态</option>
@@ -119,7 +119,7 @@
 			<a class="layui-btn layui-btn-xs  {{d.auditStatus==1  ? '' : 'hiide'}}  {{d.paymentType !=0  ? '' : 'hiide'}} {{d.paymentType !=1  ? '' : 'hiide'}}" id="rate" lay-event="success">提交</a>
 			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.auditStatus==1 ? '' : 'hiide'}} "  id="pass" lay-event="fail">拒绝</a>
 			<a class="layui-btn layui-btn-xs " id="edit" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-danger layui-btn-xs {{d.auditStatus==1 ? '' : 'hiide'}}" id="logout" lay-event="logout">删除</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 			<span class="{{d.auditStatus !=4 ? 'hiide' : ''}}">已提交</span>
 		</script>
 		<script src="../../common/config-organ.js"></script>
@@ -209,7 +209,7 @@
 							"agentName":$('#agentName').val().trim(),
 							"merchantName":$('#merchantName').val().trim(),
 							"auditStatus":1,
-							"subsidy":$('#merchantType').val().trim(),
+							"subsidy":'',
 							"startTime":$('#startTime').val().trim(),
 							"endtime":$('#endTime').val().trim(),
 							"photo":$('#telNumber').val().trim(),
@@ -240,28 +240,28 @@
 								align: 'center',
 								field: 'orderNumber',
 								title: '商户流水号',
-								minWidth: 150,
+								width:150
 							}, {
 								align: 'center',
 								field: 'merchantName',
 								title: '商户名称',
-								minWidth: 300,
+								width:200
 							}, {
 								align: 'center',
 								field: 'registerCell',
 								title: '商户手机号',
-								minWidth: 150,
+								width:150
 							}, {
 								align: 'center',
 								field: 'agentName',
 								title: '所属服务商',
-								minWidth: 270,
+								width:200
 							}, {
 								align: 'center',
 								field: 'subsidy',
 								// toolbar: '#selectBar_lx',
 								title: '类型',
-								minWidth: 150,
+								width:80,
 								templet:function(data){
 									if(data.subsidy == 1){
 										return '普通商户'
@@ -274,19 +274,19 @@
 								align: 'center',
 								field: 'paymentName',
 								title: '进件通道',
-								minWidth: 100,
+								width:80
 							}, {
 								align: 'center',
 								field: 'agentName',
 								title: '通道费率',
-								minWidth: 100,
+								width:80,
 								templet:function(data){
 									return (data.rate*10000/100).toFixed(2) + '%'
 								}
 							}, {
 								align: 'center',
 								title: '状态',
-								minWidth: 100,
+								width: 100,
 								templet:function(data){
 									switch (data.auditStatus) {
 										case 0:
@@ -323,17 +323,16 @@
 								align: 'center',
 								field: 'insertTime',
 								title: '注册时间',
-								minWidth: 160,
+								width:150
 							},{
 								align: 'center',
 								field: 'msg',
 								title: '原因',
-								minWidth: 150,
+								width:150
 							}, {
 								align: 'center',
 								title: '操作',
 								toolbar: '#toolbar',
-								minWidth: 300,
 							}]
 						],
 						page: true,
@@ -588,8 +587,8 @@
 							tjData.paymentChannel = data.paymentChannel
 							$.ajax({
 						            type: 'POST',
-						            //url: 'https://api.51shanhe.com/m-wechat/register/intoSubmission', 
-						             url: 'http://192.168.1.152:6005/shanhe-admin/audit/submitMerchant', 
+						            //url: 'https://api.51shanhe.com/shanhe-admin/register/intoSubmission', 
+						            url: 'https://api.51shanhe.com/shanhe-admin/audit/submitMerchant', 
 						            data: tjData,
 						            async: 'false',
 						            dataType: 'json', 

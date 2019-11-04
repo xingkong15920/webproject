@@ -435,8 +435,10 @@
             },
             function(data) {
                 if (data.code == 1000) {
+
                     var saleInfo = JSON.parse(sessionStorage.getItem('rate'))
-                    console.log(saleInfo)
+                    if(saleInfo != null){
+                        console.log(saleInfo)
                     rateD0 = saleInfo.productSwitch.split('&');
                     rateD1 = saleInfo.productSwitchD1.split('&');
 
@@ -460,7 +462,8 @@
                             rate2.push(rateD0[i])
                         }
                     }
-                    console.log(rate1, rate2, rateId1, rateId2)
+                    }
+                    
                     var bankData = data.data.merchantBankCardInfo
 
                     sessionStorage.setItem("bankData", JSON.stringify(bankData));

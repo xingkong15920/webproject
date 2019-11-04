@@ -277,6 +277,20 @@
 						<div class="layui-form-mid layui-word-aux">尺寸508px*206px</div>
 					</div>
 					<div class="layui-form-item logoUpk">
+						<label class="layui-form-label">刷脸设备logo</label>
+						<div class="layui-input-inline logowidth">
+							<div class="layui-upload-img" id="">
+								<img src="../../public/images/default.png" id="demo4" style="max-width: 100%;max-height: 100%;" lay-filter="logo">
+							</div>
+							<!--<button type="button" class="layui-btn">上传图片</button>-->
+						</div>
+						<div class="layui-input-inline uploadimgbtn">
+							<p id="demoText4" class="block"></p>
+							<button type="button" class="layui-btn layui-btn-sm block" id="test4">上传图片</button>
+						</div>
+						<div class="layui-form-mid layui-word-aux">尺寸120px*48px</div>
+					</div>
+					<div class="layui-form-item logoUpk">
 						<label class="layui-form-label">ICON</label>
 						<div class="layui-input-inline logowidth">
 							<div class="layui-upload-img" id="">
@@ -314,6 +328,7 @@
 			var logoUrl = '';
 			var logotwUrl = '';
 			var IconUrl = '';
+			var faceUrl = ''
 
 			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 				layui.$.support.cors = true; //允许ajax跨域
@@ -444,9 +459,11 @@
 								$('#demo1').attr('src', jgData.institutionLogo)
 								$('#demo2').attr('src', jgData.writtenLogo)
 								$('#demo3').attr('src', jgData.icon)
+								$('#demo4').attr('src', jgData.faceSwiping)
 								logoUrl = jgData.institutionLogo
 								logotwUrl = jgData.writtenLogo
 								IconUrl = jgData.icon
+								faceUrl = jgData.faceSwiping
 								type = 0
 							} else {
 								type = 1
@@ -645,6 +662,7 @@
 					data: {
 						"institutionNumber": userNumber,
 					},
+					exts:'ico',
 					before: function(obj) {
 						console.log(obj)
 						//预读本地文件示例，不支持ie8
@@ -681,7 +699,50 @@
 						});
 					}
 				});
+				//刷脸设备logo
+				//普通图片上传
+				var uploadInst = upload.render({
+					elem: '#test4',
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+					data: {
+						"institutionNumber": userNumber,
+					},
+					before: function(obj) {
+						console.log(obj)
+						//预读本地文件示例，不支持ie8
+						obj.preview(function(index, file, result) {
+							$('#demo4').attr('src', result); //图片链接（base64）
+						});
+					},
+					done: function(res) {
+						//如果上传失败
+						if (res.code != 1000) {
+							var demoText = $('#demoText4');
+							demoText.html(
+								'<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+							demoText.find('.demo-reload').on('click', function() {
+								uploadInst.upload();
+							});
+							return layer.msg('上传失败');
 
+						} else {
+							faceUrl = res.data
+							return layer.msg('上传成功');
+
+						}
+						//上传成功
+						console.log(res)
+					},
+					error: function() {
+						//演示失败状态，并实现重传
+						var demoText = $('#demoText4');
+						demoText.html(
+							'<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+						demoText.find('.demo-reload').on('click', function() {
+							uploadInst.upload();
+						});
+					}
+				});
 				//监听指定开关
 				form.on('switch(switchTest)', function(data) {
 					layer.tips('商户认证：' + (this.checked ? '已开启' : '已关闭'), data.othis)
@@ -711,12 +772,17 @@
 						layer.msg('请上传logo图片')
 						return false
 					}
+					if(faceUrl == ''){
+						layer.msg('请上传刷脸设备logo')
+						return false
+					}
 					var D0List = '',
 						D1List = '',
 						T1List = ''
 					data.institutionLogo = logoUrl
 					data.writtenLogo = logotwUrl
 					data.icon = IconUrl
+					data.faceSwiping = faceUrl
 					data.institutionNumber = userNumber
 					CmsUtility.postAjaxCall(
 						//系统设置

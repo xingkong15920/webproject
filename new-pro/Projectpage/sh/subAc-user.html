@@ -19,10 +19,10 @@
 		<div class="x-body">
 			<div class="demoTable layui-form x-so">
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="分销人姓名" name="batch" id="batch">
+					<input type="text" class="layui-input" placeholder="分销人姓名" name="batch" id="name">
 				</div>
 				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="分销人手机号" name="batch" id="batch">
+					<input type="text" class="layui-input" placeholder="分销人手机号" name="batch" id="phone">
 				</div>
 				<div class="layui-input-inline">
 					<button class="layui-btn" data-type="reload" id="search"><i class="layui-icon">&#xe615;</i></button>
@@ -78,8 +78,8 @@
 						where: {
 							"fixedAccount": 0,
 							"institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
-							"name": "",
-							"tell": "",
+							"name": $('#name').val(),
+							"tell": $('#phone').val(),
 						},
 						method: "post",
 						height: "full-124",
@@ -177,6 +177,9 @@
 						}
 					});
 				}
+				$('#search').click(function(){
+					tableRender()
+				})
 				$('#addA').click(function() {
 					layer.open({
 						type: 2,

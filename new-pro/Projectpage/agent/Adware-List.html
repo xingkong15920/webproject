@@ -192,12 +192,13 @@
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					console.log(data)
 					var tjData = new Object();
-					tjData.institutionNumber = userNumber;
+					tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+					tjData.agentNumber = userNumber
 					tjData.number = data.value;
 					tjData.state = this.checked?'0':'1';
 					CmsUtility.postAjaxCall(
 						//系统设置
-						CmsConfig.addressUrl.Mechanism.updateInstitutionAdvertisementState,
+						'insAdvertising/updateAdvertising',
 						tjData,
 						function(data){
 							if(data.code == 1000){
