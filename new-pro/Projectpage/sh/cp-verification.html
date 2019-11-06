@@ -69,7 +69,7 @@
 				})
 				table.render({
 					elem: '#LAY_table_bill',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucherRecord +
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.selCancelCerification +
 						'?merchantNumber=' + merNumber,
 					method: "get",
 					height: "full-130",
@@ -96,7 +96,7 @@
 						[{
 							type: 'numbers'
 						}, {
-							field: 'voucherNo',
+							field: 'voucherId',
 							title: '优惠券编号',
 							align: 'center',
 							minWidth: 180
@@ -104,12 +104,36 @@
 							field: 'voucherName',
 							title: '优惠券标题',
 							align: 'center',
-							minWidth: 120,
+							minWidth: 160,
+						}, {
+							field: 'useShop',
+							title: '核销门店',
+							align: 'center',
+							minWidth: 220,
+							templet: function(data) {
+								if (data.useShop) {
+									return data.useShop
+								} else {
+									return '--'
+								}
+							}
+						}, {
+							field: 'useClerk',
+							title: '核销员',
+							align: 'center',
+							minWidth: 220,
+							templet: function(data) {
+								if (data.useClerk) {
+									return data.useClerk
+								} else {
+									return '--'
+								}
+							}
 						}, {
 							field: 'voucherClass',
 							title: '优惠券类型',
 							align: 'center',
-							minWidth: 220,
+							minWidth: 120,
 							templet: function(data) {
 								switch (data.voucherClass) {
 									case 0:
@@ -127,23 +151,22 @@
 							field: 'channelNo',
 							title: '领取渠道',
 							align: 'center',
-							minWidth: 150,
+							minWidth: 120,
 							templet: function(data) {
-								// 0支付即会员；1消费有礼；2分享有礼；3开卡有礼；4生日有礼
-								switch (data.channelNo) {
-									case '0':
+								switch (data.channelNo) { //0支付即会员；1消费有礼；2分享有礼；3开卡有礼；4生日有礼
+									case 0:
 										return '支付即会员'
 										break;
-									case '1':
+									case 1:
 										return '消费有礼'
 										break;
-									case '2':
+									case 2:
 										return '分享有礼'
 										break;
-									case '3':
+									case 3:
 										return '开卡有礼'
 										break;
-									case '4':
+									case 4:
 										return '生日有礼'
 										break;
 								}
@@ -152,20 +175,25 @@
 							field: 'name',
 							title: '会员姓名',
 							align: 'center',
-							minWidth: 120,
+							minWidth: 100,
 						}, {
 							field: 'memberNo',
-							title: '会员卡号',
+							title: '会员编号',
 							align: 'center',
 							minWidth: 190,
 						}, {
 							field: 'cell',
 							title: '会员电话',
 							align: 'center',
-							minWidth: 120,
+							minWidth: 160,
 						}, {
 							field: 'collectionTime',
 							title: '领取时间',
+							align: 'center',
+							minWidth: 160,
+						}, {
+							field: 'useTime',
+							title: '核销时间',
 							align: 'center',
 							minWidth: 160,
 						}]

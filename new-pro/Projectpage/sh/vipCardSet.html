@@ -554,18 +554,22 @@
 				$('.imgDel').click(function(e) {
 					var delId = e.currentTarget.dataset.id
 					if (delId == 'cardLo') {
-						console.log('cardLo')
 						$('#cardLimg').attr('src', './images/card_logo.png')
-						$('#cardLo').find('img').remove()
+						$('#cardLo').find('img').removeAttr('src')
 						$(this).prev().find(".upTips").show()
 						logo_id = ''
 					}
 					if (delId == 'cardBg') {
-						console.log('cardBg')
-						$('#cardBg').find('img').remove()
+						$('#cardBg').find('img').removeAttr('src')
 						$('#cardBimg').find('img').remove()
 						$(this).prev().find(".upTips").show()
 						image_id = ''
+						$('.coverTit').show()
+						$('.coverCon').hide()
+						$('.coversys').css({
+							'height': '40px',
+							'border-bottom': '1px solid #e6e6e6'
+						})
 					}
 					$(this).hide()
 				})
@@ -574,107 +578,24 @@
 						shade: 0.5
 					});
 					uploadImg(this, function(data) {
-						Imgbase = data
+						uploadImgajax(data, 0)
 					});
-					setTimeout(function() {
-						var datas = {
-							"imgBaseStr": Imgbase,
-							"institutionNumber": insNumber,
-							"imgType": "0",
-							"merchantNumber": merNumber
-						}
-						// 发送请求
-						$.ajax({
-							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
-							data: JSON.stringify(datas),
-							dataType: "json",
-							async: false,
-							headers: {
-								"Content-Type": "application/json"
-							},
-							success: function(data) {
-								layer.closeAll('loading');
-								if (data.code === 1000) {
-									logo_id = data.data.imageId
-									$('#cardLimg').attr('src', data.data.localImgUrl);
-									$('#cardLo').append('<img src="' + data.data.localImgUrl + '" id="cardLoImg">');
-									$('#cardLo').find('.upTips').hide();
-								}
-							}
-						});
-					}, 300)
 				});
 				$("#upBg").change(function() {
 					layer.load(2, {
 						shade: 0.5
 					});
 					uploadImg(this, function(data) {
-						Imgbase = data
+						uploadImgajax(data, 1)
 					});
-					setTimeout(function() {
-						var datas = {
-							"imgBaseStr": Imgbase,
-							"institutionNumber": insNumber,
-							"imgType": "1",
-							"merchantNumber": merNumber
-						}
-						// 发送请求
-						$.ajax({
-							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
-							data: JSON.stringify(datas),
-							dataType: "json",
-							async: false,
-							headers: {
-								"Content-Type": "application/json"
-							},
-							success: function(data) {
-								layer.closeAll('loading');
-								if (data.code === 1000) {
-									image_id = data.data.imageId
-									$('#cardBimg').append('<img src="' + data.data.localImgUrl + '">');
-									$('#cardBg').append('<img src="' + data.data.localImgUrl + '" id="cardBgImg">');
-									$('#cardBg').find('.upTips').hide();
-								}
-							}
-						});
-					}, 300)
 				});
 				$("#upSysImgBtn").change(function() {
 					layer.load(2, {
 						shade: 0.5
 					});
 					uploadImg(this, function(data) {
-						Imgbase = data
+						uploadImgajax(data, 4)
 					});
-					setTimeout(function() {
-						var datas = {
-							"imgBaseStr": Imgbase,
-							"institutionNumber": insNumber,
-							"imgType": "4",
-							"merchantNumber": merNumber
-						}
-						// 发送请求
-						$.ajax({
-							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
-							data: JSON.stringify(datas),
-							dataType: "json",
-							async: false,
-							headers: {
-								"Content-Type": "application/json"
-							},
-							success: function(data) {
-								layer.closeAll('loading');
-								if (data.code === 1000) {
-									layer.msg('上传系统图库成功')
-								} else {
-									layer.msg('上传系统图库失败')
-								}
-							}
-						});
-					}, 300)
 				});
 
 				/*---------- 监听开关 ----------*/
@@ -909,28 +830,65 @@
 				}
 
 				function uploadImg(input_file, get_data) {
-					/*input_file：文件按钮对象*/
-					/*get_data: 转换成功后执行的方法*/
-					if (typeof(FileReader) === 'undefined') {
-						alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
-					} else {
-						try {
-							/*图片转Base64 核心代码*/
-							var file = input_file.files[0];
-							//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
-							if (!/image\/\w+/.test(file.type)) {
-								alert("请确保文件为图像类型");
-								return false;
+					var file = input_file.files[0];
+					var reader = new FileReader();
+					var AllowImgFileSize = 2100000;
+					if (file) {
+						reader.readAsDataURL(file);
+						reader.onload = function() {
+							if (AllowImgFileSize != 0 && AllowImgFileSize < this.result.length) {
+								layer.closeAll('loading');
+								layer.msg('上传失败<br>请上传不大于2M的图片！', function() {});
+								return;
+							} else {
+								get_data(this.result)
 							}
-							var reader = new FileReader();
-							reader.onload = function() {
-								get_data(this.result);
-							}
-							reader.readAsDataURL(file);
-						} catch (e) {
-							alert('图片转Base64出错啦！' + e.toString())
 						}
+					} else {
+						layer.closeAll('loading');
 					}
+				}
+
+				function uploadImgajax(Imgbase, upType) {
+					var datas = {
+						"imgBaseStr": Imgbase,
+						"institutionNumber": insNumber,
+						"imgType": upType,
+						"merchantNumber": merNumber
+					}
+					// 发送请求
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+						data: JSON.stringify(datas),
+						dataType: "json",
+						async: false,
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
+							if (data.code === 1000) {
+								switch (upType) {
+									case 0:
+										logo_id = data.data.imageId
+										$('#cardLimg').attr('src', data.data.localImgUrl);
+										$('#cardLoImg').attr('src', data.data.localImgUrl);
+										$('#cardLo').find('.upTips').hide();
+										break;
+									case 1:
+										image_id = data.data.imageId
+										$('#cardBimg').append('<img src="' + data.data.localImgUrl + '">');
+										$('#cardBgImg').attr('src', data.data.localImgUrl);
+										$('#cardBg').find('.upTips').hide();
+										break;
+									case 4:
+										layer.msg('上传系统图库成功')
+										break
+								}
+							}
+						}
+					});
 				}
 			});
 		</script>
