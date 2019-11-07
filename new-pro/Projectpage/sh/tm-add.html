@@ -24,6 +24,21 @@
             <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 		<style type="text/css">
+			.layui-input-block {
+				margin-left: 200px;
+			}
+
+			.max400 {
+				max-width: 400px;
+				width: 100% !important;
+			}
+
+			.flexcl {
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+			}
+
 			.show {
 				display: block;
 			}
@@ -36,23 +51,12 @@
 				width: 200px;
 			}
 
-			.cardSet {
-				padding: 0;
-			}
-
-			.cardSet .layui-upload-list {
-				border-bottom-left-radius: 0;
-				border-bottom-right-radius: 0;
-			}
-
-			.cardSet .upTips {
-				/* display: block; */
-				position: initial;
-				line-height: 40px;
-				background: #1E9FFF;
-				color: #fff;
-				border: none;
-				border-radius: 0;
+			.upTips {
+				position: absolute;
+				color: #333;
+				border: 1px dashed #ccc;
+				border-radius: 6px;
+				cursor: pointer;
 			}
 
 			.cardSet .layui-textarea {
@@ -71,7 +75,7 @@
 			}
 
 			.iwList .layui-input-inline {
-				width: auto !important;
+				width: 100%;
 				margin: 0;
 			}
 
@@ -88,6 +92,8 @@
 			.iwList .layui-upload-list {
 				border: 1px solid #e6e6e6;
 				border-bottom: none;
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
 			}
 
 			.layui-elem-quote .layui-form-switch {
@@ -127,13 +133,107 @@
 			.tmTab .layui-tab-item {
 				padding: 10px;
 			}
+
+			.layui-table-body {
+				background: #fff;
+			}
+
+			.centerBtn {
+				text-align: center;
+				margin-bottom: 20px;
+			}
+
+			.BtnTit {
+				display: block;
+				margin: 0 auto;
+				width: 136px;
+				height: 36px;
+				line-height: 36px;
+				color: rgb(99, 179, 89);
+				border-color: rgb(99, 179, 89);
+				border: 1px solid;
+				border-radius: 6px;
+				cursor: pointer;
+				margin-bottom: 5px;
+			}
+
+			.TMlist {
+				width: 100% !important;
+			}
+
+			.TMlist input {
+				width: 60px;
+				margin-right: 10px;
+			}
+
+			.TMlist .layui-form-label {
+				width: auto;
+				min-width: 50px;
+				padding-right: 10px;
+			}
+
+			.TMlist li {
+				justify-content: flex-start;
+				padding-left: 0;
+			}
+
+			.TMlist li span {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-right: 10px;
+			}
+
+			.TMlist li span input {
+				min-width: 60px;
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+				margin: 0;
+			}
+
+			.TMlist li span p {
+				text-align: center;
+				background: #eee;
+				line-height: 36px;
+				border: 1px solid #e6e6e6;
+				border-top-right-radius: 3px;
+				border-bottom-right-radius: 3px;
+				border-left: none;
+				padding: 0 10px;
+			}
 		</style>
 	</head>
 
 	<body id="iosiframe" class="iframe_index_1 autoHeight">
+		<div class="timePeriod hide layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span class="redC">* </span>周一至周日 :</label>
+				<div class="layui-input-inline max300">
+					<input type="checkbox" name="timeSlotCollect" value="周一" lay-filter="timeSlotCollect" lay-skin="primary" title="周一">
+					<input type="checkbox" name="timeSlotCollect" value="周二" lay-filter="timeSlotCollect" lay-skin="primary" title="周二">
+					<input type="checkbox" name="timeSlotCollect" value="周三" lay-filter="timeSlotCollect" lay-skin="primary" title="周三">
+					<input type="checkbox" name="timeSlotCollect" value="周四" lay-filter="timeSlotCollect" lay-skin="primary" title="周四">
+					<input type="checkbox" name="timeSlotCollect" value="周五" lay-filter="timeSlotCollect" lay-skin="primary" title="周五">
+					<input type="checkbox" name="timeSlotCollect" value="周六" lay-filter="timeSlotCollect" lay-skin="primary" title="周六">
+					<input type="checkbox" name="timeSlotCollect" value="周日" lay-filter="timeSlotCollect" lay-skin="primary" title="周日">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span class="redC">* </span>每天时段 :</label>
+				<div class="layui-input-inline max300">
+					<div class="layui-input-inline" style="width: 100px;">
+						<input type="text" id="sTime" lay-verify="sTime" placeholder="开始时间" readonly="readonly" autocomplete="off" class="layui-input">
+					</div>
+					<div class="layui-form-mid">-</div>
+					<div class="layui-input-inline" style="width: 100px;">
+						<input type="text" id="eTime" lay-verify="eTime" placeholder="截止时间" readonly="readonly" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
 		<script type="text/javascript">
 			$(function() {
-				var navH = $(".cardSetpreview").offset().top;
+				var navH = $(".iframe_index_1_con").offset().top;
 				$(window).scroll(function() {
 					var scroH = $(this).scrollTop();
 					if (scroH >= navH) {
@@ -148,18 +248,18 @@
 				})
 			})
 		</script>
-		<div class="x-body iframe_index_1_con">
+		<div class="x-body iframe_index_1_con autoHeight" style="margin-bottom: 44px;">
 			<div class="layui-row">
 				<div class="layui-col-xs3 layui-col-sm3 layui-col-md3 cardSetpreview" style="top: 40px;">
 					<img src="./images/topbar.png" class="topbar">
 					<div class="card_boby">
 						<div class="card_b card_bc1">
-							<img class="card_b_bg" src="./images/cardBg_default.png" id="cardBimg">
+							<img class="card_b_bg hide" id="cardBimg">
 							<div class="card_b_lt card_posi">
-								<img src="./images/card_logo.png" id="ppLogopv">
+								<img src="./images/card_logo.png" id="cardLimg">
 								<div class="">
-									<p class="ltN"></p>
-									<p class="ltNamepv"></p>
+									<p class="ltN">品牌名称</p>
+									<p class="ltNamepv">次/月卡标题</p>
 								</div>
 							</div>
 							<div class="card_b_ld card_posi">
@@ -183,31 +283,36 @@
 								<h3>使用时间：2019-10-10 - 2019-20-20</h3>
 							</li>
 						</ul>
+						<div class="centerBtn">
+							<span class="BtnTit" id="BtnTit"></span>
+							<p id="BtnSubTit"></p>
+						</div>
 					</div>
 					<ul class="card_fList" style="border-top: 1px solid #e6e6e6;">
 						<li class="card_fListli">
+							<p>购买续费</p>
+							<i class="iconfont"></i>
+						</li>
+						<li class="card_fListli">
+							<p>使用记录</p>
+							<i class="iconfont"></i>
+						</li>
+						<li class="card_fListli">
 							<div class="card_fListliDiv">
-								<p>推荐给朋友</p>
+								<p>自定义入口3</p>
 								<span></span>
 							</div>
 							<i class="iconfont"></i>
 						</li>
 						<li class="card_fListli">
 							<div class="card_fListliDiv">
-								<p>会员卡详情</p>
+								<p>自定义入口4</p>
 								<span></span>
 							</div>
 							<i class="iconfont"></i>
 						</li>
 						<li class="card_fListli">
-							<div class="card_fListliDiv">
-								<p>适用门店</p>
-								<span></span>
-							</div>
-							<i class="iconfont"></i>
-						</li>
-						<li class="card_fListli">
-							<p>会员卡详情</p>
+							<p>次/月卡详情</p>
 							<i class="iconfont"></i>
 						</li>
 						<li class="card_fListli">
@@ -216,313 +321,425 @@
 						</li>
 					</ul>
 				</div>
-				<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet" style="margin-bottom: 44px;">
+				<div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet">
 					<div class="layui-form" lay-filter="basic">
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							基本设置
+						</blockquote>
+						<!-- tab1 -->
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>品牌名称 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="brandName" class="layui-input" autocomplete="off" lay-verify="brandName" id="ltName">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>次/月卡标题 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="cardName" class="layui-input" autocomplete="off" lay-verify="cardName" id="ltNamefu">
+							</div>
+						</div>
+						<input type="file" accept="image/png, image/jpeg, image/jpg" class="input_img layui-input" style="display: none;"
+						 id="upLogo" />
+						<input type="file" accept="image/png, image/jpeg, image/jpg" class="input_img layui-input" style="display: none;"
+						 id="upBg" />
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>品牌logo :</label>
+							<div class="layui-input-inline widthauto pinpaiLogo">
+								<div class="layui-upload-list">
+									<div class="layui-upload-img" id="cardLo">
+										<img id="cardLoImg">
+										<div class="upTips show">
+											+<br />上传logo
+										</div>
+									</div>
+									<div class="imgDel" data-id="cardLo" style="display: none;">
+										<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+									</div>
+								</div>
+								<div class="layui-input-inline max400 layui-word-aux">尺寸120px*120px，支持JPG、JPEG、PNG图片，文件小于1M</div>
+							</div>
+						</div>
 
-						<div class="layui-tab tmTab">
-							<ul class="layui-tab-title">
-								<li class="layui-this">基本设置</li>
-								<li>中心按钮</li>
-								<li>自定义/营销入口</li>
-								<li>次/月卡详情</li>
-							</ul>
-							<div class="layui-tab-content">
-								<!-- tab1 -->
-								<div class="layui-tab-item layui-show">
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>卡券封面颜色 :</label>
+							<div class="layui-input-block chooseColor">
+								<span data-color="colorC0" class="card_bc0"></span>
+								<span data-color="colorC1" class="card_bc1"></span>
+								<span data-color="colorC2" class="card_bc2"></span>
+								<span data-color="colorC3" class="card_bc3"></span>
+								<span data-color="colorC4" class="card_bc4"></span>
+								<span data-color="colorC5" class="card_bc5"></span>
+								<span data-color="colorC6" class="card_bc6"></span>
+								<span data-color="colorC7" class="card_bc7"></span>
+								<span data-color="colorC8" class="card_bc8"></span>
+								<span data-color="colorC9" class="card_bc9"></span>
+								<span data-color="colorC10" class="card_bc10"></span>
+								<span data-color="colorC11" class="card_bc11"></span>
+								<span data-color="colorC11" class="card_bc12"></span>
+								<span data-color="colorC11" class="card_bc13"></span>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">卡券封面图片 :</label>
+							<div class="layui-input-inline widthauto max400 cardBgimg">
+								<div class="layui-upload-list">
+									<div class="layui-upload-img" id="cardBg">
+										<img id="cardBgImg">
+										<div class="upTips show">
+											+<br />上传封面图片
+										</div>
+									</div>
+									<div class="imgDel" data-id="cardBg" style="display: none;">
+										<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+									</div>
+								</div>
+								<div class="layui-input-inline layui-word-aux max400">图片建议尺寸：850像素*350像素，大小不超过2M；支持jpg、png、jpeg格式</div>
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>次/月卡单位 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="company" class="layui-input" autocomplete="off" lay-verify="company">
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>库存 :</label>
+							<div class="layui-input-inline max400">
+								<input type="number" name="stock" class="layui-input" autocomplete="off" max="10000000" lay-verify="stock">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>code展示类型 :</label>
+							<div class="layui-input-inline max400">
+								<select name="code" lay-filter="aihao">
+									<option value="0" selected="">二维码</option>
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>卡券类型 :</label>
+							<div class="layui-input-inline max400 cardType">
+								<input type="radio" name="cardType" lay-filter="cardType" value="0" title="次卡" checked="">
+								<input type="radio" name="cardType" lay-filter="cardType" value="1" title="月卡">
+							</div>
+						</div>
+						<div class="cardType0 show">
+							<!-- 次卡 -->
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>次卡规格 :</label>
+								<div class="layui-input-inline widthauto">
+									<!-- <input type="text" autocomplete="off" placeholder="添加次卡规格" class="layui-input"> -->
+									<div class="" style="margin-bottom:10px;">
+										<a class="layui-btn layui-btn-sm" id="addTM_T">添加次卡规格</a>
+										<a class="layui-btn layui-btn-sm" id="consoleTM_T">测试</a>
+									</div>
+									<ul class="layui-input-inline saleList TMlist" id="TMlist_T"></ul>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>限制使用时间 :</label>
+								<div class="layui-input-inline max400 Limitedtime">
+									<input type="radio" name="Limitedtime" lay-filter="Limitedtime" value="0" title="领取后N天内使用" checked="">
+									<input type="radio" name="Limitedtime" lay-filter="Limitedtime" value="1" title="指定具体使用时间">
+								</div>
+							</div>
+							<!-- <div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>领取后多少天后开始生效 :</label>
+								<div class="layui-input-inline widthauto">
+									<input type="text" name="entryForce" id="entryForce" autocomplete="off" lay-verify="entryForce" placeholder="领取后多少天后开始生效"
+									 class="layui-input">
+								</div>
+								<div class="layui-form-mid layui-word-aux">0代表当天生效</div>
+							</div> -->
+							<div class="layui-form-item Limitedtime0">
+								<label class="layui-form-label"><span class="redC">* </span>领取后多少天内有效 :</label>
+								<div class="layui-input-inline widthauto">
+									<input type="text" name="effectiveDay" id="effectiveDay" autocomplete="off" lay-verify="effectiveDay"
+									 placeholder="领取后多少天内有效" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-item Limitedtime1 hide">
+								<label class="layui-form-label"><span class="redC">* </span>指定具体使用时间 :</label>
+								<div class="layui-input-inline widthauto">
+									<input type="text" id="limitUseTimeTyperange" autocomplete="off" readonly="readonly" placeholder="请指定具体使用时间"
+									 class="layui-input" lay-verify="limitUseTimeTyperange">
+								</div>
+							</div>
+						</div>
+						<div class="cardType1 hide">
+							<!-- 月卡 -->
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>卡券不限次数 :</label>
+								<div class="layui-input-inline max400 unlimited">
+									<input type="radio" name="unlimited" lay-filter="unlimited" value="0" title="是" checked="">
+									<input type="radio" name="unlimited" lay-filter="unlimited" value="1" title="否">
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>月卡规格 :</label>
+								<div class="layui-input-inline widthauto">
+									<div class="" style="margin-bottom:10px;">
+										<a class="layui-btn layui-btn-sm" id="addTM_M">添加月卡规格</a>
+										<a class="layui-btn layui-btn-sm" id="consoleTM_M">测试</a>
+									</div>
+									<ul class="layui-input-inline saleList TMlist" id="TMlist_M"></ul>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label"><span class="redC">* </span>指定具体使用时间 :</label>
+								<div class="layui-input-inline widthauto">
+									<input type="text" id="limitUseTimeTyperange1" autocomplete="off" readonly="readonly" placeholder="请指定具体使用时间"
+									 class="layui-input" lay-verify="limitUseTimeTyperange">
+								</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">适用时间段 :</label>
+							<div class="layui-input-inline widthauto">
+								<table class="layui-hide" id="timeS" lay-filter="timeS"></table>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>是否允许续费 :</label>
+							<div class="layui-input-inline max400 renewType">
+								<input type="radio" name="renewType" lay-filter="renewType" value="0" title="是" checked="">
+								<input type="radio" name="renewType" lay-filter="renewType" value="1" title="否">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>是否显示出售 :</label>
+							<div class="layui-input-inline max400 sellType">
+								<input type="radio" name="sellType" lay-filter="sellType" value="0" title="是" checked="">
+								<input type="radio" name="sellType" lay-filter="sellType" value="1" title="否">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>每人可购买数量 :</label>
+							<div class="layui-input-inline">
+								<input type="text" name="quantityNumber" class="layui-input" lay-verify="quantityNumber">
+							</div>
+							<div class="layui-form-mid layui-word-aux">0表示不限制</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>每天使用限制 :</label>
+							<!-- <div class="layui-form-mid">每</div>
+							<div class="layui-input-inline" style="width: 50px;">
+								<input type="text" autocomplete="off" class="layui-input" value="1">
+							</div>
+							<div class="layui-form-mid">天限制使用</div> -->
+							<div class="layui-input-inline">
+								<input type="text" name="useLimit" autocomplete="off" class="layui-input" lay-verify="useLimit">
+							</div>
+							<div class="layui-form-mid layui-word-aux">0表示不限制</div>
+						</div>
+						<!-- tab2 -->
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							中心按钮
+						</blockquote>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>标题 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="title" class="layui-input" id="title" maxlength="" lay-verify="title" value="立即领取">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">副标题 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="subheading" class="layui-input" id="subheading" lay-verify="subheading" value="">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>链接 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="link" class="layui-input" id="link" lay-verify="link" readonly="readonly" disabled="disabled"
+								 value="http://192.168.1.222:8848/webproject-1/new-pro/Projectpage/sh/index.html">
+							</div>
+						</div>
+						<!-- tab3 -->
+						<!-- 自定义入口一 -->
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							自定义/营销入口三
+							<input type="checkbox" lay-skin="switch" lay-filter="custom1Bodysw" id="custom1Bodysw" lay-text="开|关">
+						</blockquote>
+						<div class="layui-form-item custom1Body hide">
+							<div class="layui-form-item">
+								<label class="layui-form-label"></label>
+								<div class="layui-input-inline max400 ">
+									<input type="radio" name="custom1" lay-filter="custom1" value="0" title="自定义链接" checked="">
+									<input type="radio" name="custom1" lay-filter="custom1" value="1" title="自定义小程序">
+								</div>
+							</div>
+							<div class="custom1B max600">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>入口名称 :</label>
+									<div class="layui-input-inline max400">
+										<input type="text" class="layui-input customNameInput" id="custom1lNInput" value="营销入口" placeholder="入口名称">
+									</div>
+								</div>
+								<div class="custom1-link">
 									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>品牌名称 :</label>
-										<div class="layui-input-inline max360">
-											<input type="text" name="subtitle1" value="品牌名称" class="layui-input" autocomplete="off" lay-verify="ltName"
-											 id="ltName">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>次/月卡标题 :</label>
-										<div class="layui-input-inline max360">
-											<input type="text" name="subtitle1" value="次/月卡标题" class="layui-input" autocomplete="off" lay-verify="ltNamefu"
-											 id="ltNamefu">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>品牌logo :</label>
-										<div class="layui-input-inline max360 pinpaiLogo">
-											<div class="layui-upload-list">
-												<div class="layui-upload-img" id="cardLo">
-													<img src="./images/card_logo.png" id="cardLoImg">
-													<div class="upTips">
-														+<br />上传logo
-													</div>
-												</div>
-												<div class="imgDel" data-id="cardLo" style="display: none;">
-													<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
-												</div>
-											</div>
-										</div>
-										<div class="layui-input-inline max360 layui-word-aux">尺寸120px*120px，支持JPG、JPEG、PNG图片，文件小于1M</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>次/月卡单位 :</label>
-										<div class="layui-input-inline max360">
-											<input type="text" name="subtitle" class="layui-input" autocomplete="off" lay-verify="ltName">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>库存 :</label>
-										<div class="layui-input-inline max360">
-											<input type="number" name="subtitle" class="layui-input" autocomplete="off" max="10000000" lay-verify="ltName">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>code展示类型 :</label>
-										<div class="layui-input-inline max360">
-											<select name="interest" lay-filter="aihao">
-												<option value="1" selected="">二维码</option>
-											</select>
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>卡券类型 :</label>
-										<div class="layui-input-inline max360 tmType">
-											<input type="radio" name="codeType" lay-filter="tmType" value="0" title="次卡" checked="">
-											<input type="radio" name="codeType" lay-filter="tmType" value="1" title="月卡">
-										</div>
-									</div>
-									<div class="tmType0 show">
-										<!-- 次卡 -->
-										<div class="layui-form-item">
-											<label class="layui-form-label"><span class="redC">* </span>次卡规格 :</label>
-											<div class="layui-input-inline widthauto">
-												<input type="text" name="entryForce" autocomplete="off" lay-verify="entryForce" placeholder="领取后多少天后开始生效"
-												 class="layui-input">
-											</div>
-										</div>
-										<div class="layui-form-item">
-											<label class="layui-form-label"><span class="redC">* </span>限制使用时间 :</label>
-											<div class="layui-input-inline max360 barcodeshow">
-												<input type="radio" name="codeType1" lay-filter="barcodeshow" value="0" title="是" checked="">
-												<input type="radio" name="codeType1" lay-filter="barcodeshow" value="0" title="否">
-											</div>
-										</div>
-										<div class="layui-form-item">
-											<label class="layui-form-label"><span class="redC">* </span>领取后多少天后开始生效 :</label>
-											<div class="layui-input-inline widthauto">
-												<input type="text" name="entryForce" id="entryForce" autocomplete="off" lay-verify="entryForce" placeholder="领取后多少天后开始生效"
-												 class="layui-input">
-											</div>
-											<div class="layui-form-mid layui-word-aux">0代表当天生效</div>
-										</div>
-										<div class="layui-form-item">
-											<label class="layui-form-label"><span class="redC">* </span>生效后多少天内有效 :</label>
-											<div class="layui-input-inline widthauto">
-												<input type="text" name="effectiveDay" id="effectiveDay" autocomplete="off" lay-verify="effectiveDay"
-												 placeholder="生效后多少天内有效" class="layui-input">
-											</div>
-										</div>
-										<div class="layui-form-item">
-											<label class="layui-form-label"><span class="redC">* </span>指定具体使用时间 :</label>
-											<div class="layui-input-inline widthauto">
-												<input type="text" id="limitUseTimeTyperange" autocomplete="off" readonly="readonly" placeholder="请指定具体使用时间"
-												 class="layui-input">
-											</div>
-										</div>
-									</div>
-									<div class="tmType1 hide">
-										<!-- 月卡 -->
-										<div class="layui-form-item">
-											<label class="layui-form-label"><span class="redC">* </span>卡券不限次数 :</label>
-											<div class="layui-input-inline max360 barcodeshow">
-												<input type="radio" name="codeType2" lay-filter="barcodeshow" value="0" title="是" checked="">
-												<input type="radio" name="codeType2" lay-filter="barcodeshow" value="0" title="否">
-											</div>
-										</div>
-										<div class="layui-form-item">
-											<label class="layui-form-label"><span class="redC">* </span>指定具体使用时间 :</label>
-											<div class="layui-input-inline widthauto">
-												<input type="text" id="limitUseTimeTyperange" autocomplete="off" readonly="readonly" placeholder="请指定具体使用时间"
-												 class="layui-input">
-											</div>
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>是否允许续费 :</label>
-										<div class="layui-input-inline max360 barcodeshow">
-											<input type="radio" name="codeType3" lay-filter="barcodeshow" value="0" title="是" checked="">
-											<input type="radio" name="codeType3" lay-filter="barcodeshow" value="0" title="否">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>是否显示出售 :</label>
-										<div class="layui-input-inline max360 barcodeshow">
-											<input type="radio" name="codeType4" lay-filter="barcodeshow" value="0" title="是" checked="">
-											<input type="radio" name="codeType4" lay-filter="barcodeshow" value="0" title="否">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>每人可购买数量 :</label>
-										<div class="layui-input-inline max360">
-											<input type="text" name="subtitle" class="layui-input" lay-verify="ltName">
-										</div>
-									</div>
-									<div class="layui-form-item">
-										<label class="layui-form-label"><span class="redC">* </span>使用限制 :</label>
-										<div class="layui-input-inline max360">
-											<input type="text" name="subtitle" class="layui-input" lay-verify="ltName">
+										<label class="layui-form-label"><span class="redC">* </span>自定义链接 :</label>
+										<div class="layui-input-inline max400">
+											<input type="text" class="layui-input" id="custom1lLInput" placeholder="自定义链接地址">
 										</div>
 									</div>
 								</div>
-								<!-- tab2 -->
-								<div class="layui-tab-item">内容2</div>
-								<!-- tab3 -->
-								<div class="layui-tab-item">
-									<!-- 自定义入口一 -->
-									<blockquote class="layui-elem-quote consumeTit">
-										<i class="leftline"></i>
-										自定义入口一
-									</blockquote>
-									<div class="layui-form-item custom1Body">
-										<div class="layui-form-item">
-											<div class="layui-input-inline max360 ">
-												<input type="radio" name="custom1" lay-filter="custom1" value="0" title="不设置">
-												<input type="radio" name="custom1" lay-filter="custom1" value="1" title="自定义链接" checked="">
-												<input type="radio" name="custom1" lay-filter="custom1" value="2" title="自定义小程序">
-											</div>
-										</div>
-										<div class="custom1B max600">
-											<div class="layui-form-item">
-												<label class="layui-form-label"><span class="redC">* </span>入口名称 :</label>
-												<div class="layui-input-inline max360">
-													<input type="text" name="custom1lNInput" class="layui-input customNameInput" id="custom1lNInput" value="推荐给朋友"
-													 placeholder="入口名称">
-												</div>
-											</div>
-											<div class="custom1-link">
-												<div class="layui-form-item">
-													<label class="layui-form-label"><span class="redC">* </span>自定义链接 :</label>
-													<div class="layui-input-inline max360">
-														<input type="text" name="custom1lLInput" class="layui-input" lay-verify="customlLInput" id="custom1lLInput"
-														 placeholder="自定义链接地址">
-													</div>
-												</div>
-											</div>
-											<div class="custom1-miniapp" style="display: none;">
-												<div class="layui-form-item">
-													<label class="layui-form-label"><span class="redC">* </span>小程序ID :</label>
-													<div class="layui-input-inline max360">
-														<input type="text" name="custom1mIInput" class="layui-input" id="custom1mIInput" placeholder="小程序ID">
-													</div>
-												</div>
-												<div class="layui-form-item">
-													<label class="layui-form-label"><span class="redC">* </span>小程序页面 :</label>
-													<div class="layui-input-inline max360">
-														<input type="text" name="custom1mPInput" class="layui-input" id="custom1mPInput" placeholder="小程序页面路径path">
-													</div>
-												</div>
-											</div>
-											<div class="layui-form-item">
-												<label class="layui-form-label">引导语 :</label>
-												<div class="layui-input-inline max360">
-													<input type="text" name="custom1mYInput" class="layui-input" id="custom1mYInput" placeholder="引导语">
-												</div>
-											</div>
+								<div class="custom1-miniapp" style="display: none;">
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>小程序ID :</label>
+										<div class="layui-input-inline max400">
+											<input type="text" class="layui-input" id="custom1mIInput" placeholder="小程序ID">
 										</div>
 									</div>
-									<!-- 自定义入口二 -->
-									<blockquote class="layui-elem-quote consumeTit">
-										<i class="leftline"></i>
-										自定义入口二
-									</blockquote>
-									<div class="layui-form-item custom2Body">
-										<div class="layui-form-item">
-											<div class="layui-input-inline max360 ">
-												<input type="radio" name="custom2" lay-filter="custom2" value="0" title="不设置">
-												<input type="radio" name="custom2" lay-filter="custom2" value="1" title="自定义链接" checked="">
-												<input type="radio" name="custom2" lay-filter="custom2" value="2" title="自定义小程序">
-											</div>
-										</div>
-										<div class="custom2B max600">
-											<div class="layui-form-item">
-												<label class="layui-form-label"><span class="redC">* </span>入口名称 :</label>
-												<div class="layui-input-inline max360">
-													<input type="text" name="custom2lNInput" class="layui-input customNameInput" id="custom2lNInput" value="会员卡详情"
-													 placeholder="入口名称">
-												</div>
-											</div>
-											<div class="custom2-link">
-												<div class="layui-form-item">
-													<label class="layui-form-label"><span class="redC">* </span>自定义链接 :</label>
-													<div class="layui-input-inline max360">
-														<input type="text" name="custom2lLInput" class="layui-input" lay-verify="customlLInput" id="custom2lLInput"
-														 placeholder="自定义链接地址">
-													</div>
-												</div>
-											</div>
-											<div class="custom2-miniapp" style="display: none;">
-												<div class="layui-form-item">
-													<label class="layui-form-label"><span class="redC">* </span>小程序ID :</label>
-													<div class="layui-input-inline max360">
-														<input type="text" name="custom2mIInput" class="layui-input" id="custom2mIInput" placeholder="小程序ID">
-													</div>
-												</div>
-												<div class="layui-form-item">
-													<label class="layui-form-label"><span class="redC">* </span>小程序页面 :</label>
-													<div class="layui-input-inline max360">
-														<input type="text" name="custom2mPInput" class="layui-input" id="custom2mPInput" placeholder="小程序页面路径path">
-													</div>
-												</div>
-											</div>
-											<div class="layui-form-item">
-												<label class="layui-form-label">引导语 :</label>
-												<div class="layui-input-inline max360">
-													<input type="text" name="custom2mYInput" class="layui-input" id="custom2mYInput" placeholder="引导语">
-												</div>
-											</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>小程序页面 :</label>
+										<div class="layui-input-inline max400">
+											<input type="text" class="layui-input" id="custom1mPInput" placeholder="小程序页面路径path">
 										</div>
 									</div>
 								</div>
-								<!-- tab4 -->
-								<div class="layui-tab-item">
-									<div class="layui-form-item">
-										<label class="layui-form-label">图文介绍 :</label>
-										<div class="layui-input-inline max360">
-											<div class="layui-form-mid layui-word-aux">图片建议尺寸：900像素 * 500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
-											<ul class="layui-form-item max400 iwList" id="iwList"></ul>
-										</div>
-										<div class="layui-input-inline max360" style="display: flex;justify-content: flex-start;align-items: center;margin-bottom: 15px;">
-											<button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">增加图文</button>
-										</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">引导语 :</label>
+									<div class="layui-input-inline max400">
+										<input type="text" class="layui-input" maxlength="5" id="custom1mYInput" placeholder="引导语">
 									</div>
 								</div>
 							</div>
 						</div>
-
-						<div class="cardQrcode" style="display: none;">
-							<img src="./images/erweima.jpg">
+						<!-- 自定义入口二 -->
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							自定义/营销入口四
+							<input type="checkbox" lay-skin="switch" lay-filter="custom2Bodysw" id="custom2Bodysw" lay-text="开|关">
+						</blockquote>
+						<div class="layui-form-item custom2Body hide">
+							<div class="layui-form-item">
+								<label class="layui-form-label"></label>
+								<div class="layui-input-inline max400 ">
+									<input type="radio" name="custom2" lay-filter="custom2" value="0" title="自定义链接" checked="">
+									<input type="radio" name="custom2" lay-filter="custom2" value="1" title="自定义小程序">
+								</div>
+							</div>
+							<div class="custom2B max600">
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="redC">* </span>入口名称 :</label>
+									<div class="layui-input-inline max400">
+										<input type="text" class="layui-input customNameInput" id="custom2lNInput" value="自定义入口" placeholder="入口名称">
+									</div>
+								</div>
+								<div class="custom2-link">
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>自定义链接 :</label>
+										<div class="layui-input-inline max400">
+											<input type="text" class="layui-input" id="custom2lLInput" placeholder="自定义链接地址">
+										</div>
+									</div>
+								</div>
+								<div class="custom2-miniapp" style="display: none;">
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>小程序ID :</label>
+										<div class="layui-input-inline max400">
+											<input type="text" class="layui-input" id="custom2mIInput" placeholder="小程序ID">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label"><span class="redC">* </span>小程序页面 :</label>
+										<div class="layui-input-inline max400">
+											<input type="text" class="layui-input" id="custom2mPInput" placeholder="小程序页面路径path">
+										</div>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">引导语 :</label>
+									<div class="layui-input-inline max400">
+										<input type="text" class="layui-input" maxlength="5" id="custom2mYInput" placeholder="引导语">
+									</div>
+								</div>
+							</div>
 						</div>
-						<!-- <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-							<div class="layui-block">
+						<!-- tab4 -->
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							次/月卡详情
+						</blockquote>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">消费者自助核销密码 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="cancellationPassword" placeholder="请输入4位数字密码" class="layui-input" autocomplete="off">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">适用门店 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" id="mdSelect" autocomplete="off" readonly="readonly" placeholder="请选择适用门店" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>特权说明 :</label>
+							<div class="layui-input-inline max400">
+								<textarea class="layui-textarea" name="privilegeDescription" autocomplete="off" placeholder="请输入特权说明" rows="3"
+								 lay-verify="privilegeDescription"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>使用须知 :</label>
+							<div class="layui-input-inline max400">
+								<textarea class="layui-textarea" name="useNotice" autocomplete="off" placeholder="请输入特权说明" rows="3" lay-verify="useNotice"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">联系电话 :</label>
+							<div class="layui-input-inline max400">
+								<input type="number" name="tell" lay-verify="celltest" class="layui-input" placeholder="请输入联系电话">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>操作提示 :</label>
+							<div class="layui-input-inline max400">
+								<input type="text" name="operationHint" placeholder="使用时操作提示向服务员出示此券" value="使用时向服务员出示此券" class="layui-input"
+								 autocomplete="off" lay-verify="company">
+							</div>
+							<div class="layui-form-mid layui-word-aux">建议引导用户到店出示会员卡，由店员完成核销操作，字数上限为16个汉字</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">图文介绍 :</label>
+							<div class="layui-input-inline max400">
+								<div class="layui-form-mid layui-word-aux">图片建议尺寸：900像素 * 500像素，大小不超过2M。至少上传1组图文，最多输入170字</div>
+								<ul class="layui-form-item max400 iwList" id="iwList"></ul>
+							</div>
+							<div class="layui-input-inline max400" style="display: flex;justify-content: flex-start;align-items: center;margin-bottom: 15px;">
+								<button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">增加图文</button>
+							</div>
+						</div>
+
+						<div class="layui-form-item layui-layout-admin">
+							<div class="layui-input-block">
 								<div class="layui-footer" style="left: 0;text-align: center;">
 									<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
-									<button class="layui-btn" lay-submit="" lay-filter="nextstep" id="nextstep">下一步</button>
-									<button class="layui-btn hide" lay-submit="" lay-filter="laststep" id="laststep">上一步</button>
-									<button class="layui-btn hide" lay-submit="" lay-filter="add" id="add">提交</button>
+									<button class="layui-btn" lay-submit="" lay-filter="add" id="add">提交</button>
 								</div>
 							</div>
-						</div> -->
-					</div>
-				</div>
-				<div class="layui-form-item layui-layout-admin">
-					<div class="layui-input-block">
-						<div class="layui-footer" style="left: 0;text-align: center;">
-							<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
-							<button class="layui-btn" lay-submit="" lay-filter="nextstep" id="nextstep">下一步</button>
-							<button class="layui-btn hide" lay-submit="" lay-filter="laststep" id="laststep">上一步</button>
-							<button class="layui-btn hide" lay-submit="" lay-filter="add" id="add">提交</button>
 						</div>
-						<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
 					</div>
 				</div>
 			</div>
 		</div>
+		<script type="text/html" id="toolbarDemo">
+			<a class="layui-btn layui-btn-sm" lay-event="timeSAdd">添加时间段</a>
+		</script>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs layui-btn-danger" data-index="{{d.index}}" lay-event="del">删除</a>
+		</script>
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script src="../../common/utility.js"></script>
@@ -530,15 +747,51 @@
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 
-			var cardCon;
-			var chooseCnum
-			var wxCardNo
-			var shopNumbers = []
-			var columnDVal = ["积分", "余额", "优惠券", "等级"]
-			var merchantSL = ["免费WIFI", "可带宠物", "免费停车", "可外卖"]
-			var imageTexts = []
+			var chooseCnum = 1
+			var vashierTimes = []
+			var shopList = []
+			var colorList = ["63b359", "2c9f67", "509fc9", "5885cf", "9062c0", "d09a45", "e4b138",
+				"ee903c", "f08500",
+				"a9d92d", "dd6549", "cc463d", "cf3e36", "5E6671"
+			]
+			var imgTexts = []
 			var imgNum = 0
 			var customs = new Array()
+			var logo_id, image_id
+			// 次月卡
+			var tmList = [{
+				"originalPrice": 500,
+				"dataType": 0,
+				"cardType": 0,
+				"frequency": 50,
+				"price": 5,
+				"frequencyLimitType": 0,
+				"days": 10,
+				"startTime": "2019-09-18 16:30:00",
+				"endTime": "2020-09-18 16:30:00"
+			}]
+			var tmList_T = [{
+				"originalPrice": 500,
+				"dataType": 0,
+				"cardType": 0,
+				"frequency": 50,
+				"price": 5,
+				"frequencyLimitType": 0,
+				"days": 10,
+				"startTime": "2019-09-18 16:30:00",
+				"endTime": "2020-09-18 16:30:00"
+			}]
+			var tmList_M = [{
+				"originalPrice": 500,
+				"dataType": 0,
+				"cardType": 0,
+				"frequency": 50,
+				"price": 5,
+				"frequencyLimitType": 0,
+				"days": 10,
+				"startTime": "2019-09-18 16:30:00",
+				"endTime": "2020-09-18 16:30:00"
+			}]
 
 			layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
 				layui.$.support.cors = true; //允许ajax跨域
@@ -551,8 +804,229 @@
 				var tableSelect = layui.tableSelect;
 
 
+				// 时段-时分
+				laydate.render({
+					elem: '#limitUseTimeTyperange',
+					min: fun_date(0),
+					range: true,
+					value: fun_date(0) + ' - ' + fun_date(30),
+				});
+				laydate.render({
+					elem: '#limitUseTimeTyperange1',
+					min: fun_date(0),
+					range: true,
+					value: fun_date(0) + ' - ' + fun_date(30),
+				});
+				laydate.render({
+					elem: '#sTime',
+					type: 'time',
+					format: 'HH:mm'
+				});
+				laydate.render({
+					elem: '#eTime',
+					type: 'time',
+					format: 'HH:mm'
+				});
+
+
+				//展示已知数据
+				timeStable()
+
+				function timeStable() {
+					table.render({
+						elem: '#timeS',
+						toolbar: '#toolbarDemo',
+						defaultToolbar: false,
+						id: 'timeSList',
+						cols: [
+							[{
+								type: 'numbers'
+							}, {
+								field: 'timeSlotCollect',
+								title: '使用周',
+								align: 'left',
+								minWidth: 320,
+							}, {
+								field: 'id',
+								title: '使用时间段',
+								align: 'center',
+								minWidth: 110,
+								templet: function(data) {
+									return data.startTime + '~' + data.endTime
+								}
+							}, {
+								field: 'operation',
+								title: '操作',
+								toolbar: "#tool",
+								width: 65,
+							}]
+						],
+						data: vashierTimes,
+					});
+				}
+				//头工具栏事件
+				table.on('toolbar(timeS)', function(obj) {
+					var checkStatus = table.checkStatus(obj.config.id);
+					var arrO = new Object(),
+						arrc = new Array(),
+						arrcold = new Array(),
+						arrcnew = new Array(),
+						arrl = new Array();
+					switch (obj.event) {
+						case 'timeSAdd':
+							var checkval = []
+							$("input:checkbox[name='timeSlotCollect']").each(function(i) {
+								checkval.push($(this).val())
+							});
+							if (vashierTimes.length > 0) {
+								for (let i = 0; i < vashierTimes.length; i++) {
+									arrcold = arrcold.concat(vashierTimes[i].timeSlotCollect.split('#'))
+								}
+							}
+							for (let i = 0; i < checkval.length; i++) {
+								if (arrcold.indexOf(checkval[i]) >= 0) {
+									$("input:checkbox[name='timeSlotCollect']").eq(i).prop('checked', true)
+									$("input:checkbox[name='timeSlotCollect']").eq(i).attr('disabled', 'disabled')
+								} else {
+									$("input:checkbox[name='timeSlotCollect']").eq(i).prop('checked', false)
+									$("input:checkbox[name='timeSlotCollect']").eq(i).removeAttr('disabled')
+								}
+								form.render('checkbox')
+							}
+							layer.open({
+								type: 1,
+								shade: 0.5,
+								area: ['500px', '300px'],
+								title: '添加时间段',
+								content: $('.timePeriod'),
+								btn: ['确定', '取消'],
+								yes: function(index) {
+									$("input:checkbox[name='timeSlotCollect']:checked").each(function(i) {
+										arrcnew[i] = $(this).val();
+									});
+									if ($('#sTime').val() == '') {
+										return layer.msg('请选择开始时间！', function() {})
+									}
+									if ($('#eTime').val() == '') {
+										return layer.msg('请选择结束时间！', function() {})
+									}
+									if ($('#eTime').val() == '00:00') {
+										return layer.msg('结束时间不能为00:00！', function() {})
+									}
+									for (let i = 0; i < arrcnew.length; i++) {
+										if (arrcold.indexOf(arrcnew[i]) == -1) {
+											arrl.push(arrcnew[i])
+										}
+									}
+									if (arrl.length < 1) {
+										return layer.msg('请选择周时间！', function() {})
+									}
+									arrO.timeSlotCollect = arrl.join('#')
+									arrO.startTime = $('#sTime').val()
+									arrO.endTime = $('#eTime').val()
+									vashierTimes.push(arrO)
+									layer.close(index)
+									layer.msg('添加成功')
+									timeStable()
+									$('#sTime').val('')
+									$('#eTime').val('')
+								},
+							});
+							// }
+							break;
+					};
+				});
+				//监听行工具事件
+				table.on('tool(timeS)', function(obj) {
+					var data = obj.data;
+					if (obj.event === 'del') {
+						for (let i = 0; i < vashierTimes.length; i++) {
+							if (vashierTimes[i].timeSlotCollect == data.timeSlotCollect) {
+								vashierTimes.splice(i, 1)
+							}
+						}
+						timeStable()
+						layer.msg('删除成功', function(index) {
+							layer.close(index);
+						});
+					}
+				});
+
+
+
+				/*---------- 品牌logo，卡背景上传 ----------*/
+				$('#cardLo').click(function() {
+					$('#upLogo').click()
+				})
+				$('#cardBg').click(function() {
+					$('#upBg').click()
+				})
+				$('.layui-upload-img').on({
+					mouseover: function() {
+						var cardId = $(this).attr("id")
+						var cardSrc = $('#' + cardId + 'Img').attr("src")
+						if (cardId === 'cardLo' && cardSrc) {
+							$('.pinpaiLogo .imgDel').css({
+								"display": "block",
+								"opacity": 1
+							})
+						}
+						if (cardId === 'cardBg' && cardSrc) {
+							$('.cardBgimg .imgDel').css({
+								"display": "block",
+								"opacity": 1
+							})
+						}
+					}
+				})
+				$('.imgDel').on({
+					mouseleave: function() {
+						$('.imgDel').css({
+							"display": "none",
+							"opacity": 0
+						})
+					}
+				})
+				$('.imgDel').click(function(e) {
+					var delId = e.currentTarget.dataset.id
+					if (delId == 'cardLo') {
+						$('#cardLimg').attr('src', './images/card_logo.png')
+						$('#cardLo').find('img').removeAttr('src')
+						$(this).prev().find(".upTips").show()
+						logo_id = ''
+					}
+					if (delId == 'cardBg') {
+						$('#cardBg').find('img').removeAttr('src')
+						$('#cardBimg').removeAttr('src')
+						$('#cardBimg').hide()
+						$(this).prev().find(".upTips").show()
+						image_id = ''
+					}
+					$(this).hide()
+				})
+
+				$("#upLogo").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						uploadImgajax(data, 1)
+					});
+					$(this).val('')
+				});
+				$("#upBg").change(function() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					uploadImg(this, function(data) {
+						uploadImgajax(data, 2)
+					});
+					$(this).val('')
+				});
+
+
 				tableSelect.render({
-					elem: '#symd',
+					elem: '#mdSelect',
 					searchKey: 'shopName',
 					checkedKey: 'shopNumber',
 					searchPlaceholder: '门店名称',
@@ -583,33 +1057,158 @@
 						]
 					},
 					done: function(elem, data) {
-						shopNumbers.splice(0)
+						shopList.splice(0)
 						var shopname = []
 						layui.each(data.data, function(index, item) {
-							shopNumbers.push(item.shopNumber)
+							shopList.push({
+								'shopNo': item.shopNumber
+							})
 							shopname.push(item.shopName)
 						})
-						elem.val('已选 ' + shopNumbers.length + ' 个门店')
+						elem.val(shopname.join('||'))
 					}
+				});
+
+				$('#consoleTM_T').click(function() {
+					console.log(tmList_T)
+				})
+				$('#consoleTM_M').click(function() {
+					console.log(tmList_M)
 				})
 
+				/*---------- 添加次卡 ----------*/
+				function tmlist_T() {
+					var str = ''
+					for (let i = 0; i < tmList_T.length; i++) {
+						str +=
+							'<li class="clearfix flexcl"><span><label class="layui-form-label">原价</label><input type="number" placeholder="100" autocomplete="off" data-type="prizesM" lay-verify="prizesM" class="layui-input originalPrice" value="' +
+							tmList_T[i].originalPrice + '"  data-id="' + i +
+							'"><p>元</p></span><span><label class="layui-form-label">售价</label><input type="number" value="' +
+							tmList_T[i].price + '"  data-id="' + i +
+							'" lay-verify="prizesM" placeholder="10" autocomplete="off" class="layui-input price"><p>元</p></span><span><label class="layui-form-label">次数</label><input type="number" value="' +
+							tmList_T[i].frequency + '"  data-id="' + i +
+							'" lay-verify="prizesM" placeholder="10" autocomplete="off" class="layui-input frequency"><p>次</p></span><div class="delBtn delSale delTm" data-id="' +
+							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+					}
+					$('#TMlist_T').html(str)
+				}
+
+				tmlist_T()
+
+				$('#addTM_T').click(function() {
+					console.log($("input:radio[name='Limitedtime']:checked").val())
+					var newO = new Object()
+					newO.originalPrice = ''
+					newO.frequency = ''
+					newO.price = ''
+					newO.days = 0
+					tmList_T.push(newO)
+					tmlist_T()
+					del_T()
+					save_T()
+					form.render()
+				})
+
+				function del_T() {
+					$('.delTm').click(function(e) {
+						var data = this
+						var num = data.getAttribute('data-id')
+						tmList_T.splice(num, 1)
+						tmlist_T()
+						del_T()
+						save_T()
+					})
+				}
+
+				function save_T() {
+					$('.originalPrice').bind("input propertychange", function(event) {
+						tmList_T[this.dataset.id].originalPrice = this.value
+					})
+					$('.price').bind("input propertychange", function(event) {
+						tmList_T[this.dataset.id].price = this.value
+					})
+					$('.frequency').bind("input propertychange", function(event) {
+						tmList_T[this.dataset.id].frequency = this.value
+					})
+				}
+				save_T()
+				del_T()
+
+				/*---------- 添加月卡 ----------*/
+				function tmlist_M() {
+					var str = ''
+					for (let i = 0; i < tmList_M.length; i++) {
+						str +=
+							'<li class="clearfix flexcl"><span><label class="layui-form-label">原价</label><input type="number" placeholder="100" autocomplete="off" data-type="prizesM" lay-verify="prizesM" class="layui-input originalPrice" value="' +
+							tmList_M[i].originalPrice + '"  data-id="' + i +
+							'"><p>元</p></span><span><label class="layui-form-label">售价</label><input type="number" value="' +
+							tmList_M[i].price + '"  data-id="' + i +
+							'" lay-verify="prizesM" placeholder="10" autocomplete="off" class="layui-input price"><p>元</p></span><div class="nolimit hide"><span><label class="layui-form-label">次数</label><input type="number" value="' +
+							tmList_M[i].frequency + '"  data-id="' + i +
+							'" lay-verify="prizesM" placeholder="10" autocomplete="off" class="layui-input frequency"><p>次</p></span></div><span><label class="layui-form-label">天数</label><input type="number" value="' +
+							tmList_M[i].days + '"  data-id="' + i +
+							'" lay-verify="prizesM" placeholder="10" autocomplete="off" class="layui-input days"><p>天</p></span><div class="delBtn delSale delTm" data-id="' +
+							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
+					}
+					$('#TMlist_M').html(str)
+				}
+				tmlist_M()
+				$('#addTM_M').click(function() {
+					var newO = new Object()
+					newO.originalPrice = ''
+					newO.frequency = ''
+					newO.price = ''
+					newO.days = ''
+					tmList_M.push(newO)
+					tmlist_M()
+					del_M()
+					save_M()
+					form.render()
+				})
+
+				function del_M() {
+					$('.delTm').click(function(e) {
+						var data = this
+						var num = data.getAttribute('data-id')
+						tmList_M.splice(num, 1)
+						tmlist_M()
+						del_M()
+						save_M()
+					})
+				}
+
+				function save_M() {
+					$('.originalPrice').bind("input propertychange", function(event) {
+						tmList_M[this.dataset.id].originalPrice = this.value
+					})
+					$('.price').bind("input propertychange", function(event) {
+						tmList_M[this.dataset.id].price = this.value
+					})
+					$('.frequency').bind("input propertychange", function(event) {
+						tmList_M[this.dataset.id].frequency = this.value
+					})
+				}
+				save_M()
+				del_M()
 
 				/*---------- 图文添加 ----------*/
 				function saleListFor() {
 					var str = ''
-					for (let i = 0; i < imageTexts.length; i++) {
-						str += '<li><input type="file" class="input_img layui-input" style="display: none;" id="upLogo' + i + '" />' +
-							'<div class="layui-input-inline max360 pinpaiLogo' + i + '">' +
+					for (let i = 0; i < imgTexts.length; i++) {
+						str +=
+							'<li><input type="file" accept="image/*" class="input_img layui-input" style="display: none;" id="upLogo' + i +
+							'" />' +
+							'<div class="layui-input-inline pinpaiLogo' + i + '">' +
 							'<div class="layui-upload-list">' +
 							'<div class="layui-upload-img" id="cardLo' + i + '" onclick="imgUp(' + i +
 							')">' +
-							'<img id="cardLoImg' + i + '" src="' + imageTexts[i].localImgUrl + '">' +
+							'<img id="cardLoImg' + i + '" src="' + imgTexts[i].image + '">' +
 							'<div class="upTips">+<br />上传图片</div></div>' +
 							'<div class="imgDel" data-id="cardLo' + i + '" style="display: none;">' +
 							'<i class="layui-icon layui-unselect layui-tab-close">ဆ</i>' +
 							'</div></div></div>' +
-							'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" id="imgText' + i +
-							'" class="layui-textarea" onclick="textIn(' + i + ')">' + imageTexts[i].text +
+							'<textarea placeholder="图文内容建议上传商品、服务、环境等优质图片，并辅之以简单描述" lay-verify="graphicText" id="imgText' + i +
+							'" class="layui-textarea" onclick="textIn(' + i + ')">' + imgTexts[i].imageText +
 							'</textarea><div class="delBtn delSale" data-id="' +
 							i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
 					}
@@ -618,7 +1217,7 @@
 					/*---------- 图文设置 ----------*/
 					window.textIn = function(i) {
 						$('#imgText' + i).on("input", function(e) {
-							imageTexts[i].text = e.delegateTarget.value
+							imgTexts[i].imageText = e.delegateTarget.value
 						});
 					}
 					window.imgUp = function(i) {
@@ -629,35 +1228,8 @@
 								shade: 0.5
 							});
 							uploadImg(this, function(data) {
-								Imgbase = data
+								uploadImgajax(data, 6)
 							});
-							setTimeout(function() {
-								var datas = {
-									"imgBaseStr": Imgbase,
-									"institutionNumber": "1004",
-									"imgType": "0",
-									"merchantNumber": "180913174959827"
-								}
-								// 发送请求
-								$.ajax({
-									type: "post",
-									url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
-									data: JSON.stringify(datas),
-									dataType: "json",
-									headers: {
-										"Content-Type": "application/json"
-									},
-									success: function(data) {
-										layer.closeAll('loading');
-										if (data.code === 1000) {
-											imageTexts[imgNum].imageId = data.data.imageId
-											imageTexts[imgNum].localImgUrl = data.data.localImgUrl
-											$('#cardLoImg' + imgNum).attr('src', data.data.localImgUrl);
-											$('#cardLo' + imgNum).find('.upTips').hide();
-										}
-									}
-								});
-							}, 300)
 						});
 					}
 					window.imgDel = function(i) {
@@ -695,10 +1267,10 @@
 
 				$('#addSale').click(function() {
 					var newO = new Object()
-					newO.text = ''
+					newO.imageText = ''
 					newO.imageId = ''
-					newO.localImgUrl = '../../public/images/default.png'
-					imageTexts.push(newO)
+					newO.image = '../../public/images/default.png'
+					imgTexts.push(newO)
 					saleListFor()
 					cli()
 					char()
@@ -707,13 +1279,13 @@
 
 				function cli() {
 					$('.delSale').click(function(e) {
-						if (imageTexts.length == 1) {
-							layer.msg('最少要保留一条图文信息')
-							return
-						}
+						// if (imgTexts.length == 1) { //限制图文信息最少一条,不限制注释掉
+						// 	layer.msg('最少要保留一条图文信息')
+						// 	return
+						// }
 						var data = this
 						var num = data.getAttribute('data-id')
-						imageTexts.splice(num, 1)
+						imgTexts.splice(num, 1)
 						saleListFor()
 						cli()
 						char()
@@ -723,64 +1295,86 @@
 
 				function char() {
 					$('.charge').bind("input propertychange", function(event) {
-						imageTexts[this.dataset.id].text = this.value
+						imgTexts[this.dataset.id].imageText = this.value
 					})
 				}
 
 				function give() {
 					$('.give').bind("input propertychange", function(event) {
-						imageTexts[this.dataset.id].imageId = this.value
+						imgTexts[this.dataset.id].imageId = this.value
 					})
 				}
 				give()
 				char()
 				cli()
 
+
 				/*---------- 单选复选监听 ----------*/
-				form.on('checkbox(columnDisplay)', function(data) {
-					if ($("input[name='columnDisplay']:checked").length > 3) {
-						$(this).prop("checked", false);
-						form.render('checkbox');
-						layer.msg("最多只能选择3个标签", function() {});
-					} else {
-						var checkNum = columnDVal.indexOf(data.elem.value)
-						if (data.elem.checked) {
-							$('.card_qListli').eq(checkNum).addClass('lishow');
-						} else {
-							$('.card_qListli').eq(checkNum).removeClass('lishow')
-						}
+				form.on('radio(cardType)', function(data) {
+					if (data.value == 0) {
+						$('.cardType0').show()
+						$('.cardType1').hide()
+						tmList_T.splice(0)
+						tmList_M.splice(0)
+						tmlist_T()
+						del_T()
+						save_T()
+						tmlist_M()
+						del_M()
+						save_M()
+					} else if (data.value == 1) {
+						$('.cardType0').hide()
+						$('.cardType1').show()
+						tmList_T.splice(0)
+						tmList_M.splice(0)
+						tmlist_T()
+						del_T()
+						save_T()
+						tmlist_M()
+						del_M()
+						save_M()
 					}
 				});
-				form.on('radio(tmType)', function(data) {
+				form.on('radio(Limitedtime)', function(data) {
 					if (data.value == 0) {
-						$('.tmType0').show()
-						$('.tmType1').hide()
+						$('.Limitedtime0').show()
+						$('.Limitedtime0').find('input').attr('lay-verify', 'effectiveDay')
+						$('.Limitedtime1').hide()
+						$('.Limitedtime1').find('input').removeAttr('lay-verify')
 					} else if (data.value == 1) {
-						$('.tmType0').hide()
-						$('.tmType1').show()
+						$('.Limitedtime0').hide()
+						$('.Limitedtime0').find('input').removeAttr('lay-verify')
+						$('.Limitedtime1').show()
+						$('.Limitedtime1').find('input').attr('lay-verify', 'limitUseTimeTyperange')
+					}
+				});
+				form.on('radio(unlimited)', function(data) {
+					if (data.value == 0) {
+						$('.nolimit').hide()
+					} else if (data.value == 1) {
+						$('.nolimit').show()
 					}
 				});
 
-				// 自定义入口一
+				// 自定义入口三
 				form.on('switch(custom1Bodysw)', function(data) {
 					if (data.elem.checked == true) {
 						$('.custom1Body').show()
+						$('.card_fListli').eq(2).find('p').html($('#custom1lNInput').val())
+						$('#custom1lNInput').attr('lay-verify', 'entryname')
+						$('#custom1lLInput').attr('lay-verify', 'customlLInput')
 					} else if (data.elem.checked == false) {
+						$('.card_fListli').eq(2).find('p').html('自定义入口3')
 						$('.custom1Body').hide()
-					}
-				});
-				form.on('radio(custom1)', function(data) {
-					console.log(data.value)
-					if (data.value == 0) {
-						$('.custom1B').hide()
-						$('#custom1lNInput').val('')
 						$('#custom1lNInput').removeAttr('lay-verify')
 						$('#custom1lLInput').removeAttr('lay-verify')
 						$('#custom1mIInput').removeAttr('lay-verify')
 						$('#custom1mPInput').removeAttr('lay-verify')
 						$('#custom1mYInput').removeAttr('lay-verify')
-						$('.card_fListli').eq(0).hide()
-					} else if (data.value == 1) {
+					}
+				});
+				form.on('radio(custom1)', function(data) {
+					if (data.value == 1) {
 						$('.card_fListli').eq(0).show()
 						$('.custom1B').show()
 						$('.custom1-link').show()
@@ -804,37 +1398,37 @@
 				});
 				$("#custom1lNInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(0).find('p').html('自定义入口一')
+						$('.card_fListli').eq(2).find('p').html('自定义入口三')
 					} else {
-						$('.card_fListli').eq(0).find('p').html(e.delegateTarget.value)
+						$('.card_fListli').eq(2).find('p').html(e.delegateTarget.value)
 					}
 				});
 				$("#custom1mYInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(0).find('span').html('')
+						$('.card_fListli').eq(2).find('span').html('')
 					} else {
-						$('.card_fListli').eq(0).find('span').html(e.delegateTarget.value)
+						$('.card_fListli').eq(2).find('span').html(e.delegateTarget.value)
 					}
 				});
-				// 自定义入口二
+				// 自定义入口四
 				form.on('switch(custom2Bodysw)', function(data) {
 					if (data.elem.checked == true) {
 						$('.custom2Body').show()
+						$('.card_fListli').eq(3).find('p').html($('#custom2lNInput').val())
+						$('#custom2lNInput').attr('lay-verify', 'entryname')
+						$('#custom2lLInput').attr('lay-verify', 'customlLInput')
 					} else if (data.elem.checked == false) {
+						$('.card_fListli').eq(3).find('p').html('自定义入口4')
 						$('.custom2Body').hide()
-					}
-				});
-				form.on('radio(custom2)', function(data) {
-					if (data.value == 0) {
-						$('.custom2B').hide()
-						$('#custom2lNInput').val('')
 						$('#custom2lNInput').removeAttr('lay-verify')
 						$('#custom2lLInput').removeAttr('lay-verify')
 						$('#custom2mIInput').removeAttr('lay-verify')
 						$('#custom2mPInput').removeAttr('lay-verify')
 						$('#custom2mYInput').removeAttr('lay-verify')
-						$('.card_fListli').eq(1).hide()
-					} else if (data.value == 1) {
+					}
+				});
+				form.on('radio(custom2)', function(data) {
+					if (data.value == 1) {
 						$('.card_fListli').eq(1).show()
 						$('.custom2B').show()
 						$('.custom2-link').show()
@@ -858,30 +1452,50 @@
 				});
 				$("#custom2lNInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(1).find('p').html('自定义入口二')
+						$('.card_fListli').eq(3).find('p').html('自定义入口四')
 					} else {
-						$('.card_fListli').eq(1).find('p').html(e.delegateTarget.value)
+						$('.card_fListli').eq(3).find('p').html(e.delegateTarget.value)
 					}
 				});
 				$("#custom2mYInput").on("input", function(e) {
 					if (e.delegateTarget.value == '') {
-						$('.card_fListli').eq(1).find('span').html('')
+						$('.card_fListli').eq(3).find('span').html('')
 					} else {
-						$('.card_fListli').eq(1).find('span').html(e.delegateTarget.value)
+						$('.card_fListli').eq(3).find('span').html(e.delegateTarget.value)
 					}
 				});
 
-				/*---------- Input监听 ----------*/
-				ltname()
-
 				/*---------- 自定义验证规则 ----------*/
 				form.verify({
-					ltName: function(value) {
+					brandName: function(value) {
 						if (value == '') {
-							return '副标题不能为空！'
+							return '品牌名称不能为空！'
 						} else if (value != '') {
-							if (value.length > 5) {
-								return '副标题不能超过5个字符！'
+							if (value.length > 8) {
+								return '品牌名称不能超过8个字符！'
+							}
+						}
+					},
+					cardName: function(value) {
+						if (value == '') {
+							return '次/月卡标题不能为空！'
+						} else if (value != '') {
+							if (value.length > 8) {
+								return '次/月卡标题不能超过8个字符！'
+							}
+						}
+					},
+					company: function(value) {
+						if (value == '') {
+							return '次/月卡单位不能为空！'
+						}
+					},
+					stock: function(value) {
+						if (value < 1) {
+							return '次/月卡库存最少为1'
+						} else if (value != '') {
+							if (value > 10000000) {
+								return '次/月卡库存上限为10000000'
 							}
 						}
 					},
@@ -915,6 +1529,43 @@
 							return '入口名称不能超过5个字符'
 						}
 					},
+					celltest: function(value) {
+						var rg = new RegExp(/^1\d{10}$/)
+						var rg2 = new RegExp(/0\d{2}-\d{7,8}/)
+						if (value != '' && !rg.test(value) && !rg2.test(value)) {
+							return '请填写正确的联系电话！'
+						}
+					},
+					effectiveDay: function(value) {
+						if (value == '') {
+							return '请设置领取后多少天内有效！'
+						}
+					},
+					limitUseTimeTyperange: function(value) {
+						if (value == '') {
+							return '请指定具体使用时间！'
+						}
+					},
+					quantityNumber: function(value) {
+						if (value == '') {
+							return '请设置每人可购买数量！'
+						}
+					},
+					useLimit: function(value) {
+						if (value == '') {
+							return '请设置每人每天使用限制！'
+						}
+					},
+					privilegeDescription: function(value) {
+						if (value == '') {
+							return '请设置特权说明！'
+						}
+					},
+					useNotice: function(value) {
+						if (value == '') {
+							return '请设置使用须知！'
+						}
+					},
 				});
 
 				//表单初始赋值
@@ -929,51 +1580,41 @@
 				form.on('submit(add)', function(data) {
 					customs = []
 					var data = data.field
-					// layer.alert(JSON.stringify(data.field), {
-					//  title: '最终的提交信息'
-					// })
-					for (var i = 1; i < 4; i++) {
+					data.cardColor = '#' + colorList[chooseCnum]
+					data.logo = logo_id
+					data.imgNo = image_id
+					for (var i = 1; i < 3; i++) {
 						var customNamel = new Object()
-						customNamel.customNo = i
-						customNamel.customState = data['custom' + i]
-						customNamel.customName = data['custom' + i + 'lNInput']
-						customNamel.customLink = data['custom' + i + 'lLInput']
-						customNamel.leadingInfo = data['custom' + i + 'mYInput']
-						customNamel.appletId = data['custom' + i + 'mIInput']
-						customNamel.appletLink = data['custom' + i + 'mPInput']
+						customNamel.serialNo = i
+						customNamel.settingType = data['custom' + i]
+						customNamel.entryName = $('#custom' + i + 'lNInput').val()
+						customNamel.customLinks = $('#custom' + i + 'lLInput').val()
+						customNamel.leadingWords = $('#custom' + i + 'mYInput').val()
+						customNamel.widgetId = $('#custom' + i + 'mIInput').val()
+						customNamel.widgetPage = $('#custom' + i + 'mPInput').val()
+						customNamel.openOrClose = $("input:checkbox[id='custom" + i + "Bodysw']").is(':checked') == true ? 0 : 1
 						customs.push(customNamel)
 					}
-					data.customs = customs
-					data.imageTexts = imageTexts
+					data.cardSettingInfoList = customs
+					data.imageTextList = imgTexts
+					data.timeSlotInfo = vashierTimes
 
-					var arrc = new Array();
-					var arrm = new Array();
-					$("input:checkbox[name='columnDisplay']:checked").each(function(i) {
-						arrc[i] = $(this).val();
-					});
-					$("input:checkbox[name='merchantService']:checked").each(function(i) {
-						arrm[i] = $(this).val();
-					});
-					data.columnDisplay = arrc.join('||');
-					data.merchantService = arrm.join('||');
 					data.institutionNumber = insNumber
-					data.merchantNumber = merNumber
-					// data.applyShops = shopNumbers
-					data.applyShops = []
-					if (shopNumbers != '') {
-						data.shopJurisdiction = 1
-					} else {
-						data.shopJurisdiction = 0
-					}
+					data.userNo = merNumber
+					data.voucherShopInfoList = shopList
+					// data.nextMonthTypeInfo = tmList_T.concat(tmList_M)
+					data.nextMonthTypeInfo = tmList
+
+					// layer.alert(JSON.stringify(data))
 					console.log(data)
+					// return
 					layer.load(2, {
 						shade: 0.5
 					});
-					// return
 					// 发送请求
 					$.ajax({
 						type: "post",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addWCard,
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addCountingcard,
 						data: JSON.stringify(data),
 						dataType: "json",
 						headers: {
@@ -981,9 +1622,10 @@
 						},
 						success: function(data) {
 							if (data.code === 1000) {
-								layer.closeAll('loading');
-								parent.layer.msg(data.msg)
-								location.replace(location.href)
+								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+								parent.layer.close(index); //再执行关闭
+								parent.layer.msg('添加次月卡成功')
+								parent.layui.table.reload('tmList')
 							} else {
 								layer.closeAll('loading');
 								parent.layer.msg(data.msg)
@@ -993,53 +1635,127 @@
 					return false;
 				});
 			});
-			$('.card_qListli').click(function(e) {
-				chooseCnum = $('.card_qListli').index(this) + 1
-			})
 
-			$('.chooseColor span').click(function(e) {
-				chooseCnum = $('.chooseColor span').index(this) + 1
-				$(this).siblings('span').removeClass('chooseCC layui-icon layui-icon-ok')
-				$(this).addClass('chooseCC layui-icon layui-icon-ok')
-				$('.card_b').attr("class", 'card_b card_bc' + chooseCnum)
-			})
+			ccolor()
+			ltname()
+
+			function ccolor() {
+				$('.chooseColor span').eq(1).addClass('chooseCC layui-icon layui-icon-ok');
+				$('.chooseColor span').click(function(e) {
+					chooseCnum = $('.chooseColor span').index(this)
+					$(this).addClass('chooseCC layui-icon layui-icon-ok');
+					$('.chooseColor span').not($(this)).removeClass('chooseCC layui-icon layui-icon-ok')
+					$('.card_bc1').css('background-color', '#' + colorList[chooseCnum])
+				})
+			}
 
 			function ltname() {
 				$('.ltN').text($("#ltName").val())
 				$('.ltNamepv').text($("#ltNamefu").val())
+				$('.BtnTit').text($("#title").val())
+				$('.BtnSubTit').text($("#subheading").val())
 				$("#ltName").on("input", function(e) {
-					//获取input输入的值
 					$('.ltN').text(e.delegateTarget.value)
 				});
 				$("#ltNamefu").on("input", function(e) {
-					//获取input输入的值
 					$('.ltNamepv').text(e.delegateTarget.value)
+				});
+				$("#title").on("input", function(e) {
+					$('#BtnTit').text(e.delegateTarget.value)
+				});
+				$("#subheading").on("input", function(e) {
+					$('#BtnSubTit').text(e.delegateTarget.value)
 				});
 			}
 
 			function uploadImg(input_file, get_data) {
-				/*input_file：文件按钮对象*/
-				/*get_data: 转换成功后执行的方法*/
-				if (typeof(FileReader) === 'undefined') {
-					alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
-				} else {
-					try {
-						/*图片转Base64 核心代码*/
-						var file = input_file.files[0];
-						//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
-						if (!/image\/\w+/.test(file.type)) {
-							alert("请确保文件为图像类型");
-							return false;
+				var file = input_file.files[0];
+				var reader = new FileReader();
+				var AllowImgFileSize = 2100000;
+				if (file) {
+					reader.readAsDataURL(file);
+					reader.onload = function() {
+						if (AllowImgFileSize != 0 && AllowImgFileSize < this.result.length) {
+							layer.closeAll('loading');
+							layer.msg('上传失败<br>请上传不大于2M的图片！', function() {});
+							return;
+						} else {
+							get_data(this.result)
 						}
-						var reader = new FileReader();
-						reader.onload = function() {
-							get_data(this.result);
-						}
-						reader.readAsDataURL(file);
-					} catch (e) {
-						alert('图片转Base64出错啦！' + e.toString())
 					}
+				} else {
+					layer.closeAll('loading');
 				}
+			}
+
+			function uploadImgajax(Imgbase, upType) {
+				var datas = {
+					"imgBaseStr": Imgbase,
+					"institutionNumber": insNumber,
+					"imgType": upType,
+					"merchantNumber": merNumber
+				}
+				// 发送请求
+				$.ajax({
+					type: "post",
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+					data: JSON.stringify(datas),
+					dataType: "json",
+					async: false,
+					headers: {
+						"Content-Type": "application/json"
+					},
+					success: function(data) {
+						layer.closeAll('loading');
+						if (data.code === 1000) {
+							switch (upType) {
+								case 1:
+									logo_url = data.data.localImgUrl
+									logo_id = data.data.imageId
+									$('#cardLimg').attr('src', data.data.localImgUrl);
+									$('#cardLoImg').attr('src', data.data.localImgUrl);
+									$('#cardLo').find('.upTips').hide();
+									break;
+								case 2:
+									imgNo = data.data.imageId
+									imgUrl = data.data.localImgUrl
+									$('#cardBimg').show();
+									$('#cardBimg').attr('src', data.data.localImgUrl);
+									$('#cardBgImg').attr('src', data.data.localImgUrl);
+									$('#cardBg').find('.upTips').hide();
+									break
+								case 4:
+									layer.msg('上传系统图库成功')
+									break
+								case 6:
+									imgTexts[imgNum].imageId = data.data.imageId
+									imgTexts[imgNum].image = data.data.localImgUrl
+									$('#cardLoImg' + imgNum).attr('src', data.data.localImgUrl);
+									$('#cardLo' + imgNum).find('.upTips').hide();
+									break
+							}
+						}
+					}
+				});
+			}
+
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
 			}
 		</script>
 	</body>

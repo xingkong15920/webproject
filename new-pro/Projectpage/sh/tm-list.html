@@ -72,7 +72,7 @@
 			</div>
 		</div>
 		<script type="text/html" id="switchBar">
-			<input type="checkbox" name="discountabled" lay-skin="switch" lay-filter="discountabled" lay-text="上架|下架" {{d.defaultFlag==1 ? 'checked' : ''}}  data-deliveryno="{{d.deliveryNo}}" value="{{d.defaultFlag}}">
+			<input type="checkbox" lay-skin="switch" lay-filter="discountabled" lay-text="上架|下架" {{d.state==0 ? 'checked' : ''}}  data-cardno="{{d.cardNo}}" value="{{d.state}}">
 		</script>
 		<script type="text/html" id="shareBar">
 			<a class="layui-btn layui-btn-xs shareBarBtn {{d.aliGetCardUrl?'':'hide'}}" lay-event="zfblink">支付宝卡券</a>
@@ -80,8 +80,8 @@
 			<a class="layui-btn layui-btn-xs shareBarBtn {{d.getCardUrl?'':'hide'}}" lay-event="shlink">领取链接</a>
 		</script>
 		<script type="text/html" id="tool">
+			<!-- <a class="layui-btn layui-btn-xs" lay-event="edit">领取</a> -->
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-xs" lay-event="edit">领取</a>
 		</script>
 		<script src="../../common/config-meb.js?v=1.0.3"></script>
 		<script src="../../common/utility.js"></script>
@@ -145,50 +145,53 @@
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.deliveryChannels,
+							"data": res.data.list,
 						}
 					},
 					cols: [
 						[{
-							field: 'channelName',
+							field: 'cardName',
 							title: '卡券名称',
 							align: 'center',
-							width: 150,
+							minWidth: 150,
 						}, {
-							field: 'shopNumber',
+							field: 'cardType',
 							title: '卡券类型',
 							align: 'center',
-							width: 180,
+							minWidth: 180,
 							templet: function(data) {
-								if (data.shopNumbers.length == 1) {
-									return data.shopNumbers[0].split('||')[0] + '<br>' + data.shopNumbers[0].split('||')[1]
-								} else {
-									return '已选 ' + data.shopNumbers.length + ' 个门店'
+								switch (data.cardType) {
+									case 0:
+										return '次卡'
+										break;
+									case 1:
+										return '月卡'
+										break;
 								}
 							}
 						}, {
-							field: 'giveMoney',
+							field: 'stock',
 							title: '库存',
 							align: 'center',
-							width: 100,
+							minWidth: 100,
 							sort: true,
 						}, {
-							field: 'giveIntegral',
+							field: 'recipients',
 							title: '领取数量',
 							align: 'center',
-							width: 100,
+							minWidth: 100,
 						}, {
-							field: 'giveIntegral',
+							field: 'validity',
 							title: '有效期',
 							align: 'center',
-							width: 100,
+							minWidth: 100,
 						}, {
 							field: 'insertTime',
 							title: '创建时间',
 							align: 'center',
-							width: 180,
+							minWidth: 180,
 						}, {
-							field: 'operation',
+							field: 'state',
 							title: '状态',
 							align: 'center',
 							toolbar: "#switchBar",
@@ -197,7 +200,7 @@
 							field: 'insertTime',
 							title: '二维码',
 							align: 'center',
-							width: 100,
+							minWidth: 100,
 							toolbar: "#shareBar"
 						}, {
 							field: 'operation',
@@ -220,8 +223,8 @@
 				form.on('switch(discountabled)', function(data) {
 					console.log(data)
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
-					var tjData = new Object();
-					tjData.deliveryNo = data.elem.dataset.deliveryno,
+					var tjData = new Object()
+					tjData.cardNo = data.elem.dataset.cardno,
 						tjData.merchantNumber = merNumber
 					// $.ajax({
 					// 	type: "post",
@@ -246,82 +249,19 @@
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
 
-					if (obj.event === 'zfblink') {
-						copyLinkM = data.aliGetCardUrl
-						downLinkMTit = data.deliveryNo
-						qrcode.makeCode(data.aliGetCardUrl);
-						layer.open({
-							type: 1,
-							shadeClose: true,
-							shade: 0.5,
-							title: false,
-							area: ['380px', '440px'],
-							content: $('.cardQrcode'),
-						});
-					} else if (obj.event === 'wxlink') {
-						copyLinkM = data.wxCardUrl
-						downLinkMTit = data.deliveryNo
-						qrcode.makeCode(data.wxCardUrl);
-						layer.open({
-							type: 1,
-							shadeClose: true,
-							shade: 0.5,
-							title: false,
-							area: ['380px', '440px'],
-							content: $('.cardQrcode'),
-						});
-					} else if (obj.event === 'shlink') {
-						copyLinkM = data.getCardUrl
-						downLinkMTit = data.deliveryNo
-						qrcode.makeCode(data.getCardUrl);
-						layer.open({
-							type: 1,
-							shadeClose: true,
-							shade: 0.5,
-							title: false,
-							area: ['380px', '440px'],
-							content: $('.cardQrcode'),
-						});
-					} else if (obj.event === 'edit') {
+					if (obj.event === 'edit') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
-							title: '渠道编辑',
-							area: ['600px', '90%'],
-							content: 'vipPutwayedit.html',
+							title: '次/月卡-编辑',
+							area: ['90%', '90%'],
+							content: 'tm-edit.html',
 							success: function(layero, index) {
 								// 获取子页面的iframe
 								var iframe = window['layui-layer-iframe' + index];
 								// 向子页面的全局函数child传参
-								iframe.subPageCon(data.deliveryNo)
+								iframe.subPageCon(data.cardNo)
 							}
-						});
-					} else if (obj.event === 'delete') {
-						// 弹出是删除询问框
-						layer.confirm('确定要删除此折扣设置？', function(index) {
-							var mydata = {
-								"deliveryNo": data.deliveryNo,
-							}
-							// 发送请求
-							// $.ajax({
-							// 	type: "post",
-							// 	url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.deleteChannel,
-							// 	data: JSON.stringify(mydata),
-							// 	dataType: "json",
-							// 	headers: {
-							// 		"Content-Type": "application/json"
-							// 	},
-							// 	success: function(data) {
-							// 		layer.closeAll('loading');
-							// 		if (data.code == 1000) {
-							// 			layer.close(index);
-							// 			layer.msg('删除成功！')
-							// 			layui.table.reload('tmList');
-							// 		} else {
-							// 			layer.msg(data.msg)
-							// 		}
-							// 	}
-							// });
 						});
 					}
 				});
@@ -350,7 +290,7 @@
 						addTM: function() {
 							layer.open({
 								type: 2,
-								title: '添加次/月卡',
+								title: '次/月卡-添加',
 								shadeClose: false,
 								shade: 0.3,
 								move: false,
