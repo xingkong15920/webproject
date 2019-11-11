@@ -16,6 +16,7 @@
     <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script type="text/javascript">
@@ -410,7 +411,47 @@
     } else {
         $('#adv').hide()
     }
+
+     function onBack(res) {
+        alert(JSON.stringify(res));
+    }
     $(function() {
+        CmsUtility.postAjaxCall2(
+            //系统设置
+                'https://nb.51shanhe.com/shanhe-admin/insTpa/getThirdParty', 
+                {
+                    "institutionNumber":JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
+                },
+                function(data) {
+                       
+                        // 回调执行函数
+                       
+                   
+ 
+                   CmsUtility.postAjaxCall2(
+                    //系统设置
+                        'http://192.168.1.66:6017/p-server/appServer/getBaiduToken', 
+                        {
+                            "clientId":data.data.baiduAPIKey,
+                            "clientSecret":data.data.baiduSecretKey
+                        },
+                        function(data) {
+                            if(data.code == 1000){
+                                sessionStorage.setItem("access_token", data.data.access_token);
+                            }else{
+                                sessionStorage.setItem("access_token", 'no');
+                            }
+                           
+                        },
+                        function(data) {
+
+                        },'get'
+                    )
+                },
+                function(data) {
+
+                }
+            )
         $('#logout').click(function() {
             var ajjData = new Object()
             ajjData.institutionNumber = JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
