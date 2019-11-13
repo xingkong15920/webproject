@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>会员充值</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+	</head>
+
+	<body>
+		<div id="loadstart" class="loadzz">
+			<div class="loading_k">
+				<div class="loading"></div>
+			</div>
+		</div>
+		<div class="vipCenter recBody" id="Vip">
+			<p class="rectit">余额(元)</p>
+			<h3 class="recbalan">{{mebbalan}}</h3>
+			<ul class="recFun flex_cc">
+				<li class="flex_cc" v-for="item in recFun" @click="jmup(item)">
+					<i class="icon iconfont" :class="item.toolcl"></i>
+					<p>{{item.toolitit}}</p>
+				</li>
+			</ul>
+			<div class="saleCon">
+				<p class="saleshname flex_cc"><i class="icon iconfont icondianpu"></i><span>庆丰包子铺</span></p>
+				<div class="saleInput flex_cc">
+					<label for="">￥</label><input type="number" v-model="saleJ" placeholder="请选择/输入充值金额" />
+				</div>
+				<ul class="saleli flex_cc">
+					<li class="flex_cc" v-for="(item,i) in saleli" @click="addC(i,$event,item)" :class="{active:i==current}">
+						<p class="flex_cc">{{item.saleM}} 元</p>
+						<span class="flex_cc">赠<i>{{item.saleZ}}</i>元</span>
+					</li>
+				</ul>
+				<a class="recBtn1">充值</a>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./js/sweetalert.min.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./js/qrcode.min.js"></script>
+	<script src="./js/JsBarcode.all.min.js"></script>
+	<script>
+		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
+		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+		new Vue({
+			el: '#Vip',
+			data: {
+				current: 0,
+				saleJ: '100',
+				mebNo: "2123345656664147666",
+				mebbalan: '12300.00',
+				recFun: [{
+					toolcl: "iconqianbao",
+					toolitit: "充值记录",
+					address: "bill-rec.html",
+				}, {
+					toolcl: "iconqianbao",
+					toolitit: "会员支付",
+					address: "pay.html",
+				}],
+				saleli: [{
+					saleM: '100',
+					saleZ: '10',
+				}, {
+					saleM: '200',
+					saleZ: '25',
+				}, {
+					saleM: '300',
+					saleZ: '50',
+				}, {
+					saleM: '500',
+					saleZ: '80',
+				}, {
+					saleM: '80000',
+					saleZ: '100',
+				}]
+			},
+			methods: {
+				jmup: function(e) {
+					window.location.href = e.address
+				},
+				addC: function(i, e, res) {
+					this.current = i
+					this.saleJ = res.saleM
+				}
+			},
+			created: function created() {
+				$('#loadstart').hide()
+			},
+			mounted: function mounted() {}
+		})
+
+		function getQueryString(name) {
+			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		}
+	</script>
+
+</html>

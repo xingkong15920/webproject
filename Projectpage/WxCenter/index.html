@@ -4,7 +4,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>会员管理</title>
+		<title>会员中心</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -12,12 +12,6 @@
 		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
-		<style type="text/css">
-			.vipBillul {
-				height: auto;
-				overflow: initial;
-			}
-		</style>
 	</head>
 
 	<body>
@@ -27,54 +21,42 @@
 			</div>
 		</div>
 		<div class="vipCenter" id="Vip">
-			<div class="vipBlock vipCardB" v-cloak>
-				<img src="./images/index_bg.png" class="index_bg">
-				<div class="vipCard-zhang">
-					会员总数(个)
+			<h3 class="mTit">我的VIP</h3>
+			<div class="mebInfo">
+				<div class="mebInfoCon flex_cc">
+					<div class="headImg">
+						<img src="http://sh-upfile.oss-cn-beijing.aliyuncs.com/1004/crm/logo/1567412767613.png">
+					</div>
+					<div class="headCon flex_cc">
+						<h3 class="flex_cc">春暖花开<span><i class="icon iconfont iconhuiyuan"></i>超级会员</span></h3>
+						<p>17778261160</p>
+					</div>
 				</div>
-				<div class="vipCard-zong">
-					<span>{{memberCount}}</span>
-				</div>
-				<ul class="vipCardtool">
-					<li class="vipCardtooli">
-						<p class="toolitit">今日新增(个)</p>
-						<span>{{memberTodCount}}</span>
+				<ul class="mebFun flex_cc">
+					<li class="flex_cc">
+						<h5>积分</h5>
+						<p>1233</p>
 					</li>
-					<li class="vipCardtooli">
-						<p class="toolitit">昨日新增(个)</p>
-						<span>{{memberYesdCount}}</span>
+					<li class="flex_cc">
+						<h5>余额</h5>
+						<p>400<span>元</span></p>
+					</li>
+					<li class="flex_cc" @click="toCoupons()">
+						<h5>优惠券</h5>
+						<p>1233<span>张</span></p>
 					</li>
 				</ul>
 			</div>
-			<div class="vipBlock vipTool" v-cloak>
-				<ul class="vipToolul">
-					<li class="vipTooli" v-for="item in vipToolul1" v-on:click="jump(item.address)">
-						<span class="icon iconfont toolimg" :class="item.toolcl"></span>
-						<p class="toolitit">{{item.toolitit}}</p>
-					</li>
-				</ul>
-			</div>
-			<div class="line10"></div>
-			<div class="vipBlock vipBill" v-cloak>
-				<div class="vipBilltit">
-					<p>会员信息</p>
-					<a href="bill-all.html">查看更多</a>
-				</div>
-				<ul class="vipBillul">
-					<li class="vipBilli" v-for="item in vipBilli">
-						<div class="vipBilliBody">
-							<div class="vipBilliL">
-								<p class="vipBillitit">{{item.name?item.name:'--'}}</p>
-								<p class="vipBillitime">{{item.cell?item.cell:'--'}}</p>
-							</div>
-							<div class="vipBilliR">
-								<p class="vipBillistate">余额</p>
-								<p class="vipBillimoney">¥ {{item.allBalance}}</span></p>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
+			<h3 class="mTit2">常用功能</h3>
+			<ul class="mFun flex_cc">
+				<li class="flex_cc" v-for="(item,i) in mFun" :class="item.toolstate==0?'':'stateOff'" @click="jmup(item)">
+					<div class="mTips" v-show="item.tips">
+						{{item.tips}}
+					</div>
+					<i class="icon iconfont" :class="item.toolcl"></i>
+					<p>{{item.toolitit}}</p>
+				</li>
+			</ul>
 		</div>
 	</body>
 	<script src="./js/jquery.min.js"></script>
@@ -85,130 +67,156 @@
 	<script src="./js/vue.min.js"></script>
 	<script src="./js/qrcode.min.js"></script>
 	<script>
-		// http://192.168.1.222:8848/webproject-1/Projectpage/Vip-android/index.html?json={"memberNo": "","merchantNumber": "1004000394","institutionNumber": "1004","clerkNumber": "1004000394","ip": "119.248.3.85","alias": "860d6661c62d937aa2efe18c9fbe2ab4","shopNumber": "","source": 1,"equipmentNumber": "860d6661c62d937aa2efe18c9fbe2ab4","equipmentType": 1}
-		// {
-		// 	"memberNo": "",
-		// 	"merchantNumber": "1004000394",
-		// 	"institutionNumber": "1004",
-		// 	"clerkNumber": "1004000394",
-		// 	"ip": "119.248.3.85",
-		// 	"alias": "860d6661c62d937aa2efe18c9fbe2ab4",
-		// 	"shopNumber": "",
-		// 	"source": 1,
-		// 	"equipmentNumber": "860d6661c62d937aa2efe18c9fbe2ab4",
-		// 	"equipmentType": 1
-		// }
-		$(document).ready(function() {
-			var userInfo = getQueryString('json')
-			sessionStorage.setItem("userInfo", userInfo)
-			var insNumber = JSON.parse(sessionStorage.getItem('userInfo')).institutionNumber;
-			var merNumber = JSON.parse(sessionStorage.getItem('userInfo')).merchantNumber;
-			$(".vipstatement").click(function() {
-				window.location.href = "bill-list.html"
-			})
-			$(".datastatis").click(function() {
-				window.location.href = "data-statis.html"
-			})
-
-			new Vue({
-				el: '#Vip',
-				data: {
-					page: 1,
-					limit: 10,
-					memberTodCount: '',
-					memberCount: '',
-					memberYesdCount: '',
-					vipToolul1: [{
-						toolcl: "iconhuiyuan",
-						toolitit: "会员充值",
-						address: "recharge.html"
-					}, {
-						toolcl: "iconxinjian",
-						toolitit: "会员消费",
-						address: "consume.html"
-					}, {
-						toolcl: "iconearn",
-						toolitit: "充值记录",
-						address: "bill-rec.html"
-					}, {
-						toolcl: "iconxiaofei1",
-						toolitit: "消费记录",
-						address: "bill-con.html"
-					}],
-					memberNo: '',
-					memDetails: {},
-					vipBilli: []
-				},
-				methods: {
-					changeDatas: function changeDatas(res) {
-						for (let i = 0; i < res.length; i++) {
-							if (res[i].allBalance.split('.')[0].length > 5) {
-								res[i].allBalance = parseInt(res[i].allBalance.split('.')[0] / 10000) + '万'
-							}
-							if (res[i].giveMoney.split('.')[0].length > 5) {
-								res[i].giveMoney = parseInt(res[i].giveMoney.split('.')[0] / 10000) + '万'
-							}
-						}
-						return res
-					},
-					// 查询会员汇总
-					getMemSummary: function getMemSummary() {
-						var that = this,
-							sendData = new Object()
-						sendData.merchantNumber = merNumber
-						sendData.page = that.page
-						sendData.limit = that.limit
-						$.ajax({
-							type: "get",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers,
-							data: sendData,
-							dataType: "json",
-							headers: {
-								"Content-Type": "application/json"
-							},
-							success: function success(data) {
-								if (data.code === 1000) {
-									$('#loadstart').hide()
-									that.vipBilli = that.changeDatas(data.data.memberList)
-									that.memberTodCount = data.data.memberTodCount
-									that.memberCount = data.data.memberCount
-									that.memberYesdCount = data.data.memberTodCount
-								} else {
-									$('#loadstart').hide()
-									// swal({
-									// 	title: "",
-									// 	text: data.msg,
-									// 	type: "error"
-									// });
-									layer.msg(data.msg)
-									that.memberTodCount = '--'
-									that.memberCount = '--'
-									that.memberYesdCount = '--'
-								}
-							}
+		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
+		new Vue({
+			el: '#Vip',
+			data: {
+				page: 1,
+				limit: 10,
+				memberTodCount: '',
+				memberCount: '',
+				memberYesdCount: '',
+				mFun: [{
+					toolcl: "iconzhifufangshi",
+					toolitit: "会员支付",
+					address: "pay.html",
+					toolstate: 0,
+				}, {
+					toolcl: "iconWYCZ",
+					toolitit: "会员充值",
+					address: "recharge.html",
+					tips: "有礼",
+					toolstate: 0,
+				}, {
+					toolcl: "iconanchuweidianiconquanji_fuzhi-",
+					toolitit: "积分兑换",
+					address: "bill-rec.html",
+					tips: "未开放",
+					toolstate: 1,
+				}, {
+					toolcl: "iconwodeyouhuiquan",
+					toolitit: "卡券中心",
+					address: "tmlist.html?cardType=1",
+					toolstate: 0,
+				}, {
+					toolcl: "iconduizhangdan-copy",
+					toolitit: "消费记录",
+					address: "bill-con.html",
+					toolstate: 0,
+				}, {
+					toolcl: "iconwujifen",
+					toolitit: "充值记录",
+					address: "bill-rec.html",
+					toolstate: 0,
+				}, {
+					toolcl: "iconjifen",
+					toolitit: "积分记录",
+					address: "bill-rec.html",
+					toolstate: 0,
+				}, {
+					toolcl: "iconfenxiang",
+					toolitit: "推荐给朋友",
+					address: "shareCard.html",
+					toolstate: 0,
+				}],
+				memberNo: '',
+				memDetails: {},
+				vipBilli: []
+			},
+			methods: {
+				jmup: function(e) {
+					if (e.toolstate == 0) {
+						window.location.href = e.address
+					} else if (e.toolstate == 1) {
+						swal({
+							title: "",
+							text: '功能未开放',
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: true,
 						});
-					},
-					jump: function jump(data) {
-						window.location.href = data
 					}
 				},
-				created: function created() {
-					this.memberNo = window.location.href.split('?memberNo=')[1]
+				toCoupons: function() {
+					window.location.href = 'tmlist.html?cardType=0'
 				},
-				mounted: function mounted() {
-					this.getMemSummary()
+			},
+			created: function created() {
+				var num = {
+					"institutionNumber": getQueryString('institutionNumber'),
+					"merchantNumber": getQueryString('merchantNumber'),
 				}
-			})
+				sessionStorage.setItem("num", JSON.stringify(num));
+				$('#loadstart').hide()
+				// if (/MicroMessenger/.test(window.navigator.userAgent)) {
+				// 	if (window.location.href.indexOf('&code=') == -1) {
+				// 		insNumber = getQueryString('institutionNumber')
+				// 		merNumber = getQueryString('merchantNumber')
+				// 	} else {
+				// 		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+				// 		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+				// 	}
+				// 	$.ajax({
+				// 		url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + merNumber,
+				// 		type: "GET",
+				// 		async: false,
+				// 		headers: {
+				// 			"Content-Type": "application/x-www-form-urlencoded"
+				// 		},
+				// 		success: function(data) {
+				// 			if (data.code == 1000) {
+				// 				weixinCode = data.data.appId;
+				// 				comId = data.data.componentAppid;
+				// 				appSecret = data.data.appSecret
+				// 			}
+				// 		}
+				// 	})
+				// 	var code;
+				// 	if (window.location.href.indexOf('&code=') == -1) {
+				// 		var num = {
+				// 			"institutionNumber": getQueryString('institutionNumber'),
+				// 			"merchantNumber": getQueryString('merchantNumber'),
+				// 		}
+				// 		sessionStorage.setItem("num", JSON.stringify(num));
+				// 		var scope = "snsapi_userinfo";
+				// 		var redirect_uri = window.location.href;
 
-			function getQueryString(name) {
-				var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-				var r = decodeURIComponent(window.location.search).substr(1).match(reg);
-				if (r != null) {
-					return unescape(r[2]);
-				}
-				return null;
-			}
+				// 		window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixinCode +
+				// 			"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope + "&state=start#wechat_redirect"
+				// 	} else {
+				// 		code = window.location.href.split('&code=')[1].split('&')[0];
+				// 		$.ajax({
+				// 			url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
+				// 				weixinCode + '&code=' + code + '&appSecret=' + appSecret,
+				// 			type: "GET",
+				// 			async: false,
+				// 			headers: {
+				// 				"Content-Type": "application/x-www-form-urlencoded"
+				// 			},
+				// 			success: function(data) {
+				// 				$('#loadstart').hide()
+				// 				if (data.code == '-2') {
+				// 					mebInfo = ''
+				// 				} else if (data.code == '1000') {
+				// 					mebInfo = JSON.stringify(data.data)
+				// 				}
+				// 			}
+				// 		})
+				// 	}
+				// }
+			},
+			mounted: function mounted() {}
 		})
+
+		function getQueryString(name) {
+			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		}
 	</script>
 
 </html>

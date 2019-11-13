@@ -4,10 +4,13 @@ var Edition = 'prd';
 var server;
 if (Edition == 'qty') {
 	server = 'http://192.168.1.167:6007/shanhe-merchant/'
+	publicUrl = 'http://192.168.1.167:5006/shanhe-common/'
 } else if (Edition == 'prd') {
 	server = 'https://nb.51shanhe.com/shanhe-merchant/'
+	publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 } else if (Edition == 'zyh') {
-	server = 'http://192.168.1.66:80/shanhe-member/'
+	server = 'http://192.168.1.124:6007/shanhe-merchant/'
+	publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }
 /* 
 接口前缀解释
@@ -21,11 +24,12 @@ var CmsConfig = {
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
-		// ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
-		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
-		// ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
-		ApiRootUrl: server
+		// ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.254:6019/p-member/',
+		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
+		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
+		ApiRootUrl: server,
+		PubUrl: publicUrl
 		// imgUrl:imgAdd
 	},
 	addressUrl: {
@@ -175,6 +179,8 @@ var CmsConfig = {
 			getChannelDetails: "delivery/getChannelDetails",
 			// 设置默认投放渠道
 			setDefaultChannel: "delivery/setDefaultChannel",
+			// 修改投放渠道
+			updateChannel: "delivery/updateChannel",
 			// 渠道-删除投放渠道
 			deleteChannel: "delivery/deleteChannel",
 			// 推荐设置
@@ -209,6 +215,8 @@ var CmsConfig = {
 			getMRefundTurnovers: "memberManage/getRefundTurnovers",
 			// 查询消费信息统计
 			getConsumInfo: "memberManage/getConsumInfo",
+			// 查询消费流水
+			getConTurnovers: "turnover/getConTurnovers",
 
 			// 流水明细
 			// 查询充值流水
@@ -253,6 +261,64 @@ var CmsConfig = {
 			getRecahrge: "censusManage/getRecahrge",
 			// 销售统计
 			getConsum: "censusManage/getConsum",
+
+			// 优惠券设置
+			// 添加优惠券
+			addVoucher: "voucher/addVoucher",
+			// 更新优惠券
+			updateVoucher: "voucher/updateVoucher",
+			// 优惠券详情
+			getVoucherDetail: "voucher/getVoucherDetail",
+			// 删除优惠券
+			delVoucher: "voucher/delVoucher",
+			// 获取商户下优惠券列表
+			getVoucherList: "voucher/getVoucherList",
+			// 优惠券上下架
+			updateVoucherShelf: "voucher/updateVoucherShelf",
+			// 查询优惠券领取记录
+			getVoucherRecord: "record/getRecord",
+			// 查询优惠券核销记录
+			selCancelCerification: "record/selCancelCerification",
+			// 拉取优惠券
+			getVoucehrListForWx: "synVoucher/getVoucehrListForWx",
+			// 优惠券同步到本地
+			getWeChatVtoLocal: "synVoucher/getWeChatVtoLocal",
+			// 优惠券同步到微信
+			synVoucherForWx: "synVoucher/synVoucherForWx",
+			// 获取微信领卡连接
+			getVoucehrListLink: "synVoucher/getVoucehrListLink",
+			// 查询优惠券绑定的店铺列表
+			getVoucherShopList: "voucher/getVoucherShopList",
+			// 查询渠道列表
+			getDeliveryList: "voucher/getDeliveryList",
+			// 添加渠道
+			inserNextDelivery: "voucher/inserNextDelivery",
+			// 删除渠道
+			delDelivery: "voucher/delDelivery",
+			// 门店统计
+			statisticsshop: "statistics/shop",
+			// 优惠券营销统计
+			detailedReports: "statistics/detailedReports",
+
+			// 海报设置
+			// 查询海报列表
+			hb_selPoster: "poster/selPoster",
+			// 添加/更新海报
+			hb_addPoster: "poster/addPoster",
+			// 查询海报详情
+			hb_selAllMessage: "poster/selAllMessage",
+
+			// 次月卡设置
+			// 查询次/月卡列表
+			getCountingcardList: "countingcard/getCountingcardList",
+			// 查询次/月卡详情
+			getCountingDetailList: "countingcard/getCountingDetailList",
+			// 添加次/月卡
+			addCountingcard: "countingcard/addCountingcard",
+			// 修改次/月卡
+			updateCountingcard: "countingcard/updateCountingcard",
+			// 删除次/月卡
+			delCountingcard: "countingcard/delCountingcard",
 		},
 		//商户后台
 		Merchant: {
@@ -326,6 +392,18 @@ var CmsConfig = {
 			getMerchantBillExcel: "merchantBill/getMerchantBillExcel",
 			//导出门店账单
 			getShopBillExcel: "shopBill/getShopBillExcel",
+
+			//广告管理
+			//获取广告列表
+			getAdvertList: "advert/getAdvertList",
+			//添加广告
+			addAdvert: "advert/addAdvert",
+			//添加图片
+			addPic: "advert/addPic",
+			//添加视频
+			addVideo: "advert/addVideo",
+			//广告更新
+			updateAdvert: "advert/updateAdvert",
 		},
 		//公共
 		Public: {

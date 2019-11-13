@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>消费记录</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./lib/mescroll/mescroll.css">
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<style type="text/css">
+			* {
+				transition: initial;
+			}
+
+			.vipBill {
+				margin: 0;
+			}
+
+			.vipBillitype {
+				margin-bottom: 5px;
+			}
+
+			.vipBillistated {
+				color: #999;
+			}
+
+			.operation.disableundo {
+				background: #ccc;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="loadstart" class="loadzz">
+			<div class="loading_k">
+				<div class="loading"></div>
+			</div>
+		</div>
+		<div class="vipCenter vipRec" id="Vip">
+			<div class="vipBlock vipBill">
+				<div class="vipBillul" v-cloak ref="mescroll" class="mescroll">
+					<ul id="vipBillulB">
+						<li class="vipBilli vipBilli3" v-for="(item,index) in vipBilli" data-type="0" @click="getDetails(item.orderNumber)">
+							<div class="vipBilliBody" v-if="item.orderState == 1" @touchstart.capture="touchStart" @touchend.capture="touchEnd"
+							 @click="skip">
+								<div class="vipBilliL">
+									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
+									<p class="vipBillitime">{{item.orderTime}}</p>
+								</div>
+								<div class="vipBilliC">
+									<p class="vipBillitype">{{item.payType1}}</p>
+									<p class="vipBillistated">({{item.orderState2}})</p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == 1">
+									<p class="vipBillimoney">- ¥ {{item.money}}</span></p>
+									<p class="vipBillimoneyG">优惠: ¥ {{item.discountMoney}}</span></p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == -2">
+									<p class="vipBillimoney">+ ¥ {{item.money?item.money:'0.00'}}</span></p>
+								</div>
+							</div>
+							<div class="vipBilliBody" v-else="item.orderState != 1">
+								<div class="vipBilliL">
+									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
+									<p class="vipBillitime">{{item.orderTime}}</p>
+								</div>
+								<div class="vipBilliC">
+									<p class="vipBillitype">{{item.payType1}}</p>
+									<p class="vipBillistated">({{item.orderState2}})</p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == 1">
+									<p class="vipBillimoney">- ¥ {{item.money}}</span></p>
+									<p class="vipBillimoneyG">优惠: ¥ {{item.discountMoney}}</span></p>
+								</div>
+								<div class="vipBilliR" v-show="item.orderState == -2">
+									<p class="vipBillimoney">+ ¥ {{item.money?item.money:'0.00'}}</span></p>
+								</div>
+							</div>
+							<ul class="operation" :class="item.revokeState == 1 ? 'disableundo':''">
+								<li @click="undoItem" :data-index="index" :data-state="item.revokeState" :data-recno="item.orderNumber">撤销</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="mask mebList" :class="[mebsearch?'show':'hide']" @click="inputblur()"></div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		var insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber;
+		var merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber;
+		new Vue({
+			el: '#Vip',
+			data: {
+				page: 1,
+				limit: 10,
+				branches: '',
+				vipBilli: [],
+				mescroll: null, // mescroll实例对象
+				mebsearch: false,
+				seachText: '',
+				seachTextN: '',
+				seachTextC: '',
+			},
+			methods: {
+				//跳转
+				skip() {
+					if (this.checkSlide()) {
+						this.restSlide();
+					}
+				},
+				//滑动开始
+				touchStart(e) {
+					// 记录初始位置
+					this.startX = e.touches[0].clientX;
+					this.startY = e.touches[0].clientY;
+				},
+				//滑动结束
+				touchEnd(e) {
+					// 当前滑动的父级元素
+					let parentElement = e.currentTarget.parentElement;
+					// 记录结束位置
+					this.endX = e.changedTouches[0].clientX;
+					this.endY = e.changedTouches[0].clientY;
+					// 判断上滑偏移量
+					if (this.startY - this.endY < 30) {
+						// 左滑
+						if (parentElement.dataset.type == 0 && this.startX - this.endX > 30) {
+							this.restSlide();
+							parentElement.dataset.type = 1;
+						}
+						// 右滑
+						if (parentElement.dataset.type == 1 && this.startX - this.endX < -30) {
+							this.restSlide();
+							parentElement.dataset.type = 0;
+						}
+					}
+					this.startX = 0;
+					this.endX = 0;
+				},
+				//判断当前是否有滑块处于滑动状态
+				checkSlide() {
+					let listItems = document.querySelectorAll('.vipBilli');
+					for (let i = 0; i < listItems.length; i++) {
+						if (listItems[i].dataset.type == 1) {
+							return true;
+						}
+					}
+					return false;
+				},
+				//复位滑动状态
+				restSlide() {
+					let listItems = document.querySelectorAll('.vipBilli');
+					// 复位
+					for (let i = 0; i < listItems.length; i++) {
+						listItems[i].dataset.type = 0;
+					}
+				},
+				//删除
+				deleteItem(e) {
+					// 当前索引
+					let index = e.currentTarget.dataset.index;
+					// 复位
+					this.restSlide();
+					alert(index)
+				},
+				//撤销
+				undoItem(e) {
+					// 当前索引
+					let recNo = e.target.dataset.recno;
+					let state = e.target.dataset.state;
+					console.log(recNo)
+					console.log(state)
+					if (state == 0) {
+						// 复位
+						this.restSlide();
+						$('#loadstart').show();
+						var that = this,
+							sendData = new Object();
+						sendData.orderNo = recNo;
+						$.ajax({
+							type: "post",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateConStateByOrderNo,
+							data: JSON.stringify(sendData),
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function success(data) {
+								$('#loadstart').hide();
+								if (data.code === 1000) {
+									that.mebsearch = false;
+									that.upCallback({
+										num: 1,
+										size: 10
+									});
+									layer.msg('撤销成功！')
+								} else {
+									that.mebsearch = false;
+									that.upCallback({
+										num: 1,
+										size: 10
+									});
+									layer.msg(data.msg)
+								}
+							}
+						});
+					} else {
+						// 复位
+						this.restSlide();
+						return layer.msg('该订单已撤销！')
+					}
+				},
+				getDetails: function getDetails(e) {
+					console.log(e)
+					window.location.href = 'detail-con.html?orderNumber=' + e
+				},
+				inputfocus: function inputfocus() {
+					this.mebsearch = true;
+				},
+				inputblur: function inputblur() {
+					this.mebsearch = false;
+				},
+				searchThing: function searchThing() {
+					$('#loadstart').show(); // 回调
+					if (this.isNumber(this.seachText)) {
+						this.seachTextC = this.seachText
+						this.seachTextN = ''
+					} else {
+						this.seachTextC = ''
+						this.seachTextN = this.seachText
+					}
+					seachText = this.seachText; //更新关键词
+					this.mescroll.resetUpScroll(); //重新搜索,重置列表数据
+				},
+				isNumber: function isNumber(val) {
+					var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+					var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+					if (regPos.test(val) || regNeg.test(val)) {
+						return true;
+					} else {
+						return false;
+					}
+				},
+				changeDatas: function changeDatas(res) {
+					for (let i = 0; i < res.length; i++) {
+						if (res[i].money.split('.')[0].length > 5) {
+							res[i].money = res[i].money.split('.')[0] / 10000 + '万'
+						}
+						if (res[i].discountMoney.split('.')[0].length > 5) {
+							res[i].discountMoney = res[i].discountMoney.split('.')[0] / 10000 + '万'
+						}
+						switch (res[i].payType) {
+							case 0:
+								res[i].payType1 = '现金'
+								break;
+							case 1:
+								res[i].payType1 = '微信'
+								break;
+							case 2:
+								res[i].payType1 = '支付宝'
+								break;
+						}
+						switch (res[i].orderState) {
+							case 1:
+								res[i].orderState1 = '+'
+								res[i].orderState2 = '充值成功'
+								break;
+							case -2:
+								res[i].orderState1 = '-'
+								res[i].orderState2 = '已撤销'
+								break;
+						}
+					}
+					return res
+				},
+				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
+				upCallback: function upCallback(page) {
+					var _this = this;
+					// 模拟联网
+					this.getListDataFromNet(this.pdType, page.num, page.size, this.seachText, function(arr) {
+						// 如果是第一页需手动制空列表
+						if (page.num === 1) _this.vipBilli = []; // 把请求到的数据添加到列表
+						_this.vipBilli = _this.vipBilli.concat(arr); // 数据渲染成功后,隐藏下拉刷新的状态
+						_this.$nextTick(function() {
+							_this.mescroll.endSuccess(arr.length);
+						});
+					}, function() {
+						_this.mescroll.endErr();
+					});
+				},
+
+				/* 联网加载列表数据
+				 * 在您的实际项目中,请参考官方写法: http://www.mescroll.com/api.html#tagUpCallback
+				 * 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
+				 * 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
+				 */
+				getListDataFromNet: function getListDataFromNet(pdType, pageNum, pageSize, seachText, successCallback,
+					errorCallback) {
+					var _this2 = this;
+
+					// 延时一秒,模拟联网
+					setTimeout(function() {
+						// 获取分页数据
+						var that = _this2,
+							sendData = new Object();
+						sendData.merchantNumber = merNumber;
+						sendData.page = pageNum;
+						sendData.limit = pageSize;
+						sendData.name = that.seachTextN;
+						sendData.cell = that.seachTextC;
+						$.ajax({
+							type: "get",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getConTurnovers,
+							data: sendData,
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function success(data) {
+								$('#loadstart').hide(); // 回调
+								if (data.code === 1000) {
+									if (data.data.consumTurnovers.length > 0) {
+										that.mebsearch = false;
+										successCallback(that.changeDatas(data.data.consumTurnovers));
+										that.branches = data.data.count;
+									} else {
+										that.mebsearch = false;
+										successCallback([]);
+									}
+								} else {
+									that.mebsearch = false;
+									successCallback([]);
+								}
+							}
+						});
+					}, 1000);
+				}
+			},
+			mounted: function mounted() {
+				// 创建MeScroll对象
+				this.mescroll = new MeScroll(this.$refs.mescroll, {
+					// 在vue的mounted生命周期初始化mescroll,确保此处配置的ref有值
+					up: {
+						callback: this.upCallback,
+						page: {
+							num: 0, // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
+							size: 10 // 每页数据的数量
+						},
+						noMoreSize: 1, // 如果列表已无数据,可设置列表的总数量要大于等于5条才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看
+						empty: {
+							warpId: 'vipBillulB', // 父布局的id;
+							icon: './images/mescroll-empty.png', // 图标,默认null
+							tip: '暂无消费数据~', // 提示
+						},
+						toTop: { // 配置回到顶部按钮
+							src: './images/mescroll-totop.png'
+						},
+						lazyLoad: {
+							use: true // 是否开启懒加载,默认false
+						},
+						htmlNodata: '<p class="upwarp-nodata">-- 无更多数据 --</p>' //无数据的布局
+					}
+				});
+			},
+			beforeRouteEnter: function beforeRouteEnter(to, from, next) {
+				// 如果没有配置回到顶部按钮或isBounce,则beforeRouteEnter不用写
+				next(function(vm) {
+					if (vm.mescroll) {
+						// 恢复到之前设置的isBounce状态
+						if (vm.mescroll.lastBounce != null) vm.mescroll.setBounce(vm.mescroll.lastBounce); // 滚动到之前列表的位置(注意:路由使用keep-alive才生效)
+						if (vm.mescroll.lastScrollTop) {
+							vm.mescroll.setScrollTop(vm.mescroll.lastScrollTop);
+							setTimeout(function() {
+								// 需延时,因为setScrollTop内部会触发onScroll,可能会渐显回到顶部按钮
+								vm.mescroll.setTopBtnFadeDuration(0); // 设置回到顶部按钮显示时无渐显动画
+							}, 16);
+						}
+					}
+				});
+			},
+			beforeRouteLeave: function beforeRouteLeave(to, from, next) {
+				// 如果没有配置回到顶部按钮或isBounce,则beforeRouteLeave不用写
+				if (this.mescroll) {
+					this.mescroll.lastBounce = this.mescroll.optUp.isBounce; // 记录当前是否禁止ios回弹
+					this.mescroll.setBounce(true); // 允许bounce
+					this.mescroll.lastScrollTop = this.mescroll.getScrollTop(); // 记录当前滚动条的位置
+					this.mescroll.hideTopBtn(0); // 隐藏回到顶部按钮,无渐隐动画
+				}
+				next();
+			}
+		});
+	</script>
+
+</html>
