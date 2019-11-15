@@ -47,8 +47,8 @@
             }
             
             .layui-upload-img {
-                width: 150px;
-                height: 150px;
+                 width: 180px;
+                height: 250px;
                 margin: 0 10px 10px 0;
             }
             
@@ -120,17 +120,17 @@
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
-                        <label class="layui-form-label">商户简称</label>
+                        <label class="layui-form-label">商户名称</label>
                         <div class="layui-input-block">
-                            <input type="text" name="merchantAbbreviation" lay-verify="title" autocomplete="off" placeholder="请输入商户简称" class="layui-input">
+                            <input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户简称" class="layui-input">
                         </div>
                     </div>
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">商户全称</label>
+                        <label class="layui-form-label">客服手机号</label>
                         <div class="layui-input-block">
-                            <input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户全称" class="layui-input">
+                            <input type="text" name="customerServiceTell" lay-verify="title" autocomplete="off" placeholder="请输入客服手机号" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto;margin-left:30px">
@@ -153,16 +153,17 @@
                     </div>
                 </div>
                 <div class="box-item">
+                    
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">客服手机号</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="customerServiceTell" lay-verify="title" autocomplete="off" placeholder="请输入客服手机号" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
                         <label class="layui-form-label">费率</label>
                         <div class="layui-input-block">
-                            <input type="text" name="rate" lay-verify="title" autocomplete="off" placeholder="请输入费率" class="layui-input">
+                            <input type="text" name="rate" lay-verify="title" autocomplete="off" placeholder="请输入费率，例如0.38" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item noGeren" style="display:inline-block;width:500px;margin-left:30px">
+                        <label class="layui-form-label">营业执照名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户全称" class="layui-input">
                         </div>
                     </div>
                 </div>
@@ -1028,8 +1029,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":1
             },
             before: function(obj) {
@@ -1092,8 +1092,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":13
             },
             before: function(obj) {
@@ -1129,8 +1128,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":14
             },
             before: function(obj) {
@@ -1166,8 +1164,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":5
             },
             before: function(obj) {
@@ -1205,8 +1202,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":2
             },
             before: function(obj) {
@@ -1271,8 +1267,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":3
             },
             before: function(obj) {
@@ -1338,8 +1333,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":11
             },
             before: function(obj) {
@@ -1376,8 +1370,7 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":12
             },
             before: function(obj) {
@@ -1414,40 +1407,15 @@ function fc2() {
             url: server + 'InsMer/uploadMerchantImg',
             data: {
                 "institutionNumber": userNumber,
-                "merchantNumber":'',
-                "longTime":longTime,
+                "longTime":merchantNumber == ''?longTime:merchantNumber,
                 "type":6
             },
             before: function(obj) {
                 console.log(obj)
                 //预读本地文件示例，不支持ie8
-                obj.preview(function(index, file, result) {
-                            var result  = result
-                            $.ajax({
-                                type: 'post',
-                                url: 'https://aip.baidubce.com/rest/2.0/ocr/v1/bankcard?access_token='+ acctoken, 
-                                data: {
-                                    "image":result.replace(/data:image\/.*;base64,/,'')
-
-                                },
-                                headers:{
-                                    'Content-Type':"application/x-www-form-urlencoded"
-                                },
-                                success: function(data) {
-                                    console.log(data)
-                                    form.val('cardAdd',{
-                                        "bankCardNo":fourStr(data.words_result.签发日期.words)
-                                    })
-                                   
-                                    // $('#juridicalpersonIdTime')
-                                    // $('#juridicalPersonIDEndTime')
-                                    
-                                    
-                                    
-                                    
-                                }
-                            })
-                        });
+                
+                            
+                       
                var index = layer.load(2, { shade: [0.4, '#393D49'] })
             },
             done: function(res) {
@@ -1534,33 +1502,34 @@ function fc2() {
           });
         //验证
         form.verify({
-            // title: function(value) {
-            //     if (!value) {
-            //         return '必填项不能为空！';
-            //     }
-            // },
-            // title1:function(value){
-            //     if(merType != 0){
-            //         if (!value) {
-            //         return '必填项不能为空！';
-            //     }
-            //     }
-            // },
-            // title2:function(value){
-            //     if(merType != 0 && businessLicenseType ==1){
-            //         if (!value) {
-            //         return '必填项不能为空！';
-            //     }
-            //     }
-            // },
-            // title3:function(value){
-            //     if(juridicalPersonIDType ==1){
-            //         if (!value) {
-            //         return '必填项不能为空！';
-            //     }
-            //     }
-            // },
+            title: function(value) {
+                if (!value) {
+                    return '必填项不能为空！';
+                }
+            },
+            title1:function(value){
+                if(merType != 0){
+                    if (!value) {
+                    return '必填项不能为空！';
+                }
+                }
+            },
+            title2:function(value){
+                if(merType != 0 && businessLicenseType ==1){
+                    if (!value) {
+                    return '必填项不能为空！';
+                }
+                }
+            },
+            title3:function(value){
+                if(juridicalPersonIDType ==1){
+                    if (!value) {
+                    return '必填项不能为空！';
+                }
+                }
+            },
         });
+        
         form.on('submit(add)', function(data, index) {
             console.log(data)
             if( cashier == '' || placeBusiness == '' || doorheadPhoto == '' ||  juridicalpersonIdPositive == '' || juridicalpersonIdReverseside == '' || holdId == '' ||   bankCardPositive == ''){
@@ -1647,7 +1616,9 @@ function fc2() {
                    console.log(data)
                    if(data.code == 1000){
                         merchantNumber  = data.data
+                        layer.msg('商户信息提交成功')
                    }else{
+                    
                         layer.msg(data.msg)
                    }
                 },

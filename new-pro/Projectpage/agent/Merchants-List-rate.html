@@ -104,6 +104,11 @@
                     function(data) {
                         console.log(data)
                         if (data.code == '1000') {
+                            // var str = new Array()
+                            // for(var i = 0 ; i < data.data.length;i++){
+                            //     str.push(data.data[i].channelType)
+                            // }
+                            // console.log(str)
                             CmsUtility.postAjaxCall(
                                 //系统设置
                                 CmsConfig.addressUrl.Agent.getAgentPaymentRate, {
@@ -150,14 +155,28 @@
                                                     title: '支付方式',
                                                     field: 'rateType',
                                                     templet: function(data) {
-                                                        return '微信/支付宝/京东支付/银联卡支付'
+                                                        if(data.channelType == 0){
+                                                            return '支付宝'
+                                                        }else if(data.channelType == 1){
+                                                            return '微信'
+                                                        }else{
+                                                            return '微信/支付宝/京东支付/银联卡支付'
+                                                        }
+                                                        
                                                     }
                                                 }, {
                                                     align: 'center',
                                                     title: '运营费率',
                                                     field: 'rate',
                                                     templet: function(data) {
-                                                        return (data.weChatRate*10000/100) + '%' + '/' + (data.alipayRate*10000/100) + '%'  + '/' + (data.jingdongRate*10000/100) + '%'  + '/' + (data.unionPayRate*10000/100) + '%'  
+                                                        if(data.channelType == 0){
+                                                            return (data.alipayRate*10000/100) + '%'
+                                                        }else if(data.channelType == 1){
+                                                            return (data.weChatRate*10000/100) + '%'
+                                                        }else{
+                                                            return (data.weChatRate*10000/100) + '%' + '/' + (data.alipayRate*10000/100) + '%'  + '/' + (data.jingdongRate*10000/100) + '%'  + '/' + (data.unionPayRate*10000/100) + '%'  
+                                                        }
+                                                        
  
                                                     }
                                                 }, {
@@ -165,7 +184,14 @@
                                                     title: '分佣费率',
                                                     field: 'rate',
                                                     templet: function(data) {
-                                                        return yyRate + '/' + yyRate + '/' + yyRate + '/' + yyRate
+                                                        if(data.channelType == 0){
+                                                            return yyRate
+                                                        }else if(data.channelType == 1){
+                                                            return yyRate
+                                                        }else{
+                                                            return yyRate + '/' + yyRate + '/' + yyRate + '/' + yyRate
+                                                        }
+                                                        
                                                     }
                                                 }]
                                             ],
