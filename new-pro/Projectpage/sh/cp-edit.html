@@ -1480,18 +1480,14 @@
 									return '优惠金额不能为空！'
 								} else if (value < 0.01) {
 									return '优惠金额最低0.01元！'
-								} else if ($('#minimumCharge').val() > 0) {
-									if (value > $('#minimumCharge').val()) {
-										return '优惠金额不能高于最低消费！'
-									}
 								}
 							},
 							minimumCharge: function(value) {
 								if (value == '') {
 									return '最低消费不能为空！'
 								} else if (value > 0) {
-									if (value < $('#discountAmount').val()) {
-										return '最低消费不能低于优惠金额！'
+									if (value <= $('#discountAmount').val()) {
+										return '最低消费不能低于或等于优惠金额！'
 									}
 								}
 							},
