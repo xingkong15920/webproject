@@ -232,10 +232,10 @@
 							str +=
 								'<li class="clearfix flexcl"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">送</label>' +
 								'<select class="chooseCP" value="' + voucherIdList[i].voucherId + '" data-id="' + i + '" id="giveiCP_' + i +
-								'" lay-filter="chooseCP" lay-search style="width:100px;margin-right:10px"><option value="">--请选优惠券--</option>' +
+								'" lay-filter="chooseCP" lay-verify="prizesCP" lay-search style="width:100px;margin-right:10px"><option value="">--请选优惠券--</option>' +
 								vorL + '</select>' +
 								'<input type="number" value="' + voucherIdList[i].giveNumber + '"  data-id="' + i +
-								'" lay-verify="prizesCP" placeholder="10" autocomplete="off" class="layui-input giveiCP" style="width:50px;margin-right:10px">' +
+								'" lay-verify="prizesCPnum" placeholder="10" autocomplete="off" class="layui-input giveiCP" style="width:50px;margin-right:10px">' +
 								'<label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">张</label><div class="delBtn delSale delSaleCP" data-id="' +
 								i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
 						}
@@ -488,6 +488,7 @@
 									$('.prizesM').hide()
 									$('.prizesM').find('input').removeAttr('lay-verify')
 									preferentialRechargesM.splice(0)
+									saleListForM()
 								}
 								break;
 							case '1':
@@ -497,6 +498,7 @@
 									$('.prizesJ').hide()
 									$('.prizesJ').find('input').removeAttr('lay-verify')
 									preferentialRechargesJ.splice(0)
+									saleListForJ()
 								}
 								break;
 							case '2':
@@ -506,6 +508,7 @@
 									$('.prizesCP').hide()
 									$('.prizesCP').find('input').removeAttr('lay-verify')
 									voucherIdList.splice(0)
+									saleListForCP()
 								}
 								break;
 						}
@@ -570,6 +573,18 @@
 								} else if (value < 1) {
 									return '消费金额最低为1！';
 								}
+							}
+						},
+						prizesCP: function(value) {
+							if (value == '') {
+								return '优惠券不能为空！';
+							}
+						},
+						prizesCPnum: function(value) {
+							if (value == '') {
+								return '优惠券数量不能为空！';
+							} else if (value < 1) {
+								return '消费金额最低为1！';
 							}
 						},
 					});

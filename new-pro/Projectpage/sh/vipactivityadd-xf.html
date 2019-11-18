@@ -376,7 +376,7 @@
 						var newO = new Object()
 						newO.fullMoney = ''
 						newO.voucherId = ''
-						newO.giveNumber = ''
+						newO.giveNumber = '1'
 						voucherIdList.push(newO)
 						saleListForCP()
 						cliCP()
@@ -622,6 +622,7 @@
 									$('.prizesM').hide()
 									$('.prizesM').find('input').removeAttr('lay-verify')
 									preferentialRechargesM.splice(0)
+									saleListForM()
 								}
 								break;
 							case '1':
@@ -631,6 +632,7 @@
 									$('.prizesJ').hide()
 									$('.prizesJ').find('input').removeAttr('lay-verify')
 									preferentialRechargesJ.splice(0)
+									saleListForJ()
 								}
 								break;
 							case '2':
@@ -640,6 +642,7 @@
 									$('.prizesCP').hide()
 									$('.prizesCP').find('input').removeAttr('lay-verify')
 									voucherIdList.splice(0)
+									saleListForCP()
 								}
 								break;
 						}
@@ -860,13 +863,6 @@
 								}
 							});
 						}
-						dataXF.activityLevels = gradeNoList
-						if (dataXF.activityPrizeIntegral.length < 1 && voucherIdList.length < 1) {
-							return layer.tips('最少选择一种消费优惠！', '.hdjp');
-						}
-						if (!breakpoint) {
-							return
-						}
 						if (voucherIdList.length > 0) {
 							var arrCP = new Array(),
 								arrCP1 = new Array();
@@ -880,6 +876,13 @@
 							if (arrCP1.length != $.unique(arrCP1).length) {
 								return layer.msg('赠送的优惠券不能重复！', {})
 							}
+						}
+						dataXF.activityLevels = gradeNoList
+						if (dataXF.activityPrizeIntegral.length < 1 && voucherIdList.length < 1) {
+							return layer.tips('最少选择一种消费优惠！', '.hdjp');
+						}
+						if (!breakpoint) {
+							return
 						}
 						if (preferentialRechargesM.length > 0) {
 							var arrM = new Array(),
