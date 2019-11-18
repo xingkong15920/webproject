@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.actdown {
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<ul class="actList" id="activityInfos">
+			<li class="actListli" v-cloak v-for="item in actList" v-on:click="jumpAdd(item)">
+				<div class="actBody">
+					<img :src="item.activityImage" class="actBtop" :class="item.activityClass">
+					<div class="actdown">
+						<h3>{{item.activityName}}</h3>
+						<p>{{item.activityTips}}</p>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<script src="../../common/config-agent.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+			// var merNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+			var actlist = [{
+				'activityType': 0,
+				'activityClass': 'avt_zfjhy',
+				'activityImage': '../../public/images/meb/avt_zfjhy.png',
+				'activityName': '收银码牌',
+				'activityTips': '联系索要',
+				'addLink': 'vipactivityadd-zfjhy.html'
+			}, {
+				'activityType': 1,
+				'activityClass': 'avt_chuz',
+				'activityImage': '../../public/images/meb/avt_chuz.png',
+				'activityName': '蓝牙音箱',
+				'activityTips': '联系索要',
+				'addLink': 'vipsetrecadd.html'
+			}, {
+				'activityType': 2,
+				'activityClass': 'avt_xf',
+				'activityImage': '../../public/images/meb/avt_xf.png',
+				'activityName': '闪盒收银APP',
+				'activityTips': '点击下载',
+				'addLink': 'vipactivityadd-xf.html'
+			}, {
+				'activityType': 3,
+				'activityClass': 'avt_fx',
+				'activityImage': '../../public/images/meb/avt_fx.png',
+				'activityName': '闪盒收银PC',
+				'activityTips': '点击下载',
+				'addLink': 'vipactivityadd-fx.html'
+			}, {
+				'activityType': 4,
+				'activityClass': 'avt_kk',
+				'activityImage': '../../public/images/meb/avt_kk.png',
+				'activityName': '微信青蛙',
+				'activityTips': '联系购买',
+				'addLink': 'vipactivityadd-kk.html'
+			}, {
+				'activityType': 5,
+				'activityClass': 'avt_sr',
+				'activityImage': '../../public/images/meb/avt_sr.png',
+				'activityName': '支付宝蜻蜓',
+				'activityTips': '联系购买',
+				'addLink': 'vipactivityadd-sr.html'
+			}]
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					laydate = layui.laydate,
+					form = layui.form,
+					element = layui.element;
+
+				setActInof(actlist)
+
+				function setActInof(obj) {
+					new Vue({
+						el: '#activityInfos',
+						data: {
+							actList: obj
+						},
+						methods: {
+							jumpAdd: function(e) {
+								switch (e.activityType) {
+									case 0:
+										console.log(000)
+										break;
+									case 1:
+										console.log(111)
+										break;
+									case 2:
+										console.log(222)
+										break;
+									case 3:
+										console.log(333)
+										break;
+									case 4:
+										console.log(444)
+										break;
+									case 5:
+										console.log(555)
+										break;
+								}
+							}
+						},
+						mounted() {
+							parent.layer.closeAll('loading');
+						}
+					})
+				}
+				$('.actListadd .actBody').on('click', function() {
+					console.log(111)
+					layer.open({
+						type: 2,
+						area: ['600px', '650px'],
+						fixed: false, //不固定
+						maxmin: true,
+						resize: false,
+						content: 'vipactivityadd.html'
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

@@ -207,7 +207,20 @@ var CmsConfig = {
             delAgEquipment:"agentQrCode/delAgEquipment",
             
 
-
+			// 导出报表
+			// 导出代理商收益明细报表
+			getAgentBillExcel:"agentBill/getAgentBillExcel",
+			// 导出销售账单
+			getSaleBillExcle:"agSale/getSaleBillExcle",
+			// 导出代理商收益明细报表
+			getMerDetailExcel:"agentBill/getMerDetailExcel",
+			// agentLevel
+			getMerDrawMoneyExcel:"agMerchant/getMerDrawMoneyExcel",
+			// 导出商户账单
+			getMerchantBillExcel:"merchantBill/getMerchantBillExcel",
+			// 导出门店账单
+			getShopBillExcel:"shopBill/getShopBillExcel",
+			
 
 
             //修改密码

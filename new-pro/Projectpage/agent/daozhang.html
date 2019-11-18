@@ -1,409 +1,482 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title></title>
-    <meta name="renderer" content="webkit|ie-comp|ie-stand">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <link rel="stylesheet" href="../../public/css/xadmin.css">
-    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-    <link rel="stylesheet" href="../../public/css/style-baobiao.css">
-    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
-    <style>
-    /* *{
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<link rel="stylesheet" href="../../public/css/style-baobiao.css">
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style>
+			/* *{
 				font-size: 14px;
 			} */
-    /* .layui-table-cell {
+			/* .layui-table-cell {
 				height: auto;
 				line-height: initial;
 			} */
-    .layui-table-cell {
-        height: auto;
-    }
-    </style>
-    <style type="text/css">
-    .index-zs .layui-col-md5 {
-        width: 20%;
-        text-align: center;
-    }
+			.layui-table-cell {
+				height: auto;
+			}
+		</style>
+		<style type="text/css">
+			.index-zs .layui-col-md5 {
+				width: 20%;
+				text-align: center;
+			}
 
-    .homelistitle {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-        color: #999;
-    }
+			.homelistitle {
+				font-size: 1.2rem;
+				margin-bottom: 10px;
+				color: #999;
+			}
 
-    .homelistc:last-child {
-        margin-bottom: 20px;
-    }
+			.homelistc:last-child {
+				margin-bottom: 20px;
+			}
 
-    .homelistc {
-        font-size: 1.6rem;
-        font-weight: 600;
-    }
+			.homelistc {
+				font-size: 1.6rem;
+				font-weight: 600;
+			}
 
-    .homelistc span {
-        display: block;
-        font-size: 1.6rem;
-        font-weight: 600;
-    }
+			.homelistc span {
+				display: block;
+				font-size: 1.6rem;
+				font-weight: 600;
+			}
 
-    .homelistc span i {
-        font-style: normal;
-        font-size: 1.6rem;
-        font-weight: 600;
-    }
+			.homelistc span i {
+				font-style: normal;
+				font-size: 1.6rem;
+				font-weight: 600;
+			}
 
-    p {
-        font-size: 16px;
-    }
-    </style>
-</head>
+			p {
+				font-size: 16px;
+			}
+		</style>
+	</head>
 
-<body>
-    <div class="x-nav">
-       <!--  <span class="layui-breadcrumb">
+	<body>
+		<div class="x-nav">
+			<!--  <span class="layui-breadcrumb">
 				<a href="">首页</a>
 				<a><cite>订单管理</cite></a>
 			</span> -->
-        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+			 title="刷新">
 				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
-    </div>
-    <div class="x-body">
-        <div class="layui-form layui-row">
-            <div class="layui-input-inline text">
-                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                <input id="shopName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
-            </div>
-            
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
-            </div>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" placeholder="结束" name="endTime" id="endTime">
-            </div>
-            <div class="layui-input-inline">
-                        <select name="type" id="payMentType">
-                            <!-- <option value="">支付通道</option>
+		</div>
+		<div class="x-body">
+			<div class="layui-form layui-row x-so">
+				<div class="layui-input-inline text">
+					<div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+					<input id="shopName" type="text" name="userName" placeholder="商户名称" autocomplete="off" class="layui-input">
+				</div>
+
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
+				</div>
+				<div class="layui-input-inline">
+					<input type="text" class="layui-input" placeholder="结束" name="endTime" id="endTime">
+				</div>
+				<div class="layui-input-inline">
+					<select name="type" id="payMentType">
+						<!-- <option value="">支付通道</option>
                             <option value="0">支付宝</option>
                             <option value="1">微信</option> -->
-                            <option value="2">富友</option>
-                            <!-- <option value="3">易融码</option>
-                            <option value="4">新大陆</option>
-                            <option value="5">随行付</option> -->
-                        </select>
-                    </div>
-          
-            <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
-             <div class="layui-input-inline">
-                <span style="margin-left:15px;color:red"> *注：暂时支持富友通道的查询</span>
-            </div>
-        </div>
-        
-        <table class="layui-hide" id="LAY_table_bill" lay-filter="bill" style="font-size:14px"></table>
-    </div>
-    <script type="text/html" id="tool">
-        <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+						<option value="2">富友</option>
+						<!-- <option value="3">易融码</option>
+                            <option value="4">新大陆</option> -->
+						<option value="5">随行付</option>
+					</select>
+				</div>
+
+				<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+				<!-- <div class="layui-input-inline">
+					<span style="margin-left:15px;color:red"> *注：暂时支持富友通道的查询</span>
+				</div> -->
+			</div>
+			<xblock>
+				<button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
+			</xblock>
+			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill" style="font-size:14px"></table>
+		</div>
+		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
 			
 		</script>
-    <script src="../../common/config-agent.js"></script>
-    <script src="../../common/utility.js"></script>
-    <script>
-    // <a class="layui-btn layui-btn-xs" lay-event="instep" style="margin-left:0">同步</a>
-    var newData;
+		<script src="../../common/config-agent.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			// <a class="layui-btn layui-btn-xs" lay-event="instep" style="margin-left:0">同步</a>
+			var newData;
 
-    function fun_date(aa) {
-        var date1 = new Date(),
-            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
-        var date2 = new Date(date1);
-        date2.setDate(date1.getDate() + aa);
-        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
 
-        var a = time2.split('-')[0],
-            b = time2.split('-')[1],
-            c = time2.split('-')[2]
-        if (b < 10) {
-            b = 0 + b
-        }
-        if (c < 10) {
-            c = 0 + c
-        }
-        return a + '-' + b + '-' + c
-    }
+				var a = time2.split('-')[0],
+					b = time2.split('-')[1],
+					c = time2.split('-')[2]
+				if (b < 10) {
+					b = 0 + b
+				}
+				if (c < 10) {
+					c = 0 + c
+				}
+				return a + '-' + b + '-' + c
+			}
 
-    function changeList(data) {
-        var dataL = data.transactionReceiptShareProfitList
-        for (var i = 0; i < dataL.length; i++) {
-            if (dataL[i].orderState == 1) {
-                dataL[i].orderState1 = "交易成功"
-            }
-            if (dataL[i].orderState == 2) {
-                dataL[i].orderState1 = "已结算"
-            }
-            if (dataL[i].orderState == 3) {
-                dataL[i].orderState1 = "失败"
-            }
-            if (dataL[i].orderState == 4) {
-                dataL[i].orderState1 = "全部退款"
-            }
-            if (dataL[i].orderState == 5) {
-                dataL[i].orderState1 = "部分退款"
-            }
-            if (dataL[i].orderState == 6) {
-                dataL[i].orderState1 = "异常订单"
-            }
-            if (dataL[i].orderState == 7) {
-                dataL[i].orderState1 = "退款中"
-            }
+			function changeList(data) {
+				var dataL = data.transactionReceiptShareProfitList
+				for (var i = 0; i < dataL.length; i++) {
+					if (dataL[i].orderState == 1) {
+						dataL[i].orderState1 = "交易成功"
+					}
+					if (dataL[i].orderState == 2) {
+						dataL[i].orderState1 = "已结算"
+					}
+					if (dataL[i].orderState == 3) {
+						dataL[i].orderState1 = "失败"
+					}
+					if (dataL[i].orderState == 4) {
+						dataL[i].orderState1 = "全部退款"
+					}
+					if (dataL[i].orderState == 5) {
+						dataL[i].orderState1 = "部分退款"
+					}
+					if (dataL[i].orderState == 6) {
+						dataL[i].orderState1 = "异常订单"
+					}
+					if (dataL[i].orderState == 7) {
+						dataL[i].orderState1 = "退款中"
+					}
 
-        }
-        console.log(data)
-        newData = data.agentOrderList
-        return dataL
-    }
-    window.onload = function() {
-        var beginDate = fun_date(-6);
+				}
+				console.log(data)
+				newData = data.agentOrderList
+				return dataL
+			}
 
-        var endDate = fun_date(0);
-        layui.use(['table', 'laytpl', 'laydate'], function() {
+			function verTime() {
+				var arr1 = $('#startTime').val().split('-');
+				var arr2 = $('#endTime').val().split('-');
+				arr1[1] = parseInt(arr1[1]);
+				arr1[2] = parseInt(arr1[2]);
+				arr2[1] = parseInt(arr2[1]);
+				arr2[2] = parseInt(arr2[2]);
+				var flag = true;
+				if (arr1[0] == arr2[0]) { //同年
+					if (arr2[1] - arr1[1] > 3) { //月间隔超过3个月
+						flag = false;
+					} else if (arr2[1] - arr1[1] == 3) { //月相隔3个月，比较日
+						if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+							flag = false;
+						}
+					}
+				} else { //不同年
+					if (arr2[0] - arr1[0] > 1) {
+						flag = false;
+					} else if (arr2[0] - arr1[0] == 1) {
+						if (arr1[1] < 10) { //开始年的月份小于10时，不需要跨年
+							flag = false;
+						} else if (arr1[1] + 3 - arr2[1] < 12) { //月相隔大于3个月
+							flag = false;
+						} else if (arr1[1] + 3 - arr2[1] == 12) { //月相隔3个月，比较日
+							if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+								flag = false;
+							}
+						}
+					}
+				}
+				if (!flag) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			window.onload = function() {
+				var beginDate = fun_date(-6);
 
-            var table = layui.table,
-                form = layui.form,
-                laydate = layui.laydate
-            laytpl = layui.laytpl,
-                $ = layui.jquery;
+				var endDate = fun_date(0);
+				layui.use(['table', 'laytpl', 'laydate'], function() {
 
-            laydate.render({
-                elem: '#startTime', //指定元素
-                value: beginDate
-            });
-            laydate.render({
-                elem: '#endTime',
-                value: endDate
-            });
-            console.log()
+					var table = layui.table,
+						form = layui.form,
+						laydate = layui.laydate
+					laytpl = layui.laytpl,
+						$ = layui.jquery;
 
-            var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
-            var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
-            //方法级渲染
-            console.log($('#startTime').val())
+					laydate.render({
+						elem: '#startTime', //指定元素
+						value: beginDate
+					});
+					laydate.render({
+						elem: '#endTime',
+						value: endDate
+					});
+					console.log()
 
-            function tableRender() {
-                var index = layer.load(2, { shade: [0.4, '#393D49'] })
-                table.render({
-                    url: CmsConfig.ServiceUrl.ApiRootUrl + 'agMerchant/getMerAccountArrival' + '?agentNumber=' + userNumber,
-                    where: {
-                        
-                        "merchantName": $('#shopName').val().trim(),
-                        "startTime": $('#startTime').val(),
-                        "endTime": $('#endTime').val() ,
-                        "payMentType":$('#payMentType').val()
-                    },
-                    elem: '#LAY_table_bill',
-                    page: true,
-                    height: 'full-200',
-                    id: 'billlist',
-                    response: {
-                        "statusCode": "1000", //解析接口状态
-                    },
-                    parseData: function(res) {
-                        if (res.data == null) {
-                            return
-                        }
-                        return {
-                            "msg": res.msg,
-                            "code": res.code,
-                            "count": res.data.count,
-                            "data": res.data.resultList,
-                        }
-                    },
-                    cols: [
-                        [{
-                            title: '交易日期',
-                            align: 'center',
-                            field:'settleDt'
-                        }, {
-                            
-                            title: '商户名称',
-                            align: 'center',
-                            field:'merchantName'
-                        }, {
-                            field: 'payMentType',
-                            title: '通道类型',
-                            align: 'center',
-                            templet:function(data){
-                                switch (data.payMentType) {
-                                    case '0':
-                                        return '支付宝'
-                                        break;
-                                    case '1':
-                                        return '微信'
-                                        break;
-                                    case '2':
-                                        return '富友'
-                                        break;
-                                    case '3':
-                                        return '易融码'
-                                        break;
-                                    case '4':
-                                        return '新大陆'
-                                        break;
-                                    case '5':
-                                        return '随行付'
-                                        break;
-                                    default:
-                                        // statements_def
-                                        break;
-                                }
-                            }
-
-                        }, {
-                            field: 'shopPoundage',
-                            title: '结算信息',
-                            align: 'center',
-                            templet:function(data){
-                                return data.settleAcntNm + '</br>' + data.settleAcntNo
-                            }
-                        }, {
-                            field: 'merchantType',
-                            title: '结算类型',
-                            align: 'center',
-                        }, {
-                           
-                            title: '结算金额',
-                            align: 'center',
-                            field:'payAmt',
-                            templet:function(data){
-                                return '￥' + (data.payAmt/100).toFixed(2)
-                            }
-                        }, {
-                            field: 'serviceCharge',
-                            title: '手续费',
-                            align: 'center',
-                            templet:function(data){
-                                return '￥' + (data.serviceCharge/100).toFixed(2)
-                            }
-                           
-                        }, {
-                            field: 'payStDesc',
-                            title: '结算状态',
-                            align: 'center',
-
-                        }, {
-                            field: 'remark',
-                            title: '结束失败原因',
-                            align: 'center',
-
-                        }, {
-                            field: 'insertTime',
-                            title: '结束日期',
-                            align:'center'
-                        }]
-                    ],
-                    done: function(res, curr, count) {
-                        // console.log(newData)
-                        // console.log(curr)
-                        
-                           
-                        
+					var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+					var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+					//方法级渲染
+					console.log($('#startTime').val())
 
 
-                        layer.closeAll()
-                    }
-                });
-            }
-            setTimeout(function() {
-                tableRender()
-            }, 500)
+					$('#baobiao').click(function() {
+						if ($('#billType').val() == 0 || $('#billType').val() == 3) {
+							if (!verTime()) {
+								layer.msg('只能查询三个月以内数据')
+								return
+							}
+						}
+						var newData = new Object()
+						newData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+						newData.agentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
+						newData.startTime = $('#startTime').val()
+						newData.endTime = $('#endTime').val()
+						layer.open({
+							type: 2,
+							title: '下载报表',
+							shade: 0.5,
+							area: ['500px', '270px'],
+							maxmin: false,
+							resize: false,
+							content: ['down-excel.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(newData, '4')
+							}
+						});
+					})
 
-            $('#search').click(function() {
-                tableRender()
-            })
-            // 根據條件重载表格
-            var $ = layui.$,
-                active = {
-                    reload: function() {
-                        // 获取上面查询框的值
-                        var userName = $('#userName'); // 所属商户
-                        var orderId = $('#orderId'); // 订单编号
-                        var operatorNumber = $('#operatorNumber'); // 经销商名称
-                        var startTime = $('#startTime');
-                        var endTime = $('#endTime');
-                        var transactionType = $('#transactionType'); // 支付方式
-                        var salesNumber = $('#salesNumber'); // 业务员
+					function tableRender() {
+						var index = layer.load(2, {
+							shade: [0.4, '#393D49']
+						})
+						table.render({
+							url: CmsConfig.ServiceUrl.ApiRootUrl + 'agMerchant/getMerAccountArrival' + '?agentNumber=' + userNumber,
+							where: {
 
-                        //执行重载
-                        table.reload('billlist', {
-                            page: {
-                                curr: 1 //重新从第 1 页开始
-                            },
-                            where: {
-                                userName: userName.val().trim(),
-                                orderId: orderId.val().trim(),
-                                operatorNumber: operatorNumber.val(),
-                                startTime: startTime.val(),
-                                endTime: endTime.val(),
-                                transactionType: transactionType.val(),
-                                salesNumber: salesNumber.val()
-                            }
-                        });
-                    }
-                };
+								"merchantName": $('#shopName').val().trim(),
+								"startTime": $('#startTime').val(),
+								"endTime": $('#endTime').val(),
+								"payMentType": $('#payMentType').val()
+							},
+							elem: '#LAY_table_bill',
+							page: true,
+							height: 'full-200',
+							id: 'billlist',
+							response: {
+								"statusCode": "1000", //解析接口状态
+							},
+							parseData: function(res) {
+								if (res.data == null) {
+									return
+								}
+								return {
+									"msg": res.msg,
+									"code": res.code,
+									"count": res.data.count,
+									"data": res.data.resultList,
+								}
+							},
+							cols: [
+								[{
+									title: '交易日期',
+									align: 'center',
+									field: 'settleDt'
+								}, {
 
-            //监听工具条
-            table.on('tool(bill)', function(obj) {
-                var data = obj.data;
-                if (obj.event === 'detail') {
-                    console.log(data)
-                    // 跳转流水详情页面
-                    layer.open({
-                        type: 2,
-                        title: '订单详情',
-                        area: ['40%', '80%'], //宽高
-                        content: 'dealersBillDetail.html',
-                        success: function(layero, index) {
-                            // 获取子页面的iframe
-                            var iframe = window['layui-layer-iframe' + index];
-                            // 向子页面的全局函数child传参
-                            iframe.subPagebill(data)
-                        }
-                    });
-                } else if (obj.event === 'instep') {
-                    // 同步流水
-                    layer.confirm('确定要同步流水吗', {
-                        btn: ['确定', '取消'] //按钮
-                    }, function() {
-                        console.log(data)
-                    })
-                }
-            });
+									title: '商户名称',
+									align: 'center',
+									field: 'merchantName'
+								}, {
+									field: 'payMentType',
+									title: '通道类型',
+									align: 'center',
+									templet: function(data) {
+										switch (data.payMentType) {
+											case '0':
+												return '支付宝'
+												break;
+											case '1':
+												return '微信'
+												break;
+											case '2':
+												return '富友'
+												break;
+											case '3':
+												return '易融码'
+												break;
+											case '4':
+												return '新大陆'
+												break;
+											case '5':
+												return '随行付'
+												break;
+											default:
+												// statements_def
+												break;
+										}
+									}
 
-            $('.layui-row .layui-btn').on('click', function() {
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
-        });
-    }
-    // 选择日期插件
-    </script>
-    <script type="text/javascript">
-    $("input").focus(function() {
-        $(this).parent().children(".layui-input-clear").show();
-    });
-    $("input").blur(function() {
-        if ($(this).val() == '') {
-            $(this).parent().children(".layui-input-clear").hide();
-        }
-    });
-    $(".layui-input-clear").click(function() {
-        $(this).parent().find('input').val('');
-        $(this).hide();
-    });
-    </script>
-</body>
+								}, {
+									field: 'shopPoundage',
+									title: '结算信息',
+									align: 'center',
+									templet: function(data) {
+										return data.settleAcntNm + '</br>' + data.settleAcntNo
+									}
+								}, {
+									field: 'merchantType',
+									title: '结算类型',
+									align: 'center',
+								}, {
+
+									title: '结算金额',
+									align: 'center',
+									field: 'payAmt',
+									templet: function(data) {
+										return '￥' + (data.payAmt / 100).toFixed(2)
+									}
+								}, {
+									field: 'serviceCharge',
+									title: '手续费',
+									align: 'center',
+									templet: function(data) {
+										return '￥' + (data.serviceCharge / 100).toFixed(2)
+									}
+
+								}, {
+									field: 'payStDesc',
+									title: '结算状态',
+									align: 'center',
+
+								}, {
+									field: 'remark',
+									title: '结束失败原因',
+									align: 'center',
+
+								}, {
+									field: 'insertTime',
+									title: '结束日期',
+									align: 'center'
+								}]
+							],
+							done: function(res, curr, count) {
+								// console.log(newData)
+								// console.log(curr)
+
+
+
+
+
+								layer.closeAll()
+							}
+						});
+					}
+					setTimeout(function() {
+						tableRender()
+					}, 500)
+
+					$('#search').click(function() {
+						tableRender()
+					})
+					// 根據條件重载表格
+					var $ = layui.$,
+						active = {
+							reload: function() {
+								// 获取上面查询框的值
+								var userName = $('#userName'); // 所属商户
+								var orderId = $('#orderId'); // 订单编号
+								var operatorNumber = $('#operatorNumber'); // 经销商名称
+								var startTime = $('#startTime');
+								var endTime = $('#endTime');
+								var transactionType = $('#transactionType'); // 支付方式
+								var salesNumber = $('#salesNumber'); // 业务员
+
+								//执行重载
+								table.reload('billlist', {
+									page: {
+										curr: 1 //重新从第 1 页开始
+									},
+									where: {
+										userName: userName.val().trim(),
+										orderId: orderId.val().trim(),
+										operatorNumber: operatorNumber.val(),
+										startTime: startTime.val(),
+										endTime: endTime.val(),
+										transactionType: transactionType.val(),
+										salesNumber: salesNumber.val()
+									}
+								});
+							}
+						};
+
+					//监听工具条
+					table.on('tool(bill)', function(obj) {
+						var data = obj.data;
+						if (obj.event === 'detail') {
+							console.log(data)
+							// 跳转流水详情页面
+							layer.open({
+								type: 2,
+								title: '订单详情',
+								area: ['40%', '80%'], //宽高
+								content: 'dealersBillDetail.html',
+								success: function(layero, index) {
+									// 获取子页面的iframe
+									var iframe = window['layui-layer-iframe' + index];
+									// 向子页面的全局函数child传参
+									iframe.subPagebill(data)
+								}
+							});
+						} else if (obj.event === 'instep') {
+							// 同步流水
+							layer.confirm('确定要同步流水吗', {
+								btn: ['确定', '取消'] //按钮
+							}, function() {
+								console.log(data)
+							})
+						}
+					});
+
+					$('.layui-row .layui-btn').on('click', function() {
+						var type = $(this).data('type');
+						active[type] ? active[type].call(this) : '';
+					});
+				});
+			}
+			// 选择日期插件
+		</script>
+		<script type="text/javascript">
+			$("input").focus(function() {
+				$(this).parent().children(".layui-input-clear").show();
+			});
+			$("input").blur(function() {
+				if ($(this).val() == '') {
+					$(this).parent().children(".layui-input-clear").hide();
+				}
+			});
+			$(".layui-input-clear").click(function() {
+				$(this).parent().find('input').val('');
+				$(this).hide();
+			});
+		</script>
+	</body>
 
 </html>
