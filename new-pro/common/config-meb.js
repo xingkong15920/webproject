@@ -201,6 +201,8 @@ var CmsConfig = {
 			updateMemGrade: "memberManage/updateMemGrade",
 			// 删除会员
 			deleteMember: "memberManage/deleteMember",
+			// 会员退卡
+			memberQuitCard: "member/memberQuitCard",
 			// 查询资金变动
 			getCapitals: "memberManage/getCapitals",
 			// 资金变动

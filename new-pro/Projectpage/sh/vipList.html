@@ -200,7 +200,7 @@
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="capital">资金</a>
 			<a class="layui-btn layui-btn-xs" lay-event="level">等级</a>
-			<!-- <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">退卡</a> -->
+			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">退卡</a>
 		</script>
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
@@ -498,14 +498,16 @@
 					} else if (obj.event === 'delete') {
 						// 弹出是否要删除门店
 						layer.confirm('确定要删除<br>会员(' + data.name + ')', function(index) {
-							var mydata = {
-								"memberNo": data.memberNo
-							}
-							return
+							var mydata = new Object()
+							mydata.userNo = merNumber
+							mydata.memberNo = data.memberNo
+							mydata.shopNo = data.shopNumber
+							mydata.clerkNumber = data.clerkNumber ? data.clerkNumber : ''
+							// return
 							// 发送请求
 							$.ajax({
 								type: "post",
-								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.deleteMember,
+								url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberQuitCard,
 								data: JSON.stringify(mydata),
 								dataType: "json",
 								headers: {
@@ -515,7 +517,7 @@
 									parent.layer.closeAll('loading');
 									if (data.code == 1000) {
 										layer.close(index);
-										layer.msg('删除成功！')
+										layer.msg('退卡成功！')
 										layui.table.reload('vipList');
 									} else {
 										layer.msg(data.msg)
