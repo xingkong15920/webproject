@@ -157,7 +157,13 @@
                         <li>
                             <a lay-href="dealersMerchantPage.html">
                                 <i class="icon icon icon-shanghuguanli1"></i>
-                                <cite>商户管理</cite>
+                                <cite>已审核商户</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="merchant-wait.html">
+                                <i class="icon icon icon-shanghuguanli1"></i>
+                                <cite>待审核商户</cite>
                             </a>
                         </li>
                         <li>
@@ -372,7 +378,7 @@
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show layui-iframe">
-                    <iframe src='./welcome.html' id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                    <iframe src='./new-welcome.html' id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>
                 </div>
             </div>
         </div>
@@ -424,7 +430,7 @@
     $(function() {
         CmsUtility.postAjaxCall2(
             //系统设置
-                'https://nb.51shanhe.com/shanhe-admin/insTpa/getThirdParty', 
+                 CmsConfig.ServiceUrl.ApiRootUrl.split('shanhe-service/')[0 ] +'shanhe-admin/insTpa/getThirdParty', 
                 {
                     "institutionNumber":JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
                 },
@@ -436,7 +442,7 @@
  
                    CmsUtility.postAjaxCall2(
                     //系统设置
-                        'http://192.168.1.66:6017/p-server/appServer/getBaiduToken', 
+                        'http://api.51shanhe.com/p-server/appServer/getBaiduToken', 
                         {
                             "clientId":data.data.baiduAPIKey,
                             "clientSecret":data.data.baiduSecretKey

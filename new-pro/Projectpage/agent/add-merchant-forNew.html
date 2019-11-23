@@ -428,13 +428,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-item" style="margin-bottom:150px">
+                <!-- <div class="box-item" style="margin-bottom:150px">
                     <div class="layui-form-item" style="display:inline-block">
                         <label class="layui-form-label">进件通道</label>
                         <div class="layui-input-block" id="paymentBox" >
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="layui-form-item layui-layout-admin">
                     <div class="layui-input-block">
                         <div class="layui-footer" style="left: 0;text-align: center;">
@@ -477,10 +477,14 @@
     var juridicalPersonIDType = 1
     var businessLicenseType = 1
     var isOpenYunPay = 1
-    var merchantNumber = ''
+    // var merchantNumber = ''
     var merType = 0
     var acctoken = sessionStorage.getItem('access_token')
-
+    var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+    //var merchantNumber = '1004000563'
+    var channelType = CmsUtility.getQueryString('type')
+    var channelName = CmsUtility.getQueryString('name')
+    var channel =  CmsUtility.getQueryString('channel')
     $('.layui-upload-img').mouseover(function(){
          // console.log(this.getElementsByTagName('img')[0].getAttribute('src'))
          console.dir(this.childNodes[1])
@@ -1610,23 +1614,14 @@ function fc2() {
                     return false
                 }
             }
-            var arr = new Array();
-            $("input:checkbox[name='payment']:checked").each(function(i) {
-                arr[i] = $(this).val();
-            });
-            console.log(arr)
-            var pyList = []
-            for(var j = 0 ; j < arr.length ; j++){
-                var pb = new Object()
-                pb.paymentType = arr[j].split('|')[1]
-                pb.paymentChannel = arr[j].split('|')[0]
-                pyList.push(pb)
-            }
+         
+           
             var tjData = data.field
             tjData.institutionNumber = userNumber
             tjData.agentNumber  = $('#agName').attr('agentnumber')
             tjData.saleNumber  = $('#slName').attr('salenumber')
-
+            tjData.paymentType= type
+            tjData.paymentChannel = channel
             tjData.businessLicense = businessLicense
             tjData.cashier = cashier
             tjData.placeBusiness = placeBusiness
@@ -1663,7 +1658,7 @@ function fc2() {
             tjData.businessLicenseAddress = tjData.province + tjData.city + tjData.area + tjData.address
              console.log(tjData)
              tjData.isOpenYunPay = isOpenYunPay
-             tjData.paymentChannels = JSON.stringify(pyList)
+             
              tjData.subsidy = 1
              tjData.openingBank = tjData.openingBank1.split('|')[1]
              tjData.openingBankID = tjData.openingBank1.split('|')[0]

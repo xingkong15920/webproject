@@ -196,6 +196,14 @@
 								title: '请输入要生成码牌的数量！(1-30)'
 							}, function(pass, index) {
 								console.log(pass,index)
+								if(isNaN(pass) == true){
+									layer.msg('请输入1-30的数字')
+									return
+								}
+								if(pass > 30){
+									layer.msg('单次生成码牌数量不得大于30')
+									return
+								}
 								var index = layer.load(2, {shade: [0.4, '#393D49']})
 								CmsUtility.postAjaxCall(
 									//系统设置

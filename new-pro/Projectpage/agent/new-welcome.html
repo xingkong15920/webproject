@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Insert title here</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="../../public/css/style-baobiao.css">
+    <script type="text/javascript" src="./js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <style type="text/css">
+    .index-zs .layui-col-md5 {
+        width: 20%;
+        text-align: center;
+    }
+
+    .homelistitle {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #999;
+    }
+
+    .homelistc:last-child {
+        margin-bottom: 20px;
+    }
+
+    .homelistc {
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span i {
+        font-style: normal;
+        font-size: 1.6rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    p {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    span,
+    i {
+        text-align: center;
+    }
+
+    .layui-col-md2 {
+        overflow: hidden
+    }
+
+    .btnBox {
+        position: absolute;
+        top: 7px;
+        right: 20px;
+        margin-right: 20px;
+    }
+
+    .fl {
+        float: left;
+        margin: 0 0 0 -1px !important;
+    }
+
+    .fl1 {
+        float: left;
+        margin: 0 0 0 -1px !important;
+    }
+
+    .dayCheck {
+        background: #3ebdff;
+        color: #fff;
+    }
+
+    .dayCheck1 {
+        background: #3ebdff;
+        color: #fff;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="x-body" id="levA">
+        <blockquote class="layui-elem-quote">概览数据</blockquote>
+        <div class="layui-row index-zs">
+            <div style="overflow:hidden">
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">今日分润（元）</p>
+                        <div class="homelistc">
+                            <span><i id="todayFenRun">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">昨日分润（元）</p>
+                        <div class="homelistc">
+                            <span><i id="yesterdayFenRun">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">分润总额（元）</p>
+                        <div class="homelistc">
+                            <span><i id="totalFenRun">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">总交易额（元）</p>
+                        <div class="homelistc">
+                            <span><i id="totalVolume">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">总交易数</p>
+                        <div class="homelistc">
+                            <span><i id="totalNumber">0</i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">服务商总数</p>
+                        <div class="homelistc">
+                            <span><i id="numberOfAgents">0</i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="overflow:hidden">
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">销售总数</p>
+                        <div class="homelistc">
+                            <span><i id="numberOfSellers">0</i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">商户总数</p>
+                        <div class="homelistc">
+                            <span><i id="numberOfMerchants">0</i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">本月新增商户</p>
+                        <div class="homelistc">
+                            <span><i id="numberOfMerchantsThisMonth">0</i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">昨日活跃商户</p>
+                        <div class="homelistc">
+                            <span><i id="numberBusinessesYesterday">0</i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">昨日异常商户</p>
+                        <div class="homelistc">
+                            <span><i id="abnormalMerchantYesterday">0</i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <blockquote class="layui-elem-quote" style="position:relative;left:0;top:0">
+            <span style="margin-right: 30px;vertical-align:top">交易数据</span>
+            <div class="btnBox">
+                <button class="layui-btn layui-btn-primary fl dayCheck" onclick="jyClick(0)">昨天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(1)">3天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(2)">7天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(3)">15天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(4)">30天</button>
+            </div>
+        </blockquote>
+        <div class="baobiao">
+            <div style="overflow:hidden">
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">交易金额（元）</p>
+                        <div class="homelistc">
+                            <span><i id="totalTransactionAmount">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">交易笔数（元）</p>
+                        <div class="homelistc">
+                            <span><i id="totalNumberOfTransactions">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">退款金额（元）</p>
+                        <div class="homelistc">
+                            <span><i id="theRefundAmount">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">退款笔数</p>
+                        <div class="homelistc">
+                            <span><i id="aRefundOf">0</i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">手续费（元）</p>
+                        <div class="homelistc">
+                            <span><i id="poundage">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">实际营收（元）</p>
+                        <div class="homelistc">
+                            <span><i id="theActualRevenue">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="overflow:hidden">
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">我的分润（元）</p>
+                        <div class="homelistc">
+                            <span><i id="myFenRun">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">微信分润（元）</p>
+                        <div class="homelistc">
+                            <span><i id="weChatFenRun">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="homelist">
+                        <p class="homelistitle">支付宝分润（元）</p>
+                        <div class="homelistc">
+                            <span><i id="ailiFenRun">0</i>元</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <blockquote class="layui-elem-quote">
+            <span style="margin-right: 30px;vertical-align:top">数据统计</span>
+        </blockquote>
+        <div class="layui-tab layui-tab-card" style="position:relative;left:0;top:0">
+            <ul class="layui-tab-title">
+                <li class="layui-this qiehuan" style="width:90px" onclick="tab(0)">我的分润</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(1)">交易金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(2)">交易笔数</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(3)">退款金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(4)">退款笔数</li>
+            </ul>
+            <div class="btnBox" style="top:1px">
+                <button class="layui-btn layui-btn-primary fl1 dayCheck1" onclick="jyClick1(0)">昨天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(1)">3天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(2)">7天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(3)">15天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(4)">30天</button>
+            </div>
+        </div>
+        <div class="grid-demo border">
+            <div id="main" style="height: 400px"></div>
+        </div>
+        <div class="layui-row layui-col-space30" style="margin-top:30px;margin-bottom:100px">
+            <!--汇总-->
+            <blockquote class="layui-elem-quote">
+                <span style="margin-right: 30px;vertical-align:top">占比统计</span>
+            </blockquote>
+            <!--报表-->
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md6" style="padding-left:50px">
+                <div class="grid-demo border">
+                    <div class="">
+                        <p class="x-red" style="font-size: 20px;margin-bottom: 15px;">服务商商户占比</p>
+                        <div class="grid-demo border" style="width:100%;overflow:auto">
+                            <div id="main1" style="height: 300px;width:100%"></div>
+                            <div id="newCount" style="display:none;width:100%;text-align:center">暂没有数据</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                <div class="grid-demo border">
+                    <div class="">
+                        <p class="x-red" style="font-size: 20px;margin-bottom: 15px;">销售商户占比 </p>
+                        <div class="grid-demo border" style="width:100%;overflow:auto">
+                            <div id="main2" style="height: 300px;width:100%"></div>
+                            <div id="newCount1" style="display:none;width:100%;text-align:center">暂无数据</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script type="text/javascript" src="http://static.hongxiaosou.com/public/js/echarts.min.js"></script>
+    <script>
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+    var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+    var Statement_Date = []
+    var orderTotalMoney = []
+    var orderCount = []
+    var orderMoney = []
+    var refundMoney = []
+    var shouxuMoney = []
+    var shishou = []
+    var myChart
+    var option
+    var option1
+    var option2
+    var myChart1 = echarts.init(document.getElementById('main1'));
+    var allShopName = []
+    var allShopList = []
+    var myChart2 = echarts.init(document.getElementById('main2'));
+    var allSaleName = []
+    var allSaleList = []
+    myChart = echarts.init(document.getElementById('main'));
+    var allShop, nowShop;
+    option = {
+        grid: {
+            x: 70,
+            x2: 20,
+            y: 70,
+            y2: 40,
+            borderWidth: 1
+        },
+        title: '',
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            }
+        },
+        legend: {
+            data: ['金额']
+        },
+        calculable: true,
+        xAxis: [{
+            type: 'category',
+            axisTick: {
+                alignWithLabel: true
+            },
+            axisLine: {
+                onZero: false
+            },
+            data: Statement_Date
+        }],
+        yAxis: [{
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    type: "dashed",
+                    color: "#dfdfdf"
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    fontSize: 14,
+                    color: '#5b6e89'
+                }
+            },
+            type: 'value'
+        }],
+        series: [{
+            name: '',
+            type: 'line',
+            smooth: true,
+            itemStyle: {
+                normal: {
+                    areaStyle: {
+                        type: 'default',
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0,
+                                color: '#6e94ff'
+                            }, {
+                                offset: 1,
+                                color: '#ffffff'
+                            }],
+                            globalCoord: false
+                        }
+                    },
+                    color: '#6e94ff'
+                }
+            },
+            data: orderTotalMoney
+        }]
+    };
+    option1 = {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            x: 'left',
+            data: allShopName
+        },
+        series: [{
+            name: '服务商商户占比',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            data: allShopList
+        }]
+    };
+    option2 = {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            x: 'left',
+            data: allSaleName
+        },
+        series: [{
+            name: '服务商商户占比',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            data: allSaleList
+        }]
+    };
+    function tab(id) {
+        switch (id) {
+            case 0:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < orderMoney.length; i++) {
+                    orderTotalMoney.push(orderMoney[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 1:
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < orderCount.length; i++) {
+                    orderTotalMoney.push(orderCount[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 2:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < refundMoney.length; i++) {
+                    orderTotalMoney.push(refundMoney[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 3:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < shouxuMoney.length; i++) {
+                    orderTotalMoney.push(shouxuMoney[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 4:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < shishou.length; i++) {
+                    orderTotalMoney.push(shishou[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            default:
+                // statements_def
+                break;
+        }
+    }
+
+    function reloadres(number) {
+        var index = layer.load(2, { shade: [0.4, '#393D49'] })
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'statistics/dataStatistics', {
+                "agentNumber": userNumber,
+                "agentLevel": agentLevel,
+                "dateStart": number
+            },
+            function(data) {
+                layer.closeAll()
+                if (data.code != 1000) {
+                    layer.msg(data.msg)
+                    CmsUtility.clearListArr(Statement_Date)
+                    CmsUtility.clearListArr(orderTotalMoney)
+                    CmsUtility.clearListArr(orderCount)
+                    CmsUtility.clearListArr(orderMoney)
+                    CmsUtility.clearListArr(refundMoney)
+                    CmsUtility.clearListArr(shouxuMoney)
+                    CmsUtility.clearListArr(shishou)
+                    myChart.clear()
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+                    return
+                }
+                CmsUtility.clearListArr(Statement_Date)
+                CmsUtility.clearListArr(orderTotalMoney)
+                CmsUtility.clearListArr(orderCount)
+                CmsUtility.clearListArr(orderMoney)
+                CmsUtility.clearListArr(refundMoney)
+                CmsUtility.clearListArr(shouxuMoney)
+                CmsUtility.clearListArr(shishou)
+                var data = data.data
+                for (var j = 0; j < data.length; j++) {
+                    Statement_Date.push(data[j].transactionTime)
+                    orderTotalMoney.push(data[j].myFenRun)
+                    orderCount.push(data[j].totalTransactionAmount)
+                    orderMoney.push(data[j].myFenRun)
+                    refundMoney.push(data[j].totalNumberOfTransactions)
+                    shouxuMoney.push(data[j].theRefundAmount)
+                    shishou.push(data[j].aRefundOf)
+                }
+
+                Statement_Date.sort()
+                myChart.clear()
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            },
+            function(data) {
+                console.log('222')
+            }, 'get'
+        )
+    }
+    setTimeout(function() {
+        reloadres(0)
+    }, 500)
+    layui.use(['table', 'table', 'laytpl', 'laydate', 'layer'], function() {
+        var table = layui.table,
+            form = layui.form,
+            laydate = layui.laydate,
+            laytpl = layui.laytpl,
+            layer = layui.layer,
+            $ = layui.jquery;
+
+
+        window.jyClick = function(data) {
+            console.log(data)
+            // 
+
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn layui-btn-primary fl dayCheck')
+            getShop(data)
+        }
+        window.jyClick1 = function(data) {
+            console.log(data)
+            // 
+
+            $('.fl1').attr('class', 'layui-btn layui-btn-primary fl1')
+            $('.fl1').eq(data).attr('class', 'layui-btn layui-btn-primary fl1 dayCheck1')
+            reloadres(data)
+        }
+
+
+        function getAll() {
+
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'statistics/overviewOfData', {
+                    "agentNumber": userNumber,
+                    "agentLevel": agentLevel
+                },
+                function(data) {
+                    $('#todayFenRun').html(data.data[0].todayFenRun)
+                    $('#yesterdayFenRun').html(data.data[0].yesterdayFenRun)
+                    $('#totalFenRun').html(data.data[0].totalFenRun)
+                    $('#totalVolume').html(data.data[0].totalVolume)
+                    $('#totalNumber').html(data.data[0].totalNumber)
+                    $('#numberOfAgents').html(data.data[0].numberOfAgents)
+                    $('#numberOfSellers').html(data.data[0].numberOfSellers)
+                    $('#numberOfMerchants').html(data.data[0].numberOfMerchants)
+                    $('#numberOfMerchantsThisMonth').html(data.data[0].numberOfMerchantsThisMonth)
+                    $('#numberBusinessesYesterday').html(data.data[0].numberBusinessesYesterday)
+                    $('#abnormalMerchantYesterday').html(data.data[0].abnormalMerchantYesterday)
+
+
+                },
+                function(data) {
+
+                }, 'get'
+            )
+        }
+        getAll()
+
+        var myDate = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2];
+        console.log(myDate)
+
+        function getShop(number) {
+
+            console.log(myDate)
+            var index = layer.load(2, { shade: [0.4, '#393D49'] })
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'statistics/tradeStatistics', {
+                    "agentNumber": userNumber,
+                    "agentLevel": agentLevel,
+                    "dateStart": number,
+                },
+                function(data) {
+                    layer.closeAll()
+                    if (data.code == 1000) {
+
+                        $('#totalTransactionAmount').html(data.data[0].totalTransactionAmount)
+                        $('#totalNumberOfTransactions').html(data.data[0].totalNumberOfTransactions)
+                        $('#theRefundAmount').html(data.data[0].theRefundAmount)
+                        $('#aRefundOf').html(data.data[0].aRefundOf)
+                        $('#poundage').html(data.data[0].poundage)
+                        $('#theActualRevenue').html(data.data[0].theActualRevenue)
+                        $('#myFenRun').html(data.data[0].myFenRun)
+                        $('#weChatFenRun').html(data.data[0].weChatFenRun)
+                        $('#ailiFenRun').html(data.data[0].ailiFenRun)
+
+
+
+
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }, 'get'
+            )
+        }
+        getShop(0)
+
+
+
+
+        //服务商商户占比
+        function dlShopCount() {
+            // ddDate = []
+            // ddData = []
+            for (let i = 0; i < allShopName.length; i++) {
+                allShopName.splice(i)
+            }
+            for (let i = 0; i < allShopList.length; i++) {
+                allShopList.splice(i)
+            }
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'statistics/agentProportion', {
+                    "agentNumber": userNumber,
+                    "agentLevel": agentLevel
+                },
+                function(data) {
+
+                    if (data.code == 1000) {
+                        for (var i = 0; i < data.data.length; i++) {
+                            allShopName.push(data.data[i].agentName)
+                            var ab = new Object()
+                            ab.name = data.data[i].agentName
+                            ab.value = data.data[i].number
+                            allShopList.push(ab)
+                        }
+                        // var abb = new Object()
+                        // abb.name = '全部商户'
+                        // abb.value = data.data[0].merchantNum
+                        // allShopList.push(abb)
+                        //             [
+                        //     {value:allShop, name:'全部商户'},
+                        //     {value:nowShop, name:'服务商商户'},
+                        // ]
+                        myChart1.clear()
+                        myChart1.setOption(option1, 'true');
+
+                    } else {
+                        $('#main1').hide()
+                        $('#newCount').show()
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }, 'get'
+            )
+        }
+        dlShopCount()
+        //服务商商户占比
+        function slShopCount() {
+            // ddDate = []
+            // ddData = []
+            for (let i = 0; i < allShopName.length; i++) {
+                allShopName.splice(i)
+            }
+            for (let i = 0; i < allShopList.length; i++) {
+                allShopList.splice(i)
+            }
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'statistics/salesAccountedFor', {
+                    "agentNumber": userNumber,
+                    "agentLevel": agentLevel
+                },
+                function(data) {
+
+                    if (data.code == 1000) {
+                        for(var i = 0 ; i < data.data.length;i++){
+                            allSaleName.push(data.data[i].userName)
+                            var ab = new Object()
+                            ab.name = data.data[i].userName
+                            ab.value = data.data[i].merchantNumber
+                            allSaleList.push(ab)
+                        }
+
+                        myChart2.clear()
+                        myChart2.setOption(option2, 'true');
+
+                    } else {
+                        $('#main2').hide()
+                        $('#newCount1').show()
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }, 'get'
+            )
+        }
+        slShopCount()
+    });
+    </script>
+</body>
+
+</html>

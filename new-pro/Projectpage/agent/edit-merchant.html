@@ -47,8 +47,8 @@
             }
             
             .layui-upload-img {
-                width: 180px;
-                height: 250px;
+                width: 200px;
+                height: 200px;
                 margin: 0 10px 10px 0;
             }
             
@@ -66,11 +66,28 @@
                 text-align: center;
                 height: 100%;
             }
+            .yingyezhizhao{
+                display:inline-block;width:500px;margin-left:30px
+            }
+            #showImgBox{
+                width: 40%;
+                height: 60%;
+                position: fixed;
+                z-index: 99999;
+                display: none;
+                background-color: #fff;
+            }
+            .showImg{
+                
+            }
         </style>
 </head>
 
 <body id="iosiframe">
     <div class="x-body">
+        <div id="showImgBox" >
+            <img id="showImg" src="http://sh-upfile.oss-cn-beijing.aliyuncs.com/1004/Merchant/1574146882000/c0b6baa3cad5d2f8cca8d5d5c6ac.jpeg" style="width:100%;height:100%">
+        </div>  
         <div class="layui-row">
             <div class="layui-form" action="" lay-filter="cardAdd">
                 <blockquote class="layui-elem-quote">商户信息</blockquote>
@@ -80,7 +97,7 @@
                 <div class="layui-form-item layui-form-text" id="businessLicense1">
                     <!-- <label class="layui-form-label">营业执照</label> -->
                     <div class="layui-input-inline  noGeren" style="margin-left:30px;display: none">
-                        <div class="layui-upload-img">
+                        <div class="layui-upload-img" >
                             <img src="http://static.hongxiaosou.com/public/images/add.jpg" id="businessLicense" style="max-width: 100%;">
                         </div>
                         <div style="width:100%;text-align:center;">营业执照</div>
@@ -119,17 +136,17 @@
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
-                        <label class="layui-form-label">商户简称</label>
+                        <label class="layui-form-label">商户名称</label>
                         <div class="layui-input-block">
-                            <input type="text" name="merchantAbbreviation" lay-verify="title" autocomplete="off" placeholder="请输入商户简称" class="layui-input">
+                            <input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
                         </div>
                     </div>
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">商户全称</label>
+                        <label class="layui-form-label">客服手机号</label>
                         <div class="layui-input-block">
-                            <input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户全称" class="layui-input">
+                            <input type="text" name="customerServiceTell" lay-verify="title" autocomplete="off" placeholder="请输入客服手机号" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto;margin-left:30px">
@@ -152,16 +169,17 @@
                     </div>
                 </div>
                 <div class="box-item">
+                    
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">客服手机号</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="customerServiceTell" lay-verify="title" autocomplete="off" placeholder="请输入客服手机号" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
                         <label class="layui-form-label">费率</label>
                         <div class="layui-input-block">
-                            <input type="text" name="rate" lay-verify="title" autocomplete="off" placeholder="请输入费率" class="layui-input">
+                            <input type="text" name="rate" lay-verify="title" autocomplete="off" placeholder="请输入费率，例如0.38" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item noGeren yingyezhizhao"  style="display:none">
+                        <label class="layui-form-label">营业执照名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="businessLicenseName" lay-verify="title1" autocomplete="off" placeholder="请输入营业执照名称" class="layui-input">
                         </div>
                     </div>
                 </div>
@@ -175,13 +193,14 @@
                     <div class="layui-form-item" style="display:inline-block;margin-left:30px">
                         <label class="layui-form-label">营业执照有限期</label>
                         <div class="layui-input-block" style="display:inline-block;width:200px;margin-left:0px;">
-                            <input type="text" name="businessLicenseTime" lay-verify="title1" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseTime">
+                            <input type="text" name="businessLicenseTime" lay-verify="title1" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseTime" >
                         </div>
                         <div style="width:30px;text-align:center;display:inline-block" class="yyNoChangqi">-</div>
                         <div class="layui-input-block yyNoChangqi" style="display:inline-block;width:200px;margin-left:5px;">
                             <input type="text" name="businessLicenseEndTime" lay-verify="title2" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseEndTime">
                         </div>
                         <div class="layui-input-block" style="display:inline-block;margin-left:15px;vertical-align:top">
+                            
                             <input type="checkbox" name="businessLicenseType" lay-skin="switch" lay-filter="businessLicenseType" lay-text="长期|非长期">
                         </div>
                     </div>
@@ -390,13 +409,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-item" style="margin-bottom:150px">
+               <!--  <div class="box-item" style="margin-bottom:150px">
                     <div class="layui-form-item" style="display:inline-block">
                         <label class="layui-form-label">进件通道</label>
                         <div class="layui-input-block" id="paymentBox">
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="layui-form-item layui-layout-admin">
                     <div class="layui-input-block">
                         <div class="layui-footer" style="left: 0;text-align: center;">
@@ -418,7 +437,7 @@
     //     setTimeout(function() { parent.layer.close(index) }, 16);
     // })
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    var server = 'http://192.168.1.131:6005/shanhe-admin/'
+    var server = 'http://192.168.1.200:6005/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
     var operlistThr = []
@@ -438,13 +457,39 @@
     var juridicalPersonIDType = 1
     var businessLicenseType = 1
     var isOpenYunPay = 1
-    var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+    var merchantNumber = CmsUtility.getQueryString('orderNumber')
+    //var merchantNumber = '1004000563'
+    var channelType = CmsUtility.getQueryString('type')
+    var channelName = CmsUtility.getQueryString('name')
+    var channel =  CmsUtility.getQueryString('channel')
+    console.log(channelType,channelName,channel)
     var merInfo = ''
     var paymentInfo = ''
     var payList = ''
     var merType = 0
     var acctoken = sessionStorage.getItem('access_token')
-
+    $('.layui-upload-img').mouseover(function(){
+         // console.log(this.getElementsByTagName('img')[0].getAttribute('src'))
+         console.dir(this.childNodes[1])
+         if(this.childNodes[1].currentSrc.indexOf('images/add.jpg')  >= 0 || this.childNodes[1].currentSrc == ''){
+            return
+         }
+         $('#showImg').attr('src',this.childNodes[1].currentSrc)
+         $('#showImgBox').css({
+            'left':this.childNodes[1].x + 200,
+            'top':this.childNodes[1].y
+         })
+         $('#showImgBox').show()
+    })
+    $('.layui-upload-img').mouseout(function(){
+         // console.log(this.getElementsByTagName('img')[0].getAttribute('src'))
+         // console.dir(this.childNodes[1])
+         // $('#showImgBox').css({
+         //    'left':this.childNodes[1].x + 200,
+         //    'top':this.childNodes[1].y
+         // })
+         $('#showImgBox').hide()
+    })
     function fourStr(data) {
         return data.substring(0, 4) + '-' + data.substring(4, 6) + '-' + data.substring(6, 8)
     }
@@ -1548,13 +1593,14 @@
         setTimeout(function(){
             CmsUtility.postAjaxCall2(
             //系统设置
-            server + 'InsMer/getMerchantInfo', {
-                "merchantNumber": merchantNumber
+            server + '/InsMer/getMerchantOrderInfo', {
+                "orderNumber": merchantNumber,
+                "institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
             },
             function(data) {
                 console.log(data)
                 if (data.code == 1000) {
-                    merInfo = data.data.merchant
+                    merInfo = data.data
                     paymentInfo = data.data.merchantPayments
                     businessLicense = merInfo.businessLicense
                     cashier = merInfo.cashier
@@ -1574,6 +1620,7 @@
                     $('#holdId').attr('src', holdId)
                     $('#openingPermit').attr('src', openingPermit)
                     $('#bankCardPositive').attr('src', bankCardPositive)
+                    
                     if (merInfo.merchantType == '个人') {
                         merInfo.merchantTyp1 = '0'
                         $('.noGeren').hide()
@@ -1685,26 +1732,27 @@
                     $('#slName').attr('saleNumber', merInfo.saleNumber)
                     console.log(payList)
                     var pStr = ''
-                    for(var b = 0 ; b < payList.length;b++){
-                        var type = 0
-                        for(var v = 0 ; v < paymentInfo.length;v++){
-                            if(paymentInfo[v].paymentChannel == payList[b].paymentChannel){
-                                type = 1
-                            }
-                        }
-                        if(type == 0){
-                            pStr += '<input type="checkbox"   data-type=' + payList[b].paymentType + ' name="payment" value=' + payList[b].paymentChannel + '|' + payList[b].paymentType + ' title=' + payList[b].paymentChannelName + ' >'
-                        }else{
-                            pStr += '<input type="checkbox"   data-type=' + payList[b].paymentType + ' name="payment" value=' + payList[b].paymentChannel + '|' + payList[b].paymentType + ' title=' + payList[b].paymentChannelName + ' checked="">'
-                        }
-                    }
-                    $('#paymentBox').html(pStr)
+                    // for(var b = 0 ; b < payList.length;b++){
+                    //     var type = 0
+                    //     for(var v = 0 ; v < paymentInfo.length;v++){
+                    //         if(paymentInfo[v].paymentChannel == payList[b].paymentChannel){
+                    //             type = 1
+                    //         }
+                    //     }
+                    //     if(type == 0){
+                    //         pStr += '<input type="checkbox"   data-type=' + payList[b].paymentType + ' name="payment" value=' + payList[b].paymentChannel + '|' + payList[b].paymentType + ' title=' + payList[b].paymentChannelName + ' >'
+                    //     }else{
+                    //         pStr += '<input type="checkbox"   data-type=' + payList[b].paymentType + ' name="payment" value=' + payList[b].paymentChannel + '|' + payList[b].paymentType + ' title=' + payList[b].paymentChannelName + ' checked="">'
+                    //     }
+                    // }
+                    // $('#paymentBox').html(pStr)
                     // form.render()
                     form.render()
                     form.val('cardAdd', {
                         "merchantType": merInfo.merchantTyp1,
                         "merchantAbbreviation": merInfo.merchantAbbreviation,
                         "merchantName": merInfo.merchantName,
+                        "businessLicenseName":merInfo.businessLicenseName,
                         "oneOperate": merInfo.oneOperate,
                         "twoOperate": merInfo.twoOperate,
                         "threeOperate": merInfo.threeOperate,
@@ -1765,18 +1813,18 @@
                     return false
                 }
             }
-            var arr = new Array();
-            $("input:checkbox[name='payment']:checked").each(function(i) {
-                arr[i] = $(this).val();
-            });
-            console.log(arr)
-            var pyList = []
-            for (var j = 0; j < arr.length; j++) {
-                var pb = new Object()
-                pb.paymentType = arr[j].split('|')[1]
-                pb.paymentChannel = arr[j].split('|')[0]
-                pyList.push(pb)
-            }
+            // var arr = new Array();
+            // $("input:checkbox[name='payment']:checked").each(function(i) {
+            //     arr[i] = $(this).val();
+            // });
+            // console.log(arr)
+            // var pyList = []
+            // for (var j = 0; j < arr.length; j++) {
+            //     var pb = new Object()
+            //     pb.paymentType = arr[j].split('|')[1]
+            //     pb.paymentChannel = arr[j].split('|')[0]
+            //     pyList.push(pb)
+            // }
             var tjData = data.field
             tjData.institutionNumber = userNumber
             tjData.agentNumber = $('#agName').attr('agentnumber')
@@ -1805,6 +1853,8 @@
                 tjData.merchantType = '企业'
                 tjData.acntType = '对公'
             }
+            tjData.paymentType= type
+            tjData.paymentChannel = channel
             tjData.juridicalPersonIDType = juridicalPersonIDType
             tjData.businessLicenseName = tjData.merchantName
             tjData.businessLicenseType = businessLicenseType
@@ -1818,7 +1868,7 @@
             tjData.businessLicenseAddress = tjData.province + tjData.city + tjData.area + tjData.address
             console.log(tjData)
             tjData.isOpenYunPay = isOpenYunPay
-            tjData.paymentChannels = JSON.stringify(pyList)
+            // tjData.paymentChannels = JSON.stringify(pyList)
             tjData.subsidy = 1
             tjData.openingBank = tjData.openingBank1.split('|')[1]
             tjData.openingBankID = tjData.openingBank1.split('|')[0]
