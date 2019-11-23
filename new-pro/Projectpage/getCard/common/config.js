@@ -183,6 +183,9 @@ var CmsConfig = {
 			updateChannel: "delivery/updateChannel",
 			// 渠道-删除投放渠道
 			deleteChannel: "delivery/deleteChannel",
+			// 查询商户默认投放渠道
+			getMerchantInitDel: "delivery/getMerchantInitDel",
+
 			// 推荐设置
 			// 推荐-添加推荐设置
 			addRecommend: "recommend/addRecommend",

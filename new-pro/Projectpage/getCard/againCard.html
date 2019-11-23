@@ -186,17 +186,16 @@
 						"Content-Type": "application/json"
 					},
 					success: function(data) {
-						if (data.code === 1000) {
-							sessionStorage.setItem('refresh', 'true');
-							history.go(-1);
+						if (data.code == 1000) {
+							getMerchantInitDel()
 						} else {
 							swal({
 								title: "",
 								text: data.msg,
 								type: "error",
-								showCancelButton: false,
+								showCancelButton: true,
 								closeOnConfirm: false,
-								showConfirmButton: true,
+								showConfirmButton: false,
 							});
 						}
 					}
@@ -204,6 +203,31 @@
 
 			});
 		});
+
+		function getMerchantInitDel() {
+			$.ajax({
+				type: "get",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMerchantInitDel,
+				data: {
+					"merchantNumber": merNumber,
+				},
+				dataType: "json",
+				success: function(data) {
+					if (data.code == 1000) {
+						window.location.href = data.data.getCardUrl
+					} else {
+						swal({
+							title: "",
+							text: data.msg,
+							type: "error",
+							showCancelButton: true,
+							closeOnConfirm: false,
+							showConfirmButton: false,
+						});
+					}
+				}
+			});
+		}
 
 		function getCode() {
 			if (codeT != true) {
