@@ -289,6 +289,8 @@ var CmsConfig = {
 			getVoucehrListLink: "synVoucher/getVoucehrListLink",
 			// 查询优惠券绑定的店铺列表
 			getVoucherShopList: "voucher/getVoucherShopList",
+			// 查询会员可使用的卡券列表
+			getMemberVoucherIsUse: "voucher/getMemberVoucherIsUse",
 			// 查询渠道列表
 			getDeliveryList: "voucher/getDeliveryList",
 			// 添加渠道

@@ -25,14 +25,14 @@
 				<h3 class="flex_cc">付款码<span>结账时请出示会员卡</span></h3>
 				<div class="codeCon flex_cc">
 					<img src="" class="cardConSysCode" id="cardConSysCode">
-					<p>{{mebNo}}</p>
+					<p>{{mebinfo.memberNo}}</p>
 					<div id="qrcode"></div>
 				</div>
 				<div class="payline"></div>
 				<div class="balanceCon flex_cc">
 					<div class="balanceConL">
 						<p class="flex_cc"><i class="icon iconfont iconjinbi"></i>余额</p>
-						<h5>￥ {{mebbalan}}</h5>
+						<h5>￥ {{mebinfo.allBalance}}</h5>
 					</div>
 					<a class="recBtn">充值</a>
 				</div>
@@ -48,18 +48,14 @@
 	<script src="./js/qrcode.min.js"></script>
 	<script src="./js/JsBarcode.all.min.js"></script>
 	<script>
-		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
-		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 		new Vue({
 			el: '#Vip',
 			data: {
-				mebNo: "2123345656664147666",
-				mebbalan: '12300.00',
+				mebinfo: JSON.parse(sessionStorage.getItem('mInfo')),
 			},
 			methods: {
 				makebarCode: function() {
-					JsBarcode("#cardConSysCode", this.mebNo, {
+					JsBarcode("#cardConSysCode", this.mebinfo.memberNo, {
 						displayValue: false,
 						height: 60,
 						margin: 0,
@@ -68,7 +64,7 @@
 						width: 140,
 						height: 140,
 					});
-					qrcode.makeCode(this.mebNo);
+					qrcode.makeCode(this.mebinfo.memberNo);
 				},
 			},
 			created: function created() {

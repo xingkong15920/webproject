@@ -29,30 +29,30 @@
 					<li class="flex_cc" v-for="(item,i) in tmFun" @click="addTm(i,item)" :class="{active:i==current_tm}">{{item.name}}</li>
 				</ul>
 				<ul class="tmTabli">
-					<li class="conList" v-if="cardshowT==0" v-for="(item,i) in conList">
+					<li class="conList" v-if="cardshowT==0" v-for="(item,i) in conList" :class="item.useType == -2?'stateOff':''">
 						<div v-if="item.voucherUse==0" class="conListT zk flex_cc">
 							<div class="conListTmodel flex_cc">
-								<p>￥ <span>20</span></p>
+								<p>折 <span>{{item.discount}}</span></p>
 								<a>折扣券</a>
 							</div>
-							<p class="conListTCon">所有商品满100元使用</p>
+							<p class="conListTCon">{{item.voucherDescribe}}</p>
 						</div>
 						<div v-else-if="item.voucherUse==1" class="conListT dj flex_cc">
 							<div class="conListTmodel flex_cc">
-								<p>￥ <span>20</span></p>
+								<p>￥ <span>{{item.discountAmount}}</span></p>
 								<a>代金券</a>
 							</div>
-							<p class="conListTCon">所有商品满100元使用</p>
+							<p class="conListTCon">{{item.voucherDescribe}}</p>
 						</div>
 						<div v-else-if="item.voucherUse==2" class="conListT dh flex_cc">
 							<div class="conListTmodel flex_cc">
 								<p>￥ <span>20</span></p>
 								<a>兑换券</a>
 							</div>
-							<p class="conListTCon">所有商品满100元使用</p>
+							<p class="conListTCon">{{item.voucherDescribe}}</p>
 						</div>
 						<div class="conListD flex_cc">
-							<p>有效期：<span>{{item.insertTime.split(' ')[0]}}</span></p>
+							<p>有效期：<span>{{item.endTime}}</span></p>
 							<a class="">立即使用</a>
 						</div>
 					</li>
@@ -70,10 +70,10 @@
 			</ul>
 			<div class="mask" v-show="mask" @click="hidemask()"></div>
 			<ul class="conFunMask useMask" v-if="cardshowT==0" v-show="mask_u">
-				<li v-for="(item,i) in useT" @click="useChoose(item,i)" :class="{active:i==current_u}">{{item.usetit}}</li>
+				<li v-for="(item,i) in useT" @click="useChoose(item,item.usetype)" :class="{active:item.usetype==current_u}">{{item.usetit}}</li>
 			</ul>
 			<ul class="conFunMask conMask" v-if="cardshowT==0" v-show="mask_c">
-				<li v-for="(item,i) in conT" @click="conChoose(item,i)" :class="{active:i==current_c}">{{item.contit}}</li>
+				<li v-for="(item,i) in conT" @click="conChoose(item,item.contype)" :class="{active:item.contype==current_c}">{{item.contit}}</li>
 			</ul>
 		</div>
 	</body>
@@ -92,13 +92,15 @@
 		new Vue({
 			el: '#Vip',
 			data: {
+				page: 1,
+				limit: 10,
 				cardshowT: 0,
 				mask: false,
 				mask_u: false,
 				mask_c: false,
 				current: 0,
-				current_u: 0,
-				current_c: 0,
+				current_u: 1000,
+				current_c: 1000,
 				current_tm: 0,
 				tmtit: [{
 					name: "优惠券"
@@ -113,31 +115,31 @@
 				usechoose: 0,
 				usetips: '',
 				useT: [{
-					usetype: 0,
+					usetype: 1000,
 					usetit: '全部类型',
 				}, {
-					usetype: 1,
+					usetype: 0,
 					usetit: '已使用',
 				}, {
-					usetype: 2,
+					usetype: 1,
 					usetit: '未使用',
 				}, {
-					usetype: 3,
+					usetype: -2,
 					usetit: '已过期',
 				}],
 				conchoose: 0,
 				contips: '',
 				conT: [{
-					contype: 0,
+					contype: 1000,
 					contit: '全部优惠券',
 				}, {
-					contype: 1,
+					contype: 0,
 					contit: '折扣券',
 				}, {
-					contype: 2,
+					contype: 1,
 					contit: '代金券',
 				}, {
-					contype: 3,
+					contype: 2,
 					contit: '满减券',
 				}],
 				conList: [],
@@ -152,8 +154,8 @@
 					this.tmList = []
 					if (i == 0) {
 						this.getVoucher()
-						this.current_u = 0
-						this.current_c = 0
+						this.current_u = 1000
+						this.current_c = 1000
 						this.usetips = this.useT[0].usetit
 						this.contips = this.conT[0].contit
 					} else if (i == 1) {
@@ -179,16 +181,20 @@
 				},
 				getVoucher() {
 					var that = this,
-						sendData = new Object();
-					sendData.merchantNumber = merNumber
-					sendData.page = 1
-					sendData.limit = 999
-					sendData.voucherUse = that.conchoose
-					sendData.voucherUse = that.conchoose
+						tjData = new Object();
+					// tjData.memberNo = "JSON.parse(sessionStorage.getItem('mInfo')).memberNo"
+					// tjData.shopNo = "JSON.parse(sessionStorage.getItem('mInfo')).shopNumber"
+					tjData.merchantNumber = merNumber
+					tjData.disable = 0
+					tjData.page = that.page
+					tjData.limit = that.limit
+					tjData.voucherUse = that.current_u
+					tjData.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo
+					tjData.useType = that.current_c
 					$.ajax({
 						type: "get",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucherList,
-						data: sendData,
+						data: tjData,
 						dataType: "json",
 						headers: {
 							"Content-Type": "application/json"
@@ -244,6 +250,16 @@
 						}
 					});
 				},
+				changeData(res) {
+					if (res.length > 0) {
+						for (let i = 0; i < res.length; i++) {
+							if (res[i].discount != 0) {
+								res[i].discount = res[i].discount * 10
+							}
+						}
+						return res
+					}
+				},
 				showuse() {
 					this.mask = true
 					this.mask_u = true
@@ -252,6 +268,8 @@
 					this.current_u = i
 					this.usetips = e.usetit
 					this.usechoose = i
+					console.log(this.current_u)
+					console.log(i)
 					this.getVoucher()
 				},
 				showcon() {
@@ -263,6 +281,8 @@
 					this.current_c = i
 					this.contips = e.contit
 					this.conchoose = i
+					console.log(this.current_c)
+					console.log(i)
 					this.getVoucher()
 				},
 				hidemask() {

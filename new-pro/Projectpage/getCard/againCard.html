@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+	<head>
+		<title>会员开卡</title>
+		<meta charset="utf-8" />
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
+		<link rel="stylesheet" href="./css/register_member.css" />
+		<style>
+			.mcode{
+				color: #04be02;
+				margin-right: 8px;
+			}
+			.weui_check{
+				    left: 0;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+			}
+			.skxjl-t{
+				display: none;
+			}
+			.toss-box{
+				height: 85%;
+			}
+        </style>
+	</head>
+	<body>
+		<div class="container js_activate">
+			<div id="tips" style="" class="weui_toptips weui_warn"></div>
+			<div class="card_box" style="">
+				<div class="card_background" style=" background: #e4b138 ">
+				</div>
+				<div class="card_mask"></div>
+				<img src="http://club.liantuobank.com/imgPath/club-open/1574345957927.jpg" alt="" class="card_logo js_norefer_img">
+				<div class="card_brand">
+					永丰超市
+				</div>
+				<div class="card_name">
+					会员卡
+				</div>
+			</div>
+			<div class="activate_form">
+				<div id="js_required_info">
+					<form action="">
+						<div class="weui_cells weui_cells_form" id="js_required_info_input_area">
+							<div class="weui_cells_title">
+								必填信息
+							</div>
+							<div class="weui_cell">
+								<div class="weui_cell_hd">
+									<label class="weui_label">手机号</label>
+								</div>
+								<div class="weui_cell_bd weui_cell_primary">
+									<input class="weui_input member_field_info phone" type="number" maxlength="11" id="yzCell" placeholder="请输入手机号">
+								</div>
+							</div>
+							<div class="weui_cell weui_vcode">
+								<div class="weui_cell_hd">
+									<label class="weui_label">验证码 </label>
+								</div>
+								<div class="weui_cell_bd weui_cell_primary">
+									<input class="weui_input codeinput yzm" type="number" id="yzCode" placeholder="请输入验证码">
+								</div>
+								<div id="phoneBtn" class="weui_cell_ft mcode">
+									获取验证码
+								</div>
+							</div>
+							<div class="weui_cell weui_cell_select weui_select_after">
+								<div class="weui_cell_hd">
+									<label for="" class="weui_label">性别</label>
+								</div>
+								<div class="weui_cell_bd weui_cell_primary">
+									<select class="weui_select member_field_info" id="sexsel">
+										<option value="1">男</option>
+										<option value="0">女</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="weui_btn_area">
+					<a id="js_btn_submit" class="weui_btn  weui_btn_primary">立即开卡</a>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./js/sweetalert.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="./common/config-cs.js"></script>
+	<script src="./common/utility.js"></script>
+	<script>
+		function getQueryString(name) {
+			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		}
+		var codeNum = 59
+		var codeT = true
+		var timer, cellCode, insNumber, merNumber, memberNo, rg = new RegExp(/^1[3456789]\d{9}$/);
+		memberNo = getQueryString('mebNo')
+		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+		$(function() {
+			$("#phoneBtn").click(function() {
+				console.log($('#yzCell').val())
+				if (!rg.test($('#yzCell').val())) {
+					alert('请输入正确的手机号')
+					return
+				}
+				if (codeT == false) {
+					alert('请在一分钟后重试')
+					return
+				}
+				timer = setInterval(function() {
+					if (codeNum == 0) {
+						clearInterval(timer)
+						$('#phoneBtn').html('获取验证码')
+						codeNum = 59
+						codeT = true
+					} else {
+						console.log('123')
+						getCode()
+						$('#phoneBtn').html(codeNum + 'S后重新获取')
+						codeNum--
+						codeT = false
+					}
+				}, 1000)
+			});
+			$('#js_btn_submit').click(function() {
+				var sendData = new Object(),
+					cell = $('#yzCell').val(),
+					cellcode = $('#yzCode').val(),
+					sex = $('#sexsel').val();
+				if (!rg.test(cell)) {
+					return swal({
+						title: "",
+						text: "请输入正确的手机号！",
+						type: "error",
+						showCancelButton: false,
+						closeOnConfirm: false,
+						showConfirmButton: true,
+					});
+				}
+				if (cellcode != '' && cellcode.length != 6) {
+					return swal({
+						title: "",
+						text: "请输入正确的验证码！",
+						type: "error",
+						showCancelButton: false,
+						closeOnConfirm: false,
+						showConfirmButton: true,
+					});
+				}
+				if (sex == '') {
+					return swal({
+						title: "",
+						text: "请选择性别！",
+						type: "error",
+						showCancelButton: false,
+						closeOnConfirm: false,
+						showConfirmButton: true,
+					});
+				}
+
+				sendData.userNo = merNumber
+				sendData.memberNo = memberNo
+				sendData.cell = cell
+				sendData.code = cellcode
+				sendData.sex = sex
+
+				$.ajax({
+					type: "post",
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberAgenOpenCard,
+					data: JSON.stringify(sendData),
+					dataType: "json",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					success: function(data) {
+						if (data.code === 1000) {
+							sessionStorage.setItem('refresh', 'true');
+							history.go(-1);
+						} else {
+							swal({
+								title: "",
+								text: data.msg,
+								type: "error",
+								showCancelButton: false,
+								closeOnConfirm: false,
+								showConfirmButton: true,
+							});
+						}
+					}
+				});
+
+			});
+		});
+
+		function getCode() {
+			if (codeT != true) {
+				return
+			}
+			var sData = new Object()
+			sData.cell = $('#yzCell').val()
+			sData.institutionNumber = insNumber
+			$.ajax({
+				type: "post",
+				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberSendVerification,
+				data: JSON.stringify(sData),
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						cellCode = data.data
+					} else {
+						swal({
+							title: "",
+							text: data.msg,
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: false,
+						});
+					}
+				}
+			});
+		}
+	</script>
+</html>

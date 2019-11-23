@@ -73,6 +73,17 @@
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script>
+		window.addEventListener('pageshow', function(event) {
+			if (event.persisted) { // ios 有效, android 和 pc 每次都是 false
+				location.reload();
+			} else { // ios 除外
+				if (sessionStorage.getItem('refresh') === 'true') {
+					location.reload();
+				}
+			}
+			sessionStorage.removeItem('refresh');
+		});
+
 		function getQueryString(name) {
 			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
 			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
@@ -87,7 +98,7 @@
 		$('.cardB').width(_w - 60)
 		$('.cardB').height(_h)
 
-		var cardCon, applystore, subtitle, showQrcodeUrl, shareDescribeText
+		var cardCon, applystore, subtitle, showQrcodeUrl, shareDescribeText, returnCard = false
 		var deliveryNo
 		var insNumber
 		var merNumber
@@ -144,7 +155,7 @@
 			} else {
 				code = window.location.href.split('&code=')[1].split('&')[0];
 				$.ajax({
-					url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
+					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + "/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
 						weixinCode + '&code=' + code + '&appSecret=' + appSecret,
 					type: "GET",
 					async: false,
@@ -156,6 +167,25 @@
 						if (data.code == '-2') {
 							mebInfo = ''
 							getCardWxCon()
+						} else if (data.code == '-1') {
+							returnCard = true
+							swal({
+								title: "",
+								text: "您已退卡，是否重复领卡！",
+								type: "error",
+								showCancelButton: true,
+								confirmButtonColor: "#DD6B55",
+								confirmButtonText: "领卡",
+								cancelButtonText: "关闭",
+								closeOnConfirm: false,
+								closeOnCancel: false
+							}, function(isConfirm) {
+								if (isConfirm) {
+									window.location.href = 'againCard.html?mebNo=' + data.data.memberNo
+								} else {
+									wx.closeWindow();
+								}
+							})
 						} else if (data.code == '1000') {
 							$('#getCardB').show()
 							mebInfo = JSON.stringify(data.data)
@@ -423,7 +453,7 @@
 					"institutionNumber": insNumber,
 					"deliveryNo": deliveryNo,
 					"memberInfo": mebInfo,
-					"distributionNo":distributionID,
+					"distributionNo": distributionID,
 				},
 				async: true,
 				dataType: "json",

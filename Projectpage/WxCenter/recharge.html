@@ -22,7 +22,7 @@
 		</div>
 		<div class="vipCenter recBody" id="Vip">
 			<p class="rectit">余额(元)</p>
-			<h3 class="recbalan">{{mebbalan}}</h3>
+			<h3 class="recbalan">{{mebinfo.allBalance}}</h3>
 			<ul class="recFun flex_cc">
 				<li class="flex_cc" v-for="item in recFun" @click="jmup(item)">
 					<i class="icon iconfont" :class="item.toolcl"></i>
@@ -36,8 +36,8 @@
 				</div>
 				<ul class="saleli flex_cc">
 					<li class="flex_cc" v-for="(item,i) in saleli" @click="addC(i,$event,item)" :class="{active:i==current}">
-						<p class="flex_cc">{{item.saleM}} 元</p>
-						<span class="flex_cc">赠<i>{{item.saleZ}}</i>元</span>
+						<p class="flex_cc">{{item.rechargeMoney.split('.')[0]}} 元</p>
+						<span class="flex_cc">赠<i>{{item.giveMoney.split('.')[0]}}</i>元</span>
 					</li>
 				</ul>
 				<a class="recBtn1">充值</a>
@@ -53,16 +53,12 @@
 	<script src="./js/qrcode.min.js"></script>
 	<script src="./js/JsBarcode.all.min.js"></script>
 	<script>
-		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
-		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 		new Vue({
 			el: '#Vip',
 			data: {
 				current: 0,
-				saleJ: '100',
-				mebNo: "2123345656664147666",
-				mebbalan: '12300.00',
+				saleJ: '',
+				mebinfo: JSON.parse(sessionStorage.getItem('mInfo')),
 				recFun: [{
 					toolcl: "iconqianbao",
 					toolitit: "充值记录",
@@ -72,22 +68,7 @@
 					toolitit: "会员支付",
 					address: "pay.html",
 				}],
-				saleli: [{
-					saleM: '100',
-					saleZ: '10',
-				}, {
-					saleM: '200',
-					saleZ: '25',
-				}, {
-					saleM: '300',
-					saleZ: '50',
-				}, {
-					saleM: '500',
-					saleZ: '80',
-				}, {
-					saleM: '80000',
-					saleZ: '100',
-				}]
+				saleli: []
 			},
 			methods: {
 				jmup: function(e) {
@@ -95,11 +76,39 @@
 				},
 				addC: function(i, e, res) {
 					this.current = i
-					this.saleJ = res.saleM
-				}
+					this.saleJ = res.rechargeMoney
+				},
+				getyhlist() {
+					var sendData = new Object(),
+						that = this;
+					sendData.merchantNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+					sendData.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMemDetails,
+						data: sendData,
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							$('#loadstart').hide()
+							if (data.code === 1000) {
+								that.saleli = data.data.preferentialRecharges
+							} else {
+								swal({
+									title: "",
+									text: data.msg,
+									type: "error",
+								});
+							}
+						}
+					});
+
+				},
 			},
 			created: function created() {
-				$('#loadstart').hide()
+				this.getyhlist()
 			},
 			mounted: function mounted() {}
 		})
