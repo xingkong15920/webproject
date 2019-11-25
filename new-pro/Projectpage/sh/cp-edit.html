@@ -223,18 +223,6 @@
 	<body id="iosiframe">
 		<div class="timePeriod hide layui-form">
 			<div class="layui-form-item">
-				<label class="layui-form-label"><span class="redC">* </span>周一至周日 :</label>
-				<div class="layui-input-inline max300">
-					<input type="checkbox" name="timeSlotCollect" value="周一" lay-filter="timeSlotCollect" lay-skin="primary" title="周一">
-					<input type="checkbox" name="timeSlotCollect" value="周二" lay-filter="timeSlotCollect" lay-skin="primary" title="周二">
-					<input type="checkbox" name="timeSlotCollect" value="周三" lay-filter="timeSlotCollect" lay-skin="primary" title="周三">
-					<input type="checkbox" name="timeSlotCollect" value="周四" lay-filter="timeSlotCollect" lay-skin="primary" title="周四">
-					<input type="checkbox" name="timeSlotCollect" value="周五" lay-filter="timeSlotCollect" lay-skin="primary" title="周五">
-					<input type="checkbox" name="timeSlotCollect" value="周六" lay-filter="timeSlotCollect" lay-skin="primary" title="周六">
-					<input type="checkbox" name="timeSlotCollect" value="周日" lay-filter="timeSlotCollect" lay-skin="primary" title="周日">
-				</div>
-			</div>
-			<div class="layui-form-item">
 				<label class="layui-form-label"><span class="redC">* </span>每天时段 :</label>
 				<div class="layui-input-inline max300">
 					<div class="layui-input-inline" style="width: 100px;">
@@ -244,6 +232,18 @@
 					<div class="layui-input-inline" style="width: 100px;">
 						<input type="text" id="eTime" lay-verify="eTime" placeholder="截止时间" readonly="readonly" autocomplete="off" class="layui-input">
 					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span class="redC">* </span>周一至周日 :</label>
+				<div class="layui-input-inline max300">
+					<input type="checkbox" name="timeSlotCollect" value="周一" lay-filter="timeSlotCollect" lay-skin="primary" title="周一">
+					<input type="checkbox" name="timeSlotCollect" value="周二" lay-filter="timeSlotCollect" lay-skin="primary" title="周二">
+					<input type="checkbox" name="timeSlotCollect" value="周三" lay-filter="timeSlotCollect" lay-skin="primary" title="周三">
+					<input type="checkbox" name="timeSlotCollect" value="周四" lay-filter="timeSlotCollect" lay-skin="primary" title="周四">
+					<input type="checkbox" name="timeSlotCollect" value="周五" lay-filter="timeSlotCollect" lay-skin="primary" title="周五">
+					<input type="checkbox" name="timeSlotCollect" value="周六" lay-filter="timeSlotCollect" lay-skin="primary" title="周六">
+					<input type="checkbox" name="timeSlotCollect" value="周日" lay-filter="timeSlotCollect" lay-skin="primary" title="周日">
 				</div>
 			</div>
 		</div>
@@ -715,7 +715,7 @@
 		<script src="../../common/config-meb.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			function subPageCon(cpid, wxcpid) {
+			function subPageCon(cpid, wxcpid, zfbcpid) {
 				$(".conBlock:last").css("margin-bottom", "44px");
 				var loadindex = layer.load(2, {
 					shade: 0.5
@@ -872,6 +872,7 @@
 									area: ['500px', '300px'],
 									title: '添加时间段',
 									content: $('.timePeriod'),
+									scrollbar: false,
 									btn: ['确定', '取消'],
 									yes: function(index) {
 										$("input:checkbox[name='timeSlotCollect']:checked").each(function(i) {
@@ -1464,6 +1465,8 @@
 							voucherName: function(value) {
 								if (value == '') {
 									return '优惠券标题不能为空！'
+								} else if (value.length > 9) {
+									return '优惠券标题不能大于9个汉字！'
 								}
 							},
 							discount: function(value) {
@@ -1588,6 +1591,7 @@
 						data.templateId = templateId
 						data.voucherID = cpid
 						data.weChatCardNo = wxcpid
+						data.templateId = zfbcpid
 						data.userNo = merNumber
 						// 第一步数据
 						data.entryForce = 0
