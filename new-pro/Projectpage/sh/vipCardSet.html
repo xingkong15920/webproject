@@ -24,6 +24,12 @@
             <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 		<style type="text/css">
+			.flex_cc {
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+			}
+
 			.layui-input-inline.widthauto,
 			.layui-form-mid.widthauto {
 				margin: 0;
@@ -45,10 +51,10 @@
 				margin-right: 5px;
 				line-height: 1;
 			}
-			
-			.card_boby{
+
+			.card_boby {
 				background: transparent;
-				background-image: url(../../public/images/vip_bg.png);
+				/* background-image: url(../../public/images/vip_bg.png); */
 				background-repeat: no-repeat;
 				background-position: top center;
 				background-size: 100% auto;
@@ -144,8 +150,9 @@
 							<input type="file" class="input_img layui-input" style="display: none;" id="upSysImgBtn" />
 							<div class="layui-form-item max600">
 								<label class="layui-form-label"><span class="redC">* </span>品牌名称 :</label>
-								<div class="layui-input-block">
+								<div class="layui-input-block flex_cc">
 									<input type="text" name="cardName" class="layui-input" lay-verify="ltName" id="ltName" value="">
+									<div class="layui-form-mid redC" style="margin-left: 10px;width: 220px;">设置成功后不可更改！</div>
 								</div>
 							</div>
 							<div class="layui-form-item max600">
@@ -620,6 +627,13 @@
 				});
 				//表单初始赋值   15629212743071660    15638668467844936
 				function setcardCon() {
+					// 设置不可编辑项
+					var unEdit = {
+						'readonly': '',
+						'disabled': ''
+					}
+					$("input[name='cardName']").attr(unEdit)
+
 					form.val('basic', {
 						"cardName": cardCon.cardName,
 						"cardLimit": '' + cardCon.cardLimit + '',
@@ -638,8 +652,8 @@
 					ltName: function(value) {
 						if (value == '') {
 							return '品牌名称不能为空！';
-						} else if (value.length > 5) {
-							return '品牌名称不能超过5个字符'
+						} else if (value.length > 12) {
+							return '品牌名称不能超过12个字符'
 						}
 					},
 					operationTips: function(value) {
