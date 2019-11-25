@@ -35,7 +35,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">请输入数量</label>
                     <div class="layui-input-block">
-                        <input type="text" name="number" lay-verify="number" autocomplete="off" placeholder="请输入数字" class="layui-input" id="number">
+                        <input type="text" name="number" lay-verify="number1" autocomplete="off" placeholder="请输入数字" class="layui-input" id="number">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -78,12 +78,21 @@
                 //         return "一次生成最多5000条"
                 //     }
                 // },
-                code: function(value) {
-                    console.log(value)
-                    if (value != code1) {
-                        return '请输入正确的验证码';
+                number1:function (obj) {
+                    if(isNaN(obj)==true){
+                        return "请输入数字"
+                    }
+                    if(obj%1 != 0){
+                        return '您输入的生产数量有误，请重新输入除0以外的正整数!'
                     }
                 },
+                // code: function(value) {
+                //     console.log(value)
+                //     if (value != code1) {
+                //         return '请输入正确的验证码';
+                //     }
+                // },
+                
             });
             // $('#sub').click(function() {
                 

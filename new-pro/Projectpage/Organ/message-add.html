@@ -104,7 +104,7 @@
 					<div class="layui-form-item">
 	                    <label class="layui-form-label">内容</label>
 	                    <div class="layui-input-block">
-	                        <textarea class="layui-textarea" style="height:500px" name="messageContent" autocomplete="off" placeholder="内容" lay-verify="title" rows="3" id="content"></textarea>
+	                        <textarea class="layui-textarea" style="height:500px" name="messageContent" autocomplete="off" placeholder="内容" lay-verify="titleText" rows="3" id="content"></textarea>
 	                    </div>
 	                </div>
 					<div class="layui-form-item layui-layout-admin">
@@ -304,14 +304,31 @@
 				});
 
 				/*---------- 自定义验证规则 ----------*/
+				// 监听标题
 				form.verify({
 					title: function(value) {
 						if(value.length == "") {
 							return '不能为空！';
 						}
+						if(value.length >120) {
+							return '最多不得超过120个字符'
+						}
 					},
 					
 				});
+				// 监听内容
+				form.verify({
+					titleText: function(value) {
+						if(value.length == "") {
+							return '不能为空！';
+						}
+						if(value.length >800) {
+							return '最多不得超过800个字符'
+						}
+					},
+					
+				});
+
 				// var body = '<p><b><i><u><strike><a target="_blank" href="http://www.baidu.com">1231321321312313213213123132132131231321321312313213213</a></strike></u></i></b></p>'
 				//   layedit.setContent(index111,body,true);
 				/*---------- 监听开关 ----------*/
