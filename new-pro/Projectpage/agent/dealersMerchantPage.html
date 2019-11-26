@@ -281,7 +281,7 @@
 	                            	var addStr = "'"+ paymentList[i].paymentChannel + '|' + data.merchantNumber + "'"
 	                            	if(paymentList[i].paymentType == 0 || paymentList[i].paymentType == 1){
 	                            		for(var j = 0 ; j < thisPayment.length;j++){
-	                            			addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber + "'"
+	                            			addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber + '|' +  data.merchantNumber + "'"  
 		                            		if(paymentList[i].paymentChannel == thisPayment[j].paymentChannel){
 		                            			is = false
 		                            			if(thisPayment[j].auditStatus == 2){
@@ -305,7 +305,7 @@
 	                            	}else{
 	                            		for(var j = 0 ; j < thisPayment.length;j++){
 	                            		if(paymentList[i].paymentChannel == thisPayment[j].paymentChannel){
-	                            			addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber + "'"
+	                            			addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber+ '|' +  data.merchantNumber  + "'"
 	                            			is = false
 	                            			if(thisPayment[j].auditStatus == 2){
 	                            				str1 += '<span style="color:green">'+ paymentList[i].paymentChannelName +'</span>'
@@ -654,7 +654,7 @@
                 type: 2,
                 title: '通道 : ' + name,
                 area: ['90%', '90%'], //宽高
-                content: 'edit-merchant.html?name='+name + '&type=' + type + '&channel='+ channel + '&orderNumber='+data.split('|')[1],
+                content: 'edit-merchant.html?name='+name + '&type=' + type + '&channel='+ channel + '&merchantNumber='+data.split('|')[2]+ '&orderNumber='+data.split('|')[1],
                 success: function(layero, index) {
                     var iframe = window['layui-layer-iframe' + index];
                     // iframe.subPage(data, userNumber)
@@ -675,7 +675,7 @@
                 type: 2,
                 title: '添加通道 : ' + name,
                 area: ['90%', '90%'], //宽高
-                content: 'add-merchant-forNew.html?name='+name + '&type=' + type + '&channel='+ channel + '&merchantNumber='+data.split('|')[1],
+                content: 'add-merchant-forNew.html?name='+name + '&type=' + type + '&channel='+ channel + '&merchantNumber=' +data.split('|')[1] ,
                 success: function(layero, index) {
                     var iframe = window['layui-layer-iframe' + index];
                     // iframe.subPage(data, userNumber)

@@ -61,7 +61,9 @@
 					<div class="layui-input-inline">
 						<input type="text" name="telNumber" id="telNumber" placeholder="商户手机号" autocomplete="off" class="layui-input" lay-verify="number">
 					</div>
-					
+					<div class="layui-input-inline">
+						<input type="text" name="couponName" id="agentName" placeholder="服务商名称" autocomplete="off" class="layui-input">
+					</div>
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
 					</div>
@@ -112,12 +114,10 @@
 			</select>
 		</script>
 		<script type="text/html" id="toolbar">
-			<a class="layui-btn layui-btn-xs  {{d.paymentType==0 ? '' : 'hiide'}}" " id="create" lay-event="create">生成</a>
-			<a class="layui-btn layui-btn-xs  {{d.paymentType==1 ? '' : 'hiide'}}" " id="create" lay-event="create">生成</a>
-			<a class="layui-btn layui-btn-xs  {{d.auditStatus==1  ? '' : 'hiide'}}  {{d.paymentType !=0  ? '' : 'hiide'}} {{d.paymentType !=1  ? '' : 'hiide'}}" id="rate" lay-event="success">提交</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.auditStatus==1 ? '' : 'hiide'}} "  id="pass" lay-event="fail">拒绝</a>
-			<a class="layui-btn layui-btn-xs " id="edit" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
+			
+			
+			
+			<a class="layui-btn layui-btn-xs {{d.auditStatus ==0 ? '' : 'hiide'}} " id="edit" lay-event="edit">编辑</a>
 			<span class="{{d.auditStatus !=4 ? 'hiide' : ''}}">已提交</span>
 		</script>
 		<script src="../../common/config-organ.js"></script>
@@ -132,6 +132,7 @@
 			// <a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			// <a class="layui-btn layui-btn-xs" id="secretkey" lay-event="secretkey">秘钥</a>
 			// <a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
+			//<a class="layui-btn layui-btn-xs  {{d.auditStatus==1  ? '' : 'hiide'}}  {{d.paymentType !=0  ? '' : 'hiide'}} {{d.paymentType !=1  ? '' : 'hiide'}}" id="rate" lay-event="success">提交</a>
 			//return false;
 			function fun_date(aa){
 		        var date1 = new Date(),
@@ -204,6 +205,7 @@
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getMerOrderlist + '?institutionNumber=' + userNumber ,
 						 
 						where:{
+							"agentName":$('#agentName').val().trim(),
 							"agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number,
 							"merchantName":$('#merchantName').val().trim(),
 							"auditStatus":1,
@@ -254,21 +256,7 @@
 								field: 'agentName',
 								title: '所属服务商',
 								width:200
-							}, {
-								align: 'center',
-								field: 'subsidy',
-								// toolbar: '#selectBar_lx',
-								title: '类型',
-								width:80,
-								templet:function(data){
-									if(data.subsidy == 1){
-										return '普通商户'
-									}
-									if(data.subsidy == 0){
-										return '补贴商户'
-									}
-								}
-							}, {
+							},  {
 								align: 'center',
 								field: 'paymentName',
 								title: '进件通道',
@@ -326,7 +314,7 @@
 								align: 'center',
 								field: 'msg',
 								title: '原因',
-								width:150
+								width:250
 							}, {
 								align: 'center',
 								title: '操作',
@@ -541,21 +529,32 @@
 							}
 						});
 					} else if(obj.event === 'edit') { //编辑商户
+						console.log(data)
 						layer.open({
-							type: 2,
-							title: '编辑',
-							shade: 0.5,
-							area: ['90%', '90%'],
-							maxmin: false,
-							resize: false,
-							content: ['Merchants-List-wait-edit.html'],
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
-							}
-						});
+			                type: 2,
+			                title: '通道 : ' + data.paymentName,
+			                area: ['90%', '90%'], //宽高
+			                content: 'edit-merchant.html?name='+data.paymentName + '&type=' + data.paymentType + '&channel='+ data.paymentChannel + '&orderNumber='+data.orderNumber,
+			                success: function(layero, index) {
+			                    var iframe = window['layui-layer-iframe' + index];
+			                    // iframe.subPage(data, userNumber)
+			                }
+			            });
+						// layer.open({
+						// 	type: 2,
+						// 	title: '编辑',
+						// 	shade: 0.5,
+						// 	area: ['90%', '90%'],
+						// 	maxmin: false,
+						// 	resize: false,
+						// 	content: ['Merchants-List-wait-edit.html'],
+						// 	success: function(layero, index) {
+						// 		// 获取子页面的iframe
+						// 		var iframe = window['layui-layer-iframe' + index];
+						// 		// 向子页面的全局函数child传参
+						// 		iframe.subPage(data, userNumber)
+						// 	}
+						// });
 					} else if(obj.event === 'failMessage') { //秘钥secretkey
 						console.log(data)
 						layer.msg(data.msg)

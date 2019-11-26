@@ -97,7 +97,7 @@
                 </fieldset>
                 <div class="layui-form-item layui-form-text" id="businessLicense1">
                     <!-- <label class="layui-form-label">营业执照</label> -->
-                    <div class="layui-input-inline  noGeren" style="margin-left:30px;display: none" onmousemove="showImg(this)">
+                    <div class="layui-input-inline  noGeren" style="margin-left:30px;display: none" >
                         <div class="layui-upload-img" >
                             <img src="http://static.hongxiaosou.com/public/images/add.jpg" id="businessLicense" style="max-width: 100%;"  >
                             <div class="layui-btn layui-btn-sm block" id="test1" style="width:100%;text-align:center">上传图片</div>
@@ -178,9 +178,9 @@
                 <div class="box-item">
                     
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">费率</label>
+                        <label class="layui-form-label">费率(%)</label>
                         <div class="layui-input-block">
-                            <input type="text" name="rate" lay-verify="rate" autocomplete="off" placeholder="请输入费率，例如0.38%" class="layui-input">
+                            <input type="text" name="rate" lay-verify="rate" autocomplete="off" placeholder="请输入费率，例如0.38" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item noGeren yingyezhizhao"  style="display:none">
@@ -252,7 +252,7 @@
                 <div class="layui-form-item" style="width:755px">
                     <label class="layui-form-label">商户详细地址</label>
                     <div class="layui-input-block">
-                        <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="请输入商户详细地址" class="layui-input">
+                        <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="请输入商户详细地址,必须包含数字" class="layui-input">
                     </div>
                 </div>
                 <div class="box-item">
@@ -388,12 +388,12 @@
                         </div>
                         </div>
                     </div>
-                    <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
+                    <!-- <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
                         <label class="layui-form-label">开户支行地区</label>
                         <div class="layui-input-block">
                             <input type="text" name="openingBankBranchAddress" lay-verify="title" autocomplete="off" placeholder="开户支行地区" class="layui-input">
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
@@ -463,7 +463,11 @@
     var prov = []
     var city = []
     var area = []
-    var longTime = Date.parse(new Date())
+    var code1 = ''
+    for(var i = 0; i < 4; i++) {
+        code1 += Math.floor(Math.random() * 10)
+    }
+    var longTime = new Date().getTime() + code1
     console.log(longTime)
     var businessLicense = ''
     var cashier = ''
@@ -480,7 +484,37 @@
     var merchantNumber = ''
     var merType = 0
     var acctoken = sessionStorage.getItem('access_token')
-
+    //判断是否有？
+    function isWen(data){
+        if(!data){
+            return ''
+        }
+        if(data.indexOf('?')>=0){
+            return data.split('?')[0]
+        }else{
+            return data
+        }
+    }
+    //转utf-8
+    function toUtf8(str) {   
+        var out, i, len, c;   
+        out = "";   
+        len = str.length;   
+        for(i = 0; i < len; i++) {   
+            c = str.charCodeAt(i);   
+            if ((c >= 0x0001) && (c <= 0x007F)) {   
+                out += str.charAt(i);   
+            } else if (c > 0x07FF) {   
+                out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));   
+                out += String.fromCharCode(0x80 | ((c >>  6) & 0x3F));   
+                out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));   
+            } else {   
+                out += String.fromCharCode(0xC0 | ((c >>  6) & 0x1F));   
+                out += String.fromCharCode(0x80 | ((c >>  0) & 0x3F));   
+            }   
+        }   
+        return out;   
+    }
     $('.layui-upload-img').mouseover(function(){
          // console.log(this.getElementsByTagName('img')[0].getAttribute('src'))
          console.dir(this.childNodes[1])
@@ -692,6 +726,7 @@ function fc2() {
             layer = layui.layer;
         // var index = layer.load(2, { shade: [0.4, '#393D49'] })
         var tableSelect = layui.tableSelect;
+        
         //开户银行
         if(acctoken == 'no'){
             layer.msg('未查询到百度API，暂时无法使用图片识别')
@@ -1088,15 +1123,16 @@ function fc2() {
                 //预读本地文件示例，不支持ie8
                 obj.preview(function(index, file, result) {
                             var result  = result
+                            var aData = new Object()
+                            aData.url = 'https://aip.baidubce.com/rest/2.0/ocr/v1/idcard?access_token='+ acctoken
+                            aData.image = toUtf8(result.replace(/data:image\/.*;base64,/,''))
+                            aData.idCardSide = 'front'
                             $.ajax({
                                 type: 'post',
-                                url: 'https://aip.baidubce.com/rest/2.0/ocr/v1/business_license?access_token='+ acctoken, 
-                                data: {
-                                    "image":result.replace(/data:image\/.*;base64,/,'')
-
-                                },
+                                url: 'http://192.168.1.66:6017/p-server/appServer/getIdCard', 
+                                data: JSON.stringify(aData),
                                 headers:{
-                                    'Content-Type':"application/x-www-form-urlencoded"
+                                    'Content-Type':"application/json"
                                 },
                                 success: function(data) {
                                     console.log(data)
@@ -1112,6 +1148,32 @@ function fc2() {
                                     
                                 }
                             })
+                            // $.ajax({
+                            //     type: 'post',
+                            //     url: 'https://aip.baidubce.com/rest/2.0/ocr/v1/idcard?access_token='+ acctoken, 
+                            //     data: {
+                            //         "image":result.replace(/data:image\/.*;base64,/,''),
+                            //         "id_card_side":'front',
+
+                            //     },
+                            //     headers:{
+                            //         'Content-Type':"application/x-www-form-urlencoded"
+                            //     },
+                            //     success: function(data) {
+                            //         console.log(data)
+                            //         form.val('cardAdd',{
+                            //             "juridicalpersonId":data.words_result.公民身份号码.words,
+                            //             "juridicalpersonName":data.words_result.姓名.words
+                            //         })
+                                   
+                            //         // $('#juridicalpersonIdTime')
+                            //         // $('#juridicalPersonIDEndTime')
+                                    
+                                    
+                                    
+                                    
+                            //     }
+                            // })
                         });
                var index = layer.load(2, { shade: [0.4, '#393D49'] })
             },
@@ -1123,8 +1185,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#businessLicense').attr('src', res.data); //图片链接（base64）
+                        var timeStr = new Date().getTime()
+                        $('#businessLicense').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     businessLicense = res.data
                     return layer.msg('上传成功');
@@ -1159,8 +1221,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#cashier').attr('src', res.data); //图片链接（base64）
+                        var timeStr = new Date().getTime()
+                        $('#cashier').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     cashier = res.data
                     return layer.msg('上传成功');
@@ -1195,8 +1257,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#placeBusiness').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                        $('#placeBusiness').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     placeBusiness = res.data
                     return layer.msg('上传成功');
@@ -1231,8 +1293,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#doorheadPhoto').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                        $('#doorheadPhoto').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     doorheadPhoto = res.data
                     return layer.msg('上传成功');
@@ -1297,8 +1359,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#juridicalpersonIdPositive').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                        $('#juridicalpersonIdPositive').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     juridicalpersonIdPositive = res.data
                     return layer.msg('上传成功');
@@ -1363,8 +1425,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#juridicalpersonIdReverseside').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                        $('#juridicalpersonIdReverseside').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     juridicalpersonIdReverseside = res.data
                     return layer.msg('上传成功');
@@ -1400,8 +1462,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#holdId').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                        $('#holdId').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     holdId = res.data
                     return layer.msg('上传成功');
@@ -1437,8 +1499,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#openingPermit').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                        $('#openingPermit').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     openingPermit = res.data
                     return layer.msg('上传成功');
@@ -1477,8 +1539,8 @@ function fc2() {
                     return layer.msg('上传失败');
 
                 } else {
-
-                        $('#bankCardPositive').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                        $('#bankCardPositive').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
                     
                     bankCardPositive = res.data
                     return layer.msg('上传成功');
@@ -1593,6 +1655,7 @@ function fc2() {
         });
         
         form.on('submit(add)', function(data, index) {
+            
             console.log(data)
             if( cashier == '' || placeBusiness == '' || doorheadPhoto == '' ||  juridicalpersonIdPositive == '' || juridicalpersonIdReverseside == '' || holdId == '' ||   bankCardPositive == ''){
                 layer.msg('请补充图片信息')
@@ -1627,16 +1690,16 @@ function fc2() {
             tjData.agentNumber  = $('#agName').attr('agentnumber')
             tjData.saleNumber  = $('#slName').attr('salenumber')
 
-            tjData.businessLicense = businessLicense
-            tjData.cashier = cashier
-            tjData.placeBusiness = placeBusiness
-            tjData.doorheadPhoto = doorheadPhoto
-            tjData.facePhoto = doorheadPhoto
-            tjData.juridicalpersonIdPositive = juridicalpersonIdPositive
-            tjData.juridicalpersonIdReverseside = juridicalpersonIdReverseside
-            tjData.holdId = holdId
-            tjData.openingPermit = openingPermit
-            tjData.bankCardPositive = bankCardPositive
+            tjData.businessLicense = isWen(businessLicense)
+            tjData.cashier = isWen(cashier)
+            tjData.placeBusiness = isWen(placeBusiness)
+            tjData.doorheadPhoto = isWen(doorheadPhoto)
+            tjData.facePhoto = isWen(doorheadPhoto)
+            tjData.juridicalpersonIdPositive = isWen(juridicalpersonIdPositive)
+            tjData.juridicalpersonIdReverseside = isWen(juridicalpersonIdReverseside)
+            tjData.holdId = isWen(holdId)
+            tjData.openingPermit = isWen(openingPermit)
+            tjData.bankCardPositive = isWen(bankCardPositive)
             tjData.longTime = longTime
             if(tjData.merchantType == 0){
                 tjData.merchantType = '个人'
@@ -1671,15 +1734,20 @@ function fc2() {
              tjData.openingBankBranchID = $('#openingBankBranch').attr('openingBankNumber')
              tjData.merchantNumber = merchantNumber
              console.log(tjData)
+             var index = layer.load(2, { shade: [0.4, '#393D49'] })
              CmsUtility.postAjaxCall2(
             //系统设置
                 server + 'InsMer/insertMerchant', 
                 tjData,
                 function(data) {
                    console.log(data)
+                   layer.closeAll()
                    if(data.code == 1000){
                         merchantNumber  = data.data
                         layer.msg('商户信息提交成功')
+                        setTimeout(function(){
+                            window.location.reload()
+                        },1000)
                    }else{
                     
                         layer.msg(data.msg)

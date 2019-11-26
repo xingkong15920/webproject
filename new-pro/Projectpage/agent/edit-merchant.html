@@ -90,6 +90,12 @@
         </div>  
         <div class="layui-row">
             <div class="layui-form" action="" lay-filter="cardAdd">
+                <div class="layui-form-item" id="msg" style="display:none">
+                        <label class="layui-form-label">审核失败原因:</label>
+                        <div class="layui-input-block">
+                            <input type="text" style="color:red;font-weight:bold"  name="msg" disabled="" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                    </div>
                 <blockquote class="layui-elem-quote">商户信息</blockquote>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">图片信息</legend>
@@ -130,9 +136,10 @@
                     <div class="layui-form-item" style="display:inline-block;width:500px">
                         <label class="layui-form-label">商户类型</label>
                         <div class="layui-input-block widthauto">
-                            <input type="radio" name="merchantType" value="0" title="个人" lay-filter="cardvalid" checked="">
+                            <!-- <input type="radio" name="merchantType" value="0" title="个人" lay-filter="cardvalid" checked="">
                             <input type="radio" name="merchantType" value="1" title="个体" lay-filter="cardvalid">
-                            <input type="radio" name="merchantType" value="2" title="企业" lay-filter="cardvalid">
+                            <input type="radio" name="merchantType" value="2" title="企业" lay-filter="cardvalid"> -->
+                            <input type="text" disabled="" name="merchantType" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
@@ -171,7 +178,7 @@
                 <div class="box-item">
                     
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">费率</label>
+                        <label class="layui-form-label">费率(%)</label>
                         <div class="layui-input-block">
                             <input type="text" name="rate" lay-verify="title" autocomplete="off" placeholder="请输入费率，例如0.38" class="layui-input">
                         </div>
@@ -370,12 +377,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
+                    <!-- <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
                         <label class="layui-form-label">开户支行地区</label>
                         <div class="layui-input-block">
                             <input type="text" name="openingBankBranchAddress" lay-verify="title" autocomplete="off" placeholder="开户支行地区" class="layui-input">
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
@@ -390,7 +397,7 @@
                     <div class="layui-form-item" style="display:inline-block;width:500px">
                         <label class="layui-form-label">所属服务商</label>
                         <div class="layui-input-block">
-                            <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择服务商" class="layui-input" id="agName" onblur="bl()" onfocus="fc()">
+                            <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择服务商" class="layui-input" id="agName" onblur="bl()" onfocus="fc()" disabled="">
                             <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
                                 <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
                                     <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
@@ -403,7 +410,7 @@
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
                         <label class="layui-form-label">所属销售</label>
                         <div class="layui-input-block">
-                            <input type="text" name="slName" lay-verify="saleName" autocomplete="off" placeholder="请搜索并选择销售" class="layui-input" id="slName" onblur="bl1()" onfocus="fc1()">
+                            <input type="text" name="slName" lay-verify="saleName" autocomplete="off" placeholder="请搜索并选择销售" class="layui-input" id="slName" onblur="bl1()" onfocus="fc1()"  disabled="">
                             <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox1">
                             </div>
                         </div>
@@ -457,7 +464,8 @@
     var juridicalPersonIDType = 1
     var businessLicenseType = 1
     var isOpenYunPay = 1
-    var merchantNumber = CmsUtility.getQueryString('orderNumber')
+    var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+    var orderNumber = CmsUtility.getQueryString('orderNumber')
     //var merchantNumber = '1004000563'
     var channelType = CmsUtility.getQueryString('type')
     var channelName = CmsUtility.getQueryString('name')
@@ -468,6 +476,18 @@
     var payList = ''
     var merType = 0
     var acctoken = sessionStorage.getItem('access_token')
+    //判断是否有？
+    function isWen(data){
+        console.log(data)
+        if(!data){
+            return ''
+        }
+        if(data.indexOf('?')>=0){
+            return data.split('?')[0]
+        }else{
+            return data
+        }
+    }
     $('.layui-upload-img').mouseover(function(){
          // console.log(this.getElementsByTagName('img')[0].getAttribute('src'))
          console.dir(this.childNodes[1])
@@ -1111,8 +1131,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#businessLicense').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#businessLicense').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     businessLicense = res.data
                     return layer.msg('上传成功');
@@ -1147,8 +1167,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#cashier').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#cashier').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     cashier = res.data
                     return layer.msg('上传成功');
@@ -1183,8 +1203,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#placeBusiness').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#placeBusiness').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     placeBusiness = res.data
                     return layer.msg('上传成功');
@@ -1219,8 +1239,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#doorheadPhoto').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#doorheadPhoto').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     doorheadPhoto = res.data
                     return layer.msg('上传成功');
@@ -1285,8 +1305,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#juridicalpersonIdPositive').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#juridicalpersonIdPositive').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     juridicalpersonIdPositive = res.data
                     return layer.msg('上传成功');
@@ -1351,8 +1371,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#juridicalpersonIdReverseside').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#juridicalpersonIdReverseside').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     juridicalpersonIdReverseside = res.data
                     return layer.msg('上传成功');
@@ -1388,8 +1408,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#holdId').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#holdId').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     holdId = res.data
                     return layer.msg('上传成功');
@@ -1425,8 +1445,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#openingPermit').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#openingPermit').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     openingPermit = res.data
                     return layer.msg('上传成功');
@@ -1489,8 +1509,8 @@
                     return layer.msg('上传失败');
 
                 } else {
-
-                    $('#bankCardPositive').attr('src', res.data); //图片链接（base64）
+var timeStr = new Date().getTime()
+                    $('#bankCardPositive').attr('src', res.data+ '?time='+timeStr); //图片链接（base64）
 
                     bankCardPositive = res.data
                     return layer.msg('上传成功');
@@ -1594,7 +1614,7 @@
             CmsUtility.postAjaxCall2(
             //系统设置
             server + '/InsMer/getMerchantOrderInfo', {
-                "orderNumber": merchantNumber,
+                "orderNumber": orderNumber,
                 "institutionNumber":JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
             },
             function(data) {
@@ -1620,7 +1640,7 @@
                     $('#holdId').attr('src', holdId)
                     $('#openingPermit').attr('src', openingPermit)
                     $('#bankCardPositive').attr('src', bankCardPositive)
-                    
+                    merInfo.merchantType1 = merInfo.merchantType
                     if (merInfo.merchantType == '个人') {
                         merInfo.merchantTyp1 = '0'
                         $('.noGeren').hide()
@@ -1749,7 +1769,7 @@
                     // form.render()
                     form.render()
                     form.val('cardAdd', {
-                        "merchantType": merInfo.merchantTyp1,
+                        "merchantType": merInfo.merchantType1,
                         "merchantAbbreviation": merInfo.merchantAbbreviation,
                         "merchantName": merInfo.merchantName,
                         "businessLicenseName":merInfo.businessLicenseName,
@@ -1780,9 +1800,14 @@
                         "openingBankBranch": merInfo.openingBankBranch,
                         "openingBankBranchAddress": merInfo.openingBankBranchAddress,
                         "reserveCell": merInfo.reserveCell,          
-
+                        "msg":merInfo.msg,
 
                     })
+                    if(merInfo.msg == null || merInfo.msg == ''){
+                        $('#msg').hide()
+                    }else {
+                        $('#msg').show()
+                    }
                     layer.closeAll()
                 } else {
 
@@ -1830,30 +1855,30 @@
             tjData.agentNumber = $('#agName').attr('agentnumber')
             tjData.saleNumber = $('#slName').attr('salenumber')
 
-            tjData.businessLicense = businessLicense
-            tjData.cashier = cashier
-            tjData.placeBusiness = placeBusiness
-            tjData.doorheadPhoto = doorheadPhoto
-            tjData.facePhoto = doorheadPhoto
-            tjData.juridicalpersonIdPositive = juridicalpersonIdPositive
-            tjData.juridicalpersonIdReverseside = juridicalpersonIdReverseside
-            tjData.holdId = holdId
-            tjData.openingPermit = openingPermit
-            tjData.bankCardPositive = bankCardPositive
+            tjData.businessLicense = isWen(businessLicense)
+            tjData.cashier = isWen(cashier)
+            tjData.placeBusiness = isWen(placeBusiness)
+            tjData.doorheadPhoto = isWen(doorheadPhoto)
+            tjData.facePhoto = isWen(doorheadPhoto)
+            tjData.juridicalpersonIdPositive = isWen(juridicalpersonIdPositive)
+            tjData.juridicalpersonIdReverseside = isWen(juridicalpersonIdReverseside)
+            tjData.holdId = isWen(holdId)
+            tjData.openingPermit = isWen(openingPermit)
+            tjData.bankCardPositive = isWen(bankCardPositive)
             tjData.longTime = longTime
-            if (tjData.merchantType == 0) {
+            if (tjData.merchantType == '个人') {
                 tjData.merchantType = '个人'
                 tjData.acntType = '对私'
             }
-            if (tjData.merchantType == 1) {
+            if (tjData.merchantType =='个体') {
                 tjData.merchantType = '个体'
                 tjData.acntType = '对私'
             }
-            if (tjData.merchantType == 2) {
+            if (tjData.merchantType == '企业') {
                 tjData.merchantType = '企业'
                 tjData.acntType = '对公'
             }
-            tjData.paymentType= type
+            tjData.paymentType= channelType
             tjData.paymentChannel = channel
             tjData.juridicalPersonIDType = juridicalPersonIDType
             tjData.businessLicenseName = tjData.merchantName
@@ -1875,14 +1900,21 @@
             tjData.openingBankBranch = $('#openingBankBranch').attr('openingBankName')
             tjData.openingBankBranchID = $('#openingBankBranch').attr('openingBankNumber')
             tjData.merchantNumber = merchantNumber
+            tjData.orderNumber = orderNumber
+            var index = layer.load(2, { shade: [0.4, '#393D49'] })
             CmsUtility.postAjaxCall2(
                 //系统设置
-                server + 'InsMer/upateMerchant',
+                server + 'InsMer/updateMerchantOrderInfo',
                 tjData,
                 function(data) {
                     console.log(data)
+                    layer.closeAll()
                     if (data.code == 1000) {
-                        merchantNumber = data.data
+                        setTimeout(function(){
+                            x_admin_close()
+                            parent.layer.msg('服务成功')
+                            window.parent.location.reload()
+                        })
                     } else {
                         layer.msg(data.msg)
                     }

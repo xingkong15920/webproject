@@ -16,10 +16,16 @@
     <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
-    
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script type="text/javascript">
+    function getDateStr(dayCount) {
+            var dayNumber = 0 + dayCount
+            let dd = new Date()
+            dd.setDate(dd.getDate() + dayCount)
+            let time = dd.getTime()
+            return time + ''
+        }
     var number = CmsUtility.getQueryString('number')
     var ins = CmsUtility.getQueryString('ins')
     var cname = ''
@@ -51,6 +57,11 @@
                             if (data.code == '1000') {
                                 sessionStorage.setItem("agentUser", JSON.stringify(data.data));
                                 $('#userName').html(JSON.parse(sessionStorage.getItem("agentUser")).login)
+                                var dataObj = new Object()
+                                        dataObj.time = getDateStr(7)
+                                        dataObj.data = data.data
+                                        console.log(JSON.stringify(dataObj))
+                                        localStorage.setItem('agentStorage',JSON.stringify(dataObj))
                                 window.location.href = decodeURIComponent(window.location).split('?')[0]
                                 // layer.msg('登录成功')
                                 // setTimeout(function() {
@@ -69,10 +80,23 @@
         })
         // window.location.href = decodeURIComponent(window.location).split('?')[0]
     } else {
-        if (!sessionStorage.getItem("agentUser")) {
-            console.log(sessionStorage.getItem("agentUser"))
+
+        
+
+        
+        if (!localStorage.getItem("agentStorage")) {
+            console.log(localStorage.getItem("agentStorage"))
             window.location.href = 'login.html'
+        } else {
+            var nowTime = getDateStr(0)
+            var localData = JSON.parse(localStorage.getItem("agentStorage"))
+            if (nowTime >= localData.time) {
+                window.location.href = 'login.html'
+            } else {
+                sessionStorage.setItem("agentUser", JSON.stringify(localData.data));
+            }
         }
+
     }
 
 
@@ -148,7 +172,7 @@
                         <i class="iconfont nav_right">&#xe697;</i>
                     </a>
                     <ul class="sub-menu">
-                         <li>
+                        <li>
                             <a lay-href="add-merchant.html">
                                 <i class="icon icon icon-shanghuguanli1"></i>
                                 <cite>添加商户</cite>
@@ -202,12 +226,11 @@
                     </ul>
                 </li>
                 <li class="layui-nav-item">
-                        <a lay-href="yajin.html">
-                            <i class="icon icon icon-weixinzhifu"></i>
-                            <cite>预授权订单</cite>
-                            
-                        </a>
-                    </li>
+                    <a lay-href="yajin.html">
+                        <i class="icon icon icon-weixinzhifu"></i>
+                        <cite>预授权订单</cite>
+                    </a>
+                </li>
                 <li class="layui-nav-item">
                     <a lay-href="javascript:;">
                         <i class="icon icon icon-shebeiguanli"></i>
@@ -319,7 +342,6 @@
                         </li>
                     </ul>
                 </li>
-                
                 <li class="layui-nav-item">
                     <a lay-href="javascript:;">
                         <i class="icon icon icon-jiaoyitongji"></i>
@@ -339,7 +361,6 @@
                                 <cite>销售统计</cite>
                             </a>
                         </li>
-                       
                     </ul>
                 </li>
                 <!--<li class="layui-nav-item">
@@ -361,11 +382,11 @@
                         </a>
                     </li>-->
                 <li class="layui-nav-item">
-					<a lay-href="cashiertools.html">
-						<i class="icon icon icon-shebeiguanli"></i>
-						<cite>收银工具</cite>
-					</a>
-				</li>
+                    <a lay-href="cashiertools.html">
+                        <i class="icon icon icon-shebeiguanli"></i>
+                        <cite>收银工具</cite>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -417,53 +438,52 @@
     } else {
         $('#levA').show()
     }
-    
+
     if (JSON.parse(sessionStorage.getItem("agentUser")).advertJurisdiction == 0) {
         $('#adv').show()
     } else {
         $('#adv').hide()
     }
 
-     function onBack(res) {
+    function onBack(res) {
         alert(JSON.stringify(res));
     }
     $(function() {
         CmsUtility.postAjaxCall2(
             //系统设置
-                 CmsConfig.ServiceUrl.ApiRootUrl.split('shanhe-service/')[0 ] +'shanhe-admin/insTpa/getThirdParty', 
-                {
-                    "institutionNumber":JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
-                },
-                function(data) {
-                       
-                        // 回调执行函数
-                       
-                   
- 
-                   CmsUtility.postAjaxCall2(
+            // CmsConfig.ServiceUrl.ApiRootUrl.split('shanhe-service/')[0 ] +'shanhe-admin/insTpa/getThirdParty', 
+            'https://nb.51shanhe.com/shanhe-admin/insTpa/getThirdParty', {
+                "institutionNumber": JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
+            },
+            function(data) {
+
+                // 回调执行函数
+
+
+
+                CmsUtility.postAjaxCall2(
                     //系统设置
-                        'http://api.51shanhe.com/p-server/appServer/getBaiduToken', 
-                        {
-                            "clientId":data.data.baiduAPIKey,
-                            "clientSecret":data.data.baiduSecretKey
-                        },
-                        function(data) {
-                            if(data.code == 1000){
-                                sessionStorage.setItem("access_token", data.data.access_token);
-                            }else{
-                                sessionStorage.setItem("access_token", 'no');
-                            }
-                           
-                        },
-                        function(data) {
+                    'http://api.51shanhe.com/p-server/appServer/getBaiduToken', {
+                        "clientId": data.data.baiduAPIKey,
+                        "clientSecret": data.data.baiduSecretKey
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            sessionStorage.setItem("access_token", data.data.access_token);
+                        } else {
+                            sessionStorage.setItem("access_token", 'no');
+                        }
 
-                        },'get'
-                    )
-                },
-                function(data) {
+                    },
+                    function(data) {
 
-                }
-            )
+                    }, 'get'
+                )
+            },
+            function(data) {
+
+            }
+        )
         $('#logout').click(function() {
             var ajjData = new Object()
             ajjData.institutionNumber = JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber

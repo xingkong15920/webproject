@@ -20,9 +20,25 @@
 		<script src="../../common/config-organ.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script type="text/javascript">
-			if(!sessionStorage.getItem("organUser")){
-				console.log(sessionStorage.getItem("organUser"))
+			function getDateStr(dayCount) {
+					var dayNumber = 0+dayCount
+				    let dd = new Date()
+				    dd.setDate(dd.getDate() + dayCount)
+				    let time = dd.getTime()
+				    return time + ''
+				  }
+			console.log(localStorage.getItem("organStorage"))
+			if(!localStorage.getItem("organStorage")){
+				console.log(localStorage.getItem("organStorage"))
 				window.location.href = 'login.html' 
+			}else{
+				var nowTime = getDateStr(0)
+				var localData = JSON.parse(localStorage.getItem("organStorage"))
+				if(nowTime >= localData.time){
+					window.location.href = 'login.html' 
+				}else{
+					sessionStorage.setItem("organUser", JSON.stringify(localData.data));
+				}
 			}
 			var dw = $(window).width(),
 				dh = $(window).height(),

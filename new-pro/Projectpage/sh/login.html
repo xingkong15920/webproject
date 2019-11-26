@@ -65,6 +65,14 @@
 			<script src="../../common/config-sh.js"></script>
 			<script src="../../common/utility.js"></script>
 			<script type="text/javascript">
+				localStorage.removeItem('shStorage')
+				function getDateStr(dayCount) {
+					var dayNumber = 0+dayCount
+				    let dd = new Date()
+				    dd.setDate(dd.getDate() + dayCount)
+				    let time = dd.getTime()
+				    return time + ''
+				  }
 				$('.layui-input').each(function() {
 					$(this).focus(function() {
 						$(this).parent().parent().addClass("active"); /*禁用浏览器自带边框阴影*/
@@ -180,6 +188,11 @@
 									if (data.code == '1000') {
 										layer.msg('登录成功')
 										sessionStorage.setItem("userSh", JSON.stringify(data.data));
+										var dataObj = new Object()
+										dataObj.time = getDateStr(7)
+										dataObj.data = data.data
+										console.log(JSON.stringify(dataObj))
+										localStorage.setItem('shStorage',JSON.stringify(dataObj))
 										setTimeout(function() {
 											window.location.href = 'index.html'
 										}, 300)

@@ -60,20 +60,15 @@
 			<script src="../../common/config-organ.js"></script>
 			<script src="../../common/utility.js"></script>
 			<script type="text/javascript">
-				CmsUtility.postAjaxCall2(
-								//系统设置
-						'http://hongsoutest2.natapp1.cc/p-pay/hello',
-						{
-							
-						},
-						function(data) {
-							
-						},
-						function(data) {
-							console.log('222')
-						},
-						'get'
-					)
+				localStorage.removeItem('organStorage')
+				function getDateStr(dayCount) {
+					var dayNumber = 0+dayCount
+				    let dd = new Date()
+				    dd.setDate(dd.getDate() + dayCount)
+				    let time = dd.getTime()
+				    return time + ''
+				  }
+				  console.log(getDateStr(0))
 				setTimeout(function removeReadonly(){
 		        var username=document.getElementById("username");
 		        var password=document.getElementById("password");
@@ -190,6 +185,11 @@
 									if(data.code == '1000') {
 										layer.msg('登录成功')
 										sessionStorage.setItem("organUser", JSON.stringify(data.data));
+										var dataObj = new Object()
+										dataObj.time = getDateStr(7)
+										dataObj.data = data.data
+										console.log(JSON.stringify(dataObj))
+										localStorage.setItem('organStorage',JSON.stringify(dataObj))
 										sessionStorage.setItem("organ-level", 0);
 											setTimeout(function() {
 												window.location.href = 'index.html'
