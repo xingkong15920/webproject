@@ -632,7 +632,7 @@
 						'readonly': '',
 						'disabled': ''
 					}
-					$("input[name='cardName']").attr(unEdit)
+					// $("input[name='cardName']").attr(unEdit)
 
 					form.val('basic', {
 						"cardName": cardCon.cardName,
@@ -652,8 +652,8 @@
 					ltName: function(value) {
 						if (value == '') {
 							return '品牌名称不能为空！';
-						} else if (value.length > 12) {
-							return '品牌名称不能超过12个字符'
+						} else if (getByteLen(value) > 18) {
+							return '品牌名称不能超过18个字符'
 						}
 					},
 					operationTips: function(value) {
@@ -794,7 +794,7 @@
 					data.defaultShop = shopNumbers
 					data.defaultClerk = clerkNumbers
 					console.log(data)
-					// return
+					return
 					// 发送请求
 					layer.load(2, {
 						shade: 0.5
@@ -911,6 +911,19 @@
 							}
 						}
 					});
+				}
+				//获取字符串长度（汉字算两个字符，字母数字算一个）
+				function getByteLen(val) {
+					var len = 0;
+					for (var i = 0; i < val.length; i++) {
+						var a = val.charAt(i);
+						if (a.match(/[^\x00-\xff]/ig) != null) { //\x00-\xff→GBK双字节编码范围
+							len += 2;
+						} else {
+							len += 1;
+						}
+					}
+					return len;
 				}
 			});
 		</script>

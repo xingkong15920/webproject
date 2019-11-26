@@ -264,23 +264,21 @@
 						"statusCode": "1000", //解析接口状态
 					},
 					parseData: function(res) {
-
 						if (res.data == null) {
 							return
 						}
 						if (res.data == '查询数据为空') {
 							return
 						}
-						console.log('123')
-						for (var i = 0; i < res.data.result.length; i++) {
-							if (res.data.result[i] == null) {
-								res.data.result.splice(i, 1)
+						for (var i = 0; i < res.data.refundTurnoverInfos.length; i++) {
+							if (res.data.refundTurnoverInfos[i] == null) {
+								res.data.refundTurnoverInfos.splice(i, 1)
 							}
 						}
 						return {
 							"code": res.code,
 							"count": res.data.count,
-							"data": res.data.result,
+							"data": res.data.refundTurnoverInfos,
 						}
 					},
 					cols: [
@@ -317,7 +315,7 @@
 							align: 'center',
 							width: 120,
 						}, {
-							field: 'shopNumber',
+							field: 'refundMode',
 							title: '退款方式',
 							align: 'center',
 							width: 120,
@@ -335,7 +333,7 @@
 								}
 							}
 						}, {
-							field: 'shopNumber',
+							field: 'refundType',
 							title: '退款类型',
 							align: 'center',
 							width: 120,
@@ -350,12 +348,12 @@
 								}
 							}
 						}, {
-							field: 'statementDate',
+							field: 'orderState',
 							title: '退款状态',
 							align: 'center',
 							width: 120,
 							templet: function(data) {
-								switch (data.refundType) {
+								switch (data.orderState) {
 									case 0:
 										return '已退款'
 										break;
@@ -368,63 +366,63 @@
 								}
 							}
 						}, {
-							field: 'statementDate',
+							field: 'refundAmount',
 							title: '退款金额',
 							align: 'center',
 							width: 120,
 							templet: function(data) {
-								if (data.opCardRefAmount) {
-									return '¥ ' + data.opCardRefAmount
+								if (data.refundAmount) {
+									return '¥ ' + data.refundAmount
 								} else {
 									return '--'
 								}
 							}
 						}, {
-							field: 'statementDate',
+							field: 'realRefundAmount',
 							title: '实充退款金额',
 							align: 'center',
 							width: 120,
 							templet: function(data) {
-								if (data.opCardRefAmount) {
-									return '¥ ' + data.opCardRefAmount
+								if (data.realRefundAmount) {
+									return '¥ ' + data.realRefundAmount
 								} else {
 									return '--'
 								}
 							}
 						}, {
-							field: 'statementDate',
+							field: 'giveRefundAmount',
 							title: '赠送退款金额',
 							align: 'center',
 							width: 120,
 							templet: function(data) {
-								if (data.opCardRefAmount) {
-									return '¥ ' + data.opCardRefAmount
+								if (data.giveRefundAmount) {
+									return '¥ ' + data.giveRefundAmount
 								} else {
 									return '--'
 								}
 							}
 						}, {
-							field: 'statementDate',
+							field: 'serviceCharge',
 							title: '手续费',
 							align: 'center',
 							width: 120,
 							templet: function(data) {
-								if (data.opCardRefAmount) {
-									return '¥ ' + data.opCardRefAmount
+								if (data.serviceCharge) {
+									return '¥ ' + data.serviceCharge
 								} else {
 									return '--'
 								}
 							}
 						}, {
-							field: 'shopNumber',
+							field: 'rechrgeNo',
 							title: '原充值订单号',
 							align: 'center',
-							width: 180,
+							width: 250,
 						}, {
-							field: 'shopNumber',
+							field: 'paymentNo',
 							title: '原支付单号',
 							align: 'center',
-							width: 180,
+							width: 250,
 						}, {
 							field: 'shopName',
 							title: '操作员',

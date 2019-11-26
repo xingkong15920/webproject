@@ -69,44 +69,45 @@
 			</div>
 		</div>
 		<script>
-			// function getQueryString(name) {
-			// 	var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-			// 	var r = decodeURIComponent(window.location.search).substr(1).match(reg);
-			// 	if (r != null) {
-			// 		return unescape(r[2]);
-			// 	}
-			// 	return null;
-			// }
-			// var authTypt = getQueryString('authTypt')
-			// var authType
-			// $('.layui-btn').attr('data-type', authTypt)
-			// switch (authTypt) {
-			// 	case 'WeChat':
-			// 		$('.authName').text('公众号')
-			// 		authType = 1
-			// 		break;
-			// 	case 'MiniApp':
-			// 		$('.authName').text('小程序')
-			// 		authType = 2
-			// 		break;
-			// 	case 'AliBa':
-			// 		$('.authName').text('支付宝')
-			// 		authType = 1
-			// 		break;
-			// }
+			//alert(window.location.href)
+			function getQueryString(name) {
+				var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+				var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+				if (r != null) {
+					return unescape(r[2]);
+				}
+				return null;
+			}
+			var authTypt = getQueryString('authTypt')
+			var authType
+			$('.layui-btn').attr('data-type', authTypt)
+			switch (authTypt) {
+				case 'WeChat':
+					$('.authName').text('公众号')
+					authType = 1
+					break;
+				case 'MiniApp':
+					$('.authName').text('小程序')
+					authType = 2
+					break;
+				case 'AliBa':
+					$('.authName').text('支付宝')
+					authType = 1
+					break;
+			}
 
 			var i = 5;
 			layui.use(['layer'], function() {
 				var $ = layui.jquery,
 					layer = layui.layer;
 
-				after()
+				$("#time").empty().append('请关闭当前页面！');
+				// after()
 				setTimeout(function() {
 					$('.layui-btn').click()
 				}, 5000)
 
 				function after() {
-					$("#time").empty().append(i + ' 秒自动关闭');
 					i = i - 1;
 					setTimeout(function() {
 						after();
