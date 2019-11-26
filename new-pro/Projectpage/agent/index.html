@@ -19,6 +19,8 @@
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script type="text/javascript">
+        //var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
+            var site = '51shanhe'
     function getDateStr(dayCount) {
             var dayNumber = 0 + dayCount
             let dd = new Date()
@@ -61,7 +63,7 @@
                                         dataObj.time = getDateStr(7)
                                         dataObj.data = data.data
                                         console.log(JSON.stringify(dataObj))
-                                        localStorage.setItem('agentStorage',JSON.stringify(dataObj))
+                                        localStorage.setItem(site+'agentStorage',JSON.stringify(dataObj))
                                 window.location.href = decodeURIComponent(window.location).split('?')[0]
                                 // layer.msg('登录成功')
                                 // setTimeout(function() {
@@ -84,12 +86,11 @@
         
 
         
-        if (!localStorage.getItem("agentStorage")) {
-            console.log(localStorage.getItem("agentStorage"))
+        if (!localStorage.getItem(site+"agentStorage")) {
             window.location.href = 'login.html'
         } else {
             var nowTime = getDateStr(0)
-            var localData = JSON.parse(localStorage.getItem("agentStorage"))
+            var localData = JSON.parse(localStorage.getItem(site+"agentStorage"))
             if (nowTime >= localData.time) {
                 window.location.href = 'login.html'
             } else {
