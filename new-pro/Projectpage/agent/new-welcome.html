@@ -192,11 +192,11 @@
         <blockquote class="layui-elem-quote" style="position:relative;left:0;top:0">
             <span style="margin-right: 30px;vertical-align:top">交易数据</span>
             <div class="btnBox">
-                <button class="layui-btn layui-btn-primary fl dayCheck" onclick="jyClick(0)">昨天</button>
-                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(1)">3天</button>
-                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(2)">7天</button>
-                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(3)">15天</button>
-                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(4)">30天</button>
+                <button class="layui-btn layui-btn-primary fl dayCheck" onclick="jyClick(0,0)">昨天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(1,2)">3天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(2,3)">7天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(3,4)">15天</button>
+                <button class="layui-btn layui-btn-primary fl" onclick="jyClick(4,5)">30天</button>
             </div>
         </blockquote>
         <div class="baobiao">
@@ -211,9 +211,9 @@
                 </div>
                 <div class="layui-col-md2">
                     <div class="homelist">
-                        <p class="homelistitle">交易笔数（元）</p>
+                        <p class="homelistitle">交易笔数</p>
                         <div class="homelistc">
-                            <span><i id="totalNumberOfTransactions">0</i>元</span>
+                            <span><i id="totalNumberOfTransactions">0</i></span>
                         </div>
                     </div>
                 </div>
@@ -289,11 +289,11 @@
                 <li style="width:90px" class="qiehuan" onclick="tab(4)">退款笔数</li>
             </ul>
             <div class="btnBox" style="top:1px">
-                <button class="layui-btn layui-btn-primary fl1 dayCheck1" onclick="jyClick1(0)">昨天</button>
-                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(1)">3天</button>
-                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(2)">7天</button>
-                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(3)">15天</button>
-                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(4)">30天</button>
+                <button class="layui-btn layui-btn-primary fl1 dayCheck1" onclick="jyClick1(0,0)">昨天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(1,2)">3天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(2,3)">7天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(3,4)">15天</button>
+                <button class="layui-btn layui-btn-primary fl1" onclick="jyClick1(4,5)">30天</button>
             </div>
         </div>
         <div class="grid-demo border">
@@ -527,10 +527,11 @@
             case 2:
 
                 CmsUtility.clearListArr(orderTotalMoney)
+                
                 for (let i = 0; i < refundMoney.length; i++) {
                     orderTotalMoney.push(refundMoney[i])
                 }
-
+                
                 myChart.clear()
                 myChart.setOption(option);
                 // statements_1
@@ -541,7 +542,7 @@
                 for (let i = 0; i < shouxuMoney.length; i++) {
                     orderTotalMoney.push(shouxuMoney[i])
                 }
-
+                console.log(orderTotalMoney)
                 myChart.clear()
                 myChart.setOption(option);
                 // statements_1
@@ -552,7 +553,7 @@
                 for (let i = 0; i < shishou.length; i++) {
                     orderTotalMoney.push(shishou[i])
                 }
-
+                console.log(orderTotalMoney)
                 myChart.clear()
                 myChart.setOption(option);
                 // statements_1
@@ -567,7 +568,7 @@
         var index = layer.load(2, { shade: [0.4, '#393D49'] })
         CmsUtility.postAjaxCall(
             //系统设置
-            'statistics/dataStatistics', {
+            'statistics/tradeStatistics', {
                 "agentNumber": userNumber,
                 "agentLevel": agentLevel,
                 "dateStart": number
@@ -597,6 +598,7 @@
                 CmsUtility.clearListArr(shishou)
                 var data = data.data
                 for (var j = 0; j < data.length; j++) {
+               
                     Statement_Date.push(data[j].transactionTime)
                     orderTotalMoney.push(data[j].myFenRun)
                     orderCount.push(data[j].totalTransactionAmount)
@@ -605,7 +607,8 @@
                     shouxuMoney.push(data[j].theRefundAmount)
                     shishou.push(data[j].aRefundOf)
                 }
-
+                // console.log(shouxuMoney)
+                // console.log(shishou)
                 Statement_Date.sort()
                 myChart.clear()
                 // 为echarts对象加载数据
@@ -628,21 +631,24 @@
             $ = layui.jquery;
 
 
-        window.jyClick = function(data) {
+        window.jyClick = function(data,data1) {
             console.log(data)
             // 
 
             $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
             $('.fl').eq(data).attr('class', 'layui-btn layui-btn-primary fl dayCheck')
-            getShop(data)
+            getShop(data1)
         }
-        window.jyClick1 = function(data) {
+        window.jyClick1 = function(data,data1) {
             console.log(data)
             // 
 
             $('.fl1').attr('class', 'layui-btn layui-btn-primary fl1')
             $('.fl1').eq(data).attr('class', 'layui-btn layui-btn-primary fl1 dayCheck1')
-            reloadres(data)
+            var qiehuan = document.getElementsByClassName('qiehuan')
+            $('.qiehuan').attr('class','qiehuan')
+            $('.qiehuan').eq(0).attr('class','qiehuan layui-this')
+            reloadres(data1)
         }
 
 
@@ -677,15 +683,15 @@
         getAll()
 
         var myDate = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2];
-        console.log(myDate)
+       
 
         function getShop(number) {
 
-            console.log(myDate)
+            
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
             CmsUtility.postAjaxCall(
                 //系统设置
-                'statistics/tradeStatistics', {
+                'statistics/dataStatistics', {
                     "agentNumber": userNumber,
                     "agentLevel": agentLevel,
                     "dateStart": number,
