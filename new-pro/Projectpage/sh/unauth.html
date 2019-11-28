@@ -25,12 +25,14 @@
         <![endif]-->
 		<style type="text/css">
 			.x-body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
 				background-image: url(../../public/images/unauthBg.png);
 				background-repeat: repeat;
 			}
 
 			.unauthB {
-				margin-top: 15%;
 				display: flex;
 				justify-content: center;
 				align-items: center;
@@ -66,6 +68,30 @@
 				background-color: #1E9FFF;
 				color: #fff;
 			}
+
+			.auth_conditions li {
+				padding-left: 25px;
+				position: relative;
+				line-height: 2;
+				color: red;
+			}
+
+			.auth_conditions li .auth_tips {
+				font-size: 10px;
+				color: #999;
+			}
+
+			.auth_conditions li:before {
+				content: '';
+				position: absolute;
+				top: 10px;
+				left: 8px;
+				width: 6px;
+				height: 6px;
+				overflow: hidden;
+				border-radius: 50%;
+				background: red;
+			}
 		</style>
 	</head>
 
@@ -80,6 +106,23 @@
 
 					<div class="layui-btn unauthBtn" data-type="reload">点击授权</div>
 				</div>
+				<ul class="auth_conditions">
+					<li>
+						已通过微信认证的服务号。
+					</li>
+					<li>
+						已开通卡券功能。 <br />
+					</li>
+					<li>
+						已开通模板消息。<br />
+						<span class="auth_tips">为保证会员卡信息变更通知的发送，模板消息所在行业中，必须有一个要选择「IT科技 互联网|电子商务」。</span><br />
+						<span class="auth_tips">模板消息功能和卡券功能，可进入微信公众平台 -> 添加功能插件，选择卡券功能或模板消息功能，申请开通。</span><br />
+					</li>
+					<li>
+						如需使用小程序功能，在进行公众号授权时，请务必确认已勾选【开放平台账号管理权限】，再进行授权。<br />
+						<span class="auth_tips">公众号只可将此权限授权给一个第三方平台，如已绑定其它第三方平台，请到微信公众平台 -> 添加功能插件 -> 授权管理，手动解绑其它第三方，再进行授权。</span>
+					</li>
+				</ul>
 
 				<div class="cardQrcode" style="display: none;">
 					<div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div>
@@ -186,7 +229,7 @@
 									title: '微信授权',
 									area: ['90%', '90%'],
 									content: 'http://api.51shanhe.com/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(sessionStorage
-										.getItem('userSh')).Number + '&authType=' + authType,
+										.getItem('userSh')).Number + '&authType=' + authType + '&operationType=0',
 									success: function(layero, index) {
 										// 获取子页面的iframe
 										var iframe = window['layui-layer-iframe' + index];

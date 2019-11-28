@@ -345,7 +345,7 @@
 							str +=
 								'<li class="clearfix flexcl"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">送</label><input type="number" value="' +
 								preferentialRechargesM[i].giveIntegral + '"  data-id="' + i +
-								'" lay-verify="prizesM" placeholder="10" autocomplete="off" class="layui-input givemM"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">金额</label><div class="delBtn delSale delSaleM" data-id="' +
+								'" lay-verify="giveMoney" placeholder="10" autocomplete="off" class="layui-input givemM"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">金额</label><div class="delBtn delSale delSaleM" data-id="' +
 								i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
 						}
 						$('#saleListM').html(str)
@@ -410,7 +410,7 @@
 							str +=
 								'<li class="clearfix flexcl"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">送</label><input type="number" value="' +
 								preferentialRechargesJ[i].giveIntegral + '"  data-id="' + i +
-								'" lay-verify="prizesJ" placeholder="10" autocomplete="off" class="layui-input giveiJ"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">积分</label><div class="delBtn delSale delSaleJ" data-id="' +
+								'" lay-verify="giveIntegral" placeholder="10" autocomplete="off" class="layui-input giveiJ"><label class="layui-form-label" style="text-align:left;width:auto;padding-right:10px;">积分</label><div class="delBtn delSale delSaleJ" data-id="' +
 								i + '"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div></li>'
 						}
 						$('#saleListJ').html(str)
@@ -545,16 +545,16 @@
 						},
 						giveMoney: function(value) {
 							if (value == '') {
-								return '消费金额不能为空！';
-							} else if (value < 1) {
-								return '消费金额最低为1！';
+								return '赠送金额不能为空！';
+							} else if (value < 0) {
+								return '赠送金额最低为0！';
 							}
 						},
 						giveIntegral: function(value) {
 							if (value == '') {
-								return '消费积分不能为空！';
-							} else if (value < 1) {
-								return '消费积分最低为1！';
+								return '赠送积分不能为空！';
+							} else if (value < 0) {
+								return '赠送积分最低为0！';
 							}
 						},
 						prizesM: function(value) {
@@ -583,8 +583,8 @@
 						prizesCPnum: function(value) {
 							if (value == '') {
 								return '优惠券数量不能为空！';
-							} else if (value < 1) {
-								return '消费金额最低为1！';
+							} else if (parseFloat(value) < 1) {
+								return '优惠券数量最低为1！';
 							}
 						},
 					});
