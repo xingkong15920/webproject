@@ -457,29 +457,14 @@
                 "institutionNumber": JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
             },
             function(data) {
+                if(data.code == 1000){
+                    sessionStorage.setItem("baidu", JSON.stringify(data.data));
+                }else{
+                    
+                    sessionStorage.setItem("baidu", 'no');
+                }
 
-                // 回调执行函数
-
-
-
-                CmsUtility.postAjaxCall2(
-                    //系统设置
-                    'http://api.51shanhe.com/p-server/appServer/getBaiduToken', {
-                        "clientId": data.data.baiduAPIKey,
-                        "clientSecret": data.data.baiduSecretKey
-                    },
-                    function(data) {
-                        if (data.code == 1000) {
-                            sessionStorage.setItem("access_token", data.data.access_token);
-                        } else {
-                            sessionStorage.setItem("access_token", 'no');
-                        }
-
-                    },
-                    function(data) {
-
-                    }, 'get'
-                )
+                
             },
             function(data) {
 
