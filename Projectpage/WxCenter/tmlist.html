@@ -147,19 +147,29 @@
 			},
 			methods: {
 				addC: function(i, e, res) {
-					$('#loadstart').show();
 					this.cardshowT = i
 					this.current = i
 					this.conList = []
 					this.tmList = []
 					if (i == 0) {
+						$('#loadstart').show();
 						this.getVoucher()
 						this.current_u = 1000
 						this.current_c = 1000
 						this.usetips = this.useT[0].usetit
 						this.contips = this.conT[0].contit
 					} else if (i == 1) {
-						this.getTimeMonth()
+						swal({
+							title: "",
+							text: "功能未开放！",
+							type: "error",
+							showCancelButton: false,
+							closeOnConfirm: false,
+							showConfirmButton: true,
+						});
+						this.cardshowT = 0
+						this.current = 0
+						// this.getTimeMonth()
 					}
 				},
 				addTm: function(i, res) {
@@ -184,22 +194,18 @@
 						tjData = new Object();
 					// tjData.memberNo = "JSON.parse(sessionStorage.getItem('mInfo')).memberNo"
 					// tjData.shopNo = "JSON.parse(sessionStorage.getItem('mInfo')).shopNumber"
-					tjData.merchantNumber = merNumber
-					tjData.disable = 0
+					tjData.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo
 					tjData.page = that.page
 					tjData.limit = that.limit
+					tjData.shopNo = JSON.parse(sessionStorage.getItem('mInfo')).shopNumber
 					tjData.voucherUse = that.current_u
-					tjData.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo
 					tjData.useType = that.current_c
-					$.ajax({
-						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucherList,
-						data: tjData,
-						dataType: "json",
-						headers: {
-							"Content-Type": "application/json"
-						},
-						success: function success(data) {
+
+					CmsUtility.postAjaxCall2(
+						//系统设置
+						CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberVoucherUseList,
+						tjData,
+						function(data) {
 							$('#loadstart').hide();
 							that.mask = false
 							that.mask_u = false
@@ -207,17 +213,49 @@
 							if (data.code === 1000) {
 								that.conList = data.data.list
 							} else {
-								swal({
-									title: "",
-									text: data.msg,
-									type: "error",
-									showCancelButton: false,
-									closeOnConfirm: false,
-									showConfirmButton: true,
-								});
+								layer.msg(data.msg)
+								// swal({
+								// 	title: "",
+								// 	text: data.msg,
+								// 	type: "error",
+								// 	showCancelButton: false,
+								// 	closeOnConfirm: false,
+								// 	showConfirmButton: true,
+								// });
 							}
-						}
-					});
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+					)
+					// $.ajax({
+					// 	type: "get",
+					// 	url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberVoucherUseList,
+					// 	data: tjData,
+					// 	dataType: "json",
+					// 	headers: {
+					// 		"Content-Type": "application/json"
+					// 	},
+					// 	success: function success(data) {
+					// 		$('#loadstart').hide();
+					// 		that.mask = false
+					// 		that.mask_u = false
+					// 		that.mask_c = false
+					// 		if (data.code === 1000) {
+					// 			that.conList = data.data.list
+					// 		} else {
+					// 			swal({
+					// 				title: "",
+					// 				text: data.msg,
+					// 				type: "error",
+					// 				showCancelButton: false,
+					// 				closeOnConfirm: false,
+					// 				showConfirmButton: true,
+					// 			});
+					// 		}
+					// 	}
+					// });
 				},
 				getTimeMonth() {
 					var that = this,

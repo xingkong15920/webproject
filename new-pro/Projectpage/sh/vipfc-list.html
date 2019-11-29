@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/data.js"></script>
+		<style type="text/css">
+			.tabTit {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				border: 1px solid #009688;
+				height: 50px;
+				padding: 0 10px;
+				margin-bottom: 10px;
+				border-radius: 4px;
+			}
+
+			.tabTit p {
+				line-height: 1;
+			}
+
+			.customFbtn {
+				margin-left: auto;
+				margin-right: 10px;
+				height: auto;
+				line-height: 36px;
+				padding: 0 20px;
+				font-size: 14px;
+			}
+
+			.layui-tab-title {
+				height: auto;
+				border: none;
+			}
+
+			.layui-tab-title li {
+				width: auto !important;
+				padding: 0 20px !important;
+				line-height: 36px;
+				height: auto;
+			}
+
+			.layui-tab-title li.layui-this {
+				background: #009688;
+				color: #fff;
+			}
+
+			.layui-tab-title li.layui-this:after {
+				border: none;
+			}
+
+			.layerList {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.layerList li {
+				width: 25%;
+				text-align: center;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;
+			}
+
+			.layerList li .deftitle {
+				font-size: 18px;
+				margin-top: 22px;
+				margin-bottom: 4px;
+				color: #2db7f5;
+			}
+
+			.layerList li .info {
+				font-size: 12px;
+				color: #999;
+				margin-bottom: 13px;
+				height: 35px;
+			}
+
+			.layerList li .data {
+				font-size: 14px;
+				color: #666;
+				margin-bottom: 4px;
+			}
+
+			.layerList li .split {
+				display: inline-block;
+				width: 100%;
+				border-top: 1px dashed #e4e4e4;
+				margin: 15px 0px 10px 0px;
+			}
+
+			.layerList li .layui-btn {
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="x-body">
+			<div class="layui-tab layui-tab-brief" lay-filter="act">
+				<div class="tabTit flex_cc">
+					<p>向不同会员精准群发活动礼品，并通过微信消息触达，与会员互动，唤醒到店，促进购买，提升会员参与感 。</p>
+					<a class="layui-btn layui-btn-sm customFbtn">自定义分层</a>
+					<ul class="layui-tab-title">
+						<li class="layui-btn layui-btn-sm"><i class="icon icon icon-shixianshujubianxian"></i>会员分层</li>
+						<li class="layui-btn layui-btn-sm"><i class="icon icon icon-shixianshujubianxian"></i>群发记录</li>
+					</ul>
+				</div>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							默认人群分层
+						</blockquote>
+						<ul class="layerList">
+							<li class="item">
+								<p class="deftitle">高频高额会员</p>
+								<p class="info"><span class="def_days">--</span>天内消费频次><span class="def_pin">--</span>次，客单价><span class="def_dan">--</span>元的会员</p>
+								<p class="data">会员数量：<span id="def_meb_1">0</span>人</p>
+								<p class="data">会员占比：<span id="def_acc_1">0</span>%</p>
+								<span class="split"></span>
+								<div class="layui-btn layui-btn-sm"><i class="md md-local-attraction"></i> 群发礼品</div>
+							</li>
+							<li class="item">
+								<p class="deftitle">高频低额会员</p>
+								<p class="info"><span class="def_days">--</span>天内消费频次><span class="def_pin">--</span>次，客单价≤<span class="def_dan">--</span>元的会员</p>
+								<p class="data">会员数量：<span id="def_meb_2">0</span>人</p>
+								<p class="data">会员占比：<span id="def_acc_2">0</span>%</p>
+								<span class="split"></span>
+								<div class="layui-btn layui-btn-sm"><i class="md md-local-attraction"></i> 群发礼品</div>
+							</li>
+							<li class="item">
+								<p class="deftitle">低频高额会员</p>
+								<p class="info"><span class="def_days">--</span>天内消费频次≤<span class="def_pin">--</span>次，客单价><span class="def_dan">--</span>元的会员</p>
+								<p class="data">会员数量：<span id="def_meb_3">0</span>人</p>
+								<p class="data">会员占比：<span id="def_acc_3">0</span>%</p>
+								<span class="split"></span>
+								<div class="layui-btn layui-btn-sm"><i class="md md-local-attraction"></i> 群发礼品</div>
+							</li>
+							<li class="item">
+								<p class="deftitle">低频低额会员</p>
+								<p class="info"><span class="def_days">--</span>天内消费频次≤<span class="def_pin">--</span>次，客单价≤<span class="def_dan">--</span>元的会员</p>
+								<p class="data">会员数量：<span id="def_meb_4">0</span>人</p>
+								<p class="data">会员占比：<span id="def_acc_4">0</span>%</p>
+								<span class="split"></span>
+								<div class="layui-btn layui-btn-sm"><i class="md md-local-attraction"></i> 群发礼品</div>
+							</li>
+						</ul>
+						<blockquote class="layui-elem-quote consumeTit">
+							<i class="leftline"></i>
+							自定义人群分层
+						</blockquote>
+					</div>
+					<div class="layui-tab-item">
+						123123
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			var _h = $('.x-body').outerHeight();
+			var _h1 = $('.layui-tab-title').height() + 1;
+			var _h2 = _h - _h1 - 60
+			$('.layui-tab-content').height(_h2)
+
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			layui.use(['table', 'laydate', 'element'], function() {
+				var table = layui.table,
+					$ = layui.$,
+					laydate = layui.laydate,
+					form = layui.form,
+					element = layui.element;
+
+				layer.load(2, {
+					shade: 0.5
+				});
+
+				element.on('tab(act)', function(data) {
+					switch (data.index) {
+						case 0:
+							layer.load(2, {
+								shade: 0.5
+							});
+							setlayerData()
+							$('.customFbtn').show()
+							break;
+						case 1:
+							layer.load(2, {
+								shade: 0.5
+							});
+							$('.customFbtn').hide()
+							layer.closeAll('loading');
+							break;
+						default:
+							setlayerData()
+							break;
+					}
+				});
+
+				// setActInof(layeredmo)
+				setlayerData()
+
+				function setlayerData() {
+					var ajaData = new Object()
+					ajaData.userNo = merNumber
+					console.log(CmsConfig.ServiceUrl.ApiRootUrlMeb)
+					console.log(CmsConfig.addressUrl.Mervip.getMemberGroupSetting)
+					CmsUtility.postAjaxCall2(
+						//系统设置
+						CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMemberGroupSetting,
+						ajaData,
+						function(data) {
+							if (data.code == '1000') {
+
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+					)
+					$('.def_days').text('30')
+					$('.def_pin').text('5')
+					$('.def_dan').text('50')
+					$('#def_meb_1').text('50')
+					$('#def_acc_1').text('50')
+					$('#def_meb_2').text('50')
+					$('#def_acc_2').text('50')
+					$('#def_meb_3').text('50')
+					$('#def_acc_3').text('50')
+					$('#def_meb_4').text('50')
+					$('#def_acc_4').text('50')
+
+					layer.closeAll('loading');
+				}
+
+				function setActInof(obj) {
+					new Vue({
+						el: '#activityInfos',
+						data: {
+							layeredmo: obj,
+							pinci: pinci,
+							kedan: kedan,
+						},
+						methods: {
+
+						},
+						mounted() {
+
+						}
+					})
+				}
+				$('.customFbtn').on('click', function() {
+					console.log(111)
+					layer.open({
+						type: 2,
+						area: ['600px', '90%'],
+						fixed: false, //不固定
+						maxmin: true,
+						resize: false,
+						content: 'vipfc-add.html'
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>

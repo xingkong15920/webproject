@@ -302,6 +302,10 @@ var CmsConfig = {
 			// 优惠券营销统计
 			detailedReports: "statistics/detailedReports",
 
+			// 会员中心
+			// 查询会员可使用的优惠券
+			memberVoucherUseList: "voucher/memberVoucherUseList",
+
 			// 海报设置
 			// 查询海报列表
 			hb_selPoster: "poster/selPoster",

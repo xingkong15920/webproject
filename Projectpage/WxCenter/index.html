@@ -69,12 +69,16 @@
 	<script>
 		// http://192.168.1.222:8848/webproject/Projectpage/WxCenter/index.html?institutionNumber=1004&merchantNumber=1004000394
 		// http://api.51shanhe.com/WxCenter/index.html?institutionNumber=1004&merchantNumber=1004000394
-		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
+		// var insNumber, merNumber, weixinCode, appSecret
 		new Vue({
 			el: '#Vip',
 			data: {
 				page: 1,
 				limit: 10,
+				insNumber: '',
+				merNumber: '',
+				weixinCode: '',
+				appSecret: '',
 				memberTodCount: '',
 				memberCount: '',
 				memberYesdCount: '',
@@ -93,13 +97,14 @@
 					toolcl: "iconanchuweidianiconquanji_fuzhi-",
 					toolitit: "积分兑换",
 					address: "bill-rec.html",
-					tips: "未开放",
+					// tips: "未开放",
 					toolstate: 1,
 				}, {
 					toolcl: "iconwodeyouhuiquan",
 					toolitit: "卡券中心",
 					address: "tmlist.html?cardType=1",
-					toolstate: 0,
+					// tips: "未开放",
+					toolstate: 1,
 				}, {
 					toolcl: "iconduizhangdan-copy",
 					toolitit: "消费记录",
@@ -131,22 +136,15 @@
 					if (e.toolstate == 0) {
 						window.location.href = e.address
 					} else if (e.toolstate == 1) {
-						swal({
-							title: "",
-							text: '功能未开放',
-							type: "error",
-							showCancelButton: false,
-							closeOnConfirm: false,
-							showConfirmButton: true,
-						});
+						layer.msg('功能未开放！')
 					}
 				},
 				getmebInfo: function() {
-					var code = window.location.href.split('&code=')[1].split('&')[0],
+					var code = window.location.href.split('&code=')[1].split('&state')[0],
 						that = this;
 					$.ajax({
-						url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + merNumber + '&appId=' +
-							weixinCode + '&code=' + code + '&appSecret=' + appSecret,
+						url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+							that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
 						type: "GET",
 						headers: {
 							"Content-Type": "application/x-www-form-urlencoded"
@@ -178,7 +176,6 @@
 						success: function(data) {
 							$('#loadstart').hide()
 							if (data.code == '1000') {
-								console.log(data.data.voucherCount)
 								that.memCpnum = data.data.voucherCount
 							} else {}
 						}
@@ -192,29 +189,6 @@
 				var that = this
 				if (/MicroMessenger/.test(window.navigator.userAgent)) {
 					if (window.location.href.indexOf('&code=') == -1) {
-						insNumber = getQueryString('institutionNumber')
-						merNumber = getQueryString('merchantNumber')
-					} else {
-						insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-						merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
-					}
-					$.ajax({
-						url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + merNumber,
-						type: "GET",
-						async: false,
-						headers: {
-							"Content-Type": "application/x-www-form-urlencoded"
-						},
-						success: function(data) {
-							if (data.code == 1000) {
-								weixinCode = data.data.appId;
-								comId = data.data.componentAppid;
-								appSecret = data.data.appSecret
-							}
-						}
-					})
-					var code;
-					if (window.location.href.indexOf('&code=') == -1) {
 						var num = {
 							"institutionNumber": getQueryString('institutionNumber'),
 							"merchantNumber": getQueryString('merchantNumber'),
@@ -222,10 +196,34 @@
 						sessionStorage.setItem("num", JSON.stringify(num));
 						var scope = "snsapi_userinfo";
 						var redirect_uri = window.location.href;
-
-						window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + weixinCode +
-							"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope + "&state=start#wechat_redirect"
+						that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+						that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+						$.ajax({
+							url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+							type: "GET",
+							async: false,
+							headers: {
+								"Content-Type": "application/x-www-form-urlencoded"
+							},
+							success: function(data) {
+								if (data.code == 1000) {
+									that.weixinCode = data.data.appId;
+									that.appSecret = data.data.appSecret
+									var numw = {
+										"weixinCode": data.data.appId,
+										"appSecret": data.data.appSecret,
+									}
+									sessionStorage.setItem("numw", JSON.stringify(numw));
+									window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
+										"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope + "&state=start#wechat_redirect"
+								}
+							}
+						})
 					} else {
+						that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+						that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+						that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
+						that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
 						that.getmebInfo()
 					}
 				}

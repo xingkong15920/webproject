@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/card.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+		<style type="text/css">
+			.flex_cc {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.layui-input-inline.max360.flex_cc .layui-input-inline {
+				width: 45%;
+				margin: 0 !important;
+			}
+
+			.layui-input-inline.max360.flex_cc .layui-form-mid {
+				margin: 0;
+			}
+
+			.layui-form-switch {
+				width: 60px;
+			}
+
+			.layui-form-onswitch em {
+				margin-right: 18px;
+				margin-left: 3px;
+			}
+
+			.layui-form-switch i {
+				top: 2px;
+			}
+
+			.layui-form-switch em {
+				top: -1px;
+			}
+
+			.chooseColor span {
+				margin-bottom: 10px;
+			}
+
+			.tips_red {
+				margin-left: auto;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="x-body">
+			<div class="layui-row">
+				<div class="layui-form" action="" lay-filter="cardAdd">
+					<div class="conBlock">
+						<blockquote class="layui-elem-quote consumeTit flex_cc">
+							<i class="leftline"></i>
+							基本设置
+							<!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关"> -->
+							<span class="tips_red">带 * 为必填项</span>
+						</blockquote>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>人群名称：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" name="groupName" lay-verify="groupName" autocomplete="off" placeholder="请输入人群名称" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>人群性别：</label>
+							<div class="layui-input-inline max360">
+								<input type="radio" name="groupSex" value="2" title="全部" lay-filter="groupSex" checked="true">
+								<input type="radio" name="groupSex" value="1" title="男" lay-filter="groupSex">
+								<input type="radio" name="groupSex" value="0" title="女" lay-filter="groupSex">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>会员等级：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" lay-verify="gradeName" readonly="readonly" autocomplete="off" placeholder="请选择等级名称" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"><span class="redC">* </span>会员归属：</label>
+							<div class="layui-input-inline max360">
+								<input type="text" lay-verify="initMoney" readonly="readonly" autocomplete="off" placeholder="请选择会员归属" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">会员积分：</label>
+							<div class="layui-input-inline max360 flex_cc">
+								<div class="layui-input-inline">
+									<input type="number" name="memberStartI" id="memberStartI" placeholder="请填写" autocomplete="off" class="layui-input">
+								</div>
+								<div class="layui-form-mid">-</div>
+								<div class="layui-input-inline">
+									<input type="number" name="memberEndI" id="memberEndI" placeholder="请填写" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-mid layui-word-aux">分</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">会员余额：</label>
+							<div class="layui-input-inline max360 flex_cc">
+								<div class="layui-input-inline">
+									<input type="number" name="memberStartM" id="memberStartM" placeholder="请填写" autocomplete="off" class="layui-input">
+								</div>
+								<div class="layui-form-mid">-</div>
+								<div class="layui-input-inline">
+									<input type="number" name="memberEndM" id="memberEndM" placeholder="请填写" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-mid layui-word-aux">元</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">消费周期：</label>
+							<div class="layui-input-inline max360">
+								<select name="consumptionCycle">
+									<option value="0" selected="">不限制</option>
+									<option value="7">7天</option>
+									<option value="30">30天</option>
+									<option value="60">60天</option>
+									<option value="90">90天</option>
+									<option value="180">180天</option>
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">消费频次：</label>
+							<div class="layui-input-inline max360 flex_cc">
+								<div class="layui-input-inline">
+									<input type="number" name="consumptionFrequency" id="consumptionFrequency" placeholder="请填写" autocomplete="off"
+									 class="layui-input">
+								</div>
+								<div class="layui-form-mid">-</div>
+								<div class="layui-input-inline">
+									<input type="number" name="consumptionFrequencyEnd" id="consumptionFrequencyEnd" placeholder="请填写"
+									 autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-mid layui-word-aux">次</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">消费金额：</label>
+							<div class="layui-input-inline max360 flex_cc">
+								<div class="layui-input-inline">
+									<input type="number" name="consumptionM" id="consumptionM" placeholder="请填写" autocomplete="off" class="layui-input">
+								</div>
+								<div class="layui-form-mid">-</div>
+								<div class="layui-input-inline">
+									<input type="number" name="consumptionMEnd" id="consumptionMEnd" placeholder="请填写" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-mid layui-word-aux">元</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">消费客单价：</label>
+							<div class="layui-input-inline max360 flex_cc">
+								<div class="layui-input-inline">
+									<input type="number" name="customerUnitPrice" id="customerUnitPrice" placeholder="请填写" autocomplete="off"
+									 class="layui-input">
+								</div>
+								<div class="layui-form-mid">-</div>
+								<div class="layui-input-inline">
+									<input type="number" name="customerUnitPriceEnd" id="customerUnitPriceEnd" placeholder="请填写" autocomplete="off"
+									 class="layui-input">
+								</div>
+							</div>
+							<div class="layui-form-mid layui-word-aux">元</div>
+						</div>
+					</div>
+
+
+					<div class="layui-form-item layui-layout-admin">
+						<div class="layui-input-block">
+							<div class="layui-footer" style="left: 0;text-align: center;">
+								<button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+							</div>
+							<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script>
+			$(".conBlock:last").css("margin-bottom", "44px");
+			var index = parent.layer.getFrameIndex(window.name);
+			$('#quxiao').click(function() {
+				setTimeout(function() {
+					parent.layer.close(index)
+				}, 16);
+			})
+
+			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+			var groupGradeList = []
+			var groupShopList = []
+			layui.use(['laydate', 'table', 'upload', 'form'], function() {
+				var $ = layui.jquery,
+					upload = layui.upload,
+					laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form,
+					admin = layui.admin,
+					element = layui.element,
+					layer = layui.layer;
+
+
+				//查询有等级详情
+				function getCardCon() {
+					layer.load(2, {
+						shade: 0.5
+					});
+					$.ajax({
+						type: "get",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getGrades,
+						data: {
+							"merchantNumber": merNumber,
+							"page": 1,
+							"limit": 1,
+						},
+						async: false,
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+
+						}
+					});
+				}
+
+				// getCardCon()
+
+
+				//执行一个laydate实例
+				laydate.render({
+					elem: '#invalidTime' //指定元素
+				});
+
+				//监听指定开关
+				form.on('switch(switchTest)', function(data) {
+					layer.tips('广告状态:' + (this.checked ? '已开启' : '已关闭'), data.othis)
+				});
+
+				/*---------- 锁定等级设置 ----------*/
+				form.on('radio(gradeType)', function(data) {
+					if (data.value == 0) {
+						$('.levellocked').show()
+						$('input[name="upgradeConditions"]').attr('lay-verify', 'integral')
+						$('input[name="initMoney"]').attr('lay-verify', 'initMoney')
+						$('input[name="giveMoney"]').attr('lay-verify', 'giveMoney')
+						$('input[name="termValidity"]').attr('lay-verify', 'termValidity')
+					} else if (data.value == 1) {
+						$('.levellocked').hide()
+						$('input[name="upgradeConditions"]').removeAttr('lay-verify', 'integral')
+						$('input[name="initMoney"]').removeAttr('lay-verify', 'initMoney')
+						$('input[name="giveMoney"]').removeAttr('lay-verify', 'giveMoney')
+						$('input[name="termValidity"]').removeAttr('lay-verify', 'termValidity')
+					}
+				});
+
+				/*---------- 积分时效 ----------*/
+				form.on('radio(timeType)', function(data) {
+					if (data.value == 0) {
+						$('.resetper').hide()
+					} else if (data.value == 1) {
+						$('.resetper').show()
+					}
+				});
+
+
+				/*---------- 自定义验证规则 ----------*/
+				form.verify({
+					groupName: function(value) {
+						if (value == '') {
+							return '人群名称不能为空！';
+						}
+					},
+					memberStartI: function(value) {
+						if (value == '') {
+							return '请填写升级所需积分';
+						}
+					},
+					memberEndI: function(value) {
+						if (value == '') {
+							return '请填写开卡金额';
+						}
+					},
+					memberStartM: function(value) {
+						if (value == '') {
+							return '请填写赠送金额';
+						}
+					},
+					memberEndM: function(value) {
+						if (value == '') {
+							return '请填写请填写正确的有效期！';
+						}
+					},
+					consumptionFrequency: function(value) {
+						if (value == '') {
+							return '请填写消费金额';
+						}
+					},
+					consumptionFrequencyEnd: function(value) {
+						if (value == '') {
+							return '请填写赠送积分';
+						}
+					},
+					consumptionM: function(value) {
+						if (value == '') {
+							return '请填写单笔上限金额';
+						}
+					},
+					consumptionMEnd: function(value) {
+						if (value == '') {
+							return '请填写开卡赠送积分';
+						}
+					},
+					customerUnitPrice: function(value) {
+						if (value == '') {
+							return '请填写积分抵现规则';
+						}
+					},
+					customerUnitPriceEnd: function(value) {
+						if (value == '') {
+							return '请填写升级送积分规则';
+						}
+					},
+				});
+
+				/*---------- 监听开关 ----------*/
+				//form.on('switch(level)', function(data) { //等级开关
+				//	layer.tips('等级开关：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+				//});
+
+				/*---------- 监听提交 ----------*/
+				form.on('submit(add)', function(data, index) {
+					var data = data.field
+					data.userNo = merNumber
+					data.institutionNumber = insNumber
+					data.groupGradeList = groupGradeList
+					data.groupShopList = groupShopList
+
+					layer.load(2, {
+						shade: 0.5
+					});
+					return console.log(data)
+					CmsUtility.postAjaxCall2(
+						//系统设置
+						CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMemberGroupSetting,
+						data,
+						function(data) {
+							if (data.code == '1000') {
+								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+								parent.layer.close(index); //再执行关闭
+								parent.layer.msg('添加等级成功')
+								parent.layui.table.reload('gradeList')
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get',
+					)
+					return false;
+				});
+			});
+		</script>
+	</body>
+
+</html>
