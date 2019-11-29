@@ -295,7 +295,7 @@
 								<li class="activityrules">
 									<div class="detaili">
 										<label class="setColor_Tit">有限期</label>
-										<p class="setColor_Con syxz">--</p>
+										<p class="setColor_Con syxz">永久有效</p>
 									</div>
 								</li>
 							</ul>
@@ -307,8 +307,10 @@
 								<i class="leftline"></i>
 								优惠券海报设置
 							</blockquote>
-							<input type="file" class="input_img layui-input" style="display: none;" id="upBg" />
-							<input type="file" class="input_img layui-input" style="display: none;" id="upSysImgBtn" />
+							<input type="file" accept="image/png, image/jpeg, image/jpg" class="input_img layui-input" style="display: none;"
+							 id="upBg" />
+							<input type="file" accept="image/png, image/jpeg, image/jpg" class="input_img layui-input" style="display: none;"
+							 id="upSysImgBtn" />
 							<div class="layui-form-item widthauto">
 								<label class="layui-form-label"><span class="redC">* </span>海报标题 :</label>
 								<div class="layui-input-inline max360">
@@ -720,79 +722,17 @@
 						shade: 0.5
 					});
 					uploadImg(this, function(data) {
-						Imgbase = data
+						uploadImgajax(data, 3)
 					});
-					setTimeout(function() {
-						var datas = {
-							"imgBaseStr": Imgbase,
-							"institutionNumber": insNumber,
-							"imgType": "3",
-							"merchantNumber": merNumber
-						}
-						// 发送请求
-						$.ajax({
-							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
-							data: JSON.stringify(datas),
-							dataType: "json",
-							async: false,
-							headers: {
-								"Content-Type": "application/json"
-							},
-							success: function(data) {
-								layer.closeAll('loading');
-								if (data.code === 1000) {
-									poster_imgId = data.data.imageId
-									poster_imgUrl = data.data.localImgUrl
-									$('#cardBgImg').attr('src', data.data.localImgUrl);
-									$('.cardBbg').attr('src', data.data.localImgUrl)
-									$('#cardBg').find('.upTips').hide();
-								}
-							}
-						});
-					}, 300)
 				});
 				$("#upSysImgBtn").change(function() {
 					layer.load(2, {
 						shade: 0.5
 					});
 					uploadImg(this, function(data) {
-						Imgbase = data
+						uploadImgajax(data, 5)
 					});
-					setTimeout(function() {
-						var datas = {
-							"imgBaseStr": Imgbase,
-							"institutionNumber": insNumber,
-							"imgType": "5",
-							"merchantNumber": merNumber
-						}
-						// 发送请求
-						$.ajax({
-							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
-							data: JSON.stringify(datas),
-							dataType: "json",
-							async: false,
-							headers: {
-								"Content-Type": "application/json"
-							},
-							success: function(data) {
-								layer.closeAll('loading');
-								if (data.code === 1000) {
-									layer.msg('上传系统图库成功')
-								} else {
-									layer.msg('上传系统图库失败')
-								}
-							}
-						});
-					}, 300)
 				});
-
-				function changeImgId(id) {
-					console.log(id)
-					poster_imgId = id
-				}
-				window._changeImgId = changeImgId;
 
 				//表单初始赋值
 				function setcardCon(postCon) {
@@ -957,28 +897,66 @@
 				}
 
 				function uploadImg(input_file, get_data) {
-					/*input_file：文件按钮对象*/
-					/*get_data: 转换成功后执行的方法*/
-					if (typeof(FileReader) === 'undefined') {
-						alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
-					} else {
-						try {
-							/*图片转Base64 核心代码*/
-							var file = input_file.files[0];
-							//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
-							if (!/image\/\w+/.test(file.type)) {
-								alert("请确保文件为图像类型");
-								return false;
-							}
-							var reader = new FileReader();
-							reader.onload = function() {
-								get_data(this.result);
-							}
-							reader.readAsDataURL(file);
-						} catch (e) {
-							alert('图片转Base64出错啦！' + e.toString())
+					var file = input_file.files[0];
+					var reader = new FileReader();
+					var AllowImgFileSize = 2100000;
+					if (file.size < AllowImgFileSize) {
+						reader.readAsDataURL(file);
+						reader.onload = function() {
+							get_data(this.result)
 						}
+						$(input_file).val('')
+					} else {
+						layer.closeAll('loading');
+						layer.msg('上传失败<br>请上传不大于2M的图片！', function() {});
+						$(input_file).val('')
 					}
+				}
+
+				function uploadImgajax(Imgbase, upType) {
+					var datas = {
+						"imgBaseStr": Imgbase,
+						"institutionNumber": insNumber,
+						"imgType": upType,
+						"merchantNumber": merNumber
+					}
+					// 发送请求
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+						data: JSON.stringify(datas),
+						dataType: "json",
+						async: false,
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							layer.closeAll('loading');
+							switch (upType) {
+								case 3:
+									poster_imgId = data.data.imageId
+									poster_imgUrl = data.data.localImgUrl
+									$('#cardBgImg').attr('src', data.data.localImgUrl);
+									$('.cardBbg').attr('src', data.data.localImgUrl)
+									$('#cardBg').find('.upTips').hide();
+									break;
+								case 5:
+									if (data.code === 1000) {
+										layer.msg('上传系统图库成功')
+									} else {
+										layer.msg('上传系统图库失败')
+									}
+									break;
+							}
+							if (data.code === 1000) {
+								poster_imgId = data.data.imageId
+								poster_imgUrl = data.data.localImgUrl
+								$('#cardBgImg').attr('src', data.data.localImgUrl);
+								$('.cardBbg').attr('src', data.data.localImgUrl)
+								$('#cardBg').find('.upTips').hide();
+							}
+						}
+					});
 				}
 			});
 
