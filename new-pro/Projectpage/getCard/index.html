@@ -87,7 +87,8 @@
 		$('.cardB').width(_w - 60)
 		$('.cardB').height(_h)
 
-		var cardCon, applystore, subtitle, showQrcodeUrl, shareDescribeText, returnCard = false
+		var cardCon, applystore, subtitle, showQrcodeUrl, shareDescribeText, returnCard = false,
+			isHaveMember, mebNo
 		var deliveryNo
 		var insNumber
 		var merNumber
@@ -111,7 +112,7 @@
 				distributionID = JSON.parse(sessionStorage.getItem('num')).id
 			}
 			$.ajax({
-				url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + merNumber,
+				url: "https://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + merNumber,
 				type: "GET",
 				async: false,
 				headers: {
@@ -119,12 +120,14 @@
 				},
 				success: function(data) {
 					// alert(data)
-					if (data.code != 1000) {
+					if (data.code == 1000) {
 						//alert(data.msg)
+						weixinCode = data.data.appId;
+						comId = data.data.componentAppid;
+						appSecret = data.data.appSecret
+					} else {
+						alert(data.msg)
 					}
-					weixinCode = data.data.appId;
-					comId = data.data.componentAppid;
-					appSecret = data.data.appSecret
 				}
 			})
 			var code;
@@ -154,7 +157,9 @@
 					success: function(data) {
 						getdeliveryCon()
 						if (data.code == '-2') {
-							mebInfo = ''
+							mebInfo = JSON.stringify(data.data)
+							isHaveMember = 1
+							mebNo = data.data.memberNo
 							getCardWxCon()
 						} else if (data.code == '-1') {
 							returnCard = true
@@ -178,6 +183,7 @@
 						} else if (data.code == '1000') {
 							$('#getCardB').show()
 							mebInfo = JSON.stringify(data.data)
+							isHaveMember = 0
 							getCardWxCon()
 						}
 					}
@@ -210,8 +216,9 @@
 					},
 					success: function(data) {
 						if (data.code == 1000) {
-							alert(data.data.appId)
-							aliPid = data.data.appId;
+							// alert(data.data.isvAppId)
+							// aliPid = data.data.merchantAppId;
+							aliPid = data.data.isvAppId;
 							window.location.href = 'https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=' + aliPid +
 								'&scope=' + aliscope + '&redirect_uri=' + aliredirectUrl
 						} else {
@@ -242,7 +249,7 @@
 						"Content-Type": "application/x-www-form-urlencoded"
 					},
 					success: function(data) {
-						alert(JSON.stringify(data))
+						// alert(JSON.stringify(data))
 						if (data.code === 1000) {
 							window.location.href = data.data.schemaUrl
 						} else {
@@ -353,10 +360,6 @@
 							shareDescribeText = data.data.shareDescribe
 							$('title').html(data.data.shareTitle)
 						}
-						//设置页面内容
-						setTimeout(function() {
-							setCardf()
-						}, 500);
 					} else {
 						console.log(data.msg)
 						swal({
@@ -445,6 +448,8 @@
 					"deliveryNo": deliveryNo,
 					"memberInfo": mebInfo,
 					"distributionNo": distributionID,
+					"isHaveMember": isHaveMember,
+					"memberNo": mebNo,
 				},
 				async: true,
 				dataType: "json",
@@ -453,10 +458,12 @@
 				},
 				success: function(data) {
 					if (data.code === 1000) {
-						if (mebInfo == '') {
+						if (isHaveMember == '1') {
 							window.location.href = data.data.getCardUrl
+						} else {
+							setCardf()
+							shareLink = data.data.getCardUrl
 						}
-						shareLink = data.data.getCardUrl
 					} else {
 						console.log(data.msg, 1111)
 						swal({
