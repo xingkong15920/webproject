@@ -81,6 +81,7 @@
             <a class="layui-btn layui-btn-xs" lay-event="horn">设备</a>
             <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
             <a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
+            <a class="layui-btn layui-btn-xs" lay-event="model">模块</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
         </script>
     <script type="text/html" id="toolbar_switch">
@@ -614,7 +615,26 @@
                         iframe.subPageClerkpush(data, userNumber)
                     }
                 });
-            } else if (obj.event == 'delete') {
+            } 
+            else if(obj.event == 'model'){                //模块
+                layer.open({
+                    type: 2,
+                    title: '模块-' + data.merchantName,
+                    shade: 0.5,
+                    area: ['700px', '570px'],
+                    maxmin: false,
+                    resize: false,
+                    content: 'Merchants-model.html',
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                        sessionStorage.setItem(data.merchantNumber, JSON.stringify(data));
+                    }
+                });
+            } 
+            else if (obj.event == 'delete') {
                 // 发送请求,将商户进行禁用
                 layer.confirm('真的要删除(' + data.merchantName + ')此商户吗?', function(index) {
                     console.log(data)

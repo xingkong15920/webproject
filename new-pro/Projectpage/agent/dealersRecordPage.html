@@ -46,8 +46,9 @@
     <script type="text/html" id="tool">
         <a class="layui-btn layui-btn-xs rate" style="display:none" lay-event="rate">修改费率</a>
 			<a class="layui-btn layui-btn-xs edit" style="display:none" lay-event="edit">编辑</a>
-			
-			<a class="layui-btn layui-btn-xs " lay-event="delete">修改密码</a>
+            <a class="layui-btn layui-btn-xs " lay-event="delete">修改密码</a>
+            <a class="layui-btn layui-btn-xs" lay-event="settlement-records">结算记录</a>
+            <a class="layui-btn layui-btn-xs" lay-event="commissionRecord">佣金记录</a>
 		</script>
     <script type="text/html" id="toolbar_switch">
         <input type="checkbox" name="switch" value="{{d.agentNumber}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="启用|禁用" {{ d.state==0 ? 'checked' : '' }}>
@@ -274,6 +275,29 @@
                         var iframe = window['layui-layer-iframe' + index];
                         // 向子页面的全局函数child传参
                         iframe.subPage(data)
+                    }
+                });
+            } else if (obj.event == 'settlement-records') {     //结算记录
+                console.log(data)
+                layer.open({
+                    type: 2,
+                    title: '结算记录',
+                    area: ['70%', '90%'], //宽高
+                    content: 'settlement-records.html?agentLevel='+data.agentLevel+'&agentNumber='+data.agentNumber,
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                    }
+                });
+            } else if (obj.event == 'commissionRecord') {      //佣金记录
+                layer.open({
+                    type: 2,
+                    title: '佣金记录',
+                    area: ['70%', '80%'], //宽高
+                    content: 'commission-record.html?agentLevel='+data.agentLevel+'&agentNumber='+data.agentNumber,
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
                     }
                 });
             } else if (obj.event == 'open') {
