@@ -436,7 +436,8 @@
                     <div class="layui-input-block">
                         <div class="layui-footer" style="left: 0;text-align: center;">
                             <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
-                            <button class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                            <span class="layui-btn layui-btn-primary" id="chongzhi">重置</span>
+                            <span class="layui-btn layui-btn-primary" id="quxiao">取消</span>
                         </div>
                         <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
                     </div>
@@ -447,11 +448,14 @@
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
-    // var index = parent.layer.getFrameIndex(window.name);
-    // $('#quxiao').click(function() {
-
-    //     setTimeout(function() { parent.layer.close(index) }, 16);
-    // })
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+        console.log('123')
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+    $('#chongzhi').click(function(){
+        window.location.reload()
+    })
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
     //var server = 'http://192.168.1.113:6005/shanhe-admin/'
     var server = 'https://nb.51shanhe.com/shanhe-admin/'
@@ -461,7 +465,7 @@
     var prov = []
     var city = []
     var area = []
-
+    var imgList = new Object()
     var longTime = Date.parse(new Date())
     var businessLicense = ''
     var cashier = ''
@@ -1283,7 +1287,7 @@
                     var timeStr = new Date().getTime()
                     $('#' + name).attr('src', returndata.data + '?time=' + timeStr); //图片链接（base64）
 
-                    name = returndata.data
+                    imgList[name] = returndata.data
                     if (type == 1) {
                         var aData = new Object()
 
@@ -1645,6 +1649,16 @@
                     if (data.code == 1000) {
                         merInfo = data.data.merchant
                         paymentInfo = data.data.merchantPayments
+                        imgList['businessLicense'] =  merInfo.businessLicense ||''
+                        imgList['cashier'] =  merInfo.cashier ||''
+                        imgList['placeBusiness'] =  merInfo.placeBusiness ||''
+                        imgList['doorheadPhoto'] =  merInfo.doorheadPhoto ||''
+                        imgList['juridicalpersonIdPositive'] =  merInfo.juridicalpersonIdPositive ||''
+                        imgList['juridicalpersonIdReverseside'] =  merInfo.juridicalpersonIdReverseside ||''
+                        imgList['holdId'] =  merInfo.holdId ||''
+                        imgList['openingPermit'] =  merInfo.openingPermit ||''
+                        imgList['bankCardPositive'] =  merInfo.bankCardPositive ||''
+                        console.log(imgList)
                         businessLicense = isNull(merInfo.businessLicense)
                         cashier = isNull(merInfo.cashier)
                         placeBusiness = isNull(merInfo.placeBusiness)
@@ -1775,6 +1789,12 @@
                         $('#agName').attr('agentNumber', merInfo.agentNumber)
                         $('#slName').val(merInfo.saleName)
                         $('#slName').attr('saleNumber', merInfo.saleNumber)
+                        $('#openingBankBranch').val(merInfo.openingBankBranch)
+                        $('#openingBankBranch').attr('openingBankName',merInfo.openingBankBranch)
+                        $('#openingBankBranch').attr('openingBankNumber',merInfo.openingBankBranchID)
+                        console.log( $('#openingBankBranch').attr('openingBankName'))
+                        console.log($('#openingBankBranch').attr('openingBankNumber'))
+                        
                         console.log(payList)
                         var pStr = ''
                         // for(var b = 0 ; b < payList.length;b++){
@@ -1842,6 +1862,16 @@
 
         form.on('submit(add)', function(data, index) {
             console.log(data)
+            console.log(imgList)
+            cashier = imgList['cashier'] || ''
+            placeBusiness = imgList['placeBusiness'] || ''                
+            doorheadPhoto = imgList['doorheadPhoto'] || ''
+            juridicalpersonIdPositive = imgList['juridicalpersonIdPositive'] || ''
+            juridicalpersonIdReverseside = imgList['juridicalpersonIdReverseside'] || ''
+            bankCardPositive = imgList['bankCardPositive'] || ''
+            businessLicense = imgList['businessLicense'] || ''
+            openingPermit = imgList['openingPermit'] || ''
+            holdId = imgList['holdId'] || ''
             if (cashier == '' || placeBusiness == '' || doorheadPhoto == '' || juridicalpersonIdPositive == '' || juridicalpersonIdReverseside == '' || bankCardPositive == '') {
                 layer.msg('请补充图片信息')
                 return false

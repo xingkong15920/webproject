@@ -444,7 +444,8 @@
                     <div class="layui-input-block">
                         <div class="layui-footer" style="left: 0;text-align: center;">
                             <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
-                            <button class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                            <span class="layui-btn layui-btn-primary" id="chongzhi">重置</span>
+                            <span class="layui-btn layui-btn-primary" id="quxiao">取消</span>
                         </div>
                         <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
                     </div>
@@ -455,11 +456,14 @@
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
-    // var index = parent.layer.getFrameIndex(window.name);
-    // $('#quxiao').click(function() {
-
-    //     setTimeout(function() { parent.layer.close(index) }, 16);
-    // })
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+        console.log('123')
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+    $('#chongzhi').click(function(){
+        window.location.reload()
+    })
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
      //var server = 'http://192.168.1.113:6005/shanhe-admin/'
     var server = 'https://nb.51shanhe.com/shanhe-admin/'
@@ -1783,6 +1787,11 @@ window.fileup = function(img, name, type) {
                         $('#agName').attr('agentNumber', merInfo.agentNumber)
                         $('#slName').val(merInfo.saleName)
                         $('#slName').attr('saleNumber', merInfo.saleNumber)
+                        $('#openingBankBranch').val(merInfo.openingBankBranch)
+                        $('#openingBankBranch').attr('openingBankName',merInfo.openingBankBranch)
+                        $('#openingBankBranch').attr('openingBankNumber',merInfo.openingBankBranchID)
+                        console.log( $('#openingBankBranch').attr('openingBankName'))
+                        console.log($('#openingBankBranch').attr('openingBankNumber'))
                         console.log(payList)
                         var pStr = ''
                         // for(var b = 0 ; b < payList.length;b++){
@@ -1830,7 +1839,7 @@ window.fileup = function(img, name, type) {
 
                             "bankCardNo": merInfo.bankCardNo,
                             "openingBank1": merInfo.openingBankID + '|' + merInfo.openingBank,
-                            "openingBankBranch": merInfo.openingBankBranch,
+                            
                             "openingBankBranchAddress": merInfo.openingBankBranchAddress,
                             "reserveCell": merInfo.reserveCell,
                             "msg": merInfo.msg,

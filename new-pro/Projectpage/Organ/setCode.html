@@ -49,7 +49,7 @@
 						</div>
 						<div class="layui-inline place">
 							<label class="layui-form-label"></label>
-							<span>*注3:拖动二维码及编号右下角可以改变对应元素大小</span>
+							<span>*注3:拖动二维码右下角可以改变对应元素大小</span>
 						</div>
 						<div class="layui-inline place">
 							<label class="layui-form-label"></label>
@@ -136,6 +136,19 @@
 		<script src="../../common/config-organ.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			function IsURL (data) {
+				    
+				    var re=new RegExp(/(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/);
+				 
+				    var js=data
+				 
+				    if (!re.test(js)) {
+				        return false;
+				    } else {
+				        
+				        return true;
+				    }
+				}
 			var imgUrl;
 			var imgTrue = false
 			var code = document.getElementById('code')
@@ -468,7 +481,7 @@
 					// 	"secretkey": jgData.keys
 					// })
 					$('#sub').click(function(){
-						console.log('132132')
+						
 						var aData = new Object()
 
 				        //$('#gao').val('315')
@@ -479,7 +492,12 @@
 				       		$('#ey1').val()=='' ||
 				       		$('#kuan1').val()=='' ||
 				       		$('#payUrl').val()=='' || imgTrue == false){
-				       		alert('请补充信息')
+				       		
+				       		return
+				       	}
+				       
+				       	if(IsURL($('#payUrl').val()) == false){
+				       		layer.msg('支付域名链接不正确')
 				       		return
 				       	}
 						aData.institutionNumber = userNumber
