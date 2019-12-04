@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+	</head>
+
+	<body>
+		<div id="loadstart" class="loadzz">
+			<div class="loading_k">
+				<div class="loading"></div>
+			</div>
+		</div>
+		<div class="vipCenter cardCon" id="Vip">
+			<div class="conList" v-if="cardType == 0">
+				<div class="conListT dh flex_cc">
+					<div class="conListTmodel flex_cc">
+						<p>￥ <span>20</span></p>
+						<a>兑换券</a>
+					</div>
+					<p class="conListTCon">满10减5</p>
+				</div>
+				<div class="conListD flex_cc">
+					<p>有效期：<span>2019-10-11</span></p>
+				</div>
+			</div>
+			<div class="tmList" v-if="cardType == 1">
+				<h4>123</h4>
+				<h5>有效期：2019-10-11至2019-10-11</h5>
+				<p>价格 <span>100元</span></p>
+				<div class="tmListBtn" @click="useorbuy()">{{current_tm == 1?'立即购买':'立即使用'}}</div>
+			</div>
+			<div class="syncBtn">同步至微信卡包</div>
+			<div class="payline"></div>
+			<div class="cardConSys">
+				<img src="" class="cardConSysCode" id="cardConSysCode">
+				<p class="cardConSysCodeNum">券号 <span>{{cardNo}}</span></p>
+				<div class="cardConSysTit flex_cc">
+					<img src="./images/tit_bg_l.png" alt="">
+					<p>{{cardTypeCon}}</p>
+					<img src="./images/tit_bg_r.png" alt="">
+				</div>
+				<div class="cardConSysUse">
+					1. 满100元即可使用，适用于全场消费1. 满100元即可使用，适用于全场消费
+				</div>
+				<div class="cardConSysTit flex_cc">
+					<img src="./images/tit_bg_l.png" alt="">
+					<p>适用门店</p>
+					<img src="./images/tit_bg_r.png" alt="">
+				</div>
+				<ul class="cardConSysMd">
+					<li>1. 庆丰包子铺</li>
+					<li>1. 庆丰包子铺</li>
+					<li>1. 庆丰包子铺</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script src="./js/jquery.min.js"></script>
+	<script src="./common/config.js"></script>
+	<script src="./common/utility.js"></script>
+	<script src="./js/sweetalert.min.js"></script>
+	<script src="./lib/layer/layer.js"></script>
+	<script src="./js/vue.min.js"></script>
+	<script src="./js/qrcode.min.js"></script>
+	<script src="./js/JsBarcode.all.min.js"></script>
+	<script>
+		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
+		// insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+		// merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+		new Vue({
+			el: '#Vip',
+			data: {
+				cardType: 0,
+				cardTypeCon: '',
+				current_tm: 1,
+				cardNo: getQueryString('cardNo'),
+			},
+			methods: {
+				makebarCode: function makebarCode() {
+					JsBarcode("#cardConSysCode", this.cardNo, {
+						displayValue: false,
+						height: 40,
+						margin: 0,
+					});
+				},
+			},
+			created: function created() {
+				$('#loadstart').hide()
+				this.makebarCode()
+				switch (getQueryString('cardType')) {
+					case '0':
+						this.cardType = 0
+						this.cardTypeCon = '优惠券详情'
+						$('title').text('优惠券')
+						break;
+					case '1':
+						this.cardType = 1
+						this.cardTypeCon = '次/月卡详情'
+						$('title').text('次/月卡')
+						break;
+				}
+			},
+			mounted: function mounted() {}
+		})
+
+		function getQueryString(name) {
+			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		}
+	</script>
+
+</html>

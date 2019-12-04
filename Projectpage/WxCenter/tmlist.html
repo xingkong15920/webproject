@@ -21,15 +21,16 @@
 			</div>
 		</div>
 		<div class="vipCenter tmTab" id="Vip">
-			<ul class="tmTabtit flex_cc">
+			<ul class="tmTabtit flex_cc" v-cloak>
 				<li v-for="(item,i) in tmtit" @click="addC(i,$event,item)" :class="{active:i==current}">{{item.name}}</li>
 			</ul>
-			<div class="tmTablist">
-				<ul class="tmFun flex_cc" v-if="cardshowT==1" v-show="cardshowT==1">
+			<div class="tmTablist" v-cloak>
+				<ul class="tmFun flex_cc" v-if="cardshowT==1" v-show="cardshowT==1" v-cloak>
 					<li class="flex_cc" v-for="(item,i) in tmFun" @click="addTm(i,item)" :class="{active:i==current_tm}">{{item.name}}</li>
 				</ul>
-				<ul class="tmTabli">
-					<li class="conList" v-if="cardshowT==0" v-for="(item,i) in conList" :class="item.useType == -2?'stateOff':''">
+				<ul class="tmTabli" v-if="cardshowT == 0" v-cloak>
+					<li class="conList" v-if="cardshowT==0" v-for="(item,i) in conList" :class="item.useType == -2?'stateOff':''"
+					 @click="jump(item.voucherNo)">
 						<div v-if="item.voucherUse==0" class="conListT zk flex_cc">
 							<div class="conListTmodel flex_cc">
 								<p>折 <span>{{item.discount}}</span></p>
@@ -63,16 +64,20 @@
 						<div class="tmListBtn" @click="useorbuy()">{{current_tm == 1?'立即购买':'立即使用'}}</div>
 					</li>
 				</ul>
+				<div class="flex_cc" v-if="cardshowT == 500" style="width: 100%;height: 100%;flex-direction: column;">
+					<img src="./images/mescroll-empty.png" style="display: block;">
+					<p>暂无数据</p>
+				</div>
 			</div>
-			<ul class="conFun flex_cc" v-show="cardshowT==0">
+			<ul class="conFun flex_cc" v-show="cardshowT==0 || cardshowT==500" v-cloak>
 				<li @click="showuse()">{{usetips}}<i class="icon iconfont iconarrow-right"></i></li>
 				<li @click="showcon()">{{contips}}<i class="icon iconfont iconarrow-right"></i></li>
 			</ul>
 			<div class="mask" v-show="mask" @click="hidemask()"></div>
-			<ul class="conFunMask useMask" v-if="cardshowT==0" v-show="mask_u">
+			<ul class="conFunMask useMask" v-if="cardshowT==0 || cardshowT==500" v-show="mask_u" v-cloak>
 				<li v-for="(item,i) in useT" @click="useChoose(item,item.usetype)" :class="{active:item.usetype==current_u}">{{item.usetit}}</li>
 			</ul>
-			<ul class="conFunMask conMask" v-if="cardshowT==0" v-show="mask_c">
+			<ul class="conFunMask conMask" v-if="cardshowT==0 || cardshowT==500" v-show="mask_c" v-cloak>
 				<li v-for="(item,i) in conT" @click="conChoose(item,item.contype)" :class="{active:item.contype==current_c}">{{item.contit}}</li>
 			</ul>
 		</div>
@@ -86,14 +91,23 @@
 	<script src="./js/qrcode.min.js"></script>
 	<script src="./js/JsBarcode.all.min.js"></script>
 	<script>
-		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
-		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+		// var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
+		// insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+		// merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 		new Vue({
 			el: '#Vip',
 			data: {
+				// 以下所有页面共用数据
 				page: 1,
 				limit: 10,
+				insNumber: '',
+				merNumber: '',
+				weixinCode: '',
+				appSecret: '',
+				memberNo: '',
+				memDetails: {},
+				memCpnum: 0,
+				// 以下当前页面数据
 				cardshowT: 0,
 				mask: false,
 				mask_u: false,
@@ -159,16 +173,10 @@
 						this.usetips = this.useT[0].usetit
 						this.contips = this.conT[0].contit
 					} else if (i == 1) {
-						swal({
-							title: "",
-							text: "功能未开放！",
-							type: "error",
-							showCancelButton: false,
-							closeOnConfirm: false,
-							showConfirmButton: true,
-						});
+						layer.msg('功能未开放！')
 						this.cardshowT = 0
 						this.current = 0
+						this.getVoucher()
 						// this.getTimeMonth()
 					}
 				},
@@ -182,6 +190,9 @@
 						this.getTimeMonth()
 					}
 				},
+				jump: function jump(cardNo) {
+					window.location.href = './cardCon.html?cardType=' + this.cardshowT + '&cardNo=' + cardNo
+				},
 				useorbuy() {
 					if (this.current_tm == 0) {
 						console.log('shiyong')
@@ -192,14 +203,12 @@
 				getVoucher() {
 					var that = this,
 						tjData = new Object();
-					// tjData.memberNo = "JSON.parse(sessionStorage.getItem('mInfo')).memberNo"
-					// tjData.shopNo = "JSON.parse(sessionStorage.getItem('mInfo')).shopNumber"
 					tjData.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo
-					tjData.page = that.page
-					tjData.limit = that.limit
+					tjData.page = '1'
+					tjData.limit = '999'
 					tjData.shopNo = JSON.parse(sessionStorage.getItem('mInfo')).shopNumber
-					tjData.voucherUse = that.current_u
-					tjData.useType = that.current_c
+					tjData.voucherUse = that.current_u == 1000 ? '' : that.current_u
+					tjData.useType = that.current_c == 1000 ? '' : that.current_c
 
 					CmsUtility.postAjaxCall2(
 						//系统设置
@@ -211,17 +220,14 @@
 							that.mask_u = false
 							that.mask_c = false
 							if (data.code === 1000) {
-								that.conList = data.data.list
+								if (data.data.voucherCount > 0) {
+									that.conList = data.data.voucherList
+								} else {
+									that.cardshowT = 500
+								}
 							} else {
+								that.cardshowT = 500
 								layer.msg(data.msg)
-								// swal({
-								// 	title: "",
-								// 	text: data.msg,
-								// 	type: "error",
-								// 	showCancelButton: false,
-								// 	closeOnConfirm: false,
-								// 	showConfirmButton: true,
-								// });
 							}
 						},
 						function(data) {
@@ -229,33 +235,7 @@
 						},
 						'get',
 					)
-					// $.ajax({
-					// 	type: "get",
-					// 	url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberVoucherUseList,
-					// 	data: tjData,
-					// 	dataType: "json",
-					// 	headers: {
-					// 		"Content-Type": "application/json"
-					// 	},
-					// 	success: function success(data) {
-					// 		$('#loadstart').hide();
-					// 		that.mask = false
-					// 		that.mask_u = false
-					// 		that.mask_c = false
-					// 		if (data.code === 1000) {
-					// 			that.conList = data.data.list
-					// 		} else {
-					// 			swal({
-					// 				title: "",
-					// 				text: data.msg,
-					// 				type: "error",
-					// 				showCancelButton: false,
-					// 				closeOnConfirm: false,
-					// 				showConfirmButton: true,
-					// 			});
-					// 		}
-					// 	}
-					// });
+					console.log(this.cardshowT)
 				},
 				getTimeMonth() {
 					var that = this,
@@ -330,23 +310,104 @@
 				},
 			},
 			created: function created() {
-				$('#loadstart').hide()
-				switch (getQueryString('cardType')) {
-					case '0':
-						$('title').text('优惠券')
-						this.cardshowT = 0
-						this.current = 0
-						this.getVoucher()
-						break;
-					case '1':
-						$('title').text('次/月卡')
-						this.cardshowT = 1
-						this.current = 1
-						this.getTimeMonth()
-						break;
+				var that = this
+				if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
+						sessionStorage.getItem('mInfo'))) {
+					if (/MicroMessenger/.test(window.navigator.userAgent)) {
+						if (window.location.href.indexOf('&code=') == -1) {
+							var num = {
+								"institutionNumber": getQueryString('institutionNumber'),
+								"merchantNumber": getQueryString('merchantNumber'),
+								"localUrl": window.location.href,
+							}
+							sessionStorage.setItem("num", JSON.stringify(num));
+							var scope = "snsapi_userinfo";
+							var redirect_uri = window.location.href;
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+								type: "GET",
+								async: false,
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									if (data.code == 1000) {
+										that.weixinCode = data.data.appId;
+										that.appSecret = data.data.appSecret
+										var numw = {
+											"weixinCode": data.data.appId,
+											"appSecret": data.data.appSecret,
+										}
+										sessionStorage.setItem("numw", JSON.stringify(numw));
+										window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
+											"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope +
+											"&state=start#wechat_redirect"
+									}
+								}
+							})
+						} else {
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
+							that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
+							var code = window.location.href.split('&code=')[1].split('&state')[0];
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+									that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
+								type: "GET",
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									// $('#loadstart').hide()
+									if (data.code == '-2') {
+										that.memDetails = data.data
+										sessionStorage.setItem("mInfo", JSON.stringify(data.data));
+										switch (getQueryString('cardType')) {
+											case '0':
+												$('title').text('优惠券')
+												that.cardshowT = 0
+												that.current = 0
+												that.getVoucher()
+												break;
+											case '1':
+												$('title').text('次/月卡')
+												that.cardshowT = 1
+												that.current = 1
+												that.getTimeMonth()
+												break;
+										}
+										that.usetips = that.useT[that.usechoose].usetit
+										that.contips = that.conT[that.conchoose].contit
+									} else if (data.code == '1000') {}
+								}
+							})
+
+						}
+					}
+				} else {
+					that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+					that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+					that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
+					switch (getQueryString('cardType')) {
+						case '0':
+							$('title').text('优惠券')
+							that.cardshowT = 0
+							that.current = 0
+							that.getVoucher()
+							break;
+						case '1':
+							$('title').text('次/月卡')
+							that.cardshowT = 1
+							that.current = 1
+							that.getTimeMonth()
+							break;
+					}
+					that.usetips = that.useT[that.usechoose].usetit
+					that.contips = that.conT[that.conchoose].contit
 				}
-				this.usetips = this.useT[this.usechoose].usetit
-				this.contips = this.conT[this.conchoose].contit
 			},
 			mounted: function mounted() {}
 		})

@@ -4,7 +4,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>消费记录</title>
+		<title>积分记录</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -32,6 +32,11 @@
 			.operation.disableundo {
 				background: #ccc;
 			}
+
+			.vipBillimoney {
+				font-size: 16px;
+				color: #FC5548;
+			}
 		</style>
 	</head>
 
@@ -45,46 +50,25 @@
 			<div class="vipBlock vipBill">
 				<div class="vipBillul" v-cloak ref="mescroll" class="mescroll">
 					<ul id="vipBillulB">
-						<li class="vipBilli vipBilli3" v-for="(item,index) in vipBilli" data-type="0" @click="getDetails(item.orderNumber)">
-							<div class="vipBilliBody" v-if="item.orderState == 1" @touchstart.capture="touchStart" @touchend.capture="touchEnd"
-							 @click="skip">
+						<li class="vipBilli vipBilli3" v-for="(item,index) in vipBilli">
+							<div class="vipBilliBody">
 								<div class="vipBilliL">
-									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
-									<p class="vipBillitime">{{item.orderTime}}</p>
+									<p class="vipBillitit">{{item.changeType1}}</p>
+									<p class="vipBillitime">{{item.changeTime}}</p>
 								</div>
 								<div class="vipBilliC">
-									<p class="vipBillitype">{{item.payType1}}</p>
-									<p class="vipBillistated">({{item.orderState2}})</p>
+									<p class="vipBillitype"></p>
+									<p class="vipBillistated"></p>
 								</div>
-								<div class="vipBilliR" v-show="item.orderState == 1">
-									<p class="vipBillimoney">- ¥ {{item.money}}</span></p>
-									<p class="vipBillimoneyG">优惠: ¥ {{item.discountMoney}}</span></p>
+								<div class="vipBilliR" v-show="item.changeType == 0 ||item.changeType == 3 || item.changeType == 4">
+									<p class="vipBillimoney">+ {{item.changeIntegral}} 分</span></p>
 								</div>
-								<div class="vipBilliR" v-show="item.orderState == -2">
-									<p class="vipBillimoney">+ ¥ {{item.money?item.money:'0.00'}}</span></p>
-								</div>
-							</div>
-							<div class="vipBilliBody" v-else="item.orderState != 1">
-								<div class="vipBilliL">
-									<p class="vipBillitit">{{item.name}}({{item.cell}})</p>
-									<p class="vipBillitime">{{item.orderTime}}</p>
-								</div>
-								<div class="vipBilliC">
-									<p class="vipBillitype">{{item.payType1}}</p>
-									<p class="vipBillistated">({{item.orderState2}})</p>
-								</div>
-								<div class="vipBilliR" v-show="item.orderState == 1">
-									<p class="vipBillimoney">- ¥ {{item.money}}</span></p>
-									<p class="vipBillimoneyG">优惠: ¥ {{item.discountMoney}}</span></p>
-								</div>
-								<div class="vipBilliR" v-show="item.orderState == -2">
-									<p class="vipBillimoney">+ ¥ {{item.money?item.money:'0.00'}}</span></p>
+								<div class="vipBilliR" v-show="item.changeType == 1 ||item.changeType == 2">
+									<p class="vipBillimoney">- {{item.changeIntegral}} 分</span></p>
 								</div>
 							</div>
-							<ul class="operation" :class="item.revokeState == 1 ? 'disableundo':''">
-								<li @click="undoItem" :data-index="index" :data-state="item.revokeState" :data-recno="item.orderNumber">撤销</li>
-							</ul>
 						</li>
+						<!-- <li class="branches" v-cloak>共计 <span>{{branches}}</span> 条记录</li> -->
 					</ul>
 				</div>
 			</div>
@@ -113,12 +97,21 @@
 				memCpnum: 0,
 				// 以下当前页面数据
 				branches: '',
+				vipBilul: [{
+					'vipBilliL': '充值信息',
+					'vipBilliC': '充值金额',
+					'vipBilliR': '赠送金额'
+				}],
 				vipBilli: [],
 				mescroll: null, // mescroll实例对象
 				mebsearch: false,
 				seachText: '',
 				seachTextN: '',
 				seachTextC: '',
+				startX: 0,
+				startY: 0,
+				endX: 0,
+				endY: 0,
 			},
 			methods: {
 				//跳转
@@ -187,7 +180,6 @@
 					// 当前索引
 					let recNo = e.target.dataset.recno;
 					let state = e.target.dataset.state;
-					console.log(recNo)
 					console.log(state)
 					if (state == 0) {
 						// 复位
@@ -195,10 +187,10 @@
 						$('#loadstart').show();
 						var that = this,
 							sendData = new Object();
-						sendData.orderNo = recNo;
+						sendData.rechargeRecordNo = recNo;
 						$.ajax({
 							type: "post",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateConStateByOrderNo,
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateStateByOrderNo,
 							data: JSON.stringify(sendData),
 							dataType: "json",
 							headers: {
@@ -231,7 +223,6 @@
 				},
 				getDetails: function getDetails(e) {
 					console.log(e)
-					window.location.href = 'detail-con.html?orderNumber=' + e
 				},
 				inputfocus: function inputfocus() {
 					this.mebsearch = true;
@@ -262,31 +253,21 @@
 				},
 				changeDatas: function changeDatas(res) {
 					for (let i = 0; i < res.length; i++) {
-						if (res[i].money.split('.')[0].length > 5) {
-							res[i].money = res[i].money.split('.')[0] / 10000 + '万'
-						}
-						if (res[i].discountMoney.split('.')[0].length > 5) {
-							res[i].discountMoney = res[i].discountMoney.split('.')[0] / 10000 + '万'
-						}
-						switch (res[i].payType) {
+						switch (res[i].changeType) {
 							case 0:
-								res[i].payType1 = '现金'
+								res[i].changeType1 = '后台增加'
 								break;
 							case 1:
-								res[i].payType1 = '微信'
+								res[i].changeType1 = '后台减少'
 								break;
 							case 2:
-								res[i].payType1 = '支付宝'
+								res[i].changeType1 = '积分抵现'
 								break;
-						}
-						switch (res[i].orderState) {
-							case 1:
-								res[i].orderState1 = '+'
-								res[i].orderState2 = '消费成功'
+							case 3:
+								res[i].changeType1 = '充值赠送'
 								break;
-							case -2:
-								res[i].orderState1 = '-'
-								res[i].orderState2 = '已撤销'
+							case 4:
+								res[i].changeType1 = '消费赠送'
 								break;
 						}
 					}
@@ -295,6 +276,7 @@
 				// 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
 				upCallback: function upCallback(page) {
 					var _this = this;
+
 					// 模拟联网
 					this.getListDataFromNet(this.pdType, page.num, page.size, this.seachText, function(arr) {
 						// 如果是第一页需手动制空列表
@@ -322,14 +304,15 @@
 						// 获取分页数据
 						var that = _this2,
 							sendData = new Object();
-						sendData.merchantNumber = that.merNumber;
+						sendData.merchantNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber;
 						sendData.page = pageNum;
 						sendData.limit = pageSize;
 						sendData.name = JSON.parse(sessionStorage.getItem('mInfo')).name;
 						sendData.cell = JSON.parse(sessionStorage.getItem('mInfo')).cell;
+						sendData.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo;
 						$.ajax({
 							type: "get",
-							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getConTurnovers,
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getIntegrals,
 							data: sendData,
 							dataType: "json",
 							headers: {
@@ -338,9 +321,9 @@
 							success: function success(data) {
 								$('#loadstart').hide(); // 回调
 								if (data.code === 1000) {
-									if (data.data.consumTurnovers.length > 0) {
+									if (data.data.integralInfos.length > 0) {
 										that.mebsearch = false;
-										successCallback(that.changeDatas(data.data.consumTurnovers));
+										successCallback(that.changeDatas(data.data.integralInfos));
 										that.branches = data.data.count;
 									} else {
 										that.mebsearch = false;
@@ -419,8 +402,6 @@
 						}
 					}
 				} else {
-					that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-					that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 					that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
 				}
 			},
@@ -438,7 +419,7 @@
 						empty: {
 							warpId: 'vipBillulB', // 父布局的id;
 							icon: './images/mescroll-empty.png', // 图标,默认null
-							tip: '暂无消费记录~', // 提示
+							tip: '暂无积分数据~', // 提示
 						},
 						toTop: { // 配置回到顶部按钮
 							src: './images/mescroll-totop.png'
@@ -456,6 +437,7 @@
 					if (vm.mescroll) {
 						// 恢复到之前设置的isBounce状态
 						if (vm.mescroll.lastBounce != null) vm.mescroll.setBounce(vm.mescroll.lastBounce); // 滚动到之前列表的位置(注意:路由使用keep-alive才生效)
+
 						if (vm.mescroll.lastScrollTop) {
 							vm.mescroll.setScrollTop(vm.mescroll.lastScrollTop);
 							setTimeout(function() {

@@ -99,14 +99,20 @@
 	<script src="./lib/layer/layer.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./lib/mescroll/mescroll.js" type="text/javascript" charset="utf-8"></script>
 	<script>
-		/* 1 充值成功  -1充值失败  -2撤销 */
-		var insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber;
-		var merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber;
 		new Vue({
 			el: '#Vip',
 			data: {
+				// 以下所有页面共用数据
 				page: 1,
 				limit: 10,
+				insNumber: '',
+				merNumber: '',
+				weixinCode: '',
+				appSecret: '',
+				memberNo: '',
+				memDetails: {},
+				memCpnum: 0,
+				// 以下当前页面数据
 				branches: '',
 				vipBilul: [{
 					'vipBilliL': '充值信息',
@@ -244,11 +250,11 @@
 				searchThing: function searchThing() {
 					$('#loadstart').show(); // 回调
 					if (this.isNumber(this.seachText)) {
-						this.seachTextC = this.seachText
-						this.seachTextN = ''
+						this.seachTextC = JSON.parse(sessionStorage.getItem('mInfo')).cell
+						this.seachTextN = JSON.parse(sessionStorage.getItem('mInfo')).name
 					} else {
-						this.seachTextC = ''
-						this.seachTextN = this.seachText
+						this.seachTextC = JSON.parse(sessionStorage.getItem('mInfo')).cell
+						this.seachTextN = JSON.parse(sessionStorage.getItem('mInfo')).name
 					}
 					seachText = this.seachText; //更新关键词
 					this.mescroll.resetUpScroll(); //重新搜索,重置列表数据
@@ -329,11 +335,11 @@
 						// 获取分页数据
 						var that = _this2,
 							sendData = new Object();
-						sendData.merchantNumber = merNumber;
+						sendData.merchantNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber;
 						sendData.page = pageNum;
 						sendData.limit = pageSize;
-						sendData.name = that.seachTextN;
-						sendData.cell = that.seachTextC;
+						sendData.name = JSON.parse(sessionStorage.getItem('mInfo')).name;
+						sendData.cell = JSON.parse(sessionStorage.getItem('mInfo')).cell;
 						$.ajax({
 							type: "get",
 							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getTurnovers,
@@ -362,6 +368,73 @@
 					}, 1000);
 				}
 			},
+			created: function created() {
+				var that = this
+				if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
+						sessionStorage.getItem('mInfo'))) {
+					if (/MicroMessenger/.test(window.navigator.userAgent)) {
+						if (window.location.href.indexOf('&code=') == -1) {
+							var num = {
+								"institutionNumber": getQueryString('institutionNumber'),
+								"merchantNumber": getQueryString('merchantNumber'),
+								"localUrl": window.location.href,
+							}
+							sessionStorage.setItem("num", JSON.stringify(num));
+							var scope = "snsapi_userinfo";
+							var redirect_uri = window.location.href;
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+								type: "GET",
+								async: false,
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									if (data.code == 1000) {
+										that.weixinCode = data.data.appId;
+										that.appSecret = data.data.appSecret
+										var numw = {
+											"weixinCode": data.data.appId,
+											"appSecret": data.data.appSecret,
+										}
+										sessionStorage.setItem("numw", JSON.stringify(numw));
+										window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
+											"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope +
+											"&state=start#wechat_redirect"
+									}
+								}
+							})
+						} else {
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
+							that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
+							var code = window.location.href.split('&code=')[1].split('&state')[0];
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+									that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
+								type: "GET",
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									// $('#loadstart').hide()
+									if (data.code == '-2') {
+										that.memDetails = data.data
+										sessionStorage.setItem("mInfo", JSON.stringify(data.data));
+										// $('#loadstart').hide()
+									} else if (data.code == '1000') {}
+								}
+							})
+
+						}
+					}
+				} else {
+					that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
+				}
+			},
 			mounted: function mounted() {
 				// 创建MeScroll对象
 				this.mescroll = new MeScroll(this.$refs.mescroll, {
@@ -376,7 +449,7 @@
 						empty: {
 							warpId: 'vipBillulB', // 父布局的id;
 							icon: './images/mescroll-empty.png', // 图标,默认null
-							tip: '暂无消费数据~', // 提示
+							tip: '暂无充值数据~', // 提示
 						},
 						toTop: { // 配置回到顶部按钮
 							src: './images/mescroll-totop.png'
@@ -416,6 +489,15 @@
 				next();
 			}
 		});
+
+		function getQueryString(name) {
+			var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+			var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		}
 	</script>
 
 </html>

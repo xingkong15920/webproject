@@ -21,20 +21,20 @@
 			</div>
 		</div>
 		<div class="vipCenter payCode" id="Vip">
-			<div class="payCon">
+			<div class="payCon" v-cloak>
 				<h3 class="flex_cc">付款码<span>结账时请出示会员卡</span></h3>
 				<div class="codeCon flex_cc">
-					<img src="" class="cardConSysCode" id="cardConSysCode">
-					<p>{{mebinfo.memberNo}}</p>
+					<img src="" class="cardConSysCode" id="cardConSysCode" v-cloak>
+					<p v-cloak>{{memDetails.memberNo}}</p>
 					<div id="qrcode"></div>
 				</div>
 				<div class="payline"></div>
-				<div class="balanceCon flex_cc">
+				<div class="balanceCon flex_cc" v-cloak>
 					<div class="balanceConL">
 						<p class="flex_cc"><i class="icon iconfont iconjinbi"></i>余额</p>
-						<h5>￥ {{mebinfo.allBalance}}</h5>
+						<h5>￥ {{memDetails.allBalance}}</h5>
 					</div>
-					<a class="recBtn">充值</a>
+					<a class="recBtn" @click="jumpTorec()">充值</a>
 				</div>
 			</div>
 		</div>
@@ -51,27 +51,116 @@
 		new Vue({
 			el: '#Vip',
 			data: {
-				mebinfo: JSON.parse(sessionStorage.getItem('mInfo')),
+				// 以下所有页面共用数据
+				page: 1,
+				limit: 10,
+				insNumber: '',
+				merNumber: '',
+				weixinCode: '',
+				appSecret: '',
+				memberNo: '',
+				memDetails: {},
+				memCpnum: 0,
+				// 以下当前页面数据
 			},
 			methods: {
-				makebarCode: function() {
-					JsBarcode("#cardConSysCode", this.mebinfo.memberNo, {
+				makebarCode: function makebarCode() {
+					var that = this
+					JsBarcode("#cardConSysCode", that.memDetails.memberNo, {
 						displayValue: false,
 						height: 60,
 						margin: 0,
 					});
-					var qrcode = new QRCode(document.getElementById("qrcode"), {
+				},
+				erweima: function erweima() {
+					var link = this.memDetails.memberNo
+					console.log(link)
+					var qrcode = new QRCode("qrcode", {
+						text: link,
 						width: 140,
 						height: 140,
 					});
-					qrcode.makeCode(this.mebinfo.memberNo);
 				},
+				jumpTorec: function jumpTorec() {
+					window.location.href = "./recharge.html?institutionNumber=" + this.insNumber + "&merchantNumber=" + this.merNumber
+				}
 			},
 			created: function created() {
-				$('#loadstart').hide()
-			},
-			mounted: function mounted() {
-				this.makebarCode()
+				var that = this
+				if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
+						sessionStorage.getItem('mInfo'))) {
+					if (/MicroMessenger/.test(window.navigator.userAgent)) {
+						if (window.location.href.indexOf('&code=') == -1) {
+							var num = {
+								"institutionNumber": getQueryString('institutionNumber'),
+								"merchantNumber": getQueryString('merchantNumber'),
+								"localUrl": window.location.href,
+							}
+							sessionStorage.setItem("num", JSON.stringify(num));
+							var scope = "snsapi_userinfo";
+							var redirect_uri = window.location.href;
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+								type: "GET",
+								async: false,
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									if (data.code == 1000) {
+										that.weixinCode = data.data.appId;
+										that.appSecret = data.data.appSecret
+										var numw = {
+											"weixinCode": data.data.appId,
+											"appSecret": data.data.appSecret,
+										}
+										sessionStorage.setItem("numw", JSON.stringify(numw));
+										window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
+											"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope +
+											"&state=start#wechat_redirect"
+									}
+								}
+							})
+						} else {
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
+							that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
+							var code = window.location.href.split('&code=')[1].split('&state')[0];
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+									that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
+								type: "GET",
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									// $('#loadstart').hide()
+									if (data.code == '-2') {
+										that.memDetails = data.data
+										sessionStorage.setItem("mInfo", JSON.stringify(data.data));
+										that.makebarCode()
+										setTimeout(function() {
+											that.erweima()
+											$('#loadstart').hide()
+										}, 50);
+									} else if (data.code == '1000') {}
+								}
+							})
+						}
+					}
+				} else {
+					that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+					that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+					that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
+					that.makebarCode()
+					setTimeout(function() {
+						that.erweima()
+						$('#loadstart').hide()
+					}, 50);
+				}
 			}
 		})
 

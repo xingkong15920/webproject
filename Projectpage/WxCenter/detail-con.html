@@ -27,7 +27,7 @@
 			<ul class="payDetails">
 				<li class="flex_cc">
 					<span>付款方式</span>
-					<p>{{orderDetail.cell}}</p><i class="icon iconfont iconarrow-right-copy"></i>
+					<p>{{orderDetail.payType1}}</p><i class="icon iconfont iconarrow-right-copy"></i>
 				</li>
 				<li class="flex_cc">
 					<span>积分奖励</span>
@@ -35,7 +35,7 @@
 				</li>
 				<li class="flex_cc">
 					<span>商品说明</span>
-					<p>四级凉皮(中心线店)消费订单</p><i class="icon iconfont iconarrow-right-copy"></i>
+					<p>{{orderDetail.shopName}}消费订单</p><i class="icon iconfont iconarrow-right-copy"></i>
 				</li>
 				<div class="line1"></div>
 				<li class="flex_cc">
@@ -85,6 +85,19 @@
 				orderMoney: '100.00',
 			},
 			methods: {
+				changeDatas: function changeDatas(res) {
+					switch (res.payType) {
+						case 0:
+							res.payType1 = '钱包'
+							break;
+						case 1:
+							res.payType1 = '微信'
+							break;
+						case 2:
+							res.payType1 = '支付宝'
+							break;
+					}
+				},
 				getDetails() {
 					// 获取分页数据
 					var that = this,
@@ -104,7 +117,7 @@
 						success: function success(data) {
 							$('#loadstart').hide(); // 回调
 							if (data.code === 1000) {
-								that.orderDetail = data.data.consumTurnovers[0]
+								that.orderDetail = changeDatas(data.data.consumTurnovers[0])
 							} else {
 								swal({
 									title: "",

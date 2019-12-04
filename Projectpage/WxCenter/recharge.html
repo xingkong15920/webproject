@@ -22,15 +22,15 @@
 		</div>
 		<div class="vipCenter recBody" id="Vip">
 			<p class="rectit">余额(元)</p>
-			<h3 class="recbalan">{{mebinfo.allBalance}}</h3>
-			<ul class="recFun flex_cc">
+			<h3 class="recbalan" v-cloak>{{memDetails.allBalance}}</h3>
+			<ul class="recFun flex_cc" v-cloak>
 				<li class="flex_cc" v-for="item in recFun" @click="jmup(item)">
 					<i class="icon iconfont" :class="item.toolcl"></i>
 					<p>{{item.toolitit}}</p>
 				</li>
 			</ul>
-			<div class="saleCon">
-				<p class="saleshname flex_cc"><i class="icon iconfont icondianpu"></i><span>庆丰包子铺</span></p>
+			<div class="saleCon" v-cloak>
+				<p class="saleshname flex_cc"><i class="icon iconfont icondianpu"></i><span>{{memDetails.shopName}}</span></p>
 				<div class="saleInput flex_cc">
 					<label for="">￥</label><input type="number" v-model="saleJ" placeholder="请选择/输入充值金额" />
 				</div>
@@ -40,7 +40,7 @@
 						<span class="flex_cc">赠<i>{{item.giveMoney.split('.')[0]}}</i>元</span>
 					</li>
 				</ul>
-				<a class="recBtn1">充值</a>
+				<a class="recBtn1" @click="recForm()">充值</a>
 			</div>
 		</div>
 	</body>
@@ -56,9 +56,21 @@
 		new Vue({
 			el: '#Vip',
 			data: {
+				// 以下所有页面共用数据
+				page: 1,
+				limit: 10,
+				insNumber: '',
+				merNumber: '',
+				weixinCode: '',
+				appSecret: '',
+				memberNo: '',
+				memDetails: {},
+				memCpnum: 0,
+				// 以下当前页面数据
+				shopname: '',
+				shopnumber: '',
 				current: 0,
 				saleJ: '',
-				mebinfo: JSON.parse(sessionStorage.getItem('mInfo')),
 				recFun: [{
 					toolcl: "iconqianbao",
 					toolitit: "充值记录",
@@ -72,7 +84,7 @@
 			},
 			methods: {
 				jmup: function(e) {
-					window.location.href = e.address
+					window.location.href = e.address + "?institutionNumber=" + this.insNumber + "&merchantNumber=" + this.merNumber
 				},
 				addC: function(i, e, res) {
 					this.current = i
@@ -94,6 +106,7 @@
 						success: function(data) {
 							$('#loadstart').hide()
 							if (data.code === 1000) {
+								that.memDetails = data.data
 								that.saleli = data.data.preferentialRecharges
 							} else {
 								swal({
@@ -104,11 +117,137 @@
 							}
 						}
 					});
-
 				},
+				recForm: function recForm() {
+					var sendDataR = new Object(),
+						that = this;
+					$('#loadstart').show()
+					if (parseFloat(that.saleJ) < 0.01) {
+						$('#loadstart').hide()
+						swal({
+							title: "",
+							text: "请输入正确的金额！",
+							type: "error",
+						});
+						return
+					}
+					sendDataR.institutionNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+					sendDataR.merchantNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+					sendDataR.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo
+					sendDataR.openId = JSON.parse(sessionStorage.getItem('mInfo')).subOpenId
+					equipmentType
+					sendDataR.payType = 1
+					sendDataR.codeType = 'PublicAddress_Pay'
+					sendDataR.paymentType = 'WeChat_Pay'
+					sendDataR.source = 6
+					sendDataR.totalMoney = that.saleJ
+					sendDataR.rechargeClass = 0
+					sendDataR.shopNumber = JSON.parse(sessionStorage.getItem('mInfo')).shopNumber
+					sendDataR.clerkNumber = JSON.parse(sessionStorage.getItem('mInfo')).clerkNumber || ''
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.apppay,
+						data: JSON.stringify(sendDataR),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							$('#loadstart').hide()
+							if (data.code === 1000) {
+								that.cell = ''
+								that.customM = ''
+								that.mebInfoTips = false
+								swal({
+									title: "充值成功！",
+									text: "",
+									type: "success",
+								});
+							} else {
+								swal({
+									title: "",
+									text: data.msg,
+									type: "error",
+								});
+							}
+						}
+					});
+				}
 			},
 			created: function created() {
-				this.getyhlist()
+				var that = this
+				if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
+						sessionStorage.getItem('mInfo'))) {
+					if (/MicroMessenger/.test(window.navigator.userAgent)) {
+						if (window.location.href.indexOf('&code=') == -1) {
+							var num = {
+								"institutionNumber": getQueryString('institutionNumber'),
+								"merchantNumber": getQueryString('merchantNumber'),
+								"localUrl": window.location.href,
+							}
+							sessionStorage.setItem("num", JSON.stringify(num));
+							var scope = "snsapi_userinfo";
+							var redirect_uri = window.location.href;
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+								type: "GET",
+								async: false,
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									if (data.code == 1000) {
+										that.weixinCode = data.data.appId;
+										that.appSecret = data.data.appSecret
+										var numw = {
+											"weixinCode": data.data.appId,
+											"appSecret": data.data.appSecret,
+										}
+										sessionStorage.setItem("numw", JSON.stringify(numw));
+										window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
+											"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope +
+											"&state=start#wechat_redirect"
+									}
+								}
+							})
+						} else {
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
+							that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
+							var code = window.location.href.split('&code=')[1].split('&state')[0];
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+									that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
+								type: "GET",
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									// $('#loadstart').hide()
+									if (data.code == '-2') {
+										that.memDetails = data.data
+										that.shopname = data.data.shopName
+										that.shopnumber = data.data.shopNumber
+										sessionStorage.setItem("mInfo", JSON.stringify(data.data));
+										$('#loadstart').hide()
+										that.getyhlist()
+									} else if (data.code == '1000') {}
+								}
+							})
+						}
+					}
+				} else {
+					that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+					that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+					that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
+					that.shopname = JSON.parse(sessionStorage.getItem('mInfo')).shopName
+					that.shopnumber = JSON.parse(sessionStorage.getItem('mInfo')).shopNumber
+					$('#loadstart').hide()
+					that.getyhlist()
+				}
 			},
 			mounted: function mounted() {}
 		})
