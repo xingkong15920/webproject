@@ -18,7 +18,7 @@
 	<body>
 		<div class="x-body">
 			<form class="layui-form" lay-filter="editAssistant">
-				<!-- <div class="layui-form-item">
+				<div class="layui-form-item">
 					<label class="layui-form-label">角色</label>
 					<div class="layui-input-inline">
 						<select name="userKinds" id="userKinds" lay-filter="userKinds" lay-verify="userKinds">
@@ -26,7 +26,7 @@
 							<option value='5'>店员</option>
 						</select>
 					</div>
-				</div> -->
+				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">名称</label>
 					<div class="layui-input-inline">
@@ -63,7 +63,6 @@
 					clerkName = data.clerkName,
 					userKinds = data.userKinds,
 					shopName = data.shopName;
-					console.log(data)
 				layui.use(['form', 'layer'], function() {
 					$ = layui.jquery;
 					var form = layui.form,
@@ -71,7 +70,7 @@
 
 					//表单初始赋值
 					form.val('editAssistant', {
-						// "userKinds":data.userKinds,
+						"userKinds": data.userKinds,
 						"clerkerName": data.clerkName,
 						"clerkerTel": data.registeredCell,
 					})
@@ -79,13 +78,13 @@
 					//自定义验证规则
 					form.verify({
 						name: function(value) {
-							if(!value) {
+							if (!value) {
 								return '管理员名称';
 							}
 						},
 						pass: [/^[0-9A-Za-z]{6,12}$/, '密码必须6到12位'],
 						repass: function(value) {
-							if($('#L_pass').val() != $('#L_repass').val()) {
+							if ($('#L_pass').val() != $('#L_repass').val()) {
 								return '两次密码不一致';
 							}
 						}
@@ -93,15 +92,33 @@
 
 					//监听提交
 					form.on('submit(add)', function(data) {
-						if(!data.field.clerkNumber){
+						if (!data.field.clerkNumber) {
 							data.field.clerkerNumber = clerkNumber
 						}
+						var tjData = new Object();
+						tjData.merchantNumber = userNumber
+						tjData.shopNumber = shopNumber
+						tjData.clerkerNumber = clerkNumber
+						tjData.userKinds = data.field.userKinds
+						CmsUtility.postAjaxCall(
+							//系统设置
+							CmsConfig.addressUrl.Merchant.updateClerkerType,
+							tjData,
+							function(data) {
+								if (data.code == 1000) {} else {
+									layer.msg(data.msg)
+								}
+							},
+							function(data) {
+								console.log('222')
+							}
+						)
+
 						console.log(data.field);
 						var addData = data.field
 						addData.shopNumber = shopNumber
 						addData.merchantNumber = userNumber
 						addData.shopName = shopName
-						addData.userKinds = userKinds
 						addData.deletionFlag = 0
 						// 发送请求
 						CmsUtility.postAjaxCall(
@@ -109,7 +126,7 @@
 							CmsConfig.addressUrl.Merchant.updateClerker,
 							addData,
 							function(data) {
-								if(data.code == 1000) {
+								if (data.code == 1000) {
 									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 									parent.layer.close(index); //再执行关闭
 									parent.layer.msg('修改成功！')

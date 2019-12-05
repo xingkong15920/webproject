@@ -252,6 +252,8 @@ var CmsConfig = {
 			getMerchantBill: "merchantBill/getMerchantBill",
 			// 账单管理--店员账单
 			getClerkBill: "clerkBill/getClerkBill",
+			// 查询划款账单
+			getMerAccountArrival: "arrivalBill/getMerAccountArrival",
 			//交易数据统计
 			getStatistics: "statistics/getTransactionStatistics",
 			//店员统计
@@ -276,6 +278,8 @@ var CmsConfig = {
 			getShopBillExcel: "shopBill/getShopBillExcel",
 			// 导出店员账单
 			getClerkBillExcel: "clerkBill/getClerkBillExcel",
+			// 导出划款账单
+			getMerDrawMoneyExcel: "arrivalBill/getMerDrawMoneyExcel",
 
 			//广告管理
 			//获取广告列表

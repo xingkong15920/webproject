@@ -78,6 +78,7 @@
 		</div>
 
 		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" lay-event="weixinPush">推送</a>
 			<a class="layui-btn layui-btn-xs" lay-event="resetting">密码</a>
 			<a class="layui-btn layui-btn-xs" lay-event="pay">码牌</a>
@@ -325,7 +326,20 @@
 					var data = obj.data;
 					var logGid = data.LogGid;
 					var shop = data.ShopName;
-					if (obj.event == 'resetting') {
+					if (obj.event == 'edit') {
+						layer.open({
+							type: 2,
+							title: '编辑',
+							area: ['460px', '350px'], //宽高
+							content: 'assistant-edit.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPageClerkedit(data, merNumber)
+							}
+						});
+					} else if (obj.event == 'resetting') {
 						layer.open({
 							type: 2,
 							title: '修改密码',

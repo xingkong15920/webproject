@@ -37,13 +37,13 @@
 						<option value="">请选择县/区</option>
 					</select>
 				</div> -->
-				 <div class="layui-input-inline">
+				<div class="layui-input-inline">
 					<select name="shopStatus" id="shopStatus">
 						<option value="">状态</option>
 						<option value="0">正常</option>
 						<option value="1">禁用</option>
 					</select>
-				</div> 
+				</div>
 				<div class="layui-input-inline">
 					<button class="layui-btn" data-type="reload"><i class="layui-icon">&#xe615;</i></button>
 				</div>
@@ -57,6 +57,7 @@
 			<input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|禁用" {{d.enable==0 ? 'checked' : ''}}  data-shopNumber="{{d.shopNumber}}" value="{{d.enable}}">
 		</script>
 		<script type="text/html" id="tool">
+			<a class="layui-btn layui-btn-xs" lay-event="funsys">设置</a>
 			<a class="layui-btn layui-btn-xs" lay-event="devicelist">码牌</a>
 			<a class="layui-btn layui-btn-xs" lay-event="assistantlist">店员</a>
 			
@@ -68,7 +69,6 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use('table', function() {
 				var table = layui.table,
@@ -77,7 +77,7 @@
 				// setTimeout(function(){
 				// 		form.render()
 				// 	},100)
-				
+
 				//省市区三联
 				// form.on('select(provice)', function(data) {
 				// 	CmsUtility.chooseCity(data.value)
@@ -95,7 +95,8 @@
 				//方法级渲染
 				table.render({
 					elem: '#LAY_table_shop',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' + userNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getShops + '?merchantNumber=' +
+						userNumber,
 					method: "post",
 					height: 'full-150',
 					page: true,
@@ -104,7 +105,7 @@
 						"statusCode": "1000", //解析接口状态
 					},
 					parseData: function(res) {
-						if(res.data == null) {
+						if (res.data == null) {
 							return
 						}
 						return {
@@ -115,51 +116,52 @@
 					},
 					cols: [
 						[{
-							field: 'shopNumber',
-							title: '编号',
-							align: 'center',
-							width: 250
-						},{
-							field: 'shopName',
-							title: '门店名称',
-							align: 'center',
-							width: 250
-						}, {
-							title: '门店地址',
-							templet: function(data) {
-								return  data.address
-							},
-							align: 'center',
-							width: 300
-						}
-						// , {
-						// 	field: 'storePhone',
-						// 	title: '门店电话',
-						// 	align: 'center',
-						// 	width: 150
-						// }
-						, {
-							field: 'insertTime',
-							title: '创建时间',
-							align: 'center',
-							width: 150
-						}, {
-							field: 'enable',
-							title: '状态',
-							align: 'center',
-							toolbar: "#switchBar",
-							width: 200
-						}, {
-							field: 'operation',
-							title: '操作',
-							align: 'center',
-							toolbar: "#tool",
-							minWidth: 300
-						}]
+								field: 'shopNumber',
+								title: '编号',
+								align: 'center',
+								width: 250
+							}, {
+								field: 'shopName',
+								title: '门店名称',
+								align: 'center',
+								width: 250
+							}, {
+								title: '门店地址',
+								templet: function(data) {
+									return data.address
+								},
+								align: 'center',
+								width: 300
+							}
+							// , {
+							// 	field: 'storePhone',
+							// 	title: '门店电话',
+							// 	align: 'center',
+							// 	width: 150
+							// }
+							, {
+								field: 'insertTime',
+								title: '创建时间',
+								align: 'center',
+								width: 150
+							}, {
+								field: 'enable',
+								title: '状态',
+								align: 'center',
+								toolbar: "#switchBar",
+								width: 200
+							}, {
+								field: 'operation',
+								title: '操作',
+								align: 'center',
+								toolbar: "#tool",
+								minWidth: 300
+							}
+						]
 					],
 					done: function(res, curr, count) {
 						console.log(res)
-						if(res.data == null) {
+						if (res.data == null) {
 							// layer.msg(res.msg)
 						} else {
 
@@ -170,25 +172,25 @@
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					var tjData = new Object();
 					console.log(data);
-					tjData.merchantNumber=userNumber,
-					tjData.shopNumber= data.elem.dataset.shopnumber,
-					tjData.deletionFlag=0
-					tjData.enable=this.checked?'0':'1';
+					tjData.merchantNumber = userNumber,
+						tjData.shopNumber = data.elem.dataset.shopnumber,
+						tjData.deletionFlag = 0
+					tjData.enable = this.checked ? '0' : '1';
 					CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Merchant.enableShop,
 						tjData,
-						function(data){
-							if(data.code == 1000){
-								 
+						function(data) {
+							if (data.code == 1000) {
+
 								parent.layer.msg('更改成功')
 								layui.table.reload('shoplist')
-							}else{
+							} else {
 								layer.msg(data.msg)
-								
+
 							}
 						},
-						function(data){
+						function(data) {
 							console.log('222')
 						}
 					)
@@ -197,7 +199,7 @@
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
 
-					if(obj.event === 'edit') {
+					if (obj.event === 'edit') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
@@ -211,7 +213,7 @@
 								iframe.subPage(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'wechatPush') {
+					} else if (obj.event === 'wechatPush') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
@@ -225,7 +227,7 @@
 								iframe.subPageClerkpush(data, userNumber)
 							}
 						});
-					}else if(obj.event === 'assistantlist') {
+					} else if (obj.event === 'assistantlist') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
@@ -239,7 +241,7 @@
 								iframe.subPageclerk(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'devicelist') {
+					} else if (obj.event === 'devicelist') {
 						// 跳转编辑详情页面
 						layer.open({
 							type: 2,
@@ -253,13 +255,27 @@
 								iframe.subPagedevice(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'delete') {
+					} else if (obj.event === 'funsys') {
+						// 跳转编辑详情页面
+						layer.open({
+							type: 2,
+							title: '功能设置',
+							area: ['800px', '50%'],
+							content: 'sy-mendian-model.html',
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传参
+								iframe.subPagedevice(data, userNumber)
+							}
+						});
+					} else if (obj.event === 'delete') {
 						// 弹出是否要删除门店
-						layer.confirm('确定要删除('+data.shopName+')门店么?删除成功将删除门店下所有店员！！！', function(index) {
+						layer.confirm('确定要删除(' + data.shopName + ')门店么?删除成功将删除门店下所有店员！！！', function(index) {
 							var mydata = {
 								"merchantNumber": userNumber,
 								"shopNumber": data.shopNumber,
-								"shopName":data.shopName
+								"shopName": data.shopName
 							}
 							// 发送请求
 							CmsUtility.postAjaxCall(
@@ -267,7 +283,7 @@
 								CmsConfig.addressUrl.Merchant.deleteShop,
 								mydata,
 								function(data) {
-									if(data.code == 1000) {
+									if (data.code == 1000) {
 										layer.close(index);
 										layer.msg('删除成功！')
 										layui.table.reload('shoplist');
