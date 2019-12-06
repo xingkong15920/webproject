@@ -1,144 +1,319 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title></title>
-		<meta name="renderer" content="webkit|ie-comp|ie-stand">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-		<meta http-equiv="Cache-Control" content="no-siteapp" />
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<link rel="stylesheet" href="../../public/css/vipS.css">
-		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-		<script type="text/javascript" src="../../public/js/data.js"></script>
-		<style type="text/css">
-			.actdown {
-				text-align: center;
-			}
-		</style>
-	</head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/js/vue.min.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <style type="text/css">
+    .actList {
+        min-width: 1300px;
+        height: 90px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        width:100%;
+		height:90px;
+		background:rgba(246,246,246,1);
+    }
 
-	<body>
-		<ul class="actList" id="activityInfos">
-			<li class="actListli" v-cloak v-for="item in actList" v-on:click="jumpAdd(item)">
-				<div class="actBody">
-					<img :src="item.activityImage" class="actBtop" :class="item.activityClass">
-					<div class="actdown">
-						<h3>{{item.activityName}}</h3>
-						<p>{{item.activityTips}}</p>
-					</div>
-				</div>
-			</li>
-		</ul>
-		<script src="../../common/config-agent.js"></script>
-		<script src="../../common/utility.js"></script>
-		<script>
-			var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-			// var merNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
-			var actlist = [{
-				'activityType': 0,
-				'activityClass': 'avt_zfjhy',
-				'activityImage': '../../public/images/meb/avt_zfjhy.png',
-				'activityName': '收银码牌',
-				'activityTips': '联系索要',
-				'addLink': 'vipactivityadd-zfjhy.html'
-			}, {
-				'activityType': 1,
-				'activityClass': 'avt_chuz',
-				'activityImage': '../../public/images/meb/avt_chuz.png',
-				'activityName': '蓝牙音箱',
-				'activityTips': '联系索要',
-				'addLink': 'vipsetrecadd.html'
-			}, {
-				'activityType': 2,
-				'activityClass': 'avt_xf',
-				'activityImage': '../../public/images/meb/avt_xf.png',
-				'activityName': '闪盒收银APP',
-				'activityTips': '点击下载',
-				'addLink': 'vipactivityadd-xf.html'
-			}, {
-				'activityType': 3,
-				'activityClass': 'avt_fx',
-				'activityImage': '../../public/images/meb/avt_fx.png',
-				'activityName': '闪盒收银PC',
-				'activityTips': '点击下载',
-				'addLink': 'vipactivityadd-fx.html'
-			}, {
-				'activityType': 4,
-				'activityClass': 'avt_kk',
-				'activityImage': '../../public/images/meb/avt_kk.png',
-				'activityName': '微信青蛙',
-				'activityTips': '联系购买',
-				'addLink': 'vipactivityadd-kk.html'
-			}, {
-				'activityType': 5,
-				'activityClass': 'avt_sr',
-				'activityImage': '../../public/images/meb/avt_sr.png',
-				'activityName': '支付宝蜻蜓',
-				'activityTips': '联系购买',
-				'addLink': 'vipactivityadd-sr.html'
-			}]
-			layui.use(['table', 'laydate', 'element'], function() {
-				var table = layui.table,
-					$ = layui.$,
-					laydate = layui.laydate,
-					form = layui.form,
-					element = layui.element;
+    .actListli {
+        width: 140px;
+        height: 46px;
+        line-height: 46px;
+        text-align: center;
+        background: rgba(255, 255, 255, 1);
+        border-radius: 6px;
+        margin: 0 5px;
+        font-size: 16px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: rgba(127, 127, 127, 1);
+        position: relative;
+        cursor: pointer;
+    }
 
-				setActInof(actlist)
+    .actListli:hover {
+        background: rgba(253, 164, 64, 1);
+        color: rgba(255, 255, 255, 1);
+    }
 
-				function setActInof(obj) {
-					new Vue({
-						el: '#activityInfos',
-						data: {
-							actList: obj
-						},
-						methods: {
-							jumpAdd: function(e) {
-								switch (e.activityType) {
-									case 0:
-										console.log(000)
-										break;
-									case 1:
-										console.log(111)
-										break;
-									case 2:
-										console.log(222)
-										break;
-									case 3:
-										console.log(333)
-										break;
-									case 4:
-										console.log(444)
-										break;
-									case 5:
-										console.log(555)
-										break;
-								}
-							}
-						},
-						mounted() {
-							parent.layer.closeAll('loading');
-						}
-					})
-				}
-				$('.actListadd .actBody').on('click', function() {
-					console.log(111)
-					layer.open({
-						type: 2,
-						area: ['600px', '650px'],
-						fixed: false, //不固定
-						maxmin: true,
-						resize: false,
-						content: 'vipactivityadd.html'
-					});
-				});
-			});
-		</script>
-	</body>
+    .actListli1 {
+        background: rgba(253, 164, 64, 1);
+        color: rgba(255, 255, 255, 1);
+    }
+
+    .new {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .imgBox {
+        max-width: 1300px;
+        height: 990px;
+        margin: 0 auto;
+        position: relative;
+    }
+	#img-item{
+		width: 100%;
+		height: 100%;
+	}
+	#img-tips{
+		width: 220px;
+		height: 232px;
+		position: absolute;
+		top: 35px;
+		right: 30px;
+		cursor: pointer;
+	}
+	[v-cloak] {
+      display: none;
+    }
+    #yunying{
+    	position: fixed;
+    	right: 0;
+    	top: 120px;
+    	width: 340px;
+    	height: 270px;
+    }
+    #yunying-big{
+        width: 140px;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    #yunying-small{
+        width: 200px;
+        height: 200px;
+        position: absolute;
+        left: 0;
+        top: 20px;
+        border: 1px solid black;
+    }
+    #div1{
+        width: 120px;
+        height: 120px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        opacity: 0
+    }
+    #div2{
+        width: 120px;
+        height: 100px;
+        position: absolute;
+        right: 0;
+        top: 120px;
+        opacity: 0
+    }
+    </style>
+</head>
+
+<body>
+    <ul class="actList" id="activityInfos">
+        <li class="actListli" :class="{'actListli1':item.activityType == num}" v-cloak v-for="(item,index) in actList" v-on:click="jumpAdd(index)">
+            <img v-if="item.new" class="new" src="../../public/images/new.png">
+            {{item.activityName}}
+        </li>
+    </ul>
+    <div class="imgBox">
+        <img id="img-item" src="../../public/images/mapai.png" onmousemove="return false">
+        <img id="img-tips">
+    </div>
+    <div id="yunying" >
+        <img src="" style="display:none" id="yunying-small">
+        <img src="../../public/images/yunying.png" id="yunying-big">
+        <div id="div1"></div>
+        <div id="div2"></div>
+    </div>
+    
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+    // var merNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+ 	var thatNumber = 0
+    var actlist = [{
+        'activityType': 0,
+        'activityName': '收银码牌',
+        'new': false,
+        'check': true,
+    }, {
+        'activityType': 1,
+        'activityName': '蓝牙音箱',
+        'new': false,
+        'check': false,
+    }, {
+        'activityType': 2,
+        'activityName': '闪盒收银APP',
+        'new': false,
+        'check': false,
+    }, {
+        'activityType': 3,
+        'activityName': '闪盒收银PC',
+        'new': false,
+        'check': false,
+    }, {
+        'activityType': 4,
+        'activityName': '闪盒助手',
+        'new': false,
+        'check': false,
+    }, {
+        'activityType': 5,
+        'activityName': '闪盒Pay',
+        'new': false,
+        'check': false,
+    }, {
+        'activityType': 6,
+        'activityName': '微信青蛙',
+        'new': true,
+        'check': false,
+    }, {
+        'activityType': 7,
+        'activityName': '支付宝蜻蜓',
+        'new': true,
+        'check': false,
+    }]
+
+    var img = [{
+            img: '../../public/images/mapai.png',
+            imgTips: '../../public/images/mapai-1.png'
+        },
+        {
+            img: '../../public/images/yinxiang.png',
+            imgTips: '../../public/images/yinxiang-1.png'
+        },
+        {
+            img: '../../public/images/app.png',
+            imgTips: '../../public/images/app-1.png'
+        },
+        {
+            img: '../../public/images/chajian.png',
+            imgTips: '../../public/images/chajian-1.png'
+        },
+        {
+            img: '../../public/images/zhushou.png',
+            imgTips: '../../public/images/zhushou-1.png'
+        },
+        {
+            img: '../../public/images/shanhepay.png',
+            imgTips: '../../public/images/shanhepay-1.png'
+        },
+        {
+            img: '../../public/images/qingwa.png',
+            imgTips: '../../public/images/qingwa-1.png'
+        },
+        {
+            img: '../../public/images/qingting.png',
+            imgTips: '../../public/images/qingting-1.png'
+        },
+    ]
+    function attrSrc(){
+    	console.log(img[thatNumber])
+    	$('#img-item').attr('src',img[thatNumber].img)
+    	$('#img-tips').attr('src',img[thatNumber].imgTips)
+    }
+    attrSrc()
+    $('#img-tips').click(function(){
+    	if(thatNumber == 2){
+    		window.open('http://down.51shanhe.com/shanhe.apk')
+    	}
+    	if(thatNumber == 3){
+    		window.open('http://down.51shanhe.com/shanhe.rar')
+    	}
+    	if(thatNumber == 0 || thatNumber == 1 ||thatNumber == 6 ||thatNumber == 7 ){
+    		window.open('http://wpa.qq.com/msgrd?v=3&uin=1056678874&site=qq&menu=yes')
+    	}
+    })
+    $('#div1').mouseover(function() {
+          $('#yunying-small').attr('src','../../public/images/yunying2.jpeg')  
+            $('#yunying-small').show()
+    })
+    $('#div1').mouseout(function() {
+       $('#yunying-small').hide()
+    })
+    $('#div2').mouseover(function() {
+          $('#yunying-small').attr('src','../../public/images/yunying1.jpeg')  
+            $('#yunying-small').show()
+    })
+    $('#div2').mouseout(function() {
+       $('#yunying-small').hide()
+    })
+    layui.use(['table', 'laydate', 'element'], function() {
+        var table = layui.table,
+            $ = layui.$,
+            laydate = layui.laydate,
+            form = layui.form,
+            element = layui.element;
+
+
+        new Vue({
+            el: '#activityInfos',
+            data: {
+                actList: actlist,
+                num: 0
+            },
+            methods: {
+                jumpAdd: function(e) {
+                    console.log(this)
+                    this.num = e
+                    console.log(actlist)
+                    thatNumber = e
+                    attrSrc()
+                    // switch (e.activityType) {
+                    // 	case 0:
+                    // 		console.log(000)
+                    // 		break;
+                    // 	case 1:
+                    // 		console.log(111)
+                    // 		break;
+                    // 	case 2:
+                    // 		console.log(222)
+                    // 		break;
+                    // 	case 3:
+                    // 		console.log(333)
+                    // 		break;
+                    // 	case 4:
+                    // 		console.log(444)
+                    // 		break;
+                    // 	case 5:
+                    // 		console.log(555)
+                    // 		break;
+                    // }
+                }
+            },
+            mounted() {
+                parent.layer.closeAll('loading');
+            }
+        })
+
+        // $('.actListadd .actBody').on('click', function() {
+        // 	console.log(111)
+        // 	layer.open({
+        // 		type: 2,
+        // 		area: ['600px', '650px'],
+        // 		fixed: false, //不固定
+        // 		maxmin: true,
+        // 		resize: false,
+        // 		content: 'vipactivityadd.html'
+        // 	});
+        // });
+    });
+    </script>
+</body>
 
 </html>
