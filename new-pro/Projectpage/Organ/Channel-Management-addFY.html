@@ -53,11 +53,11 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                        <label class="layui-form-label">小程序AppSecret</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="miniAppSecret" autocomplete="off" placeholder="小程序AppSecret" class="layui-input" lay-verify="miniAppSecret">
-                        </div>
+                    <label class="layui-form-label">小程序AppSecret</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="miniAppSecret" autocomplete="off" placeholder="小程序AppSecret" class="layui-input" lay-verify="miniAppSecret">
                     </div>
+                </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">推荐关注APPID</label>
                     <div class="layui-input-block">
@@ -70,22 +70,33 @@
                         <input type="text" name="payDasd" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
                     </div>
                 </div>
+                <div class="layui-form-item logoUpk">
+                    <label class="layui-form-label">认证二维码</label>
+                    <div class="layui-input-inline logowidth">
+                        <div class="layui-upload-img" id="">
+                            <img src="../../public/images/default.png" id="demo3" style="max-width: 100%;max-height: 100%;" lay-filter="logo">
+                        </div>
+                    </div>
+                    <div class="layui-input-inline uploadimgbtn">
+                        <p id="demoText3" class="block"></p>
+                        <button type="button" class="layui-btn layui-btn-sm block" id="test3">上传图片</button>
+                    </div>
+                    
+                </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                    <legend  style="font-weight: 500;">支付宝参数</legend>
+                    <legend style="font-weight: 500;">支付宝参数</legend>
                 </fieldset>
                 <div id="disanfang">
                     <div class="layui-form-item">
                         <label class="layui-form-label">PID</label>
-                        
                         <div class="layui-input-block">
-                        <input type="text" name="aliPID" autocomplete="off" placeholder="支付宝PID" class="layui-input" lay-verify="aliPID"> </div>
+                            <input type="text" name="aliPID" autocomplete="off" placeholder="支付宝PID" class="layui-input" lay-verify="aliPID"> </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">支付宝AppID</label>
-                        
                         <div class="layui-input-block">
-                        <input type="text" name="aliAppid" autocomplete="off" placeholder="支付宝Appid" class="layui-input" lay-verify="appsecret">
-                    </div>
+                            <input type="text" name="aliAppid" autocomplete="off" placeholder="支付宝Appid" class="layui-input" lay-verify="appsecret">
+                        </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">RSA私钥</label>
@@ -224,6 +235,7 @@
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     var merchantCa = true;
+    var authenticationQRCode = ''
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
         var $ = layui.jquery,
             upload = layui.upload,
@@ -258,102 +270,148 @@
         });
 
         /*---------- 自定义验证规则 ----------*/
-        // form.verify({
-        //     paymentName: function(value) {
-        //         if (value.length == "") {
-        //             return '通道中文名称不能为空！';
-        //         }
-        //     },
-        //     paymentSpell: function(value) {
-        //         var newReg = new RegExp('^[0-9a-zA-Z]+$')
-        //         if(!newReg.test(value)){
-        //             return '通道英文名称只能为英文或数字'
-        //         }
-        //         if (value.length == "") {
-        //             return '通道英文名称不能为空！';
-        //         }
-                
-        //     },
-        //     title: function(value) {
-        //         if (value.length == "") {
-        //             return '不能为空！'
-        //         }
-        //     },
-        //     wxappid: function(value) {
-        //         if (value.length == "") {
-        //             return '微信APPID不能为空！';
-        //         }
-        //     },
-        //     miniappid: function(value) {
-        //         if (value.length == "") {
-        //             return '小程序APPID不能为空！';
-        //         }
-        //     },
-        //     siyao: function(value) {
-        //         if (value.length == "") {
-        //             return '商户私钥不能为空！';
-        //         }
-        //     },
-        //     gongyao: function(value) {
-        //         if (value.length == "") {
-        //             return '商户公钥不能为空！';
-        //         }
-        //     },
-        //     fygongyao: function(value) {
-        //         if (value.length == "") {
-        //             return '富友公钥不能为空！';
-        //         }
-        //     },
-        //     jigouhao: function(value) {
-        //         if (value.length == "") {
-        //             return '机构号不能为空！';
-        //         }
-        //     },
-        //     huidiaodizhi: function(value) {
-        //         if (value.length == "") {
-        //             return '回调地址不能为空';
-        //         }
-        //     },
-        //     zhifuwangguan: function(value) {
-        //         if (value.length == "") {
-        //             return '支付网关不能为空';
-        //         }
-        //     },
-        //     qianzhui: function(value) {
-        //         if (value.length == "") {
-        //             return '支付前缀不能为空';
-        //         }
-        //     },
-        //     entryKey: function(value) {
-        //         if (value.length == "") {
-        //             return '富友进件秘钥不能为空';
-        //         }
-        //     },
-        //     entryFtpN: function(value) {
-        //         if (value.length == "") {
-        //             return '进件FTP账号不能为空';
-        //         }
-        //     },
-        //     entryFtpP: function(value) {
-        //         if (value.length == "") {
-        //             return '进件FTP密码不能为空';
-        //         }
-        //     },
-        //     miniAppSecret:function(value){
-        //         if(value.length == ""){
-        //             return '微笑小程序AppSecret不能为空'
-        //         }
-        //     }
-        // });
+        form.verify({
+            paymentName: function(value) {
+                if (value.length == "") {
+                    return '通道中文名称不能为空！';
+                }
+            },
+            paymentSpell: function(value) {
+                var newReg = new RegExp('^[0-9a-zA-Z]+$')
+                if(!newReg.test(value)){
+                    return '通道英文名称只能为英文或数字'
+                }
+                if (value.length == "") {
+                    return '通道英文名称不能为空！';
+                }
+
+            },
+            title: function(value) {
+                if (value.length == "") {
+                    return '不能为空！'
+                }
+            },
+            wxappid: function(value) {
+                if (value.length == "") {
+                    return '微信APPID不能为空！';
+                }
+            },
+            miniappid: function(value) {
+                if (value.length == "") {
+                    return '小程序APPID不能为空！';
+                }
+            },
+            siyao: function(value) {
+                if (value.length == "") {
+                    return '商户私钥不能为空！';
+                }
+            },
+            gongyao: function(value) {
+                if (value.length == "") {
+                    return '商户公钥不能为空！';
+                }
+            },
+            fygongyao: function(value) {
+                if (value.length == "") {
+                    return '富友公钥不能为空！';
+                }
+            },
+            jigouhao: function(value) {
+                if (value.length == "") {
+                    return '机构号不能为空！';
+                }
+            },
+            huidiaodizhi: function(value) {
+                if (value.length == "") {
+                    return '回调地址不能为空';
+                }
+            },
+            zhifuwangguan: function(value) {
+                if (value.length == "") {
+                    return '支付网关不能为空';
+                }
+            },
+            qianzhui: function(value) {
+                if (value.length == "") {
+                    return '支付前缀不能为空';
+                }
+            },
+            entryKey: function(value) {
+                if (value.length == "") {
+                    return '富友进件秘钥不能为空';
+                }
+            },
+            entryFtpN: function(value) {
+                if (value.length == "") {
+                    return '进件FTP账号不能为空';
+                }
+            },
+            entryFtpP: function(value) {
+                if (value.length == "") {
+                    return '进件FTP密码不能为空';
+                }
+            },
+            miniAppSecret:function(value){
+                if(value.length == ""){
+                    return '微笑小程序AppSecret不能为空'
+                }
+            }
+        });
 
         form.on('switch(fyswitch)', function(data) { //计次开关
             layer.tips('富友通道：' + (this.checked ? '已开启' : '已关闭'), data.othis)
             merchantCa = this.checked
         });
+        //普通图片上传
+                var uploadInst = upload.render({
+                    elem: '#test3',
+                    url: CmsConfig.ServiceUrl.ApiRootUrl +'qrcodeSetting/updateQrcadeImg',
+                    data: {
+                        "institutionNumber": userNumber,
+                    },
+                    size:5000,
+                    before: function(obj) {
+                        console.log(obj)
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function(index, file, result) {
+                            $('#demo3').attr('src', result); //图片链接（base64）
+                        });
+                    },
+                    done: function(res) {
+                        //如果上传失败
+                        if (res.code != 1000) {
+                            var demoText = $('#demoText3');
+                            demoText.html(
+                                '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                            demoText.find('.demo-reload').on('click', function() {
+                                uploadInst.upload();
+                            });
+                            return layer.msg('上传失败');
 
+                        } else {
+                            authenticationQRCode = res.data
+                            return layer.msg('上传成功');
+
+                        }
+                        //上传成功
+                        console.log(res)
+                    },
+                    error: function() {
+                        //演示失败状态，并实现重传
+                        var demoText = $('#demoText3');
+                        demoText.html(
+                            '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                        demoText.find('.demo-reload').on('click', function() {
+                            uploadInst.upload();
+                        });
+                    }
+                });
         /*---------- 监听提交 ----------*/
         form.on('submit(add)', function(data, index) {
-
+            if(authenticationQRCode == ''){
+                layer.msg('请上传微信认证图片')
+                 return false
+            }
             var addData = data.field
             addData.paymentType = 2
             if (merchantCa == false) {
@@ -362,6 +420,7 @@
                 addData.disable = 0
             }
             addData.institutionNumber = userNumber;
+            addData.authenticationQRCode = authenticationQRCode
             // 发送请求
             console.log(addData)
             CmsUtility.postAjaxCall(
@@ -384,7 +443,6 @@
                     console.log('222')
                 }
             )
-            return false;
             return false;
         });
 

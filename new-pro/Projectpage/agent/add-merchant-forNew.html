@@ -457,8 +457,8 @@
         window.location.reload()
     })
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    //var server = 'http://192.168.1.113:6005/shanhe-admin/'
-    var server = 'https://nb.51shanhe.com/shanhe-admin/'
+    var server = 'http://192.168.1.113:6005/shanhe-admin/'
+    //var server = 'https://nb.51shanhe.com/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
     var operlistThr = []
@@ -1275,7 +1275,8 @@
             formData.append("longTime", "1231151223123");
             formData.append("type", type);
             $.ajax({
-                url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
+                // url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
+                url:'http://192.168.1.113:6005/shanhe-admin/InsMer/uploadMerchantImg',
                 type: 'POST',
                 data: formData,
                 async: false,
@@ -1822,7 +1823,7 @@
                             "twoOperate": merInfo.twoOperate,
                             "threeOperate": merInfo.threeOperate,
                             "customerServiceTell": merInfo.customerServiceTell,
-                            "rate": merInfo.rate,
+                            "rate":merInfo.rate >0.1? merInfo.rate : (merInfo.rate * 100).toFixed(2),
                             "businessLicenseNo": merInfo.businessLicenseNo,
                             "businessLicenseTime": merInfo.businessLicenseTime,
                             "businessLicenseEndTime": merInfo.businessLicenseEndTime,
@@ -1934,6 +1935,10 @@
             if (tjData.merchantType == '2') {
                 tjData.merchantType = '企业'
                 tjData.acntType = '对公'
+            }
+            if(!$('#openingBankBranch').attr('openingBankNumber')){
+                layer.msg('请选择支行')
+                return
             }
             tjData.paymentType = channelType
             tjData.paymentChannel = channel

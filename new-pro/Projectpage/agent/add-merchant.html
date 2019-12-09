@@ -464,8 +464,8 @@
     <script src="../../common/utility.js"></script>
     <script>
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    //var server = 'http://192.168.1.113:6005/shanhe-admin/'
-    var server = 'https://nb.51shanhe.com/shanhe-admin/'
+    var server = 'http://192.168.1.113:6005/shanhe-admin/'
+    //var server = 'https://nb.51shanhe.com/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
     var operlistThr = []
@@ -821,7 +821,9 @@
 
         CmsUtility.postAjaxCall2(
             //系统设置
-            'https://nb.51shanhe.com/shanhe-common/cache/getBank', {
+            // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
+            'http://192.168.1.113:6008/shanhe-common/cache/getBank',
+             {
                 "bankCode": $('#openingBank').val().split('|')[0],
                 "paymentType": '4',
                 "bankName": $('#openingBankBranch').val(),
@@ -1001,7 +1003,8 @@
             document.getElementById('searchBox2').innerHTML = ''
             CmsUtility.postAjaxCall2(
                 //系统设置
-                'https://nb.51shanhe.com/shanhe-common/cache/getBank', {
+               // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
+            'http://192.168.1.113:6008/shanhe-common/cache/getBank', {
                     "bankCode": $('#openingBank').val().split('|')[0],
                     "paymentType": '4',
                     "bankName": $('#openingBankBranch').val(),
@@ -1302,7 +1305,8 @@
             formData.append("longTime", longTime);
             formData.append("type", type);
             $.ajax({
-                url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
+                // url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
+                url:'http://192.168.1.113:6005/shanhe-admin/InsMer/uploadMerchantImg',
                 type: 'POST',
                 data: formData,
                 async: false,
@@ -1795,7 +1799,10 @@
                 tjData.merchantType = '企业'
                 tjData.acntType = '对公'
             }
-            
+            if(!$('#openingBankBranch').attr('openingBankNumber')){
+                layer.msg('请选择支行')
+                return
+            }
             tjData.juridicalPersonIDType = juridicalPersonIDType
             tjData.businessLicenseType = businessLicenseType
             tjData.operationId = data.field.threeOperate
@@ -1819,7 +1826,6 @@
             tjData.reserveCell = tjData.registerCell
             console.log(tjData)
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
-            return false
             CmsUtility.postAjaxCall2(
                 //系统设置
                 server + 'InsMer/insertMerchant',

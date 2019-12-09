@@ -25,6 +25,9 @@
     .layui-input-block{
         margin-left:130px
     }
+    .logowidth{
+        margin-left: 20px;
+    }
     </style>
 </head>
 
@@ -293,6 +296,19 @@
                     <div class="layui-input-block">
                         <input type="text" name="payDasd" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret">
                     </div>
+                </div>
+                <div class="layui-form-item logoUpk">
+                    <label class="layui-form-label">认证二维码</label>
+                    <div class="layui-input-inline logowidth">
+                        <div class="layui-upload-img" id="">
+                            <img src="../../public/images/default.png" id="demo1" style="max-width: 100%;max-height: 100%;" lay-filter="logo">
+                        </div>
+                    </div>
+                    <div class="layui-input-inline uploadimgbtn">
+                        <p id="demoText3" class="block"></p>
+                        <button type="button" class="layui-btn layui-btn-sm block" id="test1">上传图片</button>
+                    </div>
+                    
                 </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">支付宝参数</legend>
@@ -621,6 +637,19 @@
                         <input type="text" name="payDASD" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret2">
                     </div>
                 </div>
+                <div class="layui-form-item logoUpk">
+                    <label class="layui-form-label">认证二维码</label>
+                    <div class="layui-input-inline logowidth">
+                        <div class="layui-upload-img" id="">
+                            <img src="../../public/images/default.png" id="demo2" style="max-width: 100%;max-height: 100%;" lay-filter="logo">
+                        </div>
+                    </div>
+                    <div class="layui-input-inline uploadimgbtn">
+                        <p id="demoText3" class="block"></p>
+                        <button type="button" class="layui-btn layui-btn-sm block" id="test2">上传图片</button>
+                    </div>
+                    
+                </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">支付宝参数</legend>
                 </fieldset>
@@ -779,6 +808,19 @@
                         <input type="text" name="payDASD" autocomplete="off" placeholder="支付授权目录" class="layui-input" lay-verify="appsecret2">
                     </div>
                 </div>
+                <div class="layui-form-item logoUpk">
+                    <label class="layui-form-label">认证二维码</label>
+                    <div class="layui-input-inline logowidth">
+                        <div class="layui-upload-img" id="">
+                            <img src="../../public/images/default.png" id="demo3" style="max-width: 100%;max-height: 100%;" lay-filter="logo">
+                        </div>
+                    </div>
+                    <div class="layui-input-inline uploadimgbtn">
+                        <p id="demoText3" class="block"></p>
+                        <button type="button" class="layui-btn layui-btn-sm block" id="test3">上传图片</button>
+                    </div>
+                    
+                </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend  style="font-weight: 500;">支付宝参数</legend>
                 </fieldset>
@@ -903,6 +945,7 @@
         setTimeout(function() { parent.layer.close(index) }, 16);
     })
     var gzhAuthId,gzhAuthTime,gzhNo,xcxAuthId,xcxAuthTime,xcxNo;
+    var authenticationQRCode =''
     function subPage(data, data1) {
         console.log(data)
         var serverUrl = window.parent.serverUrl
@@ -1056,6 +1099,8 @@
                                 "miniAppSecret": sjData.miniAppSecret,
                                 "aliPID": sjData.aliPID,
                             })
+                            authenticationQRCode = sjData.authenticationQRCode
+                             $('#demo1').attr('src', sjData.authenticationQRCode)
                             type = sjData.disable == 0 ? true : false
                         } else {
                             layer.msg(data.msg)
@@ -1118,6 +1163,8 @@
                                 // "entryFtpN":sjData.entryFtpN,
                                 // "entryFtpP":sjData.entryFtpP
                             })
+                             authenticationQRCode = sjData.authenticationQRCode
+                             $('#demo3').attr('src', sjData.authenticationQRCode)
                             type = sjData.disable == 0 ? true : false
                         } else {
                             layer.msg(data.msg)
@@ -1164,6 +1211,8 @@
                                 "aliPID": sjData.aliPID,
                                 "prefixPayment":sjData.prefixPayment,
                             })
+                            authenticationQRCode = sjData.authenticationQRCode
+                             $('#demo2').attr('src', sjData.authenticationQRCode)
                             type = sjData.disable == 0 ? true : false
                         } else {
                             layer.msg(data.msg)
@@ -1210,6 +1259,8 @@
                                 "paymentSpell":sjData.paymentSpell,
                                 "prefixPayment":sjData.prefixPayment,
                             })
+                            authenticationQRCode = sjData.authenticationQRCode
+                             $('#demo3').attr('src', sjData.authenticationQRCode)
                             type = sjData.disable == 0 ? true : false
                         } else {
                             layer.msg(data.msg)
@@ -1516,6 +1567,11 @@
                 addData.institutionNumber = userNumber;
                 addData.paymentChannel = jgData.id
                 addData.paymentChannelType = 2
+                if(authenticationQRCode == ''){
+                    layer.msg('请上传微信认证图片')
+                    return false
+                }
+                addData.authenticationQRCode = authenticationQRCode
                 console.log(addData)
                 CmsUtility.postAjaxCall(
                     //系统设置
@@ -1665,6 +1721,11 @@
                 addData.institutionNumber = userNumber;
                 addData.paymentChannel = jgData.id
                 addData.paymentChannelType = 3
+                if(authenticationQRCode == ''){
+                    layer.msg('请上传微信认证图片')
+                    return false
+                }
+                addData.authenticationQRCode = authenticationQRCode
                 console.log(addData)
                 CmsUtility.postAjaxCall(
                     //系统设置
@@ -1817,6 +1878,11 @@
                 // }
                 addData.paymentChannel = jgData.id
                 addData.institutionNumber = userNumber;
+                if(authenticationQRCode == ''){
+                    layer.msg('请上传微信认证图片')
+                    return false
+                }
+                addData.authenticationQRCode = authenticationQRCode
                 // 发送请求
                 console.log(addData)
                 CmsUtility.postAjaxCall(
@@ -2197,6 +2263,136 @@
             );
             
         })
+//普通图片上传
+                var uploadInst = upload.render({
+                    elem: '#test3',
+                    url: CmsConfig.ServiceUrl.ApiRootUrl +'qrcodeSetting/updateQrcadeImg',
+                    data: {
+                        "institutionNumber": userNumber,
+                    },
+                    size:1024,
+                    before: function(obj) {
+                        console.log(obj)
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function(index, file, result) {
+                            $('#demo3').attr('src', result); //图片链接（base64）
+                        });
+                    },
+                    done: function(res) {
+                        //如果上传失败
+                        if (res.code != 1000) {
+                            // var demoText = $('#demoText3');
+                            // demoText.html(
+                            //     '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                            // demoText.find('.demo-reload').on('click', function() {
+                            //     uploadInst.upload();
+                            // });
+                            return layer.msg('上传失败');
+
+                        } else {
+                            authenticationQRCode = res.data
+                            return layer.msg('上传成功');
+
+                        }
+                        //上传成功
+                        console.log(res)
+                    },
+                    error: function() {
+                        //演示失败状态，并实现重传
+                        // var demoText = $('#demoText3');
+                        // demoText.html(
+                        //     '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                        // demoText.find('.demo-reload').on('click', function() {
+                        //     uploadInst.upload();
+                        // });
+                    }
+                });
+                var uploadInst = upload.render({
+                    elem: '#test2',
+                    url: CmsConfig.ServiceUrl.ApiRootUrl +'qrcodeSetting/updateQrcadeImg',
+                    data: {
+                        "institutionNumber": userNumber,
+                    },
+                    size:1024,
+                    before: function(obj) {
+                        console.log(obj)
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function(index, file, result) {
+                            $('#demo2').attr('src', result); //图片链接（base64）
+                        });
+                    },
+                    done: function(res) {
+                        //如果上传失败
+                        if (res.code != 1000) {
+                            // var demoText = $('#demoText3');
+                            // demoText.html(
+                            //     '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                            // demoText.find('.demo-reload').on('click', function() {
+                            //     uploadInst.upload();
+                            // });
+                            return layer.msg('上传失败');
+
+                        } else {
+                            authenticationQRCode = res.data
+                            return layer.msg('上传成功');
+
+                        }
+                        //上传成功
+                        console.log(res)
+                    },
+                    error: function() {
+                        //演示失败状态，并实现重传
+                        // var demoText = $('#demoText3');
+                        // demoText.html(
+                        //     '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                        // demoText.find('.demo-reload').on('click', function() {
+                        //     uploadInst.upload();
+                        // });
+                    }
+                });
+                var uploadInst = upload.render({
+                    elem: '#test1',
+                    url: CmsConfig.ServiceUrl.ApiRootUrl +'qrcodeSetting/updateQrcadeImg',
+                    data: {
+                        "institutionNumber": userNumber,
+                    },
+                    size:1024,
+                    before: function(obj) {
+                        console.log(obj)
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function(index, file, result) {
+                            $('#demo1').attr('src', result); //图片链接（base64）
+                        });
+                    },
+                    done: function(res) {
+                        //如果上传失败
+                        if (res.code != 1000) {
+                            // var demoText = $('#demoText3');
+                            // demoText.html(
+                            //     '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                            // demoText.find('.demo-reload').on('click', function() {
+                            //     uploadInst.upload();
+                            // });
+                            return layer.msg('上传失败');
+
+                        } else {
+                            authenticationQRCode = res.data
+                            return layer.msg('上传成功');
+
+                        }
+                        //上传成功
+                        console.log(res)
+                    },
+                    error: function() {
+                        //演示失败状态，并实现重传
+                        // var demoText = $('#demoText3');
+                        // demoText.html(
+                        //     '<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                        // demoText.find('.demo-reload').on('click', function() {
+                        //     uploadInst.upload();
+                        // });
+                    }
+                });
         form.on('submit(add)', function(data, index) {
 
             var addData = data.field
