@@ -233,9 +233,9 @@
 								<label class="layui-form-label mLines"><span><span class="redC">* </span>默认门店<br>默认店员</span> :</label>
 								<div class="layui-input-block" style="display: flex;justify-content: space-between;align-items: center;">
 									<input type="text" name="applyShops" class="layui-input" lay-verify="defaultMd" id="symd" readonly="readonly"
-									 autocomplete="off" ts-selected="" placeholder="请选择适用门店" style="width: 48%;">
-									<input type="text" name="applyShops" class="layui-input" lay-verify="" id="sydy" readonly="readonly"
-									 autocomplete="off" ts-selected="" placeholder="请选择适用门店" style="width: 48%;">
+									 autocomplete="off" ts-selected="" placeholder="请选择默认门店" style="width: 48%;">
+									<input type="text" name="applyShops" class="layui-input" lay-verify="defaultDy" id="sydy" readonly="readonly"
+									 autocomplete="off" ts-selected="" placeholder="请选择默认店员" style="width: 48%;">
 								</div>
 								<div class="layui-input-block">
 									<div class="layui-form-mid layui-word-aux">如投放渠道不选择对应门店和店员，那么注册门店则为默认门店，充值，消费同取默认门店</div>
@@ -263,8 +263,9 @@
 							</div>
 							<div class="layui-form-item max600">
 								<label class="layui-form-label"><span class="redC">* </span>联系电话 :</label>
-								<div class="layui-input-block">
+								<div class="layui-input-block flex_cc">
 									<input type="text" name="servicePhone" class="layui-input" lay-verify="phone" id="" placeholder="请输入联系电话">
+									<div class="layui-form-mid redC" style="margin-left: 10px;width: 220px;">例：13000000000或0311-88888888</div>
 								</div>
 							</div>
 						</div>
@@ -361,6 +362,7 @@
 								$('#symd').attr('ts-selected', data.data.defaultShop)
 								$('#symd').val(data.data.defaultShopName)
 								if (data.data.defaultClerk) {
+									clerkNumbers = data.data.defaultClerk
 									$('#sydy').attr('ts-selected', data.data.defaultClerk)
 									$('#sydy').val(data.data.defaultClerkName)
 								}
@@ -507,12 +509,6 @@
 										field: 'clerkName',
 										title: '店员名称',
 										align: 'center',
-										width: 150,
-									}, {
-										field: 'shopName',
-										title: '所属门店',
-										align: 'center',
-										width: 200,
 									}]
 								]
 							},
@@ -674,7 +670,13 @@
 							return '使用须知不能为空！';
 						}
 					},
-					phone: [/^1[3456789]\d{9}$/, "请输入正确的手机号"],
+					phone: function(value) {
+						var rg = new RegExp(/^1(3|4|5|6|7|8|9)\d{9}$/)// 手机号正则
+						var rg2 = new RegExp(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/)// 固话正则
+						if (value != '' && !rg.test(value) && !rg2.test(value)) {
+							return '请填写正确的联系电话！'
+						}
+					},
 					shareTit: function(value) {
 						if (value == '') {
 							return '分享标题不能为空！';
@@ -688,6 +690,11 @@
 					defaultMd: function() {
 						if (shopNumbers == '') {
 							return '请选择默认门店'
+						}
+					},
+					defaultDy: function() {
+						if (clerkNumbers == '') {
+							return '请选择默认店员'
 						}
 					}
 				});
@@ -797,7 +804,7 @@
 					data.defaultShop = shopNumbers
 					data.defaultClerk = clerkNumbers
 					console.log(data)
-					return
+					// return
 					// 发送请求
 					layer.load(2, {
 						shade: 0.5

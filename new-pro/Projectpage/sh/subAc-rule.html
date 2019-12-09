@@ -62,7 +62,8 @@
 			.widthHalf {
 				margin: 0;
 			}
-			.layui-block{
+
+			.layui-block {
 				height: 40px;
 				margin-bottom: 10px;
 			}
@@ -71,7 +72,7 @@
 
 	<body>
 		<div class="x-body vipdetail layui-form" style="padding: 0;" lay-filter="cardAdd">
-			<div class="vipdetail_B " id="mDetails" >
+			<div class="vipdetail_B " id="mDetails">
 				<div class="conBlock widthAll" style="width:100%">
 					<blockquote class="layui-elem-quote consumeTit">
 						<i class="leftline"></i>
@@ -82,7 +83,8 @@
 							<div class="layui-block">
 								<label class="layui-form-label">微信分账比例</label>
 								<div class="layui-input-inline">
-									<input type="text" name="separateAccountsBill" lay-verify="required|number" autocomplete="off" class="layui-input" id="fenzhang">
+									<input type="text" name="separateAccountsBill" lay-verify="required|number" autocomplete="off" class="layui-input"
+									 id="fenzhang">
 								</div>
 								<div class="layui-form-mid layui-word-aux">%</div>
 							</div>
@@ -100,8 +102,7 @@
 									<input type="radio" name="activityType" value="1" title="自定义" lay-filter="timeType">
 								</div>
 								<div class="layui-input-inline resetper">
-									<input type="text" name="invalidTime" id="invalidTime" class="layui-input" lay-verify=""
-									 placeholder="请选择时间">
+									<input type="text" name="invalidTime" id="invalidTime" class="layui-input" lay-verify="" placeholder="请选择时间">
 								</div>
 							</div>
 						</div>
@@ -123,14 +124,14 @@
 						</div>
 					</div>
 					<div class="layui-form-item" style="width:100%">
-                    <div class="layui-input-block" style="margin-left:0;margin-top:15px">
-                        <div class="layui-footer" style="">
-                            <button class="layui-btn" lay-submit="" lay-filter="add">提交</button>
-                            
-                        </div>
-                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
-                    </div>
-                </div>
+						<div class="layui-input-block" style="margin-left:0;margin-top:15px">
+							<div class="layui-footer" style="">
+								<button class="layui-btn" lay-submit="" lay-filter="add">提交</button>
+
+							</div>
+							<!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+						</div>
+					</div>
 				</div>
 
 				<div class="conBlock widthHalf">
@@ -173,40 +174,42 @@
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			var setList = [
-				{
-					name:'会员买卡',
-					num:1
+			var setList = [{
+					name: '会员买卡',
+					num: 1
 				},
 				{
-					name:'会员充值',
-					num:2
+					name: '会员充值',
+					num: 2
 				},
 				{
-					name:'付费买券',
-					num:3
+					name: '付费买券',
+					num: 3
 				},
 				{
-					name:'付费次/月卡',
-					num:4
+					name: '付费次/月卡',
+					num: 4
 				},
 				{
-					name:'会员消费',
-					num:5
+					name: '会员消费',
+					num: 5
 				},
 				{
-					name:'门店收银',
-					num:6
+					name: '门店收银',
+					num: 6
 				},
 			]
-			function fun_date(aa){
-		        var date1 = new Date(),
-		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
-		        var date2 = new Date(date1);
-		        date2.setDate(date1.getDate()+aa);
-		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
-		        return time2
-		    }
+
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+				return time2
+			}
+			var serUrl = 'http://api.51shanhe.com/p-sepaccount/'
+			// var serUrl = 'http://192.168.1.250:6020/p-sepaccount/'
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			layui.use(['table', 'laydate', 'element'], function() {
@@ -215,12 +218,12 @@
 					element = layui.element,
 					laydate = layui.laydate,
 					form = layui.form;
-					laydate.render({
-					  elem: '#invalidTime'
-					  ,range: true,
-					  value:fun_date(-30) + ' - ' + fun_date(0)
-					});
-					/*---------- 积分时效 ----------*/
+				laydate.render({
+					elem: '#invalidTime',
+					range: true,
+					value: fun_date(-30) + ' - ' + fun_date(0)
+				});
+				/*---------- 积分时效 ----------*/
 				form.on('radio(timeType)', function(data) {
 					if (data.value == 0) {
 						$('.resetper').css('display', 'none')
@@ -229,67 +232,70 @@
 					}
 				});
 				var setStr = ''
-				for(var i = 0 ; i < setList.length;i++){
-					setStr +='<input type="checkbox" name="like1" lay-skin="primary" title="'+ setList[i].name +'" value="'+ setList[i].num +'" >'
+				for (var i = 0; i < setList.length; i++) {
+					setStr += '<input type="checkbox" name="like1" lay-skin="primary" title="' + setList[i].name + '" value="' +
+						setList[i].num + '" >'
 				}
 				$('#setList').html(setStr)
 				form.render()
 				CmsUtility.postAjaxCall2(
-		                //系统设置
-		               	CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getAccountRole',
-		                {
-		                	"merchantNumber":merNumber,
-							"institutionNumber":insNumber,
-		                },
-		                function(data) {
-		                    if (data.code == 1000) {
-		                    	console.log(data.data.separateAccountsBill)
-		                        form.val('cardAdd', {
-					                "separateAccountsBill": data.data.separateAccountsBill*100,
-					                "poundage":data.data.poundage*100,
-					                "activityType":data.data.activityType,
-					                "invalidTime":data.data.startTime.split(' ')[0] + ' - ' + data.data.endTime.split(' ')[0],
+					//系统设置
+					serUrl + 'accountManage/getAccountRole', {
+						"merchantNumber": merNumber,
+						"institutionNumber": insNumber,
+					},
+					function(data) {
+						console.log(serUrl + 'accountManage/getAccountRole')
+						if (data.code == 1000) {
+							console.log(data.data.separateAccountsBill)
+							form.val('cardAdd', {
+								"separateAccountsBill": data.data.separateAccountsBill * 100,
+								"poundage": data.data.poundage * 100,
+								"activityType": data.data.activityType,
+								"invalidTime": data.data.startTime.split(' ')[0] + ' - ' + data.data.endTime.split(' ')[0],
 
-					            })
-					            if (data.data.activityType == 0) {
-									$('.resetper').css('display', 'none')
-								} else if (data.data.activityType == 1) {
-									$('.resetper').css('display', 'inline-block')
-								}
-					            var setStr = ''
-								for(var i = 0 ; i < setList.length;i++){
-									
-									if(data.data.accountType.indexOf(setList[i].num) >=0){
-										setStr +='<input type="checkbox" name="like1" lay-skin="primary" title="'+ setList[i].name +'" value="'+ setList[i].num +'" checked="">'
-									}else{
-										setStr +='<input type="checkbox" name="like1" lay-skin="primary" title="'+ setList[i].name +'" value="'+ setList[i].num +'" >'
-									}
-									
-								}
-								$('#setList').html(setStr)
-								form.render()
-		                    } else {
-		                        layer.msg(data.msg)
+							})
+							if (data.data.activityType == 0) {
+								$('.resetper').css('display', 'none')
+							} else if (data.data.activityType == 1) {
+								$('.resetper').css('display', 'inline-block')
+							}
+							var setStr = ''
+							for (var i = 0; i < setList.length; i++) {
 
-		                    }
-		                },
-		                function(data) {
-		                    console.log('222')
-		                },
-		                'get'
-		            )
+								if (data.data.accountType.indexOf(setList[i].num) >= 0) {
+									setStr += '<input type="checkbox" name="like1" lay-skin="primary" title="' + setList[i].name + '" value="' +
+										setList[i].num + '" checked="">'
+								} else {
+									setStr += '<input type="checkbox" name="like1" lay-skin="primary" title="' + setList[i].name + '" value="' +
+										setList[i].num + '" >'
+								}
+
+							}
+							$('#setList').html(setStr)
+							form.render()
+						} else {
+							layer.msg(data.msg)
+
+						}
+					},
+					function(data) {
+						console.log('222')
+					},
+					'get'
+				)
 
 				//方法级渲染
 				table.render({
 					elem: '#Fixedaccount',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributorInfo?merchantNumber=' +
+					url: serUrl + 'accountManage/getDistributorInfo?merchantNumber=' +
 						merNumber,
-					where:{
-						"institutionNumber":insNumber,
-						"fixedAccount":1,
-						"name":'',
-						"tell":''
-						},
+					where: {
+						"institutionNumber": insNumber,
+						"fixedAccount": 1,
+						"name": '',
+						"tell": ''
+					},
 					method: "get",
 					height: 'full-350',
 					page: true,
@@ -327,7 +333,8 @@
 							align: 'center',
 							width: 320,
 							templet: function(data) {
-								return (data.memberCard*100).toFixed(2) + ' / ' + (data.memberRecharge*100).toFixed(2) + ' / ' + (data.payVouchers*100).toFixed(2)	 + ' / ' + (data.payNext*100).toFixed(2)
+								return (data.memberCard * 100).toFixed(2) + ' / ' + (data.memberRecharge * 100).toFixed(2) + ' / ' + (
+									data.payVouchers * 100).toFixed(2) + ' / ' + (data.payNext * 100).toFixed(2)
 							}
 						}, {
 							field: 'operation',
@@ -350,14 +357,14 @@
 				//消费记录
 				table.render({
 					elem: '#Separaterules',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributionLevel?merchantNumber=' +
+					url: serUrl + 'accountManage/getDistributionLevel?merchantNumber=' +
 						merNumber,
-					where:{
-						"institutionNumber":insNumber,
-						"fixedAccount":0,
-						"name":'',
-						"tell":''
-						},
+					where: {
+						"institutionNumber": insNumber,
+						"fixedAccount": 0,
+						"name": '',
+						"tell": ''
+					},
 					method: "get",
 					height: 'full-350',
 					page: true,
@@ -383,7 +390,7 @@
 							templet: function(data) {
 								return '<span class="mebColor" style="color:' + data.gradeColor + '">' + data.gradeName + '</span>'
 							},
-							width:110
+							width: 110
 						}, {
 							field: 'shopName',
 							title: '升级规则<br>(累计分账(元) / 累计交易(元) / 累计客户数(天))',
@@ -391,21 +398,22 @@
 							templet: function(data) {
 								return data.separateAmount + ' / ' + data.transactionAmount + ' / ' + data.extensionCount
 							},
-							width:280
+							width: 280
 						}, {
 							field: 'shopName',
 							title: '分账规则(%)<br>(会员买卡 / 会员充值 / 付费买券 / 付费次/月卡)',
 							align: 'center',
 							templet: function(data) {
-								return (data.memberCard*100).toFixed(2) + ' / ' + (data.memberRecharge*100).toFixed(2) + ' / ' + (data.payVouchers*100).toFixed(2)	 + ' / ' + (data.payNext*100).toFixed(2)
+								return (data.memberCard * 100).toFixed(2) + ' / ' + (data.memberRecharge * 100).toFixed(2) + ' / ' + (
+									data.payVouchers * 100).toFixed(2) + ' / ' + (data.payNext * 100).toFixed(2)
 							},
-							width:280
+							width: 280
 						}, {
 							field: 'operation',
 							title: '操作',
 							align: 'left',
 							toolbar: "#tool1",
-							width:120
+							width: 120
 						}]
 					],
 					done: function(res, curr, count) {
@@ -418,50 +426,50 @@
 					}
 				});
 				form.on('submit(add)', function(data, index) {
-					console.log(data,index)
+					console.log(data, index)
 					var arr = new Array();
-		            $("input:checkbox[name='like1']:checked").each(function(i){
-		                arr[i] = $(this).val();
-		            });
+					$("input:checkbox[name='like1']:checked").each(function(i) {
+						arr[i] = $(this).val();
+					});
 					console.log(arr)
 					var tjData = new Object()
 					tjData.merchantNumber = merNumber
 					tjData.institutionNumber = insNumber
 					tjData.paymentType = '1'
 					//分账比例
-					tjData.separateAccountsBill = ($('#fenzhang').val().trim()/100)
+					tjData.separateAccountsBill = ($('#fenzhang').val().trim() / 100)
 					//手续费比例
-					tjData.poundage = ($('#shouxufei').val().trim()/100)
+					tjData.poundage = ($('#shouxufei').val().trim() / 100)
 					//活动标识
 					tjData.activityType = data.field.activityType
 					tjData.startTime = data.field.invalidTime.split(' - ')[0] + ' 00:00:00'
 					tjData.endTime = data.field.invalidTime.split(' - ')[1] + ' 23:59:59'
 					tjData.accountType = arr.join('&')
 					CmsUtility.postAjaxCall2(
-		                //系统设置
-		               	CmsConfig.ServiceUrl.ApiRootUrlMeb+'accountManage/setAccountRole',
-		                tjData,
-		                function(data) {
-		                	layer.msg(data.msg)
-		                    if (data.code == 1000) {
-		                        
-		                    } else {
-		                        // layer.msg(data.msg)
+						//系统设置
+						serUrl + 'accountManage/setAccountRole',
+						tjData,
+						function(data) {
+							layer.msg(data.msg)
+							if (data.code == 1000) {
 
-		                    }
-		                },
-		                function(data) {
-		                    console.log('222')
-		                },
-		                'get'
-		            )
-		            return false;
-		        
+							} else {
+								// layer.msg(data.msg)
+
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get'
+					)
+					return false;
+
 				})
 				table.on('tool(shop)', function(obj) {
 					var data = obj.data;
 					console.log(data)
-					if(obj.event === 'edit') { //编辑
+					if (obj.event === 'edit') { //编辑
 						layer.open({
 							type: 2,
 							title: '编辑',
@@ -477,8 +485,8 @@
 								iframe.subPage(data)
 							}
 						});
-					} else if(obj.event == 'delete'){
-						layer.confirm('确定删除此（'+ data.name +'）分销人吗？', {
+					} else if (obj.event == 'delete') {
+						layer.confirm('确定删除此（' + data.name + '）分销人吗？', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
@@ -493,18 +501,18 @@
 							// 发送请求
 							CmsUtility.postAjaxCall2(
 								//系统设置
-								CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/updatefixedAccount',
+								serUrl + 'accountManage/updatefixedAccount',
 								addData,
-								function(data){
-									if(data.code == 1000){
-										
+								function(data) {
+									if (data.code == 1000) {
+
 										layer.msg('删除成功')
 										layui.table.reload('gradeList');
-									}else{
+									} else {
 										layer.msg(data.msg)
 									}
 								},
-								function(data){
+								function(data) {
 									console.log('222')
 								}
 							)
@@ -514,7 +522,7 @@
 				table.on('tool(shop123)', function(obj) {
 					var data = obj.data;
 					console.log(data)
-					if(obj.event === 'edit') { //编辑
+					if (obj.event === 'edit') { //编辑
 						layer.open({
 							type: 2,
 							title: '编辑',
@@ -530,8 +538,8 @@
 								iframe.subPage(data)
 							}
 						});
-					} else if(obj.event == 'delete'){
-						layer.confirm('确定删除此（'+ data.gradeName +'）等级规则吗？', {
+					} else if (obj.event == 'delete') {
+						layer.confirm('确定删除此（' + data.gradeName + '）等级规则吗？', {
 							icon: 3,
 							title: '提示'
 						}, function(index) {
@@ -548,18 +556,18 @@
 							// 发送请求
 							CmsUtility.postAjaxCall2(
 								//系统设置
-								 CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/updateDistributionLevel',
+								serUrl + 'accountManage/updateDistributionLevel',
 								addData,
-								function(data){
-									if(data.code == 1000){
-										
+								function(data) {
+									if (data.code == 1000) {
+
 										layer.msg('删除成功')
 										layui.table.reload('Separaterules');
-									}else{
+									} else {
 										layer.msg(data.msg)
 									}
 								},
-								function(data){
+								function(data) {
 									console.log('222')
 								}
 							)

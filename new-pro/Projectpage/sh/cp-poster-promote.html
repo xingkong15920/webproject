@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/card.css">
+		<link rel="stylesheet" href="../../public/css/vipS.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../../public/js/vue.min.js"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script type="text/javascript" src="../../public/js/tableSelect.1.js"></script>
+		<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+		<style type="text/css">
+			[v-cloak] {
+				display: none !important;
+			}
+
+			.iframe_index_1_con {
+				border-radius: 0;
+			}
+
+			.cardSet {
+				float: right;
+				padding: 10px;
+				width: 100%;
+				background: #f4f8fb;
+				border-radius: 6px;
+				overflow: hidden;
+			}
+
+			.cardBbg {
+				display: initial;
+				height: auto;
+			}
+
+			.layui-colorpicker-main {
+				width: 296px;
+			}
+
+			.layui-input-inline.widthauto,
+			.layui-form-mid.widthauto {
+				margin: 0;
+			}
+
+			.layui-form-checkbox span {
+				width: 75px;
+			}
+
+			.layui-input-block {
+				margin-left: 105px;
+			}
+
+			.layui-colorpicker {
+				height: 38px;
+				width: 38px;
+			}
+
+			.setSP {
+				border: none;
+				background-size: 100% 100%;
+				background-position: center;
+				position: relative;
+				height: auto;
+				/* min-height: 600px; */
+				top: 0;
+			}
+
+			.layui-upload-img img {
+				height: auto;
+			}
+
+			.postTit {
+				position: absolute;
+				width: 64%;
+				left: 17%;
+				top: 22px;
+				text-align: center;
+				color: #fff;
+				overflow: hidden;
+				word-wrap: normal;
+				height: 20px;
+				line-height: 20px;
+			}
+
+			.colorChoose {
+				line-height: 38px;
+				margin-left: 10px;
+			}
+
+			.sysBtn {
+				width: calc(100% - 115px);
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				flex-wrap: wrap;
+			}
+
+			.sysBtn .layui-input-inline {
+				width: 45%;
+				margin: 0;
+			}
+
+			.sysBtn .layui-form-label {
+				width: auto;
+			}
+
+			.getCardB {
+				padding: 12px;
+				height: calc(100% - 48px);
+				overflow-y: scroll;
+			}
+
+			.getCardB::-webkit-scrollbar {
+				display: none
+			}
+
+			.getCardBg {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 40%;
+			}
+
+			.getCardBg img {
+				width: 100%;
+				height: 100%;
+				display: none;
+			}
+
+			.getCardBgzz {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+
+			.layui-elem-quote .layui-form-switch {
+				width: 50px;
+				height: 24px;
+			}
+
+			.shareD {
+				border: none;
+			}
+
+			.layui-icon.layui-icon-ok {
+				color: #e5e5e5 !important;
+			}
+
+			.cardB {
+				width: 100%;
+				background: transparent;
+				border-radius: 0;
+				margin: 0;
+				margin-bottom: 20px;
+			}
+
+			.postList {
+				width: 94%;
+				height: auto;
+				margin: 0 auto;
+				background: #fff;
+				border: 1px solid #E5E5E5;
+				border-radius: 6px;
+				padding-top: 15px;
+				margin-bottom: 15px;
+				position: relative;
+			}
+
+			.delpost {
+				position: absolute;
+				right: -12px;
+				top: -18px;
+			}
+
+			.postList:last-child {
+				margin-bottom: 0;
+			}
+
+			.couponListBody .layui-input-inline {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.addcoupon i {
+				font-size: 20px !important;
+				margin: 0 !important;
+			}
+
+			.choosecpNum {
+				width: 50px;
+				height: 28px;
+				line-height: 28px;
+			}
+
+			.setcpul {
+				margin-bottom: 20px;
+			}
+
+			.cardDulTit {
+				width: 100%;
+				color: #fff;
+				text-align: center;
+				font-size: 18px;
+				margin-bottom: 10px;
+			}
+
+			.setcpli {
+				width: 100%;
+				background: #fff;
+				padding: 10px;
+				margin-bottom: 10px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				border-radius: 5px;
+			}
+
+			.detailicon h3 {
+				font-size: 17px;
+				color: #fc4949;
+				font-weight: bold;
+			}
+
+			.detailicon h5 {
+				font-size: 12px;
+				color: #999;
+			}
+
+			.detailicon p {
+				font-size: 12px;
+				color: #333;
+			}
+
+			.detailibtn {
+				width: 60px;
+				height: 25px;
+				line-height: 25px;
+				text-align: center;
+				font-size: 11px;
+				border-radius: 2.5px;
+				background: #f9803e;
+				color: white;
+			}
+
+			.activityrules,
+			.activityrules .detaili label {
+				color: #fff;
+			}
+
+			.funSP {
+				width: calc(100% - 320px);
+				position: fixed;
+				top: 0;
+				right: 0;
+				background: #fff;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				flex-direction: column;
+			}
+
+			.funSP li {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				height: 100px;
+				color: #949494;
+				cursor: pointer;
+				border-bottom: 1px solid #f2f2f2;
+			}
+
+			.funSP li:hover {
+				background: #006F65;
+				color: #fff;
+			}
+		</style>
+	</head>
+
+	<body id="iosiframe">
+		<div class="iframe_index_1_con">
+			<div class="layui-row">
+				<div class="layui-form" lay-filter="basic">
+					<div class="layui-col-xs3 layui-col-sm3 layui-col-md3 setSP">
+						<img src="./images/topbar_w.png" class="topbar topbar_w">
+						<p class="postTit"></p>
+						<div class="getCardB" id="getCardB">
+							<div class="cardB">
+								<img src="http://sh.51shanhe.com/images/cardBg_default.png" class="cardBbg">
+							</div>
+							<!-- <div class="cardBtn">
+								立即领取
+							</div> -->
+							<div id="setcoupons">
+								<ul class="setcpul" v-for="item in couponsList" v-cloak>
+									<div class="cardDulTit">{{item.name}}</div>
+									<li class="setcpli" v-for="items in item.couponList">
+										<div class="detailicon">
+											<h3>{{items.className}}</h3>
+											<p>{{items.className}}</p>
+											<h5>有效期：9999-12-31 ~ 9999-12-31</h5>
+										</div>
+										<div class="detailibtn">立即领取</div>
+									</li>
+								</ul>
+							</div>
+							<ul class="cardDul">
+								<div class="cardDulTit">活动规则</div>
+								<li class="activityrules">
+									<div class="detaili">
+										<label class="setColor_Tit">活动规则：</label>
+										<p class="setColor_Con postrxplain"></p>
+									</div>
+								</li>
+								<li class="activityrules">
+									<div class="detaili">
+										<label class="setColor_Tit">有限期：</label>
+										<p class="setColor_Con syxz">永久有效</p>
+									</div>
+								</li>
+							</ul>
+							<div id="qrcode" style="width:140px; height:140px;margin: 30px auto 20px;"></div>
+						</div>
+					</div>
+					<ul class="layui-col-xs9 layui-col-sm9 layui-col-md9 funSP" style="width:calc(100% - 320px);">
+						<!-- <li data-type="downLinkM" id="downLinkM">下载海报</li> -->
+						<li data-type="downLinkC" id="downLinkC">下载二维码</li>
+						<li data-type="copyLinkM">复制链接</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script type="text/html" id="tool">
+			<input class="layui-input choosecpNum" type="number" id="" value="1" />
+		</script>
+		<script src="../../common/config-meb.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+		<script src="../../public/js/canvas2image.js"></script>
+		<script src="../../public/js/qrcode.js"></script>
+		<script>
+			function subPageCon(posterId) {
+				var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+				var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+
+				// var _w = $('.setSP').width()
+				var _h = document.body.clientHeight
+				// $('.cardB').width(_w - 60)
+				$('.setSP').height(_h)
+				$('.funSP').height(_h)
+
+				layui.use(['laydate', 'table', 'form', 'laytpl', 'upload', 'layer', 'colorpicker'], function() {
+					layui.$.support.cors = true; //允许ajax跨域
+					var $ = layui.jquery,
+						upload = layui.upload,
+						laydate = layui.laydate,
+						table = layui.table,
+						form = layui.form,
+						layer = layui.layer,
+						laytpl = layui.laytpl,
+						colorpicker = layui.colorpicker;
+					var tableSelect = layui.tableSelect;
+
+					var postCon
+					var couponSettings = []
+					var symdName = []
+					var symdList = []
+					var colorC
+					var logo_id = '';
+					var poster_imgId = ''
+					var poster_imgUrl = ''
+					var posBgcolor = '#ffffff'
+					var posButtTextColor = '#ffffff'
+					var posConTitcolor = '#666666'
+					var posConConColor = '#000000'
+					var Imgbase
+					var chooseCnum = 0
+					var downLinkMTit
+
+					// 时段-时分
+					laydate.render({
+						elem: '#validTime',
+						range: true,
+						value: fun_date(0) + ' - ' + fun_date(30)
+					});
+
+					//查询有无会员卡
+					getPostCon()
+
+					function postVue() {
+						new Vue({
+							el: '#setcoupons',
+							data: {
+								couponsList: couponSettings
+							},
+						})
+						new Vue({
+							el: '#ceshivue',
+							data: {
+								posterList: couponSettings,
+							},
+							methods: {
+								inputfocus: function inputfocus(e) {
+									var that = this
+									var id = e.target.dataset.id
+									var id1 = e.target.dataset.id1
+									tableSelect.render({
+										elem: '#' + e.target.id,
+										searchKey: 'voucherName',
+										checkedKey: 'voucherID',
+										searchPlaceholder: '优惠券名称',
+										table: {
+											url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getVoucherList +
+												'?merchantNumber=' + merNumber + '&disable=0',
+											response: {
+												"statusCode": "1000", //解析接口状态
+											},
+											parseData: function(res) {
+												if (res.data == null) {
+													return
+												}
+												return {
+													"code": res.code,
+													"count": res.data.count,
+													"data": res.data.list,
+												}
+											},
+											cols: [
+												[{
+													type: 'radio'
+												}, {
+													field: 'voucherName',
+													title: '卡券',
+													align: 'center',
+													minWidth: 180,
+													templet: function(data) {
+														if (data.voucherName) {
+															return data.voucherName
+														} else {
+															return '--'
+														}
+													}
+												}, {
+													field: 'voucherUse',
+													title: '卡券类型',
+													align: 'center',
+													minWidth: 120,
+													templet: function(data) {
+														switch (data.voucherUse) {
+															case 0:
+																return '折扣券'
+																break;
+															case 1:
+																return '代金券'
+																break;
+															case 2:
+																return '兑换券'
+																break;
+														}
+													}
+												}, {
+													field: 'putCount',
+													title: '当前库存',
+													align: 'center',
+													minWidth: 120,
+													templet: function(data) {
+														if (data.putCount) {
+															return data.putCount
+														} else {
+															return '--'
+														}
+													}
+												}, {
+													field: 'putCount',
+													title: '每人可领取数量',
+													align: 'center',
+													minWidth: 140,
+													templet: function(data) {
+														if (data.putCount) {
+															return data.putCount
+														} else {
+															return '--'
+														}
+													}
+												}, {
+													field: 'operation',
+													title: '数量',
+													align: 'center',
+													toolbar: "#tool"
+												}]
+											]
+										},
+										done: function(elem, data) {
+											var cpName
+											layui.each(data.data, function(index, item) {
+												that.posterList[id].couponList[id1].className = item.voucherName
+												that.posterList[id].couponList[id1].cardTicketId = item.voucherID
+											})
+											elem.val(cpName)
+										}
+									});
+								},
+								inputblur: function inputblur(e) {
+									// console.log(e)
+								},
+								inputFunc: function inputFunc(e) {
+									var id = e.target.dataset.id
+									this.posterList[id].name = e.target.value
+								},
+								inputFunc1: function inputFunc1(e) {
+									var id = e.target.dataset.id
+									var id1 = e.target.dataset.id1
+									this.posterList[id].couponList[id1] = e.target.value
+								},
+								addpost: function addpost() {
+									var newO = new Object()
+									newO.name = '类别名'
+									newO.couponList = []
+									this.posterList.push(newO)
+								},
+								addcoupon: function addcoupon(i) {
+									var newO = new Object()
+									newO.className = ''
+									newO.cardTicketId = ''
+									this.posterList[i].couponList.push(newO)
+								},
+								delpost: function delpost(i) {
+									this.posterList.splice(i, 1)
+								},
+								delcoupon: function delcoupon(i, ic) {
+									this.posterList[i].couponList.splice(ic, 1)
+								},
+								consoleData: function consoleData() {
+									console.log(this.posterList)
+								}
+							},
+						})
+					}
+
+					function getPostCon() {
+						layer.load(2, {
+							shade: 0.5
+						});
+						$.ajax({
+							type: "get",
+							url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.hb_selAllMessage,
+							data: {
+								"posterId": posterId
+							},
+							dataType: "json",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							success: function(data) {
+								if (data.code === 1000) {
+									setpostCon(data.data)
+								}
+								if (data.code == -2) {
+									layer.msg(data.msg)
+								}
+							}
+						});
+					}
+
+					//表单初始赋值
+					function setpostCon(postCon) {
+						poster_imgUrl = postCon.advertisingPictures
+						qrcode.makeCode(postCon.advertisingPictures);
+						if (!postCon.advertisingPictures) {
+							$('.upTips').show()
+						} else {
+							console.log(postCon.advertisingPictures)
+
+							$('.upTips').hide()
+							$('#cardBgImg').attr('src', postCon.advertisingPictures)
+							$('#getCardB').find('img').attr('src', postCon.advertisingPictures)
+						}
+						if (postCon.validTimeType == 1) {
+							$('.resetper').show()
+							$('.syxz').text(postCon.startTime.split(' ')[0] + ' - ' + postCon.endTime.split(' ')[0])
+							$('#validTime').val(postCon.startTime.split(' ')[0] + ' - ' + postCon.endTime.split(' ')[0])
+						}
+						couponSettings = postCon.couponSettings
+						posBgcolor = postCon.backdropColour
+						$('.getCardB').css('background', postCon.backdropColour)
+						$('.postTit').text(postCon.title)
+						$('.postrxplain').text(postCon.rulesActivity)
+						downLinkMTit = postCon.title
+						form.val('basic', {
+							"title": postCon.title,
+							"scopeCollections": postCon.scopeCollections,
+							"validTimeType": postCon.validTimeType,
+							"rulesActivity": postCon.rulesActivity,
+						})
+						// 优惠券类别添加
+						postVue()
+						layer.closeAll('loading');
+					}
+					//表单验证
+
+					var $ = layui.$,
+						active = {
+							copyLinkM: function() {
+								var ssrsss = 'copyLinkM'
+								var flag = copyText(ssrsss); //传递文本
+								layer.msg(flag ? "链接复制成功！" : "链接复制失败！", {
+									icon: 1
+								});
+							},
+							downLinkM: function() {
+								var test = $(".getCardB").get(0); //将jQuery对象转换为dom对象
+								html2canvas(test).then(function(canvas) {
+									var canvasWidth = canvas.width;
+									var canvasHeight = canvas.height;
+									console.log(canvasWidth, canvasHeight)
+									var img = Canvas2Image.convertToImage(canvas, canvasWidth, canvasHeight);
+									// Canvas2Image.saveAsPNG(canvas, canvasWidth, canvasHeight)
+									$(".postTit").after(img);
+								});
+							},
+							downLinkC: function() {
+								downloadImage()
+							},
+						};
+					$('.funSP li').on('click', function() {
+						var type = $(this).data('type');
+						active[type] ? active[type].call(this) : '';
+					});
+
+					// 生成二维码
+					var qrcode = new QRCode(document.getElementById("qrcode"), {
+						width: 140,
+						height: 140
+					});
+
+					// 下载图片 
+					function downloadImage() {
+						var imgSrc = $("#qrcode img").attr("src");
+						var a = $("<a></a>").attr("href", imgSrc).attr("download", downLinkMTit + ".png").appendTo("body");
+						a[0].click();
+						a.remove();
+					}
+
+					// 复制到剪切板
+					function copyText(text) {
+						var textarea = document.createElement("input"); //创建input对象
+						textarea.className = "copyInput"
+						var currentFocus = document.activeElement; //当前获得焦点的元素
+						document.body.appendChild(textarea); //添加元素
+						textarea.value = text;
+						textarea.focus();
+						if (textarea.setSelectionRange)
+							textarea.setSelectionRange(0, textarea.value.length); //获取光标起始位置到结束位置
+						else
+							textarea.select();
+						try {
+							var flag = document.execCommand("copy"); //执行复制
+						} catch (eo) {
+							var flag = false;
+						}
+						document.body.removeChild(textarea); //删除元素
+						currentFocus.focus();
+						return flag;
+					}
+
+					function fun_date(aa) {
+						var date1 = new Date(),
+							time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+						var date2 = new Date(date1);
+						date2.setDate(date1.getDate() + aa);
+						var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+						var a = time2.split('-')[0],
+							b = time2.split('-')[1],
+							c = time2.split('-')[2]
+						if (b < 10) {
+							b = 0 + b
+						}
+						if (c < 10) {
+							c = 0 + c
+						}
+						return a + '-' + b + '-' + c
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

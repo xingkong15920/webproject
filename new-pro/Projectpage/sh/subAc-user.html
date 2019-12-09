@@ -50,6 +50,8 @@
 		<script src="../../common/utility.js"></script>
 		<script src="../../public/js/qrcode.js"></script>
 		<script>
+			var serUrl = 'http://api.51shanhe.com/p-sepaccount/'
+			// var serUrl = 'http://192.168.1.250:6020/p-sepaccount/'
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
@@ -73,7 +75,7 @@
 					})
 					table.render({
 						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/getDistributorList?merchantNumber=' +
+						url: serUrl + 'accountManage/getDistributorList?merchantNumber=' +
 							userNumber,
 						where: {
 							"fixedAccount": 0,
@@ -200,7 +202,7 @@
 					console.log(disableVal)
 					$.ajax({
 						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/isDisdisable?distributionNo=' + data.elem.dataset.distributionno +
+						url: serUrl + 'accountManage/isDisdisable?distributionNo=' + data.elem.dataset.distributionno +
 							'&disable=' + disableVal,
 						// data: JSON.stringify(tjData),
 						dataType: "json",
@@ -279,7 +281,7 @@
 							// 发送请求
 							CmsUtility.postAjaxCall2(
 								//系统设置
-								CmsConfig.ServiceUrl.ApiRootUrlMeb + 'accountManage/updatefixedAccount',
+								serUrl + 'accountManage/updatefixedAccount',
 								addData,
 								function(data) {
 									if (data.code == 1000) {

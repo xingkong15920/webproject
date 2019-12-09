@@ -576,7 +576,9 @@
 						},
 						success: function(data) {
 							layer.closeAll('loading');
-							if (data.code == 1000) {} else {
+							if (data.code == 1000) {
+								location.replace(location.href)
+							} else {
 								layer.msg(data.msg)
 							}
 						}
@@ -756,6 +758,11 @@
 					} else {
 						posButtTextColor = posButtTextColor
 					}
+					if (data.posterEnabled) {
+						data.posterEnabled = 0
+					} else {
+						data.posterEnabled = 1
+					}
 					data.posButtcolor = posButtcolor
 					data.posButtTextColor = posButtTextColor
 					data.titleColor = posConTitcolor
@@ -781,6 +788,7 @@
 							if (data.code === 1000) {
 								layer.closeAll('loading');
 								layer.msg('设置分享海报成功')
+								location.replace(location.href)
 							}
 						}
 					});
@@ -830,6 +838,7 @@
 							if (data.code === 1000) {
 								layer.closeAll('loading');
 								layer.msg('设置分享海报成功')
+								location.replace(location.href)
 							}
 						}
 					});

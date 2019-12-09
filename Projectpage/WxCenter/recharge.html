@@ -8,10 +8,10 @@
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/sweetalert.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/style.css" media="all">
 	</head>
 
 	<body>
@@ -44,14 +44,15 @@
 			</div>
 		</div>
 	</body>
-	<script src="./js/jquery.min.js"></script>
-	<script src="./common/config.js"></script>
-	<script src="./common/utility.js"></script>
-	<script src="./js/sweetalert.min.js"></script>
-	<script src="./lib/layer/layer.js"></script>
-	<script src="./js/vue.min.js"></script>
-	<script src="./js/qrcode.min.js"></script>
-	<script src="./js/JsBarcode.all.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/jquery.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/common/config.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/common/utility.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/sweetalert.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/lib/layer/layer.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/vue.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/qrcode.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/JsBarcode.all.min.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		new Vue({
 			el: '#Vip',
@@ -135,7 +136,7 @@
 					sendDataR.merchantNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 					sendDataR.memberNo = JSON.parse(sessionStorage.getItem('mInfo')).memberNo
 					sendDataR.openId = JSON.parse(sessionStorage.getItem('mInfo')).subOpenId
-					equipmentType
+					// sendDataR.equipmentNumber = "NO210040000463"
 					sendDataR.payType = 1
 					sendDataR.codeType = 'PublicAddress_Pay'
 					sendDataR.paymentType = 'WeChat_Pay'
@@ -155,14 +156,32 @@
 						success: function(data) {
 							$('#loadstart').hide()
 							if (data.code === 1000) {
-								that.cell = ''
-								that.customM = ''
-								that.mebInfoTips = false
-								swal({
-									title: "充值成功！",
-									text: "",
-									type: "success",
-								});
+
+								//var ggdata = data.guanggao、
+								var payData = new Object()
+								payData.totalMoney = that.saleJ
+								payData.openId = JSON.parse(sessionStorage.getItem('mInfo')).subOpenId
+								payData.preNumber = data.data.preNumber
+								$.ajax({
+									//url: "https://api.51shanhe.com/p-pay/pay/payRoute",
+									url: "http://api.51shanhe.com/p-pay/pay/qrCode",
+									type: "POST",
+									async: true,
+									headers: {
+										"Content-Type": "application/json"
+									},
+									data: JSON.stringify(payData),
+									success: function(data) {
+										// alert(JSON.stringify(data))
+										if (data.code != 1000) {
+
+										} else {
+											that.onBridgeReady(data.data.map.appId, data.data.map.timeStamp, data.data.map.nonceStr, data.data.map
+												.package,
+												data.data.map.signType, data.data.map.paySign);
+										}
+									}
+								})
 							} else {
 								swal({
 									title: "",
@@ -172,7 +191,26 @@
 							}
 						}
 					});
-				}
+				},
+				onBridgeReady: function onBridgeReady(appId, time, nonceStr, package, signType, paySign, ggdata) {
+					WeixinJSBridge.invoke(
+						'getBrandWCPayRequest', {
+							"appId": appId,
+							"timeStamp": time,
+							"nonceStr": nonceStr,
+							"package": package,
+							"signType": signType,
+							"paySign": paySign
+						},
+						function(res) {
+							if (res.err_msg == "get_brand_wcpay_request:ok") {
+
+							} else {
+								layer.msg(data.msg)
+							}
+						}
+					);
+				},
 			},
 			created: function created() {
 				var that = this
@@ -227,14 +265,35 @@
 								},
 								success: function(data) {
 									// $('#loadstart').hide()
-									if (data.code == '-2') {
+									if (data.code == '-2' || data.code == -2) {
 										that.memDetails = data.data
 										that.shopname = data.data.shopName
 										that.shopnumber = data.data.shopNumber
 										sessionStorage.setItem("mInfo", JSON.stringify(data.data));
 										$('#loadstart').hide()
 										that.getyhlist()
-									} else if (data.code == '1000') {}
+									} else if (data.code == '-1' || data.code == -1) {
+										returnCard = true
+										swal({
+											title: "",
+											text: "您已退卡，是否重新领卡！",
+											type: "error",
+											showCancelButton: true,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "领卡",
+											cancelButtonText: "关闭",
+											closeOnConfirm: false,
+											closeOnCancel: false
+										}, function(isConfirm) {
+											if (isConfirm) {
+												window.location.href = 'http://api.51shanhe.com/h5-crm/againCard.html?mebNo=' + data.data.memberNo +
+													'&merNo=' + data.data.userNo +
+													'&merN=' + that.merNumber + '&insN=' + that.insNumber
+											} else {
+												wx.closeWindow();
+											}
+										})
+									} else if (data.code == '1000' || data.code == 1000) {}
 								}
 							})
 						}

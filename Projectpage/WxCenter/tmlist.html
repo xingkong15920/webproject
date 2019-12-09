@@ -8,10 +8,10 @@
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-		<link rel="stylesheet" type="text/css" href="./css/reset.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./fonts/iconfont.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/fonts/iconfont.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/sweetalert.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/style.css" media="all">
 	</head>
 
 	<body>
@@ -29,7 +29,7 @@
 					<li class="flex_cc" v-for="(item,i) in tmFun" @click="addTm(i,item)" :class="{active:i==current_tm}">{{item.name}}</li>
 				</ul>
 				<ul class="tmTabli" v-if="cardshowT == 0" v-cloak>
-					<li class="conList" v-if="cardshowT==0" v-for="(item,i) in conList" :class="item.useType == -2?'stateOff':''"
+					<li class="conList" v-if="cardshowT==0" v-for="(item,i) in conList" :class="item.useType == 1 || item.useType == -2?'stateOff':''"
 					 @click="jump(item.voucherNo)">
 						<div v-if="item.voucherUse==0" class="conListT zk flex_cc">
 							<div class="conListTmodel flex_cc">
@@ -54,7 +54,9 @@
 						</div>
 						<div class="conListD flex_cc">
 							<p>有效期：<span>{{item.endTime}}</span></p>
-							<a class="">立即使用</a>
+							<a class="" v-if="item.useType == 0">立即使用</a>
+							<a class="" v-else-if="item.useType == 1">已使用</a>
+							<a class="" v-else-if="item.useType == -2">已过期</a>
 						</div>
 					</li>
 					<li class="tmList flex_cc" v-if="cardshowT==1" v-for="(item,i) in tmList">
@@ -65,7 +67,7 @@
 					</li>
 				</ul>
 				<div class="flex_cc" v-if="cardshowT == 500" style="width: 100%;height: 100%;flex-direction: column;">
-					<img src="./images/mescroll-empty.png" style="display: block;">
+					<img src="http://static.51shanhe.com/wxCenter/images/mescroll-empty.png" style="display: block;">
 					<p>暂无数据</p>
 				</div>
 			</div>
@@ -82,14 +84,15 @@
 			</ul>
 		</div>
 	</body>
-	<script src="./js/jquery.min.js"></script>
-	<script src="./common/config.js"></script>
-	<script src="./common/utility.js"></script>
-	<script src="./js/sweetalert.min.js"></script>
-	<script src="./lib/layer/layer.js"></script>
-	<script src="./js/vue.min.js"></script>
-	<script src="./js/qrcode.min.js"></script>
-	<script src="./js/JsBarcode.all.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/jquery.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/common/config.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/common/utility.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/sweetalert.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/lib/layer/layer.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/vue.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/qrcode.min.js"></script>
+	<script src="http://static.51shanhe.com/wxCenter/js/JsBarcode.all.min.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		// var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
 		// insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
@@ -133,10 +136,10 @@
 					usetit: '全部类型',
 				}, {
 					usetype: 0,
-					usetit: '已使用',
+					usetit: '未使用',
 				}, {
 					usetype: 1,
-					usetit: '未使用',
+					usetit: '已使用',
 				}, {
 					usetype: -2,
 					usetit: '已过期',
@@ -154,7 +157,7 @@
 					contit: '代金券',
 				}, {
 					contype: 2,
-					contit: '满减券',
+					contit: '兑换券',
 				}],
 				conList: [],
 				tmList: [],
@@ -191,7 +194,7 @@
 					}
 				},
 				jump: function jump(cardNo) {
-					window.location.href = './cardCon.html?cardType=' + this.cardshowT + '&cardNo=' + cardNo
+					window.location.href = 'http://static.51shanhe.com/wxCenter/wx_cardCon.html?cardType=' + this.cardshowT + '&cardNo=' + cardNo
 				},
 				useorbuy() {
 					if (this.current_tm == 0) {
@@ -207,8 +210,8 @@
 					tjData.page = '1'
 					tjData.limit = '999'
 					tjData.shopNo = JSON.parse(sessionStorage.getItem('mInfo')).shopNumber
-					tjData.voucherUse = that.current_u == 1000 ? '' : that.current_u
-					tjData.useType = that.current_c == 1000 ? '' : that.current_c
+					tjData.useType = that.current_u == 1000 ? '' : that.current_u
+					tjData.voucherUse = that.current_c == 1000 ? '' : that.current_c
 
 					CmsUtility.postAjaxCall2(
 						//系统设置
@@ -220,10 +223,12 @@
 							that.mask_u = false
 							that.mask_c = false
 							if (data.code === 1000) {
-								if (data.data.voucherCount > 0) {
+								if (data.data.voucherList.length > 0) {
+									that.cardshowT = 0
 									that.conList = data.data.voucherList
 								} else {
 									that.cardshowT = 500
+									that.conList = []
 								}
 							} else {
 								that.cardshowT = 500
@@ -235,7 +240,6 @@
 						},
 						'get',
 					)
-					console.log(this.cardshowT)
 				},
 				getTimeMonth() {
 					var that = this,
@@ -286,8 +290,6 @@
 					this.current_u = i
 					this.usetips = e.usetit
 					this.usechoose = i
-					console.log(this.current_u)
-					console.log(i)
 					this.getVoucher()
 				},
 				showcon() {
@@ -299,8 +301,6 @@
 					this.current_c = i
 					this.contips = e.contit
 					this.conchoose = i
-					console.log(this.current_c)
-					console.log(i)
 					this.getVoucher()
 				},
 				hidemask() {
@@ -362,7 +362,7 @@
 								},
 								success: function(data) {
 									// $('#loadstart').hide()
-									if (data.code == '-2') {
+									if (data.code == '-2' || data.code == -2) {
 										that.memDetails = data.data
 										sessionStorage.setItem("mInfo", JSON.stringify(data.data));
 										switch (getQueryString('cardType')) {
@@ -381,7 +381,28 @@
 										}
 										that.usetips = that.useT[that.usechoose].usetit
 										that.contips = that.conT[that.conchoose].contit
-									} else if (data.code == '1000') {}
+									} else if (data.code == '-1' || data.code == -1) {
+										returnCard = true
+										swal({
+											title: "",
+											text: "您已退卡，是否重新领卡！",
+											type: "error",
+											showCancelButton: true,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "领卡",
+											cancelButtonText: "关闭",
+											closeOnConfirm: false,
+											closeOnCancel: false
+										}, function(isConfirm) {
+											if (isConfirm) {
+												window.location.href = 'http://api.51shanhe.com/h5-crm/againCard.html?mebNo=' + data.data.memberNo +
+													'&merNo=' + data.data.userNo +
+													'&merN=' + that.merNumber + '&insN=' + that.insNumber
+											} else {
+												wx.closeWindow();
+											}
+										})
+									} else if (data.code == '1000' || data.code == 1000) {}
 								}
 							})
 
