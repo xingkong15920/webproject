@@ -71,6 +71,7 @@
                         <option value="">支付方式</option>
                         <option value="Alipay_Pay">支付宝</option>
                         <option value="WeChat_Pay">微信</option>
+						<option value="UnionPay_Pay">云闪付</option>
                     </select>
                 </div>
                 <!-- <div class="layui-input-inline">
@@ -269,7 +270,7 @@
                     }, {
                         align: 'center',
                         field: 'tuikuanjine',
-                        width: 80,
+                        width: 120,
                         title: '退单金额',
                         templet: function(data) {
                             return '￥' + data.tuikuanjine
@@ -277,71 +278,74 @@
                     }, {
                         align: 'center',
                         field: 'experience',
-                        width: 150,
+                        width: 170,
                         title: '提交时间/成功时间',
                         templet: function(data) {
                             return data.orderTime + '</br>' + data.transactionTime
                         }
                     }, {
                         align: 'center',
-                        field: 'subaccountNumber',
-                        width: 140,
+                        field: 'onepaymentTypeName',
+                        width: 120,
                         title: '支付方式',
                         templet: function(data) {
-                            var oneZ, twoZ
                             switch (data.onepaymentTypeName) {
                                 case '0':
-                                    oneZ = '支付宝'
+                                    return '支付宝'
                                     break;
                                 case '1':
-                                    oneZ = '微信'
+                                    return '微信'
                                     break;
                                 case '2':
-                                    oneZ = '京东钱包'
+                                    return '京东钱包'
                                     break;
                                 case '3':
-                                    oneZ = '云闪付'
+                                    return '云闪付'
                                     break;
                                 default:
-                                    oneZ = '--'
+                                    return '--'
                                     break;
                             }
+                        }
+                    }, {
+                        align: 'center',
+                        field: 'twopaymentTypeName',
+                        width: 150,
+                        title: '支付类型',
+                        templet: function(data) {
                             switch (data.twopaymentTypeName) {
                                 case '0':
-                                    twoZ = '条码支付'
+                                    return '条码支付'
                                     break;
                                 case '1':
-                                    twoZ = '动态二维码支付'
+                                    return '动态二维码支付'
                                     break;
                                 case '2':
-                                    twoZ = '小程序支付'
+                                    return '小程序支付'
                                     break;
                                 case '3':
-                                    twoZ = 'APP支付'
+                                    return 'APP支付'
                                     break;
                                 case '4':
-                                    twoZ = 'H5支付'
+                                    return 'H5支付'
                                     break;
                                 case '5':
-                                    twoZ = '公众号支付'
+                                    return '公众号支付'
                                     break;
                                 case '6':
-                                    twoZ = '服务窗支付'
+                                    return '服务窗支付'
                                     break;
                                 case '7':
-                                    twoZ = '预授权'
+                                    return '预授权'
                                     break;
                                 case '8':
-                                    twoZ = '刷脸支付'
+                                    return '刷脸支付'
                                     break;
                                 default:
-                                    twoZ = '--'
+                                    return '--'
                                     break;
                             }
-                            return oneZ + '</br>' + twoZ
-
                         }
-                        //1级+2级
                     }, {
                         align: 'center',
                         field: 'orderRemarks',
@@ -351,11 +355,12 @@
                         align: 'center',
                         field: 'orderState',
                         title: '状态',
+                        width: 100,
                     }, {
                         align: 'center',
                         title: '操作',
                         toolbar: '#toolbar',
-                        minWidth: 200
+                        minWidth: 100
                     }]
                 ],
                 page: true,

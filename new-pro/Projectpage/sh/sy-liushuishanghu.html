@@ -255,13 +255,13 @@
                             field: 'logGid',
                             title: '账单号',
                             align: 'center',
-                            width: 150
+                            width: 200
                         },
                         {
                             field: 'statementDate',
                             title: '账单日期',
                             align: 'center',
-                            width: 100
+                            width: 130
                         }, {
                             field: 'billType',
                             title: '账单类型',
@@ -293,6 +293,14 @@
                             width: 300
                         }, {
                             field: 'totalOrder',
+                            title: '云闪付(笔数/交易额/退款额/手续费/实收额)',
+                            align: 'center',
+                            templet: function(data) {
+                                return data.unionPayTotalOrder + ' / ' + data.unionPayOrderMoney + ' / ' + data.unionPayrefundOrderTotalMoney + ' / ' + data.unionPayPoundage + ' / ' + data.unionPayShishoujine
+                            },
+                            width: 300
+                        }, {
+                            field: 'totalOrder',
                             title: '补贴(笔数/交易额)',
                             align: 'center',
                             templet: function(data) {
@@ -305,7 +313,8 @@
                             align: 'center',
                             templet: function(data) {
                                 return data.historyRefundCount + ' / ' + data.historyRefundAmount + ' / ' + data.historyShopPoundage
-                            }
+                            },
+                            width: 200
                         }
                     ]
                 ],
