@@ -22,11 +22,12 @@ del  删除
 var CmsConfig = {
 
 	ServiceUrl: {
+		ApiRootUrlOrg: 'https://nb.51shanhe.com/shanhe-admin/',
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
 		// ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
-		// ApiRootUrlMeb: 'http://192.168.1.130:6019/p-member/',
-		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.254:6019/p-member/',
+		ApiRootUrlMeb: 'https://api.51shanhe.com/p-member/',
 		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
 		ApiRootUrl: server,
 		PubUrl: publicUrl
@@ -226,6 +227,11 @@ var CmsConfig = {
 			memberAgenOpenCard: "member/memberAgenOpenCard",
 			// 会员重新领卡发送验证码
 			memberSendVerification: "member/memberSendVerification",
+			// 手机号判断是否已注册会员，没有则发送验证码
+			memberIsExistence: "card/memberIsExistence",
+			// 验证手机号，获取会员卡分享链接
+			checkMemberByPhone: "card/checkMemberByPhone",
+			
 
 			// 流水明细
 			// 查询充值流水
@@ -413,6 +419,11 @@ var CmsConfig = {
 			addVideo: "advert/addVideo",
 			//广告更新
 			updateAdvert: "advert/updateAdvert",
+		},
+		//机构
+		Organ: {
+			//机构信息
+			getInsRegInfo: "basicSetting/getInsRegInfo",
 		},
 		//公共
 		Public: {

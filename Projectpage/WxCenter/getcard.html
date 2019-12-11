@@ -4,14 +4,14 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>推荐给朋友</title>
+		<title>送你一张会员卡！</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/reset.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/fonts/iconfont.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/sweetalert.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
 	</head>
 
 	<body>
@@ -20,77 +20,33 @@
 				<div class="loading"></div>
 			</div>
 		</div>
-		<div class="vipCenter shareCon" id="Vip">
-			<img src="http://static.51shanhe.com/wxCenter/images/share_bg.png" class="share_bg">
-			<div class="sharebody flex_cc">
-				<h3 class="shareTit">邀好友领卡得奖励</h3>
-				<div class="wxCard">
+		<div class="vipCenter getCon" id="Vip">
+			<img src="./images/get_bg1.png" class="share_bg get_bg">
+			<div class="sharebody flex_cc" v-cloak>
+				<h3 class="shareTit">新会员专享礼包</h3>
+				<div class="wxCard" v-cloak>
 					<img :src="cardCon.localImgUrl" class="wxCardImg">
 					<div class="cardTit flex_cc">
 						<img :src="cardCon.logoUrl">
 						<h3>{{cardCon.cardName}}<span>{{wxcardCon.subtitle}}</span></h3>
 					</div>
 				</div>
-				<ul class="shareFun flex_cc">
+				<ul class="shareFun flex_cc" v-cloak>
 					<li class="flex_cc" v-for="(item,i) in shareFun" @click="shareFunTab(i)">
 						<i class="icon iconfont" :class="item.funicon"></i>
 						<p>{{item.funtit}}</p>
 					</li>
 				</ul>
-				<div class="shareFunCon">
-					<div class="shareFunCon1 flex_cc" v-show="shareFunCon==0">
-						<p class="shareFunConTit">扫码领取会员卡</p>
-						<div id="shareFunCon1Img"></div>
-					</div>
-					<div class="shareFunCon2 flex_cc" v-show="shareFunCon==1">
-						<p class="shareFunConTit">共计邀请好友 <span>2</span> 人</p>
-						<ul class="invitelist">
-							<li class="flex_cc" v-for="(item,i) in invitelist">
-								<img :src="item.inviteImg">
-								<div class="inviteCon flex_cc">
-									<h3>{{item.inviteName}}<span>已领卡</span></h3>
-									<p>{{item.inviteTime}}</p>
-								</div>
-							</li>
-						</ul>
-					</div>
-					<div class="shareFunCon3 flex_cc" v-show="shareFunCon==2">
-						<p class="shareFunConTit">我的奖励</p>
-						<ul class="cplist">
-							<li class="flex_cc" v-for="(item,i) in cplist">
-								<div class="cpCon flex_cc" v-if="item.cptype == 0">
-									<div class="cpConL">
-										￥ <span>{{item.cpjine}}</span>
-									</div>
-									<p class="flex_cc">折扣券<span>满{{item.cpxianzhi}}元即可使用</span></p>
-								</div>
-								<div class="cpCon flex_cc" v-if="item.cptype == 1">
-									<div class="cpConL">
-										折 <span>{{item.cpjine.split('.')[1]}}</span>
-									</div>
-									<p class="flex_cc">代金券<span>满{{item.cpxianzhi}}元即可使用</span></p>
-								</div>
-								<div class="cpCon flex_cc" v-if="item.cptype == 2">
-									<div class="cpConL">
-										折 <span>{{item.cpjine.split('.')[1]}}</span>
-									</div>
-									<p class="flex_cc">兑换券<span>满{{item.cpxianzhi}}元即可使用</span></p>
-								</div>
-								<p class="flex_cc">立即使用</p>
-							</li>
-						</ul>
-					</div>
+				<div class="shareFunCon" v-cloak>
 				</div>
-				<div class="shareBtn">立即分享</div>
-				<div class="payline"></div>
-				<div class="sharerule flex_cc">
-					<p class="shareruleTit">活动规则</p>
+				<div class="sharerule flex_cc" v-cloak>
+					<!-- <p class="shareruleTit">活动规则</p>
 					<ul class="shareruleCon">
 						<li class="flex_cc">
 							<span>分享规则：</span>
 							<p>可通过微信好友、朋友圈、面对面扫二维码等多 种方式邀请好友领卡，好友领卡后充值或消费即可得到奖励</p>
 						</li>
-					</ul>
+					</ul> -->
 					<p class="shareruleTit">会员卡详情</p>
 					<ul class="shareruleCon">
 						<li class="flex_cc">
@@ -108,7 +64,6 @@
 					</ul>
 				</div>
 			</div>
-			<img src="http://static.51shanhe.com/wxCenter/images/share_bg1.png" class="share_bg1">
 		</div>
 	</body>
 	<script src="http://static.51shanhe.com/wxCenter/js/jquery.min.js"></script>
@@ -121,11 +76,20 @@
 	<script src="http://static.51shanhe.com/wxCenter/js/JsBarcode.all.min.js"></script>
 	<script>
 		var insNumber, merNumber, weixinCode, comId, appSecret, mebInfo
-		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 		new Vue({
 			el: '#Vip',
 			data: {
+				// 以下所有页面共用数据
+				page: 1,
+				limit: 10,
+				insNumber: '',
+				merNumber: '',
+				weixinCode: '',
+				appSecret: '',
+				memberNo: '',
+				memDetails: {},
+				memCpnum: 0,
+				// 以下当前页面数据
 				mebNo: "2123345656664147666",
 				shareFunCon: 0,
 				shareFun: [{
@@ -173,7 +137,7 @@
 						type: "get",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard,
 						data: {
-							"merchantNumber": merNumber
+							"merchantNumber": that.merNumber
 						},
 						dataType: "json",
 						headers: {
@@ -183,14 +147,7 @@
 							if (data.code === 1000) {
 								that.cardCon = data.data
 							} else {
-								swal({
-									title: "",
-									text: '功能未开放',
-									type: "error",
-									showCancelButton: false,
-									closeOnConfirm: false,
-									showConfirmButton: true,
-								});
+								layer.msg(data.msg)
 							}
 						}
 					});
@@ -201,7 +158,7 @@
 						type: "get",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard,
 						data: {
-							"merchantNumber": merNumber
+							"merchantNumber": that.merNumber
 						},
 						async: false,
 						dataType: "json",
@@ -212,14 +169,7 @@
 							if (data.code === 1000) {
 								that.wxcardCon = data.data
 							} else {
-								swal({
-									title: "",
-									text: '功能未开放',
-									type: "error",
-									showCancelButton: false,
-									closeOnConfirm: false,
-									showConfirmButton: true,
-								});
+								layer.msg(data.msg)
 							}
 						}
 					});
@@ -234,7 +184,99 @@
 			},
 			created: function created() {
 				$('#loadstart').hide()
+				this.insNumber = getQueryString('institutionNumber')
+				this.merNumber = getQueryString('merchantNumber')
+				this.getcard()
+				this.getwxcard()
 			},
+			// created: function created() {
+			// 	var that = this
+			// 	if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
+			// 			sessionStorage.getItem('mInfo'))) {
+			// 		if (/MicroMessenger/.test(window.navigator.userAgent)) {
+			// 			if (window.location.href.indexOf('&code=') == -1) {
+			// 				var num = {
+			// 					"institutionNumber": getQueryString('institutionNumber'),
+			// 					"merchantNumber": getQueryString('merchantNumber'),
+			// 					"localUrl": window.location.href,
+			// 				}
+			// 				sessionStorage.setItem("num", JSON.stringify(num));
+			// 				var scope = "snsapi_userinfo";
+			// 				var redirect_uri = window.location.href;
+			// 				that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+			// 				that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+			// 				$.ajax({
+			// 					url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+			// 					type: "GET",
+			// 					async: false,
+			// 					headers: {
+			// 						"Content-Type": "application/x-www-form-urlencoded"
+			// 					},
+			// 					success: function(data) {
+			// 						if (data.code == 1000) {
+			// 							that.weixinCode = data.data.appId;
+			// 							that.appSecret = data.data.appSecret
+			// 							var numw = {
+			// 								"weixinCode": data.data.appId,
+			// 								"appSecret": data.data.appSecret,
+			// 							}
+			// 							sessionStorage.setItem("numw", JSON.stringify(numw));
+			// 							window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
+			// 								"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope +
+			// 								"&state=start#wechat_redirect"
+			// 						}
+			// 					}
+			// 				})
+			// 			} else {
+			// 				that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+			// 				that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+			// 				that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
+			// 				that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
+			// 				var code = window.location.href.split('&code=')[1].split('&state')[0];
+			// 				$.ajax({
+			// 					url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+			// 						that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
+			// 					type: "GET",
+			// 					headers: {
+			// 						"Content-Type": "application/x-www-form-urlencoded"
+			// 					},
+			// 					success: function(data) {
+			// 						$('#loadstart').hide()
+			// 						if (data.code == '-2' || data.code == -2) {
+			// 							that.memDetails = data.data
+			// 							sessionStorage.setItem("mInfo", JSON.stringify(data.data));
+			// 							// $('#loadstart').hide()
+			// 						} else if (data.code == '-1' || data.code == -1) {
+			// 							returnCard = true
+			// 							swal({
+			// 								title: "",
+			// 								text: "您已退卡，是否重新领卡！",
+			// 								type: "error",
+			// 								showCancelButton: true,
+			// 								confirmButtonColor: "#DD6B55",
+			// 								confirmButtonText: "领卡",
+			// 								cancelButtonText: "关闭",
+			// 								closeOnConfirm: false,
+			// 								closeOnCancel: false
+			// 							}, function(isConfirm) {
+			// 								if (isConfirm) {
+			// 									window.location.href = 'http://api.51shanhe.com/h5-crm/againCard.html?mebNo=' + data.data.memberNo +
+			// 										'&merNo=' + data.data.userNo +
+			// 										'&merN=' + that.merNumber + '&insN=' + that.insNumber
+			// 								} else {
+			// 									wx.closeWindow();
+			// 								}
+			// 							})
+			// 						} else if (data.code == '1000' || data.code == 1000) {}
+			// 					}
+			// 				})
+
+			// 			}
+			// 		}
+			// 	} else {
+			// 		that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
+			// 	}
+			// },
 			mounted: function mounted() {
 				this.getcard()
 				this.getwxcard()

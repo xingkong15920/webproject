@@ -357,7 +357,8 @@
 				}
 			},
 			created: function created() {
-				var that = this
+				var that = this,
+					serUrl = isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb)
 				if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
 						sessionStorage.getItem('mInfo'))) {
 					if (/MicroMessenger/.test(window.navigator.userAgent)) {
@@ -373,7 +374,7 @@
 							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
 							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 							$.ajax({
-								url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+								url: serUrl + "server/getMerAppId?merchantNumber=" + that.merNumber,
 								type: "GET",
 								async: false,
 								headers: {
@@ -401,7 +402,7 @@
 							that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
 							var code = window.location.href.split('&code=')[1].split('&state')[0];
 							$.ajax({
-								url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+								url: serUrl + "server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
 									that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
 								type: "GET",
 								headers: {
@@ -427,7 +428,7 @@
 											closeOnCancel: false
 										}, function(isConfirm) {
 											if (isConfirm) {
-												window.location.href = 'http://api.51shanhe.com/h5-crm/againCard.html?mebNo=' + data.data.memberNo +
+												window.location.href = 'https://api.51shanhe.com/h5-crm/againCard.html?mebNo=' + data.data.memberNo +
 													'&merNo=' + data.data.userNo +
 													'&merN=' + that.merNumber + '&insN=' + that.insNumber
 											} else {
