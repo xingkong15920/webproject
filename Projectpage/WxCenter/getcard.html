@@ -11,7 +11,16 @@
 		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/reset.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/fonts/iconfont.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/sweetalert.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="./css/style.css" media="all">
+		<link rel="stylesheet" type="text/css" href="http://static.51shanhe.com/wxCenter/css/style.css" media="all">
+		<style type="text/css">
+			.cardNum {
+				position: absolute;
+				left: 20px;
+				bottom: 15px;
+				z-index: 100;
+				color: #fff;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -21,24 +30,45 @@
 			</div>
 		</div>
 		<div class="vipCenter getCon" id="Vip">
-			<img src="./images/get_bg1.png" class="share_bg get_bg">
+			<img src="http://static.51shanhe.com/wxCenter/images/get_bg1.png" class="share_bg get_bg">
 			<div class="sharebody flex_cc" v-cloak>
-				<h3 class="shareTit">新会员专享礼包</h3>
-				<div class="wxCard" v-cloak>
+				<div class="wxCard" v-cloak style="margin-top: 10px;">
 					<img :src="cardCon.localImgUrl" class="wxCardImg">
 					<div class="cardTit flex_cc">
 						<img :src="cardCon.logoUrl">
 						<h3>{{cardCon.cardName}}<span>{{wxcardCon.subtitle}}</span></h3>
 					</div>
+					<div class="cardNum">
+						NO.8888 8888 8888 8888
+					</div>
 				</div>
-				<ul class="shareFun flex_cc" v-cloak>
-					<li class="flex_cc" v-for="(item,i) in shareFun" @click="shareFunTab(i)">
-						<i class="icon iconfont" :class="item.funicon"></i>
-						<p>{{item.funtit}}</p>
-					</li>
-				</ul>
-				<div class="shareFunCon" v-cloak>
+				<div class="shareFunCon flex_cc" v-cloak>
+					<h3 class="shareTit">新会员专享礼包</h3>
+					<div class="shareFunConDiv">
+						<ul class="shareFunConList">
+							<li v-show="reward_jf != 0">
+								<div class="shareFunConListli flex_cc">
+									<img src="http://static.51shanhe.com/wxCenter/images/jl-jifen.png" alt="">
+									<p class="flex_cc">{{reward_jf}}积分<span>奖励领卡后自动发放</span></p>
+								</div>
+							</li>
+							<li v-show="reward_je != 0">
+								<div class="shareFunConListli flex_cc">
+									<img src="http://static.51shanhe.com/wxCenter/images/jl-yue.png" alt="">
+									<p class="flex_cc">{{reward_je}}元余额<span>奖励领卡后自动发放</span></p>
+								</div>
+							</li>
+							<li v-show="cplist.length > 0" v-for="item in cplist">
+								<div class="shareFunConListli flex_cc">
+									<img src="http://static.51shanhe.com/wxCenter/images/jl-yhq.png" alt="">
+									<p class="flex_cc">{{item.Voucher_Name}}<span>奖励领卡后自动发放</span></p>
+									<h5>x <span>{{item.fullGive}}</span></h5>
+								</div>
+							</li>
+						</ul>
+					</div>
 				</div>
+				<div class="shareBtn" v-cloak style="box-shadow: 0 3px 0 0 #A90607;background: #EF0022;color: #fff;">立即领取</div>
 				<div class="sharerule flex_cc" v-cloak>
 					<!-- <p class="shareruleTit">活动规则</p>
 					<ul class="shareruleCon">
@@ -51,7 +81,7 @@
 					<ul class="shareruleCon">
 						<li class="flex_cc">
 							<span>特权说明：</span>
-							<p>领取会员卡即送优惠大礼包，包含积分、优惠券等多种优惠券</p>
+							<p>{{cardCon.privilegeState}}</p>
 						</li>
 						<li class="flex_cc">
 							<span>有效日期：</span>
@@ -59,7 +89,7 @@
 						</li>
 						<li class="flex_cc">
 							<span>使用须知：</span>
-							<p>无需出示会员卡直接微信、支付宝买单即可享会 员权益</p>
+							<p>{{cardCon.useInstructions}}</p>
 						</li>
 					</ul>
 				</div>
@@ -92,50 +122,20 @@
 				// 以下当前页面数据
 				mebNo: "2123345656664147666",
 				shareFunCon: 0,
-				shareFun: [{
-					funtit: '我的二维码',
-					funicon: 'iconico',
-				}, {
-					funtit: '分享记录',
-					funicon: 'iconfenxiangjilu',
-				}, {
-					funtit: '我的奖励',
-					funicon: 'iconanchuweidianiconquanji_fuzhi-',
-				}],
-				invitelist: [{
-					inviteImg: 'http://sh-upfile.oss-cn-beijing.aliyuncs.com/1004/crm/logo/1567412767613.png',
-					inviteName: '春暖花开',
-					inviteTime: '2019-10-31 15:32:23'
-				}, {
-					inviteImg: 'http://sh-upfile.oss-cn-beijing.aliyuncs.com/1004/crm/logo/1567412767613.png',
-					inviteName: '春暖花开',
-					inviteTime: '2019-10-31 15:32:23'
-				}],
-				cplist: [{
-					cpjine: '100',
-					cpxianzhi: '2000',
-					cptype: 0
-				}, {
-					cpjine: '0.95',
-					cpxianzhi: '200',
-					cptype: 1
-				}, {
-					cpjine: '0.95',
-					cpxianzhi: '200',
-					cptype: 2
-				}],
+				shareFun: [],
+				invitelist: [],
+				cplist: [],
 				cardCon: {},
 				wxcardCon: {},
+				reward_jf: '',
+				reward_je: '',
 			},
 			methods: {
-				shareFunTab(i) {
-					this.shareFunCon = i
-				},
 				getcard() {
 					var that = this
 					$.ajax({
 						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard,
+						url: CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard),
 						data: {
 							"merchantNumber": that.merNumber
 						},
@@ -145,6 +145,7 @@
 						},
 						success: function(data) {
 							if (data.code === 1000) {
+								that.getwxcard()
 								that.cardCon = data.data
 							} else {
 								layer.msg(data.msg)
@@ -156,7 +157,7 @@
 					var that = this
 					$.ajax({
 						type: "get",
-						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard,
+						url: CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard),
 						data: {
 							"merchantNumber": that.merNumber
 						},
@@ -166,7 +167,9 @@
 							"Content-Type": "application/json"
 						},
 						success: function(data) {
+							// $('#loadstart').hide()
 							if (data.code === 1000) {
+								that.getShareMyReward()
 								that.wxcardCon = data.data
 							} else {
 								layer.msg(data.msg)
@@ -174,114 +177,134 @@
 						}
 					});
 				},
-				makebarCode: function() {
-					var qrcode = new QRCode(document.getElementById("shareFunCon1Img"), {
-						width: 140,
-						height: 140,
-					});
-					qrcode.makeCode(this.mebNo);
+				getShareMyReward: function getShareMyReward() {
+					var that = this,
+						ajaData = new Object();
+					ajaData.merchantNumber = that.merNumber
+					ajaData.activityClass = 3
+					CmsUtility.postAjaxCall2(
+						//系统设置
+						CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getShareMyReward),
+						ajaData,
+						function(data) {
+							$('#loadstart').hide()
+							if (data.code == '1000') {
+								that.reward_jf = data.data.resultGive[0].integral
+								that.reward_je = data.data.resultGive[0].money
+								that.cplist = data.data.resultVoucher
+								console.log(data.data)
+							} else {
+								layer.msg(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						},
+						'get'
+					)
 				},
 			},
-			created: function created() {
-				$('#loadstart').hide()
-				this.insNumber = getQueryString('institutionNumber')
-				this.merNumber = getQueryString('merchantNumber')
-				this.getcard()
-				this.getwxcard()
-			},
 			// created: function created() {
-			// 	var that = this
-			// 	if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
-			// 			sessionStorage.getItem('mInfo'))) {
-			// 		if (/MicroMessenger/.test(window.navigator.userAgent)) {
-			// 			if (window.location.href.indexOf('&code=') == -1) {
-			// 				var num = {
-			// 					"institutionNumber": getQueryString('institutionNumber'),
-			// 					"merchantNumber": getQueryString('merchantNumber'),
-			// 					"localUrl": window.location.href,
-			// 				}
-			// 				sessionStorage.setItem("num", JSON.stringify(num));
-			// 				var scope = "snsapi_userinfo";
-			// 				var redirect_uri = window.location.href;
-			// 				that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-			// 				that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
-			// 				$.ajax({
-			// 					url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
-			// 					type: "GET",
-			// 					async: false,
-			// 					headers: {
-			// 						"Content-Type": "application/x-www-form-urlencoded"
-			// 					},
-			// 					success: function(data) {
-			// 						if (data.code == 1000) {
-			// 							that.weixinCode = data.data.appId;
-			// 							that.appSecret = data.data.appSecret
-			// 							var numw = {
-			// 								"weixinCode": data.data.appId,
-			// 								"appSecret": data.data.appSecret,
-			// 							}
-			// 							sessionStorage.setItem("numw", JSON.stringify(numw));
-			// 							window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
-			// 								"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope +
-			// 								"&state=start#wechat_redirect"
-			// 						}
-			// 					}
-			// 				})
-			// 			} else {
-			// 				that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-			// 				that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
-			// 				that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
-			// 				that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
-			// 				var code = window.location.href.split('&code=')[1].split('&state')[0];
-			// 				$.ajax({
-			// 					url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
-			// 						that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
-			// 					type: "GET",
-			// 					headers: {
-			// 						"Content-Type": "application/x-www-form-urlencoded"
-			// 					},
-			// 					success: function(data) {
-			// 						$('#loadstart').hide()
-			// 						if (data.code == '-2' || data.code == -2) {
-			// 							that.memDetails = data.data
-			// 							sessionStorage.setItem("mInfo", JSON.stringify(data.data));
-			// 							// $('#loadstart').hide()
-			// 						} else if (data.code == '-1' || data.code == -1) {
-			// 							returnCard = true
-			// 							swal({
-			// 								title: "",
-			// 								text: "您已退卡，是否重新领卡！",
-			// 								type: "error",
-			// 								showCancelButton: true,
-			// 								confirmButtonColor: "#DD6B55",
-			// 								confirmButtonText: "领卡",
-			// 								cancelButtonText: "关闭",
-			// 								closeOnConfirm: false,
-			// 								closeOnCancel: false
-			// 							}, function(isConfirm) {
-			// 								if (isConfirm) {
-			// 									window.location.href = 'http://api.51shanhe.com/h5-crm/againCard.html?mebNo=' + data.data.memberNo +
-			// 										'&merNo=' + data.data.userNo +
-			// 										'&merN=' + that.merNumber + '&insN=' + that.insNumber
-			// 								} else {
-			// 									wx.closeWindow();
-			// 								}
-			// 							})
-			// 						} else if (data.code == '1000' || data.code == 1000) {}
-			// 					}
-			// 				})
-
-			// 			}
-			// 		}
-			// 	} else {
-			// 		that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
-			// 	}
+			// 	$('#loadstart').hide()
+			// 	this.insNumber = getQueryString('institutionNumber')
+			// 	this.merNumber = getQueryString('merchantNumber')
+			// 	this.getcard()
+			// 	this.getwxcard()
 			// },
-			mounted: function mounted() {
-				this.getcard()
-				this.getwxcard()
-				this.makebarCode()
-			}
+			created: function created() {
+				var that = this
+				if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
+						sessionStorage.getItem('mInfo'))) {
+					if (/MicroMessenger/.test(window.navigator.userAgent)) {
+						if (window.location.href.indexOf('&code=') == -1) {
+							var num = {
+								"institutionNumber": getQueryString('institutionNumber'),
+								"merchantNumber": getQueryString('merchantNumber'),
+								"localUrl": window.location.href,
+							}
+							sessionStorage.setItem("num", JSON.stringify(num));
+							var scope = "snsapi_userinfo";
+							var redirect_uri = window.location.href;
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMerAppId?merchantNumber=" + that.merNumber,
+								type: "GET",
+								async: false,
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									if (data.code == 1000) {
+										that.weixinCode = data.data.appId;
+										that.appSecret = data.data.appSecret
+										var numw = {
+											"weixinCode": data.data.appId,
+											"appSecret": data.data.appSecret,
+										}
+										sessionStorage.setItem("numw", JSON.stringify(numw));
+										window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + that.weixinCode +
+											"&redirect_uri=" + redirect_uri + "&response_type=code&scope=" + scope +
+											"&state=start#wechat_redirect"
+									}
+								}
+							})
+						} else {
+							that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+							that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+							that.weixinCode = JSON.parse(sessionStorage.getItem('numw')).weixinCode;
+							that.appSecret = JSON.parse(sessionStorage.getItem('numw')).appSecret
+							var code = window.location.href.split('&code=')[1].split('&state')[0];
+							$.ajax({
+								url: "http://api.51shanhe.com/p-member/server/getMemInfo?merchantNumber=" + that.merNumber + '&appId=' +
+									that.weixinCode + '&code=' + code + '&appSecret=' + that.appSecret,
+								type: "GET",
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								success: function(data) {
+									$('#loadstart').hide()
+									if (data.code == '-2' || data.code == -2) {
+										that.memDetails = data.data
+										that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+										that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+										sessionStorage.setItem("mInfo", JSON.stringify(data.data));
+										that.getcard()
+										// $('#loadstart').hide()
+									} else if (data.code == '-1' || data.code == -1) {
+										returnCard = true
+										swal({
+											title: "",
+											text: "您已退卡，是否重新领卡！",
+											type: "error",
+											showCancelButton: true,
+											confirmButtonColor: "#DD6B55",
+											confirmButtonText: "领卡",
+											cancelButtonText: "关闭",
+											closeOnConfirm: false,
+											closeOnCancel: false
+										}, function(isConfirm) {
+											if (isConfirm) {
+												window.location.href = 'http://api.51shanhe.com/h5-crm/againCard.html?mebNo=' + data.data.memberNo +
+													'&merNo=' + data.data.userNo +
+													'&merN=' + that.merNumber + '&insN=' + that.insNumber
+											} else {
+												wx.closeWindow();
+											}
+										})
+									} else if (data.code == '1000' || data.code == 1000) {}
+								}
+							})
+
+						}
+					}
+				} else {
+					that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
+					that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+					that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+					that.getcard()
+				}
+			},
 		})
 
 		function getQueryString(name) {

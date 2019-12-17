@@ -22,10 +22,11 @@ del  删除
 var CmsConfig = {
 
 	ServiceUrl: {
+		ApiRootUrlOrg: 'https://nb.51shanhe.com/shanhe-admin/',
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
 		// ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
-		// ApiRootUrlMeb: 'http://192.168.1.254:6019/p-member/',
+		// ApiRootUrlMeb: 'http://192.168.1.254:6018/p-member/',
 		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
 		ApiRootUrl: server,
@@ -306,6 +307,16 @@ var CmsConfig = {
 			// 查询会员可使用的优惠券
 			memberVoucherUseList: "voucher/memberVoucherUseList",
 
+			// 分享会员卡
+			// 分享会员卡—我的奖励
+			getShareMyReward: "card/getShareMyReward",
+			// 分享会员卡—分享记录
+			getShareRecord: "card/getShareRecord",
+			// 分享会员卡—获取分享链接
+			shareCardGetUrl: "card/shareCardGetUrl",
+			// JS-API获取签名信息
+			jsApiGetSign: "synVoucher/jsApiGetSign",
+
 			// 海报设置
 			// 查询海报列表
 			hb_selPoster: "poster/selPoster",
@@ -410,6 +421,11 @@ var CmsConfig = {
 			addVideo: "advert/addVideo",
 			//广告更新
 			updateAdvert: "advert/updateAdvert",
+		},
+		//机构
+		Organ: {
+			//机构信息
+			getInsRegInfo: "basicSetting/getInsRegInfo",
 		},
 		//公共
 		Public: {

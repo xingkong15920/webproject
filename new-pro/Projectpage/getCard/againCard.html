@@ -9,6 +9,9 @@
 		<link rel="stylesheet" type="text/css" href="./css/sweetalert.css" media="all" />
 		<link rel="stylesheet" href="./css/register_member.css" />
 		<style>
+			.js_activate{
+				padding-top: 0.1px;
+			}
 			.mcode{
 				color: #04be02;
 				margin-right: 8px;
@@ -36,7 +39,7 @@
 				<div class="card_mask"></div>
 				<img src="http://club.liantuobank.com/imgPath/club-open/1574345957927.jpg" alt="" class="card_logo js_norefer_img">
 				<div class="card_brand">
-					永丰超市
+					闪盒会员
 				</div>
 				<div class="card_name">
 					会员卡
@@ -92,7 +95,7 @@
 	<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/sweetalert.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="./common/config-cs.js"></script>
+	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script>
 		function getQueryString(name) {
@@ -107,8 +110,15 @@
 		var codeT = true
 		var timer, cellCode, insNumber, merNumber, memberNo, rg = new RegExp(/^1[3456789]\d{9}$/);
 		memberNo = getQueryString('mebNo')
-		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+		if (!JSON.parse(sessionStorage.getItem('num'))) {
+			insNumber = getQueryString('insN')
+			merNumber = getQueryString('merN')
+		} else {
+			insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+			merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+		}
+		getcard()
+		getwxcard()
 		$(function() {
 			$("#phoneBtn").click(function() {
 				console.log($('#yzCell').val())
@@ -179,7 +189,7 @@
 
 				$.ajax({
 					type: "post",
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberAgenOpenCard,
+					url: CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberAgenOpenCard),
 					data: JSON.stringify(sendData),
 					dataType: "json",
 					headers: {
@@ -204,10 +214,54 @@
 			});
 		});
 
+		function getcard() {
+			$.ajax({
+				type: "get",
+				url: CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getCard),
+				data: {
+					"merchantNumber": merNumber
+				},
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						$('.card_logo').attr('src', data.data.logoUrl)
+						$('.card_brand').text(data.data.cardName)
+					} else {
+						layer.msg(data.msg)
+					}
+				}
+			});
+		}
+
+		function getwxcard() {
+			$.ajax({
+				type: "get",
+				url: CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getWCard),
+				data: {
+					"merchantNumber": merNumber
+				},
+				async: false,
+				dataType: "json",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				success: function(data) {
+					if (data.code === 1000) {
+						$('.card_name').text(data.data.subtitle)
+					} else {
+						layer.msg(data.msg)
+					}
+				}
+			});
+		}
+
 		function getMerchantInitDel() {
 			$.ajax({
 				type: "get",
-				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMerchantInitDel,
+				url: CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMerchantInitDel),
 				data: {
 					"merchantNumber": merNumber,
 				},
@@ -238,7 +292,7 @@
 			sData.institutionNumber = insNumber
 			$.ajax({
 				type: "post",
-				url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberSendVerification,
+				url: CmsUtility.isHttps(CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.memberSendVerification),
 				data: JSON.stringify(sData),
 				dataType: "json",
 				headers: {

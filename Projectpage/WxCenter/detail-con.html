@@ -21,8 +21,8 @@
 			</div>
 		</div>
 		<div class="vipCenter payConD" id="Vip">
-			<h5 class="flex_cc"><img src="http://sh-upfile.oss-cn-beijing.aliyuncs.com/1004/crm/logo/1567412767613.png"><span>闪盒收银</span></h5>
-			<h3>- {{orderDetail.money}}</h3>
+			<h5 class="flex_cc"><img :src="insImg"><span>{{insName}}</span></h5>
+			<h3 style="text-align: center;">- {{orderDetail.money}}</h3>
 			<p>交易成功</p>
 			<ul class="payDetails">
 				<li class="flex_cc">
@@ -31,7 +31,7 @@
 				</li>
 				<li class="flex_cc">
 					<span>积分奖励</span>
-					<p>+100积分</p><i class="icon iconfont iconarrow-right-copy"></i>
+					<p>+ {{orderDetail.GiveI}} 积分</p><i class="icon iconfont iconarrow-right-copy"></i>
 				</li>
 				<li class="flex_cc">
 					<span>商品说明</span>
@@ -74,15 +74,24 @@
 	<script src="http://static.51shanhe.com/wxCenter/lib/layer/layer.js"></script>
 	<script src="http://static.51shanhe.com/wxCenter/js/vue.min.js"></script>
 	<script>
-		var insNumber, merNumber, orderNumber
-		insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
-		merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
 		new Vue({
 			el: '#Vip',
 			data: {
+				// 以下所有页面共用数据
+				page: 1,
+				limit: 10,
+				insNumber: '',
+				merNumber: '',
+				weixinCode: '',
+				appSecret: '',
+				memberNo: '',
+				memDetails: {},
+				memCpnum: 0,
+				// 以下当前页面数据
 				orderDetail: {},
-				orderNumber: getQueryString('orderNumber'),
-				orderMoney: '100.00',
+				orderNumber: '',
+				insImg: '',
+				insName: '',
 			},
 			methods: {
 				changeDatas: function changeDatas(res) {
@@ -97,15 +106,21 @@
 							res.payType1 = '支付宝'
 							break;
 					}
+					if (res.consumptionGiveI || res.consumGiveI) {
+						res.GiveI = res.consumptionGiveI + res.consumGiveI
+					}else{
+						res.GiveI = '0'
+					}
+					return res
 				},
-				getDetails() {
+				getDetails: function getDetails(orderNumber) {
 					// 获取分页数据
 					var that = this,
 						sendData = new Object();
-					sendData.merchantNumber = merNumber;
+					sendData.merchantNumber = that.merNumber;
 					sendData.page = '1';
 					sendData.limit = '10';
-					sendData.consumOrderNumber = that.orderNumber;
+					sendData.consumOrderNumber = orderNumber;
 					$.ajax({
 						type: "get",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getConTurnovers,
@@ -117,7 +132,8 @@
 						success: function success(data) {
 							$('#loadstart').hide(); // 回调
 							if (data.code === 1000) {
-								that.orderDetail = changeDatas(data.data.consumTurnovers[0])
+								that.orderDetail = that.changeDatas(data.data.consumTurnovers[0])
+								console.log(that.orderDetail)
 							} else {
 								swal({
 									title: "",
@@ -130,11 +146,52 @@
 							}
 						}
 					});
-
+				},
+				getInsInfo: function getInsInfo(ins) {
+					var that = this
+					// alert(insN)
+					// alert(CmsConfig.ServiceUrl.ApiRootUrlOrg + CmsConfig.addressUrl.Organ.getInsRegInfo)
+					CmsUtility.postAjaxCall2(
+						//系统设置
+						CmsConfig.ServiceUrl.ApiRootUrlOrg + CmsConfig.addressUrl.Organ.getInsRegInfo, {
+							'institutionNumber': ins,
+						},
+						function(data) {
+							// alert(JSON.stringify(data))
+							if (data.code == 1000) {
+								that.insImg = data.data[0].institutionLogo
+								that.insName = data.data[0].institutionName
+							} else {
+								alert(data.msg)
+							}
+						},
+						function(data) {
+							console.log('222')
+						}
+					)
 				}
 			},
 			created: function created() {
-				this.getDetails(this.orderNumber)
+				var that = this
+				if (!JSON.parse(sessionStorage.getItem('num')) || !JSON.parse(sessionStorage.getItem('numw')) || !JSON.parse(
+						sessionStorage.getItem('mInfo'))) {
+					swal({
+						title: "",
+						text: data.msg,
+						type: "error",
+						showCancelButton: false,
+						closeOnConfirm: false,
+						showConfirmButton: true,
+					});
+				} else {
+					$('#loadstart').hide()
+					that.insNumber = JSON.parse(sessionStorage.getItem('num')).institutionNumber
+					that.merNumber = JSON.parse(sessionStorage.getItem('num')).merchantNumber
+					that.memDetails = JSON.parse(sessionStorage.getItem('mInfo'))
+					that.getInsInfo(JSON.parse(sessionStorage.getItem('num')).institutionNumber)
+					that.getDetails(getQueryString('orderNumber'))
+				}
+
 			},
 			mounted: function mounted() {}
 		})
