@@ -1,707 +1,914 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title id="title">商户管理系统</title>
-    <meta name="renderer" content="webkit|ie-comp|ie-stand">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-    <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> -->
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <link rel="stylesheet" href="../../public/css/font.css">
-    <link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
-    <link rel="stylesheet" href="../../public/css/xadmin.css">
-    <link rel="stylesheet" href="../../public/css/style.1.2.1.css">
-    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
-    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
-    <script src="../../common/config-sh.js"></script>
-    <script src="../../common/utility.js"></script>
-    <script type="text/javascript">
-        //var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
-            var site = '51shanhe'
-    function getDateStr(dayCount) {
-        var dayNumber = 0 + dayCount
-        let dd = new Date()
-        dd.setDate(dd.getDate() + dayCount)
-        let time = dd.getTime()
-        return time + ''
-    }
-    var number = CmsUtility.getQueryString('number')
-    var ins = CmsUtility.getQueryString('ins')
-    var cname = ''
-    var cip = ''
-    if (CmsUtility.getQueryString('number') != null) {
-        $.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
-            console.log(returnCitySN)
-            cip = returnCitySN.cip
-        });
-        //获取用户所在城市信息
-        var citysearch = new AMap.CitySearch();
-        //自动获取用户IP，返回当前城市
-        citysearch.getLocalCity(function(status, result) {
-            console.log(status, result)
-            if (status === 'complete' && result.info === 'OK') {
-                if (result && result.city && result.bounds) {
-                    cname = result.province + result.city
-                    console.log(cip, cname)
-                    CmsUtility.postAjaxCall(
-                        //系统设置
-                        CmsConfig.addressUrl.Login.Automaticlist, {
-                            "loginClass": '3',
-                            "number": number,
-                            "institutionNumber": ins,
-                            "address": cname,
-                            "IP": cip
-                        },
-                        function(data) {
-                            if (data.code == '1000') {
-                                console.log(data)
-                                var data = data.data
-                                console.log(data)
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title id="title">商户管理系统</title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+		<!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> -->
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="../../public/css/font.css">
+		<link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
+		<link rel="stylesheet" href="../../public/css/xadmin.css">
+		<link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
+		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<script src="../../common/config-sh.js"></script>
+		<script src="../../common/utility.js"></script>
+		<script type="text/javascript">
+			//var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
+			var site = '51shanhe'
 
-                                sessionStorage.setItem("userSh", JSON.stringify(data));
-                                var dataObj = new Object()
+			function getDateStr(dayCount) {
+				var dayNumber = 0 + dayCount
+				let dd = new Date()
+				dd.setDate(dd.getDate() + dayCount)
+				let time = dd.getTime()
+				return time + ''
+			}
+			var number = CmsUtility.getQueryString('number')
+			var ins = CmsUtility.getQueryString('ins')
+			var cname = ''
+			var cip = ''
+			if (CmsUtility.getQueryString('number') != null) {
+				$.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
+					console.log(returnCitySN)
+					cip = returnCitySN.cip
+				});
+				//获取用户所在城市信息
+				var citysearch = new AMap.CitySearch();
+				//自动获取用户IP，返回当前城市
+				citysearch.getLocalCity(function(status, result) {
+					console.log(status, result)
+					if (status === 'complete' && result.info === 'OK') {
+						if (result && result.city && result.bounds) {
+							cname = result.province + result.city
+							console.log(cip, cname)
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.addressUrl.Login.Automaticlist, {
+									"loginClass": '3',
+									"number": number,
+									"institutionNumber": ins,
+									"address": cname,
+									"IP": cip
+								},
+								function(data) {
+									if (data.code == '1000') {
+										console.log(data)
+										var data = data.data
+										console.log(data)
+
+										sessionStorage.setItem("userSh", JSON.stringify(data));
+										var dataObj = new Object()
 										dataObj.time = getDateStr(7)
 										dataObj.data = data
 										console.log(JSON.stringify(dataObj))
-										localStorage.setItem(site+'shStorage',JSON.stringify(dataObj))
-                                window.location.href = decodeURIComponent(window.location).split('?')[0]
-                                // layer.msg('登录成功')
-                                // setTimeout(function() {
-                                // 	window.location.href = 'index.html'
-                                // }, 500)
-                            } else {
-                                //layer.msg(data.msg)
-                            }
-                        },
-                        function(data) {
-                            console.log('222')
-                        }
-                    )
-                }
-            } else {}
-        })
-        // window.location.href = decodeURIComponent(window.location).split('?')[0]
-    } else {
-       
-        if (!localStorage.getItem(site+"shStorage")) {
-            window.location.href = 'login.html'
-        } else {
-            var nowTime = getDateStr(0)
-            var localData = JSON.parse(localStorage.getItem(site+"shStorage"))
-            if (nowTime >= localData.time) {
-                window.location.href = 'login.html'
-            } else {
-                sessionStorage.setItem("userSh", JSON.stringify(localData.data));
-            }
-        }
-    }
-    var dw = $(window).width(),
-        dh = $(window).height(),
-        ifmbox = $(".layui-iframe"),
-        iframe = $("#iframepage");
+										localStorage.setItem(site + 'shStorage', JSON.stringify(dataObj))
+										window.location.href = decodeURIComponent(window.location).split('?')[0]
+										// layer.msg('登录成功')
+										// setTimeout(function() {
+										// 	window.location.href = 'index.html'
+										// }, 500)
+									} else {
+										//layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+					} else {}
+				})
+				// window.location.href = decodeURIComponent(window.location).split('?')[0]
+			} else {
 
-    var cssText = "width:" + dw + "px !important;";
-    iframe.css("cssText", cssText);
+				if (!localStorage.getItem(site + "shStorage")) {
+					window.location.href = 'login.html'
+				} else {
+					var nowTime = getDateStr(0)
+					var localData = JSON.parse(localStorage.getItem(site + "shStorage"))
+					if (nowTime >= localData.time) {
+						window.location.href = 'login.html'
+					} else {
+						sessionStorage.setItem("userSh", JSON.stringify(localData.data));
+					}
+				}
+			}
+			var dw = $(window).width(),
+				dh = $(window).height(),
+				ifmbox = $(".layui-iframe"),
+				iframe = $("#iframepage");
 
-    if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //判断是苹果设备还是其他设备 
-        ifmbox.addClass('ifm-ios');
-        iframe.attr("scrolling", "no") //评估设置设置为no
-    } else {
-        iframe.attr("scrolling", "yes") //安卓设备设置为yes
-        iframe.height(dh)
-    }
-    </script>
-    <style type="text/css">
-    .vipshow,
-    .subAcshow {
-        display: none;
-    }
-    </style>
-</head>
+			var cssText = "width:" + dw + "px !important;";
+			iframe.css("cssText", cssText);
 
-<body>
-    <!-- 顶部开始 -->
-    <div class="container">
-        <div class="logo">
-            <a href="./index.html" id="titName" style="width:250px">商户管理系统</a>
-        </div>
-        <div class="left_open">
-            <i title="展开左侧栏" class="iconfont">&#xe699;</i>
-        </div>
-        <div class="left_refresh" style="margin-left: 15px;">
-            <i title="刷新" class="layui-icon layui-icon-refresh"></i>
-        </div>
-        <ul class="layui-nav right" lay-filter="">
-            <li class="layui-nav-item">
-                <a href="javascript:;" id="userName"></a>
-                <dl class="layui-nav-child">
-                    <dd>
-                        <a href="javascript:;" id="logout">退出</a>
-                    </dd>
-                </dl>
-            </li>
-        </ul>
-    </div>
-    <!-- 顶部结束 -->
-    <!-- 中部开始 -->
-    <!-- 左侧菜单开始 -->
-    <div class="left-nav">
-        <div id="side-nav">
-            <ul class="layui-nav layui-nav-tree" id="nav">
-                <div class="layui-nav-item1 vipshow" style="display:none">
-                    卡券管理
-                </div>
-                <li class="layui-nav-item vipshow" style="display:none">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-gongzibiao-liushuimingxi"></i>
-                        <cite>次/月卡管理</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="tm-list.html">
-                                <i class="icon icon icon-chongzhimingxi"></i>
-                                <cite>次/月卡管理</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportinteTurs.html">
-                                <i class="icon icon icon-wulianguoji-tubiao_jifenmingxi"></i>
-                                <cite>次/月卡套餐</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportref.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>次/月卡销售报表</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportcardTurs.html">
-                                <i class="icon icon icon-wuqiatuiqia"></i>
-                                <cite>次/月卡统计</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportref.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>次/月卡增减记录</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportcardTurs.html">
-                                <i class="icon icon icon-wuqiatuiqia"></i>
-                                <cite>页面标题设置</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item vipshow_yx" style="display:none">
-                    <a lay-href="vipactivity.html">
-                        <i class="icon icon icon-yingxiao"></i>
-                        <cite>卡券设置</cite>
-                    </a>
-                </li>
-                <div class="layui-nav-item1">
-                    商户管理
-                </div>
-                <li class="layui-nav-item">
-                    <a lay-href="sy-liushui.html">
-                        <i class="icon icon icon-dingdanguanli"></i>
-                        <cite>订单管理</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="sy-liushui.html">
-                                <i class="icon icon icon-wodedingdan-quanbu"></i>
-                                <cite>全部订单</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="order-refound.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>退款订单</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="Order-Unusual.html">
-                                <i class="icon icon icon-order-error"></i>
-                                <cite>异常订单</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item" id="preLicensing" style="display:none">
-                    <a lay-href="sy-liushui.html">
-                        <i class="icon icon icon-dingdanguanli"></i>
-                        <cite>预授权订单</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="sy-yushouquan-pay.html">
-                                <i class="icon icon icon-wodedingdan-quanbu"></i>
-                                <cite>预授权-支付</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="sy-yushouquan-undo.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>预授权-撤销</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="sy-yushouquan-comp.html">
-                                <i class="icon icon icon-order-error"></i>
-                                <cite>预授权-完成</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item subAcshow">
-                    <a lay-href="sy-liushui.html">
-                        <i class="icon icon icon-dingdanguanli"></i>
-                        <cite>分账管理</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="subAc-rule.html">
-                                <i class="icon icon icon-wodedingdan-quanbu"></i>
-                                <cite>分账规则</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="subAc-bill.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>分账订单</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="subAc-user.html">
-                                <i class="icon icon icon-order-error"></i>
-                                <cite>分销人列表</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- <li class="layui-nav-item">
+			if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //判断是苹果设备还是其他设备 
+				ifmbox.addClass('ifm-ios');
+				iframe.attr("scrolling", "no") //评估设置设置为no
+			} else {
+				iframe.attr("scrolling", "yes") //安卓设备设置为yes
+				iframe.height(dh)
+			}
+		</script>
+		<style type="text/css">
+			html,
+			body {
+				overflow: hidden;
+			}
+
+			.vipshow,
+			.subAcshow {
+				display: none;
+			}
+
+			.container .layui-nav .layui-nav-item {
+				height: 45px;
+				line-height: 45px;
+			}
+
+			.container .layui-nav .layui-nav-item.layui-this:after {
+				background: transparent;
+			}
+
+			.container .layui-nav .layui-nav-item .layui-icon {
+				font-size: 18px;
+			}
+
+			#msgTips {
+				display: none;
+			}
+
+			.msgCon {
+				display: none;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.3);
+				position: absolute;
+				top: 0;
+				left: 0;
+				z-index: 9999;
+				transition: 0.3s all;
+			}
+
+			.msgConDiv {
+				width: 500px;
+				height: calc(100% - 45px);
+				position: absolute;
+				top: 45px;
+				right: -100%;
+				z-index: 10000;
+				transition: 0.3s all;
+				background: #fff;
+			}
+
+			.layui-badge {
+				display: none;
+			}
+
+			.layui-tab {
+				margin: 0;
+			}
+
+			.layui-tab .layui-this {
+				width: auto;
+			}
+
+			.msgConDiv .layui-tab .layui-tab-title li:first-child {
+				width: auto;
+			}
+
+			.layui-tab-title {
+				margin: 0;
+			}
+
+			.layui-table-hover {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- 顶部开始 -->
+		<div class="container">
+			<div class="logo">
+				<a href="./index.html" id="titName" style="width:250px">商户管理系统</a>
+			</div>
+			<div class="left_open">
+				<i title="展开左侧栏" class="iconfont">&#xe699;</i>
+			</div>
+			<div class="left_refresh" style="margin-left: 15px;">
+				<i title="刷新" class="layui-icon layui-icon-refresh"></i>
+			</div>
+			<ul class="layui-nav right" lay-filter="">
+				<li class="layui-nav-item">
+					<a href="javascript:;" data-method="notice" id="msgConBtn">
+						<i title="消息中心" class="layui-icon layui-icon-notice"></i> 消息中心
+						<!-- <cite>消息中心</cite> -->
+						<span class="layui-badge-dot" id="msgTips"></span>
+					</a>
+				</li>
+				<li class="layui-nav-item">
+					<a href="javascript:;" id="userName"></a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="javascript:;" id="logout">退出</a>
+						</dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+		<!-- 顶部结束 -->
+		<!-- 中部开始 -->
+		<!-- 左侧菜单开始 -->
+		<div class="left-nav">
+			<div id="side-nav">
+				<ul class="layui-nav layui-nav-tree" id="nav">
+					<div class="layui-nav-item1 vipshow" style="display:none">
+						卡券管理
+					</div>
+					<li class="layui-nav-item vipshow" style="display:none">
+						<a href="javascript:;">
+							<i class="icon icon icon-gongzibiao-liushuimingxi"></i>
+							<cite>次/月卡管理</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="tm-list.html">
+									<i class="icon icon icon-chongzhimingxi"></i>
+									<cite>次/月卡管理</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportinteTurs.html">
+									<i class="icon icon icon-wulianguoji-tubiao_jifenmingxi"></i>
+									<cite>次/月卡套餐</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportref.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>次/月卡销售报表</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportcardTurs.html">
+									<i class="icon icon icon-wuqiatuiqia"></i>
+									<cite>次/月卡统计</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportref.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>次/月卡增减记录</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportcardTurs.html">
+									<i class="icon icon icon-wuqiatuiqia"></i>
+									<cite>页面标题设置</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item vipshow_yx" style="display:none">
+						<a lay-href="vipactivity.html">
+							<i class="icon icon icon-yingxiao"></i>
+							<cite>卡券设置</cite>
+						</a>
+					</li>
+					<div class="layui-nav-item1">
+						商户管理
+					</div>
+					<li class="layui-nav-item">
+						<a lay-href="sy-liushui.html">
+							<i class="icon icon icon-dingdanguanli"></i>
+							<cite>订单管理</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="sy-liushui.html">
+									<i class="icon icon icon-wodedingdan-quanbu"></i>
+									<cite>全部订单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="order-refound.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>退款订单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="Order-Unusual.html">
+									<i class="icon icon icon-order-error"></i>
+									<cite>异常订单</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item" id="preLicensing" style="display:none">
+						<a lay-href="sy-liushui.html">
+							<i class="icon icon icon-dingdanguanli"></i>
+							<cite>预授权订单</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="sy-yushouquan-pay.html">
+									<i class="icon icon icon-wodedingdan-quanbu"></i>
+									<cite>预授权-支付</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="sy-yushouquan-undo.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>预授权-撤销</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="sy-yushouquan-comp.html">
+									<i class="icon icon icon-order-error"></i>
+									<cite>预授权-完成</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item subAcshow">
+						<a lay-href="sy-liushui.html">
+							<i class="icon icon icon-dingdanguanli"></i>
+							<cite>分账管理</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="subAc-rule.html">
+									<i class="icon icon icon-wodedingdan-quanbu"></i>
+									<cite>分账规则</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="subAc-bill.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>分账订单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="subAc-user.html">
+									<i class="icon icon icon-order-error"></i>
+									<cite>分销人列表</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<!-- <li class="layui-nav-item">
 						<a lay-href="sy-yajin.html">
 							<i class="icon icon icon-mendianguanli"></i>
 							<cite>押金管理</cite>
 						</a>
 					</li> -->
-                <li class="layui-nav-item">
-                    <a lay-href="sy-mendian.html">
-                        <i class="icon icon icon-mendianguanli"></i>
-                        <cite>门店管理</cite>
-                    </a>
-                </li>
-                <li class="layui-nav-item">
-                    <a lay-href="clerk-list.html">
-                        <i class="icon icon icon-mendianguanli"></i>
-                        <cite>店员管理</cite>
-                    </a>
-                </li>
-                <li class="layui-nav-item" id="adv" style="display:none">
-                    <a lay-href="Adware-List.html">
-                        <i class="icon icon icon-guanggao-"></i>
-                        <cite>广告管理</cite>
-                    </a>
-                </li>
-                <li class="layui-nav-item">
-                    <a lay-href="cashManage.html">
-                        <i class="icon icon icon-shixianshujubianxian"></i>
-                        <cite>提现管理</cite>
-                    </a>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-zhangdan"></i>
-                        <cite>账单管理</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="sy-liushuishanghu.html">
-                                <i class="icon icon icon-bill"></i>
-                                <cite>商户账单</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="sy-liushuimendian.html">
-                                <i class="icon icon icon-mendiandingdan"></i>
-                                <cite>门店账单</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="sy-liushuidianyuan.html">
-                                <i class="icon icon icon-bill"></i>
-                                <cite>店员账单</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="sy-liushuijiaoban.html">
-                                <i class="icon icon icon-jiaobanbaobiao"></i>
-                                <cite>交班账单</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="sy-liushuihuakuan.html">
-                                <i class="icon icon icon-mendiandingdan"></i>
-                                <cite>划款查询</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-zhangdan"></i>
-                        <cite>营业报表</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="yy-baobiao.html">
-                                <i class="icon icon icon-mendiandingdan"></i>
-                                <cite>营业统计</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="tj-baobiao.html">
-                                <i class="icon icon icon-bill"></i>
-                                <cite>经营统计</cite>
-                            </a>
-                        </li>
-                        <!-- <li>
+					<li class="layui-nav-item">
+						<a lay-href="sy-mendian.html">
+							<i class="icon icon icon-mendianguanli"></i>
+							<cite>门店管理</cite>
+						</a>
+					</li>
+					<li class="layui-nav-item">
+						<a lay-href="clerk-list.html">
+							<i class="icon icon icon-mendianguanli"></i>
+							<cite>店员管理</cite>
+						</a>
+					</li>
+					<li class="layui-nav-item" id="adv" style="display:none">
+						<a lay-href="Adware-List.html">
+							<i class="icon icon icon-guanggao-"></i>
+							<cite>广告管理</cite>
+						</a>
+					</li>
+					<li class="layui-nav-item">
+						<a lay-href="cashManage.html">
+							<i class="icon icon icon-shixianshujubianxian"></i>
+							<cite>提现管理</cite>
+						</a>
+					</li>
+					<li class="layui-nav-item">
+						<a href="javascript:;">
+							<i class="icon icon icon-zhangdan"></i>
+							<cite>账单管理</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="sy-liushuishanghu.html">
+									<i class="icon icon icon-bill"></i>
+									<cite>商户账单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="sy-liushuimendian.html">
+									<i class="icon icon icon-mendiandingdan"></i>
+									<cite>门店账单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="sy-liushuidianyuan.html">
+									<i class="icon icon icon-bill"></i>
+									<cite>店员账单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="sy-liushuijiaoban.html">
+									<i class="icon icon icon-jiaobanbaobiao"></i>
+									<cite>交班账单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="sy-liushuihuakuan.html">
+									<i class="icon icon icon-mendiandingdan"></i>
+									<cite>划款查询</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item">
+						<a href="javascript:;">
+							<i class="icon icon icon-zhangdan"></i>
+							<cite>营业报表</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="yy-baobiao.html">
+									<i class="icon icon icon-mendiandingdan"></i>
+									<cite>营业统计</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="tj-baobiao.html">
+									<i class="icon icon icon-bill"></i>
+									<cite>经营统计</cite>
+								</a>
+							</li>
+							<!-- <li>
 								<a lay-href="bins-invoice.html">
 									<i class="icon icon icon-jiaobanbaobiao"></i>
 									<cite>开票记录</cite>
 								</a>
 							</li> -->
-                    </ul>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-jiaoyishuju"></i>
-                        <cite>数据统计</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="Financial-deal.html">
-                                <i class="icon icon icon-dingdanguanli"></i>
-                                <cite>交易统计</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="Financial-deal-dianyuan.html">
-                                <i class="icon icon icon-shujutongji"></i>
-                                <cite>店员统计</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item">
-                    <a lay-href="">
-                        <i class="icon icon icon-fengkongshezhi"></i>
-                        <cite>系统设置</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="basicInfo.html">
-                                <i class="icon icon icon-jiekou"></i>
-                                <cite>系统设置</cite>
-                            </a>
-                        </li>
-                        <li class="vipshow" style="display:none">
-                            <a lay-href="wechat-auth.html">
-                                <i class="icon icon icon-weixinshouquan"></i>
-                                <cite>微信授权</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <div class="layui-nav-item1 vipshow" style="display:none">
-                    会员管理
-                </div>
-                <li class="layui-nav-item vipshow" style="display:none">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-ziyuan"></i>
-                        <cite>会员卡管理</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="vipCardSet.html">
-                                <i class="icon icon icon-huiyuanqia" style="font-size:12px"></i>
-                                <cite>会员卡配置</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipCardSet-w.html">
-                                <i class="icon icon icon-weixinhuiyuanqia"></i>
-                                <cite>微信会员卡</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipCardSet-ali.html">
-                                <i class="icon icon icon-weixinhuiyuanqia"></i>
-                                <cite>支付宝会员卡</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipCardSet-p.html">
-                                <i class="icon icon icon-fenxiangqia" style="font-size:20px;padding-right: 6px;"></i>
-                                <cite>分享海报</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item vipshow-quan" style="display:none">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-zhangdan"></i>
-                        <cite>优惠券管理</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="cp-list.html">
-                                <i class="icon icon icon-chongzhimingxi"></i>
-                                <cite>券设置</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="cp-marketstat.html">
-                                <i class="icon icon icon-wulianguoji-tubiao_jifenmingxi"></i>
-                                <cite>营销统计</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="cp-receiver.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>领取记录</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="cp-verification.html">
-                                <i class="icon icon icon-wuqiatuiqia"></i>
-                                <cite>核销记录</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="cp-poster-list.html">
-                                <i class="icon icon icon-wuqiatuiqia"></i>
-                                <cite>海报设置</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item vipshow" style="display:none">
-                    <a lay-href="vipCenter.html">
-                        <i class="icon icon icon-huiyuanguanli"></i>
-                        <cite>会员管理</cite>
-                    </a>
-                </li>
-                <li class="layui-nav-item vipshow" style="display:none">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-gongzibiao-liushuimingxi"></i>
-                        <cite>流水明细</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="vipreportsale.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>消费明细</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportrec.html">
-                                <i class="icon icon icon-chongzhimingxi"></i>
-                                <cite>充值明细</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportinteTurs.html">
-                                <i class="icon icon icon-wulianguoji-tubiao_jifenmingxi"></i>
-                                <cite>积分明细</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportref.html">
-                                <i class="icon icon icon-dingdantuikuan"></i>
-                                <cite>退款明细</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipreportcardTurs.html">
-                                <i class="icon icon icon-wuqiatuiqia"></i>
-                                <cite>退卡明细</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="layui-nav-item vipshow_yx" style="display:none">
-                    <a lay-href="vipactivity.html">
-                        <i class="icon icon icon-yingxiao"></i>
-                        <cite>营销活动</cite>
-                    </a>
-                </li>
-                <li class="layui-nav-item vipshow" style="display:none">
-                    <a href="javascript:;">
-                        <i class="icon icon icon-hy-tongji"></i>
-                        <cite>会员统计</cite>
-                        <i class="iconfont nav_right">&#xe697;</i>
-                    </a>
-                    <ul class="sub-menu">
-                        <li>
-                            <a lay-href="vipstatis-meb.html">
-                                <i class="icon icon icon-hy-tongji"></i>
-                                <cite>会员统计</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipList-rec.html">
-                                <i class="icon icon icon-gailan"></i>
-                                <cite>概览报表</cite>
-                            </a>
-                        </li>
-                        <li>
-                            <a lay-href="vipList-ana.html">
-                                <i class="icon icon icon-qudao"></i>
-                                <cite>渠道统计</cite>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <!-- 左侧菜单结束 -->
-    <!-- 右侧主体开始 -->
-    <div class="page-content">
-        <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
-            <ul class="layui-tab-title">
-                <li class="layui-this layui-icon layui-icon-home"></li>
-            </ul>
-            <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show">
-                    <iframe src='sy-liushui.html' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="page-content-bg"></div>
-    <!-- 右侧主体结束 -->
-</body>
-<script src="../../common/config-sh.js"></script>
-<script src="../../common/utility.js"></script>
-<script type="text/javascript">
-$('#userName').html(JSON.parse(sessionStorage.getItem("userSh")).merchantName + '/' + JSON.parse(sessionStorage.getItem(
-    "userSh")).Number)
-if (JSON.parse(sessionStorage.getItem("userSh")).AdvertJurisdiction == 0) {
-    $('#adv').show()
-} else {
-    $('#adv').hide()
-}
-var vipList = JSON.parse(sessionStorage.getItem("userSh")).list
-for (let i = 0; i < vipList.length; i++) {
-    switch (vipList[i].type) {
-        case 3:
-            if (vipList[i].status == 0) {
-                $('.vipshow').show()
-            } else {
-                $('.vipshow').hide()
-            }
-            break;
+						</ul>
+					</li>
+					<li class="layui-nav-item">
+						<a href="javascript:;">
+							<i class="icon icon icon-jiaoyishuju"></i>
+							<cite>数据统计</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="Financial-deal.html">
+									<i class="icon icon icon-dingdanguanli"></i>
+									<cite>交易统计</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="Financial-deal-dianyuan.html">
+									<i class="icon icon icon-shujutongji"></i>
+									<cite>店员统计</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item">
+						<a lay-href="">
+							<i class="icon icon icon-fengkongshezhi"></i>
+							<cite>系统设置</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="basicInfo.html">
+									<i class="icon icon icon-jiekou"></i>
+									<cite>系统设置</cite>
+								</a>
+							</li>
+							<li class="vipshow" style="display:none">
+								<a lay-href="wechat-auth.html">
+									<i class="icon icon icon-weixinshouquan"></i>
+									<cite>微信授权</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<div class="layui-nav-item1 vipshow" style="display:none">
+						会员管理
+					</div>
+					<li class="layui-nav-item vipshow" style="display:none">
+						<a href="javascript:;">
+							<i class="icon icon icon-ziyuan"></i>
+							<cite>会员卡管理</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="vipCardSet.html">
+									<i class="icon icon icon-huiyuanqia" style="font-size:12px"></i>
+									<cite>会员卡配置</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipCardSet-w.html">
+									<i class="icon icon icon-weixinhuiyuanqia"></i>
+									<cite>微信会员卡</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipCardSet-ali.html">
+									<i class="icon icon icon-weixinhuiyuanqia"></i>
+									<cite>支付宝会员卡</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipCardSet-p.html">
+									<i class="icon icon icon-fenxiangqia" style="font-size:20px;padding-right: 6px;"></i>
+									<cite>分享海报</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item vipshow-quan" style="display:none">
+						<a href="javascript:;">
+							<i class="icon icon icon-zhangdan"></i>
+							<cite>优惠券管理</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="cp-list.html">
+									<i class="icon icon icon-chongzhimingxi"></i>
+									<cite>券设置</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="cp-marketstat.html">
+									<i class="icon icon icon-wulianguoji-tubiao_jifenmingxi"></i>
+									<cite>营销统计</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="cp-receiver.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>领取记录</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="cp-verification.html">
+									<i class="icon icon icon-wuqiatuiqia"></i>
+									<cite>核销记录</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="cp-poster-list.html">
+									<i class="icon icon icon-wuqiatuiqia"></i>
+									<cite>海报设置</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item vipshow" style="display:none">
+						<a lay-href="vipCenter.html">
+							<i class="icon icon icon-huiyuanguanli"></i>
+							<cite>会员管理</cite>
+						</a>
+					</li>
+					<li class="layui-nav-item vipshow" style="display:none">
+						<a href="javascript:;">
+							<i class="icon icon icon-gongzibiao-liushuimingxi"></i>
+							<cite>流水明细</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="vipreportsale.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>消费明细</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportrec.html">
+									<i class="icon icon icon-chongzhimingxi"></i>
+									<cite>充值明细</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportinteTurs.html">
+									<i class="icon icon icon-wulianguoji-tubiao_jifenmingxi"></i>
+									<cite>积分明细</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportref.html">
+									<i class="icon icon icon-dingdantuikuan"></i>
+									<cite>退款明细</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipreportcardTurs.html">
+									<i class="icon icon icon-wuqiatuiqia"></i>
+									<cite>退卡明细</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="layui-nav-item vipshow_yx" style="display:none">
+						<a lay-href="vipactivity.html">
+							<i class="icon icon icon-yingxiao"></i>
+							<cite>营销活动</cite>
+						</a>
+					</li>
+					<li class="layui-nav-item vipshow" style="display:none">
+						<a href="javascript:;">
+							<i class="icon icon icon-hy-tongji"></i>
+							<cite>会员统计</cite>
+							<i class="iconfont nav_right">&#xe697;</i>
+						</a>
+						<ul class="sub-menu">
+							<li>
+								<a lay-href="vipstatis-meb.html">
+									<i class="icon icon icon-hy-tongji"></i>
+									<cite>会员统计</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipList-rec.html">
+									<i class="icon icon icon-gailan"></i>
+									<cite>概览报表</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="vipList-ana.html">
+									<i class="icon icon icon-qudao"></i>
+									<cite>渠道统计</cite>
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- 左侧菜单结束 -->
+		<!-- 右侧主体开始 -->
+		<div class="page-content">
+			<div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+				<ul class="layui-tab-title">
+					<li class="layui-this layui-icon layui-icon-home"></li>
+				</ul>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<iframe src='sy-liushui.html' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="page-content-bg"></div>
+		<!-- 右侧主体结束 -->
+		<!-- 消息中心 -->
+		<div class="msgConDiv" id="msgConDiv">
+			<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+				<ul class="layui-tab-title">
+					<li class="layui-this">通知消息<span class="layui-badge"></span></li>
+				</ul>
+				<div class="layui-tab-content">
+					<table class="layui-hide" id="msgList" lay-filter="msgList"></table>
+				</div>
+			</div>
+		</div>
+		<div class="msgCon" id="msgCon"></div>
+		<!-- 消息中心-end -->
+	</body>
+	<script src="../../common/config-sh.js"></script>
+	<script src="../../common/utility.js"></script>
+	<script type="text/javascript">
+		$('#userName').html(JSON.parse(sessionStorage.getItem("userSh")).merchantName + '/' + JSON.parse(sessionStorage.getItem(
+			"userSh")).Number)
+		if (JSON.parse(sessionStorage.getItem("userSh")).AdvertJurisdiction == 0) {
+			$('#adv').show()
+		} else {
+			$('#adv').hide()
+		}
 
-        case 4:
-            if (vipList[i].status == 0) {
-                $('.vipshow-quan').show()
-            } else {
-                $('.vipshow-quan').hide()
-            }
-            break;
-        case 6:
-            if (vipList[i].status == 0) {
-                $('.vipshow_yx').show()
-            } else {
-                $('.vipshow_yx').hide()
-            }
-            break;
-            // case 8:
-            // 	if (vipList[i].status == 0) {
-            // 		$('.subAcshow').show()
-            // 	} else {
-            // 		$('.subAcshow').hide()
-            // 	}
-            // 	break;
-        case 13:
-            if (vipList[i].status == 0) {
-                $('#preLicensing').show()
-            } else {
-                $('#preLicensing').hide()
-            }
-            break;
-    }
-}
-CmsUtility.postAjaxCall(
-    //系统设置
-    CmsConfig.addressUrl.Public.getSitePath, {
-        "sitePath": '51shanhe.com',
-        // "sitePath": 'hongxiaosou.cn',
-    },
-    function(data) {
-        console.log(data)
-        if (data.code == '1000') {
-            $('#titName').html(data.data[0].websiteName + '-商户管理平台')
-            $('#title').html(data.data[0].websiteName + '-商户管理平台')
-            sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));
-            // document.write('<title>机构后台管理系统</title>')
-        } else {
-            layer.msg(data.msg)
-        }
-    },
-    function(data) {
-        console.log('222')
-    }
-)
-console.log(JSON.parse(sessionStorage.getItem("userSh")).login)
-$(function() {
-    $('#logout').click(function() {
-        console.log('退出')
-        console.log(sessionStorage.getItem("userSh"))
-        CmsUtility.postAjaxCall(
-            //系统设置
-            CmsConfig.addressUrl.Login.exitLogin, {
-                "number": JSON.parse(sessionStorage.getItem("userSh")).Number,
-                "institutionNumber": JSON.parse(sessionStorage.getItem("userSh")).institutionNumber
-            },
-            function(data) {
-                if (data.code == '1000') {
-                    // layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
-                    // 	title: ''
-                    // })
-                    layer.msg('退出成功，即将跳转登录页')
-                    sessionStorage.clear();
-                    setTimeout(function() {
-                        window.location.href = 'login.html'
-                    }, 300)
-                } else {}
-            },
-            function(data) {
-                console.log('222')
-            }
-        )
-    })
-})
-</script>
+		var vipList = JSON.parse(sessionStorage.getItem("userSh")).list
+		var msgD = []
+		for (let i = 0; i < vipList.length; i++) {
+			switch (vipList[i].type) {
+				case 3:
+					if (vipList[i].status == 0) {
+						$('.vipshow').show()
+					} else {
+						$('.vipshow').hide()
+					}
+					break;
+
+				case 4:
+					if (vipList[i].status == 0) {
+						$('.vipshow-quan').show()
+					} else {
+						$('.vipshow-quan').hide()
+					}
+					break;
+				case 6:
+					if (vipList[i].status == 0) {
+						$('.vipshow_yx').show()
+					} else {
+						$('.vipshow_yx').hide()
+					}
+					break;
+					// case 8:
+					// 	if (vipList[i].status == 0) {
+					// 		$('.subAcshow').show()
+					// 	} else {
+					// 		$('.subAcshow').hide()
+					// 	}
+					// 	break;
+				case 13:
+					if (vipList[i].status == 0) {
+						$('#preLicensing').show()
+					} else {
+						$('#preLicensing').hide()
+					}
+					break;
+			}
+		}
+		CmsUtility.postAjaxCall(
+			//系统设置
+			CmsConfig.addressUrl.Public.getSitePath, {
+				"sitePath": '51shanhe.com',
+				// "sitePath": 'hongxiaosou.cn',
+			},
+			function(data) {
+				console.log(data)
+				if (data.code == '1000') {
+					$('#titName').html(data.data[0].websiteName + '-商户管理平台')
+					$('#title').html(data.data[0].websiteName + '-商户管理平台')
+					sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));
+					// document.write('<title>机构后台管理系统</title>')
+				} else {
+					layer.msg(data.msg)
+				}
+			},
+			function(data) {
+				console.log('222')
+			}
+		)
+		CmsUtility.postAjaxCall2(
+			// 消息通知
+			CmsConfig.ServiceUrl.ApiRootUrl + 'insnotify/getInsMeNotice', {
+				"institutionNumber": JSON.parse(sessionStorage.getItem("userSh")).institutionNumber,
+				"page": 1,
+				"limit": 10000,
+			},
+			function(data) {
+				if (data.code == '1000') {
+					sessionStorage.setItem("msgL", data.data.count);
+				} else {}
+			},
+			function(data) {
+				console.log('222')
+			},
+			'get'
+		)
+		console.log(JSON.parse(sessionStorage.getItem("userSh")).login)
+		$(function() {
+			layui.use(['laydate', 'table', 'form'], function() {
+				var laydate = layui.laydate,
+					table = layui.table,
+					form = layui.form;
+				//方法级渲染
+				msgRender()
+
+				function msgRender() {
+					table.render({
+						elem: '#msgList',
+						url: CmsConfig.ServiceUrl.ApiRootUrl + 'insnotify/getInsMeNotice?institutionNumber=' + JSON.parse(
+							sessionStorage.getItem("userSh")).institutionNumber,
+						method: "post",
+						height: "full-125",
+						page: true,
+						id: 'msgList',
+						response: {
+							"statusCode": "1000", //解析接口状态
+						},
+						parseData: function(res) {
+							if (res.data == null) {
+								return
+							}
+							if (res.data == '查询数据为空') {
+								return
+							}
+							return {
+								"code": res.code,
+								"count": res.data.count,
+								"data": res.data.insMessageNotice,
+							}
+						},
+						cols: [
+							[{
+								field: 'articleTitle',
+								title: '标题内容',
+								align: 'left',
+							}, {
+								field: 'updateTime',
+								title: '时间',
+								align: 'center',
+								width: 160,
+								templet: function(data) {
+									return data.updateTime
+								}
+							}]
+						],
+						done: function(res, curr, count) {
+							console.log(JSON.parse(sessionStorage.getItem("msgL")))
+							if (count > JSON.parse(sessionStorage.getItem("msgL"))) {
+								$('.layui-badge').show()
+								$('.layui-badge').text(count - JSON.parse(sessionStorage.getItem("msgL")))
+							} else {}
+						}
+					});
+				}
+				//监听行单击事件（双击事件为：rowDouble）
+				table.on('row(msgList)', function(obj) {
+					var data = obj.data;
+
+					//示范一个公告层
+					layer.open({
+						type: 1,
+						title: false,
+						closeBtn: false,
+						area: ['400px'],
+						shade: 0.3,
+						shadeClose: true,
+						id: 'LAY_layuipro',
+						btn: ['关闭'],
+						btnAlign: 'c',
+						moveType: 1,
+						content: '<div style="padding: 20px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;overflow:auto;">' +
+							'<h3 style="font-size: 20px;margin-bottom: 10px;">' + data.articleTitle + '</h3>' +
+							'<p style="font-size: 14px;margin-bottom: 10px;">' + data.updateTime + '</p>' +
+							'<p>' + data.messageContent + '</p>' +
+							'</div>',
+					});
+
+					//标注选中样式
+					obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+				});
+
+				$('#msgConBtn').click(function() {
+					$('#msgTips').hide()
+					$('#msgCon').show()
+					$("#msgConDiv").css({
+						'right': '0'
+					});
+					msgRender()
+				})
+				$('#msgCon').click(function() {
+					$('#msgCon').hide()
+					$("#msgConDiv").css({
+						'right': '-100%'
+					});
+				})
+			});
+			$('#logout').click(function() {
+				console.log('退出')
+				console.log(sessionStorage.getItem("userSh"))
+				CmsUtility.postAjaxCall(
+					//系统设置
+					CmsConfig.addressUrl.Login.exitLogin, {
+						"number": JSON.parse(sessionStorage.getItem("userSh")).Number,
+						"institutionNumber": JSON.parse(sessionStorage.getItem("userSh")).institutionNumber
+					},
+					function(data) {
+						if (data.code == '1000') {
+							// layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
+							// 	title: ''
+							// })
+							layer.msg('退出成功，即将跳转登录页')
+							sessionStorage.clear();
+							setTimeout(function() {
+								window.location.href = 'login.html'
+							}, 300)
+						} else {}
+					},
+					function(data) {
+						console.log('222')
+					}
+				)
+			})
+		})
+	</script>
 
 </html>
