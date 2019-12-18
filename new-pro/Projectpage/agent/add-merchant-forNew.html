@@ -215,6 +215,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="layui-form-item noGeren" style="display:none;width:755px;position:relative;">
+                    <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>营业执照地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verType="tips" name="businessLicenseAddress" lay-verify="title1" autocomplete="off" placeholder="请输入营业执照地址，必须和营业执照上登记地址一样" class="layui-input">
+                    </div>
+                </div>
                 <div class="box-item">
                     <div class="layui-form-item BLcn" style="display:inline-block;width:500px">
                         <label class="layui-form-label">邮箱</label>
@@ -227,6 +233,21 @@
                         <div class="layui-input-block" style="display:inline-block;margin-left:0px;vertical-align:top">
                             <!--  <input type="checkbox" name="isOpenYunPay" title="开通"> -->
                             <input type="checkbox" name="isOpenYunPay" lay-skin="switch" lay-filter="isOpenYunPay" lay-text="开通|不开通">
+                        </div>
+                    </div>
+                </div>
+                <div class="box-item ysfRate" style="display:none">
+                    <div class="layui-form-item " style="display:inline-block;width:500px;position:relative;">
+                        <label class="layui-form-label">云闪付费率1(%)</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="unionPayRate" lay-verify="unionPayRate" autocomplete="off" placeholder="请输入云闪付费率1" class="layui-input" value="0.52">
+                        </div>
+                        
+                    </div>
+                    <div class="layui-form-item " style="display:inline-block;width:500px;margin-left:30px;position:relative">
+                        <label class="layui-form-label">云闪付费率2(%)</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="unionPayRate2" lay-verify="unionPayRate2" autocomplete="off" placeholder="请输入云闪付费率2" class="layui-input"  value="0.52">
                         </div>
                     </div>
                 </div>
@@ -457,7 +478,9 @@
         window.location.reload()
     })
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    var server = 'http://192.168.1.113:6005/shanhe-admin/'
+    var server = 'http://192.168.1.112:6005/shanhe-admin/'
+    var commonServer = 'http://192.168.1.112:6008/shanhe-common/'
+    var jgServer = 'http://192.168.1.112:6005/shanhe-admin/'
     //var server = 'https://nb.51shanhe.com/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
@@ -799,7 +822,7 @@
 
         CmsUtility.postAjaxCall2(
             //系统设置
-            'https://nb.51shanhe.com/shanhe-common/cache/getBank', {
+            commonServer+'cache/getBank', {
                 "bankCode": $('#openingBank').val().split('|')[0],
                 "paymentType": '4',
                 "bankName": $('#openingBankBranch').val(),
@@ -975,7 +998,7 @@
             document.getElementById('searchBox2').innerHTML = ''
             CmsUtility.postAjaxCall2(
                 //系统设置
-                'https://nb.51shanhe.com/shanhe-common/cache/getBank', {
+                commonServer+'cache/getBank', {
                     "bankCode": $('#openingBank').val().split('|')[0],
                     "paymentType": '4',
                     "bankName": $('#openingBankBranch').val(),
@@ -1012,7 +1035,7 @@
         })
         CmsUtility.postAjaxCall2(
             //系统设置
-            'https://nb.51shanhe.com/shanhe-common/cache/getOperationIds', {
+            commonServer + 'cache/getOperationIds', {
                 "institutionNumber": userNumber,
                 "paymentType": 4
             },
@@ -1113,7 +1136,7 @@
         })
         CmsUtility.postAjaxCall2(
             //系统设置
-            'https://nb.51shanhe.com/shanhe-common/cache/getAreajson02', {
+            commonServer + 'cache/getAreajson02', {
                 // "institutionNumber": userNumber,
                 // "paymentType": 4
             },
@@ -1214,6 +1237,24 @@
                     }
                 }
             }
+
+            $('#city1').html(str)
+            form.render()
+        })
+        form.on('select(prov1)', function(data) {
+            console.log(data.value)
+            var str = ''
+            var str1 = ''
+            var childId
+            for (var i = 0; i < city.length; i++) {
+                if (city[i].parId == data.value.split('|')[0]) {
+                    childId = city[i].childList[0].id
+                    for (var j = 0; j < city[i].childList.length; j++) {
+
+                        str += "<option value=" + city[i].childList[j].id + '|' + city[i].childList[j].name + " >" + city[i].childList[j].name + "</option>"
+                    }
+                }
+            }
             $('#city').html(str)
             form.render()
         })
@@ -1272,11 +1313,11 @@
             var formData = new FormData();
             formData.append("file", dataURLtoFile(img, "123.png"));
             formData.append("institutionNumber", "1004");
-            formData.append("longTime", "1231151223123");
+            formData.append("longTime",  !merchantNumber?longTime:merchantNumber);
             formData.append("type", type);
             $.ajax({
                 // url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
-                url:'http://192.168.1.113:6005/shanhe-admin/InsMer/uploadMerchantImg',
+                url:server + 'InsMer/uploadMerchantImg',
                 type: 'POST',
                 data: formData,
                 async: false,
@@ -1319,7 +1360,8 @@
                                         "businessLicenseName": data.words_result.单位名称.words,
                                         "businessLicenseNo": data.words_result.社会信用代码.words,
                                         "businessLicenseTime": data.words_result.成立日期.words.replace('年', '-').replace('月', '-').replace('日', ''),
-                                        "businessLicenseEndTime": data.words_result.有效期.words.replace('年', '-').replace('月', '-').replace('日', '')
+                                        "businessLicenseEndTime": data.words_result.有效期.words.replace('年', '-').replace('月', '-').replace('日', ''),
+                                        "businessLicenseAddress":data.words_result.地址.words,
                                     })
                                 })
                             }
@@ -1582,8 +1624,10 @@
             if (this.checked == true) {
 
                 isOpenYunPay = 0
+                $('.ysfRate').show()
             } else {
                 isOpenYunPay = 1
+                $('.ysfRate').hide()
             }
 
         });
@@ -1633,6 +1677,43 @@
                     if (!value) {
                         return '必填项不能为空！';
                     }
+                }
+            },
+            rate: function(value) {
+                if (!value) {
+                    return '必填项不能为空！'
+                }
+                if (isNaN(value) == true) {
+                    return '请输入数字'
+                }
+                if (value < 0.25 || value > 1) {
+                    return '费率需在0.25-1之间'
+                }
+            },
+            unionPayRate:function(value){
+                if(isOpenYunPay == 0){
+                     if (!value) {
+                        return '必填项不能为空！'
+                    }
+                }
+                if (isNaN(value) == true) {
+                    return '请输入数字'
+                }
+                if (value < 0.25 || value > 1) {
+                    return '费率需在0.25-1之间'
+                }
+            },
+            unionPayRate2:function(value){
+                if(isOpenYunPay == 0){
+                     if (!value) {
+                        return '必填项不能为空！'
+                    }
+                }
+                if (isNaN(value) == true) {
+                    return '请输入数字'
+                }
+                if (value < 0.25 || value > 1) {
+                    return '费率需在0.25-1之间'
                 }
             },
         });
@@ -1707,8 +1788,10 @@
                         if (merInfo.isOpenYunPay == true) {
 
                             isOpenYunPay = 0
+                            $('.ysfRate').show()
                         } else {
                             isOpenYunPay = 1
+                             $('.ysfRate').hide()
                         }
                         if (merInfo.businessLicenseType == 0) {
                             $('.yyNoChangqi').hide()
@@ -1827,6 +1910,7 @@
                             "businessLicenseNo": merInfo.businessLicenseNo,
                             "businessLicenseTime": merInfo.businessLicenseTime,
                             "businessLicenseEndTime": merInfo.businessLicenseEndTime,
+                            "businessLicenseAddress":merInfo.businessLicenseAddress,
                             "businessLicenseType": merInfo.businessLicenseType == 0 ? true : false,
                             "mailbox": merInfo.mailbox,
                             "isOpenYunPay": merInfo.isOpenYunPay == 0 ? true : false,
@@ -1837,8 +1921,8 @@
                             "juridicalpersonId": merInfo.juridicalpersonId,
                             "juridicalpersonName": merInfo.juridicalpersonName,
                             "registerCell": merInfo.registerCell,
-                            "juridicalpersonIdTime": merInfo.juridicalpersonIdTime,
-                            "juridicalPersonIDEndTime": merInfo.juridicalPersonIDEndTime,
+                            "juridicalpersonIdTime": merInfo.juridicalPersonIDEndTime,
+                            "juridicalPersonIDEndTime": merInfo.juridicalpersonIdTime,
                             "juridicalPersonIDType": merInfo.juridicalPersonIDType == 0 ? true : false,
 
                             "bankCardNo": merInfo.bankCardNo,
@@ -1846,7 +1930,8 @@
                             "openingBankBranch": merInfo.openingBankBranch,
                             "openingBankBranchAddress": merInfo.openingBankBranchAddress,
                             "reserveCell": merInfo.reserveCell,
-
+                            "unionPayRate":merInfo.unionPayRate,
+                            "unionPayRate2":merInfo.unionPayRate2,
 
                         })
                         layer.closeAll()
@@ -1951,7 +2036,6 @@
             tjData.cityID = tjData.city1.split('|')[0]
             tjData.area = tjData.area1.split('|')[1]
             tjData.areaID = tjData.area1.split('|')[0]
-            tjData.businessLicenseAddress = tjData.province + tjData.city + tjData.area + tjData.address
             console.log(tjData)
             tjData.isOpenYunPay = isOpenYunPay
             // tjData.paymentChannels = JSON.stringify(pyList)
@@ -1963,6 +2047,8 @@
             tjData.merchantNumber = merchantNumber
             tjData.customerServiceTell = tjData.registerCell
             tjData.reserveCell = tjData.registerCell  
+            tjData.unionPayRate = (tjData.unionPayRate/100).toFixed(4)
+            tjData.unionPayRate2 = (tjData.unionPayRate2/100).toFixed(4)
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
             CmsUtility.postAjaxCall2(
                 //系统设置

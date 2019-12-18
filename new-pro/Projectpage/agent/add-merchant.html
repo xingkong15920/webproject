@@ -81,34 +81,59 @@
             .showImg{
                 
             }
+            #codeImg{
+                width: 150px;
+                height: 200px;
+                position: fixed;   
+                top: 50%;   
+                left: 50%;   
+                -webkit-transform: translate(-50%, -50%);   
+                -moz-transform: translate(-50%, -50%);   
+                -ms-transform: translate(-50%, -50%);   
+                -o-transform: translate(-50%, -50%);   
+                transform: translate(-50%, -50%);
+                z-index: 9999;   
+                display:none
+            }
+            .shili{
+                padding: 20px;
+                background-color: #eee;
+                display: none;
+                border-radius: 30px;
+            }
         </style>
 </head>
 
 <body id="iosiframe">
     <div class="x-body">
+        <a class="layui-layer-ico layui-layer-close layui-layer-close2" href="javascript:;" style="display:none" id="closeShili"></a>
+        <div id="codeImg">
+        </div>
         <div id="showImgBox">
             <img id="showImg" src="http://sh-upfile.oss-cn-beijing.aliyuncs.com/1004/Merchant/1574146882000/c0b6baa3cad5d2f8cca8d5d5c6ac.jpeg" style="width:100%;height:100%">
         </div>
         <div id="formVal"></div>
-        <div class="layui-row">
+        <div class="layui-row" style="position:relative">
             <div class="layui-form" action="" lay-filter="cardAdd">
                 <blockquote class="layui-elem-quote">商户信息</blockquote>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">注册信息</legend>
                 </fieldset>
                 <div class="box-item">
-                    <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">商户名称</label>
+                    <div class="layui-form-item" style="display:inline-block;width:500px;position:relative;">
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>商户名称</label>
                         <div class="layui-input-block">
-                            <input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
+                            <input type="text" lay-verType="tips" name="merchantName" lay-verify="title" autocomplete="off" placeholder="请输入商户名称" class="layui-input">
                         </div>
+                        <i class="layui-icon" id="merchantNameTips" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px;position:relative;">
-                        <label class="layui-form-label">注册手机号</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>注册手机号</label>
                         <div class="layui-input-block">
-                            <input type="text" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="注册手机号" class="layui-input">
+                            <input type="text" lay-verType="tips" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="注册手机号" class="layui-input">
                         </div>
-                        <div id="phoneTips" style="position:absolute;right:5px;top:2px;font-weight:bold;color:red;cursor:pointer">?</div>
+                        <!-- <div id="phoneTips" style="position:absolute;right:5px;top:2px;font-weight:bold;color:red;cursor:pointer">?</div> -->
+                        <i class="layui-icon" id="phoneTips" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
                     </div>
                 </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -122,6 +147,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test1" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">营业执照</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(0)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                     <div class="layui-input-inline" style="margin-left:30px;">
                         <div class="layui-upload-img">
@@ -129,6 +156,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test2" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">收银台照</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(1)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                     <div class="layui-input-inline" style="margin-left:30px;">
                         <div class="layui-upload-img">
@@ -136,6 +165,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test3" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">场景照</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(2)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                     <div class="layui-input-inline" style="margin-left:30px;">
                         <div class="layui-upload-img">
@@ -143,6 +174,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test4" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">门头照</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(3)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                 </div>
                 <!--隐藏-->
@@ -152,7 +185,7 @@
                 </fieldset>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">商户类型</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>商户类型</label>
                         <div class="layui-input-block widthauto">
                             <input type="radio" name="merchantType" value="0" title="个人" lay-filter="cardvalid" checked="">
                             <input type="radio" name="merchantType" value="1" title="个体" lay-filter="cardvalid">
@@ -162,7 +195,7 @@
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto">
-                        <label class="layui-form-label">经营范围</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>经营范围</label>
                         <div class="layui-input-block" style="display:inline-block;width:200px;margin-left:0px;">
                             <select name="oneOperate" id="chOne" lay-filter="chOne" lay-verify="title">
                                 <!-- <option value="">一级类目</option>
@@ -182,44 +215,57 @@
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">费率(%)</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>费率(%)</label>
                         <div class="layui-input-block">
-                            <input type="text" name="rate" lay-verify="rate" autocomplete="off" placeholder="请输入费率，例如0.38" class="layui-input">
+                            <input type="text" lay-verType="tips" name="rate" lay-verify="rate" autocomplete="off" placeholder="请输入费率，例如0.38" class="layui-input" id="rateSelect" onblur="blRate()" onfocus="fcRate()">
+                            <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBoxRate">
+                                <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                    <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                    <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                    <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                    <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div> -->
+                            </div>
                         </div>
                     </div>
                     <div class="layui-form-item noGeren yingyezhizhao" style="display:none">
-                        <label class="layui-form-label">营业执照名称</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>营业执照名称</label>
                         <div class="layui-input-block">
-                            <input type="text" name="businessLicenseName" lay-verify="title1" autocomplete="off" placeholder="请输入营业执照名称" class="layui-input">
+                            <input type="text" lay-verType="tips" name="businessLicenseName" lay-verify="title1" autocomplete="off" placeholder="请输入营业执照名称" class="layui-input">
                         </div>
                     </div>
                 </div>
                 <div class="box-item noGeren" style="display: none">
                     <div class="layui-form-item BLcn" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">营业执照编号</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>营业执照编号</label>
                         <div class="layui-input-block">
-                            <input type="text" name="businessLicenseNo" lay-verify="title1" autocomplete="off" placeholder="请输入营业执照编号" class="layui-input">
+                            <input type="text" lay-verType="tips" name="businessLicenseNo" lay-verify="title1" autocomplete="off" placeholder="请输入营业执照编号" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;margin-left:30px">
-                        <label class="layui-form-label">营业执照有限期</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>营业执照有限期</label>
                         <div class="layui-input-block" style="display:inline-block;width:200px;margin-left:0px;">
-                            <input type="text" name="businessLicenseTime" lay-verify="title1" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseTime">
+                            <input type="text" lay-verType="tips" name="businessLicenseTime" lay-verify="title1" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseTime">
                         </div>
                         <div style="width:30px;text-align:center;display:inline-block" class="yyNoChangqi">-</div>
                         <div class="layui-input-block yyNoChangqi" style="display:inline-block;width:200px;margin-left:5px;">
-                            <input type="text" name="businessLicenseEndTime" lay-verify="title2" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseEndTime">
+                            <input type="text" lay-verType="tips" name="businessLicenseEndTime" lay-verify="title2" autocomplete="off" placeholder="请选择营业执照有效期" class="layui-input" id="businessLicenseEndTime">
                         </div>
                         <div class="layui-input-block" style="display:inline-block;margin-left:15px;vertical-align:top">
                             <input type="checkbox" name="businessLicenseType" lay-skin="switch" lay-filter="businessLicenseType" lay-text="长期|非长期">
                         </div>
                     </div>
                 </div>
+                <div class="layui-form-item noGeren" style="display:none;width:755px;position:relative;">
+                    <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>营业执照地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verType="tips" name="businessLicenseAddress" lay-verify="title1" autocomplete="off" placeholder="请输入营业执照地址，必须和营业执照上登记地址一样" class="layui-input">
+                    </div>
+                </div>
                 <div class="box-item">
                     <div class="layui-form-item BLcn" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">邮箱</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>邮箱</label>
                         <div class="layui-input-block">
-                            <input type="text" name="mailbox" lay-verify="title" autocomplete="off" placeholder="请输入邮箱" class="layui-input">
+                            <input type="text" lay-verType="tips" name="mailbox" lay-verify="title" autocomplete="off" placeholder="请输入邮箱" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;margin-left:30px;vertical-align:top">
@@ -230,9 +276,26 @@
                         </div>
                     </div>
                 </div>
+                <div class="box-item ysfRate" style="display:none">
+                    <div class="layui-form-item " style="display:inline-block;width:500px;position:relative;">
+                        <label class="layui-form-label">云闪付费率1(%)</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="unionPayRate" lay-verify="unionPayRate" autocomplete="off" placeholder="请输入云闪付费率1" class="layui-input" value="0.52">
+                        </div>
+                        <!--  <div id="wechatTips" style="position:absolute;right:5px;top:2px;font-weight:bold;color:red;cursor:pointer">?</div> -->
+                        <i class="layui-icon" id="unionPayRate" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
+                    </div>
+                    <div class="layui-form-item " style="display:inline-block;width:500px;margin-left:30px;position:relative">
+                        <label class="layui-form-label">云闪付费率2(%)</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="unionPayRate2" lay-verify="unionPayRate2" autocomplete="off" placeholder="请输入云闪付费率2" class="layui-input"  value="0.52">
+                        </div>
+                        <i class="layui-icon" id="unionPayRate2" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
+                    </div>
+                </div>
                 <div class="box-item">
                     <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto">
-                        <label class="layui-form-label">公司地址</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>公司地址</label>
                         <div class="layui-input-block" style="display:inline-block;width:200px;margin-left:0px;">
                             <select name="prov1" id="prov" lay-filter="prov" lay-verify="title">
                                 <!-- <option value="">一级类目</option>
@@ -250,11 +313,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="layui-form-item" style="width:755px">
-                    <label class="layui-form-label">商户详细地址</label>
+                <div class="layui-form-item" style="width:755px;position:relative;">
+                    <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>商户详细地址</label>
                     <div class="layui-input-block">
-                        <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="请输入商户详细地址,必须包含数字" class="layui-input">
+                        <input type="text" lay-verType="tips" name="address" lay-verify="title" autocomplete="off" placeholder="请输入商户详细地址,必须包含数字" class="layui-input">
                     </div>
+                    <i class="layui-icon" id="addressTips" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item BLcn" style="display:inline-block;width:500px;position:relative;">
@@ -262,13 +326,15 @@
                         <div class="layui-input-block">
                             <input type="text" name="weChatNo" lay-verify="" autocomplete="off" placeholder="请输入微信号" class="layui-input">
                         </div>
-                        <div id="wechatTips" style="position:absolute;right:5px;top:2px;font-weight:bold;color:red;cursor:pointer">?</div>
+                        <!--  <div id="wechatTips" style="position:absolute;right:5px;top:2px;font-weight:bold;color:red;cursor:pointer">?</div> -->
+                        <i class="layui-icon" id="wechatTips" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
                     </div>
-                    <div class="layui-form-item BLcn" style="display:inline-block;width:500px;margin-left:30px">
+                    <div class="layui-form-item BLcn" style="display:inline-block;width:500px;margin-left:30px;position:relative">
                         <label class="layui-form-label">支付宝号</label>
                         <div class="layui-input-block">
                             <input type="text" name="aliPayNo" lay-verify="" autocomplete="off" placeholder="请输入支付宝号" class="layui-input">
                         </div>
+                        <i class="layui-icon" id="alitTips" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
                     </div>
                 </div>
                 <blockquote class="layui-elem-quote">法人信息</blockquote>
@@ -283,6 +349,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test5" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">身份证正面</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(4)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                     <div class="layui-input-inline" style="margin-left:30px;">
                         <div class="layui-upload-img">
@@ -290,6 +358,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test6" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">身份证反面</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(5)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                     <div class="layui-input-inline geren" style="margin-left:30px;">
                         <div class="layui-upload-img">
@@ -297,6 +367,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test7" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">手持身份证</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(6)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                 </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -304,15 +376,15 @@
                 </fieldset>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">身份证号</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>身份证号</label>
                         <div class="layui-input-block">
-                            <input type="text" name="juridicalpersonId" lay-verify="title" autocomplete="off" placeholder="请输入身份证号" class="layui-input" id="juridicalpersonId">
+                            <input type="text" lay-verType="tips" name="juridicalpersonId" lay-verify="title" autocomplete="off" placeholder="请输入身份证号" class="layui-input" id="juridicalpersonId">
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
-                        <label class="layui-form-label">姓名</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>姓名</label>
                         <div class="layui-input-block">
-                            <input type="text" name="juridicalpersonName" lay-verify="title" autocomplete="off" placeholder="请输入姓名" class="layui-input" id="juridicalpersonName">
+                            <input type="text" lay-verType="tips" name="juridicalpersonName" lay-verify="title" autocomplete="off" placeholder="请输入姓名" class="layui-input" id="juridicalpersonName">
                         </div>
                     </div>
                 </div>
@@ -324,13 +396,13 @@
                         </div>
                     </div> -->
                     <div class="layui-form-item" style="display:inline-block">
-                        <label class="layui-form-label">身份证有效期</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>身份证有效期</label>
                         <div class="layui-input-block" style="display:inline-block;width:200px;margin-left:0px;">
-                            <input type="text" name="juridicalpersonIdTime" lay-verify="title" autocomplete="off" placeholder="请选择身份证有效期" class="layui-input" id="juridicalpersonIdTime">
+                            <input type="text" lay-verType="tips" name="juridicalpersonIdTime" lay-verify="title" autocomplete="off" placeholder="请选择身份证有效期" class="layui-input" id="juridicalpersonIdTime">
                         </div>
                         <div style="width:30px;text-align:center;display:inline-block" class="sfzNoChangqi">-</div>
                         <div class="layui-input-block sfzNoChangqi" style="display:inline-block;width:200px;margin-left:5px;">
-                            <input type="text" name="juridicalPersonIDEndTime" lay-verify="" autocomplete="off" placeholder="请选择身份证有效期" class="layui-input" id="juridicalPersonIDEndTime">
+                            <input type="text" lay-verType="tips" name="juridicalPersonIDEndTime" lay-verify="" autocomplete="off" placeholder="请选择身份证有效期" class="layui-input" id="juridicalPersonIDEndTime">
                         </div>
                         <div class="layui-input-block" style="display:inline-block;margin-left:15px;vertical-align:top">
                             <input type="checkbox" name="juridicalPersonIDType" lay-skin="switch" lay-filter="juridicalPersonIDType" lay-text="长期|非长期">
@@ -349,6 +421,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test8" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">开户许可证</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(7)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                     <div class="layui-input-inline noQiye" style="margin-left:30px;">
                         <div class="layui-upload-img">
@@ -356,6 +430,8 @@
                             <div class="layui-btn layui-btn-sm block" id="test9" style="width:100%;text-align:center">上传图片</div>
                         </div>
                         <div style="width:100%;text-align:center;width:200px">银行卡正面</div>
+                        <div style="width:100%;text-align:center;width:200px;line-height:40px;color:#666666" onmouseover="shili(8)" onmouseout="shilihide()"><i class="layui-icon" id="shili1" style="color:#009688">&#xe615;</i>预览示例图</div>
+                        <img class="shili" src="" style="width:200;height:100px;position:absolute;right:0;bottom:0;z-index:9999">
                     </div>
                 </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -363,13 +439,13 @@
                 </fieldset>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">银行卡号</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>银行卡号</label>
                         <div class="layui-input-block">
-                            <input type="text" name="bankCardNo" lay-verify="title" autocomplete="off" placeholder="请输入银行卡号" class="layui-input">
+                            <input type="text" lay-verType="tips" name="bankCardNo" lay-verify="title" autocomplete="off" placeholder="请输入银行卡号" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
-                        <label class="layui-form-label">开户银行</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>开户银行</label>
                         <div class="layui-input-block">
                             <!-- <input type="text" name="openingBank" lay-verify="title" autocomplete="off" placeholder="请输入开户银行" class="layui-input"> -->
                             <select name="openingBank1" lay-verify="openingBank" lay-search="" id="openingBank">
@@ -379,7 +455,7 @@
                 </div>
                 <div class="box-item">
                     <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto">
-                        <label class="layui-form-label">开户地区</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>开户地区</label>
                         <div class="layui-input-block" style="display:inline-block;width:182px;margin-left:0px;">
                             <select name="prov11" id="prov1" lay-filter="prov1" lay-verify="title">
                                 <!-- <option value="">一级类目</option>
@@ -393,7 +469,7 @@
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
-                        <label class="layui-form-label">开户支行</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>开户支行</label>
                         <div class="layui-input-block">
                             <input type="text" name="openingBankBranch" lay-verify="openingBankBranch" autocomplete="off" placeholder="请搜索并选择开户支行" class="layui-input" id="openingBankBranch" onblur="bl2()" onfocus="fc2()">
                             <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox2">
@@ -420,9 +496,9 @@
                 <blockquote class="layui-elem-quote">其他信息</blockquote>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
-                        <label class="layui-form-label">所属服务商</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>所属服务商</label>
                         <div class="layui-input-block">
-                            <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择服务商" class="layui-input" id="agName" onblur="bl()" onfocus="fc()">
+                            <input type="text" lay-verType="tips" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择服务商" class="layui-input" id="agName" onblur="bl()" onfocus="fc()">
                             <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
                                 <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
                                     <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
@@ -433,9 +509,9 @@
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
-                        <label class="layui-form-label">所属销售</label>
+                        <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>所属销售</label>
                         <div class="layui-input-block">
-                            <input type="text" name="slName" lay-verify="saleName" autocomplete="off" placeholder="请搜索并选择销售" class="layui-input" id="slName" onblur="bl1()" onfocus="fc1()">
+                            <input type="text" lay-verType="tips" name="slName" lay-verify="saleName" autocomplete="off" placeholder="请搜索并选择销售" class="layui-input" id="slName" onblur="bl1()" onfocus="fc1()">
                             <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox1">
                             </div>
                         </div>
@@ -464,7 +540,9 @@
     <script src="../../common/utility.js"></script>
     <script>
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    var server = 'http://192.168.1.113:6005/shanhe-admin/'
+    var server = 'http://192.168.1.112:6005/shanhe-admin/'
+    var commonServer = 'http://192.168.1.112:6008/shanhe-common/'
+    var jgServer = 'http://192.168.1.112:6005/shanhe-admin/'
     //var server = 'https://nb.51shanhe.com/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
@@ -495,6 +573,130 @@
     var merType = 0
     var baidu = JSON.parse(sessionStorage.getItem('baidu'))
     var form
+    var rateList = [{
+            rate: '0.25'
+        },
+        {
+            rate: '0.26'
+        },
+        {
+            rate: '0.28',
+        },
+        {
+            rate: '0.30',
+        },
+        {
+            rate: '0.35',
+        },
+        {
+            rate: '0.38',
+        },
+        {
+            rate: '0.40',
+        },
+        {
+            rate: '0.45',
+        },
+        {
+            rate: '0.50',
+        },
+        {
+            rate: '0.55',
+        },
+        {
+            rate: '0.60',
+        }
+    ];
+    var strRate = ''
+    for (var i = 0; i < rateList.length; i++) {
+        strRate += '<div class="layui-btn layui-btn-primary"  data-value="' + rateList[i].rate + '"  style="width:100%;margin-left:0" onclick="clickSRate(this)" >' + rateList[i].rate + '</div>'
+    }
+    document.getElementById('searchBoxRate').innerHTML = strRate
+
+    function blRate() {
+        setTimeout(function() {
+            $('#searchBoxRate').hide()
+        }, 200)
+        //$('#searchBox').hide()
+    }
+
+    function fcRate() {
+        $('#searchBoxRate').show()
+    }
+
+    function clickSRate(e) {
+        $('#rateSelect').val(e.getAttribute('data-value'))
+        $('#searchBoxRate').hide()
+    }
+    var shiliList = [
+        '../../public/images/shili-yyzz.png',
+        '../../public/images/shili-shouyintai.png',
+        '../../public/images/shili-diannei.png',
+        '../../public/images/shili-mentou.png',
+        '../../public/images/shili-sfz-z.png',
+        '../../public/images/shili-sfz-fan.png',
+        '../../public/images/shili-shouchi.png',
+        '../../public/images/shili-kaihuhang.png',
+        '../../public/images/shili-yinhangka.png'
+    ]
+
+    var shiliNumList = []
+
+    for (var i = 0; i < shiliList.length; i++) {
+        var img = new Image();
+
+        // 改变图片的src
+        img.src = shiliList[i];
+        setTimeout(function() {
+            var scale = img.width / img.height;
+
+            // var width  = img.width
+            // var height = img.height
+            var width = 400
+            var height = 400 / parseFloat(scale)
+            var nO = new Object()
+            nO.width = width
+            nO.height = height
+            shiliNumList.push(nO)
+            console.log(shiliNumList)
+        }, 100)
+
+    }
+
+
+
+    function shili(num) {
+        console.log(num)
+
+        console.log($('.shili').eq(num))
+        $('.shili').eq(num).attr('src', shiliList[num])
+
+
+
+        // var width  = img.width
+        // var height = img.height
+        var width = shiliNumList[num].width
+        var height = shiliNumList[num].height
+        // 打印
+        $('.shili').eq(num).css({
+            'right': 10 - width,
+            'bottom': 100 - height,
+            'width': width,
+            'height': height
+        })
+        $('.shili').eq(num).show()
+
+
+    }
+
+    function shilihide() {
+
+        $('.shili').hide()
+    }
+
+
+
+
     // var index = parent.layer.getFrameIndex(window.name);
     // $('#quxiao').click(function() {
 
@@ -822,8 +1024,7 @@
         CmsUtility.postAjaxCall2(
             //系统设置
             // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
-            'http://192.168.1.113:6008/shanhe-common/cache/getBank',
-             {
+            commonServer + 'cache/getBank', {
                 "bankCode": $('#openingBank').val().split('|')[0],
                 "paymentType": '4',
                 "bankName": $('#openingBankBranch').val(),
@@ -859,6 +1060,38 @@
         )
 
     }
+
+    $('#addressTips').mouseover(function() {
+        var that = this;
+        layer.tips('填写门店实际经营地址，详细到XX路XX号。', that, {
+            tips: [2],
+            time: 20000
+        });
+    })
+    $('#addressTips').mouseout(function() {
+        layer.closeAll()
+    })
+    $('#merchantNameTips').mouseover(function() {
+        var that = this;
+        layer.tips('注：商户名称，包括商户全称和商户简称，填写规范如下：商户所属行业合法，禁止入网的行业包括：广告、棋牌类、基金、理财 、套现、信用卡、传销等。商户名称中，不得包括以下敏感词汇：藏独、法轮功、色情、毒品、赌博、博彩、基金、理财、担保、贷款、集资、P2P、麻醉、间谍服务、私人侦探、股权、众筹、乐刷、套现、自选、千万户、000、T0、信用卡、担保、资金、淘宝、财务、收款、超时、商圈、金服、资产管理、微盘。', that, {
+            tips: [2],
+            time: 20000
+        });
+    })
+    $('#merchantNameTips').mouseout(function() {
+        layer.closeAll()
+    })
+
+    $('#alitTips').mouseover(function() {
+        var that = this;
+        layer.tips('支付宝账号为登录时的手机号或者邮箱号！', that, {
+            tips: [2],
+            time: 20000
+        });
+    })
+    $('#alitTips').mouseout(function() {
+        layer.closeAll()
+    })
     $('#wechatTips').mouseover(function() {
         var that = this;
         layer.tips('请填写商户联系人微信信息,微信要求已绑定银行卡完成实名认证，且实名的姓名与所填写的联系人姓名一致，微信号：需打开微信，在 "个人信息" 中看到的 "微信号",如 "微信号" 一栏显示 "未设置"，需先进行设置', that, {
@@ -877,6 +1110,26 @@
         });
     })
     $('#phoneTips').mouseout(function() {
+        layer.closeAll()
+    })
+    $('#unionPayRate').mouseover(function() {
+        var that = this;
+        layer.tips('该费率为单笔交易1000以内包含1000的费率', that, {
+            tips: [2],
+            time: 20000
+        });
+    })
+    $('#unionPayRate').mouseout(function() {
+        layer.closeAll()
+    })
+    $('#unionPayRate2').mouseover(function() {
+        var that = this;
+        layer.tips('该费率为单笔交易金额大于1000的费率', that, {
+            tips: [2],
+            time: 20000
+        });
+    })
+    $('#unionPayRate2').mouseout(function() {
         layer.closeAll()
     })
     // chOne
@@ -1003,8 +1256,8 @@
             document.getElementById('searchBox2').innerHTML = ''
             CmsUtility.postAjaxCall2(
                 //系统设置
-               // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
-            'http://192.168.1.113:6008/shanhe-common/cache/getBank', {
+                // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
+                commonServer + 'cache/getBank', {
                     "bankCode": $('#openingBank').val().split('|')[0],
                     "paymentType": '4',
                     "bankName": $('#openingBankBranch').val(),
@@ -1041,7 +1294,7 @@
         })
         CmsUtility.postAjaxCall2(
             //系统设置
-            'https://nb.51shanhe.com/shanhe-common/cache/getOperationIds', {
+            commonServer + 'cache/getOperationIds', {
                 "institutionNumber": userNumber,
                 "paymentType": 4
             },
@@ -1142,7 +1395,7 @@
         })
         CmsUtility.postAjaxCall2(
             //系统设置
-            'https://nb.51shanhe.com/shanhe-common/cache/getAreajson02', {
+            commonServer + 'cache/getAreajson02', {
                 // "institutionNumber": userNumber,
                 // "paymentType": 4
             },
@@ -1306,7 +1559,7 @@
             formData.append("type", type);
             $.ajax({
                 // url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
-                url:'http://192.168.1.113:6005/shanhe-admin/InsMer/uploadMerchantImg',
+                url: jgServer + 'InsMer/uploadMerchantImg',
                 type: 'POST',
                 data: formData,
                 async: false,
@@ -1322,17 +1575,17 @@
                     console.log(name)
                     // placeBusiness = imgList[placeBusiness] || ''
                     // console.log(imgList[placeBusiness])
-                     console.log(imgList['cashier'])
+                    console.log(imgList['cashier'])
                     if (type == 1) {
                         var aData = new Object()
 
                         aData.image = returndata.data
 
-                        // aData.idCardSide = 'back'
-                        // aData.type = '1'
-                        // aData.appId = baidu.baiduAppID
-                        // aData.aipKey = baidu.baiduAPIKey
-                        // aData.aipToken = baidu.baiduSecretKey
+                        aData.idCardSide = 'back'
+                        aData.type = '1'
+                        aData.appId = baidu.baiduAppID
+                        aData.aipKey = baidu.baiduAPIKey
+                        aData.aipToken = baidu.baiduSecretKey
                         console.log(aData)
                         // $.ajax({
                         //     url: "http://bnesslic.market.alicloudapi.com/buslicense",
@@ -1368,31 +1621,32 @@
 
                         //     }
                         // })
-                        // $.ajax({
-                        //     type: 'post',
-                        //     url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
-                        //     data: JSON.stringify(aData),
-                        //     headers: {
-                        //         'Content-Type': "application/json"
-                        //     },
-                        //     success: function(data) {
-                        //         console.log(JSON.parse(data.data))
-                        //         var data = JSON.parse(data.data)
-                        //         layui.use(['upload', 'form'], function() {
-                        //             var $ = layui.jquery,
-                        //                 upload = layui.upload,
+                        $.ajax({
+                            type: 'post',
+                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            data: JSON.stringify(aData),
+                            headers: {
+                                'Content-Type': "application/json"
+                            },
+                            success: function(data) {
+                                console.log(JSON.parse(data.data))
+                                var data = JSON.parse(data.data)
+                                layui.use(['upload', 'form'], function() {
+                                    var $ = layui.jquery,
+                                        upload = layui.upload,
 
-                        //                 form = layui.form,
-                        //                 layer = layui.layer;
-                        //             form.val('cardAdd', {
-                        //                 "businessLicenseName": data.words_result.单位名称.words,
-                        //                 "businessLicenseNo": data.words_result.社会信用代码.words,
-                        //                 "businessLicenseTime": data.words_result.成立日期.words.replace('年', '-').replace('月', '-').replace('日', ''),
-                        //                 "businessLicenseEndTime": data.words_result.有效期.words.replace('年', '-').replace('月', '-').replace('日', '')
-                        //             })
-                        //         })
-                        //     }
-                        // })
+                                        form = layui.form,
+                                        layer = layui.layer;
+                                    form.val('cardAdd', {
+                                        "businessLicenseName": data.words_result.单位名称.words,
+                                        "businessLicenseNo": data.words_result.社会信用代码.words,
+                                        "businessLicenseTime": data.words_result.成立日期.words.replace('年', '-').replace('月', '-').replace('日', ''),
+                                        "businessLicenseEndTime": data.words_result.有效期.words.replace('年', '-').replace('月', '-').replace('日', ''),
+                                        "businessLicenseAddress": data.words_result.地址.words,
+                                    })
+                                })
+                            }
+                        })
                     } else if (type == 2) {
                         var aData = new Object()
 
@@ -1656,8 +1910,10 @@
             if (this.checked == true) {
 
                 isOpenYunPay = 0
+                $('.ysfRate').show()
             } else {
                 isOpenYunPay = 1
+                $('.ysfRate').hide()
             }
 
         });
@@ -1716,16 +1972,41 @@
                 if (isNaN(value) == true) {
                     return '请输入数字'
                 }
-                if (value < 0.25 || value > 1.99) {
-                    return '费率需在0.25-1.99之间'
+                if (value <= 0.25 || value >= 1) {
+                    return '费率需在0.25-1之间'
                 }
-            }
-        });
+            },
+            unionPayRate:function(value){
+                if(isOpenYunPay == 0){
+                     if (!value) {
+                        return '必填项不能为空！'
+                    }
+                }
+                if (isNaN(value) == true) {
+                    return '请输入数字'
+                }
+                if (value <= 0.25 || value >= 1) {
+                    return '费率需在0.25-1之间'
+                }
+            },
+            unionPayRate2:function(value){
+                if(isOpenYunPay == 0){
+                     if (!value) {
+                        return '必填项不能为空！'
+                    }
+                }
+                if (isNaN(value) == true) {
+                    return '请输入数字'
+                }
+                if (value <= 0.25 || value >= 1) {
+                    return '费率需在0.25-1之间'
+                }
+            },
 
         form.on('submit(add)', function(data, index) {
             console.log(imgList)
             cashier = imgList['cashier'] || ''
-            placeBusiness = imgList['placeBusiness'] || ''                
+            placeBusiness = imgList['placeBusiness'] || ''
             doorheadPhoto = imgList['doorheadPhoto'] || ''
             juridicalpersonIdPositive = imgList['juridicalpersonIdPositive'] || ''
             juridicalpersonIdReverseside = imgList['juridicalpersonIdReverseside'] || ''
@@ -1736,8 +2017,8 @@
 
 
 
-            if (cashier == '' || placeBusiness == '' || doorheadPhoto == '' || juridicalpersonIdPositive == '' || juridicalpersonIdReverseside == '' || bankCardPositive == '') {
-                
+            if (cashier == '' || placeBusiness == '' || doorheadPhoto == '' || juridicalpersonIdPositive == '' || juridicalpersonIdReverseside == '') {
+
                 layer.msg('请补充图片信息')
                 return false
             }
@@ -1755,6 +2036,12 @@
             }
             if (merType == 0) {
                 if (holdId == '') {
+                    layer.msg('请补充图片信息')
+                    return false
+                }
+            }
+            if (merType != 2) {
+                if (bankCardPositive == '') {
                     layer.msg('请补充图片信息')
                     return false
                 }
@@ -1799,7 +2086,7 @@
                 tjData.merchantType = '企业'
                 tjData.acntType = '对公'
             }
-            if(!$('#openingBankBranch').attr('openingBankNumber')){
+            if (!$('#openingBankBranch').attr('openingBankNumber')) {
                 layer.msg('请选择支行')
                 return
             }
@@ -1812,7 +2099,6 @@
             tjData.cityID = tjData.city1.split('|')[0]
             tjData.area = tjData.area1.split('|')[1]
             tjData.areaID = tjData.area1.split('|')[0]
-            tjData.businessLicenseAddress = tjData.province + tjData.city + tjData.area + tjData.address
             console.log(tjData)
             tjData.isOpenYunPay = isOpenYunPay
             tjData.paymentChannels = JSON.stringify(pyList)
@@ -1824,8 +2110,11 @@
             tjData.merchantNumber = merchantNumber
             tjData.customerServiceTell = tjData.registerCell
             tjData.reserveCell = tjData.registerCell
+            tjData.rate = (tjData.rate/100).toFixed(4)
+            tjData.unionPayRate = (tjData.unionPayRate/100).toFixed(4)
+            tjData.unionPayRate2 = (tjData.unionPayRate2/100).toFixed(4)
             console.log(tjData)
-            var index = layer.load(2, { shade: [0.4, '#393D49'] })
+
             CmsUtility.postAjaxCall2(
                 //系统设置
                 server + 'InsMer/insertMerchant',

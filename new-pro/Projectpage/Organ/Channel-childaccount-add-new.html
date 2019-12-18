@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .layui-input-inline {
+        width: 480px !important;
+    }
+    .layui-form-label{
+        width: 150px;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form" action="" lay-filter="cardAdd">
+                <div class="layui-form-item" id="type1">
+                    <label class="layui-form-label">商户名称</label>
+                    <div class="layui-input-inline" style="position:relative;left:0;bottom:0">
+                        <input type="text" name="merchantNumber" autocomplete="off" placeholder="请搜索并选择商户" class="layui-input" lay-verify="merchantNumber" id="search" onblur="bl()" onfocus="fc()">
+                        <div class="layui-input-inline" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff" id="searchBox">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div id="noali" style="display:none">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户类型</label>
+                        <div class="layui-input-block widthauto">
+                            <input type="radio" name="merchantType" value="个人" title="个人" lay-filter="cardvalid" checked="">
+                            <input type="radio" name="merchantType" value="个体" title="个体" lay-filter="cardvalid">
+                            <input type="radio" name="merchantType" value="企业" title="企业" lay-filter="cardvalid">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算标识</label>
+                        <div class="layui-input-block widthauto">
+                            <input type="radio" name="acntType" value="对私" title="对私" lay-filter="cardvalid" checked="">
+                            <input type="radio" name="acntType" value="对公" title="对公" lay-filter="cardvalid">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算类型</label>
+                        <div class="layui-input-inline" id="jiesuan">
+                          
+                        </div>
+                    </div>
+                    <div class="layui-form-item isAli" style="display:none">
+                        <label class="layui-form-label">支付宝费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="alipayRate" autocomplete="off" placeholder="支付宝费率" class="layui-input" lay-verify="alipayRate" value="0.30">
+                        </div>
+                    </div>
+                     <div class="layui-form-item isWechat" style="display:none">
+                        <label class="layui-form-label">微信费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weChatRate" autocomplete="off" placeholder="微信费率" class="layui-input" lay-verify="weChatRate"  value="0.30">
+                        </div>
+                    </div>
+                     <div class="layui-form-item isJian" style="display:none">
+                        <label class="layui-form-label">京东支付费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="jingdongRate" autocomplete="off" placeholder="京东支付费率" class="layui-input" lay-verify="jingdongRate"  value="0.30">
+                        </div>
+                    </div>
+                    <div class="layui-form-item isJian"  style="display:none">
+                        <label class="layui-form-label">是否开通云闪付</label>
+                        <div class="layui-input-inline">
+                          <input type="radio"  lay-filter="isYun" name="isOpenYunPay" value="1" title="否" checked="">
+                          <input type="radio"  lay-filter="isYun" name="isOpenYunPay" value="0" title="是">
+                        </div>
+                    </div>
+                    <div class="layui-form-item isYun" style="display:none">
+                        <label class="layui-form-label">云闪付支付费率1(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="unionPayRate" autocomplete="off" placeholder="单笔1000以内包括1000" class="layui-input" lay-verify="unionPayRate"  value="0.30">
+                        </div>
+                    </div>
+                    <div class="layui-form-item isYun"  style="display:none">
+                        <label class="layui-form-label">云闪付支付费率2(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="unionPayRate2" autocomplete="off" placeholder="单笔1000以上" class="layui-input" lay-verify="unionPayRate2"  value="0.30">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">子商户号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="subaccountNumber" autocomplete="off" placeholder="子商户号" class="layui-input" lay-verify="subaccountNumber">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item xdl">
+                        <label class="layui-form-label">子商户秘钥</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
+                        </div>
+                    </div>
+                    <div class="layui-form-item " id="sxf" style="display:none">
+                        <label class="layui-form-label">任务单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="sxfTask" autocomplete="off" placeholder="任务单号(仅随行付通道需要)" class="layui-input" lay-verify="sxfTask">
+                        </div>
+                    </div>
+                     <div class="layui-form-item xdl">
+                        <label class="layui-form-label">终端号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div>
+                    <div class="layui-form-item xdl">
+                        <label class="layui-form-label">门店号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="stoeId" autocomplete="off" placeholder="门店号" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div>
+                    <!-- <div class="layui-form-item">
+                        <label class="layui-form-label">费率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="rate" autocomplete="off" placeholder="费率" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div> -->
+                   
+                    
+                    <!-- <div class="layui-form-item">
+                        <label class="layui-form-label">类型</label>
+                        <div class="layui-input-inline">
+                          
+                          <select name="subsidyType" id="merchantEnble" >
+                            
+                            <option value="1">普通商户</option>
+                            <option value="0" >补贴商户A</option>
+                            <option value="2" >补贴商户B</option>
+                            <option value="3" >餐饮补贴A</option>
+                        </select>
+                        </div>
+                    </div> -->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">
+                            <input class="layui-checkbox" type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关" checked>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao" onclick="x_admin_close()">关闭</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+                   
+                </div>
+                <div id="ali" style="display:none">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">请扫码获取授权</label>
+                        <div class="layui-input-inline">
+                            <div id="qrcode"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="layui-form-item">
+						<label class="layui-form-label">成本费率模式</label>
+						<div class="layui-input-inline widthauto">
+							<input type="radio" name="Costratemodel" value="0" title="继承通道" checked="">
+							<input type="radio" name="Costratemodel" value="1" title="自定义">
+						</div>
+						<div class="layui-input-inline">
+							<input type="text" name="disCount" autocomplete="off" placeholder="自定义成本费率" class="layui-input">
+						</div>
+					</div> -->
+                <!-- <div class="layui-form-item">
+                    <label class="layui-form-label">风控继承</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="riskMode" lay-skin="switch" lay-filter="riskMode" lay-text="是|否" checked>
+                        </div>
+                    </div>
+                </div> -->
+                
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script src="../../public/js/qrcode.js"></script>
+    <script>
+    var channel = CmsUtility.getQueryString('channel')
+    var payment = CmsUtility.getQueryString('payment')
+    var type = CmsUtility.getQueryString('type')
+    var app = CmsUtility.getQueryString('app')
+    var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+    var qrcode = new QRCode('qrcode', { 
+      text: '', 
+      width: 256, 
+      height: 256, 
+      colorDark : '#000000', 
+      colorLight : '#ffffff', 
+      correctLevel : QRCode.CorrectLevel.H 
+    });
+
+    // // 设置参数方式
+    // var qrcode = new QRCode('qrcode', {
+    //   text: 'your content',
+    //   width: 380,
+    //   height: 380,
+    //   colorDark : '#000000',
+    //   colorLight : '#ffffff',
+    //   correctLevel : QRCode.CorrectLevel.H
+    // });
+
+    // 使用 API
+    // qrcode.clear();
+    // qrcode.makeCode('new content');
+    function isbaifenbi(data){
+        if(data.indexOf('%') >= 0 ){
+                return (parseFloat(data.replace('%','')) /10000 *100 ).toFixed(4)
+            }else{
+                return  (parseFloat(data) /10000 *100 ).toFixed(4)
+            }
+    }
+
+    var serverUrl = window.parent.serverUrl;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var riskMode = true
+    var disable = true
+
+    function clickS(e) {
+        $('#search').val(e.getAttribute('data-id'))
+        console.log(e)
+        $('#search').attr('shopNumber', e.getAttribute('data-name'))
+        $('#searchBox').hide()
+        if(payment == 0){
+            CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Mechanism.getZFBOfficial, {
+                        'alipayNumber':channel,
+                        'institutionNumber':userNumber
+                    },
+                    function(data) {
+                        if (data.code == 1000) {
+                            console.log(data)
+                            sjData = data.data
+                            if(!sjData.notifyUrl){
+                                layer.msg('获取授权地址为空')
+                                return 
+                            }
+                             var jumphref = sjData.notifyUrl + '?institutionNumber=' + userNumber + '&merchantNumber='+e.getAttribute('data-name') + '&paymentChannel='+channel + '&orderNumber='
+                           
+                            qrcode.clear(); 
+                            qrcode.makeCode('https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id='+sjData.alipayAppid+'&redirect_uri=' + jumphref); 
+            
+           
+                                $('#ali').show()
+                          
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    },
+                    'post',
+                    'false'
+                )
+           
+        }
+    }
+
+    function bl() {
+        setTimeout(function() {
+            $('#searchBox').hide()
+        }, 200)
+        //$('#searchBox').hide()
+    }
+
+    function fc() {
+        $('#searchBox').show()
+        CmsUtility.postAjaxCall(
+            //系统设置
+            CmsConfig.addressUrl.Mechanism.getMerchantNumberlist, {
+                "merchantName": $('#search').val(),
+                "institutionNumber": userNumber,
+                "page":1,
+                "limit":100
+            },
+            function(data) {
+                console.log(this.value)
+                if (data.code == 1000) {
+                    var str = ''
+                    for (var i = 0; i < data.data.institutionSubaccountlist.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.institutionSubaccountlist[i].merchantName + '" data-name="' + data.data.institutionSubaccountlist[i].merchantNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.institutionSubaccountlist[i].merchantNumber + ']' + data.data.institutionSubaccountlist[i].merchantName + '</div>'
+                    }
+                    document.getElementById('searchBox').innerHTML = str
+                    // layer.msg('保存成功')
+                    // setTimeout(function(){
+                    // 	x_admin_close()
+                    // },500);
+
+                } else {
+                    //layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }
+        )
+
+    }
+    layui.use(['flow', 'laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        var $ = layui.jquery; //不用额外加载jQuery，flow模块本身是有依赖jQuery的，直接用即可。  
+        var flow = layui.flow;
+        console.log(payment)
+            if (payment == 0) {
+                $('#noali').hide()
+               
+            } else {
+                $('#noali').show()
+                
+            }
+            if(payment != 4){
+                $('.xdl').hide()
+            }
+            
+            if(payment == 5){
+                $('#sxf').show()
+            }
+            if(payment == 0 || payment == 1){
+                $('#jiesuan').html('<input type="radio" name="rateType" value="T1" title="T1" checked="">')
+               
+            }else{
+                $('#jiesuan').html('<input type="radio" name="rateType" value="T1" title="T1" checked=""><input type="radio" name="rateType" value="D1" title="D1"><input type="radio" name="rateType" value="D0" title="D0">')
+                 $('.isAli').show()
+                 $('.isWechat').show()
+                 $('.isJian').show()
+            }
+            if(payment == 1){
+                $('.isWechat').show()
+            }
+             form.render()
+        //   				flow.load({
+        //   					elem: '#searchBox', 
+        //   					done:function(page,next){
+        //   						console.log(page,next)
+        //   						CmsUtility.postAjaxCall(
+        // 	//系统设置
+        // 	CmsConfig.addressUrl.Mechanism.getMerchantNumberlist,
+        // 	{
+        // 		"merchantNumber":'',
+        // 		"institutionNumber":''
+        // 	},
+        // 	function(data){
+        // 		console.log(this.value)
+        // 		if(data.code == 1000){
+        // 			 var str = ''
+        // 			 for(var i =0;i<data.data.length;i++){
+        // 			 	str+= '<div class="layui-btn layui-btn-primary" data-id="'+ data.data[i].merchantName+'" data-name="'+ data.data[i].merchantNumber+'" style="width:100%;margin-left:0" onclick="clickS(this)" >'+'['+ data.data[i].merchantNumber +']'+ data.data[i].merchantName+'</div>'
+        // 			 }
+        // 			 document.getElementById('searchBox').innerHTML = str
+        // 			// layer.msg('保存成功')
+        // 			// setTimeout(function(){
+        // 			// 	x_admin_close()
+        // 			// },500);
+
+        // 		}else{
+        // 			layer.msg(data.msg)
+
+        // 		}
+        // 	},
+        // 	function(data){
+        // 		console.log('222')
+        // 	}
+        // )
+        //   					}
+        //   				})
+        var tableSelect = layui.tableSelect;
+
+        $("#search").bind('input propertychange', function() {
+            console.log(this.value)
+            $('#search').removeAttr('shopNumber')
+            document.getElementById('searchBox').innerHTML = ''
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.getMerchantNumberlist, {
+                    "merchantName": this.value,
+                    "institutionNumber": userNumber,
+                    "page":1,
+                    "limit":100
+                },
+                function(data) {
+                    
+                    if (data.code == 1000) {
+                        var str = ''
+
+                        for (var i = 0; i < data.data.institutionSubaccountlist.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.institutionSubaccountlist[i].merchantName + '" data-name="' + data.data.institutionSubaccountlist[i].merchantNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.institutionSubaccountlist[i].merchantNumber + ']' + data.data.institutionSubaccountlist[i].merchantName + '</div>'
+                    }
+                        document.getElementById('searchBox').innerHTML = str
+                        // layer.msg('保存成功')
+                        // setTimeout(function(){
+                        // 	x_admin_close()
+                        // },500);
+
+                    } else {
+                        //layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        })
+        // function clickS(){
+        // 	console.log(this)
+        // }
+        form.on('select(search1)'),
+            function(data) {
+                console.log('12121')
+            }
+        /*---------- 自定义验证规则 ----------*/
+        if (type == 1) {
+            form.verify({
+
+                subaccountNumber: function(value) {
+                    if (value.length == "") {
+                        return '子商户编号不得为空';
+                    }
+                },
+                // subaccountKey: function(value) {
+                // 	if(value.length == "") {
+                // 		return '商户秘钥不能为空！';
+                // 	}
+                // },
+                // wechatAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '微信公众号appID不能为空！';
+                // 	}
+                // },
+                // smallroutineAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '小程序appID不能为空！';
+                // 	}
+                // },
+                // appsecret: function(value) {
+                // 	if(value.length == "") {
+                // 		return 'appsecret不能为空！';
+                // 	}
+                // },
+                // terminalNumber: function(value) {
+                // 	if(value.length == "") {
+                // 		return '终端号不能为空！';
+                // 	}
+                // },
+            });
+        } else if (type != 1) {
+            form.verify({
+                merchantNumber: function(value) {
+                    console.log($('#search').attr('shopNumber'))
+                    if (value.length == "" || $('#search').attr('shopNumber') == undefined) {
+                        return '请搜索并选择商户'
+                    }
+
+                },
+                subaccountNumber: function(value) {
+                    if (value.length == "") {
+                        return '子商户编号不得为空';
+                    }
+                },
+                terminalNumber:function(value){
+                    if(type == 5){
+                       if (value.length == "") {
+                        return '请输入随行付任务单号';
+                    } 
+                    }
+                },
+                // subaccountKey: function(value) {
+                // 	if(value.length == "") {
+                // 		return '商户秘钥不能为空！';
+                // 	}
+                // },
+                // wechatAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '微信公众号appID不能为空！';
+                // 	}
+                // },
+                // smallroutineAppid: function(value) {
+                // 	if(value.length == "") {
+                // 		return '小程序appID不能为空！';
+                // 	}
+                // },
+                // appsecret: function(value) {
+                // 	if(value.length == "") {
+                // 		return 'appsecret不能为空！';
+                // 	}
+                // },
+                // terminalNumber: function(value) {
+                // 	if(value.length == "") {
+                // 		return '终端号不能为空！';
+                // 	}
+                // },
+            });
+        }
+
+
+        /*---------- 监听开关 ----------*/
+        //form.on('switch(level)', function(data) { //等级开关
+        //	layer.tips('等级开关：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+        //});
+        form.on('switch(riskMode)', function(data) { //消费优惠开关
+            // layer.tips('继承状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            riskMode = this.checked
+
+        });
+        form.on('radio(isYun)', function(data) { //消费优惠开关
+            // layer.tips('继承状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            if(this.value == 0){
+                $('.isYun').show()
+            }else{
+                $('.isYun').hide()
+            }
+
+        });
+        form.on('switch(disable)', function(data) { //充值优惠开关
+            // layer.tips('充值优惠：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            disable = this.checked
+        });
+
+        /*---------- 监听提交 ----------*/
+        form.on('submit(add)', function(data, index) {
+            // if(type != 1){
+            // 	if(!!document.getElementById('search').getAttribute('shopNumber'))
+            // 	layer.msg('请搜索商户名称')
+            // 	document.getElementById('search').onfocus()
+            // 	return false
+            // }
+            var tjData = data.field;
+            tjData.riskMode = riskMode == true ? 0 : 1
+            tjData.disable = disable == true ? 0 : 1
+            tjData.institutionNumber = userNumber
+            if (type == 1) {
+                tjData.merchantNumber = merchantNumber
+            } else {
+                tjData.merchantNumber = document.getElementById('search').getAttribute('shopNumber')
+            }
+            tjData.paymentChannel = channel
+            tjData.channelType = payment
+            tjData.alipayRate = isbaifenbi(tjData.alipayRate)
+
+            tjData.weChatRate = isbaifenbi(tjData.weChatRate)
+            tjData.jingdongRate = isbaifenbi(tjData.jingdongRate)
+            if(tjData.isOpenYunPay == 0){
+                 tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
+            tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
+            }
+            tjData.subsidyType = 1
+            console.log(tjData)
+            // isbaifenbi            
+            var index = layer.load(2, {shade: [0.4, '#393D49']})
+            console.log(tjData)
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'channelSub/addChannelSubMer',
+                tjData,
+                function(data) {
+                    if (data.code == 1000) {
+
+                        parent.layer.msg('保存成功')
+                        setTimeout(function() {
+                            x_admin_close()
+                            parent.layui.table.reload('vip_cardList')
+                        }, 16);
+
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            return false;
+        });
+
+    });
+    </script>
+</body>
+
+</html>

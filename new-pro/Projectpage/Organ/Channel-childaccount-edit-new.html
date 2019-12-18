@@ -18,8 +18,11 @@
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style type="text/css">
-    .layui-input-inline {
-        width: 380px !important;
+     .layui-input-inline {
+        width: 480px !important;
+    }
+    .layui-form-label{
+        width: 150px;
     }
     </style>
 </head>
@@ -36,58 +39,113 @@
                         </div>
                     </div>
                     <div id="noali" style="display:none">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">子商户号</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="newSubaccountNumber" autocomplete="off" placeholder="子商户号" class="layui-input" lay-verify="newSubaccountNumber">
-                            </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户类型</label>
+                        <div class="layui-input-block widthauto">
+                            <input type="radio" name="merchantType" value="个人" title="个人" lay-filter="cardvalid" checked="">
+                            <input type="radio" name="merchantType" value="个体" title="个体" lay-filter="cardvalid">
+                            <input type="radio" name="merchantType" value="企业" title="企业" lay-filter="cardvalid">
                         </div>
-                        <div class="layui-form-item xdl" style="display:none">
-                            <label class="layui-form-label">商户秘钥</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
-                            </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">子商户号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="newSubaccountNumber" autocomplete="off" placeholder="子商户号" class="layui-input" lay-verify="subaccountNumber">
                         </div>
-                         <div class="layui-form-item " id="sxf" style="display:none">
+                    </div>
+                    
+                    <div class="layui-form-item xdl">
+                        <label class="layui-form-label">子商户秘钥</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="subaccountKey" autocomplete="off" placeholder="商户秘钥" class="layui-input" lay-verify="subaccountKey">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算标识</label>
+                        <div class="layui-input-block widthauto">
+                            <input type="radio" name="acntType" value="对私" title="对私" lay-filter="cardvalid" checked="">
+                            <input type="radio" name="acntType" value="对公" title="对公" lay-filter="cardvalid">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结算类型</label>
+                        <div class="layui-input-inline" id="jiesuan">
+                          
+                        </div>
+                    </div>
+                    <div class="layui-form-item isAli" style="display:none">
+                        <label class="layui-form-label">支付宝费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="alipayRate" autocomplete="off" placeholder="支付宝费率" class="layui-input" lay-verify="alipayRate">
+                        </div>
+                    </div>
+                     <div class="layui-form-item isWechat" style="display:none">
+                        <label class="layui-form-label">微信费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="weChatRate" autocomplete="off" placeholder="微信费率" class="layui-input" lay-verify="weChatRate">
+                        </div>
+                    </div>
+                     <div class="layui-form-item isJian" style="display:none">
+                        <label class="layui-form-label">京东支付费率(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="jingdongRate" autocomplete="off" placeholder="京东支付费率" class="layui-input" lay-verify="jingdongRate">
+                        </div>
+                    </div>
+                    <div class="layui-form-item isJian"  style="display:none">
+                        <label class="layui-form-label">是否开通云闪付</label>
+                        <div class="layui-input-inline">
+                          <input type="radio"  lay-filter="isYun" name="isOpenYunPay" value="1" title="否" checked="">
+                          <input type="radio"  lay-filter="isYun" name="isOpenYunPay" value="0" title="是">
+                        </div>
+                    </div>
+                    <div class="layui-form-item isYun" style="display:none">
+                        <label class="layui-form-label">云闪付支付费率1(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="unionPayRate" autocomplete="off" placeholder="单笔1000以内包括1000" class="layui-input" lay-verify="unionPayRate">
+                        </div>
+                    </div>
+                    <div class="layui-form-item isYun"  style="display:none">
+                        <label class="layui-form-label">云闪付支付费率2(%)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="unionPayRate2" autocomplete="off" placeholder="单笔1000以上" class="layui-input" lay-verify="unionPayRate2">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item " id="sxf" style="display:none">
                         <label class="layui-form-label">任务单号</label>
                         <div class="layui-input-inline">
                             <input type="text" name="sxfTask" autocomplete="off" placeholder="任务单号(仅随行付通道需要)" class="layui-input" lay-verify="sxfTask">
                         </div>
                     </div>
-                        <div class="layui-form-item xdl" style="display:none">
-                            <label class="layui-form-label">终端号</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
-                            </div>
-                        </div>
-                        <!-- <div class="layui-form-item">
-                            <label class="layui-form-label">费率</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="rate" autocomplete="off" placeholder="费率" class="layui-input" lay-verify="terminalNumber">
-                            </div>
-                        </div> -->
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">结算类型</label>
-                            <div class="layui-input-inline">
-                                <input type="radio"  name="rateType" value="D1" title="D1" checked="">
-                                <input type="radio"  name="rateType" value="D0" title="D0">
-                                <input type="radio" name="rateType" value="T1" title="T1" >
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">类型</label>
-                            <div class="layui-input-inline">
-                                <!-- <input type="radio" name="subsidy" value="1" title="普通商户" checked="">
-                          <input type="radio" name="subsidy" value="0" title="补贴商户A"> -->
-                                <select name="subsidyType" id="merchantEnble">
-                                    <option value="0">补贴商户A</option>
-                                    <option value="1">普通商户</option>
-                                    <option value="2">补贴商户B</option>
-                                    <option value="3">餐饮补贴A</option>
-                                </select>
-                            </div>
+                     <div class="layui-form-item xdl">
+                        <label class="layui-form-label">终端号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="terminalNumber" autocomplete="off" placeholder="终端号" class="layui-input" lay-verify="terminalNumber">
                         </div>
                     </div>
+                    <div class="layui-form-item xdl">
+                        <label class="layui-form-label">门店号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="stoeId" autocomplete="off" placeholder="门店号" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div>
+                    <!-- <div class="layui-form-item">
+                        <label class="layui-form-label">费率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="rate" autocomplete="off" placeholder="费率" class="layui-input" lay-verify="terminalNumber">
+                        </div>
+                    </div> -->
+                   
+                    
+                   
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">
+                            <input class="layui-checkbox" type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关" checked>
+                        </div>
+                    </div>
+                </div>
                     <div id="ali" style="display:none">
                         <div class="layui-form-item">
                             <label class="layui-form-label">请扫码获取授权</label>
@@ -97,15 +155,15 @@
                         </div>
                     </div>
                     <!-- <div class="layui-form-item">
-						<label class="layui-form-label">成本费率模式</label>
-						<div class="layui-input-inline widthauto">
-							<input type="radio" name="Costratemodel" value="0" title="继承通道" checked="">
-							<input type="radio" name="Costratemodel" value="1" title="自定义">
-						</div>
-						<div class="layui-input-inline">
-							<input type="text" name="disCount" autocomplete="off" placeholder="自定义成本费率" class="layui-input">
-						</div>
-					</div> -->
+                        <label class="layui-form-label">成本费率模式</label>
+                        <div class="layui-input-inline widthauto">
+                            <input type="radio" name="Costratemodel" value="0" title="继承通道" checked="">
+                            <input type="radio" name="Costratemodel" value="1" title="自定义">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="disCount" autocomplete="off" placeholder="自定义成本费率" class="layui-input">
+                        </div>
+                    </div> -->
                     <div class="layui-form-item layui-layout-admin">
                         <div class="layui-input-block">
                             <div class="layui-footer" style="left: 0;text-align: center;">
@@ -130,7 +188,13 @@
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
     });
-
+    function isbaifenbi(data){
+        if(data.indexOf('%') >= 0 ){
+                return (parseFloat(data.replace('%','')) /10000 *100 ).toFixed(4)
+            }else{
+                return  (parseFloat(data) /10000 *100 ).toFixed(4)
+            }
+    }
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     var index = parent.layer.getFrameIndex(window.name);
     $('#quxiao').click(function() {
@@ -159,8 +223,8 @@
             CmsConfig.addressUrl.Mechanism.getMerchantNumberlist, {
                 "merchantName": $('#search').val(),
                 "institutionNumber": userNumber,
-                "page":1,
-                "limit":100
+                "page": 1,
+                "limit": 100
             },
             function(data) {
                 console.log(this.value)
@@ -172,7 +236,7 @@
                     document.getElementById('searchBox').innerHTML = str
                     // layer.msg('保存成功')
                     // setTimeout(function(){
-                    // 	x_admin_close()
+                    //  x_admin_close()
                     // },500);
 
                 } else {
@@ -193,10 +257,10 @@
         var jgData = data
         var serverUrl = window.parent.serverUrl
 
-        if(jgData.payment == 4){
+        if (jgData.payment == 4) {
             $('.xdl').show()
         }
-         if(jgData.payment == 5){
+        if (jgData.payment == 5) {
             $('#sxf').show()
         }
         if (jgData.payment == 0) {
@@ -232,8 +296,10 @@
             $('#ali').hide()
             $('#noali').show()
         }
+
+            
         // if(jgData.payment == 2){
-        // 				$('#disanfang').show()
+        //              $('#disanfang').show()
         // }
         layui.use(['laydate', 'table', 'upload', 'form'], function() {
             var $ = layui.jquery,
@@ -245,6 +311,26 @@
                 element = layui.element,
                 layer = layui.layer;
             var tableSelect = layui.tableSelect;
+            if(jgData.payment != 4){
+                $('.xdl').hide()
+            }
+            
+            if(jgData.payment == 5){
+                $('#sxf').show()
+            }
+            if(jgData.payment == 1 || jgData.payment == 2){
+                $('#jiesuan').html('<input type="radio" name="rateType" value="T1" title="T1" checked="">')
+               
+            }else{
+                $('#jiesuan').html('<input type="radio" name="rateType" value="T1" title="T1" checked=""><input type="radio" name="rateType" value="D1" title="D1"><input type="radio" name="rateType" value="D0" title="D0">')
+                 $('.isAli').show()
+                 $('.isWechat').show()
+                 $('.isJian').show()
+            }
+            if(jgData.payment == 1){
+                $('.isWechat').show()
+            }
+             form.render()
             $("#search").bind('input propertychange', function() {
                 console.log(this.value)
                 $('#search').removeAttr('shopNumber')
@@ -254,8 +340,8 @@
                     CmsConfig.addressUrl.Mechanism.getMerchantNumberlist, {
                         "merchantName": this.value,
                         "institutionNumber": userNumber,
-                        "page":1,
-                        "limit":100
+                        "page": 1,
+                        "limit": 100
                     },
                     function(data) {
                         console.log(this.value)
@@ -267,7 +353,7 @@
                             document.getElementById('searchBox').innerHTML = str
                             // layer.msg('保存成功')
                             // setTimeout(function(){
-                            // 	x_admin_close()
+                            //  x_admin_close()
                             // },500);
 
                         } else {
@@ -281,24 +367,26 @@
                 )
             })
             //表单初始赋值
-            var shopName= jgData.merchantName
+            var shopName = jgData.merchantName
             $('#search').attr('shopNumber', jgData.merchantNumber)
             form.val('cardAdd', {
                 "merchantNumber": shopName,
                 "newSubaccountNumber": jgData.subaccountNumber,
                 "subaccountKey": jgData.subaccountKey,
-                "wechatAppid": jgData.weChatAPPID,
-                "smallroutineAppid": jgData.smallRoutineAPPID,
-                "appsecret": jgData.aPPSECRET,
-                "terminalNumber": jgData.terminalNumber,
-                "paymentDirectory": jgData.paymentDirectory,
-                "suggestedAPPID": jgData.suggestedAPPID,
-                "aliPayPublicKey": jgData.aliPayPublicKey,
-                "aliPublicKey": jgData.aliPublicKey,
-                "aliPrivateKey": jgData.aliPrivateKey,
-                "subsidyType":jgData.subsidy,
-                "rateType":jgData.rateType,
-                "sxfTask":jgData.sxfTask
+                "merchantType":jgData.merchantType,
+                "acntType": jgData.acntType,
+                "rateType": jgData.rateType,
+                "alipayRate": (jgData.alipayRate * 100).toFixed(2),
+                "weChatRate": (jgData.weChatRate * 100).toFixed(2),
+                "jingdongRate": (jgData.jingdongRate * 100).toFixed(2),
+                "isOpenYunPay": jgData.isOpenYunPay,
+                "unionPayRate": (jgData.unionPayRate * 100).toFixed(2),
+                "unionPayRate2": (jgData.unionPayRate2 * 100).toFixed(2),
+                "subsidyType": jgData.subsidy,
+                "rateType": jgData.rateType,
+                "sxfTask": jgData.sxfTask,
+                "terminalNumber":jgData.terminalNumber,
+                "stoeId":jgData.stoeId,
             })
 
             form.on('switch(riskMode)', function(data) { //消费优惠开关
@@ -310,7 +398,15 @@
                 // layer.tips('充值优惠：' + (this.checked ? '已开启' : '已关闭'), data.othis)
                 disable = this.checked
             });
+            form.on('radio(isYun)', function(data) { //消费优惠开关
+            // layer.tips('继承状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            if(this.value == 0){
+                $('.isYun').show()
+            }else{
+                $('.isYun').hide()
+            }
 
+        });
 
             /*---------- 自定义验证规则 ----------*/
             /*---------- 自定义验证规则 ----------*/
@@ -327,29 +423,29 @@
                     }
                 },
                 // subaccountKey: function(value) {
-                // 	if(value.length == "") {
-                // 		return '商户秘钥不能为空！';
-                // 	}
+                //  if(value.length == "") {
+                //      return '商户秘钥不能为空！';
+                //  }
                 // },
                 // wechatAppid: function(value) {
-                // 	if(value.length == "") {
-                // 		return '微信公众号appID不能为空！';
-                // 	}
+                //  if(value.length == "") {
+                //      return '微信公众号appID不能为空！';
+                //  }
                 // },
                 // smallroutineAppid: function(value) {
-                // 	if(value.length == "") {
-                // 		return '小程序appID不能为空！';
-                // 	}
+                //  if(value.length == "") {
+                //      return '小程序appID不能为空！';
+                //  }
                 // },
                 // appsecret: function(value) {
-                // 	if(value.length == "") {
-                // 		return 'appsecret不能为空！';
-                // 	}
+                //  if(value.length == "") {
+                //      return 'appsecret不能为空！';
+                //  }
                 // },
                 // terminalNumber: function(value) {
-                // 	if(value.length == "") {
-                // 		return '终端号不能为空！';
-                // 	}
+                //  if(value.length == "") {
+                //      return '终端号不能为空！';
+                //  }
                 // },
             });
 
@@ -365,10 +461,19 @@
                 tjData.deletionFlag = 0
                 tjData.channelType = jgData.payment
                 console.log(tjData)
-                var index = layer.load(2, {shade: [0.4, '#393D49']})
+                tjData.alipayRate = isbaifenbi(tjData.alipayRate)
+                tjData.disable = tjData.disable == 'on'?'0':'1'
+            tjData.weChatRate = isbaifenbi(tjData.weChatRate)
+            tjData.jingdongRate = isbaifenbi(tjData.jingdongRate)
+            if(tjData.isOpenYunPay == 0){
+                 tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
+                tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
+            }
+            tjData.subsidyType = 1
+                var index = layer.load(2, { shade: [0.4, '#393D49'] })
                 CmsUtility.postAjaxCall(
                     //系统设置
-                    CmsConfig.addressUrl.Mechanism.updateInstitutionSub,
+                    'channelSub/updateChannelSubMer',
                     tjData,
                     function(data) {
                         if (data.code == 1000) {

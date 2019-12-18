@@ -26,7 +26,7 @@
 			                  	姓名
 			                </label>
 							<div class="layui-input-inline">
-								<input  type="text" id="saleName" name="saleName" required="" lay-verify="required" autocomplete="off" class="layui-input">
+								<input  type="text" id="saleName" name="saleName" required="" lay-verify="title" autocomplete="off" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -38,15 +38,28 @@
 							</div>
 						</div>
 						<div class="layui-form-item">
-							<label class="layui-form-label">费率</label>
+							<label class="layui-form-label">支付宝费率(%)</label>
 							<div class="layui-input-inline">
-								<select name="proportion" id="rate" lay-verify="title">
-									<option value="">费率</option>
-									<option value="0.006">0.6%</option>
-									<option value="0.0038">0.38%</option>
-								</select>
+								<input type="text" id="aliRate" name="aliRate" required="" lay-verify="aliRate" autocomplete="off" class="layui-input">
 							</div>
-							<div class="layui-btn" id="addRate">添加费率</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">微信费率(%)</label>
+							<div class="layui-input-inline">
+								<input type="text" id="weChatRate" name="weChatRate" required="" lay-verify="weChatRate" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">云闪付费率1(%)</label>
+							<div class="layui-input-inline">
+								<input type="text" id="unionPayRate" name="unionPayRate" required="" lay-verify="unionPayRate" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">云闪付费率2(%)</label>
+							<div class="layui-input-inline">
+								<input type="text" id="unionPayRatetwo" name="unionPayRatetwo" required="" lay-verify="unionPayRatetwo" autocomplete="off" class="layui-input">
+							</div>
 						</div>
 					</div>
 					<div class="layui-form-item layui-layout-admin">
@@ -98,7 +111,45 @@
 						"saleName": jgData.saleName,
 						"registerCell": jgData.registerCell,
 						"proportion": jgData.proportion.toFixed(5),
+						"aliRate":(jgData.aliRate*100).toFixed(2),
+						"weChatRate":(jgData.weChatRate*100).toFixed(2),
+						"unionPayRate":(jgData.unionPayRate*100).toFixed(2),
+						"unionPayRatetwo":(jgData.unionPayRatetwo*100).toFixed(2),
+
 					})
+				form.verify({
+					title: function(value) {
+						if(!value.length) {
+							return '不能为空！';
+						}
+					},
+					pass: [/^[0-9A-Za-z]{6,12}$/, '密码必须6到12位且不能有空格或特殊字符'],
+					repass: function(value) {
+						if($('#passWord').val() != $('#repassWord').val()) {
+							return '两次密码不一致';
+						}
+					},
+					aliRate:function(value){
+						if(!value.length){
+							return '支付宝费率不能为空'
+						}
+					},
+					weChatRate:function(value){
+						if(!value.length){
+							return '微信费率不能为空'
+						}
+					},
+					unionPayRate:function(value){
+						if(!value.length){
+							return '云闪付费率1不能为空'
+						}
+					},
+					unionPayRatetwo:function(value){
+						if(!value.length){
+							return '云闪付费率2不能为空'
+						}
+					},
+				});
 				$('#addRate').click(function(){
 					layer.prompt({
 			          formType: 0,
@@ -126,8 +177,13 @@
 					var addData = new Object()
 					
 					addData = data.field
+					console.log(data)
 					addData.saleNumber = jgData.saleNumber
 					addData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+					addData.aliRate = (addData.aliRate / 10000 * 100).toFixed(4)            
+		            addData.weChatRate = (addData.weChatRate / 10000 * 100).toFixed(4)
+		            addData.unionPayRate = (addData.unionPayRate / 10000 * 100).toFixed(4)
+		            addData.unionPayRatetwo = (addData.unionPayRatetwo / 10000 * 100).toFixed(4)
 					console.log(addData)
 					CmsUtility.postAjaxCall(
                         //系统设置

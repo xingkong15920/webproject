@@ -23,7 +23,17 @@
 					<div class="grid-demo">
 						<!--基本资料-->
 						<blockquote class="layui-elem-quote"><i class="iconfont icon-wode"></i>账号添加</blockquote>
-
+						<div class="layui-form-item">
+                    <div class="layui-input-item">
+                        <span style="color:red;display:block;margin-left:30px">*费率单位为百分比，示例：0.38%</span>
+                    </div>
+                    <div class="layui-input-item">
+                        <span style="color:red;display:block;margin-left:30px">*云闪付费率1为单笔1000以内包括1000所设置</span>
+                    </div>
+                    <div class="layui-input-item">
+                        <span style="color:red;display:block;margin-left:30px">*云闪付费率2为单笔1000以上所设置</span>
+                    </div>
+                </div>
 						<div class="layui-form-item">
 							<label for="name" class="layui-form-label">姓名</label>
 							<div class="layui-input-inline">
@@ -49,15 +59,28 @@
 							</div>
 						</div>
 						<div class="layui-form-item">
-							<label class="layui-form-label">费率</label>
+							<label class="layui-form-label">支付宝费率(%)</label>
 							<div class="layui-input-inline">
-								<select name="proportion" id="rate" lay-verify="title" lay-search="">
-									
-									<option value="0.006">0.6%</option>
-									<option value="0.0038">0.38%</option>
-								</select>
+								<input type="text" id="aliRate" name="aliRate" required="" lay-verify="aliRate" autocomplete="off" class="layui-input">
 							</div>
-							<div class="layui-btn" id="addRate">添加费率</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">微信费率(%)</label>
+							<div class="layui-input-inline">
+								<input type="text" id="weChatRate" name="weChatRate" required="" lay-verify="weChatRate" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">云闪付费率1(%)</label>
+							<div class="layui-input-inline">
+								<input type="text" id="unionPayRate" name="unionPayRate" required="" lay-verify="unionPayRate" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">云闪付费率2(%)</label>
+							<div class="layui-input-inline">
+								<input type="text" id="unionPayRatetwo" name="unionPayRatetwo" required="" lay-verify="unionPayRatetwo" autocomplete="off" class="layui-input">
+							</div>
 						</div>
 						<!--<div class="layui-form-item">
 							<label for="password" class="layui-form-label">
@@ -118,7 +141,27 @@
 						if($('#passWord').val() != $('#repassWord').val()) {
 							return '两次密码不一致';
 						}
-					}
+					},
+					aliRate:function(value){
+						if(!value.length){
+							return '支付宝费率不能为空'
+						}
+					},
+					weChatRate:function(value){
+						if(!value.length){
+							return '微信费率不能为空'
+						}这次
+					},
+					unionPayRate:function(value){
+						if(!value.length){
+							return '云闪付费率1不能为空'
+						}
+					},
+					unionPayRatetwo:function(value){
+						if(!value.length){
+							return '云闪付费率2不能为空'
+						}
+					},
 				});
 				$('#addRate').click(function(){
 					layer.prompt({
@@ -148,13 +191,19 @@
 					var addData = data.field
 					addData.agentNumber = userNumber
 					addData.institutionNumber = insNumber
+					addData.aliRate = (addData.aliRate / 10000 * 100).toFixed(4)            
+		            addData.weChatRate = (addData.weChatRate / 10000 * 100).toFixed(4)
+		            addData.unionPayRate = (addData.unionPayRate / 10000 * 100).toFixed(4)
+		            addData.unionPayRatetwo = (addData.unionPayRatetwo / 10000 * 100).toFixed(4)
 					console.log(addData)
 					// 发送请求
+					var index = layer.load(2, {shade: [0.4, '#393D49']})
 					CmsUtility.postAjaxCall(
 						//系统设置
 						CmsConfig.addressUrl.Agent.saleInsert,
 						addData,
 						function(data){
+							layer.closeAll()
 							if(data.code == 1000){
 								x_admin_close()
 								parent.layer.msg('添加成功')

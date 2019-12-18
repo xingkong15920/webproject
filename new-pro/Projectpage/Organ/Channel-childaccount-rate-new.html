@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    #codeInfo {
+        line-height: 38px;
+        font-size: 24px;
+        text-align: center;
+        letter-spacing: 5px
+    }
+
+    .layui-textarea {
+        height: min-height:80px;
+    }
+
+    .xdl,
+    .yrm,
+    .fuyou,
+    .guanfang {
+        display: none;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 70%;
+    }
+
+    .layui-input-inline {
+        width: 480px !important;
+    }
+
+    .layui-form-label {
+        width: 150px;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form" lay-filter="create">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 15%;"></label>
+                    <div class="layui-input-item">
+                        <span style="color:red;display:block">*所有费率所用单位为百分制</span>
+                    </div>
+                    <div class="layui-input-item">
+                        <label class="layui-form-label" style="width: 15%;"></label>
+                        <span style="color:red;display:block;">*示例：0.35%</span>
+                    </div>
+                    <label class="layui-form-label" style="width: 15%;"></label>
+                    <div class="layui-input-item">
+                        <span style="color:red;display:block">*云闪付费率1为单笔1000以内包括1000所设置</span>
+                    </div>
+                    <label class="layui-form-label" style="width: 15%;"></label>
+                    <div class="layui-input-item">
+                        <span style="color:red;display:block">*云闪付费率2为单笔1000以上所设置</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商户名称</label>
+                    <div class="layui-input-inline">
+                        <span class="layui-input" id="merchantName" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商户编号</label>
+                    <div class="layui-input-inline">
+                        <span class="layui-input" id="merchantNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商户子账号</label>
+                    <div class="layui-input-inline">
+                        <span class="layui-input" id="subNumber" style="height: 38px;line-height: 38px;border-width: 1px;border-style: solid;background-color: #fff;border-radius: 2px;"></span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">结算类型</label>
+                    <div class="layui-input-inline" id="jiesuan">
+                    </div>
+                </div>
+                <div class="layui-form-item isAli" style="display:none">
+                    <label class="layui-form-label">支付宝费率(%)</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="alipayRate" autocomplete="off" placeholder="支付宝费率" class="layui-input" lay-verify="alipayRate">
+                    </div>
+                </div>
+                <div class="layui-form-item isWechat" style="display:none">
+                    <label class="layui-form-label">微信费率(%)</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="weChatRate" autocomplete="off" placeholder="微信费率" class="layui-input" lay-verify="weChatRate">
+                    </div>
+                </div>
+                <div class="layui-form-item isJian" style="display:none">
+                    <label class="layui-form-label">京东支付费率(%)</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="jingdongRate" autocomplete="off" placeholder="京东支付费率" class="layui-input" lay-verify="jingdongRate">
+                    </div>
+                </div>
+                <div class="layui-form-item isYun" style="display:none">
+                    <label class="layui-form-label">云闪付支付费率1(%)</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="unionPayRate" autocomplete="off" placeholder="单笔1000以内包括1000" class="layui-input" lay-verify="unionPayRate">
+                    </div>
+                </div>
+                <div class="layui-form-item isYun" style="display:none">
+                    <label class="layui-form-label">云闪付支付费率2(%)</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="unionPayRate2" autocomplete="off" placeholder="单笔1000以上" class="layui-input" lay-verify="unionPayRate2">
+                    </div>
+                </div>
+                <div class="layui-form-item" id="alibaba" style="display:none">
+                    <label class="layui-form-label">强制更新</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">
+                            <input class="layui-checkbox" type="checkbox" name="disable" lay-skin="switch" lay-filter="disable" lay-text="开|关">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 15%;"></label>
+                    <div class="layui-form-mid x-red">
+                        <button class="layui-btn" lay-submit=""  lay-filter="add" id="sub">提交</button>
+                    </div>
+                </div>
+        </div>
+        </form>
+    </div>
+    <div style="position:fixed;left:0;bottom:0;width:100px;height:50px;border:1px solid block" onclick="hideModal()">
+        </dir>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var type111 = 0
+    var code1 = ''
+    var jgData
+    var nnum = 0
+    var timer;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var now = '2'
+
+    function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+            if (temp.indexOf(array[i]) == -1) {
+                temp.push(array[i]);
+            }
+        }
+        return temp;
+    }
+    var arrr = new Array()
+    function isbaifenbi(data){
+        if(data.indexOf('%') >= 0 ){
+                return (parseFloat(data.replace('%','')) /10000 *100 ).toFixed(4)
+            }else{
+                return  (parseFloat(data) /10000 *100 ).toFixed(4)
+            }
+    }
+    function hideModal() {
+        nnum++
+        console.log(jgData)
+        if (nnum == 5) {
+            layer.msg('开启隐藏模式')
+            setTimeout(function() {
+                layer.open({
+                    type: 2,
+                    title: '欢迎使用隐藏模式',
+                    shade: 0.5,
+                    area: ['80%', '45%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['hide-rate.html?institutionNumber=' + userNumber + '&subaccountNumber=' + jgData.subaccountNumber],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        // data.channel = channel
+                        iframe.subPage('data')
+                    }
+                });
+            }, 500)
+
+        }
+        setTimeout(function() {
+            nnum = 0
+        }, 1000)
+    }
+
+    function subPage(data, data1) {
+        // $('.zhifubao').hide()
+        // $('.weixin').hide()
+        // $('.jingdong').hide()
+        // $('.yinlian').hide()
+        jgData = data
+        console.log(jgData)
+        $("#merchantName").html(jgData.merchantName)
+        $("#merchantNumber").html(jgData.merchantNumber)
+        $("#subNumber").html(jgData.subaccountNumber)
+
+        if (jgData.paymentChannelType == 0) {
+            $('#alibaba').show()
+        } else {
+            $('#alibaba').hide()
+        }
+
+        var serverUrl = 'http://192.168.1.190:5002/'
+
+        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+            layui.$.support.cors = true; //允许ajax跨域
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                laytpl = layui.laytpl;
+
+            if (jgData.paymentChannelType == 0) {
+                $('#noali').hide()
+               
+            } else {
+                $('#noali').show()
+                
+            }
+            if(jgData.paymentChannelType != 4){
+                $('.xdl').hide()
+            }
+            
+            if(jgData.paymentChannelType == 5){
+                $('#sxf').show()
+            }
+            if(jgData.paymentChannelType == 0 || jgData.paymentChannelType == 1){
+                $('#jiesuan').html('<input type="radio" name="rateType" value="T1" title="T1" checked="">')
+               
+            }else{
+                $('#jiesuan').html('<input type="radio" name="rateType" value="T1" title="T1" checked=""><input type="radio" name="rateType" value="D1" title="D1"><input type="radio" name="rateType" value="D0" title="D0">')
+                 $('.isAli').show()
+                 $('.isWechat').show()
+                 $('.isJian').show()
+            }
+            if(jgData.paymentChannelType == 1){
+                $('.isWechat').show()
+            }
+             if(jgData.paymentChannelType == 0){
+                console.log('123')
+                $('.isAli').show()
+            }
+            form.render()
+            console.log(jgData)
+            //表单初始赋值
+            // $('#sub').click(function(){
+            //  console.log(code1)
+            // })
+            form.val('create', {
+                "rateType":jgData.rateType,
+                "alipayRate": (jgData.alipayRate * 100).toFixed(2),
+                "weChatRate": (jgData.weChatRate * 100).toFixed(2),
+                "jingdongRate": (jgData.jingdongRate * 100).toFixed(2),
+                "isOpenYunPay": jgData.isOpenYunPay,
+                "unionPayRate": (jgData.unionPayRate * 100).toFixed(2),
+                "unionPayRate2": (jgData.unionPayRate2 * 100).toFixed(2),
+            })
+            form.verify({
+                // number:function(value){
+                //     if(value >5000){
+                //         return "一次生成最多5000条"
+                //     }
+                // },
+                // subaccountNumber: function(value) {
+                //     console.log(value)
+                //     if(jgData.paymentChannelType != 0){
+                //         if (value == '') {
+                //             return '不能为空';
+                //         }
+                //     }
+
+                // },
+                // subaccountNumber1: function(value) {
+                //     console.log(value)
+                //     if(jgData.paymentChannelType !=3){
+                //         if (value == '') {
+                //         return '不能为空';
+                //     }
+                //     }
+
+                // },
+            });
+            form.on('switch(disable)', function(data) { //充值优惠开关
+                // layer.tips('充值优惠：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+                now = this.checked ? '1' : '2'
+            });
+
+            // $('#sub').click(function() {
+
+            //     var tjData = new Object();
+            //     tjData.institutionNumber = userNumber;
+
+            //     tjData.number = $('#number').val()
+            //     CmsUtility.postAjaxCall(
+            //         //系统设置
+            //         CmsConfig.addressUrl.Mechanism.insertChannelRate,
+            //         tjData,
+            //         function(data) {
+            //             if (data.code == 1000) {
+            //                 // type111 = 2
+
+
+            //                 x_admin_close()
+            //                 parent.layer.msg('生成成功')
+            //                 parent.layui.table.reload('vip_cardList')
+
+
+            //             } else {
+            //                 layer.msg(data.msg)
+
+            //             }
+            //         },
+            //         function(data) {
+            //             console.log('222')
+            //         }
+            //     )
+            //     return false
+            // })
+
+            // //监听提交
+            // $('#sub').click(function(){
+            //     var tjData = new Object();
+            //     console.log($('#zhifubao').attr('data-num'))
+            //     tjData.institutionNumber = userNumber;
+            //     tjData.paymentChannel = jgData.paymentChannel
+            //     tjData.subaccountNumber = jgData.subaccountNumber
+            //     tjData.paymentType = jgData.paymentChannelType
+            //     tjData.weChatRate = $('#weixin').val()
+            //     tjData.alipayRate = $('#zhifubao').val()
+            //     tjData.jingdongRate = $('#jingdong').val()
+            //     tjData.unionPayRate = $('#yinlian').val()
+            //     tjData.weChatCode  = $('#weixin').attr('data-num')
+            //     tjData.alipayCode = $('#zhifubao').attr('data-num')
+            //     tjData.jingdongCode = $('#jingdong').attr('data-num')
+            //     tjData.unionPayCode = $('#yinlian').attr('data-num')
+            //     CmsUtility.postAjaxCall(
+            //         //系统设置
+            //         'submit/updateInfoRate',
+            //         tjData,
+            //         function(data) {
+            //             if (data.code == 1000) {
+            //                 // type111 = 2
+
+
+            //                 // x_admin_close()
+            //                 // parent.layer.msg('生成成功')
+            //                 // parent.layui.table.reload('vip_cardList')
+
+
+            //             } else {
+            //                 layer.msg(data.msg)
+
+            //             }
+            //         },
+            //         function(data) {
+            //             console.log('222')
+            //         }
+            //     )
+
+            // })
+            form.on('submit(add)', function(data) {
+                console.log(data)
+                var tjData = data.field
+                console.log($('#zhifubao').attr('data-num'))
+                tjData.institutionNumber = userNumber;
+                tjData.merchantNumber = jgData.merchantNumber
+                tjData.paymentChannel = jgData.paymentChannel
+                tjData.subaccountNumber = jgData.subaccountNumber
+                tjData.paymentType = jgData.paymentChannelType
+                tjData.merchantType = jgData.merchantType
+                tjData.acntType = jgData.acntType
+                tjData.isOpenYunPay = jgData.isOpenYunPay
+                tjData.alipayRate = isbaifenbi(tjData.alipayRate)
+
+                tjData.weChatRate = isbaifenbi(tjData.weChatRate)
+                tjData.jingdongRate = isbaifenbi(tjData.jingdongRate)
+                if(tjData.isOpenYunPay == 0){
+                     tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
+                tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
+                }
+                tjData.type = now
+                console.log(tjData)
+                var index = layer.load(2, {shade: [0.4, '#393D49']})
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'commonSub/updateInfoRate',
+                    // 'http://192.168.1.112:5008/m-submit/rate/updateInfoRate',
+                    tjData,
+                    function(data) {
+                        layer.closeAll()
+                        if (data.code == 1000) {
+                            // type111 = 2
+
+                            parent.layer.msg(data.msg)
+                            x_admin_close()
+
+                            layer.msg('修改成功')
+                            parent.layui.table.reload('vip_cardList')
+
+
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                return false
+            })
+
+
+        });
+    }
+    </script>
+</body>
+
+</html>
