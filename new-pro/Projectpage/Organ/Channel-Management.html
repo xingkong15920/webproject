@@ -26,6 +26,10 @@
 			.hide {
 				display: none;
 			}
+
+			.x-body {
+				height: calc(100% - 40px);
+			}
 		</style>
 	</head>
 
@@ -89,7 +93,6 @@
 			<a class="layui-btn layui-btn-xs" id="riskctrl" lay-event="riskctrl">风控</a>
 			<a class="layui-btn layui-btn-xs" id="productcontrol" lay-event="productcontrol">产品</a>
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
-
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
 		<script src="../../common/config-organ.js"></script>
@@ -171,12 +174,11 @@
 							userNumber,
 
 						elem: '#members',
-						height: 'full-210',
+						height: 'full-140',
 						id: 'vip_cardList',
 						response: {
 							//res 即为原始返回的数据
 							"statusCode": "1000", //解析接口状态
-
 						},
 						parseData: function(res) { //res 即为原始返回的数据
 							if (res.data == null) {
@@ -464,21 +466,25 @@
 							}
 						});
 					} else if (obj.event === 'productcontrol') { //产品管理
-						layer.open({
-							type: 2,
-							title: '产品管理' + '-' + data.paymentchannelname,
-							shade: 0.5,
-							area: ['70%', '90%'],
-							maxmin: false,
-							resize: false,
-							content: ['Channel-productcontrol.html'],
-							success: function(layero, index) {
-								// 获取子页面的iframe
-								var iframe = window['layui-layer-iframe' + index];
-								// 向子页面的全局函数child传参
-								iframe.subPage(data, userNumber)
-							}
-						});
+						if (data.disable == 1) {
+							layer.msg('通道已禁用！')
+						} else {
+							layer.open({
+								type: 2,
+								title: '产品管理' + '-' + data.paymentchannelname,
+								shade: 0.5,
+								area: ['70%', '90%'],
+								maxmin: false,
+								resize: false,
+								content: ['Channel-productcontrol.html'],
+								success: function(layero, index) {
+									// 获取子页面的iframe
+									var iframe = window['layui-layer-iframe' + index];
+									// 向子页面的全局函数child传参
+									iframe.subPage(data, userNumber)
+								}
+							});
+						}
 					} else if (obj.event === 'edit') { //编辑
 						var editUrl
 						switch (data.paymentChannelType) {
@@ -536,6 +542,7 @@
 							addData.deletionFlag = '1'
 							addData.paymentType = data.paymentChannelType
 							console.log(addData)
+							// return
 							// 发送请求
 							CmsUtility.postAjaxCall(
 								//系统设置
