@@ -22,10 +22,12 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
-			.layui-table-cell{
+
+			.layui-table-cell {
 				height: auto;
 			}
-			.layui-input-inline{
+
+			.layui-input-inline {
 				margin-right: 20px;
 			}
 		</style>
@@ -34,11 +36,12 @@
 	<body id="iosiframe">
 		<div class="x-nav">
 			<span class="layui-breadcrumb">
-		        <a href="">首页</a>
-		        <a href="">订单管理</a>
-		        <a><cite>异常订单</cite></a>
-		      </span>
-			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+				<a href="">首页</a>
+				<a href="">订单管理</a>
+				<a><cite>异常订单</cite></a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+			 title="刷新">
 				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
 		</div>
 		<div class="x-body">
@@ -62,8 +65,8 @@
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="endTime" placeholder="完成时间" autocomplete="off" class="layui-input">
 					</div>
-					
-					
+
+
 				</div>
 				<div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
 					<div class="layui-input-inline">
@@ -71,6 +74,7 @@
 							<option value="">支付方式</option>
 							<option value="Alipay_Pay">支付宝</option>
 							<option value="WeChat_Pay">微信</option>
+							<option value="Yun_Pay">云闪付</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -87,7 +91,7 @@
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="subaccountNumber" placeholder="通道子商户" autocomplete="off" class="layui-input">
 					</div>
-					
+
 					<div class="layui-input-inline coupons_screen">
 						<button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
 					</div>
@@ -103,31 +107,31 @@
 		<script src="../../common/utility.js"></script>
 		<script>
 			//<a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
-			function fun_date(aa){
-		        var date1 = new Date(),
-		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
-		        var date2 = new Date(date1);
-		        date2.setDate(date1.getDate()+aa);
-		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
-		        return time2
-		    }
-		    console.log(fun_date(-6));//7天前
-		    
-			function changeRes(data){
-				if(data == null){
+			function fun_date(aa) {
+				var date1 = new Date(),
+					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+				var date2 = new Date(date1);
+				date2.setDate(date1.getDate() + aa);
+				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+				return time2
+			}
+			console.log(fun_date(-6)); //7天前
+
+			function changeRes(data) {
+				if (data == null) {
 					return
 				}
-				for(var i = 0; i < data.length;i++){
-					if(data[i].orderState == 1){
+				for (var i = 0; i < data.length; i++) {
+					if (data[i].orderState == 1) {
 						data[i].orderState1 = "交易成功"
 					}
-					if(data[i].orderState == 2){
+					if (data[i].orderState == 2) {
 						data[i].orderState1 = "已结算"
 					}
-					if(data[i].orderState == -1){
+					if (data[i].orderState == -1) {
 						data[i].orderState1 = "已退款"
 					}
-					
+
 				}
 				return data
 			}
@@ -137,67 +141,70 @@
 				var laydate = layui.laydate,
 					table = layui.table,
 					form = layui.form;
-					
-					// CmsUtility.postAjaxCall(
-					// 			//系统设置
-					// 	CmsConfig.addressUrl.Mechanism.getPassageList,
-					// 	{
-					// 		"institutionNumber":userNumber
-					// 	},
-					// 	function(data){
-					// 		if(data.data == null){
-					// 			return
-					// 		}
-					// 		var str = '<option value="">支付通道</option>'
-					// 		for(var i =0 ; i<data.data.length;i++){
-					// 			str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
-					// 		}
-					// 		console.log(str)
-					// 		$('#transactionPassageway').html(str)
-					// 		form.render()
-					// 	},
-					// 	function(data){
-					// 		console.log('222')
-					// 	}
-					// )
-				function tableRender(){
-					var index = layer.load(2, {shade: [0.4, '#393D49']})
+
+				// CmsUtility.postAjaxCall(
+				// 			//系统设置
+				// 	CmsConfig.addressUrl.Mechanism.getPassageList,
+				// 	{
+				// 		"institutionNumber":userNumber
+				// 	},
+				// 	function(data){
+				// 		if(data.data == null){
+				// 			return
+				// 		}
+				// 		var str = '<option value="">支付通道</option>'
+				// 		for(var i =0 ; i<data.data.length;i++){
+				// 			str += '<option value="'+ data.data[i].paymentChannel+'">'+data.data[i].paymentName+'</option>'
+				// 		}
+				// 		console.log(str)
+				// 		$('#transactionPassageway').html(str)
+				// 		form.render()
+				// 	},
+				// 	function(data){
+				// 		console.log('222')
+				// 	}
+				// )
+				function tableRender() {
+					var index = layer.load(2, {
+						shade: [0.4, '#393D49']
+					})
 					//方法级渲染  
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						//url: './json/vip-card.json',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList + '?institutionNumber=' + userNumber ,
+						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Mechanism.getTransactionReceiptList +
+							'?institutionNumber=' + userNumber,
 						// + userNumber ,
-						where:{
-							"merchantName":$('#merchantName').val().trim(),
-							"shopName":$('#shopName').val().trim(),
-							"startTime":$('#startTime').val().trim(),
-							"endTime":$('#endTime').val().trim(),
-							"batch":$('#batch').val().trim(),
-							"orderNumber":$('#orderNumber').val().trim(),
-							"oneTransactionType":$('#oneTransactionType').val().trim(),
-							"transactionPassageway":$('#transactionPassageway').val(),
-							"subaccountNumber":$('#subaccountNumber').val(),
+						where: {
+							"merchantName": $('#merchantName').val().trim(),
+							"shopName": $('#shopName').val().trim(),
+							"startTime": $('#startTime').val().trim(),
+							"endTime": $('#endTime').val().trim(),
+							"batch": $('#batch').val().trim(),
+							"orderNumber": $('#orderNumber').val().trim(),
+							"oneTransactionType": $('#oneTransactionType').val().trim(),
+							"transactionPassageway": $('#transactionPassageway').val(),
+							"subaccountNumber": $('#subaccountNumber').val(),
 
-							"orderState":3,
+							"orderState": 3,
 						},
 						elem: '#members',
 						height: 'full-210',
 						id: 'vip_cardList',
-						response: { 
-						//res 即为原始返回的数据
-								"statusCode":"1000", //解析接口状态
-								
-						},	
-						parseData:function(res){
-							if(res.code != 1000 || res.data == null){
+						response: {
+							//res 即为原始返回的数据
+							"statusCode": "1000", //解析接口状态
+
+						},
+						parseData: function(res) {
+							if (res.code != 1000 || res.data == null) {
 								return
 							}
-							return{
-								"count":res.data.count,
-								"code":res.code,
-								"msg":res.msg,
-							 	"data": changeRes(res.data.transactionReceiptResultBeanList)
+							return {
+								"count": res.data.count,
+								"code": res.code,
+								"msg": res.msg,
+								"data": changeRes(res.data.transactionReceiptResultBeanList)
 							}
 						},
 						cols: [
@@ -206,17 +213,16 @@
 								field: 'batchordernumber',
 								width: 200,
 								title: '商户编号/商户名称',
-								templet:function(data){
+								templet: function(data) {
 									return data.merchantNumber + '</br>' + data.merchantName
 								}
-
-							, {
+							}, {
 								align: 'center',
 								field: 'shopName',
 								width: 200,
 								title: '店铺名称',
-								
-							}}, {
+
+							}, {
 								align: 'center',
 								field: 'batch',
 								width: 200,
@@ -237,25 +243,25 @@
 								field: 'transactionPassageway',
 								width: 120,
 								title: '交易通道',
-								templet:function(data){
+								templet: function(data) {
 									switch (data.paymentType) {
 										case 0:
-										return '支付宝'
+											return '支付宝'
 											break;
 										case 1:
-										return '微信'
+											return '微信'
 											break;
 										case 2:
-										return '富友'
+											return '富友'
 											break;
 										case 3:
-										return '易融码'
+											return '易融码'
 											break;
 										case 4:
-										return '新大陆'
+											return '新大陆'
 											break;
-											case 5:
-										return '随行付'
+										case 5:
+											return '随行付'
 											break;
 										default:
 											// statements_def
@@ -274,18 +280,18 @@
 								align: 'center',
 								field: 'appid',
 								title: '支付方式',
-								templet:function(data){
-									if(data.transactionType == 0){
+								templet: function(data) {
+									if (data.transactionType == 0) {
 										return '支付宝'
-									}else{
+									} else {
 										return '微信'
 									}
 								}
-							},  {
+							}, {
 								align: 'center',
 								field: 'experience',
 								title: '创建时间',
-								templet:function(data){
+								templet: function(data) {
 									var ot = data.insertTime || ''
 									var tt = data.transactionTime || ''
 									return ot + '</br>' + tt
@@ -294,7 +300,7 @@
 								align: 'center',
 								field: 'transactionAmount',
 								title: '订单金额',
-								templet:function(data){
+								templet: function(data) {
 									return '￥' + data.transactionAmount
 								}
 							}, {
@@ -304,7 +310,7 @@
 							}, {
 								align: 'center',
 								field: 'errorDescribe',
-								toolbar:'#toolbar',
+								toolbar: '#toolbar',
 								title: '操作',
 							}]
 						],
@@ -312,63 +318,63 @@
 						done: function(res, curr, count) {
 							console.log(res)
 							layer.closeAll()
-							if(res.data == null){
+							if (res.data == null) {
 								console.log(res)
-								if(!!res.msg){
+								if (!!res.msg) {
 									//layer.msg(res.msg)
-								}else{
+								} else {
 									layer.msg('无数据')
 								}
-								
-							}else{
+
+							} else {
 								//layer.msg(res.msg)
 							}
 						}
 					});
 				}
-				
-				$('#search').click(function(){
+
+				$('#search').click(function() {
 					tableRender()
 				})
 				laydate.render({
-					elem:"#startTime",
+					elem: "#startTime",
 					type: 'datetime'
 				})
 				laydate.render({
-					elem:"#endTime",
+					elem: "#endTime",
 					type: 'datetime'
 				})
-				$('#startTime').val(fun_date(-6) + ' ' +  '00:00:00')
-		     $('#endTime').val(fun_date(0)+' ' + '23:59:59')
-		     tableRender()
+				$('#startTime').val(fun_date(-6) + ' ' + '00:00:00')
+				$('#endTime').val(fun_date(0) + ' ' + '23:59:59')
+				tableRender()
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
-					if(obj.event === 'Toview') { //编辑
+					if (obj.event === 'Toview') { //编辑
 						$.ajax({
 							type: "get",
 							url: 'https://api.51shanhe.com/p-order/sync/order',
 							async: true,
 							dataType: "json",
 							data: {
-								"batch":data.batch,
-								"insNumber":userNumber,
-								"merchantNumber":data.merchantNumber,
-								"orderState":'3'
+								"batch": data.batch,
+								"insNumber": userNumber,
+								"merchantNumber": data.merchantNumber,
+								"orderState": '3'
 							},
 							success: function(data) {
-								if(data.code == 1000){
-									 layer.msg(data.msg)
+								if (data.code == 1000) {
+									layer.msg(data.msg)
 									// parent.layer.msg('更改成功')
 									layui.table.reload('vip_cardList')
-								}else{
+								} else {
 									layer.msg(data.msg)
-									
+
 								}
 							},
 
 						});
-					} else if(obj.event === 'Sync') { //同步
+					} else if (obj.event === 'Sync') { //同步
 						var zhuxiaoData = {
 							card: data.card,
 							cardType: 5
@@ -386,7 +392,7 @@
 								contentType: "application/json",
 								data: JSON.stringify(zhuxiaoData),
 								success: function(data) {
-									if(data.code == 0) {
+									if (data.code == 0) {
 										layer.close(index);
 										layer.msg("会员卡已注销");
 										// 刷新页面
@@ -396,7 +402,7 @@
 												curr: curr
 											}
 										});
-									} else if(data.code == 1) {
+									} else if (data.code == 1) {
 										layer.msg("会员卡注销失败");
 									}
 								}
