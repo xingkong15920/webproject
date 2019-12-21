@@ -484,7 +484,17 @@
 										templet: function(data) {
 											switch (data.rechargeClass) {
 												case 0:
-													return '正常充值'
+													switch (data.orderState) {
+														case 1:
+															return '正常充值'
+															break;
+														case -1:
+															return '充值失败'
+															break;
+														case -2:
+															return '已撤销'
+															break;
+													}
 													break;
 												case 1:
 													return '人工变更'
@@ -677,7 +687,7 @@
 								return {
 									"code": res.code,
 									"count": res.data.count,
-									"data": res.data.memberList,
+									"data": res.data.refundTurnoverInfos,
 								}
 							},
 							cols: [
@@ -685,38 +695,53 @@
 									field: 'headImg',
 									title: '订单号/退款时间',
 									align: 'center',
-									width: 200,
+									width: 250,
 									templet: function(data) {
-										return data.memberNo + '<br>' + data.registerTime
+										return data.refundNo + '<br>' + data.refundTime
 									}
 								}, {
-									field: 'name',
+									field: 'shopName',
 									title: '退款门店',
 									align: 'center',
-									width: 150
+									width: 200
 								}, {
-									field: 'nickName',
+									field: 'refundAmount',
 									title: '订单金额',
 									align: 'center',
 									width: 100
 								}, {
-									field: 'memberNo',
+									field: 'realRefundAmount',
 									title: '退款金额',
 									align: 'center',
 									width: 100
 								}, {
-									field: 'cell',
+									field: 'realRefundAmount',
 									title: '退款状态',
-									align: 'center',
-									width: 100
-								}, {
-									field: 'allBalance',
-									title: '操作人',
 									align: 'center',
 									width: 100,
 									templet: function(data) {
+										switch (data.orderState) {
+											case 0:
+												return '已退款'
+												break;
+											case 1:
+												return '退款中'
+												break;
+											case 2:
+												return '退款失败'
+												break;
+										}
+									}
+								}, {
+									field: 'clerkName',
+									title: '操作人',
+									align: 'center',
+									minWidth: 100,
+									templet: function(data) {
 										if (data.clerkName == null) {
 											return 'Admin'
+										} else {
+											return data.clerkName
 										}
 									}
 								}]
