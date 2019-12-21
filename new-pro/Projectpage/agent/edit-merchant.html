@@ -495,6 +495,7 @@
     var prov = []
     var city = []
     var area = []
+    var imgList = new Object()
     var longTime = Date.parse(new Date())
     var businessLicense = ''
     var cashier = ''
@@ -1318,7 +1319,7 @@ window.fileup = function(img, name, type) {
                     var timeStr = new Date().getTime()
                     $('#' + name).attr('src', returndata.data + '?time=' + timeStr); //图片链接（base64）
 
-                    name = returndata.data
+                    imgList[name] = returndata.data
                     if (type == 1) {
                         var aData = new Object()
 
@@ -1675,8 +1676,8 @@ window.fileup = function(img, name, type) {
                 if (isNaN(value) == true) {
                     return '请输入数字'
                 }
-                if (value < 0.25 || value > 1) {
-                    return '费率需在0.25-1之间'
+                if (value < 0.20 || value > 1) {
+                    return '费率需在0.20-1之间'
                 }
             },
             unionPayRate:function(value){
@@ -1684,26 +1685,29 @@ window.fileup = function(img, name, type) {
                      if (!value) {
                         return '必填项不能为空！'
                     }
+                    if (isNaN(value) == true) {
+                        return '请输入数字'
+                    }
+                    if (value < 0.23 || value > 1) {
+                        return '费率需在0.23-1之间'
+                     }
                 }
-                if (isNaN(value) == true) {
-                    return '请输入数字'
-                }
-                if (value < 0.25 || value > 1) {
-                    return '费率需在0.25-1之间'
-                }
+                
             },
             unionPayRate2:function(value){
                 if(isOpenYunPay == 0){
                      if (!value) {
+                     
                         return '必填项不能为空！'
                     }
+                    if (isNaN(value) == true) {
+                        return '请输入数字'
+                    }
+                    if (value < 0.52 || value > 1) {
+                        return '费率需在0.52-1之间'
+                    }
                 }
-                if (isNaN(value) == true) {
-                    return '请输入数字'
-                }
-                if (value < 0.25 || value > 1) {
-                    return '费率需在0.25-1之间'
-                }
+                
             },
         });
         var index = layer.load(2, { shade: [0.4, '#393D49'] })
@@ -1720,15 +1724,25 @@ window.fileup = function(img, name, type) {
                     if (data.code == 1000) {
                         merInfo = data.data
                         paymentInfo = data.data.merchantPayments
-                        businessLicense = isNull(merInfo.businessLicense)
-                        cashier = isNull(merInfo.cashier)
-                        placeBusiness = isNull(merInfo.placeBusiness)
-                        doorheadPhoto = isNull(merInfo.doorheadPhoto)
-                        juridicalpersonIdPositive = isNull(merInfo.juridicalpersonIdPositive)
-                        juridicalpersonIdReverseside = isNull(merInfo.juridicalpersonIdReverseside)
-                        holdId = isNull(merInfo.holdId)
-                        openingPermit = isNull(merInfo.openingPermit)
-                        bankCardPositive = isNull(merInfo.bankCardPositive)
+                        imgList['businessLicense'] =  merInfo.businessLicense ||''
+                        imgList['cashier'] =  merInfo.cashier ||''
+                        imgList['placeBusiness'] =  merInfo.placeBusiness ||''
+                        imgList['doorheadPhoto'] =  merInfo.doorheadPhoto ||''
+                        imgList['juridicalpersonIdPositive'] =  merInfo.juridicalpersonIdPositive ||''
+                        imgList['juridicalpersonIdReverseside'] =  merInfo.juridicalpersonIdReverseside ||''
+                        imgList['holdId'] =  merInfo.holdId ||''
+                        imgList['openingPermit'] =  merInfo.openingPermit ||''
+                        imgList['bankCardPositive'] =  merInfo.bankCardPositive ||''
+                        console.log(imgList)
+                        businessLicense = imgList.businessLicense
+                        cashier = imgList.cashier
+                        placeBusiness = imgList.placeBusiness
+                        doorheadPhoto = imgList.doorheadPhoto
+                        juridicalpersonIdPositive = imgList.juridicalpersonIdPositive
+                        juridicalpersonIdReverseside = imgList.juridicalpersonIdReverseside
+                        holdId = imgList.holdId
+                        openingPermit = imgList.openingPermit
+                        bankCardPositive = imgList.bankCardPositive
                         $('#businessLicense').attr('src', businessLicense)
                         $('#cashier').attr('src', cashier)
                         $('#placeBusiness').attr('src', placeBusiness)
@@ -1838,7 +1852,7 @@ window.fileup = function(img, name, type) {
                         for (var j = 0; j < area.length; j++) {
                             if (area[j].parId == merInfo.cityID) {
                                 for (var k = 0; k < area[j].childList.length; k++) {
-                                    if (area[j].id == merInfo.areaID) {
+                                     if (area[j].childList[k].id == merInfo.areaID) {
                                         strr2 += "<option value=" + area[j].childList[k].id + '|' + area[j].childList[k].name + " selected>" + area[j].childList[k].name + "</option>"
                                     } else {
                                         strr2 += "<option value=" + area[j].childList[k].id + '|' + area[j].childList[k].name + " >" + area[j].childList[k].name + "</option>"
@@ -1909,8 +1923,8 @@ window.fileup = function(img, name, type) {
                             "openingBankBranchAddress": merInfo.openingBankBranchAddress,
                             "reserveCell": merInfo.reserveCell,
                             "msg": merInfo.msg,
-                            "unionPayRate":merInfo.unionPayRate,
-                            "unionPayRate2":merInfo.unionPayRate2,
+                            "unionPayRate":(merInfo.unionPayRate * 100).toFixed(2),
+                            "unionPayRate2":(merInfo.unionPayRate2 * 100).toFixed(2),
 
                         })
                         if (merInfo.msg == null || merInfo.msg == '') {
@@ -1932,7 +1946,16 @@ window.fileup = function(img, name, type) {
         }, 500)
 
         form.on('submit(add)', function(data, index) {
-            console.log(data)
+            console.log(imgList)
+            cashier = imgList['cashier'] || ''
+            placeBusiness = imgList['placeBusiness'] || ''                
+            doorheadPhoto = imgList['doorheadPhoto'] || ''
+            juridicalpersonIdPositive = imgList['juridicalpersonIdPositive'] || ''
+            juridicalpersonIdReverseside = imgList['juridicalpersonIdReverseside'] || ''
+            bankCardPositive = imgList['bankCardPositive'] || ''
+            businessLicense = imgList['businessLicense'] || ''
+            openingPermit = imgList['openingPermit'] || ''
+            holdId = imgList['holdId'] || ''
             if (cashier == '' || placeBusiness == '' || doorheadPhoto == '' || juridicalpersonIdPositive == '' || juridicalpersonIdReverseside == '' || bankCardPositive == '') {
                 layer.msg('请补充图片信息')
                 return false
@@ -2022,6 +2045,7 @@ window.fileup = function(img, name, type) {
             tjData.orderNumber = orderNumber
             tjData.customerServiceTell = tjData.registerCell
             tjData.reserveCell = tjData.registerCell        
+            tjData.rate = (tjData.rate/100).toFixed(4)
             tjData.unionPayRate = (tjData.unionPayRate/100).toFixed(4)
             tjData.unionPayRate2 = (tjData.unionPayRate2/100).toFixed(4)
             var index = layer.load(2, { shade: [0.4, '#393D49'] })

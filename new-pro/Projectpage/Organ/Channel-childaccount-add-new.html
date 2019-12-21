@@ -79,7 +79,7 @@
 								 value="0.30">
 							</div>
 						</div>
-						<div class="layui-form-item isJian" style="display:none">
+						<div class="layui-form-item " style="display:none">
 							<label class="layui-form-label">京东支付费率(%)</label>
 							<div class="layui-input-inline">
 								<input type="text" name="jingdongRate" autocomplete="off" placeholder="京东支付费率" class="layui-input" lay-verify="jingdongRate"
@@ -104,7 +104,7 @@
 							<label class="layui-form-label">云闪付支付费率2(%)</label>
 							<div class="layui-input-inline">
 								<input type="text" name="unionPayRate2" autocomplete="off" placeholder="单笔1000以上" class="layui-input"
-								 lay-verify="unionPayRate2" value="0.30">
+								 lay-verify="unionPayRate2" value="0.52">
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -219,6 +219,7 @@
 			var type = CmsUtility.getQueryString('type')
 			var app = CmsUtility.getQueryString('app')
 			var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+			var isOpenYunPay = 1
 			var qrcode = new QRCode('qrcode', {
 				text: '',
 				width: 256,
@@ -497,6 +498,17 @@
 								return '子商户编号不得为空';
 							}
 						},
+						weChatRate: function(value) {
+							if (!value) {
+								return '必填项不能为空！'
+							}
+							if (isNaN(value) == true) {
+								return '请输入数字'
+							}
+							if (value < 0.21 || value > 1) {
+								return '费率需在0.21-1之间'
+							}
+						},
 						// subaccountKey: function(value) {
 						// 	if(value.length == "") {
 						// 		return '商户秘钥不能为空！';
@@ -551,9 +563,59 @@
 							if (isNaN(value) == true) {
 								return '请输入数字'
 							}
-							if (value <= 0.01 || value >= 1) {
-								return '费率需在0.01-1之间'
+							if (value < 0.21 || value > 1) {
+								return '费率需在0.21-1之间'
 							}
+						},
+						weChatRate: function(value) {
+							if (!value) {
+								return '必填项不能为空！'
+							}
+							if (isNaN(value) == true) {
+								return '请输入数字'
+							}
+							if (value < 0.21 || value > 1) {
+								return '费率需在0.21-1之间'
+							}
+						},
+						jingdongRate: function(value) {
+							if (!value) {
+								return '必填项不能为空！'
+							}
+							if (isNaN(value) == true) {
+								return '请输入数字'
+							}
+							if (value < 0.21 || value > 1) {
+								return '费率需在0.21-1之间'
+							}
+						},
+						unionPayRate: function(value) {
+							if(isOpenYunPay == 0){
+									if (!value) {
+								return '必填项不能为空！'
+							}
+							if (isNaN(value) == true) {
+								return '请输入数字'
+							}
+							if (value < 0.23 || value > 1) {
+								return '费率需在0.23-1之间'
+							}
+							}
+							
+						},
+						unionPayRate2: function(value) {
+							if(isOpenYunPay == 0){
+								if (!value) {
+									return '必填项不能为空！'
+								}
+								if (isNaN(value) == true) {
+									return '请输入数字'
+								}
+								if (value < 0.52 || value > 1) {
+									return '费率需在0.52-1之间'
+								}
+							}
+							
 						},
 						// subaccountKey: function(value) {
 						// 	if(value.length == "") {
@@ -597,8 +659,10 @@
 					// layer.tips('继承状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					if (this.value == 0) {
 						$('.isYun').show()
+						isOpenYunPay = 0
 					} else {
 						$('.isYun').hide()
+						isOpenYunPay = 1
 					}
 
 				});
@@ -630,10 +694,8 @@
 
 					tjData.weChatRate = isbaifenbi(tjData.weChatRate)
 					tjData.jingdongRate = isbaifenbi(tjData.jingdongRate)
-					if (tjData.isOpenYunPay == 0) {
-						tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
-						tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
-					}
+					tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
+					tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
 					tjData.subsidyType = 1
 					console.log(tjData)
 					// isbaifenbi            

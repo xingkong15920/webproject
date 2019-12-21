@@ -62,7 +62,7 @@
                     </div>
                     <div class="layui-input-item">
                         <label class="layui-form-label" style="width: 15%;"></label>
-                        <span style="color:red;display:block;">*示例：0.35%</span>
+                        <span style="color:red;display:block;">*示例：0.35</span>
                     </div>
                     <label class="layui-form-label" style="width: 15%;"></label>
                     <div class="layui-input-item">
@@ -108,7 +108,7 @@
                         <input type="text" name="weChatRate" autocomplete="off" placeholder="微信费率" class="layui-input" lay-verify="weChatRate">
                     </div>
                 </div>
-                <div class="layui-form-item isJian" style="display:none">
+                <div class="layui-form-item" style="display:none">
                     <label class="layui-form-label">京东支付费率(%)</label>
                     <div class="layui-input-inline">
                         <input type="text" name="jingdongRate" autocomplete="off" placeholder="京东支付费率" class="layui-input" lay-verify="jingdongRate">
@@ -264,6 +264,11 @@
             }
             form.render()
             console.log(jgData)
+            if (jgData.isOpenYunPay == 0) {
+                $('.isYun').show()
+            } else {
+                $('.isYun').hide()
+            }
             //表单初始赋值
             // $('#sub').click(function(){
             //  console.log(code1)
@@ -277,31 +282,104 @@
                 "unionPayRate": (jgData.unionPayRate * 100).toFixed(2),
                 "unionPayRate2": (jgData.unionPayRate2 * 100).toFixed(2),
             })
-            form.verify({
-                // number:function(value){
-                //     if(value >5000){
-                //         return "一次生成最多5000条"
-                //     }
-                // },
-                // subaccountNumber: function(value) {
-                //     console.log(value)
-                //     if(jgData.paymentChannelType != 0){
-                //         if (value == '') {
-                //             return '不能为空';
-                //         }
-                //     }
+            if (jgData.paymentChannelType == 1) {
+                    form.verify({
 
-                // },
-                // subaccountNumber1: function(value) {
-                //     console.log(value)
-                //     if(jgData.paymentChannelType !=3){
-                //         if (value == '') {
-                //         return '不能为空';
-                //     }
-                //     }
+                        
+                        weChatRate: function(value) {
+                            if (!value) {
+                                return '必填项不能为空！'
+                            }
+                            if (isNaN(value) == true) {
+                                return '请输入数字'
+                            }
+                            if (value < 0.21 || value > 1) {
+                                return '费率需在0.21-1之间'
+                            }
+                        },
+                    });
+                } else if (jgData.paymentChannelType == 0) {
+                    form.verify({
 
-                // },
-            });
+                        
+                        alipayRate: function(value) {
+                            if (!value) {
+                                return '必填项不能为空！'
+                            }
+                            if (isNaN(value) == true) {
+                                return '请输入数字'
+                            }
+                            if (value < 0.21 || value > 1) {
+                                return '费率需在0.21-1之间'
+                            }
+                        },
+                    });
+                }else {
+                    form.verify({
+                        
+                        alipayRate: function(value) {
+                            if (!value) {
+                                return '必填项不能为空！'
+                            }
+                            if (isNaN(value) == true) {
+                                return '请输入数字'
+                            }
+                            if (value < 0.21 || value > 1) {
+                                return '费率需在0.21-1之间'
+                            }
+                        },
+                        weChatRate: function(value) {
+                            if (!value) {
+                                return '必填项不能为空！'
+                            }
+                            if (isNaN(value) == true) {
+                                return '请输入数字'
+                            }
+                            if (value < 0.21 || value > 1) {
+                                return '费率需在0.21-1之间'
+                            }
+                        },
+                        jingdongRate: function(value) {
+                            if (!value) {
+                                return '必填项不能为空！'
+                            }
+                            if (isNaN(value) == true) {
+                                return '请输入数字'
+                            }
+                            if (value < 0.21 || value > 1) {
+                                return '费率需在0.21-1之间'
+                            }
+                        },
+                        unionPayRate: function(value) {
+                            if(jgData.isOpenYunPay == 0){
+                                    if (!value) {
+                                return '必填项不能为空！'
+                            }
+                            if (isNaN(value) == true) {
+                                return '请输入数字'
+                            }
+                            if (value < 0.23 || value > 1) {
+                                return '费率需在0.23-1之间'
+                            }
+                            }
+                            
+                        },
+                        unionPayRate2: function(value) {
+                            if(jgData.isOpenYunPay == 0){
+                                if (!value) {
+                                    return '必填项不能为空！'
+                                }
+                                if (isNaN(value) == true) {
+                                    return '请输入数字'
+                                }
+                                if (value < 0.52 || value > 1) {
+                                    return '费率需在0.52-1之间'
+                                }
+                            }
+                            
+                        },
+                    });
+                }
             form.on('switch(disable)', function(data) { //充值优惠开关
                 // layer.tips('充值优惠：' + (this.checked ? '已开启' : '已关闭'), data.othis)
                 now = this.checked ? '1' : '2'
@@ -396,10 +474,8 @@
 
                 tjData.weChatRate = isbaifenbi(tjData.weChatRate)
                 tjData.jingdongRate = isbaifenbi(tjData.jingdongRate)
-                if(tjData.isOpenYunPay == 0){
-                     tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
-                tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
-                }
+               tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
+                    tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
                 tjData.type = now
                 console.log(tjData)
                 var index = layer.load(2, {shade: [0.4, '#393D49']})

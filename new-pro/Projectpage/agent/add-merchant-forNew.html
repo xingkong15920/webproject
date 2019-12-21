@@ -1241,23 +1241,6 @@
             $('#city1').html(str)
             form.render()
         })
-        form.on('select(prov1)', function(data) {
-            console.log(data.value)
-            var str = ''
-            var str1 = ''
-            var childId
-            for (var i = 0; i < city.length; i++) {
-                if (city[i].parId == data.value.split('|')[0]) {
-                    childId = city[i].childList[0].id
-                    for (var j = 0; j < city[i].childList.length; j++) {
-
-                        str += "<option value=" + city[i].childList[j].id + '|' + city[i].childList[j].name + " >" + city[i].childList[j].name + "</option>"
-                    }
-                }
-            }
-            $('#city').html(str)
-            form.render()
-        })
         form.on('select(city)', function(data) {
             console.log(data.value)
             var str = ''
@@ -1686,8 +1669,8 @@
                 if (isNaN(value) == true) {
                     return '请输入数字'
                 }
-                if (value < 0.25 || value > 1) {
-                    return '费率需在0.25-1之间'
+                if (value < 0.20 || value > 1) {
+                    return '费率需在0.21-1之间'
                 }
             },
             unionPayRate:function(value){
@@ -1695,26 +1678,29 @@
                      if (!value) {
                         return '必填项不能为空！'
                     }
+                    if (isNaN(value) == true) {
+                        return '请输入数字'
+                    }
+                    if (value < 0.23 || value > 1) {
+                        return '费率需在0.23-1之间'
+                     }
                 }
-                if (isNaN(value) == true) {
-                    return '请输入数字'
-                }
-                if (value < 0.25 || value > 1) {
-                    return '费率需在0.25-1之间'
-                }
+                
             },
             unionPayRate2:function(value){
                 if(isOpenYunPay == 0){
                      if (!value) {
+                     
                         return '必填项不能为空！'
                     }
+                    if (isNaN(value) == true) {
+                        return '请输入数字'
+                    }
+                    if (value < 0.52 || value > 1) {
+                        return '费率需在0.52-1之间'
+                    }
                 }
-                if (isNaN(value) == true) {
-                    return '请输入数字'
-                }
-                if (value < 0.25 || value > 1) {
-                    return '费率需在0.25-1之间'
-                }
+                
             },
         });
         var index = layer.load(2, { shade: [0.4, '#393D49'] })
@@ -1741,15 +1727,15 @@
                         imgList['openingPermit'] =  merInfo.openingPermit ||''
                         imgList['bankCardPositive'] =  merInfo.bankCardPositive ||''
                         console.log(imgList)
-                        businessLicense = isNull(merInfo.businessLicense)
-                        cashier = isNull(merInfo.cashier)
-                        placeBusiness = isNull(merInfo.placeBusiness)
-                        doorheadPhoto = isNull(merInfo.doorheadPhoto)
-                        juridicalpersonIdPositive = isNull(merInfo.juridicalpersonIdPositive)
-                        juridicalpersonIdReverseside = isNull(merInfo.juridicalpersonIdReverseside)
-                        holdId = isNull(merInfo.holdId)
-                        openingPermit = isNull(merInfo.openingPermit)
-                        bankCardPositive = isNull(merInfo.bankCardPositive)
+                        businessLicense = imgList.businessLicense
+                        cashier = imgList.cashier
+                        placeBusiness = imgList.placeBusiness
+                        doorheadPhoto = imgList.doorheadPhoto
+                        juridicalpersonIdPositive = imgList.juridicalpersonIdPositive
+                        juridicalpersonIdReverseside = imgList.juridicalpersonIdReverseside
+                        holdId = imgList.holdId
+                        openingPermit = imgList.openingPermit
+                        bankCardPositive = imgList.bankCardPositive
                         $('#businessLicense').attr('src', businessLicense)
                         $('#cashier').attr('src', cashier)
                         $('#placeBusiness').attr('src', placeBusiness)
@@ -1859,7 +1845,7 @@
                         for (var j = 0; j < area.length; j++) {
                             if (area[j].parId == merInfo.cityID) {
                                 for (var k = 0; k < area[j].childList.length; k++) {
-                                    if (area[j].id == merInfo.areaID) {
+                                     if (area[j].childList[k].id == merInfo.areaID) {
                                         strr2 += "<option value=" + area[j].childList[k].id + '|' + area[j].childList[k].name + " selected>" + area[j].childList[k].name + "</option>"
                                     } else {
                                         strr2 += "<option value=" + area[j].childList[k].id + '|' + area[j].childList[k].name + " >" + area[j].childList[k].name + "</option>"
@@ -1930,8 +1916,8 @@
                             "openingBankBranch": merInfo.openingBankBranch,
                             "openingBankBranchAddress": merInfo.openingBankBranchAddress,
                             "reserveCell": merInfo.reserveCell,
-                            "unionPayRate":merInfo.unionPayRate,
-                            "unionPayRate2":merInfo.unionPayRate2,
+                            "unionPayRate":(merInfo.unionPayRate * 100).toFixed(2),
+                            "unionPayRate2":(merInfo.unionPayRate2 * 100).toFixed(2),
 
                         })
                         layer.closeAll()
@@ -2047,6 +2033,7 @@
             tjData.merchantNumber = merchantNumber
             tjData.customerServiceTell = tjData.registerCell
             tjData.reserveCell = tjData.registerCell  
+            tjData.rate = (tjData.rate/100).toFixed(4)
             tjData.unionPayRate = (tjData.unionPayRate/100).toFixed(4)
             tjData.unionPayRate2 = (tjData.unionPayRate2/100).toFixed(4)
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
