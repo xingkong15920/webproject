@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .widthauto {
+            width: auto !important;
+        }
+
+        .tips_red {
+            color: red;
+        }
+
+        .layui-form-label {
+            padding-left: 0;
+            width: 120px;
+        }
+
+        .layui-input-block {
+            margin-left: 115px;
+        }
+
+        .layui-elem-quote {
+            font-size: 18px;
+        }
+
+        .layui-elem-field {
+            margin: 0;
+        }
+
+        .layui-elem-field legend {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .layui-upload-img {
+            width: 92px;
+            height: 92px;
+            margin: 0 10px 10px 0;
+        }
+
+        .Since_inline {
+            display: inline-block;
+            width: auto !important;
+            line-height: 38px;
+        }
+
+        .layui-elem-quote .layui-form-switch {
+            margin: 0 15px;
+            margin-top: 0;
+        }
+
+        .sxf {
+            /* margin-bottom: 40px; */
+        }
+
+        .layui-form-item .layui-input-inline {
+            width: 80px;
+        }
+
+        #suozaidi .layui-input-inline {
+            width: 190px;
+        }
+
+        .nowHide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body id="iosiframe" style="padding-bottom:20rpx;">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form" style="padding-bottom:40px" action="" lay-filter="cardAdd">
+                <!--隐藏-->
+                <!--基本信息-->
+                <blockquote class="layui-elem-quote">基本信息</blockquote>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">服务商名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="agentName" lay-verify="" autocomplete="off" placeholder="请输入服务商名称"
+                            disabled class="layui-input" value="">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">待结算金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userName" lay-verify="" autocomplete="off" placeholder="请输入待结算金额"
+                            disabled class="layui-input" value="">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">账号余额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="registerCell" lay-verify="" autocomplete="off" placeholder="请输入账号余额"
+                            class="layui-input" value="">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">结算金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="passWord" lay-verify="title" autocomplete="off" placeholder="请输入结算金额"
+                            class="layui-input" id="pass">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <a class="layui-btn layui-btn-primary" id="quxiao">取消</a>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+        var agentNumber = CmsUtility.getQueryString('agentNumber')
+
+
+
+        $('#quxiao').click(function () {
+            setTimeout(function () {
+                parent.layer.close(index)
+            }, 16);
+        })
+
+        var getData = ''
+        var institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+        layui.use(['laydate', 'table', 'upload', 'form'], function () {
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer;
+
+            function reloadres(number) {
+                var index = layer.load(2, {
+                    shade: [0.4, '#393D49']
+                })
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'Withdrawal/getLAgentBalance', {
+                        "agentNumber": agentNumber,
+                    },
+                    function (data) {
+
+                        layer.closeAll()
+                        if (data.code != 1000) {
+                            layer.msg(data.msg)
+                            return
+                        }
+                        getData = data.data
+                        form.val('cardAdd', {
+                            "agentName": data.data.agentNumber,
+                        //     "daiJieSuan": jgData.agentName,
+                        //     "zhangHaoYuE": jgData.userName,
+                        })
+                        form.render()
+                    },
+                    function (data) {
+                        console.log('222')
+                    }, 'get'
+                )
+            }
+            reloadres()
+
+
+
+            /*---------- 自定义验证规则 ----------*/
+            form.verify({
+                title: function (value) {
+                    if (!value) {
+                        return '请输入提现金额'
+                    }
+                    if (isNaN(value) == true) {
+                        return '请输入数字'
+                    }
+                    if (parseFloat(value) > parseFloat(2)) {
+                        return '结算金额不得大于待结算金额'
+                    }
+                },
+
+
+
+            });
+
+
+            /*---------- 监听提交 ----------*/
+            form.on('submit(add)', function (data, index) {
+                // layer.alert(JSON.stringify(data.field), {
+                //  title: '最终的提交信息'
+                // })
+                console.log(data)
+                return false
+                var index = layer.load(2, {
+                    shade: [0.4, '#393D49']
+                })
+
+
+
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'agentManage/addAgentRegister',
+                    addData,
+                    function (data) {
+                        layer.closeAll()
+                        if (data.code == 1000) {
+                            setTimeout(function () {
+                                $('#quxiao').click()
+                            }, 16);
+                            parent.layer.msg('新增成功')
+                            parent.layui.table.reload('salesmanList')
+
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function (data) {
+                        console.log('222')
+                    }
+                )
+                return false;
+            });
+
+        });
+    </script>
+</body>
+
+</html>
