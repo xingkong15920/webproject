@@ -84,6 +84,13 @@
 								 autocomplete="off" class="layui-input">
 							</div>
 						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">抽成比例(%)</label>
+							<div class="layui-input-inline">
+								<input type="number" id="percentage" name="percentage" required="" lay-verify="percentage"
+								 autocomplete="off" class="layui-input">
+							</div>
+						</div>
 						<!--<div class="layui-form-item">
 							<label for="password" class="layui-form-label">
 			                  	再次输入密码
@@ -188,6 +195,17 @@
 						}
 						if (value < 0.52 || value > 1) {
 							return '费率需在0.52-1之间'
+						}
+					},
+					percentage: function(value) {
+						if (!value.length) {
+							return '抽成比例不能为空'
+						}
+						if (isNaN(value) == true) {
+							return '请输入数字'
+						}
+						if (value < 0 || value > 100) {
+							return '费率需在1-100之间'
 						}
 					},
 				});
