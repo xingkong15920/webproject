@@ -107,7 +107,7 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">消费金额</label>
 								<div class="layui-input-inline max360">
-									<input type="text" id="consumMoney" lay-verify="consumMoney" autocomplete="off" placeholder="消费扣款" class="layui-input">
+									<input type="text" id="consumMoney" lay-verify="consumMoney" autocomplete="off" placeholder="消费扣款" class="layui-input layui-input-num">
 								</div>
 							</div>
 						</div>
@@ -115,13 +115,13 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">实充金额</label>
 								<div class="layui-input-inline max360">
-									<input type="text" id="rechargeMoney" autocomplete="off" placeholder="实充金额" class="layui-input">
+									<input type="text" id="rechargeMoney" autocomplete="off" placeholder="实充金额" class="layui-input layui-input-num">
 								</div>
 							</div>
 							<div class="layui-form-item">
 								<label class="layui-form-label">赠送金额</label>
 								<div class="layui-input-inline max360">
-									<input type="text" id="giveMoney" autocomplete="off" placeholder="赠送金额" class="layui-input">
+									<input type="text" id="giveMoney" autocomplete="off" placeholder="赠送金额" class="layui-input layui-input-num">
 								</div>
 							</div>
 						</div>
@@ -129,7 +129,7 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">积分</label>
 								<div class="layui-input-inline max360">
-									<input type="text" id="integral" autocomplete="off" placeholder="积分" class="layui-input">
+									<input type="text" id="integral" autocomplete="off" placeholder="积分" class="layui-input layui-input-num">
 								</div>
 							</div>
 						</div>
@@ -353,9 +353,9 @@
 
 					/*---------- 监听提交 ----------*/
 					form.on('submit(add)', function(data, index) {
-						// layer.load(2, {
-						// 	shade: 0.5
-						// });
+						layer.load(2, {
+							shade: 0.5
+						});
 						var data = data.field
 						data.institutionNumber = insNumber
 						data.merchantNumber = merNumber
@@ -441,6 +441,10 @@
 						var data = JSON.stringify(obj).replace(reg, '"--"')
 						return JSON.parse(data)
 					}
+
+					$('.layui-input-num').keyup(function() {
+						this.value = this.value.replace(/[^\d]/g, '');
+					})
 
 				});
 			}

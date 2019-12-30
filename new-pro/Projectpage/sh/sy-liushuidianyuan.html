@@ -58,6 +58,7 @@
 			<div class="layui-form-item">
 				<div class="layui-inline place">
 					<span style="color:red;display:block">*注:退款金额包含全部退款与部分退款</span>
+					<span style="color:red;display:block">*注:历史为非当天退款的汇总数据</span>
 					<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）- 手续费=实收金额</span>
 				</div>
 			</div>
@@ -326,7 +327,23 @@
 								field: 'statementDate',
 								title: '账单日期',
 								align: 'center',
-								width: 120
+								width: 140,
+								templet: function(data) {
+									switch (data.billType){
+										case '日账单':
+											return data.statementDate
+											break;
+										case '周账单':
+											return data.statementDate
+											break;
+										case '月账单':
+											return data.statementDate.split('-')[0] + '-' + data.statementDate.split('-')[1]
+											break;
+										default:
+											return data.statementDate
+											break;
+									}
+								},
 							}, {
 								field: 'ordertype',
 								title: '账单类型',

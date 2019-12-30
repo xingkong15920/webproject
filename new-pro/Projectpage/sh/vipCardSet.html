@@ -671,8 +671,8 @@
 						}
 					},
 					phone: function(value) {
-						var rg = new RegExp(/^1(3|4|5|6|7|8|9)\d{9}$/)// 手机号正则
-						var rg2 = new RegExp(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/)// 固话正则
+						var rg = new RegExp(/^1(3|4|5|6|7|8|9)\d{9}$/) // 手机号正则
+						var rg2 = new RegExp(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/) // 固话正则
 						if (value != '' && !rg.test(value) && !rg2.test(value)) {
 							return '请填写正确的联系电话！'
 						}
@@ -759,6 +759,37 @@
 						type: "post",
 						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addCard,
 						data: JSON.stringify(data),
+						dataType: "json",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						success: function(data) {
+							if (data.code === 1000) {
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
+							} else {
+								layer.closeAll('loading');
+								parent.layer.msg(data.msg)
+							}
+						}
+					});
+					var addP = new Object()
+					addP.merchantNumber = merNumber
+					addP.posButtOpacity = "100"
+					addP.posButtRadius = "999"
+					addP.posButtTextColor = "#ffffff"
+					addP.posButtcolor = "#ff5722"
+					addP.posterColor = "#5885cf"
+					addP.posterEnabled = 0
+					addP.posterImgId = "15665414888521591"
+					addP.posterShareExplain = "可通过微信好友、朋友圈、面对面扫二维码等多种方式邀请好友领卡，好友领卡后充值或消费即可得到奖励"
+					addP.posterTitle = data.shareTitle
+					addP.textColor = "#ffffff"
+					addP.titleColor = "#ffffff"
+					$.ajax({
+						type: "post",
+						url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addPoster,
+						data: JSON.stringify(addP),
 						dataType: "json",
 						headers: {
 							"Content-Type": "application/json"
