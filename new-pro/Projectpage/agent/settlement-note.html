@@ -76,13 +76,17 @@
 		<div class="layui-row index-zs">
 			<div class="layui-col-md5">
 				<div class="homelist">
-					<p id="homelistitle" class="homelistitle">结算金额（元）</p>
+					<p  class="homelistitle">结算金额（元）</p>
 					<div class="homelistc">
 						<span><i id="balance">0</i>元</span>
 					</div>
 				</div>
 			</div>
 		</div>
+		<!-- 查看 -->
+		<xblock class="layui-row">
+			<button class="layui-btn" id="homelistitle">结算</button>
+		</xblock>
 		<table class="layui-hide" id="members" lay-filter="members"></table>
 	</div>
 	<script type="text/html" id="switchBar">
@@ -96,8 +100,7 @@
 	<script src="../../common/config-agent.js"></script>
 	<script src="../../common/utility.js"></script>
 	<script>
-		var agentLevel = CmsUtility.getQueryString('agentLevel')
-		var agentNumber = CmsUtility.getQueryString('agentNumber')
+		var saleNumber = CmsUtility.getQueryString('saleNumber')
 
 		function verTime() {
 			var arr1 = $('#startTime').val().split('-');
@@ -190,8 +193,8 @@
 				table.render({
 					//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 					//url: './json/vip-card.json',
-					url: CmsConfig.ServiceUrl.ApiRootUrl + 'agSale/getSaleSettlementRecord?agentNumber=' +
-                    agentNumber,
+					url: CmsConfig.ServiceUrl.ApiRootUrl + 'agSale/getSaleSettlementRecord?saleNumber=' +
+						saleNumber,
 					where: {
 						"startTime": '',
 						"endTime": '',
@@ -405,6 +408,8 @@
 			});
 		});
 		$("#homelistitle").click(function () {
+			console.log('点击homelistitle')
+			console.log(saleNumber)
 			layer.open({
 				type: 2,
 				title: '结算金额',
@@ -412,7 +417,7 @@
 				area: [$(window).width() * 0.7 + 'px', '90%'],
 				maxmin: false,
 				resize: false,
-				content: ['settlement-amount.html?agentNumber='+agentNumber],
+				content: ['settlement-money.html?saleNumber=' + saleNumber],
 				success: function (layero, index) {
 					// 获取子页面的iframe
 					var iframe = window['layui-layer-iframe' + index];
