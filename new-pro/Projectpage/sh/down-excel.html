@@ -229,6 +229,26 @@
 								}
 							)
 						}
+						if (dataNum == 6) { //导出交班账单
+							CmsUtility.postAjaxCall(
+								//系统设置
+								CmsConfig.ServiceUrl.ApiRootUrl + 'connectionBill/getConnectionBillExcel',
+								jgData,
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
 						setTimeout(function() {
 							layer.msg('邮件已发送,请稍后到邮箱查收')
 						}, 500)

@@ -31,12 +31,12 @@
 					</select>
 				</div>
 				<div class="layui-input-inline">
-                    <!-- 需要数据对接(完成) -->
-                    <select name="clerkNumber" id="clerkNumber" lay-search>
-                        <option value="">--请选择店员--</option>
-                    </select>
-                </div>
-				
+					<!-- 需要数据对接(完成) -->
+					<select name="clerkNumber" id="clerkNumber" lay-search>
+						<option value="">--请选择店员--</option>
+					</select>
+				</div>
+
 				<div class="layui-input-inline">
 					<input type="text" class="layui-input" placeholder="签到时间" name="startTime" id="startTime">
 				</div>
@@ -49,7 +49,7 @@
 			</div>
 			<div class="layui-form-item">
 				<div class="layui-inline place">
-					
+
 					<span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）-手续费=实收金额</span>
 				</div>
 			</div>
@@ -150,7 +150,7 @@
 			}
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var startDate = fun_date(-6) + ' 00:00:00';
-			var endDate = fun_date(0)+ ' 23:59:59';
+			var endDate = fun_date(0) + ' 23:59:59';
 			var nowTime = new Date().valueOf();
 			var dataO = new Object();
 			dataO.merchantNumber = userNumber
@@ -195,17 +195,18 @@
 						form.render()
 					}
 				)
-				 CmsUtility.postAjaxCall(
-		            CmsConfig.addressUrl.Merchant.getClerkList,
-		            dataO,
-		            function(data) {
-		                var shopData = data.data
-		                for (var i = 0; i < shopData.length; i++) {
-		                    $("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + "</option>");
-		                }
-		                form.render()
-		            }
-		        )
+				CmsUtility.postAjaxCall(
+					CmsConfig.addressUrl.Merchant.getClerkList,
+					dataO,
+					function(data) {
+						var shopData = data.data
+						for (var i = 0; i < shopData.length; i++) {
+							$("#clerkNumber").append("<option value='" + shopData[i].clerkNumber + '/' + shopData[i].clerkName + "'>" +
+								shopData[i].clerkName + '/' + shopData[i].clerkNumber + "</option>");
+						}
+						form.render()
+					}
+				)
 				$('#baobiao').click(function() {
 					if ($('#billType').val() == 0 || $('#billType').val() == 3) {
 						if (!verTime()) {
@@ -221,23 +222,23 @@
 						newData.shopName = $('#shopName').val().split('/')[1],
 						newData.startTime = $('#startTime').val(),
 						newData.endTime = $('#endTime').val(),
-						// newData.billType = $('#billType').val()
-						newData.billType = 3
-					layer.open({
-						type: 2,
-						title: '下载报表',
-						shade: 0.5,
-						area: ['30%', '30%'],
-						maxmin: false,
-						resize: false,
-						content: ['down-excel.html'],
-						success: function(layero, index) {
-							// 获取子页面的iframe
-							var iframe = window['layui-layer-iframe' + index];
-							// 向子页面的全局函数child传w参
-							iframe.subPage(newData, '1')
-						}
-					});
+						newData.clerkNumber = $('#startTime').val().split('/')[0],
+						newData.clerkName = $('#endTime').val().split('/')[1],
+						layer.open({
+							type: 2,
+							title: '下载报表',
+							shade: 0.5,
+							area: ['30%', '30%'],
+							maxmin: false,
+							resize: false,
+							content: ['down-excel.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(newData, '6')
+							}
+						});
 					return
 				})
 				//方法级渲染
@@ -262,7 +263,7 @@
 							"startTime": $('#startTime').val(),
 							"endTime": $('#endTime').val(),
 							"shopNumber": $('#shopName').val().split('/')[0],
-							"clerkNumber":$('#clerkNumber').val()
+							"clerkNumber": $('#clerkNumber').val().split('/')[0],
 						},
 						method: "post",
 						height: "full-300",
