@@ -133,7 +133,7 @@
 					"weChatRate": (jgData.weChatRate * 100).toFixed(2),
 					"unionPayRate": (jgData.unionPayRate * 100).toFixed(2),
 					"unionPayRatetwo": (jgData.unionPayRatetwo * 100).toFixed(2),
-					"percentage": jgData.percentage,
+					"percentage": (jgData.percentage * 100).toFixed(2) || 0,
 				})
 				form.verify({
 					title: function (value) {
@@ -147,9 +147,9 @@
 							return '两次密码不一致';
 						}
 					},
-					aliRate: function (value) {
+					aliRate: function(value) {
 						if (!value.length) {
-							return '支付宝费率不能为空'
+							return '费率不能为空'
 						}
 						if (isNaN(value) == true) {
 							return '请输入数字'
@@ -158,18 +158,18 @@
 							return '费率需在0.20-1之间'
 						}
 					},
-					weChatRate: function (value) {
+					weChatRate: function(value) {
 						if (!value.length) {
 							return '微信费率不能为空'
 						}
 						if (isNaN(value) == true) {
 							return '请输入数字'
 						}
-						if (value < 0.20 || value > 1) {
-							return '费率需在0.20-1之间'
+						if (value < 0 || value > 1) {
+							return '费率需在0-1之间'
 						}
 					},
-					unionPayRate: function (value) {
+					unionPayRate: function(value) {
 						if (!value.length) {
 							return '云闪付费率1不能为空'
 						}
@@ -180,7 +180,7 @@
 							return '费率需在0.23-1之间'
 						}
 					},
-					unionPayRatetwo: function (value) {
+					unionPayRatetwo: function(value) {
 						if (!value.length) {
 							return '云闪付费率2不能为空'
 						}
@@ -238,7 +238,7 @@
 					addData.weChatRate = addData.aliRate
 					addData.unionPayRate = (addData.unionPayRate / 10000 * 100).toFixed(4)
 					addData.unionPayRatetwo = (addData.unionPayRatetwo / 10000 * 100).toFixed(4)
-					addData.percentage = (addData.percentage/ 10000).toFixed(4)
+					addData.percentage = (addData.percentage/ 10000 * 100).toFixed(4)
 					console.log(addData)
 					CmsUtility.postAjaxCall(
 						//系统设置

@@ -21,6 +21,10 @@
 .payBox span {
     padding: 0 10px;
 }
+
+.layui-btn .layui-btn-xs {
+    margin-left: 3px;
+}
 </style>
 
 <body>
@@ -51,15 +55,17 @@
                 <input id="saleName" type="text" name="userName" placeholder="销售名称" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-input-inline">
+                <input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
                 <select id="merchantStatus" name="state">
                     <option value="">状态</option>
                     <option value="0">正常</option>
                     <option value="1">禁用</option>
                 </select>
-            </div>
-            <div class="layui-input-inline text">
-                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                <input id="creatTime" type="text" name="userName" placeholder="创建时间（开始-结束）" autocomplete="off" class="layui-input">
             </div>
             <button class="layui-btn" id="search" title="搜索"><i class="layui-icon">&#xe615;</i></button>
         </div>
@@ -81,17 +87,18 @@
             <span>{{d.registerCell}}</span>
         </script> -->
     <script type="text/html" id="tool">
+        <a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">登录</a>
         <a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
             
             <a class="layui-btn layui-btn-xs" lay-event="resetpass">密码</a>
-            <a class="layui-btn layui-btn-xs" lay-event="feilvset">子账号</a>
+            <a class="layui-btn layui-btn-xs" lay-event="feilvset">微信认证</a>
             <a class="layui-btn layui-btn-xs" lay-event="codecard">码牌</a>
             <a class="layui-btn layui-btn-xs" lay-event="horn">设备</a>
             <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
             <a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
             <a class="layui-btn layui-btn-xs" lay-event="tongdao">通道</a>
-            <a class="layui-btn layui-btn-xs" lay-event="model">模块</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs" lay-event="model">增值功能</a>
+            
         </script>
     <script type="text/html" id="toolbar_switch">
         <input type="checkbox" name="switch" value="{{d.merchantStatus}}" lay-skin="switch" lay-filter="consumptionPreferences" data-mername="{{d.merchantNumber}}" lay-text="开|关" {{ d.merchantStatus==0 ? 'checked' : '' }}>
@@ -105,6 +112,7 @@
     // <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
     //<a class="layui-btn layui-btn-xs" lay-event="recomId">ID</a>
     //<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    //<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
     var server = 'http://192.168.1.200:6005/shanhe-admin/'
     var paymentList = []
 
@@ -166,8 +174,9 @@
         )
     }
     //          // 选择日期插件  
-    layui.use(['form', 'table', 'laytpl'], function() {
+    layui.use(['form', 'laydate', 'table', 'laytpl'], function() {
         var table = layui.table,
+            laydate = layui.laydate,
             form = layui.form,
             laytpl = layui.laytpl,
             $ = layui.jquery;
@@ -190,7 +199,9 @@
                     "merchantStatus": $('#merchantStatus').val(),
                     "agentName": $('#agentName').val().trim(),
                     "registerCell": $('#registerCell').val().trim(),
-                    "agentLevel": agentLevel
+                    "agentLevel": agentLevel,
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
                 },
                 elem: '#LAY_table_merchant',
                 height: 'full-200',
@@ -258,26 +269,26 @@
                             } else {
                                 var nArr = new Array()
                                 var listArr = data.paymentChannels.split('|')
-                                for(var j = 0 ; j < listArr.length;j++){
+                                for (var j = 0; j < listArr.length; j++) {
                                     var nO = new Object()
                                     var nList = listArr[j].split(':')
                                     var num = 0
-                                    for(var n = 0 ; n < nArr.length;n++){
-                                        if(nArr[n].paymentChannelName == nList[2]){
+                                    for (var n = 0; n < nArr.length; n++) {
+                                        if (nArr[n].paymentChannelName == nList[2]) {
                                             num++
                                         }
                                     }
 
                                     console.log(num)
-                                    if(num != 0){
+                                    if (num != 0) {
                                         continue;
                                     }
                                     nO.paymentChannel = nList[0]
                                     nO.paymentType = nList[1]
                                     nO.paymentChannelName = nList[2]
-                                    nO.subaccountNumber = nList[3] == 'S'?'': nList[3]
-                                    nO.orderNumber = nList[4] == 'O'?'': nList[4]
-                                    nO.auditStatus = nList[3] == 'S'? nList[5]:2
+                                    nO.subaccountNumber = nList[3] == 'S' ? '' : nList[3]
+                                    nO.orderNumber = nList[4] == 'O' ? '' : nList[4]
+                                    nO.auditStatus = nList[3] == 'S' ? nList[5] : 2
                                     nArr.push(nO)
                                 }
                                 var thisPayment = nArr
@@ -530,7 +541,34 @@
             };
         table.on('tool(merchant)', function(obj) {
             var data = obj.data;
-            if (obj.event === 'look') {
+            if (obj.event === 'loginTo') { //直接登录商户后台
+                var shHref = ''
+                var aData = data
+                CmsUtility.postAjaxCall2(
+                    //系统设置
+                    'https://nb.51shanhe.com/shanhe-admin/basicSetting/getInsRegInfo', {
+                'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+            },
+                    function(data) {
+                        if (data.code == 1000) {
+                            shHref = data.data[0].merchantRoute
+                            if (shHref == '') {
+                                layer.msg('未获取到商户路径')
+                            }
+                            var merHref = shHref + '/index.html?number=' + aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
+                            // 
+                            window.open(merHref)
+                        } else {
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+
+            } else if (obj.event === 'look') {
                 //查看统计信息订单列表
                 layer.open({
                     type: 2,
@@ -636,23 +674,23 @@
                         iframe.subPageClerkpass(data, userNumber)
                     }
                 });
-            }else if(obj.event === 'tongdao') { //通道
-                        layer.open({
-                            type: 2,
-                            title: '通道-' + data.merchantName,
-                            shade: 0.5,
-                            area: ['90%', '90%'],
-                            maxmin: false,
-                            resize: false,
-                            content: ['Merchants-List-channel.html'],
-                            success: function(layero, index) {
-                                // 获取子页面的iframe
-                                var iframe = window['layui-layer-iframe' + index];
-                                // 向子页面的全局函数child传参
-                                iframe.subPage(data, userNumber)
-                            }
-                        });
-                    } else if (obj.event == 'push') {
+            } else if (obj.event === 'tongdao') { //通道
+                layer.open({
+                    type: 2,
+                    title: '通道-' + data.merchantName,
+                    shade: 0.5,
+                    area: ['90%', '90%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Merchants-List-channel.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
+            } else if (obj.event == 'push') {
                 // 秘钥
                 layer.open({
                     type: 2,
@@ -666,8 +704,7 @@
                         iframe.subPageClerkpush(data, userNumber)
                     }
                 });
-            } 
-            else if(obj.event == 'model'){                //模块
+            } else if (obj.event == 'model') { //模块
                 layer.open({
                     type: 2,
                     title: '模块-' + data.merchantName,
@@ -684,8 +721,7 @@
                         sessionStorage.setItem(data.merchantNumber, JSON.stringify(data));
                     }
                 });
-            } 
-            else if (obj.event == 'delete') {
+            } else if (obj.event == 'delete') {
                 // 发送请求,将商户进行禁用
                 layer.confirm('真的要删除(' + data.merchantName + ')此商户吗?', function(index) {
                     console.log(data)
@@ -742,7 +778,7 @@
         }
         window.addMerchant2 = function(data) {
             console.log(data)
-             if(data.split('|')[1] == ''){
+            if (data.split('|')[1] == '') {
                 layer.msg('该通道暂未查询到流水号')
                 return
             }

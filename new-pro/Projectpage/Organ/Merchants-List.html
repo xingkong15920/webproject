@@ -500,34 +500,33 @@
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
 					console.log(data)
-					if(obj.event === 'loginTo') { //直接登录商户后台
-						var shHref = ''
-						var aData = data
-						CmsUtility.postAjaxCall(
-								//系统设置
-							 CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
-                                'institutionNumber': userNumber,
-                            },
-							function(data){
-								if(data.code == 1000){
-									shHref = data.data[0].merchantRoute 
-									if(shHref==''){
-							layer.msg('未获取到商户路径')
-						}
-			var merHref = shHref + '/index.html?number='+aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
-			 // 
-						window.open(merHref)
-								}else{
-									layer.msg(data.msg)
-									
-								}
-							},	
-							function(data){
-								console.log('222')
-							}
-						)
-						
-					} else if(obj.event === 'channelSet') { //通道
+					if (obj.event === 'loginTo') { //直接登录商户后台
+                var shHref = ''
+                var aData = data
+                CmsUtility.postAjaxCall2(
+                    //系统设置
+                    'https://nb.51shanhe.com/shanhe-admin/basicSetting/getInsRegInfo', {
+                'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+            },
+                    function(data) {
+                        if (data.code == 1000) {
+                    shHref = data.data[0].merchantRoute
+                    if (shHref == '') {
+                        layer.msg('未获取到商户路径')
+                    }
+                    var merHref = shHref + '/index.html?number=' + aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                    window.open(merHref)
+                } else {
+                    layer.msg(data.msg)
+
+                }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+
+            } else if(obj.event === 'channelSet') { //通道
 						layer.open({
 							type: 2,
 							title: '通道-' + data.merchantName,

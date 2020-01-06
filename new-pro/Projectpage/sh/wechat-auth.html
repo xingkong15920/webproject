@@ -383,7 +383,25 @@
 			var merchantca = false;
 			var type;
 			var logoUrl = '';
-
+			var shHref 
+			CmsUtility.postAjaxCall2(
+								//系统设置
+				 'https://nb.51shanhe.com/shanhe-admin/basicSetting/getInsRegInfo', {
+                    'institutionNumber': insNumber,
+                },
+				function(data){
+					if(data.code == 1000){
+						shHref = isHttps(data.data[0].interfaceAddress )
+						
+					}else{
+						layer.msg(data.msg)
+						
+					}
+				},
+				function(data){
+					console.log('222')
+				}
+			)
 			function switchPwd() {
 				var passwordeye = $('#passwordeye');
 				var showPwd = $("#miyao");
@@ -484,7 +502,7 @@
 										type: 2,
 										title: '微信授权',
 										area: ['90%', '90%'],
-										content: 'http://api.51shanhe.com/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(
+										content: shHref + '/wechatAuth/authBack.html?merchantNumber=' + JSON.parse(
 											sessionStorage
 											.getItem('userSh')).Number + '&authType=1&operationType=1',
 										success: function(layero, index) {

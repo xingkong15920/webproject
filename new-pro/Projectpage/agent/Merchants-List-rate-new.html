@@ -184,6 +184,7 @@
 							layer.load(2, {
 								shade: [0.4, '#393D49']
 							})
+							layer.closeAll()
 							CmsUtility.postAjaxCall(
 								//系统设置
 								'agMerchant/attestationSubmit',
@@ -219,6 +220,7 @@
 								icon: 3,
 								title: '提示'
 							}, function(index) {
+								layer.closeAll()
 								layer.load(2, {
 									shade: [0.4, '#393D49']
 								})
@@ -258,7 +260,8 @@
 						}
 					}
 					window.ewm = function(data) {
-						
+						console.log(data)
+						var data = data.split('|')[1]
 						var tjData = new Object()
 						tjData.merchantNumber = jgData.merchantNumber
 						tjData.subaccountNumber = data
@@ -451,6 +454,7 @@
 										var str1 = "'" + data.subaccountNumber + '|' + data.paymentType + '|' + data.paymentChannel + '|' +
 											data.merchantType + '|' + data.merchantNumber + "'"
 										// console.log(str1)
+										var sub = "'" + data.subaccountNumber + "'"
 										switch (data.wxApplyStatus) {
 											case -1:
 												return '未入驻微信'
@@ -469,19 +473,19 @@
 												break;
 											case 3:
 												str += '待联系人确认信息' + '</br>'
-												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + data.subaccountNumber +
+												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + sub +
 													')" >小程序码</span>'
 												return str
 												break;
 											case 4:
 												str += '待法人授权' + '</br>'
-												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + data.subaccountNumber +
+												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + sub +
 													')">小程序码</span>'
 												return str
 												break;
 											case 5:
 												str += '待门店授权' + '</br>'
-												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + data.subaccountNumber +
+												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + sub +
 													')">小程序码</span>'
 												return str
 												break;
@@ -493,7 +497,7 @@
 												break;
 											case 7:
 												str += '已冻结' + '</br>'
-												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + data.subaccountNumber +
+												str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + sub +
 													')">小程序码</span>'
 												return str
 												break;

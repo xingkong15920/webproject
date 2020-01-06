@@ -572,8 +572,8 @@
             var w = that.width,
                 h = that.height,
                 scale = w / h;
-            w = 800;
-            h = 800 / scale;
+            w = 1200;
+            h = 1200 / scale;
             var quality = 0.8; // 默认图片质量为0.7
             //生成canvas
             var canvas = document.createElement('canvas');
@@ -1914,8 +1914,8 @@
                             "juridicalpersonId": merInfo.juridicalpersonId,
                             "juridicalpersonName": merInfo.juridicalpersonName,
                             "registerCell": merInfo.registerCell,
-                            "juridicalpersonIdTime": merInfo.juridicalPersonIDEndTime,
-                            "juridicalPersonIDEndTime": merInfo.juridicalpersonIdTime,
+                            "juridicalpersonIdTime": merInfo.juridicalpersonIdTime,
+                            "juridicalPersonIDEndTime": merInfo.juridicalPersonIDEndTime,
                             "juridicalPersonIDType": merInfo.juridicalPersonIDType == 0 ? true : false,
 
                             "bankCardNo": merInfo.bankCardNo,
@@ -1951,28 +1951,36 @@
             businessLicense = imgList['businessLicense'] || ''
             openingPermit = imgList['openingPermit'] || ''
             holdId = imgList['holdId'] || ''
-            if (cashier == '' || placeBusiness == '' || doorheadPhoto == '' || juridicalpersonIdPositive == '' || juridicalpersonIdReverseside == '' || bankCardPositive == '') {
-                layer.msg('请补充图片信息')
-                return false
-            }
-            if (merType != 0) {
-                if (businessLicense == '') {
-                    layer.msg('请补充图片信息')
-                    return false
-                }
-            }
-            if (merType == 2) {
-                if (openingPermit == '') {
-                    layer.msg('请补充图片信息')
-                    return false
-                }
-            }
-            if (merType == 0) {
-                if (holdId == '') {
-                    layer.msg('请补充图片信息')
-                    return false
-                }
-            }
+            if (cashier == '' || placeBusiness == '' || doorheadPhoto == '' || juridicalpersonIdPositive == '' ||
+                            juridicalpersonIdReverseside == '') {
+
+                            layer.msg('请补充图片信息')
+                            return false
+                        }
+                        if (merType != 0) {
+                            if (businessLicense == '') {
+                                layer.msg('请补充图片信息')
+                                return false
+                            }
+                        }
+                        if (merType == 2) {
+                            if (openingPermit == '') {
+                                layer.msg('请补充图片信息')
+                                return false
+                            }
+                        }
+                        if (merType == 0) {
+                            if (holdId == '') {
+                                layer.msg('请补充图片信息')
+                                return false
+                            }
+                        }
+                        if (merType != 2) {
+                            if (bankCardPositive == '') {
+                                layer.msg('请补充图片信息')
+                                return false
+                            }
+                        }
             // var arr = new Array();
             // $("input:checkbox[name='payment']:checked").each(function(i) {
             //     arr[i] = $(this).val();

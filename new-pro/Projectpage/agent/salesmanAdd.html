@@ -25,13 +25,22 @@
 						<blockquote class="layui-elem-quote"><i class="iconfont icon-wode"></i>账号添加</blockquote>
 						<div class="layui-form-item">
 							<div class="layui-input-item">
-								<span style="color:red;display:block;margin-left:30px">*费率单位为百分比，示例：0.38%</span>
+								<span style="color:red;display:block;margin-left:30px">*费率自定义输入，格式为%展示，保留小数点后两位</span>
+							</div>
+							<div class="layui-input-item">
+								<span style="color:red;display:block;margin-left:30px">*不得高于1.00</span>
 							</div>
 							<div class="layui-input-item">
 								<span style="color:red;display:block;margin-left:30px">*云闪付费率1为单笔1000以内包括1000所设置</span>
 							</div>
 							<div class="layui-input-item">
 								<span style="color:red;display:block;margin-left:30px">*云闪付费率2为单笔1000以上所设置</span>
+							</div>
+							<div class="layui-input-item">
+								<span style="color:red;display:block;margin-left:30px">*抽成比例为0-100,用于计算服务商与商户之间，佣金的分配比例</span>
+							</div>
+							<div class="layui-input-item">
+								<span style="color:red;display:block;margin-left:30px">*抽成比例计算公式：销售佣金 =（商户签约费率-代理商费率）* 商户流水 * 抽成比例</span>
 							</div>
 						</div>
 						<div class="layui-form-item">
@@ -59,9 +68,9 @@
 							</div>
 						</div>
 						<div class="layui-form-item">
-							<label class="layui-form-label">支/微费率(%)</label>
+							<label class="layui-form-label">支/微最低费率(%)</label>
 							<div class="layui-input-inline">
-								<input type="text" id="aliRate" name="aliRate" required="" lay-verify="aliRate" autocomplete="off" class="layui-input">
+								<input type="text" id="aliRate" name="aliRate" required="" lay-verify="aliRate" autocomplete="off" class="layui-input" placeholder="建议0.23-0.6之间">
 							</div>
 						</div>
 						<!-- <div class="layui-form-item">
@@ -71,24 +80,24 @@
 							</div>
 						</div> -->
 						<div class="layui-form-item">
-							<label class="layui-form-label">云闪付费率1(%)</label>
+							<label class="layui-form-label">云闪付1最低费率(%)</label>
 							<div class="layui-input-inline">
 								<input type="text" id="unionPayRate" name="unionPayRate" required="" lay-verify="unionPayRate" autocomplete="off"
-								 class="layui-input">
+								 class="layui-input" placeholder="建议0.23-0.6之间">
 							</div>
 						</div>
 						<div class="layui-form-item">
-							<label class="layui-form-label">云闪付费率2(%)</label>
+							<label class="layui-form-label">云闪付2最低费率(%)</label>
 							<div class="layui-input-inline">
 								<input type="text" id="unionPayRatetwo" name="unionPayRatetwo" required="" lay-verify="unionPayRatetwo"
-								 autocomplete="off" class="layui-input">
+								 autocomplete="off" placeholder="建议0.53-1.00之间" class="layui-input">
 							</div>
 						</div>
 						<div class="layui-form-item">
 							<label class="layui-form-label">抽成比例(%)</label>
 							<div class="layui-input-inline">
 								<input type="number" id="percentage" name="percentage" required="" lay-verify="percentage"
-								 autocomplete="off" class="layui-input">
+								 autocomplete="off" class="layui-input" placeholder="建议1-100之间">
 							</div>
 						</div>
 						<!--<div class="layui-form-item">
@@ -155,7 +164,7 @@
 					},
 					aliRate: function(value) {
 						if (!value.length) {
-							return '支付宝费率不能为空'
+							return '费率不能为空'
 						}
 						if (isNaN(value) == true) {
 							return '请输入数字'
@@ -171,8 +180,8 @@
 						if (isNaN(value) == true) {
 							return '请输入数字'
 						}
-						if (value < 0.20 || value > 1) {
-							return '费率需在0.20-1之间'
+						if (value < 0 || value > 1) {
+							return '费率需在0-1之间'
 						}
 					},
 					unionPayRate: function(value) {
@@ -241,6 +250,7 @@
 					addData.weChatRate = addData.aliRate
 					addData.unionPayRate = (addData.unionPayRate / 10000 * 100).toFixed(4)
 					addData.unionPayRatetwo = (addData.unionPayRatetwo / 10000 * 100).toFixed(4)
+					addData.percentage = (addData.percentage / 10000 * 100).toFixed(4)
 					console.log(addData)
 					// 发送请求
 					var index = layer.load(2, {

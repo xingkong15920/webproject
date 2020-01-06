@@ -93,7 +93,7 @@
 </head>
 
 <body id="iosiframe">
-   <div class="x-body">
+    <div class="x-body">
         <div class="layui-row">
             <div class="layui-form" action="" lay-filter="cardAdd">
                 <!--隐藏-->
@@ -102,7 +102,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">选择位置</label>
                     <div class="layui-input-inline widthauto">
-                         <input type="radio" name="selectedPosition" value="0" title="支付后广告" lay-filter="add" checked="true">
+                        <input type="radio" name="selectedPosition" value="0" title="支付后广告" lay-filter="add" checked="true">
                         <input type="radio" name="selectedPosition" value="1" title="APP加载" lay-filter="add">
                         <input type="radio" name="selectedPosition" value="2" title="APP首页" lay-filter="add">
                         <input type="radio" name="selectedPosition" value="3" title="小程序首页" lay-filter="add">
@@ -126,12 +126,13 @@
                 </div>
                 <div class="layui-form-item image">
                     <label class="layui-form-label">图片地址</label>
-                     <div class="layui-input-block" id="tips">
+                    <div class="layui-input-block" id="tips">
                         <span>推荐尺寸：</span>
                         <span>*闪屏页：1920*1080；</span>
                         <span>*支付后广告：750*1200；</span>
                         <span>*首页图：1920*1080；</span>
                         <span>*小程序：750*1334；</span>
+                        <span>*刷脸后：720*400；</span>
                         <span>*单位：px</span>
                     </div>
                     <div class="layui-input-block image">
@@ -185,7 +186,6 @@
                         <input type="text" name="endTime" lay-verify="title" autocomplete="off" placeholder="请选择时间" class="layui-input" id="time2">
                     </div>
                 </div>
-                
                 <div class="layui-form-item">
                     <label class="layui-form-label">投放渠道</label>
                     <div class="layui-input-inline widthauto">
@@ -211,6 +211,7 @@
     <script>
     var logoUrl
     var oldAdd;
+
     function subPage(data, data1) {
         var jgData;
         jgData = data
@@ -244,11 +245,11 @@
             form.val('cardAdd', {
                 "name": jgData.name,
                 "selectedPosition": jgData.selectedPosition.toString(),
-                "advertType":jgData.advertType.toString(),
+                "advertType": jgData.advertType.toString(),
                 "url": jgData.url,
-                "describe":jgData.describe,
+                "describe": jgData.describe,
                 "startTime": jgData.startTime,
-                "describe1":jgData.describe,
+                "describe1": jgData.describe,
                 "endTime": jgData.endTime,
                 "state": jgData.state == 0 ? true : false,
                 "launchChannel": jgData.launchChannel.toString()
@@ -278,63 +279,63 @@
                         break;
                 }
             })
-        form.on('radio(add)', function(data) {
-            switch (data.value) {
-                case "0":
+            form.on('radio(add)', function(data) {
+                switch (data.value) {
+                    case "0":
 
-                    $('#test1').css({
-                        "width": "250px",
-                        "height": "300px"
-                    })
-                    form.val('cardAdd', {
+                        $('#test1').css({
+                            "width": "250px",
+                            "height": "300px"
+                        })
+                        form.val('cardAdd', {
 
-                        "launchChannel": '0'
-                    })
-                    break;
-                case "1":
-                    console.log('123')
-                    $('#test1').css({
-                        "width": "480px",
-                        "height": "270px"
-                    })
-                    break;
-                case "2":
-                    console.log('123')
-                    $('#test1').css({
-                        "width": "480px",
-                        "height": "270px"
-                    })
-                    break;
-                case "3":
-                    console.log('123')
-                    $('#test1').css({
-                        "width": "250px",
-                        "height": "300px"
-                    })
-                    break;
-                case "4":
-                    form.val('cardAdd', {
+                            "launchChannel": '0'
+                        })
+                        break;
+                    case "1":
+                        console.log('123')
+                        $('#test1').css({
+                            "width": "480px",
+                            "height": "270px"
+                        })
+                        break;
+                    case "2":
+                        console.log('123')
+                        $('#test1').css({
+                            "width": "480px",
+                            "height": "270px"
+                        })
+                        break;
+                    case "3":
+                        console.log('123')
+                        $('#test1').css({
+                            "width": "250px",
+                            "height": "300px"
+                        })
+                        break;
+                    case "4":
+                        form.val('cardAdd', {
 
-                        "launchChannel": '1'
-                    })
-                    break;
-                case "5":
-                    form.val('cardAdd', {
+                            "launchChannel": '1'
+                        })
+                        break;
+                    case "5":
+                        form.val('cardAdd', {
 
-                        "launchChannel": '2'
-                    })
-                    break;
-                default:
-                    // statements_def
-                    break;
-            }
-        });
-            if(jgData.advertType == 0){
+                            "launchChannel": '2'
+                        })
+                        break;
+                    default:
+                        // statements_def
+                        break;
+                }
+            });
+            if (jgData.advertType == 0) {
                 $('#demo1').attr('src', jgData.address)
-            }else{
+            } else {
                 $('#logo2').attr('src', jgData.address)
             }
-            
+
 
 
             form.on('radio(add)', function(data) {
@@ -386,73 +387,74 @@
 
 
             /*---------- 普通图片上传 ----------*/
-             var uploadInst = upload.render({
-            elem: '#test1',
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
-            data: {
-                "institutionNumber": userNumber,
-            },
-            before: function(obj) {
-                //预读本地文件示例，不支持ie8
-                obj.preview(function(index, file, result) {
-                    $('#demo1').attr('src', result); //图片链接（base64）
-                });
-            },
-            done: function(res) {
-                //如果上传失败
-                console.log(res)
-                if (res.code != 1000) {
-                    return layer.msg('上传失败');
-                } else {
-                    logoUrl = res.data
+            var uploadInst = upload.render({
+                elem: '#test1',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#demo1').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        logoUrl = res.data
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function() {
+                        uploadInst.upload();
+                    });
                 }
-                //上传成功
-            },
-            error: function() {
-                //演示失败状态，并实现重传
-                var demoText = $('#demoText');
-                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-                demoText.find('.demo-reload').on('click', function() {
-                    uploadInst.upload();
-                });
-            }
-        });
-        //上传视频
-        var uploadInst1 = upload.render({
-            elem: '#test2',
-            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addVideo,
-            field: "file",
-            data: {
-                "institutionNumber": userNumber,
-            },
-            accept: 'video' ,//视频,
-            acceptMime:'mp4',
-            size:'11000',
-            before:function(obj){
-                // $('#demo1').hide()
-                // console.log(obj)
-                var index = layer.load(2, {shade: [0.4, '#393D49']})
-            },
-            done: function(res) {
-                console.log(res)
-                if(res.code == 1000){
-                    $('#demo2').hide()
-                    $('#logo2').attr('src',res.data)
-                    logoUrl = res.data
-                    layer.closeAll()
-                }else{
-                    layer.msg(res.msg)
+            });
+            //上传视频
+            var uploadInst1 = upload.render({
+                elem: '#test2',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addVideo,
+                field: "file",
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                accept: 'video', //视频,
+                acceptMime: 'mp4',
+                size: '11000',
+                before: function(obj) {
+                    // $('#demo1').hide()
+                    // console.log(obj)
+                    var index = layer.load(2, { shade: [0.4, '#393D49'] })
+                },
+                done: function(res) {
+                    console.log(res)
+                    if (res.code == 1000) {
+                        $('#demo2').hide()
+                        $('#logo2').attr('src', res.data)
+                        logoUrl = res.data
+                        layer.closeAll()
+                    } else {
+                        layer.msg(res.msg)
+                    }
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText1');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function() {
+                        uploadInst.upload();
+                    });
                 }
-            },
-            error: function() {
-                //演示失败状态，并实现重传
-                var demoText = $('#demoText1');
-                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
-                demoText.find('.demo-reload').on('click', function() {
-                    uploadInst.upload();
-                });
-            }
-        });
+            });
             /*---------- 自定义验证规则 ----------*/
             form.verify({
                 title: function(value) {
@@ -481,7 +483,7 @@
                 }
                 data.number = jgData.number
                 data.address = logoUrl
-                if(data.address != oldAdd){
+                if (data.address != oldAdd) {
                     data.oldAdress = oldAdd
                 }
                 data.startTime = data.startTime + ' 00:00:00'

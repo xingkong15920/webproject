@@ -385,6 +385,7 @@
                 data: {
                 "agentNumber": userNumber,
             },
+            size:1024,
                 before: function(obj) {
                     //预读本地文件示例，不支持ie8
                     obj.preview(function(index, file, result) {
@@ -478,11 +479,13 @@
                 data.startTime = data.startTime + ' 00:00:00'
                 data.endTime = data.endTime + ' 23:59:59'
                 // if()
+                 var index = layer.load(2, { shade: [0.4, '#393D49'] })
                 CmsUtility.postAjaxCall1(
                     //系统设置
                     CmsConfig.addressUrl.Agent.updateAdvertising,
                     data,
                     function(data) {
+                        layer.closeAll()
                         if (data.code == 1000) {
                             setTimeout(function() { parent.layer.close(index) }, 16);
                             parent.layer.msg('保存成功')
