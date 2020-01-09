@@ -95,6 +95,7 @@
 	<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/sweetalert.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
 	<script src="./common/config.js"></script>
 	<script src="./common/utility.js"></script>
 	<script>
@@ -314,5 +315,25 @@
 				}
 			});
 		}
+		$(function() {
+			pushHistory();
+			window.addEventListener("popstate", function(e) {
+				if (/MicroMessenger/.test(window.navigator.userAgent)) {
+					// 微信
+					WeixinJSBridge.call('closeWindow');
+				} else if (/AlipayClient/.test(window.navigator.userAgent)) {
+					// 支付宝
+					AlipayJSBridge.call('popWindow');
+				}
+			}, false);
+
+			function pushHistory() {
+				var state = {
+					title: "title",
+					url: "#"
+				};
+				window.history.pushState(state, "title", "#");
+			}
+		})
 	</script>
 </html>
