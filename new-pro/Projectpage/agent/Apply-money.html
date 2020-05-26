@@ -76,7 +76,7 @@ input[type="number"]{ -moz-appearance: textfield; }
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red"></span></label>
 									<div class="layui-input-inline">
-										<span>已结算余额 <span id="alsoMoney" style="color:red"></span> 元<span>/待结算余额 <span id="canMoney" style="color:red"></span> 元/最小提现金额100元</span>
+										<span>待结算余额 <span id="alsoMoney" style="color:red"></span> 元<span>/可提现金额 <span id="canMoney" style="color:red"></span> 元/最小提现金额100元</span>
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -89,7 +89,7 @@ input[type="number"]{ -moz-appearance: textfield; }
 									<label class="layui-form-label"><span class="x-red"></span></label>
 									<div class="layui-input-inline">
 										<span style="color:red">备注:打款金额+税点=发票金额，
-										发票金额不得大于账号余额</span>
+										发票金额不得大于可提现金额</span>
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -231,9 +231,9 @@ input[type="number"]{ -moz-appearance: textfield; }
 			        },
 			        function(data){
 			            if(data.code == 1000){
-			            	lostMoney = data.data.agentBalance
-			               $('#canMoney').html(data.data.agentBalance)
-			               $('#alsoMoney').html(data.data.agentBalance)
+			            	lostMoney = data.data.realAgentBalance
+			               $('#canMoney').html(data.data.realAgentBalance)
+			               $('#alsoMoney').html(data.data.settlementCountMoney)
 			               
 			            }else{
 			                layer.msg(data.msg)

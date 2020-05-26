@@ -48,7 +48,7 @@
                     <input type="text" id="tell" name="tell" required="" lay-verify="title" autocomplete="off" class="layui-input" >
                 </div>
             </div>
-            <div class="layui-form-item">
+            <!-- <div class="layui-form-item">
                 <label for="username" class="layui-form-label">
                     <span class="x-red">*</span> 分销人等级
                 </label>
@@ -58,7 +58,7 @@
                             
                         </select>
                 </div>
-            </div>
+            </div> -->
            <div class="layui-form-item">
                 <label class="layui-form-label">分销人类型</label>
                 <div class="layui-input-block" id="franchiseType">
@@ -105,7 +105,7 @@
 
             CmsUtility.postAjaxCall2(
                 //系统设置
-                CmsConfig.ServiceUrl.ApiRootUrlMeb +'accountManage/getDistributionLevel',
+                'http://api.51shanhe.com/p-sepaccount/accountManage/getDistributionLevel',
                 {
                     "merchantNumber":userNumber,
                     "institutionNumber":JSON.parse(sessionStorage.getItem('userSh')).institutionNumber,
@@ -118,9 +118,9 @@
                 function(data) {
                     if (data.code == 1000) {
                         var str = '<option value="">分账等级</option>'
-                        for(var i = 0 ; i < data.data.resultMap.length;i++){
-                            str += '<option value="'+ data.data.resultMap[i].gradeNo +'">'+data.data.resultMap[i].gradeName  +'</option>'
-                        }
+                        // for(var i = 0 ; i < data.data.resultMap.length;i++){
+                        //     str += '<option value="'+ data.data.resultMap[i].gradeNo +'">'+data.data.resultMap[i].gradeName  +'</option>'
+                        // }
                         $('#gradeNumber').html(str)
                         console.log('123')
                         
@@ -201,7 +201,7 @@
             addData.id = jgData.id
             CmsUtility.postAjaxCall2(
                 //系统设置
-                CmsConfig.ServiceUrl.ApiRootUrlMeb +'accountManage/updateDistributionInfo',
+                'http://api.51shanhe.com/p-sepaccount/accountManage/updateDistributionInfo',
                 addData,
                 function(data) {
                     if (data.code == 1000) {

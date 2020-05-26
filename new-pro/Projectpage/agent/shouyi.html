@@ -61,6 +61,10 @@
     p {
         font-size: 16px;
     }
+    tbody:last-child tr:last-child{
+        color:red;
+        border-top: 2px solid  black;
+    }
     </style>
 </head>
 
@@ -110,7 +114,7 @@
                         退款总笔数
                     </div>
                     <div style="line-height:50px;font-size:16px" id="refundTotalCount">
-                        0元
+                        0
                     </div>
                 </div>
             </div>
@@ -198,7 +202,84 @@
         }
         return a + '-' + b + '-' + c
     }
-	
+	function reData(data) {
+                
+        var oob = new Object()
+        oob.transactionNumber = 0
+        oob.transactionMoney = 0
+        oob.transactionSYMoney = 0
+        oob.wTransactionNumber = 0
+        oob.fytransactionNumber = 0
+        oob.wTransactionMoney = 0
+        oob.wTransactionSYMoney = 0
+        oob.zTransactionNumber = 0
+        oob.zTransactionMoney = 0
+        oob.zTransactionSYMoney = 0
+        oob.zTransactionNumber = 0
+        oob.fytransactionMoney = 0
+        oob.fytransactionfrMoney = 0
+        oob.xdltransactionNumber = 0
+        oob.xdltransactionMoney = 0
+        oob.xdltransactionfrMoney = 0
+        oob.sxftransactionNumber = 0
+        oob.sxftransactionMoney = 0
+        oob.sxftransactionfrMoney = 0
+        oob.lstransactionNumber = 0
+        oob.lstransactionMoney = 0
+        oob.lstransactionfrMoney = 0
+        oob.Statement_Date = '本页合计'
+        oob.merCount = '--'
+        oob.dxMercount = '--'
+        for (var i = 0; i < data.length; i++) {
+            oob.importExportAmount += parseFloat(data[i].importExportAmount)
+            oob.transactionNumber += parseFloat(data[i].transactionNumber)
+            oob.transactionMoney += parseFloat(data[i].transactionMoney)
+            oob.transactionSYMoney += parseFloat(data[i].transactionSYMoney)
+            oob.wTransactionNumber += parseFloat(data[i].wTransactionNumber)
+            oob.wTransactionMoney += parseFloat(data[i].wTransactionMoney)
+            oob.wTransactionSYMoney += parseFloat(data[i].wTransactionSYMoney)
+            oob.zTransactionNumber += parseFloat(data[i].zTransactionNumber)
+            oob.zTransactionMoney += parseFloat(data[i].zTransactionMoney)
+            oob.zTransactionSYMoney += parseFloat(data[i].zTransactionSYMoney)
+            oob.fytransactionNumber += parseFloat(data[i].fytransactionNumber)
+            console.log(oob.fytransactionNumber)
+            oob.fytransactionMoney += parseFloat(data[i].fytransactionMoney)
+            oob.fytransactionfrMoney += parseFloat(data[i].fytransactionfrMoney)
+            oob.xdltransactionNumber += parseFloat(data[i].xdltransactionNumber)
+            oob.xdltransactionMoney += parseFloat(data[i].xdltransactionMoney)
+            oob.xdltransactionfrMoney += parseFloat(data[i].xdltransactionfrMoney)
+            oob.sxftransactionNumber += parseFloat(data[i].sxftransactionNumber)
+            oob.sxftransactionMoney += parseFloat(data[i].sxftransactionMoney)
+            oob.sxftransactionfrMoney += parseFloat(data[i].sxftransactionfrMoney)
+            oob.lstransactionNumber += parseFloat(data[i].lstransactionNumber)
+            oob.lstransactionMoney += parseFloat(data[i].lstransactionMoney)
+            oob.lstransactionfrMoney += parseFloat(data[i].lstransactionfrMoney)
+        }
+        oob.importExportAmount = parseFloat(oob.importExportAmount).toFixed(2)
+        oob.transactionNumber = parseFloat(oob.transactionNumber).toFixed(2)
+        oob.transactionMoney = parseFloat(oob.transactionMoney).toFixed(2)
+        oob.transactionSYMoney = parseFloat(oob.transactionSYMoney).toFixed(2)
+        oob.wTransactionNumber = parseFloat(oob.wTransactionNumber).toFixed(2)
+        oob.wTransactionMoney = parseFloat(oob.wTransactionMoney).toFixed(2)
+        oob.wTransactionSYMoney = parseFloat(oob.wTransactionSYMoney).toFixed(2)
+        oob.zTransactionNumber = parseFloat(oob.zTransactionNumber).toFixed(2)
+        oob.zTransactionMoney = parseFloat(oob.zTransactionMoney).toFixed(2)
+        oob.zTransactionSYMoney = parseFloat(oob.zTransactionSYMoney).toFixed(2)
+        oob.fytransactionNumber = parseFloat(oob.fytransactionNumber)
+        oob.fytransactionMoney = (oob.fytransactionMoney).toFixed(2)
+        oob.fytransactionfrMoney = (oob.fytransactionfrMoney).toFixed(2)
+        oob.xdltransactionNumber = (oob.xdltransactionNumber).toFixed(2)
+        oob.xdltransactionMoney = (oob.xdltransactionMoney).toFixed(2)
+        oob.xdltransactionfrMoney = (oob.xdltransactionfrMoney).toFixed(2)
+        oob.sxftransactionNumber = (oob.sxftransactionNumber).toFixed(2)
+        oob.sxftransactionMoney = (oob.sxftransactionMoney).toFixed(2)
+        oob.sxftransactionfrMoney = (oob.sxftransactionfrMoney).toFixed(2)
+        oob.lstransactionNumber = (oob.lstransactionNumber).toFixed(2)
+        oob.lstransactionMoney = (oob.lstransactionMoney).toFixed(2)
+        oob.lstransactionfrMoney = (oob.lstransactionfrMoney).toFixed(2)
+        data.push(oob)
+        return data
+    }
 	function verTime() {
 		var arr1 = $('#startTime').val().split('-');
 		var arr2 = $('#endTime').val().split('-');
@@ -339,11 +420,16 @@
                         if (data.code == 1000) {
                             $("#totalCount").html(data.data.agentBillMap[0].totalCount)
                             $("#orderTotalMoney").html(data.data.agentBillMap[0].orderTotalMoney + '元')
-                            $("#refundTotalMoney").html(data.data.agentBillMap[0].refundTotalMoney)
-                            $("#refundTotalCount").html(data.data.agentBillMap[0].refundTotalCount + '元')
+                            $("#refundTotalMoney").html(data.data.agentBillMap[0].refundTotalMoney + '元')
+                            $("#refundTotalCount").html(data.data.agentBillMap[0].refundTotalCount)
                             $("#poundage").html(data.data.agentBillMap[0].poundage + '元')
                             $("#income").html(data.data.agentBillMap[0].income + '元')
-                            $("#junjia").html((parseFloat(data.data.agentBillMap[0].orderTotalMoney)/parseFloat()).toFixed(2) + '元')
+                            if(parseFloat(data.data.agentBillMap[0].totalCount) == 0){
+                                $("#junjia").html('0元')
+                            }else{
+                                $("#junjia").html((parseFloat(data.data.agentBillMap[0].orderTotalMoney)/parseFloat(data.data.agentBillMap[0].totalCount)).toFixed(2) + '元')
+                            }
+                            
                             $("#SettlementCountMoney").html(data.data.agentBillMap[0].SettlementCountMoney + '元')
 
                         } else {
@@ -385,7 +471,7 @@
                             "msg": res.msg,
                             "code": res.code,
                             "count": res.data.count,
-                            "data": res.data.agentBillList,
+                            "data": reData(res.data.agentBillList),
                         }
                     },
                     cols: [
@@ -430,13 +516,6 @@
                             }
                         }, {
                             field: 'shopPoundage',
-                            title: '云闪付' + '</br>' + '总笔数/总金额/总收益',
-                            align: 'center',
-                            templet: function(data) {
-                                return  data.zTransactionNumber + ' / ￥' + data.zTransactionMoney + ' / ￥' + data.zTransactionSYMoney
-                            }
-                        }, {
-                            field: 'shopPoundage',
                             title: '富友' + '</br>' + '总笔数/总金额/总收益',
                             align: 'center',
                             templet: function(data) {
@@ -449,14 +528,14 @@
                             templet: function(data) {
                                 return  data.xdltransactionNumber + ' / ￥' + data.xdltransactionMoney + ' / ￥' + data.xdltransactionfrMoney
                             }
-                        }
-                        , {
-                            field: 'shopPoundage',
-                            title: '易融码' + '</br>' + '总笔数/总金额/总收益',
-                            align: 'center',
-                            templet: function(data) {
-                                return  data.yrmtransactionNumber + ' / ￥' + data.yrmtransactionMoney + ' / ￥' + data.yrmtransactionfrMoney
-                            }
+                        // }
+                        // , {
+                        //     field: 'shopPoundage',
+                        //     title: '易融码' + '</br>' + '总笔数/总金额/总收益',
+                        //     align: 'center',
+                        //     templet: function(data) {
+                        //         return  data.yrmtransactionNumber + ' / ￥' + data.yrmtransactionMoney + ' / ￥' + data.yrmtransactionfrMoney
+                        //     }
                         } , {
                             field: 'shopPoundage',
                             title: '随行付' + '</br>' + '总笔数/总金额/总收益',

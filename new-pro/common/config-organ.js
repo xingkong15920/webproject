@@ -9,7 +9,7 @@ if(Edition == 'qty'){
     server = 'https://nb.51shanhe.com/shanhe-admin/'
     publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }else{
-	server  = 'http://192.168.1.167:6005/shanhe-admin/'
+	server  = 'http://192.168.1.250:6005/shanhe-admin/'
     publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }
 /* 
@@ -17,7 +17,7 @@ if(Edition == 'qty'){
 get 获取
 update 更新
 insert  插入
-del  删除
+del  删除 `
 */
 var CmsConfig = {
 

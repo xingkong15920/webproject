@@ -10,6 +10,8 @@
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <link rel="stylesheet" href="../../public/css/xadmin.css">
     <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    
+     <link rel="stylesheet" href="../../public/css/style-baobiao.css">
     <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
 </head>
@@ -19,20 +21,141 @@
 }
 
 .payBox span {
-    padding: 0 10px;
+    padding: 2px 2px;
+    margin-right: 5px;
+    color: white;
 }
 
 .layui-btn .layui-btn-xs {
     margin-left: 3px;
 }
+.layui-btn+.layui-btn {
+    margin-left: 5px;
+}
 </style>
+<style type="text/css">
+    .index-zs .layui-col-md5 {
+        width: 20%;
+        text-align: center;
+    }
+    
+    .homelistitle {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #999;
+    }
 
+    .homelistc:last-child {
+        margin-bottom: 20px;
+    }
+
+    .homelistc {
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span i {
+        font-style: normal;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    p {
+        font-size: 16px;
+    }
+    .baobiaoK{
+        height: 86px;
+    }
+    #tips{
+        width: 14px;
+        height: 14px;
+        line-height: 14px;
+        text-align: center;
+        color: red;
+        border-radius: 50%;
+        margin-left: 10px;
+        display: inline-block;
+        cursor: pointer;
+        z-index: 999;
+    }
+    </style>
 <body>
     <div class="x-nav">
         <span class="layui-breadcrumb"><a href="">首页</a><a><cite>商户管理</cite></a></span>
         <a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);" title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
     </div>
     <div class="x-body">
+        <div class="baobiao" style="width:100%;height:110px;display: none" id="baobiao1" >
+            <div class="baobiao-col-1" style="padding-left: 0;">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:32px;font-size:16px">
+                        全部商户
+                    </div>
+                    <div style="line-height:30px;font-size:16px" id="merchantCount">
+                        0
+                    </div>
+                </div>
+            </div>
+            <div class="baobiao-col-1 jianhao" style="padding-right:0;position:relative">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:32px;font-size:16px">
+                        已审核
+                    </div>
+                    <div style="line-height:30px;font-size:16px;font-weight:0.3;color:green" id="auditPassMerchant">
+                        0
+                    </div>
+                </div>
+            </div>
+            
+            <div class="baobiao-col-1 jianhao" style="padding-right: 0;">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:32px;font-size:16px">
+                        待审核
+                    </div>
+                    <div style="line-height:30px;font-size:16px;font-weight:0.3;color:#FFA20A" id="auditedMerchant">
+                        0
+                    </div>
+                </div>
+            </div>
+           
+            <div class="baobiao-col-1 jianhao" style="padding-right: 0;">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:32px;font-size:16px">
+                        驳回
+                    </div>
+                    <div style="line-height:30px;font-size:16px;font-weight:0.3;color:red" id="notpassMerchant">
+                        0
+                    </div>
+                </div>
+            </div>
+            
+            <div class="baobiao-col-1 denghao" style="padding-right: 0;">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:32px;font-size:16px">
+                        本月新增(含下级)
+                    </div>
+                    <div style="line-height:30px;font-size:16px" id="monthMerchant">
+                        0
+                    </div>
+                </div>
+            </div>
+            <div class="baobiao-col-1 denghao" style="padding-right: 0;">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:32px;font-size:16px">
+                        今日新增(含下级)
+                    </div>
+                    <div style="line-height:30px;font-size:16px" id="dayMerchant">
+                        0
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="layui-row layui-form x-so">
             <div class="layui-input-inline text">
                 <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
@@ -55,11 +178,12 @@
                 <input id="saleName" type="text" name="userName" placeholder="销售名称" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-input-inline">
-                <input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline">
-                <input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
-            </div>
+                        <input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
+                    </div>
+
             <div class="layui-input-inline">
                 <select id="merchantStatus" name="state">
                     <option value="">状态</option>
@@ -72,7 +196,7 @@
         <table class="layui-hide" id="LAY_table_merchant" lay-filter="merchant"></table>
         <xblock class="layui-row">
             <button class="layui-btn layui-btn-xs downCode" data-type="getCheckDataall"><i class="layui-icon ">&#xe601;</i>批量禁用商户</button>
-            <button class="layui-btn layui-btn-xs downCode" data-type="saleChange"><i class="layui-icon ">&#xe601;</i>批量更换销售</button>
+            <button class="layui-btn layui-btn-xs downCode" data-type="saleChange"><i class="layui-icon ">&#xe601;</i>批量更换服务商及销售</button>
         </xblock>
     </div>
     <script type="text/html" id="shopName">
@@ -86,19 +210,20 @@
             </br>
             <span>{{d.registerCell}}</span>
         </script> -->
-    <script type="text/html" id="tool">
-        <a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">登录</a>
-        <a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
+     <script type="text/html" id="tool">
+            
+                <a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
             
             <a class="layui-btn layui-btn-xs" lay-event="resetpass">密码</a>
-            <a class="layui-btn layui-btn-xs" lay-event="feilvset">微信认证</a>
+            
             <a class="layui-btn layui-btn-xs" lay-event="codecard">码牌</a>
             <a class="layui-btn layui-btn-xs" lay-event="horn">设备</a>
             <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
             <a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
-            <a class="layui-btn layui-btn-xs" lay-event="tongdao">通道</a>
+            <a class="layui-btn layui-btn-xs" lay-event="feilvset">微信认证</a>
             <a class="layui-btn layui-btn-xs" lay-event="model">增值功能</a>
-            
+            <a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">商户后台</a>
+             <a class="layui-btn layui-btn-xs" id="set" lay-event="set">设置</a>
         </script>
     <script type="text/html" id="toolbar_switch">
         <input type="checkbox" name="switch" value="{{d.merchantStatus}}" lay-skin="switch" lay-filter="consumptionPreferences" data-mername="{{d.merchantNumber}}" lay-text="开|关" {{ d.merchantStatus==0 ? 'checked' : '' }}>
@@ -112,10 +237,15 @@
     // <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
     //<a class="layui-btn layui-btn-xs" lay-event="recomId">ID</a>
     //<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    //<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除</a>
-    var server = 'http://192.168.1.200:6005/shanhe-admin/'
+    var server = 'http://192.168.1.200:6005/../../'
     var paymentList = []
-
+    console.log(!localStorage.getItem("saleN"))
+    
+     if(localStorage.getItem("saleN")){
+        $('#saleName').val(localStorage.getItem("saleN"))
+        localStorage.removeItem("saleN")
+     }
+    
     function changeS(data) {
         var data = data
         for (var i = 0; i < data.length; i++) {
@@ -174,20 +304,47 @@
         )
     }
     //          // 选择日期插件  
-    layui.use(['form', 'laydate', 'table', 'laytpl'], function() {
+    layui.use(['form', 'table','laydate',  'laytpl'], function() {
         var table = layui.table,
-            laydate = layui.laydate,
-            form = layui.form,
+        laydate = layui.laydate,            form = layui.form,
             laytpl = layui.laytpl,
             $ = layui.jquery;
         var index = layer.load(2, { shade: [0.4, '#393D49'] })
         var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
         var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
 
-
+        laydate.render({
+                    elem:"#startTime"
+                })
+                laydate.render({
+                    elem:"#endTime"
+                })
         //方法级渲染
         console.log($('#merchantName').val())
+        CmsUtility.postAjaxCall(
+                    //系统设置
+        'agMerchant/getAgMerchantSummary?institutionNumber=' +JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber+ '&agentNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).Number ,
+        {},
+        function(data) {
+            console.log(data)
+            if (data.code == 1000) {
+                $('#merchantCount').html(data.data.merchantCount)                
+                $('#auditPassMerchant').html(data.data.auditPassMerchant)
+                $('#auditedMerchant').html(data.data.auditedMerchant)
+                $('#notpassMerchant').html(data.data.notpassMerchant)
+                $('#monthMerchant').html(data.data.monthMerchant)
+                $('#dayMerchant').html(data.data.dayMerchant)
 
+                $('#baobiao1').show()
+                form.render()
+            } else {
+                layer.msg(data.msg)
+            }
+        },
+        function(data) {
+            console.log('222')
+        },'get'
+    )
         function tableRender() {
             table.render({
                 url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber,
@@ -200,11 +357,11 @@
                     "agentName": $('#agentName').val().trim(),
                     "registerCell": $('#registerCell').val().trim(),
                     "agentLevel": agentLevel,
-                    "startTime": $('#startTime').val(),
-                    "endTime": $('#endTime').val(),
+                    "startTime":$('#startTime').val(),
+                    "endTime":$('#endTime').val(),
                 },
                 elem: '#LAY_table_merchant',
-                height: 'full-200',
+                height: 'full-100',
                 //method: "post",
                 page: true,
                 id: 'merchantlist',
@@ -259,36 +416,85 @@
                         },
                         width: 150
                     }, {
-                        field: 'agentLevel',
-                        title: '可用通道',
+                        field: 'products',
+                        title: '支付通道',
                         align: 'center',
                         templet: function(data) {
-
+                            // console.log('123')
+                            // var list = data.products.split('|')
+                            // var str = ''
+                            // for(var i = 0 ; i < list.length;i++){
+                            //     if(list[i].indexOf('云闪付') >=0){
+                            //                 continue;
+                            //             }
+                            //     if(i == list.length){
+                            //         str += list[i] 
+                            //     }else{
+                            //         str += list[i] + '</br>'
+                            //     }
+                            // }
+                            // str = str.replace('官方支付宝','直-支')
+                            // str = str.replace('官方微信','直-微')
+                            // str = str.replace('富友','间-富')
+                            // str = str.replace('新大陆','间-新')
+                            // str = str.replace('随行付','间-随')
+                            // str = str.replace('乐刷','间-乐')
+                            // return str
+                            if (data.products.indexOf('|') >= 0) {
+                                    var list = data.products.split('|')
+                                    if(list[0].split(':')[1] == '无通道'){
+                                          var  str = '<span>'+ list[0].split(':')[0]+ ':<span style="color:red">'+ list[0].split(':')[1] +'</span>' +'</span>'+ '</br>'
+                                        }else{
+                                             var  str = list[0] + '</br>'
+                                        }
+                                    for (var i = 1; i < list.length; i++) {
+                                        
+                                        if(list[i].indexOf('云闪付') >=0){
+                                            continue;
+                                        }
+                                        if(list[i].split(':')[1] == '无通道'){
+                                            str += '<span>'+ list[i].split(':')[0]+ ':<span style="color:red">'+ list[i].split(':')[1] +'</span>' +'</span>'+ '</br>'
+                                        }else{
+                                            str += list[i] + '</br>'
+                                        }
+                                        
+                                    }
+                                    return str
+                                } else {
+                                    return data.products
+                                }
+                        },
+                        width: 120
+                    }, {
+                        field: 'agentLevel',
+                        title: '可用通道' + '<i class="layui-icon" id="tips">&#xe702;</i>',
+                        align: 'center',
+                        templet: function(data) {
                             if (data.paymentChannels == '') {
                                 return '暂无可用通道'
                             } else {
                                 var nArr = new Array()
                                 var listArr = data.paymentChannels.split('|')
-                                for (var j = 0; j < listArr.length; j++) {
+                                for(var j = 0 ; j < listArr.length;j++){
                                     var nO = new Object()
                                     var nList = listArr[j].split(':')
-                                    var num = 0
-                                    for (var n = 0; n < nArr.length; n++) {
-                                        if (nArr[n].paymentChannelName == nList[2]) {
-                                            num++
-                                        }
-                                    }
+                                     var num = 0
+                                     for(var n = 0 ; n < nArr.length;n++){
+                                         if(nArr[n].paymentChannelName == nList[2]){
+                                             num++
+                                         }
+                                     }
 
-                                    console.log(num)
-                                    if (num != 0) {
-                                        continue;
-                                    }
+                                    // console.log(num)
+                                     if(num != 0){
+                                         continue;
+                                     }
                                     nO.paymentChannel = nList[0]
                                     nO.paymentType = nList[1]
                                     nO.paymentChannelName = nList[2]
-                                    nO.subaccountNumber = nList[3] == 'S' ? '' : nList[3]
-                                    nO.orderNumber = nList[4] == 'O' ? '' : nList[4]
-                                    nO.auditStatus = nList[3] == 'S' ? nList[5] : 2
+                                    nO.subaccountNumber = nList[3] == 'S'?'': nList[3]
+                                    nO.orderNumber = nList[4] == 'O'?'': nList[4]
+                                    nO.auditStatus = nList[3] == 'S'? nList[5]:2
                                     nArr.push(nO)
                                 }
                                 var thisPayment = nArr
@@ -300,108 +506,63 @@
                                     var addStr = "'" + thisPayment[i].paymentChannel + '|' + thisPayment[i].orderNumber + '|' + data.merchantNumber + "'"
                                     if (thisPayment[i].paymentType == 0 || thisPayment[i].paymentType == 1) {
                                         if (thisPayment[i].auditStatus == 0 || thisPayment[i].auditStatus == 3) {
-                                            str += '<span style="color:red;cursor:pointer" onclick="addMerchant(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                            str += '<span style="background:red;cursor:pointer" onclick="addMerchant(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
                                             continue
                                         }
                                         if (thisPayment[i].auditStatus == 2) {
-                                            str += '<span style="color:green;cursor:pointer" onclick="addMerchant2(' + addStr + ')" >' + thisPayment[i].paymentChannelName + '</span>'
+                                            str += '<span style="background:green;cursor:pointer" onclick="addMerchant2(' + addStr + ')" >' + thisPayment[i].paymentChannelName + '</span>'
                                             continue
                                         }
                                         if (thisPayment[i].auditStatus == 1 || thisPayment[i].auditStatus == 4 || thisPayment[i].auditStatus == 5) {
-                                            str += '<span style="color:#FFA20A">' + thisPayment[i].paymentChannelName + '</span>'
+                                            str += '<span style="background:#FFA20A">' + thisPayment[i].paymentChannelName + '</span>'
                                             continue
                                         }
                                         if (thisPayment[i].auditStatus == -1) {
-                                            str += '<span style="cursor:pointer" onclick="addMerchant1(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                            str += '<span style="background:#ccc;cursor:pointer" onclick="addMerchant1(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
                                         }
                                     } else {
                                         if (thisPayment[i].auditStatus == 0 || thisPayment[i].auditStatus == 3) {
-                                            str1 += '<span style="color:red;cursor:pointer" onclick="addMerchant(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                            str1 += '<span style="background:red;cursor:pointer" onclick="addMerchant(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
                                             continue
                                         }
                                         if (thisPayment[i].auditStatus == 2) {
-                                            str1 += '<span style="color:green;cursor:pointer" onclick="addMerchant2(' + addStr + ')" >' + thisPayment[i].paymentChannelName + '</span>'
+                                            str1 += '<span style="background:green;cursor:pointer" onclick="addMerchant2(' + addStr + ')" >' + thisPayment[i].paymentChannelName + '</span>'
                                             continue
                                         }
                                         if (thisPayment[i].auditStatus == 1 || thisPayment[i].auditStatus == 4 || thisPayment[i].auditStatus == 5) {
-                                            str1 += '<span style="color:#FFA20A">' + thisPayment[i].paymentChannelName + '</span>'
+                                            str1 += '<span style="background:#FFA20A">' + thisPayment[i].paymentChannelName + '</span>'
                                             continue
                                         }
                                         if (thisPayment[i].auditStatus == -1) {
-                                            str1 += '<span style="cursor:pointer" onclick="addMerchant1(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                            str1 += '<span style="background:#ccc;cursor:pointer" onclick="addMerchant1(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
                                         }
                                     }
                                 }
-                                // for(var i = 0 ; i < paymentList.length;i++){
-                                //  var is = true
-                                //  var addStr = "'"+ paymentList[i].paymentChannel + '|' + data.merchantNumber + "'"
-                                //  if(paymentList[i].paymentType == 0 || paymentList[i].paymentType == 1){
-                                //      for(var j = 0 ; j < thisPayment.length;j++){
-                                //          addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber + '|' +  data.merchantNumber + "'"  
-                                //          if(paymentList[i].paymentChannel == thisPayment[j].paymentChannel){
-                                //              is = false
-                                //              if(thisPayment[j].auditStatus == 2){
-                                //                  str += '<span style="color:green">'+ paymentList[i].paymentChannelName +'</span>'
-                                //                  continue
-
-                                //              }else if(thisPayment[j].auditStatus == 0){
-                                //                  str += '<span style="color:red;cursor:pointer" onclick="addMerchant('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //                  continue
-
-                                //              }else if(thisPayment[j].auditStatus == 1 || thisPayment[j].auditStatus == 4 || thisPayment[j].auditStatus == 5){
-                                //                  str += '<span style="color:#FFA20A">'+ paymentList[i].paymentChannelName +'</span>'
-                                //                  continue
-
-                                //              }
-                                //          }
-                                //      }
-                                //      if(is == true){
-                                //          str += '<span style="cursor:pointer" onclick="addMerchant1('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //      }
-                                //  }else{
-                                //      for(var j = 0 ; j < thisPayment.length;j++){
-                                //      if(paymentList[i].paymentChannel == thisPayment[j].paymentChannel){
-                                //          addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber+ '|' +  data.merchantNumber  + "'"
-                                //          is = false
-                                //          if(thisPayment[j].auditStatus == 2){
-                                //              str1 += '<span style="color:green">'+ paymentList[i].paymentChannelName +'</span>'
-                                //              continue
-
-                                //          }else if(thisPayment[j].auditStatus == 0){
-                                //              str1 += '<span style="color:red;cursor:pointer" onclick="addMerchant('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //              continue
-
-                                //          }else if(thisPayment[j].auditStatus == 1 || thisPayment[j].auditStatus == 4 || thisPayment[j].auditStatus == 5){
-                                //              str1 += '<span style="color:#FFA20A">'+ paymentList[i].paymentChannelName +'</span>'
-                                //              continue
-
-                                //          }
-                                //      }
-                                //  }
-                                //  if(is == true){
-                                //      str1 += '<span style="cursor:pointer" onclick="addMerchant1('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //  }
-                                //  }
-
-
-                                // }
+                                str = str.replace('官方支付宝','直-支')
+                                str = str.replace('官方微信','直-微')
+                                str1 = str1.replace('富友','间-富')
+                                str1 = str1.replace('新大陆','间-新')
+                                str1 = str1.replace('随行付','间-随')
+                                str1 = str1.replace('乐刷','间-乐')
                                 return '<div class="payBox">' + str + '</div><div  class="payBox">' + str1 + '</div>'
                             }
 
                         },
-                        width: 250
+                        width: 220
                     }, {
                         field: 'insertTime',
                         title: '创建时间',
                         align: 'center',
-                        width: 180
-                    }, {
-                        toolbar: '#toolbar_switch1',
-                        title: '刷脸广告',
-                        align: 'center',
-                        field: 'adv',
-                        width: 100
-                    }, {
+                        width: 150
+                    },
+                    //  {
+                    //     toolbar: '#toolbar_switch1',
+                    //     title: '刷脸广告',
+                    //     align: 'center',
+                    //     field: 'adv',
+                    //     width: 100
+                    // },
+                     {
                         toolbar: '#toolbar_switch',
                         title: '状态',
                         align: 'center',
@@ -410,6 +571,7 @@
                         field: 'operation',
                         title: '操作',
                         toolbar: "#tool",
+                        width: 550,
                     }]
                 ],
                 done: function(res, curr, count) {
@@ -418,14 +580,27 @@
                     if (JSON.parse(sessionStorage.getItem("agentUser")).advertJurisdiction == 1) {
                         $("[data-field='adv']").css('display', 'none');
                     }
-
+                    $('#tips').mouseover(function() {
+                        var that = this;
+                        layer.tips('展示背景绿色为开通状态；'+ '</br>' +'灰色为未开通状态；'+ '</br>' +'黄色为待审核状态；'+ '</br>' +'红色为驳回状态。'+ '</br>' +'红色和灰色为可编辑状态', that, {
+                            tips: [2],
+                            time: 20000
+                        });
+                    })
+                    $('#tips').mouseout(function() {
+                        layer.closeAll()
+                    })
                 }
             });
         }
         setTimeout(function() {
             tableRender()
         }, 500)
-
+    //     window.addEventListener("storage", function (e) {
+    //     $('#saleName').val(e.newValue);
+    //         tableRender()
+    //         localStorage.removeItem("saleN")
+    // });
         $('#search').click(function() {
             tableRender()
         })
@@ -551,17 +726,16 @@
             },
                     function(data) {
                         if (data.code == 1000) {
-                            shHref = data.data[0].merchantRoute
-                            if (shHref == '') {
-                                layer.msg('未获取到商户路径')
-                            }
-                            var merHref = shHref + '/index.html?number=' + aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
-                            // 
-                            window.open(merHref)
-                        } else {
-                            layer.msg(data.msg)
+                    shHref = data.data[0].merchantRoute
+                    if (shHref == '') {
+                        layer.msg('未获取到商户路径')
+                    }
+                    var merHref = shHref + '/index.html?number=' + aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                    window.open(merHref)
+                } else {
+                    layer.msg(data.msg)
 
-                        }
+                }
                     },
                     function(data) {
                         console.log('222')
@@ -578,6 +752,18 @@
                     success: function(layero, index) {
                         var iframe = window['layui-layer-iframe' + index];
                         iframe.subPageClerkpass(data, userNumber)
+                    }
+                });
+            }else if (obj.event === 'set') {
+                //设置
+                layer.open({
+                    type: 2,
+                    title: '设置 - ' + data.merchantName,
+                    area: ['90%', '90%'], //宽高
+                    content: 'merchant-set.html?merchantNumber=' + data.merchantNumber + '&merchantName=' + data.merchantName + '&userName=' + data.juridicalPersonName + '&registerCell=' + data.registerCell + '&advertJurisdiction=' + data.advertJurisdiction,
+                    success: function(layero, index) {
+                        // var iframe = window['layui-layer-iframe' + index];
+                        // iframe.subPageClerkpass(data, userNumber)
                     }
                 });
             } else if (obj.event === 'edit') {
@@ -674,23 +860,23 @@
                         iframe.subPageClerkpass(data, userNumber)
                     }
                 });
-            } else if (obj.event === 'tongdao') { //通道
-                layer.open({
-                    type: 2,
-                    title: '通道-' + data.merchantName,
-                    shade: 0.5,
-                    area: ['90%', '90%'],
-                    maxmin: false,
-                    resize: false,
-                    content: ['Merchants-List-channel.html'],
-                    success: function(layero, index) {
-                        // 获取子页面的iframe
-                        var iframe = window['layui-layer-iframe' + index];
-                        // 向子页面的全局函数child传参
-                        iframe.subPage(data, userNumber)
-                    }
-                });
-            } else if (obj.event == 'push') {
+            }else if(obj.event === 'tongdao') { //通道
+                        layer.open({
+                            type: 2,
+                            title: '通道-' + data.merchantName,
+                            shade: 0.5,
+                            area: ['90%', '90%'],
+                            maxmin: false,
+                            resize: false,
+                            content: ['Merchants-List-channel.html'],
+                            success: function(layero, index) {
+                                // 获取子页面的iframe
+                                var iframe = window['layui-layer-iframe' + index];
+                                // 向子页面的全局函数child传参
+                                iframe.subPage(data, userNumber)
+                            }
+                        });
+                    } else if (obj.event == 'push') {
                 // 秘钥
                 layer.open({
                     type: 2,
@@ -704,7 +890,8 @@
                         iframe.subPageClerkpush(data, userNumber)
                     }
                 });
-            } else if (obj.event == 'model') { //模块
+            } 
+            else if(obj.event == 'model'){                //模块
                 layer.open({
                     type: 2,
                     title: '模块-' + data.merchantName,
@@ -721,7 +908,8 @@
                         sessionStorage.setItem(data.merchantNumber, JSON.stringify(data));
                     }
                 });
-            } else if (obj.event == 'delete') {
+            } 
+            else if (obj.event == 'delete') {
                 // 发送请求,将商户进行禁用
                 layer.confirm('真的要删除(' + data.merchantName + ')此商户吗?', function(index) {
                     console.log(data)
@@ -778,7 +966,7 @@
         }
         window.addMerchant2 = function(data) {
             console.log(data)
-            if (data.split('|')[1] == '') {
+             if(data.split('|')[1] == ''){
                 layer.msg('该通道暂未查询到流水号')
                 return
             }

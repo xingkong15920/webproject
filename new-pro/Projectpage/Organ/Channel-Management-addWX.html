@@ -33,9 +33,9 @@
                  <div class="layui-form-item">
                     <label class="layui-form-label">公众号APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid" style="width:200px;display:inline-block"  disabled="disable">
-                        <input type="text" name="weChatAuthorizeT" autocomplete="off" placeholder="公众号授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
-                        <div class="layui-btn" id="shouquan" style="margin-left:30px;display:inline-block">授权</div>
+                        <input type="text" name="wechatAppid" autocomplete="off" placeholder="公众号APPID" class="layui-input" lay-verify="wechatAppid" style="width:200px;display:inline-block"  >
+                        <!-- <input type="text" name="weChatAuthorizeT" autocomplete="off" placeholder="公众号授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                        <div class="layui-btn" id="shouquan" style="margin-left:30px;display:inline-block">授权</div> -->
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -47,9 +47,9 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">小程序APPID</label>
                     <div class="layui-input-block">
-                        <input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid" style="width:200px;display:inline-block" disabled="disable">
-                        <input type="text" name="smallRoutineAuthorizeT" autocomplete="off" placeholder="小程序授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
-                         <div class="layui-btn" id="shouquan1" style="margin-left:30px;display:inline-block">授权</div>
+                        <input type="text" name="smallroutineAppid" autocomplete="off" placeholder="小程序APPID" class="layui-input" lay-verify="smallroutineAppid" style="width:200px;display:inline-block" >
+                        <!-- <input type="text" name="smallRoutineAuthorizeT" autocomplete="off" placeholder="小程序授权时间" class="layui-input" lay-verify="wechatAppid" style="margin-left:30px;width:220px;display:inline-block" disabled="disable">
+                         <div class="layui-btn" id="shouquan1" style="margin-left:30px;display:inline-block">授权</div> -->
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -120,12 +120,12 @@
 							<button type="button" class="layui-btn" id="yumingupload">开始上传</button>
 						</div>
 					</div> -->
-                <div class="layui-form-item">
+                <!-- <div class="layui-form-item">
                     <label class="layui-form-label">通道状态</label>
                     <div class="layui-input-block">
                         <input type="checkbox" name="wechatDisable" lay-skin="switch" lay-filter="GFwxswitch" lay-text="开|关" checked>
                     </div>
-                </div>
+                </div> -->
                 <div class="layui-form-item">
                     <label class="layui-form-label">中文名称</label>
                     <div class="layui-input-block">
@@ -167,6 +167,7 @@
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     var merchantCa = true;
+     var isTure = true
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
         var $ = layui.jquery,
             upload = layui.upload,
@@ -355,22 +356,31 @@
             addData.authorizationNo2 = xcxNo
             addData.smallRoutineAuthorizeT = xcxAuthTime
             // 发送请求
+            if (isTure != true) {
+                layer.msg("正在处理，请稍后")
+                return false
+            }
+            isTure = false
             console.log(addData)
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.insertWXOfficial,
                 addData,
                 function(data) {
-                    if (data.code == '1000') {
-                        layer.msg('添加成功')
-                        setTimeout(function() {
-                            x_admin_close()
-                            parent.layui.table.reload('vip_cardList')
-                        }, 500)
+                    setTimeout(function(){
+                        if (data.code == '1000') {
+                            layer.msg('添加成功')
+                            setTimeout(function() {
+                                x_admin_close()
+                                parent.layui.table.reload('vip_cardList')
+                            }, 500)
 
-                    } else {
-                        layer.msg(data.msg)
-                    }
+                        } else {
+                            isTure = true
+                            layer.msg(data.msg)
+                        }
+                    },1000)
+                    
                 },
                 function(data) {
                     console.log('222')

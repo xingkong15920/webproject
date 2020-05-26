@@ -175,12 +175,12 @@
                         <textarea class="layui-textarea" name="paymentGateway" autocomplete="off" placeholder="支付网关" rows="3" lay-verify="zhifuwangguan"></textarea>
                     </div>
                 </div>
-                <div class="layui-form-item">
+                <!-- <div class="layui-form-item">
                     <label class="layui-form-label">通道状态</label>
                     <div class="layui-input-block">
                         <input type="checkbox" name="disable" lay-skin="switch" lay-filter="fyswitch" lay-text="开|关" checked>
                     </div>
-                </div>
+                </div> -->
                 <div class="layui-form-item">
                     <label class="layui-form-label">中文名称</label>
                     <div class="layui-input-block">
@@ -221,6 +221,7 @@
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
     var merchantCa = true;
+    var isTure =  true
     var authenticationQRCode =''
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
         var $ = layui.jquery,
@@ -439,22 +440,30 @@
             }
             addData.institutionNumber = userNumber;
             // 发送请求
+            if (isTure != true) {
+                layer.msg("正在处理，请稍后")
+                return false
+            }
+            isTure = false
             console.log(addData)
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.insertConfigureXdl,
                 addData,
                 function(data) {
-                    if (data.code == '1000') {
-                        layer.msg('添加成功')
-                        setTimeout(function() {
-                            x_admin_close()
-                            parent.layui.table.reload('vip_cardList')
-                        }, 500)
+                    setTimeout(function(){
+                        if (data.code == '1000') {
+                            layer.msg('添加成功')
+                            setTimeout(function() {
+                                x_admin_close()
+                                parent.layui.table.reload('vip_cardList')
+                            }, 500)
 
-                    } else {
-                        layer.msg(data.msg)
-                    }
+                        } else {
+                            isTure = true
+                            layer.msg(data.msg)
+                        }
+                    },1000)
                 },
                 function(data) {
                     console.log('222')

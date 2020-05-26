@@ -204,12 +204,21 @@
 										} else {
 											obj.name = data.data[i].paymentTypeName
 											obj.onOff = data.data[i].switch1
+											
 											arrr.push(obj)
+											if(data.data[i].paymentTypeName == '云闪付'){
+												var obj1 = new Array()
+												obj1.name = '云闪付2'
+												obj1.onOff = '0'
+												arrr.push(obj1)
+											}
 										}
 
 									}
 
 								}
+
+								
 								arrr = uniq(arrr)
 
 								tableRender()
@@ -292,19 +301,32 @@
 											if (arrr[i].name == '京东钱包') {
 												str += (data.jingdongRate * 10000 / 100).toFixed(2) + '%/'
 											}
-											if (arrr[i].name == '云闪付') {
-												str += (data.unionPayRate * 10000 / 100).toFixed(2) + '%/'
+											if(data.isOpenYunPay == 0){
+												if (arrr[i].name == '云闪付') {
+													str += (data.unionPayRate * 10000 / 100).toFixed(2) + '%/'
+												}
+												if (arrr[i].name == '云闪付2') {
+													str += (data.unionPayRate2 * 10000 / 100).toFixed(2) + '%/'
+												}
+											}else{
+												if (arrr[i].name == '云闪付') {
+													str += '未开通云闪付。'
+												}
+												
 											}
+											
 										}
 
 										return str.substr(0, str.length - 1)
 									}
-								}, {
-									align: 'center',
-									toolbar: '#selectBar_lx',
-									width: 130,
-									title: '类型',
-								}, {
+								}
+								// , {
+								// 	align: 'center',
+								// 	toolbar: '#selectBar_lx',
+								// 	width: 130,
+								// 	title: '类型',
+								// }
+								, {
 									align: 'center',
 									field: 'rateType',
 									width: 100,
@@ -568,6 +590,9 @@
 								tjData.deletionFlag = 1
 								tjData.merchantNumber = data.merchantNumber
 								tjData.channelType = payChannelType
+								if(payChannelType == 5){
+									tjData.sxfTask = data.sxfTask
+								}
 								CmsUtility.postAjaxCall(
 									//系统设置
 									CmsConfig.addressUrl.Mechanism.updateInstitutionSub,

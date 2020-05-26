@@ -84,7 +84,7 @@
 					</div>
 					<div class="layui-input-inline">
 						<select name="shopName" id="shopName" lay-search>
-							<option value="">--请选择门店--</option>
+							<option value="">--请选择或输入门店--</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -107,6 +107,22 @@
 							<option value="1">交易成功</option>
 							<option value="4">全部退款</option>
 							<option value="5">部分退款</option>
+						</select>
+					</div>
+					<div class="layui-input-inline">
+						<select name="twoTransactionType" id="twoTransactionType">
+							<option value="">请选择支付类型</option>
+							<option value="0">条码支付</option>
+							<option value="1">动态二维码支付</option>
+							<option value="2">小程序支付</option>
+							<option value="3">APP支付</option>
+							<option value="4">H5支付</option>
+							<option value="5">公众号支付</option>
+							<option value="6">服务窗支付</option>
+							<option value="7">预授权</option>
+							<option value="8">刷脸支付</option>
+							<option value="9">花呗分期</option>
+							<option value="10">会员钱包</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -405,6 +421,7 @@
 						newData.startTime = $('#startTime').val().split(' ')[0],
 						newData.endTime = $('#endTime').val().split(' ')[0],
 						newData.billType = $('#billType').val()
+						newData.twoTransactionType = $('#twoTransactionType').val()
 					layer.open({
 						type: 2,
 						title: '下载报表',
@@ -453,6 +470,7 @@
 							"shopNumber": $('#shopName').val().split('/')[0],
 							"orderState": $('#orderStatus').val().trim(),
 							"batch": $('#orderCode').val().trim(),
+							"twoTransactionType":$('#twoTransactionType').val()
 						},
 						async: 'true',
 						dataType: 'json',
@@ -525,6 +543,8 @@
 							startTime: $('#startTime').val().trim(),
 							endTime: $('#endTime').val().trim(),
 							orderState: $('#orderStatus').val().trim(),
+
+							twoTransactionType:$('#twoTransactionType').val()
 						},
 						method: "post",
 						page: true,
@@ -651,6 +671,11 @@
 							}, {
 								field: 'orderState',
 								title: '订单状态',
+								align: 'center',
+								width: 150
+							}, {
+								field: 'orderRemarks',
+								title: '订单描述',
 								align: 'center',
 								width: 150
 							}, {

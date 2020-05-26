@@ -105,7 +105,7 @@
 									<p>会员等级：<span v-cloak>{{memCon.gradeName=='--'?'无':memCon.gradeName}}</span></p>
 									<p>会员性别：<span v-cloak>{{memCon.sex==1?'男':'女'}}</span></p>
 									<p>会员生日：<span v-cloak>{{memCon.birthday}}</span></p>
-									<p>会员年龄：<span v-cloak>{{memCon.registerTime.split('-')[0] - memCon.birthday.split('-')[0]}}</span></p>
+									<p>会员年龄：<span v-cloak>{{memCon.age}}</span></p>
 									<p>会员星座：<span v-cloak>{{memCon.constellation}}</span></p>
 									<p>会员邮箱：<span v-cloak>{{memCon.mailbox}}</span></p>
 									<p>公众账号：<span v-cloak>{{memCon.publicFollow==0?'未关注':'已关注'}}</span></p>
@@ -292,7 +292,21 @@
 
 				function setDetail(obj) {
 					layer.closeAll('loading');
-					console.log(obj)
+					console.log(obj.birthday)
+					if(obj.birthday == '--' || obj.birthday == null){
+						obj.age = '生日未填写'
+					}else{
+						var date = new Date();
+						var y = date.getFullYear()
+						var age = y - obj.birthday.split('-')[0]
+						console.log(age)
+						if(age <=0 ){
+							obj.age = 1
+						}else{
+							obj.age = age
+						}
+					}
+
 					new Vue({
 						el: '#mDetails',
 						data: {
@@ -638,6 +652,15 @@
 											case 10:
 												return '会员升级'
 												break;
+											case 11:
+												return '撤销消费订单'
+												break;
+											case 12:
+												return '撤销充值订单'
+												break;
+											default:
+										       return  '--'
+										       break;
 										}
 									}
 								}, {

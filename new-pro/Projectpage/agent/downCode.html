@@ -54,7 +54,15 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">邮箱</label>
                     <div class="layui-input-block">
-                        <input type="text" name="number" lay-verify="email" autocomplete="off" placeholder="请输入邮箱地址" class="layui-input" id="number">
+                        <input type="text" name="number" lay-verify="email" autocomplete="off" placeholder="请输入邮箱地址" class="layui-input" id="number" onblur="bl()" onfocus="fc()">
+                        <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:152px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none"
+                             id="searchBox">
+                                <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div> -->
+                            </div>
                     </div>
                 </div>
                 <div class="layui-input-block">
@@ -70,7 +78,42 @@
     var code1 = ''
     var serverUrl = 'http://192.168.1.190:5002/'
     // var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var mailList = ['@163.com', '@qq.com', '@yahoo.com', '@hotmail.com', '@163.net', '@gmail.com']
+    function fc() {
+                console.log('123')
+                if ($('#agName').val() == '' || $('#agName').val().indexOf('@') > 0) {
+                    return
+                }
+                $('#searchBox').show()
+            }
 
+            function bl() {
+                console.log('bl')
+                setTimeout(function() {
+                    $('#searchBox').hide()
+                }, 200)
+
+            }
+
+            function clickS(e) {
+                $('#number').val(e.getAttribute('data-name'))
+            }
+            $("#number").bind('input propertychange', function() {
+                        console.log(this.value.indexOf('@') > 0)
+                        if (this.value.indexOf('@') > 0) {
+                            $('#searchBox').hide()
+                            return
+                        }
+                        $('#searchBox').show()
+                        console.log(this.value)
+                        document.getElementById('searchBox').innerHTML = ''
+                        var str = ''
+                        for (var i = 0; i < mailList.length; i++) {
+                            str += '<div class="layui-btn layui-btn-primary"  data-name="' + this.value + mailList[i] +
+                                '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + this.value + mailList[i] + '</div>'
+                        }
+                        document.getElementById('searchBox').innerHTML = str
+                    })
     function subPage(data, data1) {
         console.log(data, data1)
         var id = data

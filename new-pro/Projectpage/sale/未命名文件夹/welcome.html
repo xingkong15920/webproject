@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Insert title here</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="../../public/css/style-baobiao.css">
+    <script type="text/javascript" src="./js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <style type="text/css">
+    .index-zs .layui-col-md5 {
+        width: 20%;
+        text-align: center;
+    }
+
+    .homelistitle {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #999;
+    }
+
+    .homelistc:last-child {
+        margin-bottom: 20px;
+    }
+
+    .homelistc {
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span i {
+        font-style: normal;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    p {
+        font-size: 16px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="x-body">
+        <blockquote class="layui-elem-quote">欢迎登陆销售后台管理</blockquote>
+    </div>
+    
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+    var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+    if (agentLevel != 'A') {
+        $('#levA').hide()
+        $('#levA1').show()
+    } else {
+        $('#levA1').hide()
+        $('#levA').show()
+    }
+    layui.use(['table', 'table', 'laytpl', 'laydate', 'layer'], function() {
+        var table = layui.table,
+            form = layui.form,
+            laydate = layui.laydate,
+            laytpl = layui.laytpl,
+            layer = layui.layer,
+            $ = layui.jquery;
+
+        //方法级渲染(结算记录)
+        table.render({
+            elem: '#LAY_table_SettlementRecords',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectAgentBillList + '?agentNumber=' + userNumber,
+            where: {
+                "startTime": '',
+                "endTime": '',
+            },
+            method: "post",
+            height: 'full-270',
+            response: {
+                //res 即为原始返回的数据
+                "statusCode": "1000", //解析接口状态
+
+            },
+            parseData: function(res) {
+                if (res.data == null) {
+                    return
+                }
+                //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    //"count": res.data.count, //解析数据长度
+                    "data": res.data.agentBillList, //解析数据列表
+                };
+            },
+            cols: [
+                [{
+                    field: 'inserttime',
+                    title: '日期',
+                    align: 'center',
+
+                }, {
+                    field: 'importExportAmount',
+                    align: 'center',
+                    title: '分润金额',
+                    templet:function(data){
+                        return '￥' + data.importExportAmount
+                    }
+                }, {
+                    field: 'endTermBalance',
+                    title: '变动后金额',
+                    align: 'center',
+                    templet:function(data){
+                        return '￥' + data.endTermBalance
+                    }
+                }]
+            ]
+        });
+
+        //方法级渲染(提现记录)
+        table.render({
+            elem: '#LAY_table_WithdrawalRecord',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getAgentWithdrawCash + '?agentNumber=' + userNumber,
+            method: "post",
+            height: 'full-270',
+            response: {
+                //res 即为原始返回的数据
+                "statusCode": "1000", //解析接口状态
+
+            },
+            parseData: function(res) {
+                //res 即为原始返回的数据
+                if (res.code != 1000) {
+                    return
+                }
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    //"count": res.data.count, //解析数据长度
+                    "data": res.data.data, //解析数据列表
+                };
+            },
+            cols: [
+                [{
+                    field: 'updatetime',
+                    title: '日期',
+                    align: 'center'
+                }, {
+                    field: 'withdrawCashAmount',
+                    align: 'center',
+                    title: '金额',
+                    templet:function(data){
+                        return '￥' + data.withdrawCashAmount
+                    }
+                }, {
+                    field: 'bankCardNo',
+                    align: 'center',
+                    title: '状态',
+                    templet: function(data) {
+                        if (data.orderType == 0) {
+                            return '审核中'
+                        }
+                        if (data.orderType == 1) {
+                            return '已审核'
+                        }
+                        if (data.orderType == -1) {
+                            return '已拒绝'
+                        }
+                    }
+                }]
+            ]
+        });
+
+        function getAll() {
+
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Agent.selectAgOverview, {
+                    "agentNumber": userNumber,
+                },
+                function(data) {
+
+                    console.log(data.data)
+                    $('#balance').html(data.data.balance)
+                    $('#cashing').html(data.data.cashing)
+                    $('#settlementAmount').html(data.data.settlementAmount)
+                    $('#cashed').html(data.data.cashed)
+                }
+            )
+        }
+        getAll()
+
+        var myDate = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2];
+        console.log(myDate)
+
+        function getShop() {
+            if (agentLevel != 'A'){
+                return
+            }
+            console.log(myDate)
+            var index = layer.load(2, { shade: [0.4, '#393D49'] })
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Agent.selectMerchant, {
+                    "agentNumber": userNumber,
+                    "agentLevel": agentLevel,
+                    "startTi	me": "",
+                    "endtime": "",
+                },
+                function(data) {
+                    layer.closeAll()
+                    if (data.code == 1000) {
+
+
+                        $('#shopCount').html(data.data.shopCount)
+                        $('#brokerage').html(data.data.brokerage + '元')
+                        $('#transactionNumber').html(data.data.transactionNumber)
+                        $('#wTransactionNumber').html(data.data.wTransactionNumber)
+                        $('#zTransactionNumber').html(data.data.zTransactionNumber)
+                        $('#incomeMoney').html(data.data.transactionMoney)
+                        $('#wIncomeMoney').html(data.data.wTransactionMoney)
+
+                        $('#zIncomeMoney').html(data.data.zTransactionMoney)
+                        $('#refundMoney').html(data.data.refundMoney)
+                        $('#wRefundMoney').html(data.data.wRefundMoney)
+                        $('#zRefundMoney').html(data.data.zRefundMoney)
+                        $('#poundage').html(data.data.poundage)
+                        $('#wpoundage').html(data.data.wpoundage)
+                        $('#zpoundage').html(data.data.zpoundage)                        
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+        getShop()
+    });
+
+    $('#now').click(function() {
+        myDate = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2];
+        console.log(myDate)
+        getShop()
+    })
+    $('#yes').click(function() {
+        myDate = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toLocaleDateString().split('/')[0] + '-' + new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toLocaleDateString().split('/')[1] + '-' + new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toLocaleDateString().split('/')[2];
+        console.log(myDate)
+        getShop()
+    })
+    </script>
+</body>
+
+</html>

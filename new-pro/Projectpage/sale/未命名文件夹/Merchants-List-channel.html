@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .widthauto {
+                width: auto !important;
+            }
+            
+            .tips_red {
+                color: red;
+            }
+            
+            .layui-form-label {
+                padding-left: 0;
+                width: 100px;
+            }
+            
+            .layui-input-block {
+                margin-left: 115px;
+            }
+            
+            .layui-elem-quote {
+                font-size: 18px;
+            }
+            
+            .layui-elem-field {
+                margin: 0;
+            }
+            
+            .layui-elem-field legend {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            
+            .layui-upload-img {
+                width: 92px;
+                height: 92px;
+                margin: 0 10px 10px 0;
+            }
+            
+            .Since_inline {
+                display: inline-block;
+                width: auto !important;
+                line-height: 38px;
+            }
+            
+            .layui-elem-quote .layui-form-switch {
+                margin: 0 15px;
+                margin-top: 0;
+            }
+            .layui-form-item .layui-input-inline{
+                width: 80px;
+            }
+        </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form" action="" lay-filter="cardAdd">
+                <blockquote class="layui-elem-quote">通道设置</blockquote>
+                <fieldset class="layui-elem-field layui-field-title alipay">
+                    <legend>支付宝</legend>
+                    <div class="layui-form-item">
+                        <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto">
+                            <label class="layui-form-label">支付通道</label>
+                            <div class="layui-input-block" style="display:inline-block;width:400px;margin-left:0px;">
+                                <select name="prov1" id="prov" lay-filter="prov" lay-verify="title">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto">
+                            <label class="layui-form-label">子商户号</label>
+                            <div class="layui-input-block" style="display:inline-block;width:400px;margin-left:0px;">
+                                <select name="prov1" id="prov" lay-filter="prov" lay-verify="title">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+    var paymentList = new Array()
+    function subPage(data, data1) {
+        var jgData = data
+        console.log(jgData)
+        
+        var p = [],
+            c = [],
+            aa = []
+        var serverUrl = window.parent.serverUrl
+        var institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+        var agentNumber = jgData.agentNumber
+        layui.use(['laydate', 'table', 'upload', 'form'], function() {
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer;
+            var tableSelect = layui.tableSelect;
+            
+            var rateList = []
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'agMerchant/getMerchanSubPayments', {
+                    "merchantNumber": jgData.merchantNumber,
+                    "institutionNumber":institutionNumber
+                },
+                function(data) {
+                    if(data.code == 1000){
+                        paymentList = data.
+                    }
+                },
+                function(data) {
+
+                }
+            )
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'agMerchant/getMerchantPaymentTypeSeting', {
+                    "merchantNumber": jgData.merchantNumber,
+                    "institutionNumber":institutionNumber
+                },
+                function(data) {
+                    
+                },
+                function(data) {
+
+                }
+            )
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'agMerchant/getMerchanSub', {
+                    "merchantNumber": jgData.merchantNumber,
+                    "institutionNumber":institutionNumber,
+                    "paymentChannel":'1552268454451'
+                },
+                function(data) {
+                    
+                },
+                function(data) {
+
+                }
+            )
+            function compare(property) {
+                return function(a, b) {
+                    var value1 = a[property];
+                    var value2 = b[property];
+                    return value1 - value2;
+                }
+            }
+            // var Arr = jgData.Rate.split('|')
+            // var nO = new Array()
+            // var T1, D1, D0;
+            // for (var i = 0; i < Arr.length; i++) {
+            //     if (Arr[i].split(':')[0] == 'T1') {
+            //         T1 = Arr[i].split(':')[1]
+            //     }
+            //     if (Arr[i].split(':')[0] == 'D1') {
+            //         D1 = Arr[i].split(':')[1]
+            //     }
+            //     if (Arr[i].split(':')[0] == 'D0') {
+            //         D0 = Arr[i].split(':')[1]
+            //     }
+            // }
+            form.render()
+
+            setTimeout(function() {
+                form.render()
+            }, 300)
+            // if(!!jgData.province){
+            //  console.log()
+            //  CmsUtility.choosePro(jgData.province);
+            // }
+            // if(!!jgData.province  && !!jgData.city){
+            //  console.log(jgData.province,jgData.city )
+            //  CmsUtility.chooseCity(jgData.province,jgData.city)
+            // }
+            // if(!!jgData.city  &&  !!jgData.area){
+            //  CmsUtility.chooseArea(jgData.city,jgData.area)
+            // }
+
+
+            form.on('select(provice)', function(data) {
+
+                var str1 = '<option value="">请选择市</option>'
+                for (var i3 = 0; i3 < c.length; i3++) {
+
+                    if (data.value == c[i3].provinceCode) {
+
+                        for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                            str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                        }
+                    }
+                }
+                $('#city').html(str1)
+                var str2 = '<option value="">请选择县区</option>'
+                $('#area').html(str2)
+                form.render()
+
+            })
+            form.on('select(city)', function(data) {
+
+                var str2 = '<option value="">请选择县区</option>'
+                for (var i4 = 0; i4 < aa.length; i4++) {
+                    if (data.value == aa[i4].cityCode) {
+                        for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                            str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+
+
+                        }
+                    }
+                }
+                $('#area').html(str2)
+                form.render()
+
+            })
+            /*---------- 自定义验证规则 ----------*/
+            form.verify({
+                title: function(value) {
+                    if (value == null) {
+                        return '不能为空！';
+                    }
+                    if (value.length == "") {
+                        return '不能为空！';
+                    }
+                },
+                baifenbi: function(value) {
+                    // if(value.length != ''){
+                    //     if(value.indexOf('%')<0){
+                    //         return '费率格式不正确'
+                    //     }
+                    // }
+
+                }
+            });
+            /*---------- 监听提交 ----------*/
+            form.on('submit(add)', function(data, index) {
+                var addData = data.field
+                addData.institutionNumber = userNumber
+                addData.deletionFlag = '0'
+                addData.agentNumber = jgData.agentNumber
+                addData.pAgentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
+                if (jgData.pAgentLevel == '--') {
+                    addData.agentLevel = 'A'
+                }
+                if (jgData.pAgentLevel == 'A') {
+                    addData.agentLevel = 'B'
+                }
+                if (jgData.pAgentLevel == 'B') {
+                    addData.agentLevel = 'C'
+                }
+                if (jgData.pAgentLevel == 'C') {
+                    addData.agentLevel = 'D'
+                }
+                addData.xdlweChatRate = (addData.xdlweChatRate / 10000 * 100).toFixed(4)
+
+            addData.xdlaliRate = (addData.xdlaliRate / 10000 * 100).toFixed(4)
+
+            addData.xdlUnionPayRate = (addData.xdlUnionPayRate / 10000 * 100).toFixed(4)
+
+            addData.xdlJDWallet = (addData.xdlJDWallet / 10000 * 100).toFixed(4)
+
+            addData.xdlQQWallet = (addData.xdlQQWallet / 10000 * 100).toFixed(4)
+
+            addData.fyweChatRate = (addData.fyweChatRate / 10000 * 100).toFixed(4)
+
+            addData.fyaliRate = (addData.fyaliRate / 10000 * 100).toFixed(4)
+
+            addData.fyUnionPayRate = (addData.fyUnionPayRate / 10000 * 100).toFixed(4)
+
+            addData.fyJDWallet = (addData.fyJDWallet / 10000 * 100).toFixed(4)
+
+            addData.fyQQWallet = (addData.fyQQWallet / 10000 * 100).toFixed(4)
+
+            addData.sxfweChatRate = (addData.sxfweChatRate / 10000 * 100).toFixed(4)
+
+            addData.sxfaliRate = (addData.sxfaliRate / 10000 * 100).toFixed(4)
+
+            addData.sxfUnionPayRate = (addData.sxfUnionPayRate / 10000 * 100).toFixed(4)
+
+            addData.sxfJDWallet = (addData.sxfJDWallet / 10000 * 100).toFixed(4)
+
+            addData.sxfQQWallet = (addData.sxfQQWallet / 10000 * 100).toFixed(4)
+
+            addData.yrmweChatRate = (addData.yrmweChatRate / 10000 * 100).toFixed(4)
+
+            addData.yrmaliRate = (addData.yrmaliRate / 10000 * 100).toFixed(4)
+
+            addData.yrmUnionPayRate = (addData.yrmUnionPayRate / 10000 * 100).toFixed(4)
+
+            addData.yrmJDWallet = (addData.yrmJDWallet / 10000 * 100).toFixed(4)
+
+            addData.yrmQQWallet = (addData.yrmQQWallet / 10000 * 100).toFixed(4)
+
+            addData.gfAliRate = (addData.gfAliRate / 10000 * 100).toFixed(4)
+            addData.gfWeChatRate = (addData.gfWeChatRate / 10000 * 100).toFixed(4)
+                addData.pAgentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
+                addData.agentLevel = jgData.agentLevel
+                console.log(addData)
+                // 发送请求
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    CmsConfig.addressUrl.Agent.updataAgentRate,
+                    addData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            setTimeout(function() {
+                                $('#quxiao').click()
+                            }, 16);
+                            parent.layer.msg('更改成功')
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                return false;
+            });
+        });
+    }
+    </script>
+</body>
+
+</html>

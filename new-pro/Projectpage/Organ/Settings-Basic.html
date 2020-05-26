@@ -288,7 +288,7 @@
 							<p id="demoText4" class="block"></p>
 							<button type="button" class="layui-btn layui-btn-sm block" id="test4">上传图片</button>
 						</div>
-						<div class="layui-form-mid layui-word-aux">尺寸120px*48px</div>
+						<div class="layui-form-mid layui-word-aux">尺寸508px*206px</div>
 					</div>
 					<div class="layui-form-item logoUpk">
 						<label class="layui-form-label">ICON</label>
@@ -303,6 +303,7 @@
 						</div>
 						<div class="layui-form-mid layui-word-aux">尺寸48px*48px</div>
 					</div>
+					
 					<div class="layui-form-item layui-layout-admin">
 						<div class="layui-input-block">
 							<div class="layui-footer" style="left: 0;text-align: center;">
@@ -701,6 +702,7 @@
 				});
 				//刷脸设备logo
 				//普通图片上传
+				var test41 = true
 				var uploadInst = upload.render({
 					elem: '#test4',
 					url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
@@ -712,7 +714,23 @@
 						//预读本地文件示例，不支持ie8
 						obj.preview(function(index, file, result) {
 							$('#demo4').attr('src', result); //图片链接（base64）
-						});
+							var img = new Image();
+							img.src = result;
+							img.onload = () => {
+								console.log(img.width)
+								if(img.width != 508 || img.height != 206){
+									layer.msg('图片尺寸必须为508px*206px')
+									test41 = false
+									
+								}
+							    
+							}
+							});
+						if(test41 != true){
+							return false
+						}
+						
+
 					},
 					done: function(res) {
 						//如果上传失败

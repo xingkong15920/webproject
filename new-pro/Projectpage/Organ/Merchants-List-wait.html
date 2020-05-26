@@ -70,13 +70,15 @@
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
 					</div>
-					<!-- <div class="layui-input-inline">
-						<select name="type" id="merchantType">
-							<option value="">类型</option>
-							<option value="1">普通商户</option>
-							<option value="0">补贴商户</option>
+					<div class="layui-input-inline">
+						<select name="type" id="auditStatus">
+							<option value="">状态</option>
+							<option value="0">未通过</option>
+							<option value="1">待机构审核</option>
+							<option value="4">已提交第三方</option>
+							<option value="5">待三方人工审核</option>
 						</select>
-					</div> -->
+					</div>
 					<!-- <div class="layui-input-inline">
 						<select name="cardVoucherName" id="auditStatus">
 							<option value="">审核状态</option>
@@ -112,6 +114,9 @@
 				<option value="1" {{d.auditStatus==1 ? 'selected' : ''}}>审核中</option>
 				<option value="2" {{d.auditStatus==2 ? 'selected' : ''}}>已审核</option>
 			</select>
+		</script>
+		<script type="text/html" id="ageName">
+			<span onclick="clickAge(this)" data-id="{{d.agentNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.agentName}}</span>
 		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs  {{d.paymentType==0 ? '' : 'hiide'}}" " id="create" lay-event="create">生成</a>
@@ -184,7 +189,33 @@
                 'post',
                 'false'
             )
-                            
+            function clickAge(id) {
+		        console.log(id)
+		        var id = id.dataset.id
+		        var agHref = ''
+		        CmsUtility.postAjaxCall(
+		            //系统设置
+		            CmsConfig.addressUrl.Mechanism.getInstitutionRegisterInfo, {
+		                'institutionNumber': userNumber,
+		            },
+		            function(data) {
+		                if (data.code == 1000) {
+		                    agHref = data.data[0].agentRoute
+		                    if (agHref == '') {
+		                        layer.msg('未获取到服务商路径')
+		                    }
+		                    var merHref = agHref + '/index.html?number=' + id + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber
+		                    window.open(merHref)
+		                } else {
+		                    layer.msg(data.msg)
+
+		                }
+		            },
+		            function(data) {
+		                console.log('222')
+		            }
+		        )
+		    }                
 			var serverUrl = window.parent.serverUrl
 			
 			layui.use(['laydate', 'table', 'form'], function() {
@@ -208,7 +239,7 @@
 						where:{
 							"agentName":$('#agentName').val().trim(),
 							"merchantName":$('#merchantName').val().trim(),
-							"auditStatus":1,
+							"auditStatus":$('#auditStatus').val(),
 							"subsidy":'',
 							"startTime":$('#startTime').val().trim(),
 							"endtime":$('#endTime').val().trim(),
@@ -253,24 +284,26 @@
 								width:150
 							}, {
 								align: 'center',
-								field: 'agentName',
-								title: '所属服务商',
-								width:200
-							}, {
-								align: 'center',
-								field: 'subsidy',
-								// toolbar: '#selectBar_lx',
-								title: '类型',
-								width:80,
-								templet:function(data){
-									if(data.subsidy == 1){
-										return '普通商户'
-									}
-									if(data.subsidy == 0){
-										return '补贴商户'
-									}
-								}
-							}, {
+								toolbar: '#ageName',
+								width: 200,
+								title: '所属服务商'
+							}
+							// , {
+							// 	align: 'center',
+							// 	field: 'subsidy',
+							// 	// toolbar: '#selectBar_lx',
+							// 	title: '类型',
+							// 	width:80,
+							// 	templet:function(data){
+							// 		if(data.subsidy == 1){
+							// 			return '普通商户'
+							// 		}
+							// 		if(data.subsidy == 0){
+							// 			return '补贴商户'
+							// 		}
+							// 	}
+							// }
+							, {
 								align: 'center',
 								field: 'paymentName',
 								title: '进件通道',
@@ -592,7 +625,8 @@
 							$.ajax({
 						            type: 'POST',
 						            //url: 'https://api.51shanhe.com/shanhe-admin/register/intoSubmission', 
-						            url: 'https://api.51shanhe.com/shanhe-admin/audit/submitMerchant', 
+						            // url: 'https://api.51shanhe.com/shanhe-admin/audit/submitMerchant', 
+						            url: 'http://192.168.1.250:6005/shanhe-admin/audit/submitMerchant', 
 						            data: tjData,
 						            async: 'false',
 						            dataType: 'json', 
@@ -717,8 +751,9 @@
 									CmsConfig.addressUrl.Mechanism.deleteMerInfo,
 									tjData,
 									function(data){
+										layer.closeAll()
 										if(data.code == 1000){
-											 layer.closeAll()
+											 
 											layer.msg('操作成功')
 											setTimeout(function(){
 												tableRender()

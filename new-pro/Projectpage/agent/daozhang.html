@@ -61,6 +61,10 @@
 			p {
 				font-size: 16px;
 			}
+			/* tbody:last-child tr:last-child{
+		    	color:red;
+		    	border-top: 2px solid  black;
+		    } */
 		</style>
 	</head>
 
@@ -99,7 +103,14 @@
 						<option value="6">乐刷</option>
 					</select>
 				</div>
-
+				<div class="layui-input-inline">
+					<select name="type" id="orderState" placeholder="结算状态">
+						<option value="">结算状态</option>
+						
+						<option value="1">结算完成</option>
+						<option value="-1">结算失败</option>
+					</select>
+				</div>
 				<button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
 				<!-- <div class="layui-input-inline">
 					<span style="margin-left:15px;color:red"> *注：暂时支持富友通道的查询</span>
@@ -119,7 +130,32 @@
 		<script>
 			// <a class="layui-btn layui-btn-xs" lay-event="instep" style="margin-left:0">同步</a>
 			var newData;
-
+			function reData(data) {
+		        
+		        var oob = new Object()
+		        oob.payAmt = 0
+		        oob.serviceCharge = 0
+		        oob.seetAmt = 0
+				oob.settleDt = '本页合计'
+				oob.merchantName = '--'
+				oob.payMentType = '--'
+				oob.settleAcntNm = '--'
+				oob.settleAcntNo = '--'
+				oob.merchantType = '合计'
+				oob.payStDesc = '--'
+				oob.insertTime = '--'
+		        for (var i = 0; i < data.length; i++) {
+		            oob.payAmt += parseFloat(data[i].payAmt)
+		            oob.serviceCharge += parseFloat(data[i].serviceCharge)
+		            oob.seetAmt += parseFloat(data[i].seetAmt)
+		            
+		        }
+		        oob.payAmt = (oob.payAmt).toFixed(2)
+		        oob.serviceCharge = (oob.serviceCharge).toFixed(2)
+		        oob.seetAmt = (oob.seetAmt).toFixed(2)
+		        data.push(oob)
+		        return data
+		    }
 			function fun_date(aa) {
 				var date1 = new Date(),
 					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
@@ -276,7 +312,9 @@
 								"merchantName": $('#shopName').val().trim(),
 								"startTime": $('#startTime').val(),
 								"endTime": $('#endTime').val(),
-								"payMentType": $('#payMentType').val()
+								"payMentType": $('#payMentType').val(),
+								"agentLevel":agentLevel,
+								"orderState":$('#orderState').val()
 							},
 							elem: '#LAY_table_bill',
 							page: true,
@@ -300,7 +338,10 @@
 								[{
 									title: '交易日期',
 									align: 'center',
-									field: 'settleDt'
+									field: 'settleDt',
+									templet:function(data){
+										return data.settleDt.split(' ')[0]
+									}
 								}, {
 
 									title: '商户名称',
@@ -349,20 +390,28 @@
 									align: 'center',
 								}, {
 
-									title: '结算金额',
+									title: '交易金额',
 									align: 'center',
 									field: 'payAmt',
 									templet: function(data) {
-										return '￥' + (data.payAmt / 100).toFixed(2)
+										return '￥' + parseFloat(data.payAmt).toFixed(2)
 									}
 								}, {
 									field: 'serviceCharge',
 									title: '手续费',
 									align: 'center',
 									templet: function(data) {
-										return '￥' + (data.serviceCharge / 100).toFixed(2)
+										return '￥' + parseFloat(data.serviceCharge).toFixed(2)
 									}
 
+								}, {
+
+									title: '结算金额',
+									align: 'center',
+									field: 'seetAmt',
+									templet: function(data) {
+										return '￥' + parseFloat(data.seetAmt).toFixed(2)
+									}
 								}, {
 									field: 'payStDesc',
 									title: '结算状态',

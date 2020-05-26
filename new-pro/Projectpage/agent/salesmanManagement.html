@@ -13,6 +13,11 @@
 	<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 	<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 	<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+	<style type="text/css">
+		.layui-table-cell {
+        height: auto;
+    }
+	</style>
 </head>
 
 <body>
@@ -44,9 +49,11 @@
 		<table class="layui-hide" id="LAY_table_Salesman" lay-filter="Salesman"></table>
 	</div>
 	<script type="text/html" id="tool">
+		<a class="layui-btn layui-btn-xs" lay-event="look" >查看负责商户</a>
 		<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
 		<a class="layui-btn layui-btn-xs" lay-event="resetPwd">修改密码</a>
 		<a class="layui-btn layui-btn-xs" lay-event="settlement-records">结算记录</a>
+		<a class="layui-btn layui-btn-xs" lay-event="sale-yongjin">佣金记录</a>
 		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="detele">删除</a>
 	</script>
 	<script type="text/html" id="toolbar_switch">
@@ -56,10 +63,11 @@
 	<script src="../../common/config-agent.js"></script>
 	<script src="../../common/utility.js"></script>
 	<script>
-		layui.use(['table', 'laytpl'], function () {
+		layui.use(['table', 'laytpl','element'], function () {
 
 			var table = layui.table,
 				form = layui.form,
+				element = layui.element,
 				laytpl = layui.laytpl,
 				$ = layui.jquery;
 			var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
@@ -73,6 +81,7 @@
 					where: {
 						"registerCell": $('#phone').val().trim(),
 						"saleName": $('#name').val().trim(),
+						"saleNumber":''
 					},
 					// where:{
 					// 	"merchantName":"",
@@ -108,17 +117,40 @@
 								field: 'saleNumber',
 								title: '编号',
 								align: 'center',
-								width: 300
 							}, {
 								field: 'saleName',
 								align: 'center',
 								title: '姓名',
-								width: 300
+								width:100
 							}, {
 								field: 'registerCell',
 								align: 'center',
 								title: '手机号',
-								width: 300
+								width:120
+							}
+							, {
+								field: 'registerCell',
+								align: 'center',
+								title: '佣金' + '</br>' + '账号余额/待结算佣金',
+								templet:function(data){
+									return (data.saleBalance).toFixed(2) + ' / ' + (data.settlementCountMoney).toFixed(2)
+
+								}
+							}
+							, {
+								field: 'saleMerchant',
+								align: 'center',
+								title: '商户总数',
+								width:100
+							}
+							, {
+								field: 'registerCell',
+								align: 'center',
+								title: '最低费率' + '</br>' + '微/支',
+								templet:function(data){
+									return (data.weChatRate*100).toFixed(2)+'%' + ' / ' + (data.aliRate*100).toFixed(2)+'%'
+
+								}
 							}
 							// , {
 							// 	field: 'saleBalance',
@@ -131,13 +163,16 @@
 								align: 'center',
 								title: '状态',
 								toolbar: "#toolbar_switch",
-								width: 200
+							},{
+								field: 'insertTime',
+								align: 'center',
+								title: '创建时间',
 							}, {
 								field: 'operation',
 								title: '操作',
 								align: 'center',
 								toolbar: "#tool",
-								minWidth: 300
+								minWidth: 500
 							}
 						]
 					]
@@ -214,6 +249,16 @@
 							iframe.subPage(data, userNumber)
 						}
 					});
+				}else if (obj.event == 'look') { //结算记录
+					// console.log('')
+					// console.log(data)
+					//  localStorage.setItem("saleN", data.saleName);
+					// var url = 'dealersMerchantPage.html?saleName=' + data.saleName
+					top.refreshHighlight(data.saleName);
+					
+
+					
+
 				} else if (obj.event == 'settlement-records') { //结算记录
 					console.log('这是结算记录的data')
 					console.log(data)
@@ -228,6 +273,22 @@
 							var iframe = window['layui-layer-iframe' + index];
 							// 向子页面的全局函数child传w参
 							iframe.subPage(data, userNumber)
+						}
+					})
+				}else if (obj.event == 'sale-yongjin') { //结算记录
+					console.log('佣金记录')
+					console.log(data)
+					layer.open({
+						type: 2,
+						title: '佣金记录',
+						area: ['70%', '90%'], //宽高
+						// content: 'settlement-note.html?agentLevel='+data.agentLevel+'&agentNumber='+data.agentNumber,
+						content: 'sale-yongjin.html?saleNumber='+data.saleNumber,
+						success: function (layero, index) {
+							// 获取子页面的iframe
+							var iframe = window['layui-layer-iframe' + index];
+							// 向子页面的全局函数child传w参
+							// iframe.subPage(data, userNumber)
 						}
 					})
 				} else if (obj.event == 'resetPwd') {

@@ -15,12 +15,12 @@
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
     <style>
     /* *{
-				font-size: 14px;
-			} */
+                font-size: 14px;
+            } */
     /* .layui-table-cell {
-				height: auto;
-				line-height: initial;
-			} */
+                height: auto;
+                line-height: initial;
+            } */
     .layui-table-cell {
         height: auto;
     }
@@ -67,11 +67,11 @@
 <body>
     <div class="x-nav">
         <span class="layui-breadcrumb">
-				<a href="">首页</a>
-				<a><cite>订单管理</cite></a>
-			</span>
+            <a href="">首页</a>
+            <a><cite>订单管理</cite></a>
+        </span>
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
+            <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
     <div class="x-body">
         <div class="layui-form layui-row">
@@ -95,6 +95,18 @@
                     <option value="Alipay_Pay">支付宝支付</option>
                     <option value="WeChat_Pay">微信支付</option>
                     <option value="UnionPay_Pay">云闪付</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="twoTransactionType" id="twoTransactionType">
+                    <option value="">支付类型</option>
+                    <option value="0">条码支付</option>
+                    <option value="1">动态二维码支付</option>
+                    <option value="2">小程序支付</option>
+                    <option value="5">公众号支付</option>
+                    <option value="6">服务窗支付</option>
+                    <option value="7">预授权</option>
+                    <option value="8">刷脸支付</option>
                 </select>
             </div>
             <div class="layui-input-inline">
@@ -172,8 +184,8 @@
     </div>
     <script type="text/html" id="tool">
         <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-			
-		</script>
+            
+        </script>
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
@@ -258,16 +270,29 @@
 
             function tableRender() {
                 var index = layer.load(2, { shade: [0.4, '#393D49'] })
+                var startTime
+                var endTime
+                if($('#startTime').val() != ''){
+                    startTime =$('#startTime').val() + ' ' + '00:00:00'
+                }else{
+                    startTime = ''
+                }
+                if($('#endTime').val() != ''){
+                    endTime =$('#endTime').val() + ' ' + '23:59:59'
+                }else{
+                    endTime = ''
+                }
                 table.render({
                     url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.selectOrderList + '?agentNumber=' + userNumber,
                     where: {
                         "agentLevel": agentLevel,
                         "batch": $('#orderNumber').val().trim(),
                         "merchantName": $('#shopName').val().trim(),
-                        "startTime": $('#startTime').val() + ' ' + '00:00:00',
-                        "endTime": $('#endTime').val() + ' ' + '23:59:59',
+                        "startTime": startTime,
+                        "endTime": endTime,
                         "oneTransactionType": $('#oneTransactionType').val(),
                         "orderState": $('#orderState').val(),
+                        "twoTransactionType": $('#twoTransactionType').val()
                     },
                     elem: '#LAY_table_bill',
                     page: true,
@@ -297,7 +322,7 @@
                             width: 200
                         }, {
                             templet: function(data) {
-                                return data.batch  + '<br />' + data.paymentOrderNumber
+                                return data.batch + '<br />' + data.paymentOrderNumber
                             },
                             title: '订单号/通道订单号',
                             align: 'center',
@@ -395,7 +420,7 @@
                             align: 'center',
 
                         }, {
-                            field: 'remark',
+                            field: 'orderRemarks',
                             title: '订单描述',
                             align: 'center',
 
@@ -409,21 +434,21 @@
                     done: function(res, curr, count) {
                         // console.log(newData)
                         // console.log(curr)
-                         if(res.code != 1000){
-                             $("#count").html('0')
+                        if (res.code != 1000) {
+                            $("#count").html('0')
                             $("#transactionAmount").html('0元')
                             $("#refundAmount").html('0元')
                             $("#shopPoundage").html('0元')
                             $("#settlementAmount").html('0元')
-                        }else{
+                        } else {
                             $("#count").html(newData.count)
                             $("#transactionAmount").html(newData.transactionAmount + '元')
                             $("#refundAmount").html(newData.refundAmount + '元')
                             $("#shopPoundage").html(newData.shopPoundage + '元')
                             $("#settlementAmount").html(newData.settlementAmount + '元')
                         }
-                           
-                        
+
+
 
 
                         layer.closeAll()

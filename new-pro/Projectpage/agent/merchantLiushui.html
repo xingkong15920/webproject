@@ -14,7 +14,12 @@
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
 	</head>
-
+	<style type="text/css">
+		tbody:last-child tr:last-child{
+    	color:red;
+    	border-top: 2px solid  black;
+    }
+	</style>
 	<body>
 		<div class="x-nav">
 			<span class="layui-breadcrumb"> <a href="">账单</a> <a> <cite>商户账单</cite></a>
@@ -63,6 +68,94 @@
 		<script src="../../common/config-agent.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
+			function reData(data) {
+		        
+		        var oob = new Object()
+		        oob.totalOrder = 0
+				oob.orderTotalMoney = 0
+				oob.refundOrderTotalMoney = 0
+				oob.poundage = 0
+				oob.shishoujine = 0
+				oob.weChatTotalOrder = 0
+				oob.weChatTotalMoney = 0
+				oob.weChatrefundOrderTotalMoney = 0
+				oob.weChatPoundage = 0
+				oob.weChatShishoujine = 0
+				oob.alipayTotalOrder = 0
+				oob.alipayTotalMoney = 0
+				oob.alipayrefundOrderTotalMoney = 0
+				oob.alipayPoundage = 0
+				oob.alipayShishoujine = 0
+				oob.unionTotalPayOrder = 0
+				oob.unionPayTotalMoney = 0
+				oob.unionPayrefundOrderTotalMoney = 0
+				oob.unionPayPoundage = 0
+				oob.unionPayShishoujine = 0
+				oob.subsidyNumber = 0
+				oob.subsidyMoney = 0
+				oob.historyRefundCount = 0
+				oob.historyRefundAmount = 0
+				oob.historyShopPoundage = 0
+				oob.merchantName = '本页合计'
+				oob.logGid = '--'
+				oob.statementDate = '--'
+				oob.billType = '--'
+		        for (var i = 0; i < data.length; i++) {
+			        oob.totalOrder += parseFloat(data[i].totalOrder)
+					oob.orderTotalMoney += parseFloat(data[i].orderTotalMoney)
+					oob.refundOrderTotalMoney += parseFloat(data[i].refundOrderTotalMoney)
+					oob.poundage += parseFloat(data[i].poundage)
+					oob.shishoujine += parseFloat(data[i].shishoujine)
+					oob.weChatTotalOrder += parseFloat(data[i].weChatTotalOrder)
+					oob.weChatTotalMoney += parseFloat(data[i].weChatTotalMoney)
+					oob.weChatrefundOrderTotalMoney += parseFloat(data[i].weChatrefundOrderTotalMoney)
+					oob.weChatPoundage += parseFloat(data[i].weChatPoundage)
+					oob.weChatShishoujine += parseFloat(data[i].weChatShishoujine)
+					oob.alipayTotalOrder += parseFloat(data[i].alipayTotalOrder)
+					oob.alipayTotalMoney += parseFloat(data[i].alipayTotalMoney)
+					oob.alipayrefundOrderTotalMoney += parseFloat(data[i].alipayrefundOrderTotalMoney)
+					oob.alipayPoundage += parseFloat(data[i].alipayPoundage)
+					oob.alipayShishoujine += parseFloat(data[i].alipayShishoujine)
+					oob.unionTotalPayOrder += parseFloat(data[i].unionTotalPayOrder)
+					oob.unionPayTotalMoney += parseFloat(data[i].unionPayTotalMoney)
+					oob.unionPayrefundOrderTotalMoney += parseFloat(data[i].unionPayrefundOrderTotalMoney)
+					oob.unionPayPoundage += parseFloat(data[i].unionPayPoundage)
+					oob.unionPayShishoujine += parseFloat(data[i].unionPayShishoujine)
+					oob.subsidyNumber += parseFloat(data[i].subsidyNumber)
+					oob.subsidyMoney += parseFloat(data[i].subsidyMoney)
+					oob.historyRefundCount += parseFloat(data[i].historyRefundCount)
+					oob.historyRefundAmount += parseFloat(data[i].historyRefundAmount)
+					oob.historyShopPoundage += parseFloat(data[i].historyShopPoundage) 
+		        }
+		        oob.totalOrder = (oob.totalOrder).toFixed(2)
+				oob.orderTotalMoney = (oob.orderTotalMoney).toFixed(2)
+				oob.refundOrderTotalMoney = (oob.refundOrderTotalMoney).toFixed(2)
+				oob.poundage = (oob.poundage).toFixed(2)
+				oob.shishoujine = (oob.shishoujine).toFixed(2)
+				oob.weChatTotalOrder = (oob.weChatTotalOrder).toFixed(2)
+				oob.weChatTotalMoney = (oob.weChatTotalMoney).toFixed(2)
+				oob.weChatrefundOrderTotalMoney = (oob.weChatrefundOrderTotalMoney).toFixed(2)
+				oob.weChatPoundage = (oob.weChatPoundage).toFixed(2)
+				oob.weChatShishoujine = (oob.weChatShishoujine).toFixed(2)
+				oob.alipayTotalOrder = (oob.alipayTotalOrder).toFixed(2)
+				oob.alipayTotalMoney = (oob.alipayTotalMoney).toFixed(2)
+				oob.alipayrefundOrderTotalMoney = (oob.alipayrefundOrderTotalMoney).toFixed(2)
+				oob.alipayPoundage = (oob.alipayPoundage).toFixed(2)
+				oob.alipayShishoujine = (oob.alipayShishoujine).toFixed(2)
+				oob.unionTotalPayOrder = (oob.unionTotalPayOrder).toFixed(2)
+				oob.unionPayTotalMoney = (oob.unionPayTotalMoney).toFixed(2)
+				oob.unionPayrefundOrderTotalMoney = (oob.unionPayrefundOrderTotalMoney).toFixed(2)
+				oob.unionPayPoundage = (oob.unionPayPoundage).toFixed(2)
+				oob.unionPayShishoujine = (oob.unionPayShishoujine).toFixed(2)
+				oob.subsidyNumber = (oob.subsidyNumber).toFixed(2)
+				oob.subsidyMoney = (oob.subsidyMoney).toFixed(2)
+				oob.historyRefundCount = (oob.historyRefundCount).toFixed(2)
+				oob.historyRefundAmount = (oob.historyRefundAmount).toFixed(2)
+				oob.historyShopPoundage = (oob.historyShopPoundage).toFixed(2)
+		        data.push(oob)
+		        console.log(oob)
+		        return data
+		    }
 			function verTime() {
 				var arr1 = $('#startTime').val().split('-');
 				var arr2 = $('#endTime').val().split('-');
@@ -251,7 +344,7 @@
 							return {
 								"code": res.code,
 								"count": res.data.count,
-								"data": res.data.result,
+								"data": reData(res.data.result),
 							}
 						},
 						cols: [
@@ -308,8 +401,8 @@
 									title: '云闪付(笔数/交易额/退款额/手续费/实收额)',
 									align: 'center',
 									templet: function(data) {
-										return data.alipayTotalOrder + ' / ' + data.alipayTotalMoney + ' / ' + data.alipayrefundOrderTotalMoney +
-											' / ' + data.alipayPoundage + ' / ' + data.alipayShishoujine
+										return data.unionTotalPayOrder + ' / ' + data.unionPayTotalMoney + ' / ' + data.unionPayrefundOrderTotalMoney +
+											' / ' + data.unionPayPoundage + ' / ' + data.unionPayShishoujine
 									},
 									width: 300
 								}, {
@@ -326,7 +419,8 @@
 									align: 'center',
 									templet: function(data) {
 										return data.historyRefundCount + ' / ' + data.historyRefundAmount + ' / ' + data.historyShopPoundage
-									}
+									},
+									width: 200
 								}
 							]
 						],

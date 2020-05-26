@@ -70,6 +70,15 @@
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
 					</div>
+					<div class="layui-input-inline">
+						<select name="type" id="auditStatus">
+							<option value="">状态</option>
+							<option value="0">未通过</option>
+							<option value="1">待机构审核</option>
+							<option value="4">已提交第三方</option>
+							<option value="5">待三方人工审核</option>
+						</select>
+					</div>
 					<!-- <div class="layui-input-inline">
 						<select name="type" id="merchantType">
 							<option value="">类型</option>
@@ -117,8 +126,8 @@
 			
 			
 			
-			<a class="layui-btn layui-btn-xs {{d.auditStatus !=4 ? '' : 'hiide'}} " id="edit" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-xs {{d.auditStatus ==4 ? '' : 'hiide'}} " id="look" lay-event="look">查看</a>
+			<a class="layui-btn layui-btn-xs {{d.auditStatus ==0 ? '' : 'hiide'}} " id="edit" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs {{d.auditStatus !=0 ? '' : 'hiide'}} " id="look" lay-event="look">查看</a>
 			<span class="{{d.auditStatus !=4 ? 'hiide' : ''}}">已提交</span>
 		</script>
 		<script src="../../common/config-organ.js"></script>
@@ -209,7 +218,7 @@
 							"agentName":$('#agentName').val().trim(),
 							"agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number,
 							"merchantName":$('#merchantName').val().trim(),
-							"auditStatus":1,
+							"auditStatus":$('#auditStatus').val(),
 							"subsidy":'',
 							"startTime":$('#startTime').val().trim(),
 							"endtime":$('#endTime').val().trim(),

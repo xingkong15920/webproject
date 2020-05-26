@@ -26,6 +26,7 @@
             url: fullUrl, 
             data: postData,
             async: isAsync,
+            timeout: 2000,
             dataType: dataType, 
             // headers:{
             //     contentType:"application/json"
@@ -55,9 +56,9 @@
                     console.log(XMLHttpRequest.readyState);
                     // 错误信息   
                     console.log(textStatus);
-                    // if(textStatus == 'timeout'){
-                    //     alert('接口访问超时，请稍后再试')
-                    // }
+                    if(textStatus == 'timeout'){
+                        alert('接口访问超时，请稍后再试')
+                    }
                     // if(textStatus == 'error'){
                     //     alert('接口访问错误，请稍后再试')
                     // }

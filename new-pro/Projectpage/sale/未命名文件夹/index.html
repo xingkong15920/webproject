@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title id="title">销售管理平台</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> -->
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script type="text/javascript">
+        //var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
+            var site = '51shanhe'
+    function getDateStr(dayCount) {
+            var dayNumber = 0 + dayCount
+            let dd = new Date()
+            dd.setDate(dd.getDate() + dayCount)
+            let time = dd.getTime()
+            return time + ''
+        }
+    // var number = CmsUtility.getQueryString('number')
+    // var ins = CmsUtility.getQueryString('ins')
+    // var cname = ''
+    // var cip = ''
+    
+
+        
+
+        
+        if (!localStorage.getItem(site+"saleStorage")) {
+            console.log('123')
+             window.location.href = 'login.html'
+        } else {
+            var nowTime = getDateStr(0)
+            var localData = JSON.parse(localStorage.getItem(site+"saleStorage"))
+            console.log(nowTime,localData)
+            if (nowTime >= localData.time) {
+                 window.location.href = 'login.html'
+            } else {
+                sessionStorage.setItem("saleUser", JSON.stringify(localData.data));
+            }
+        }
+
+    
+
+
+
+    var dw = $(window).width(),
+        dh = $(window).height(),
+        ifmbox = $(".layui-iframe"),
+        iframe = $("#iframepage");
+
+    var cssText = "width:" + dw + "px !important;";
+    iframe.css("cssText", cssText);
+
+    if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //判断是苹果设备还是其他设备 
+        ifmbox.addClass('ifm-ios');
+        iframe.attr("scrolling", "no") //评估设置设置为no
+    } else {
+        iframe.attr("scrolling", "yes") //安卓设备设置为yes
+        iframe.height(dh)
+    }
+    </script>
+</head>
+
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo">
+            <a href="./index.html" style="width:250px" id="titName">销售后台管理</a>
+        </div>
+        <div class="left_open">
+            <i title="展开左侧栏" class="iconfont">&#xe699;</i>
+        </div>  
+        <ul class="layui-nav right" lay-filter="">
+             <!-- <li class="layui-nav-item" style="float:left">
+                <a style="float:left" target="_blank" href=" https://www.yuque.com/books/share/d66d5c0d-bdde-4542-9d66-f3225bbc65d7?#" id="">资料库</a>
+             </li>
+            <li class="layui-nav-item" style="float:left">
+                
+                <a style="float:left" href="https://www.yuque.com/books/share/630af775-843c-4063-bb44-2ee6a043bb72?#" id="">常见问题</a>
+             </li> -->
+            <li class="layui-nav-item"  style="float:left">
+                
+                <a href="javascript:;" id="userName"></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;" id="logout">退出</a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 左侧菜单开始 -->
+    <div class="left-nav">
+        <div id="side-nav">
+            <ul class="layui-nav layui-nav-tree" id="nav">
+                
+                
+                
+                
+                <li class="layui-nav-item">
+                    <a lay-href="add-merchant.html">
+                        <i class="icon icon icon-xiaoshouguanli"></i>
+                        <cite>添加商户</cite>
+                    </a>
+                </li>
+                <li class="layui-nav-item"  >
+                    <a lay-href="dealersMerchantPage.html">
+                        <i class="icon icon icon-dailiguanli1" style="padding-right: 5px"></i>
+                        <cite>已审核商户</cite>
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a lay-href="merchant-wait.html">
+                        <i class="icon icon icon-shanghuguanli"></i>
+                        <cite>待审核商户</cite>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+    <!-- 左侧菜单结束 -->
+    <!-- 右侧主体开始 -->
+    <div class="page-content">
+        <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+            <ul class="layui-tab-title">
+                <li class="layui-this layui-icon layui-icon-home">首页</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show layui-iframe">
+                    <iframe src='./welcome.html' id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content-bg"></div>
+    <!-- 右侧主体结束 -->
+    <!-- 中部结束 -->
+    <!-- 底部开始 -->
+    <script type="text/javascript">
+    console.log(JSON.parse(sessionStorage.getItem("saleUser")))
+    $('#userName').html(JSON.parse(sessionStorage.getItem("saleUser")).login)
+
+    CmsUtility.postAjaxCall(
+        //系统设置
+        CmsConfig.addressUrl.Public.getSitePath, {
+            "sitePath": '51shanhe.com',
+        },
+        function(data) {
+            console.log(data)
+            if (data.code == '1000') {
+                $('#titName').html(data.data[0].websiteName + '-销售管理平台')
+                $('#title').html(data.data[0].websiteName + '-销售管理平台')
+                sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));
+                // document.write('<title>机构后台管理系统</title>')
+            } else {
+                layer.msg(data.msg)
+            }
+        },
+        function(data) {
+            console.log('222')
+        }
+    )
+
+    
+
+    function onBack(res) {
+        alert(JSON.stringify(res));
+    }
+    $(function() {
+        CmsUtility.postAjaxCall2(
+            //系统设置
+            // CmsConfig.ServiceUrl.ApiRootUrl.split('shanhe-service/')[0 ] +'shanhe-admin/insTpa/getThirdParty', 
+            'https://nb.51shanhe.com/shanhe-admin/insTpa/getThirdParty', {
+                "institutionNumber": JSON.parse(sessionStorage.getItem("saleUser")).institutionNumber
+            },
+            function(data) {
+                if(data.code == 1000){
+                    sessionStorage.setItem("baidu", JSON.stringify(data.data));
+                }else{
+                    
+                    sessionStorage.setItem("baidu", 'no');
+                }
+
+                
+            },
+            function(data) {
+
+            }
+        )
+        $('#logout').click(function() {
+             layer.msg('退出成功，即将跳转登录页')
+                        sessionStorage.clear();
+                        setTimeout(function() {
+                            window.location.href = 'login.html'
+                        }, 300)
+            // var ajjData = new Object()
+            // ajjData.institutionNumber = JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
+            // ajjData.number = JSON.parse(sessionStorage.getItem("agentUser")).Number
+            // console.log(ajjData)
+            // CmsUtility.postAjaxCall(
+            //     //系统设置
+            //     CmsConfig.addressUrl.Login.exitLogin,
+            //     ajjData,
+            //     function(data) {
+            //         if (data.code == '1000') {
+            //             // layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
+            //             //  title: ''
+            //             // })
+            //             layer.msg('退出成功，即将跳转登录页')
+            //             sessionStorage.clear();
+            //             setTimeout(function() {
+            //                 window.location.href = 'login.html'
+            //             }, 300)
+
+            //         } else {
+
+            //         }
+            //     },
+            //     function(data) {
+            //         console.log('222')
+            //     }
+            // )
+
+        })
+    })
+    </script>
+</body>
+</body>
+
+</html>

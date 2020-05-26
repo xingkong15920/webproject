@@ -9,8 +9,8 @@ if(Edition == 'qty'){
     //server = 'http://192.168.1.134:6006/shanhe-service/'
     publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }else{
-	server  = 'http://192.168.1.167:6006/shanhe-service/'
-    publicUrl = 'http://192.168.1.167:5006/shanhe-common/'
+	server  = 'http://192.168.1.250:6006/shanhe-service/'
+    publicUrl = 'http://192.168.1.250:5006/shanhe-common/'
     //server  = 'http://47.95.247.16:6106/shanhe-service/'
 }
 /* 

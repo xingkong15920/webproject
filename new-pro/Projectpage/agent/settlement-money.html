@@ -177,8 +177,8 @@
                         console.log(getData.saleName)
                         form.val('cardAdd', {
                             "saleName": getData.saleName,
-                            "settlementCountMoney": getData.settlementCountMoney,
-                            "realSaleBalance": getData.realSaleBalance,
+                            "settlementCountMoney": (getData.settlementCountMoney).toFixed(2),
+                            "realSaleBalance": (getData.realSaleBalance).toFixed(2),
                             // "balance": getData.balance
                         })
                         form.render()
@@ -202,7 +202,7 @@
                         return '请输入数字'
                     }
                     if (parseFloat(value) > parseFloat($("#reBalance").val())) {
-                        return '结算金额不得大于待结算金额'
+                        return '结算金额不得大于余额'
                     }
                 },
             });
@@ -266,7 +266,7 @@
 
 
                         parent.layer.msg('提交成功')
-
+                        parent.layui.table.reload('vip_cardList')
 
                         setTimeout(function () {
                             $('#quxiao').click()

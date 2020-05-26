@@ -25,8 +25,8 @@ var CmsConfig = {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
 		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
 		// ApiRootUrlMeb: 'http://192.168.1.110:6019/p-member/',
-		ApiRootUrlMeb: 'http://192.168.1.124:6019/p-member/',
-		// ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
+		//ApiRootUrlMeb: 'http://192.168.1.250:6019/p-member/',
+		 ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		// ApiRootUrlMeb: 'http://api-cs.51shanhe.com/p-member/',
 		ApiRootUrl: server,
 		PubUrl: publicUrl

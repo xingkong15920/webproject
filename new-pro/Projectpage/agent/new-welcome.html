@@ -115,7 +115,7 @@
                 </div>
                 <div class="layui-col-md2">
                     <div class="homelist">
-                        <p class="homelistitle">分润总额（元）</p>
+                        <p class="homelistitle">待结算分润（元）</p>
                         <div class="homelistc">
                             <span><i id="totalFenRun">0</i>元</span>
                         </div>
@@ -123,7 +123,7 @@
                 </div>
                 <div class="layui-col-md2">
                     <div class="homelist">
-                        <p class="homelistitle">总退款额（元）</p>
+                        <p class="homelistitle">账号余额（元）</p>
                         <div class="homelistc">
                             <span><i id="refundAmount">0</i>元</span>
                         </div>
@@ -145,10 +145,9 @@
                         </div>
                     </div>
                 </div>
-               
             </div>
             <div style="overflow:hidden">
-                 <div class="layui-col-md2">
+                <div class="layui-col-md2">
                     <div class="homelist">
                         <p class="homelistitle">服务商总数</p>
                         <div class="homelistc">
@@ -288,7 +287,7 @@
                     <div class="homelist">
                         <p class="homelistitle">云闪付分润（元）</p>
                         <div class="homelistc">
-                            <span><i id="ailiFenRun">0</i>元</span>
+                            <span><i id="unionPayPayFenRun">0</i>元</span>
                         </div>
                     </div>
                 </div>
@@ -296,7 +295,7 @@
                     <div class="homelist">
                         <p class="homelistitle">翼支付分润（元）</p>
                         <div class="homelistc">
-                            <span><i id="ailiFenRun">0</i>元</span>
+                            <span><i id="wingPayFenRun">0</i>元</span>
                         </div>
                     </div>
                 </div>
@@ -304,7 +303,7 @@
                     <div class="homelist">
                         <p class="homelistitle">京东钱包分润（元）</p>
                         <div class="homelistc">
-                            <span><i id="ailiFenRun">0</i>元</span>
+                            <span><i id="jdPayFenRun">0</i>元</span>
                         </div>
                     </div>
                 </div>
@@ -331,6 +330,24 @@
         </div>
         <div class="grid-demo border">
             <div id="main" style="height: 400px"></div>
+        </div>
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-xs12 layui-col-sm3 layui-col-md3" style="width:50%">
+                <div class="grid-demo border">
+                    <div class="">
+                        <p class="x-red" style="font-size: 20px;margin-bottom: 15px;">交易环比增长TOP10</p>
+                        <table class="layui-hide" id="members_FY3" lay-filter="members_FY3"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm3 layui-col-md3" style="width:50%">
+                <div class="grid-demo border">
+                    <div class="">
+                        <p class="x-red" style="font-size: 20px;margin-bottom: 15px;">交易环比下跌TOP10</p>
+                        <table class="layui-hide" id="members_FY4" lay-filter="members_FY4"></table>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="layui-row layui-col-space30" style="margin-top:30px;margin-bottom:100px">
             <!--汇总-->
@@ -534,6 +551,7 @@
             data: allSaleList
         }]
     };
+
     function tab(id) {
         switch (id) {
             case 0:
@@ -560,11 +578,11 @@
             case 2:
 
                 CmsUtility.clearListArr(orderTotalMoney)
-                
+
                 for (let i = 0; i < refundMoney.length; i++) {
                     orderTotalMoney.push(refundMoney[i])
                 }
-                
+
                 myChart.clear()
                 myChart.setOption(option);
                 // statements_1
@@ -631,7 +649,7 @@
                 CmsUtility.clearListArr(shishou)
                 var data = data.data
                 for (var j = 0; j < data.length; j++) {
-               
+
                     Statement_Date.push(data[j].transactionTime)
                     orderTotalMoney.push(data[j].myFenRun)
                     orderCount.push(data[j].totalTransactionAmount)
@@ -664,7 +682,7 @@
             $ = layui.jquery;
 
 
-        window.jyClick = function(data,data1) {
+        window.jyClick = function(data, data1) {
             console.log(data)
             // 
 
@@ -672,19 +690,20 @@
             $('.fl').eq(data).attr('class', 'layui-btn layui-btn-primary fl dayCheck')
             getShop(data1)
         }
-        window.jyClick1 = function(data,data1) {
+        window.jyClick1 = function(data, data1) {
             console.log(data)
             // 
 
             $('.fl1').attr('class', 'layui-btn layui-btn-primary fl1')
             $('.fl1').eq(data).attr('class', 'layui-btn layui-btn-primary fl1 dayCheck1')
             var qiehuan = document.getElementsByClassName('qiehuan')
-            $('.qiehuan').attr('class','qiehuan')
-            $('.qiehuan').eq(0).attr('class','qiehuan layui-this')
+            $('.qiehuan').attr('class', 'qiehuan')
+            $('.qiehuan').eq(0).attr('class', 'qiehuan layui-this')
             reloadres(data1)
+            zhanbi(data1)
         }
 
-
+         zhanbi(3)
         function getAll() {
 
             CmsUtility.postAjaxCall(
@@ -696,9 +715,8 @@
                 function(data) {
                     $('#todayFenRun').html(data.data[0].todayFenRun)
                     $('#yesterdayFenRun').html(data.data[0].yesterdayFenRun)
-                    $('#totalFenRun').html(data.data[0].totalFenRun)
-                    $('#refundAmount').html(data.data[0].refundAmount)
-                    
+                    $('#totalFenRun').html(data.data[0].settlementCountMoney)
+                    $('#refundAmount').html(data.data[0].agentBalance)
                     $('#totalVolume').html(data.data[0].totalVolume)
                     $('#totalNumber').html(data.data[0].totalNumber)
                     $('#numberOfAgents').html(data.data[0].numberOfAgents)
@@ -718,11 +736,11 @@
         getAll()
 
         var myDate = new Date().toLocaleDateString().split('/')[0] + '-' + new Date().toLocaleDateString().split('/')[1] + '-' + new Date().toLocaleDateString().split('/')[2];
-       
+
 
         function getShop(number) {
 
-            
+
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
             CmsUtility.postAjaxCall(
                 //系统设置
@@ -744,9 +762,9 @@
                         $('#myFenRun').html(data.data[0].myFenRun)
                         $('#weChatFenRun').html(data.data[0].weChatFenRun)
                         $('#ailiFenRun').html(data.data[0].ailiFenRun)
-
-
-
+                        $('#unionPayPayFenRun').html(data.data[0].unionPayPayFenRun)
+                        $('#wingPayFenRun').html(data.data[0].wingPayFenRun)
+                        $('#jdPayFenRun').html(data.data[0].jdPayFenRun)
 
                     } else {
                         layer.msg(data.msg)
@@ -760,100 +778,188 @@
         }
         getShop(0)
 
-
-
-
-        //服务商商户占比
-        function dlShopCount() {
-            // ddDate = []
-            // ddData = []
-            for (let i = 0; i < allShopName.length; i++) {
-                allShopName.splice(i)
-            }
-            for (let i = 0; i < allShopList.length; i++) {
-                allShopList.splice(i)
-            }
-            CmsUtility.postAjaxCall(
-                //系统设置
-                'statistics/agentProportion', {
-                    "agentNumber": userNumber,
-                    "agentLevel": agentLevel
-                },
-                function(data) {
-
-                    if (data.code == 1000) {
-                        for (var i = 0; i < data.data.length; i++) {
-                            allShopName.push(data.data[i].agentName)
-                            var ab = new Object()
-                            ab.name = data.data[i].agentName
-                            ab.value = data.data[i].number
-                            allShopList.push(ab)
-                        }
-                        // var abb = new Object()
-                        // abb.name = '全部商户'
-                        // abb.value = data.data[0].merchantNum
-                        // allShopList.push(abb)
-                        //             [
-                        //     {value:allShop, name:'全部商户'},
-                        //     {value:nowShop, name:'服务商商户'},
-                        // ]
-                        myChart1.clear()
-                        myChart1.setOption(option1, 'true');
-
-                    } else {
-                        $('#main1').hide()
-                        $('#newCount').show()
-
+        function zhanbi(num){
+            //交易环比上升10
+        table.render({
+            url: CmsConfig.ServiceUrl.ApiRootUrl + 'statistics/getTrRatioRank',
+            where: {
+                "agentNumber": userNumber,
+                "dateStart":num,
+                "sort":'DESC',
+                "startTime":'',
+                "endTime":''
+            },
+            elem: '#members_FY3',
+            id: 'members_FY3',
+            response: {
+                //res 即为原始返回的数据
+                "statusCode": "1000", //解析接口状态
+            },
+            parseData: function(res) { //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data, //解析数据列表
+                };
+            },
+            cols: [
+                [{
+                    align: 'center',
+                    field: 'Merchant_Name',
+                    title: '商户名称',
+                }, {
+                    align: 'center',
+                    field: 'currentAmount',
+                    title: '交易金额',
+                    templet: function(data) {
+                        return (data.currentAmount).toFixed(2)
                     }
-                },
-                function(data) {
-                    console.log('222')
-                }, 'get'
-            )
+                },{
+                    align: 'center',
+                    field: 'chainRatio',
+                    title: '交易环比',
+                }]
+            ],
+            done: function(res, curr, count) {}
+        });
+
+
+        //交易环比下降10  
+        table.render({
+             url: CmsConfig.ServiceUrl.ApiRootUrl + 'statistics/getTrRatioRank',
+            where: {
+                "agentNumber": userNumber,
+                "dateStart":num,
+                "sort":'ASC',
+                "startTime":'',
+                "endTime":''
+            },
+            elem: '#members_FY4',
+            id: 'members_FY4',
+            response: {
+                //res 即为原始返回的数据
+                "statusCode": "1000", //解析接口状态
+            },
+            parseData: function(res) { //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data, //解析数据列表
+                };
+            },
+            cols: [
+                [{
+                    align: 'center',
+                    field: 'Merchant_Name',
+                    title: '商户名称',
+                }, {
+                    align: 'center',
+                    field: 'currentAmount',
+                    title: '交易金额',
+                }]
+            ],
+            done: function(res, curr, count) {}
+        });
         }
-        dlShopCount()
-        //服务商商户占比
-        function slShopCount() {
-            // ddDate = []
-            // ddData = []
-            for (let i = 0; i < allShopName.length; i++) {
-                allShopName.splice(i)
-            }
-            for (let i = 0; i < allShopList.length; i++) {
-                allShopList.splice(i)
-            }
-            CmsUtility.postAjaxCall(
-                //系统设置
-                'statistics/salesAccountedFor', {
-                    "agentNumber": userNumber,
-                    "agentLevel": agentLevel
-                },
-                function(data) {
 
-                    if (data.code == 1000) {
-                        for(var i = 0 ; i < data.data.length;i++){
-                            allSaleName.push(data.data[i].userName)
-                            var ab = new Object()
-                            ab.name = data.data[i].userName
-                            ab.value = data.data[i].merchantNumber
-                            allSaleList.push(ab)
-                        }
 
-                        myChart2.clear()
-                        myChart2.setOption(option2, 'true');
 
-                    } else {
-                        $('#main2').hide()
-                        $('#newCount1').show()
 
+    
+
+    //服务商商户占比
+    function dlShopCount() {
+        // ddDate = []
+        // ddData = []
+        for (let i = 0; i < allShopName.length; i++) {
+            allShopName.splice(i)
+        }
+        for (let i = 0; i < allShopList.length; i++) {
+            allShopList.splice(i)
+        }
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'statistics/agentProportion', {
+                "agentNumber": userNumber,
+                "agentLevel": agentLevel
+            },
+            function(data) {
+
+                if (data.code == 1000) {
+                    for (var i = 0; i < data.data.length; i++) {
+                        allShopName.push(data.data[i].agentName)
+                        var ab = new Object()
+                        ab.name = data.data[i].agentName
+                        ab.value = data.data[i].number
+                        allShopList.push(ab)
                     }
-                },
-                function(data) {
-                    console.log('222')
-                }, 'get'
-            )
+                    // var abb = new Object()
+                    // abb.name = '全部商户'
+                    // abb.value = data.data[0].merchantNum
+                    // allShopList.push(abb)
+                    //             [
+                    //     {value:allShop, name:'全部商户'},
+                    //     {value:nowShop, name:'服务商商户'},
+                    // ]
+                    myChart1.clear()
+                    myChart1.setOption(option1, 'true');
+
+                } else {
+                    $('#main1').hide()
+                    $('#newCount').show()
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }, 'get'
+        )
+    }
+    dlShopCount()
+    //服务商商户占比
+    function slShopCount() {
+        // ddDate = []
+        // ddData = []
+        for (let i = 0; i < allShopName.length; i++) {
+            allShopName.splice(i)
         }
-        slShopCount()
+        for (let i = 0; i < allShopList.length; i++) {
+            allShopList.splice(i)
+        }
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'statistics/salesAccountedFor', {
+                "agentNumber": userNumber,
+                "agentLevel": agentLevel
+            },
+            function(data) {
+
+                if (data.code == 1000) {
+                    for (var i = 0; i < data.data.length; i++) {
+                        allSaleName.push(data.data[i].userName)
+                        var ab = new Object()
+                        ab.name = data.data[i].userName
+                        ab.value = data.data[i].merchantNumber
+                        allSaleList.push(ab)
+                    }
+
+                    myChart2.clear()
+                    myChart2.setOption(option2, 'true');
+
+                } else {
+                    $('#main2').hide()
+                    $('#newCount1').show()
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }, 'get'
+        )
+    }
+    slShopCount()
     });
     </script>
 </body>

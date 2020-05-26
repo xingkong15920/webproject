@@ -102,15 +102,15 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label" style="width:100px">用户名</label>
+                    <label class="layui-form-label" style="width:100px">联系人</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="">
+                        <input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="请输入联系人" class="layui-input" value="">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" style="width:100px">联系电话</label>
                     <div class="layui-input-block">
-                        <input type="text" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="请输入联系电话" class="layui-input" value="">
+                        <input type="text" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="此手机用于登录服务商管理平台" class="layui-input" value="">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -381,7 +381,7 @@
     <script src="../../common/utility.js"></script>
     <script>
     var index = parent.layer.getFrameIndex(window.name);
-
+    var pyList = new Array()
 
     $('#quxiao').click(function() {
         setTimeout(function() {
@@ -453,7 +453,7 @@
 
 
 
-        CmsUtility.postAjaxCall(
+         CmsUtility.postAjaxCall(
             //系统设置
             CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber, {
                 "page": 1,
@@ -462,48 +462,56 @@
             function(data) {
                 console.log(data)
                 if (data.code == '1000') {
+
                     for (var i = 0; i < data.data.PaymentChannellist.length; i++) {
                         switch (data.data.PaymentChannellist[i].paymentChannelType) {
                             case 0:
                                 console.log('123')
                                 if (data.data.PaymentChannellist[i].disable == 0) {
                                     $('.alipay').show()
+                                    pyList.push(0)
                                 }
 
                                 break;
                             case 1:
                                 if (data.data.PaymentChannellist[i].disable == 0) {
                                     $('.wechatpay').show()
+                                    pyList.push(1)
                                 }
 
                                 break;
                             case 2:
                                 if (data.data.PaymentChannellist[i].disable == 0) {
                                     $('.fuyou').show()
+                                    pyList.push(2)
                                 }
 
                                 break;
                             case 3:
                                 if (data.data.PaymentChannellist[i].disable == 0) {
                                     $('.yrm').show()
+                                    pyList.push(3)
                                 }
 
                                 break;
                             case 4:
                                 if (data.data.PaymentChannellist[i].disable == 0) {
                                     $('.xdl').show()
+                                    pyList.push(4)
                                 }
 
                                 break;
                             case 5:
                                 if (data.data.PaymentChannellist[i].disable == 0) {
                                     $('.sxf').show()
+                                    pyList.push(5)
                                 }
 
                                 break;
                             case 6:
                                 if (data.data.PaymentChannellist[i].disable == 0) {
                                     $('.ls').show()
+                                    pyList.push(6)
                                 }
 
                                 break;
@@ -512,34 +520,28 @@
                                 break;
                         }
                     }
-                    // for (var i = 0; i < data.data.PaymentChannellist.length; i++) {
-                    //     switch (data.data.PaymentChannellist[i].paymentChannelType) {
-                    //         case 0:
-                    //             console.log('123')
-                    //             $('.alipay').show()
-                    //             break;
-                    //         case 1:
-                    //             $('.wechatpay').show()
-                    //             break;
-                    //         case 2:
-                    //             $('.fuyou').show()
-                    //             break;
-                    //         case 3:
-                    //             $('.yrm').show()
-                    //             break;
-                    //         case 4:
-                    //             $('.xdl').show()
-                    //             break;
-                    //         case 5:
-                    //             $('.sxf').show()
-                    //             break;
-                    //         default:
-                    //             // statements_def
-                    //             break;
-                    //     }
-                    // }
-
-
+                    console.log(pyList)
+                    if (pyList.indexOf(0) < 0) {
+                        removeElementsByClass('alipay')
+                    }
+                    if (pyList.indexOf(1) < 0) {
+                        removeElementsByClass('wechatpay')
+                    }
+                    if (pyList.indexOf(2) < 0) {
+                        removeElementsByClass('fuyou')
+                    }
+                    if (pyList.indexOf(3) < 0) {
+                        removeElementsByClass('yrm')
+                    }
+                    if (pyList.indexOf(4) < 0) {
+                        removeElementsByClass('xdl')
+                    }
+                    if (pyList.indexOf(5) < 0) {
+                        removeElementsByClass('sxf')
+                    }
+                    if (pyList.indexOf(6) < 0) {
+                        removeElementsByClass('ls')
+                    }
                 } else {
 
                 }
@@ -548,6 +550,12 @@
                 console.log('222')
             }
         )
+        window.removeElementsByClass = function(className) {
+            var elements = document.getElementsByClassName(className);
+            while (elements.length > 0) {
+                elements[0].parentNode.removeChild(elements[0]);
+            }
+        }
         
         
         
@@ -710,61 +718,112 @@
             addData.pAgentNumber = JSON.parse(sessionStorage.getItem("agentUser")).Number
             addData.pAgentLevel = JSON.parse(sessionStorage.getItem("agentUser")).agentLevel
             
-            addData.xdlweChatRate = (addData.xdlweChatRate / 10000 * 100).toFixed(4)
-
-            addData.xdlaliRate = (addData.xdlaliRate / 10000 * 100).toFixed(4)
-
-            addData.xdlUnionPayRate = (addData.xdlUnionPayRate / 10000 * 100).toFixed(4)
-
-            addData.xdlJDWallet = (addData.xdlJDWallet / 10000 * 100).toFixed(4)
-
-            addData.xdlQQWallet = (addData.xdlQQWallet / 10000 * 100).toFixed(4)
-
-            addData.fyweChatRate = (addData.fyweChatRate / 10000 * 100).toFixed(4)
-
-            addData.fyaliRate = (addData.fyaliRate / 10000 * 100).toFixed(4)
-
-            addData.fyUnionPayRate = (addData.fyUnionPayRate / 10000 * 100).toFixed(4)
-
-            addData.fyJDWallet = (addData.fyJDWallet / 10000 * 100).toFixed(4)
-
-            addData.fyQQWallet = (addData.fyQQWallet / 10000 * 100).toFixed(4)
-
-            addData.sxfweChatRate = (addData.sxfweChatRate / 10000 * 100).toFixed(4)
-
-            addData.sxfaliRate = (addData.sxfaliRate / 10000 * 100).toFixed(4)
-
-            addData.sxfUnionPayRate = (addData.sxfUnionPayRate / 10000 * 100).toFixed(4)
-
-            addData.sxfJDWallet = (addData.sxfJDWallet / 10000 * 100).toFixed(4)
-
-            addData.sxfQQWallet = (addData.sxfQQWallet / 10000 * 100).toFixed(4)
-
-            
-            addData.gfAliRate = (addData.gfAliRate / 10000 * 100).toFixed(4)
-			addData.gfWeChatRate = (addData.gfWeChatRate / 10000 * 100).toFixed(4)
-
-            addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo / 10000 * 100).toFixed(4)
-            addData.sxfUnionPayRatetwo = (addData.sxfUnionPayRatetwo / 10000 * 100).toFixed(4)
-            addData.fyUnionPayRatetwo = (addData.fyUnionPayRatetwo / 10000 * 100).toFixed(4)
-            addData.XdlUnionPayRatetwo = (addData.XdlUnionPayRatetwo / 10000 * 100).toFixed(4)
-            addData.lsweChatRate = (addData.lsweChatRate / 10000 * 100).toFixed(4)
-            addData.lsaliRate = (addData.lsaliRate / 10000 * 100).toFixed(4)
-            addData.lsUnionPayRate = (addData.lsUnionPayRate / 10000 * 100).toFixed(4)
-
-            addData.lsJDWallet = (addData.lsJDWallet / 10000 * 100).toFixed(4)
-            addData.lsQQWallet = (addData.lsQQWallet / 10000 * 100).toFixed(4)
-
-
-
-            addData.lsWingPayRate = (addData.lsWingPayRate / 10000 * 100).toFixed(4)            
-            addData.sxfWingPayRate = (addData.sxfWingPayRate / 10000 * 100).toFixed(4)
-            addData.fyWingPayRate = (addData.fyWingPayRate / 10000 * 100).toFixed(4)
-            addData.xdlWingPayRate = (addData.xdlWingPayRate / 10000 * 100).toFixed(4)
+            if (pyList.indexOf(0) >= 0) {
+                    addData.gfAliRate = (addData.gfAliRate / 10000 * 100).toFixed(4)
+                }else if (pyList.indexOf(0) < 0){
+                    addData.gfAliRate = '0'
+                }
+                if (pyList.indexOf(1) >= 0) {
+                    addData.gfWeChatRate = (addData.gfWeChatRate / 10000 * 100).toFixed(4)
+                }else if (pyList.indexOf(1) < 0){
+                    addData.gfWeChatRate = 0 
+                }
+                if (pyList.indexOf(2) >= 0) {
+                    addData.fyweChatRate = (addData.fyweChatRate / 10000 * 100).toFixed(4)
+                    addData.fyaliRate = addData.fyweChatRate
+                    addData.fyUnionPayRate = (addData.fyUnionPayRate / 10000 * 100).toFixed(4)
+                    addData.fyJDWallet = (addData.fyJDWallet / 10000 * 100).toFixed(4)
+                    addData.fyQQWallet = (addData.fyQQWallet / 10000 * 100).toFixed(4)
+                    addData.fyUnionPayRatetwo = (addData.fyUnionPayRatetwo / 10000 * 100).toFixed(4)
+                    addData.fyWingPayRate = (addData.fyWingPayRate / 10000 * 100).toFixed(4)
+                }else if (pyList.indexOf(2) < 0){
+                    addData.fyweChatRate = 0
+                    addData.fyaliRate = 0
+                    addData.fyUnionPayRate = 0
+                    addData.fyJDWallet = 0
+                    addData.fyQQWallet = 0
+                    addData.fyUnionPayRatetwo = 0
+                    addData.fyWingPayRate = 0
+                }
+                if (pyList.indexOf(3) < 0) {
 
 
 
 
+                }
+                if (pyList.indexOf(4) >= 0) {
+                    addData.xdlweChatRate = (addData.xdlweChatRate / 10000 * 100).toFixed(4)
+
+                    addData.xdlaliRate = addData.xdlweChatRate
+
+                    addData.xdlUnionPayRate = (addData.xdlUnionPayRate / 10000 * 100).toFixed(4)
+
+                    addData.xdlJDWallet = (addData.xdlJDWallet / 10000 * 100).toFixed(4)
+
+                    addData.xdlQQWallet = (addData.xdlQQWallet / 10000 * 100).toFixed(4)
+
+                    addData.XdlUnionPayRatetwo = (addData.XdlUnionPayRatetwo / 10000 * 100).toFixed(4)
+                    addData.xdlWingPayRate = (addData.xdlWingPayRate / 10000 * 100).toFixed(4)
+
+
+                }else if (pyList.indexOf(4) < 0){
+                    addData.xdlweChatRate = 0
+                    addData.xdlaliRate = 0
+                    addData.xdlUnionPayRate = 0
+                    addData.xdlJDWallet = 0
+                    addData.xdlQQWallet = 0
+                    addData.XdlUnionPayRatetwo = 0
+                    addData.xdlWingPayRate = 0
+                }
+                if (pyList.indexOf(5) >= 0) {
+
+                    addData.sxfweChatRate = (addData.sxfweChatRate / 10000 * 100).toFixed(4)
+
+                    addData.sxfaliRate = addData.sxfweChatRate
+
+                    addData.sxfUnionPayRate = (addData.sxfUnionPayRate / 10000 * 100).toFixed(4)
+
+                    addData.sxfJDWallet = (addData.sxfJDWallet / 10000 * 100).toFixed(4)
+
+                    addData.sxfQQWallet = (addData.sxfQQWallet / 10000 * 100).toFixed(4)
+
+                    addData.sxfUnionPayRatetwo = (addData.sxfUnionPayRatetwo / 10000 * 100).toFixed(4)
+                    addData.sxfWingPayRate = (addData.sxfWingPayRate / 10000 * 100).toFixed(4)
+
+
+                }else if (pyList.indexOf(5) < 0){
+                    addData.sxfweChatRate = 0
+                    addData.sxfaliRate = 0
+                    addData.sxfUnionPayRate = 0
+                    addData.sxfJDWallet = 0
+                    addData.sxfQQWallet = 0
+                    addData.sxfUnionPayRatetwo = 0
+                    addData.sxfWingPayRate = 0
+                }
+                if (pyList.indexOf(6) >= 0) {
+                    addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo / 10000 * 100).toFixed(4)
+
+
+
+                    addData.lsweChatRate = (addData.lsweChatRate / 10000 * 100).toFixed(4)
+                    addData.lsaliRate = addData.lsweChatRate
+                    addData.lsUnionPayRate = (addData.lsUnionPayRate / 10000 * 100).toFixed(4)
+
+                    addData.lsJDWallet = (addData.lsJDWallet / 10000 * 100).toFixed(4)
+                    addData.lsQQWallet = (addData.lsQQWallet / 10000 * 100).toFixed(4)
+
+
+
+                    addData.lsWingPayRate = (addData.lsWingPayRate / 10000 * 100).toFixed(4)
+                }else if (pyList.indexOf(6) < 0){
+                    addData.lsUnionPayRatetwo = 0
+                    addData.lsweChatRate = 0
+                    addData.lsaliRate = 0
+                    addData.lsUnionPayRate = 0
+                    addData.lsJDWallet = 0
+                    addData.lsQQWallet = 0
+                    addData.lsWingPayRate = 0
+                }
 
 
 

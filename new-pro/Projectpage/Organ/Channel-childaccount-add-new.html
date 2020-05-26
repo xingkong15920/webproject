@@ -505,8 +505,8 @@
 							if (isNaN(value) == true) {
 								return '请输入数字'
 							}
-							if (value < 0.21 || value > 1) {
-								return '费率需在0.21-1之间'
+							if (value < 0.20 || value > 1) {
+								return '费率需在0.20-1之间'
 							}
 						},
 						// subaccountKey: function(value) {
@@ -694,8 +694,14 @@
 
 					tjData.weChatRate = isbaifenbi(tjData.weChatRate)
 					tjData.jingdongRate = isbaifenbi(tjData.jingdongRate)
-					tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
-					tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
+					if(tjData.isOpenYunPay == 1){
+						tjData.unionPayRate = 0
+						tjData.unionPayRate2 = 0
+					}else{
+						tjData.unionPayRate = isbaifenbi(tjData.unionPayRate)
+						tjData.unionPayRate2 = isbaifenbi(tjData.unionPayRate2)
+					}
+					
 					tjData.subsidyType = 1
 					console.log(tjData)
 					// isbaifenbi            
@@ -708,6 +714,7 @@
 						'channelSub/addChannelSubMer',
 						tjData,
 						function(data) {
+							layer.closeAll()
 							if (data.code == 1000) {
 
 								parent.layer.msg('保存成功')

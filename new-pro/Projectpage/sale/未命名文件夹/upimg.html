@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+ </head>
+ <body>
+  <input type="file" id="picFile" onchange="readFile(this)"/> 
+  <img style="" id="img" src="" alt="" />
+  <script>
+  function readFile(obj){ 
+   var file = obj.files[0];  
+   //判断类型是不是图片 
+    if(!/image\/\w+/.test(file.type)){ 
+      alert("请确保文件为图像类型"); 
+      return false; 
+    } 
+    var reader = new FileReader(); 
+    reader.readAsDataURL(file); 
+    reader.onload = function(e){
+        console.log(this.result)
+     dealImage(this.result,{width:200},function(base){
+
+     　　　　
+            fileup(base)
+     });
+    } 
+  } 
+    
+function dataURLtoFile(dataurl, filename) { //将base64转换为文件  
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],  
+    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);  
+    while(n--){  
+        u8arr[n] = bstr.charCodeAt(n);  
+    }  
+    return new File([u8arr], filename, {type:mime});  
+}
+ 
+function fileup(img) {  
+    var form=document.forms[0];  
+    var formData = new FormData();  
+    formData.append("file", dataURLtoFile(img,"123.png"));   
+    formData.append("institutionNumber", "1004");   
+    formData.append("longTime", "1231151223123");   
+     formData.append("type", "1");   
+    $.ajax({   
+     url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg' ,   
+     type: 'POST',   
+     data: formData,   
+     async: false,   
+     cache: false,   
+     contentType: false,   // 告诉jQuery不要去设置Content-Type请求头  
+     processData: false,   // 告诉jQuery不要去处理发送的数据
+     success: function (returndata) {   
+        console.log(returndata); 
+        document.getElementById('img').setAttribute('src',returndata.data)  
+     },   
+     error: function (returndata) {   
+        console(returndata);   
+     }   
+   })
+}
+  /**   
+   * 图片压缩，默认同比例压缩
+   * @param {Object} path
+   * pc端传入的路径可以为相对路径，但是在移动端上必须传入的路径是照相图片储存的绝对路径
+   * @param {Object} obj
+   * obj 对象 有 width， height， quality(0-1)
+   * @param {Object} callback
+   * 回调函数有一个参数，base64的字符串数据
+   */
+  function dealImage(path, obj, callback){
+   var img = new Image();
+   img.src = path;
+   img.onload = function(){
+   var that = this;
+   // 默认按比例压缩
+   var w = that.width,
+   h = that.height,
+   scale = w / h;
+   w = 800;
+   h = 800 / scale;
+   var quality = 0.8; // 默认图片质量为0.7
+   //生成canvas
+   var canvas = document.createElement('canvas');
+   var ctx = canvas.getContext('2d');
+   // 创建属性节点
+   var anw = document.createAttribute("width");
+   anw.nodeValue = w;
+   var anh = document.createAttribute("height");
+   anh.nodeValue = h;
+   canvas.setAttributeNode(anw);
+   canvas.setAttributeNode(anh);
+   ctx.drawImage(that, 0, 0, w, h);
+   // 图像质量
+   if(obj.quality && obj.quality <= 1 && obj.quality > 0){
+   quality = obj.quality;
+   }
+   // quality值越小，所绘制出的图像越模糊
+   var base64 = canvas.toDataURL('image/jpeg', quality );
+   // 回调函数返回base64的值
+   callback(base64);
+   }
+  }
+  </script>
+ </body>
+</html>

@@ -12,6 +12,11 @@
     <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
     <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            height: auto;grid: 
+        }
+    </style>
 </head>
 
 <body>
@@ -33,6 +38,21 @@
                 <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
                 <input type="text" name="name" id="userName" placeholder="服务商名称" autocomplete="off" class="layui-input">
             </div>
+            <div class="layui-input-inline">
+                    <select name="province" id="province"  lay-filter="provice">
+                        <option value="">请选择省</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" id="city"  lay-filter="city">
+                        <option value="">请选择市</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="area" id="area">
+                        <option value="">请选择区</option>
+                    </select>
+                </div>
             <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
         <xblock id="dlNum1027">
@@ -44,8 +64,9 @@
         <table class="layui-hide" id="LAY_table_Salesman" lay-filter="Salesman"></table>
     </div>
     <script type="text/html" id="tool">
-        <a class="layui-btn layui-btn-xs rate" style="display:none" lay-event="rate">修改费率</a>
-			<a class="layui-btn layui-btn-xs edit" style="display:none" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs edit" lay-event="edit">编辑信息</a>
+        <a class="layui-btn layui-btn-xs rate" lay-event="rate">修改费率</a>
+			
             <a class="layui-btn layui-btn-xs " lay-event="delete">修改密码</a>
             <a class="layui-btn layui-btn-xs" lay-event="settlement-records">结算记录</a>
             <a class="layui-btn layui-btn-xs" lay-event="commissionRecord">佣金记录</a>
@@ -56,13 +77,13 @@
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
-    if (JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber == '1027') {
-        $('#dlNum1027').show()
-        $('.edit').show()
+    // if (JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber == '1027') {
+    //     $('#dlNum1027').show()
+    //     $('.edit').show()
 
-    } else {
-        $('.rate').show()
-    }
+    // } else {
+    //     $('.rate').show()
+    // }
 
     function changeS(data) {
         var data = data
@@ -86,6 +107,7 @@
         $ = layui.jquery;
         var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
         var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+
         //方法级渲染
         function tableRender() {
             table.render({
@@ -93,7 +115,10 @@
                 where: {
                     "agentName": $('#userName').val(),
                     "registerCell": $('#registerCell').val(),
-                    "agentLevel": agentLevel
+                    "agentLevel": agentLevel,
+                    "province":$('#province').val(),
+                    "city":$('#city').val(),
+                    "area":$('#area').val(),
                 },
                 elem: '#LAY_table_merchant',
                 height: 'full-140',
@@ -151,7 +176,7 @@
                         field: 'OperatorStateC',
                         title: '状态',
                         align: 'center',
-                        width: 150,
+                        width: 90,
                         templet:function(data){
                                 if(data.state == 0 ){
                                     return '正常'
@@ -163,9 +188,12 @@
                             },
                     }, {
                         field: 'settlementCountMoney',
-                        title: '总佣金',
+                        title: '佣金' + '</br>' + '账号余额/待结算佣金',
                         align: 'center',
-                        width: 100,
+                        width: 200,
+                        templet:function(data){
+                            return data.agBalance + '/' + data.settlementCountMoney
+                        }
 
                     }, {
                         field: 'insertTime',
@@ -178,17 +206,17 @@
                         title: '操作',
                         toolbar: "#tool",
                         align: 'center',
-                        minWidth: 200
+                        minWidth: 500
                     }]
                 ],
                 done: function() {
-                    if (JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber == '1027') {
-                        $('#dlNum1027').show()
-                        $('.edit').show()
+                    // if (JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber == '1027') {
+                    //     $('#dlNum1027').show()
+                    //     $('.edit').show()
 
-                    } else {
-                        $('.rate').show()
-                    }
+                    // } else {
+                    //     $('.rate').show()
+                    // }
                 }
             })
 
@@ -196,6 +224,129 @@
         tableRender()
         $('#search').click(function() {
             tableRender()
+        })
+         var p = [],
+            c = [],
+            aa = [],
+            cityC = '0'
+        CmsUtility.postAjaxCall(
+            //系统设置
+            CmsConfig.addressUrl.Public.getAreajson, {},
+            function(data) {
+                sessionStorage.setItem("address", data.data);
+                address = JSON.parse(data.data)
+                for (var i = 0; i < address.length; i++) {
+                    var a = new Object()
+                    a.provinceCode = address[i].value
+                    a.provinceName = address[i].text
+                    p.push(a)
+                    var b = new Object()
+                    b.provinceCode = address[i].value
+                    b.children = []
+                    for (var k = 0; k < address[i].children.length; k++) {
+                        var d = new Object()
+                        d.cityCode = address[i].children[k].value
+                        d.cityName = address[i].children[k].text
+                        b.children.push(d)
+                        var e = new Object()
+                        e.cityCode = address[i].children[k].value
+                        e.childeren = []
+                        for (var j = 0; j < address[i].children[k].children.length; j++) {
+                            var t = new Object()
+                            t.areaCode = address[i].children[k].children[j].value
+                            t.areaName = address[i].children[k].children[j].text
+                            e.childeren.push(t)
+                        }
+                        aa.push(e)
+                    }
+                    c.push(b)
+
+                }
+                var str = '<option value="">请选择省</option>'
+                for (var i1 = 0; i1 < p.length; i1++) {
+
+                    str += '<option value="' + p[i1].provinceCode + '">' + p[i1].provinceName + '</option>'
+
+
+                }
+                $('#province').html(str)
+                // var str1 = '<option value="">请选择市</option>'
+                // for (var i3 = 0; i3 < c.length; i3++) {
+
+                //     if (p[0].provinceCode == c[i3].provinceCode) {
+                //         console.log(c[i3])
+                //         for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+                //             cityC = c[i3].children[0].cityCode
+
+                //             str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+                //         }
+
+                //     }
+                // }
+                // $('#city').html(str1)
+                // var str2 = '<option value="">请选择县区</option>'
+                // for (var i4 = 0; i4 < aa.length; i4++) {
+
+                //     if (cityC == aa[i4].cityCode) {
+
+                //         for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                //             str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+
+
+                //         }
+                //     }
+                // }
+                // $('#area').html(str2)
+
+
+                form.render()
+            },
+            function(data) {
+                console.log(data)
+            }
+        )
+         form.on('select(provice)', function(data) {
+            console.log(data)
+            var str1 = '<option value="">请选择市</option>'
+            for (var i3 = 0; i3 < c.length; i3++) {
+
+                if (data.value == c[i3].provinceCode) {
+
+                    for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                        str1 += '<option value="' + c[i3].children[i2].cityCode + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                    }
+                }
+            }
+            $('#city').html(str1)
+            var str2 = '<option value="">请选择县区</option>'
+            $('#area').html(str2)
+            form.render()
+
+        })
+         form.on('select(city)', function(data) {
+
+            var str2 = '<option value="">请选择县区</option>'
+            for (var i4 = 0; i4 < aa.length; i4++) {
+                if (data.value == aa[i4].cityCode) {
+                    console.log(aa[i4])
+                    for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                        str2 += '<option value="' + aa[i4].childeren[i5].areaCode + '">' + aa[i4].childeren[i5].areaName + '</option>'
+
+
+                    }
+                }
+            }
+            $('#area').html(str2)
+            form.render()
+
         })
         $('#addA').click(function() {
             layer.open({
@@ -284,7 +435,7 @@
                     type: 2,
                     title: '编辑-' + data.agentName,
                     area: ['70%', '90%'], //宽高
-                    content: 'Agent-List-edit.html',
+                    content: 'Agent-edit.html',
                     success: function(layero, index) {
                         // 获取子页面的iframe
                         var iframe = window['layui-layer-iframe' + index];

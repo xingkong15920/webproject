@@ -1328,6 +1328,17 @@
 
 				/*---------- 监听提交 ----------*/
 				form.on('submit(nextstep)', function(data, index) {
+					console.log(data)
+					var arrpay = new Array()
+					$("input:checkbox[name='applicablePay']:checked").each(function(i) {
+						arrpay[i] = $(this).val();
+					});
+					if(arrpay.indexOf('0') >= 0 || arrpay.indexOf('0') >= 1){
+						if(data.field.minimumCharge == 0){
+							layer.msg('微信及支付宝支付不支持最低消费金额为0的优惠券')
+							return false
+						}
+					}
 					step1verify()
 					$('.step1').hide()
 					$('.step2').show()
