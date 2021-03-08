@@ -13,6 +13,14 @@
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+				#btnBox .layui-btn {
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+
+		</style>
 	</head>
 
 	<body>
@@ -60,6 +68,12 @@
 			<!-- <xblock>
                 <button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
             </xblock> -->
+             <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
 		</div>
 		<script src="../../common/config-sh.js"></script>
@@ -110,19 +124,47 @@
 				)
 				//方法级渲染
 				tableRender()
+				window.jyClick = function(data, data1) {
 
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1) +
+                        ' - ' + CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
 				function tableRender() {
 					console.log($('#startTime').val())
 					var index = layer.load(2, {
 						shade: [0.4, '#393D49']
 					})
+					var startTime = $('#startTime')
 					table.render({
 						elem: '#LAY_table_bill',
 						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getDepositList + '?merchantNumber=' +
 							userNumber,
 						where: {
-							"startTime": fun_date(-6) + ' 00:00:00',
-							"endTime": fun_date(0) + ' 23:59:59',
+							"startTime": startTime.val() ? startTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									"endTime": startTime.val() ? startTime.val().split(' - ')[1] + ' 23:59:59' : '',
 							"orderState": '9',
 							"equipmentType": $('#equipmentType').val(),
 							"shopName": $('#shopName').val(),

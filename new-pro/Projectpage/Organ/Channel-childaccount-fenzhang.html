@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/hangye.js"></script>
+    <script type="text/javascript" src="../../public/js/hangye1.js"></script>
+    <script type="text/javascript" src="../../public/js/yinhang.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .widthauto {
+                width: auto !important;
+            }
+            
+            .tips_red {
+                color: red;
+            }
+            
+            .layui-form-label {
+                padding-left: 0;
+                width: 115px;
+            }
+            
+            .layui-input-block {
+                margin-left: 115px;
+            }
+            
+            .layui-elem-quote {
+                font-size: 18px;
+            }
+            
+            .layui-elem-field legend {
+                font-size: 16px;
+            }
+            
+            .layui-upload-img {
+                width: 200px;
+                height: 200px;
+                margin: 0 10px 40px 0;
+            }
+            
+            .Since_inline {
+                display: inline-block;
+                width: auto !important;
+                line-height: 38px;
+            }
+            
+            .layui-elem-quote .layui-form-switch {
+                margin: 0 15px;
+                margin-top: 0;
+            }
+            img{
+                text-align: center;
+                height: 100%;
+            }
+            .yingyezhizhao{
+                display:inline-block;width:500px;margin-left:30px
+            }
+            #showImgBox{
+                width: 35%;
+                height: 60%;
+                position: fixed;
+                z-index: 99999;
+                display: none;
+                background-color: #fff;
+            }
+            .showImg{
+                
+            }
+        </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div id="showImgBox">
+            <img id="showImg" src="http://sh-upfile.oss-cn-beijing.aliyuncs.com/1004/Merchant/1574146882000/c0b6baa3cad5d2f8cca8d5d5c6ac.jpeg" style="width:100%;height:100%">
+        </div>
+        <div class="layui-row" style="padding-bottom:200px">
+            <div class="layui-form" action="" lay-filter="cardAdd">
+                <blockquote class="layui-elem-quote">状态信息</blockquote>
+                <div class="layui-form-item msg">
+                    <label class="layui-form-label">分账状态:</label>
+                    <div class="layui-input-block">
+                        <input type="text" style="font-weight:bold;width:500px" name="bankCardStatus1" disabled="" lay-verify="" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item msg" id="qianshuBox" style="display:none">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block"> 
+                        <button type="button" class="layui-btn" id="qianshu">签署电子合同</button>
+                    </div>
+                </div>
+                <blockquote class="layui-elem-quote">开通分账</blockquote>
+                <div class="layui-form-item" style="width:600px">
+                    <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle"></span>商户编号</label>
+                    <div class="layui-input-block widthauto">
+                        <input type="text" name="merchantNumber" lay-verify="title" autocomplete="off" placeholder="商户编号" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="width:600px">
+                    <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle"></span>商户名称</label>
+                    <div class="layui-input-block widthauto">
+                        <input type="text" name="merchantName" lay-verify="title" autocomplete="off" placeholder="商户名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="width:600px">
+                    <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle"></span>分账比例</label>
+                    <div class="layui-input-block widthauto">
+                        <input type="text" name="sharePercent" lay-verify="fenzhang" autocomplete="off" placeholder="分账比例" class="layui-input" value="">
+                        <span style="display:inline-block;color:red"> 单位(%)</span>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item" style="width:600px">
+                    <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle"></span>分账授权协议图片</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-upload-img">
+                            <img src="../../public/images/add.jpg" id="test1" style="max-width: 100%;">
+                            <div class="layui-btn layui-btn-sm block" id="photo1" style="width:100%;text-align:center">上传图片</div>
+                        </div>
+                        <div style="width:100%;text-align:center;width:200px">分账授权协议</div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <span class="layui-btn layui-btn-primary" id="chongzhi">重置</span>
+                            <span class="layui-btn layui-btn-primary" id="quxiao">取消</span>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+        console.log('123')
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+    $('#chongzhi').click(function() {
+        window.location.reload()
+    })
+    var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+    var paymentType = CmsUtility.getQueryString('paymentType')
+    var paymentChannel = CmsUtility.getQueryString('paymentChannel')
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+
+
+    var merchantNumber = CmsUtility.getQueryString('merchantNumber')
+    //var orderNumber = CmsUtility.getQueryString('orderNumber')
+    //var merchantNumber = '1004000563'
+    var channelType = CmsUtility.getQueryString('type')
+    var channelName = CmsUtility.getQueryString('name')
+    var channel = CmsUtility.getQueryString('channel')
+    var subaccountNumber = CmsUtility.getQueryString('subaccountNumber')
+    var merchantName  = CmsUtility.getQueryString('merchantName')
+
+    var shareProtocolPic = '../../public/images/add.jpg'
+
+    var info = ''
+    function isWen(data) {
+        if (!data) {
+            return ''
+        }
+        if (data.indexOf('?') >= 0) {
+            return data.split('?')[0]
+        } else {
+            return data
+        }
+    }
+    //判断链接是否为空
+    function isNull(data) {
+        if (!data) {
+            return '../../public/images/add.jpg'
+        } else {
+            return data
+        }
+    }
+
+
+
+
+
+    layui.use(['laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+
+
+        var tableSelect = layui.tableSelect;
+
+        var uploadInst = upload.render({
+            elem: '#photo1',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test1').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    shareProtocolPic = res.data
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test1',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test1').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    shareProtocolPic = res.data
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        form.val('cardAdd', {
+
+            "merchantNumber": merchantNumber,
+            "merchantName":merchantName
+        })
+
+        setTimeout(function() {
+            var tjData = new Object()
+            tjData.subaccountNumber = subaccountNumber
+            tjData.merchantNumber = merchantNumber
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'sepAccount/getSepAccountSet',
+                JSON.stringify(tjData),
+                function(data1) {
+                    if (data1.code == 1000) {
+                        info = data1.data
+                        if(data1.data.separateType == 6){
+                            $('#qianshuBox').show()
+                        }else{
+                            $('#qianshuBox').hide()
+                        }
+                        var type = '--'
+                        switch (data1.data.separateType) {
+                            case '0':
+                                // statements_1
+                                type = '未开通'
+                                break;
+                            case '1':
+                                // statements_1
+                                type = '已开通'
+                                break;
+                            case '2':
+                                // statements_1
+                                type = '商户主动关闭'
+                                break;
+                            case '3':
+                                // statements_1
+                                type = '待审核'
+                                break;
+                            case '4':
+                                // statements_1
+                                type = '冻结'
+                                break;
+                            case '5':
+                                // statements_1
+                                type = '注销'
+                                break;
+                            case '6':
+                                // statements_1
+                                type = '待签合同'
+                                break;
+                            case '7':
+                                // statements_1
+                                type = '已提交'
+                                break;
+                            default:
+                                // statements_def
+                                break;
+                        }
+                        $('#test1').attr('src', data1.data.shareProtocolPic);
+                        shareProtocolPic = data1.data.shareProtocolPic
+                        form.val('cardAdd', {
+
+                            "bankCardStatus1": type,
+                            "sharePercent":(parseFloat(data1.data.sharePercent)*100).toFixed(2)
+                        })
+
+                    } else {
+                        form.val('cardAdd', {
+
+                            "bankCardStatus1": '未开通'
+                        })
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }, 500)
+        $('#qianshu').click(function(){
+            window.open(info.url)   
+        })
+
+
+
+
+
+
+
+        //验证
+        form.verify({
+            title: function(value) {
+                if (!value) {
+                    return '必填项不能为空！';
+                }
+            },
+            fenzhang:function(value){
+                if (!value) {
+                    return '必填项不能为空！'
+                }
+                if (isNaN(value) == true) {
+                    return '请输入数字'
+                }
+                if (value < 0 || value > 100) {
+                    return '分账比例需在0-100%之间'
+                }
+            }
+
+        });
+
+
+
+
+        form.on('submit(add)', function(data, index) {
+            var tjData = new Object()
+            console.log(tjData)
+            if(info != ''){
+                    if(info.separateType !=0 && info.separateType != 1 && info.separateType!= 2 ){
+                    layer.msg('暂不可提交资料更新')
+                    return  false
+                }
+            }
+            
+            // if(shareProtocolPic.indexOf('../..') >= 0 ){
+            //     layer.msg('请上传授权协议图片')
+            //     return false
+            // }
+            tjData.subaccountNumber = subaccountNumber
+            tjData.shareRole = 0
+            tjData.sharePercent = data.field.sharePercent /100
+            tjData.authTypes = 1
+            tjData.merchantNumber = data.field.merchantNumber
+            tjData.paymentType = paymentType
+            tjData.paymentChannel = paymentChannel
+            tjData.institutionNumber = userNumber
+            tjData.merchantName = data.field.merchantName
+            tjData.shareProtocolPic = shareProtocolPic
+            console.log(tjData)
+            layer.confirm('确认开通分账功能？', { icon: 0, title: '提示!' }, function(index) {
+                console.log(tjData)
+
+                var index = layer.load(2, {
+                    shade: [0.4, '#393D49']
+                })
+
+                CmsUtility.postAjaxCallJson(
+                    //系统设置
+                    'sepAccount/addSepAccountSet',
+                    JSON.stringify(tjData),
+                    function(data) {
+                        console.log(data)
+                        layer.closeAll()
+                        if (data.code == 1000) {
+                            setTimeout(function() {
+                                x_admin_close()
+                                parent.layer.msg(data.msg)
+                                 parent.layui.table.reload('vip_cardList')
+                            })
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function(data) {
+
+                    }
+                )
+                return false;
+
+            })
+
+        });
+    })
+    </script>
+</body>
+
+</html>

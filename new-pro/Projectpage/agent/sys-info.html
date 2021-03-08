@@ -169,6 +169,20 @@
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">基本信息</legend>
                 </fieldset>
+                <div class="layui-form-item pagent" style="width:60%;display:none"  >
+                    <label class="layui-form-label">上级代理商编号/名称</label>
+                    <div class="layui-input-block">
+                        <!--  <input type="text" name="merchantNumber" lay-verify="title"  placeholder="商户编号" class="layui-input" id="merchantNumber"> -->
+                        <input type="text" name="PagentName" lay-verify="title" placeholder="服务商名称" class="layui-input" disabled="disabled">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="width:60%">
+                    <label class="layui-form-label">服务商编号/名称</label>
+                    <div class="layui-input-block">
+                        <!--  <input type="text" name="merchantNumber" lay-verify="title"  placeholder="商户编号" class="layui-input" id="merchantNumber"> -->
+                        <input type="text" name="agentName" lay-verify="title" placeholder="服务商名称" class="layui-input" disabled="disabled">
+                    </div>
+                </div>
                 <div class="layui-form-item" style="width:60%">
                     <label class="layui-form-label">服务商类型</label>
                     <div class="layui-input-block">
@@ -176,13 +190,7 @@
                         <input type="text" name="agentType" lay-verify="title" placeholder="服务商类型" class="layui-input" disabled="disabled">
                     </div>
                 </div>
-                <div class="layui-form-item" style="width:60%">
-                    <label class="layui-form-label">服务商名称</label>
-                    <div class="layui-input-block">
-                        <!--  <input type="text" name="merchantNumber" lay-verify="title"  placeholder="商户编号" class="layui-input" id="merchantNumber"> -->
-                        <input type="text" name="agentName" lay-verify="title" placeholder="服务商名称" class="layui-input" disabled="disabled">
-                    </div>
-                </div>
+                
                 <div class="layui-form-item" style="width:60%">
                     <label class="layui-form-label">所在区域</label>
                     <div class="layui-input-block">
@@ -308,7 +316,7 @@
                         
                     </div>
                 </div>
-                <div class=" ls" style="display:none">
+                <div class="ls" style="display:none">
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">乐刷支/微费率(%)</label>
@@ -336,13 +344,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="choucheng" style="display:none">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">抽成比例</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="proportion" lay-verify="" autocomplete="off" placeholder="" class="layui-input"  disabled="disabled">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
-    var serverUrl = 'http://192.168.1.190:5002/'
+    var serverUrl = 'http://192.168.110.190:5002/'
     // var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 
     var code1;
@@ -394,7 +412,7 @@
                     }
                     form.val('basic', {
                         "agentType": type1,
-                        "agentName": data.data.agentName,
+                        "agentName": data.data.agentNumber + '/' +data.data.agentName,
                         "address": data.data.address,
                         "userName": data.data.userName,
                         "registerCell": data.data.registerCell,
@@ -459,9 +477,42 @@
                 console.log('222')
             }
         )
+        if(JSON.parse(sessionStorage.getItem('agentUser')).agentLevel == 'A'){
+            form.val('basic', {
+                        "PagentName": '--/--',
+                    })
+        }else{
+            $('.pagent').show()
+            $('.choucheng').show()
+            CmsUtility.postAjaxCall(
+            //系统设置
+            'agentCommon/getAgentInfo', {
+                "agentNumber":  JSON.parse(sessionStorage.getItem('agentUser')).Number,
+                "agentLevel": JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
+            },
+            function(data) {
+                console.log(data)
+                if (data.code == '1000') {
+
+                    form.val('basic', {
+                        "PagentName": data.data.agentNumber + '/' + data.data.agentName,
+                        "proportion":(data.data.proportion * 100).toFixed(2)
+                    })
+
+
+                } else {
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }
+        )
+        }
+        
         CmsUtility.postAjaxCall2(
                 //系统设置
-                'https://nb.51shanhe.com/shanhe-admin/insAgent/getAgentRate', {
+                'https://nb.hongsou.com.cn/shanhe-admin/insAgent/getAgentRate', {
                     "agentNumber":  JSON.parse(sessionStorage.getItem('agentUser')).Number
                 },
                 function(data) {

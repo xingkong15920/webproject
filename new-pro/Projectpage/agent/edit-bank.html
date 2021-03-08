@@ -332,6 +332,23 @@
                             </select>
                         </div>
                     </div>
+                    
+                </div>
+                 <div class="box-item">
+                     <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto">
+                        <label class="layui-form-label">开户地区</label>
+                        <div class="layui-input-block" style="display:inline-block;width:182px;margin-left:0px;">
+                            <select name="prov11" id="prov1" lay-filter="prov1" >
+                                <!-- <option value="">一级类目</option>
+                                <option value="1">互联网</option>
+                                <option value="2">科技</option> -->
+                            </select>
+                        </div>
+                        <div class="layui-input-block" style="display:inline-block;width:183px;margin-left:15px;">
+                            <select name="city11" id="city1" lay-filter="city1" lay-verify="">
+                            </select>
+                        </div>
+                    </div>
                     <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px">
                         <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>开户支行</label>
                         <div class="layui-input-block">
@@ -342,7 +359,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <!--  <div class="box-item" style="margin-bottom:150px">
                     <div class="layui-form-item" style="display:inline-block">
                         <label class="layui-form-label">进件通道</label>
@@ -377,13 +393,13 @@
     var merchantNumber = CmsUtility.getQueryString('merchantNumber')
     var paymentType = CmsUtility.getQueryString('paymentType')
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    var server = 'http://192.168.1.250:6005/shanhe-admin/'
-    //var commonServer = 'http://192.168.1.112:6008/shanhe-common/'
-    var jgServer = 'http://192.168.1.250:6005/shanhe-admin/'
-    //var server = 'https://nb.51shanhe.com/shanhe-admin/'
-    // var server = 'https://nb.51shanhe.com/shanhe-admin/'
-    var commonServer = 'https://nb.51shanhe.com/shanhe-common/'
-    // var jgServer = 'https://nb.51shanhe.com/shanhe-admin/'
+    var server = 'http://192.168.110.250:6005/shanhe-admin/'
+    //var commonServer = 'http://192.168.110.112:6008/shanhe-common/'
+    var jgServer = 'http://192.168.110.250:6005/shanhe-admin/'
+    //var server = 'https://nb.hongsou.com.cn/shanhe-admin/'
+    // var server = 'https://nb.hongsou.com.cn/shanhe-admin/'
+    var commonServer = 'https://nb.hongsou.com.cn/shanhe-common/'
+    // var jgServer = 'https://nb.hongsou.com.cn/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
     var operlistThr = []
@@ -429,7 +445,7 @@
     //batchNumber
     var batchNumber = 0
     $('#down-shouquan').click(function() {
-        window.open('http://static.hongxiaosou.com/public/file/shouquan.zip')
+        window.open('../../public/file/shouquan.zip')
     })
     //判断是否有？
     function readFile(obj) {
@@ -638,22 +654,35 @@
             return
         }
         $('#searchBox2').show()
-
+        var pn = ''
+            var cn = ''
+        if($('#prov1').val() != ''){
+                pn = $('#prov1').val().split('|')[1]
+            }
+            if($('#city1').val() != ''){
+                cn = $('#city1').val().split('|')[1]
+            }
         CmsUtility.postAjaxCall2(
             //系统设置
-            // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
+            // 'https://nb.hongsou.com.cn/shanhe-common/cache/getBank',
             commonServer + 'cache/getBank', {
                 "bankCode": $('#openingBank').val().split('|')[0],
                 "paymentType": '4',
                 "bankName": $('#openingBankBranch').val(),
                 "page": 1,
                 "limit": '100',
-                "provNm": '',
-                "cityNm": '',
+                "provNm": pn,
+                "cityNm": cn,
             },
             function(data) {
                 if (data.code == 1000) {
-
+                    if(data.data.selectBank.length == 0){
+                            layer.msg('未查询到支行')
+                            var str = ''
+                            document.getElementById('searchBox2').innerHTML = str
+                            $('#searchBox2').hide()
+                        return
+                    }
                     var str = ''
                     for (var i = 0; i < data.data.selectBank.length; i++) {
                         str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.selectBank[i].lbnkNo + '" data-name="' +
@@ -935,22 +964,37 @@
             $('#openingBankBranch').removeAttr('openingBankNumber')
 
             document.getElementById('searchBox2').innerHTML = ''
+            var pn = ''
+            var cn = ''
+            if($('#prov1').val() != ''){
+                pn = $('#prov1').val().split('|')[1]
+            }
+            if($('#city1').val() != ''){
+                cn = $('#city1').val().split('|')[1]
+            }
             CmsUtility.postAjaxCall2(
                 //系统设置
-                // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
+                // 'https://nb.hongsou.com.cn/shanhe-common/cache/getBank',
                 commonServer + 'cache/getBank', {
                     "bankCode": $('#openingBank').val().split('|')[0],
                     "paymentType": '4',
                     "bankName": $('#openingBankBranch').val(),
                     "page": 1,
                     "limit": '100',
-                    "provNm": '',
-                    "cityNm": '',
+                    "provNm": pn,
+                    "cityNm": cn,
                 },
                 function(data) {
                     console.log(this.value)
                     if (data.code == 1000) {
-
+                        if(data.data.selectBank.length == 0){
+                            layer.msg('未查询到支行')
+                            $('#searchBox2').hide()
+                            var str = ''
+                            document.getElementById('searchBox2').innerHTML = str
+                            
+                            return
+                        }
                         var str = ''
                         for (var i = 0; i < data.data.selectBank.length; i++) {
                             str += '<div class="layui-btn layui-btn-primary" data-id="' + data.data.selectBank[i].lbnkNo +
@@ -1019,14 +1063,17 @@
                     str += "<option value=" + prov[i].id + '|' + prov[i].name + " >" + prov[i].name + "</option>"
                 }
                 $('#prov').html(str)
-                $('#prov1').html(str)
+                var ssstttrrr = '<option value="">请选择省</option>'+ str
+                $('#prov1').html(ssstttrrr)
                 // console.log(operlistTwo)
                 var str1 = ''
                 for (var j = 0; j < city[0].childList.length; j++) {
                     str1 += "<option value=" + city[0].childList[j].id + '|' + city[0].childList[j].name + " >" + city[0].childList[j].name + "</option>"
                 }
                 $('#city').html(str1)
-                $('#city1').html(str1)
+                console.log(str1)
+                var ssttrr = '<option value="">请选择市</option>'
+                $('#city1').html(ssttrr)
                 var str2 = ''
                 for (var j = 0; j < area[0].childList.length; j++) {
                     str2 += "<option value=" + area[0].childList[j].id + '|' + area[0].childList[j].name + " >" + area[0].childList[j].name + "</option>"
@@ -1192,8 +1239,8 @@
             formData.append("file", dataURLtoFile(img, "123.png"));
             formData.append("institutionNumber", userNumber);
             $.ajax({
-                // url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
-                url: 'https://nb.51shanhe.com/shanhe-admin/insAdvertising/addPic',
+                // url: 'https://nb.hongsou.com.cn/shanhe-admin/InsMer/uploadMerchantImg',
+                url: 'https://nb.hongsou.com.cn/shanhe-admin/insAdvertising/addPic',
                 type: 'POST',
                 data: formData,
                 async: false,
@@ -1218,7 +1265,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1254,7 +1301,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1290,7 +1337,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1324,7 +1371,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1360,7 +1407,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1396,7 +1443,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1861,6 +1908,7 @@
 
                         merInfo.merchantType1 = merInfo.merchantType
                         legalFlag = merInfo.legalFlag || 0
+                        console.log(legalFlag)
                         acntType = merInfo.acntType || acntType
                         $('.feifaren').hide()
                         $('.kaihu').hide()
@@ -1962,7 +2010,6 @@
 
                         }
                         $('#prov').html(strr)
-                        $('#prov1').html(strr)
                         var strr1 = ''
                         for (var j = 0; j < city.length; j++) {
                             if (city[j].parId == merInfo.provinceID) {
@@ -1978,7 +2025,6 @@
 
                         }
                         $('#city').html(strr1)
-                        $('#city1').html(strr1)
                         var strr2 = ''
                         for (var j = 0; j < area.length; j++) {
                             if (area[j].parId == merInfo.cityID) {
@@ -2076,7 +2122,7 @@
                             "unionPayRate": (merInfo.unionPayRate * 100).toFixed(2),
                             "unionPayRate2": (merInfo.unionPayRate2 * 100).toFixed(2),
                             "acntType": acntType1,
-                            "legalFlag": merInfo.legalFlag,
+                            "legalFlag": merInfo.legalFlag.toString(),
                             "settlementPersonID": merInfo.settlementPersonID,
                             "settlementPersonName": merInfo.settlementPersonName,
                             "acntArtifidStartTime": merInfo.acntArtifidStartTime,

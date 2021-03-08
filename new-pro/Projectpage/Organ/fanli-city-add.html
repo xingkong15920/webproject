@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        ul,li{
+        padding: 0;
+        margin: 0;
+    }
+        .widthauto {
+                width: auto !important;
+            }
+            .tips_red {
+                color: red;
+            }
+            
+            .layui-form-label {
+                padding-left: 0;
+                width: 150px !important;
+            }
+            
+            .layui-input-block {
+                margin-left: 150px;
+            }
+            
+            .layui-elem-quote {
+                font-size: 18px;
+            }
+            
+            .layui-elem-field {
+                margin: 0;
+            }
+            
+            .layui-elem-field legend {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            
+            .layui-upload-img {
+                width: 92px;
+                height: 92px;
+                margin: 0 10px 10px 0;
+            }
+            
+            .Since_inline {
+                display: inline-block;
+                width: auto !important;
+                line-height: 38px;
+            }
+            
+            .layui-elem-quote .layui-form-switch {
+                margin: 0 15px;
+                margin-top: 0;
+            }
+            .layui-form-item .layui-input-inline{
+                width: 150px;
+            }
+            #suozaidi  .layui-input-inline{
+                width: 190px;
+            }
+            .nowHide{
+                display: none;
+            }
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
+            input[type="number"]{
+                -moz-appearance: textfield;
+            }
+            .saleList{
+                border: 1px solid #e6e6e6;
+                padding: 0 10px;
+                background: #fff;
+                border-radius: 6px;
+                margin-bottom: 10px;
+            }
+            .sale-item{
+                padding: 9px 0;
+                height:60px
+            }
+            .numInput{
+                width: 100px;
+                display: inline-block !important;
+                margin: 0 5px;
+            }
+            .delBtn{
+                width: 60px;
+                display: inline-block;
+                height: 60px;
+                cursor: pointer;
+                margin-left: 10px;
+            }
+            .delBtn i {
+                border-radius: 50%;
+                height: 60px;
+                width: 60px;
+                line-height: 20px;
+                text-align: center;
+                font-size: 24px;
+                background: #FF5722;
+                color: #fff;
+            }
+            .layui-input-block{
+                width: 600px;
+            }
+        </style>
+</head>
+
+<body id="iosiframe" style="padding-bottom:20rpx;">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form" style="padding-bottom:40px" action="" lay-filter="cardAdd">
+                <!--隐藏-->
+                <!--基本信息-->
+                <blockquote class="layui-elem-quote">添加站点</blockquote>
+                <div class="layui-form-item" id="suozaidi">
+                    <label class="layui-form-label" style="width:100px">隶属省份</label>
+                    <div class="layui-input-block" style="display: flex;">
+                        <select name="provinceID" id="provice" lay-filter="provice" style="width:300px !important" lay-verify="">
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">城市名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="citySiteName" lay-verify="title" autocomplete="off" placeholder="请输入城市名称" class="layui-input" value="">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">城市拼音</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="citySitePinyin" lay-verify="title" autocomplete="off" placeholder="请输入城市拼音" class="layui-input" value="">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">首字母</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="citySiteFirstPinyin" lay-verify="title" autocomplete="off" placeholder="请输入首字母" class="layui-input" value="">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">选择服务商</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请搜索并选择所属服务商" class="layui-input" id="agName" onblur="bl()" onfocus="fc()">
+                        <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">分成比例(%)</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="agentRebate" lay-verify="title" autocomplete="off" placeholder="请输入分成比例" class="layui-input" value="">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">城市坐标</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="lnglat" lay-verify="title" autocomplete="off" placeholder="请选择城市坐标" class="layui-input" value="" readonly="readonly" id="getlog">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">排序</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="" lay-verify="title" autocomplete="off" placeholder="" value="城市排序" class="layui-input" value="" readonly="readonly">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">是否启用</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="enable" lay-skin="switch" lay-filter="fyswitch" lay-text="启用|不启用" checked>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">热门城市</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="hot" lay-skin="switch" lay-filter="fyswitch1" lay-text="是|否" checked>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">城市说明</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" name="explain" autocomplete="off" placeholder="请输入城市说明" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <a class="layui-btn layui-btn-primary" id="quxiao">取消</a>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var index = parent.layer.getFrameIndex(window.name);
+
+
+
+    $('#quxiao').click(function() {
+        setTimeout(function() {
+            parent.layer.close(index)
+        }, 16);
+    })
+
+
+
+
+    function cli() {
+        $('.delSale').click(function(e) {
+            if (saleList.length == 1) {
+                layer.msg('最少要保留一条补贴信息')
+                return
+            }
+            var data = this
+            var num = data.getAttribute('data-id')
+            saleList.splice(num, 1)
+            createList()
+        })
+    }
+
+
+
+    function bl() {
+        setTimeout(function() {
+            $('#searchBox').hide()
+        }, 200)
+        //$('#searchBox').hide()
+    }
+
+
+
+    function fc() {
+        $('#searchBox').show()
+        console.log($('#agName').val())
+        pageNum = 1
+
+        CmsUtility.postAjaxCall(
+            //系统设置
+            CmsConfig.addressUrl.Mechanism.getInsAglists, {
+
+                "institutionNumber": userNumber,
+                "agentName": $('#agName').val(),
+                "page": pageNum,
+                "limit": '100',
+                "agentType": ''
+            },
+            function(data) {
+                console.log(this.value)
+                if (data.code == 1000) {
+
+                    var str = ''
+                    for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
+                        str += '<div class="layui-btn layui-btn-primary" data-level="' + data.data.agentRegisterlist[i].agentLevel +
+                            '" data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[i]
+                            .agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[
+                                i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                    }
+                    document.getElementById('searchBox').innerHTML = str
+
+                    // layer.msg('保存成功')
+                    // setTimeout(function(){
+                    //  x_admin_close()
+                    // },500);
+
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }
+        )
+
+    }
+
+
+    var pyList = new Array()
+    var serverUrl = window.parent.serverUrl
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    layui.use(['laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        laydate.render({
+            elem: '#startTime' //指定元素
+        });
+        laydate.render({
+            elem: '#endTime' //指定元素
+        });
+        window.clickS = function(e) {
+            $('#agName').val(e.getAttribute('data-name'))
+            $('#agName').attr('agentNumber', e.getAttribute('data-id'))
+            $('#agName').attr('agentType', e.getAttribute('data-level'))
+            $('#searchBox').hide()
+            $('.levelA').show()
+            btOff = false
+            subsidySetting = 1
+            marketingSubsidies = 1
+            $('#yingxiaoBox').hide()
+            $('#butieBox').hide()
+            form.val('cardAdd', {
+                "subsidySetting": false,
+                "marketingSubsidies": false
+            })
+        }
+        $('#getlog').click(function() {
+            layer.open({
+                type: 2,
+                title: '获取坐标',
+                shade: 0.5,
+                area: ['600px', '600px'],
+                maxmin: false,
+                resize: false,
+                content: ['getlnglot.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                }
+            });
+        })
+        // CmsUtility.choosePro();
+        // setTimeout(function(){
+        //  form.render()
+        // },100)
+        window.getlnglot = function(data1, data2) {
+            console.log('成功获取到经纬度了')
+            console.log(data1, data2)
+            form.val('cardAdd', {
+                "lnglat": data1 + ',' + data2
+            })
+        }
+
+
+        window.removeElementsByClass = function(className) {
+            var elements = document.getElementsByClassName(className);
+            while (elements.length > 0) {
+                elements[0].parentNode.removeChild(elements[0]);
+            }
+        }
+
+
+        $("#agName").bind('input propertychange', function() {
+            console.log(this.value)
+            $('#agName').removeAttr('agentNumber')
+
+            $('#agName').removeAttr('agentType')
+            btOff = true
+
+            $('.levelA').hide()
+            document.getElementById('searchBox').innerHTML = ''
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.getInsAglists, {
+
+                    "institutionNumber": userNumber,
+                    "agentName": $('#agName').val(),
+                    "page": pageNum,
+                    "limit": '100',
+                    "agentType": ''
+                },
+                function(data) {
+                    console.log(this.value)
+                    if (data.code == 1000) {
+                        if (data.data == null) {
+                            // layer.msg(data.msg)
+                            var str = ''
+                            document.getElementById('searchBox').innerHTML = str
+                            return
+                        }
+                        var str = ''
+                        for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
+                            str += '<div class="layui-btn layui-btn-primary" data-level="' + data.data.agentRegisterlist[i].agentLevel +
+                                '"  data-id="' + data.data.agentRegisterlist[i].agentNumber + '" data-name="' + data.data.agentRegisterlist[
+                                    i].agentName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.agentRegisterlist[
+                                    i].agentNumber + ']' + data.data.agentRegisterlist[i].agentName + '</div>'
+                        }
+                        document.getElementById('searchBox').innerHTML = str
+
+
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        })
+        var p = [],
+            c = [],
+            aa = [],
+            cityC = '0'
+        CmsUtility.postAjaxCall(
+            //系统设置
+            CmsConfig.addressUrl.Public.getAreajson, {},
+            function(data) {
+                sessionStorage.setItem("address", data.data);
+                address = JSON.parse(data.data)
+                for (var i = 0; i < address.length; i++) {
+                    var a = new Object()
+                    a.provinceCode = address[i].value
+                    a.provinceName = address[i].text
+                    p.push(a)
+                    var b = new Object()
+                    b.provinceCode = address[i].value
+                    b.children = []
+                    for (var k = 0; k < address[i].children.length; k++) {
+                        var d = new Object()
+                        d.cityCode = address[i].children[k].value
+                        d.cityName = address[i].children[k].text
+                        b.children.push(d)
+                        var e = new Object()
+                        e.cityCode = address[i].children[k].value
+                        e.childeren = []
+                        for (var j = 0; j < address[i].children[k].children.length; j++) {
+                            var t = new Object()
+                            t.areaCode = address[i].children[k].children[j].value
+                            t.areaName = address[i].children[k].children[j].text
+                            e.childeren.push(t)
+                        }
+                        aa.push(e)
+                    }
+                    c.push(b)
+
+                }
+                var str = '<option value="">不隶属</option>'
+                for (var i1 = 0; i1 < p.length; i1++) {
+
+                    str += '<option value="' + p[i1].provinceCode + '">' + p[i1].provinceName + '</option>'
+
+
+                }
+                $('#provice').html(str)
+
+
+
+                form.render()
+            },
+            function(data) {
+                console.log(data)
+            }
+        )
+
+        /*---------- 自定义验证规则 ----------*/
+        form.verify({
+            title: function(value) {
+                if (value == null) {
+                    return '不能为空！';
+                }
+                if (value.length == "") {
+                    return '不能为空！';
+                }
+            },
+
+        });
+
+
+        form.on('checkbox(merType)', function(data) {
+            var name = data.elem.name
+            subsidyType[name] = this.checked == true ? 0 : 1
+            console.log(subsidyType)
+        })
+        /*---------- 监听提交 ----------*/
+        form.on('submit(add)', function(data, index) {
+            // layer.alert(JSON.stringify(data.field), {
+            //  title: '最终的提交信息'
+            // })
+            console.log(data.field)
+            var getData = data.field
+            var tjData = new Object()
+            tjData.institutionNumber = userNumber
+            tjData.citySiteName = getData.citySiteName
+            tjData.provinceID = getData.provinceID
+            tjData.citySitePinyin = getData.citySitePinyin
+            tjData.citySiteFirstPinyin = getData.citySiteFirstPinyin
+            tjData.agentRebate = getData.agentRebate / 100
+            tjData.longF = getData.lnglat.split(',')[0]
+            tjData.latF = getData.lnglat.split(',')[1]
+
+            tjData.enable = getData.enable == 'on' ? '0' : '1'
+            tjData.hot = getData.hot == 'on' ? '0' : '1'
+            tjData.explain = getData.explain
+            tjData.agentNumber = $('#agName').attr('agentNumber')
+
+            console.log(tjData)
+            layer.confirm('确认添加（' + tjData.citySiteName + '）城市站点吗？', {
+                icon: 3,
+                title: '提示'
+            }, function(index) {
+                // 发送请求
+                
+                // 发送请求
+                CmsUtility.postAjaxCallJson(
+                    //系统设置
+                    'citySite/addCitySite',
+                    JSON.stringify(tjData),
+                    function(data) {
+                        if (data.code == 1000) {
+
+                            setTimeout(function() {
+                                $('#quxiao').click()
+                            }, 16);
+                            parent.layer.msg('添加成功')
+                            parent.layui.table.reload('vip_cardList')
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+            });
+            return false;
+
+        });
+
+    });
+    </script>
+</body>
+
+</html>

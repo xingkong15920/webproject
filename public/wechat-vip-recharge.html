@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+body,
+html {
+    width: 100%;
+    height: 100%
+}
+
+.pay {
+    position: relative;
+}
+
+.loadzz {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.loading_k {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    background: rgba(0, 0, 0, .5);
+    border-radius: 10px
+}
+
+.loading_kz {
+    width: 100px;
+    height: 100px;
+    margin: -50px 0 0 -50px;
+}
+
+.h3 {
+    width: 300px;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    top: 65%;
+    left: calc(50% - 150px);
+    font-size: 18px
+}
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -13px 0 0 -13px;
+    width: 26px;
+    height: 26px;
+    border: 2px solid;
+    border-color: #fff #fff transparent;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: loading 1s linear infinite
+}
+
+.loadingz {
+    top: 35%;
+    margin: -15px 0 0 -15px;
+    width: 30px;
+    height: 30px;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+input {
+    border: none
+}
+</style>
+<script type="text/javascript">
+var adiv = '<div id="loadstart" class="loadzz"><div class="loading_k"><div class="loading"></div></div></div>'
+document.write(adiv)
+</script>
+    
+<head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1.0,maximum-scale=1.0,width=device-width" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>会员充值</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="./js/alipayjsapi.inc.min.js"></script>
+    <script src="./js/jweixin-1.4.0.js"></script>
+    <script src="./js/fastclick.js"></script>
+    <script src="./layer/layer.js"></script>
+    <script type="text/javascript">
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    console.log(window.location.href)
+    // var projectUrl = window.location.href.split('/oneCode')[0];
+    var clientNumber = getQueryString('outTradeNo');
+    var payNumber = getQueryString('payNumber');
+
+    var aliCode, weixinCode;
+    var oData = new Object()
+    oData.equipmentNumber = clientNumber
+    
+
+    var payType
+    var uull;
+    var codeType
+    var code, pay, data;
+    var merNumber;
+    var insNumber;
+    var ip;
+    document.getElementById('loadstart').style.display = "none";
+    if (/MicroMessenger/.test(window.navigator.userAgent)) {
+        
+
+
+            payType = 'WeChat_Pay'
+            codeType = 'PublicAddress_Pay'
+    } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+        AlipayJSBridge.call('hideOptionMenu');
+        
+            payType = 'Alipay_Pay'
+            codeType = 'ServiceWindow_Pay'
+        
+    }
+    var num = 1 / window.devicePixelRatio;
+    document.write('<meta name="viewport" content="width=device-width,initial-scale='+num+',minimum-scale='+num+',maximum-scale='+num+',user-scalable=no" />')
+//          alert(document.documentElement.clientWidth);
+    var fz = document.documentElement.clientWidth / 10;
+    document.getElementsByTagName("html")[0].style.fontSize = fz + "px";
+     
+    </script>
+    
+    <script type="text/javascript">
+    window.onload = function() {
+        FastClick.attach(document.body)
+    }
+    </script>
+    <style type="text/css">
+
+        .pay-top{
+            margin: 0 auto;
+            width: 8.8rem;
+            height: 8rem;
+             background:rgba(255,255,255,1);
+             border-radius: 10px;
+
+        }
+        .pay-title{
+            width: 100%;
+            text-align: center;
+            padding-top: 0.293333333333333rem;
+            height:0.533333333333333rem;
+            font-size:0.373333333333333rem;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            color:rgba(51,51,51,1);
+            line-height:0.533333333333333
+        }
+        .pay-money{
+            width: 100%;
+            text-align: center;
+            height:1.12rem;
+            font-size:0.8rem;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            color:rgba(51,51,51,1);
+            line-height:1.12rem;
+            margin-top: 0.12rem;
+        }
+        .pay-input{
+            width:8.266666666666667rem;
+            height:1.066666666666667rem;
+            border-radius:8px;
+            border:2px solid rgba(229,229,229,1);
+            margin-left: 0.266666666666667rem;
+            font-size:0.473333333333333rem;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            line-height:1.066666666666667rem;
+            text-indent: 0.373333333333333rem;
+            margin-bottom: 0.426666666666667rem;
+        }
+        input::-webkit-input-placeholder {
+            /* placeholder颜色  */
+            font-size:0.373333333333333rem;
+            color:rgba(153,153,153,1);
+            /* placeholder位置  */
+        }
+        .payBox{
+            width:8.266666666666667rem;
+            margin-left: 0.266666666666667rem;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .payBox-item{
+            width: 2.56rem;
+            height: 1.6rem;
+            border-radius:8px;
+            border:2px solid rgba(198,198,198,0.5);
+            margin: 0 0.0498rem;
+            margin-bottom: 0.32rem;
+
+        }
+        
+        .payBox-item-top{
+            width: 100%;
+            margin-top: 0.213333333333333rem;
+            text-align: center;
+            height:0.746666666666667rem;
+            font-size:0.533333333333333rem;
+            font-family:PingFangSC-Medium;
+            font-weight:300;
+            color:rgba(252,85,72,1);
+            line-height:0.746666666666667rem;
+        }
+        .payBox-item-top span{
+            font-size: 0.35rem;
+        }
+        .payBox-item-bottom{
+            width: 100%;
+            text-align: center;
+            height:0.453333333333333rem;
+            font-size:0.32rem;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            color:rgba(166,165,172,1);
+            line-height:0.453333333333333rem;
+        }
+
+
+
+
+
+
+        .payNumBox{
+            width: 100%;
+            height: 6.4rem;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            background-color: white;
+        }
+        .payNum-item{
+            width: 24.8%;
+            height: 100%;
+            border-right: 1px solid rgba(153,153,153,1);
+            float: left;
+        }
+        .payNum-item1{
+            border-right: none;
+        }
+        .paynum{
+            width: 100%;
+            height: 24.9%;
+            border-bottom: 1px solid rgba(153,153,153,1);
+            font-size:0.693333333333333rem;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            color:rgba(51,51,51,1); 
+            line-height: 1.6rem;
+            text-align: center;
+        }
+        .delete{
+            width: 100%;
+            height: 24.9%;
+           border-bottom: 1px solid rgba(153,153,153,1);
+        }
+        .delete-img{
+            width: 0.8rem;
+            height: 0.506666666666667rem;
+            margin-left: 0.72rem;
+        }
+        .clear{
+            width: 100%;
+            height: 1.6rem;
+            text-align: center;
+            line-height: 1.6rem;
+            font-size:0.5rem;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            color:rgba(51,51,51,1);
+            border-bottom: 1px solid #F5F5F5;
+        }
+        .paySub{
+            width: 100%;
+            height: 4.8rem;
+            text-align: center;
+            line-height: 4.8rem;
+            font-size:0.533333333333333rem;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            color:rgba(255,255,255,1);
+            background:linear-gradient(135deg,rgba(254,170,0,1) 0%,rgba(254,134,0,1) 100%);
+        }
+        .paySub-disable{
+            color:rgba(255,255,255,1) !important;
+            background:rgba(198,198,198,0.5)!important;
+        }
+        .payNumBox{
+    border-top: 1px solid rgba(153,153,153,1);
+}
+    </style>
+</head>
+
+<body ontouchstart class="weui-wepay-pay-wrap">
+    <div id="mask123" style="height:100%;width:100%;position:fixed;background-color:rgba(116,116,116,0);z-index:100000;display:none">
+        <div style="position:absolute;left:30%;top:49%;width:40%;height:6%;line-height:1rem;text-align:center;background-color:rgba(116,116,116,.7);border-radius:10px;color:white;font-size:0.35rem">充值中,请稍后<span class="dotting"></span></div>
+    </div>
+    <div style="width:100%;height:0.24rem"></div>
+    <div class="pay-top">
+        <div class="pay-title">账户余额</div>
+        <div class="pay-money"><span style="font-size:0.4rem">￥</span>0.00</div>
+        <input placeholder="请输入/选择充值金额" id="paymoney" class="pay-input" disabled="disabled">
+        <div class="payBox" id="payBox">
+              
+        </div>
+    </div>
+    <div class="payNumBox">
+        <div class="payNum-item">
+            <div class="paynum">1</div>
+            <div class="paynum">4</div>
+            <div class="paynum">7</div>
+            <div class="paynum">.</div>
+        </div> 
+        <div class="payNum-item">
+            <div class="paynum">2</div>
+            <div class="paynum">5</div>
+            <div class="paynum">8</div>
+            <div class="paynum">0</div>
+        </div>
+        <div class="payNum-item">
+            <div class="paynum">3</div>
+            <div class="paynum">6</div>
+            <div class="paynum">9</div>
+            <div class="paynum">00</div>
+        </div>
+        <div class="payNum-item payNum-item1">
+            <div class="delete">
+                <img src="img/delete.png" class="delete-img" id="pay-return">
+            </div>
+            <!-- <div class="clear">
+                清空
+            </div> -->
+            <div class="paySub paySub-disable" id="payId">
+                充值
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $('#logo').css('left', document.body.offsetWidth / 2 - 25)
+    var a, b, c
+    var sInfo
+    var codeTypeTrue = false
+    $.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
+        console.log(returnCitySN)
+        ip = returnCitySN.cip
+    });
+    var payList = []
+    function compare(prop){
+        return function(a,b){
+            var value1 = a[prop]
+            var value2 = b[prop]
+            return value1 - value2
+        }
+    }
+    function create(){
+        payList.sort(compare('money'))
+        var str = ''
+        for(var i = 0 ; i < payList.length;i++){
+            if(i >=6){
+                break;
+            }
+            str += '<div class="payBox-item"><div onclick="givMoney('+ payList[i].money +')" class="payBox-item-top">'+ payList[i].money +'<span>元</span></div><div  class="payBox-item-bottom">赠送'+ payList[i].give +'元</div> </div>'
+        }
+        $('#payBox').html(str)
+    }
+    
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    var yue = getQueryString('money')
+    $('.pay-money').html('<span style="font-size:0.4rem">￥</span>' + yue)
+    $('#payinfokey td').click(function(data) {
+        console.log(this)
+    })
+    function givMoney(data){
+        $('.paySub').removeClass('paySub-disable');
+        var $paymoney = $('#paymoney')
+        $paymoney.val(data);
+        isC = true;
+    }
+    function ob() {
+        $('#payinfokey').show()
+
+    }
+
+    function of () {
+        $('#payinfokey').hide()
+    }
+
+    function oc() {
+        console.log('123')
+    }
+    $('#addMark').click(function() {
+        $('#payinfokey').hide()
+        var value = $('#mark').html().replace(',', '')
+        console.log(value)
+        layer.prompt({
+            title: '请输入备注信息',
+            formType: 3,
+            value: value,
+            yes: function(index, layero) {
+                // 获取文本框输入的值
+                var value = layero.find(".layui-layer-input").val();
+                if (value) {
+
+                    $('#mark').html(value)
+                    $('#addMark').html('修改')
+                    layer.close(index)
+                    $('#payinfokey').show()
+                } else {
+                    $('#mark').html('')
+                    $('#addMark').html('添加备注信息')
+                    layer.close(index)
+                    $('#payinfokey').show()
+                }
+            },
+            btn2: function(pass, index) { //这里就是你要的
+                console.log(pass, index)
+                $('#payinfokey').show()
+            },
+        });
+
+    })
+    $(document).ready(function() {
+        // var projectName = window.location.href.split('/oneCode')[0];
+        var clientNumber = getQueryString('outTradeNo');
+        var oData = new Object()
+        oData.memberNo = JSON.parse(sessionStorage.getItem('userInfo')).data.memberNo
+
+        //采用get方式调用服务
+        var ggNum = payType == 'WeChat_Pay' ? 1 : 2
+
+        $.ajax({
+            url: "http://api.51shanhe.com/p-member/memberManage/getMemDetails?memberNo=" + JSON.parse(sessionStorage.getItem('userInfo')).data.memberNo,
+            //url:"http://192.168.1.80:6017/p-server/appServer/getInfo",
+            type: "GET",
+            async: false,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            success: function(data) {
+
+                if (data.code != 1000) {
+
+                    alert(data.msg)
+                    return
+                }
+                if(data.data.preferentialRecharges.length > 0){
+                    for(var i = 0 ; i < data.data.preferentialRecharges.length;i++){
+                        var money = new Object()
+                        money.give = data.data.preferentialRecharges[i].giveMoney
+                        money.money = data.data.preferentialRecharges[i].rechargeMoney
+                        payList.push(money)
+                    }
+                    create()
+                }
+                
+
+            }
+        });
+    })
+
+    $(function() {
+        
+        function onBridgeReady(appId, time, nonceStr, package, signType, paySign, ggdata) {
+
+            WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    "appId": appId,
+                    "timeStamp": time,
+                    "nonceStr": nonceStr,
+                    "package": package,
+                    "signType": signType,
+                    "paySign": paySign
+                },
+                function(res) {
+                    
+                    document.getElementById('payId').style.display = "block";
+                    
+
+                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                        var $paymoney = $('#paymoney')
+                        yue = parseFloat(yue) + parseFloat($paymoney.val())
+                        yue = Math.round(yue*100)/100
+                        $('.pay-money').html('<span style="font-size:0.4rem">￥</span>' + yue)
+                        $paymoney.val('')
+                    } else {
+                        
+
+                        
+                        
+                    }
+                }
+            );
+        }
+        var clientNumber = getQueryString('outTradeNo');
+        var isC = true;
+       
+        $('#payId').click(function() {
+
+
+            if (isC != true) {
+                return
+            }
+            isC = false;
+            console.log($paymoney.text())
+            var totalFee = parseFloat($paymoney.val());
+            if ($paymoney.val() == '') {
+                alert("请输入金额！");
+
+            } else if ($paymoney.val() < 0.01) {
+                alert("请输入正确的金额，最低为0.1元");
+            } else {
+                $('#mask123').show()
+                
+                // if (url.value == '' || url.value == null || url.value == undefined) {
+                //     alert("二维码未绑定成功,无法支付！");
+                // } else {
+                    var sInfo = JSON.parse(sessionStorage.getItem('sInfo'))
+                    var userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+                   
+                var aad = new Object()
+                aad.totalMoney = totalFee
+                    aad.paymentType = payType
+                    aad.merchantNumber = sInfo.merchantNumber
+             		if( payType == "WeChat_Pay"){
+                    	aad.payType = 1
+                    }else{
+                     	aad.payType = 2 
+                    }
+                    aad.codeType = codeType
+                    aad.shopNumber = sInfo.storeId
+                    aad.clerkNumber = sInfo.userNumber
+                    // aad.appPushClerkKey = sInfo.appPushClerkKey
+                    // aad.appPushMechantKey = sInfo.appPushMechantKey
+                    // aad.pcPushKey = sInfo.pcPushKey
+                    aad.equipmentType = 3
+                    aad.equipmentNumber = sInfo.clientNumber
+                    aad.institutionNumber = sInfo.institutionNumber
+                    aad.memberNo = userInfo.data.memberNo
+                   	
+                    if(payType == "WeChat_Pay"){
+                        aad.openId = userInfo.data.subOpenId
+                    }else{
+                        aad.aliUserId = userInfo.data.aliUserId
+                    }
+                    
+                    aad.rechargeClass = 0
+                    aad.source = 5
+                    aad.ip = ip
+                $.ajax({
+                    //url: "http://192.168.1.66:6019/p-member/recharge/pay",
+                    //url:"http://api.51shanhe.com/p-member/recharge/pay",
+                  	url:"http://192.168.110.250:6019/p-member/recharge/pay",
+                    //url: "http://192.168.1.80:5008/p-pay/pay/payRoute",
+                    type: "POST",
+                    async: true,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(aad),
+
+                    success: function(data) {
+                        $('#mask123').hide()
+                        codeTypeTrue = true
+                        setTimeout(function(){
+                            isC = true
+                        },500)
+
+                        //var ggdata = data.guanggao、
+                        var payData = new Object()
+                        payData.totalMoney = aad.totalMoney
+                        if(payType == "WeChat_Pay"){
+                            payData.openId = aad.openId
+                        }else{
+                            payData.aliUserId = aad.aliUserId
+                        }
+                        payData.preNumber = data.data.preNumber
+                      	alert(JSON.stringify(payData))
+                        $.ajax({
+                            //url: "https://api.51shanhe.com/p-pay/pay/payRoute",
+
+                            url: "http://api.51shanhe.com/p-pay/pay/qrCode",
+                            type: "POST",
+                            async: true,
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            data: JSON.stringify(payData),
+
+                            success: function(data) {
+                                 if (data.code != 1000) {
+                            alert(data.msg)
+                            document.getElementById('payId').style.display = "block";
+                            document.getElementById('loading-zf').style.display = "none";
+                            document.getElementById('paymoney').innerHTML = "";
+                        }
+                        if (data.data.client == 'ALIPAY') {
+                            ap.tradePay({
+                                tradeNO: data.data.tradeNO
+                            }, function(res) {
+                                document.getElementById('payId').style.display = "block";
+                                document.getElementById('loading-zf').style.display = "none";
+                                document.getElementById('paymoney').innerHTML = "";
+
+                                if (res.resultCode == 9000) {
+                                    window.location.href = "https://api.51shanhe.com/h5-pay/lh-ad.html?insNumber=" + insNumber;
+                                } else {
+                                    // var wlh = window.location.href.split('&code=')[0]
+
+                                }
+                            });
+                        } else {
+                            onBridgeReady(data.data.map.appId, data.data.map.timeStamp, data.data.map.nonceStr, data.data.map.package, data.data.map.signType, data.data.map.paySign);
+                        }
+                            }
+                        })
+                       
+                    },
+                    fail: function(e) {
+
+                    },
+                    error: function(e) {
+                        console.log(e)
+                    }
+                })
+
+            }
+        });
+        $(".payinfo").slideDown();
+        var $paymoney = $("#paymoney");
+        $(".paynum").each(function() {
+            $(this).click(function() {
+                console.log(this)
+                isC = true
+                if (($paymoney.val()).indexOf(".") != -1 && ($paymoney.val()).substring(($paymoney.val()).indexOf(".") + 1, ($paymoney.val()).length).length == 2) {
+                    console.log('1')
+                    return;
+                }
+                if ($(this).text() == '.' && $paymoney.val().indexOf('.') >=0) {
+                    
+                    return
+                }
+               if ($(this).text() == '.' && $paymoney.val() == '') {
+                    $paymoney.val('0.')
+                    return
+                }
+                if (parseInt($paymoney.val()) > 10000 && $paymoney.val().indexOf(".") == -1) {
+                    console.log('3')
+                    return;
+                }
+                $('.paySub').removeClass('paySub-disable');
+                $paymoney.val($paymoney.val() + $(this).text());
+            });
+        });
+
+        $("#pay-return").click(function() {
+            $paymoney.val(($paymoney.val()).substring(0, ($paymoney.val()).length - 1));
+            console.log($paymoney.val())
+            if (!$paymoney.val()) {
+                $('#payId').addClass('paySub-disable');
+            }
+        });
+
+        $("#pay-zero").click(function() {
+            if (($paymoney.val()).indexOf(".") != -1 && ($paymoney.val()).substring(($paymoney.val()).indexOf(".") + 1, ($paymoney.val()).length).length == 2) {
+                return;
+            }
+            if ($.trim($paymoney.val()) == "0") {
+                return;
+            }
+            if (parseInt($paymoney.val()) > 10000 && $paymoney.val().indexOf(".") == -1) {
+                return;
+            }
+            $paymoney.val($paymoney.val() + $(this).text());
+        });
+
+        $("#pay-float").click(function() {
+            if ($.trim($paymoney.val()) == "") {
+                return;
+            }
+            if (($paymoney.val()).indexOf(".") != -1) {
+                return;
+            }
+            if (($paymoney.val()).indexOf(".") != -1) {
+                return;
+            }
+            $paymoney.val($paymoney.val() + $(this).text());
+        });
+        if (!$paymoney.val()) {
+            $('.pay').addClass('pay-disabled');
+        }
+        if (!!payNumber) {
+            $('#payinfokey').hide()
+        }
+    });
+    $(function(){
+        pushHistory();
+        
+        window.addEventListener("popstate", function(e) {
+            if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                // 微信
+                WeixinJSBridge.call('closeWindow');
+                // setTimeout(function() {
+                //       //这个可以关闭安卓系统的手机
+                //        document.addEventListener(
+                //           "WeixinJSBridgeReady",
+                //           function() {
+                //              WeixinJSBridge.call("closeWindow");
+                //           },
+                //          false
+                //        );
+                //         //这个可以关闭ios系统的手机
+                //        WeixinJSBridge.call("closeWindow");
+                //     }, 300);
+            } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                // 支付宝
+                AlipayJSBridge.call('popWindow');
+            }
+        }, false);
+        // document.querySelector('body').addEventListener('touchmove', function(e) {
+        //     e.preventDefault();
+        // })
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady1() {
+            // 通过下面这个API隐藏右上角按钮
+            WeixinJSBridge.call('hideOptionMenu');
+        });
+
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "http://www.baidu.com"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+        
+    })
+    </script>
+</body>
+
+</html>

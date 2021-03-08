@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .layui-upload-img {
+        width: 200px;
+        height: 200px;
+        margin: 0 10px 40px 0;
+    }
+
+    .layui-upload-img img {
+        width: 100%;
+        height: 100%;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row" style="margin-bottom:200px">
+            <form class="layui-form" action="" lay-filter="tongdao">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">返利卡</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="rebateSwitch" value="1" lay-filter="riskctrl" title="关闭" checked="">
+                        <input type="radio" name="rebateSwitch" value="0" lay-filter="riskctrl" title="开启">
+                    </div>
+                </div>
+                <div id="riskctrlDiv" style="display: none;">
+                    <blockquote class="layui-elem-quote">商家信息</blockquote>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block;width:500px;position:relative;">
+                            <label class="layui-form-label">商户名称</label>
+                            <div class="layui-input-block">
+                                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                <input type="text" lay-verType="tips" name="merchantName" lay-verify="title" autocomplete="off" placeholder="商户名称" class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px;position:relative;">
+                            <label class="layui-form-label">联系方式</label>
+                            <div class="layui-input-block">
+                                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                <input type="text" lay-verType="tips" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="联系方式" class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block;width:500px">
+                            <label class="layui-form-label">经营范围</label>
+                            <div class="layui-input-block widthauto">
+                                <div class="layui-input-inline">
+                                    <select name="business" id="business" lay-filter="business" lay-verify="">
+                                        <option value="0">宾馆</option>
+                                        <option value="1">餐饮</option>
+                                        <option value="2">娱乐</option>
+                                        <option value="3">超市</option>
+                                        <option value="4">加油站</option>
+                                        <option value="5">便民</option>
+                                        <option value="6">百货商店</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px;vertical-align: top;">
+                            <label class="layui-form-label">营业时间</label>
+                            <div class="layui-input-block widthauto">
+                                <input type="text" lay-verType="tips" name="time" lay-verify="title" autocomplete="off" placeholder="营业时间" class="layui-input" value="" id="time">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="suozaidi">
+                        <label class="layui-form-label" style="width:100px">省市区</label>
+                        <div class="layui-input-block" style="display: flex;">
+                            <div class="layui-input-inline">
+                                <select name="province" id="provice" lay-filter="provice" lay-verify="title">
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="city" id="city" lay-filter="city" lay-verify="title">
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="area" id="area" lay-verify="title">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:100px">详细地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="请输入详细地址" class="layui-input" value="" style="width:67.2%">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label">店内照</label>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test1" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo1" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照1</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test2" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo2" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照2</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test3" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo3" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照3</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test4" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo4" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照4</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test5" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo5" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照5</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test6" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo6" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照6</div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote">返利设置</blockquote>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block;width:700px;position:relative;">
+                            <label class="layui-form-label">商家返现比例(%)</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verType="tips" name="comsumerMaxScale" lay-verify="title" autocomplete="off" placeholder="商家返现比例" class="layui-input" value="" style="width:350px;display:inline-block">
+                                <span style="display:inline-block;color:red"> 单位(%)</span>
+                                <span style="display:inline-block;color:red">返利比例1-20%，最高不能超过20%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block;width:700px;position:relative;">
+                            <label class="layui-form-label">联盟商家ID</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verType="tips" name="id" lay-verify="" autocomplete="off" placeholder="联盟商家ID,设置完成之后分配" class="layui-input" value="" disabled="disabled" style="width:350px;display:inline-block">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var rebateSwitch = 1
+    var imgList = {
+        photo1: '../../public/images/add.jpg',
+        photo2: '../../public/images/add.jpg',
+        photo3: '../../public/images/add.jpg',
+        photo4: '../../public/images/add.jpg',
+        photo5: '../../public/images/add.jpg',
+        photo6: '../../public/images/add.jpg'
+    }
+    var merchantInfo;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var rList = []
+
+    function toDecimal2(x) {
+        var f = parseFloat(x);
+        if (isNaN(f)) {
+            return false;
+        }
+        var f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        return s;
+    }
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+
+    function fc() {
+        $('#insSeparateNumber').val('')
+        $('#insSeparateNumber').removeAttr('separateNumber')
+        $('#searchBox').show()
+        event.stopPropagation();
+
+
+    }
+    // getInsSeparate()
+    $('#iosiframe').click(function() {
+        $('#searchBox').hide()
+    })
+
+    // function getInsSeparate() {
+    //     var tjData = new Object()
+    //     tjData.institutionNumber = userNumber
+    //     CmsUtility.postAjaxCallJson(
+    //         //系统设置
+    //         'sepAccount/getSepPerson',
+    //         JSON.stringify(tjData),
+    //         function(data) {
+    //             if (data.code == 1000) {
+    //                 rList = data.data.resultList
+    //                 var str = ''
+    //                 for (var i = 0; i < rList.length; i++) {
+    //                     var type;
+    //                     if (rList[i].separateType == 0) {
+    //                         type = '商户'
+    //                     }
+    //                     if (rList[i].separateType == 1) {
+    //                         type = '个人'
+    //                     }
+    //                     if (rList[i].separateType == 2) {
+    //                         type = '系统'
+    //                     }
+    //                     str += '<div class="layui-btn layui-btn-primary" data-value="' + rList[i].separateName + '/' + type + '/' + rList[i].separateNumber +
+    //                         '" data-id="' + rList[i].separateNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + rList[i].separateName + ' / ' + type + ' / ' + rList[i].separateNumber + '</div>'
+    //                 }
+    //                 document.getElementById('searchBox').innerHTML = str
+
+    //                 // layer.msg('保存成功')
+    //                 // setTimeout(function(){
+    //                 //  x_admin_close()
+    //                 // },500);
+
+    //             } else {
+    //                 layer.msg(data.msg)
+
+    //             }
+    //         },
+    //         function(data) {
+    //             console.log('222')
+    //         }
+    //     )
+    // }
+
+    function subPage(data, data1) {
+
+        console.log(data)
+        var merchantNumber = data.merchantNumber
+        var jgData = data
+        var shopNumber,
+            clerkNumber,
+            oldVal,
+            newVal
+        var clerkNumbers = []
+        var shopNumbers = []
+        layui.use(['laydate', 'table', 'upload', 'form', 'element'], function() {
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer;
+            var tableSelect = layui.tableSelect;
+            laydate.render({
+                elem: '#time',
+                type: 'time',
+                range: true
+            });
+            window.clickS = function(e) {
+                $('#insSeparateNumber').val(e.getAttribute('data-value'))
+                $('#insSeparateNumber').attr('separateNumber', e.getAttribute('data-id'))
+                $('#searchBox').hide()
+
+
+            }
+
+            //表单初始赋值
+            //              form.val('tongdao', {
+            //                  "preferentialSetting": 1
+            //              })
+
+            /*---------- 监听开关 ----------*/
+            form.on('radio(riskctrl)', function(data) {
+                rebateSwitch = data.value
+                console.log(data.value)
+                if (merchantInfo.membrStatus == 0 && data.value == 0) {
+                    layer.confirm('该商家已开通会员，是否继续开通联盟返利功能?',
+                        function(index) {
+                            layer.closeAll()
+                            $('#riskctrlDiv').show()
+                            var str1 = '<option value="">请选择市</option>'
+                            for (var i3 = 0; i3 < c.length; i3++) {
+
+                                if (merchantInfo.province == c[i3].provinceCode) {
+
+                                    for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                                        str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                                    }
+                                }
+                            }
+
+                            $('#city').html(str1)
+                            var str2 = '<option value="">请选择县区</option>'
+                            for (var i4 = 0; i4 < aa.length; i4++) {
+                                if (merchantInfo.city == aa[i4].cityCode) {
+
+                                    for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                            '</option>'
+
+
+                                    }
+                                }
+                            }
+                            $('#area').html(str2)
+                            imgList.photo1 = merchantInfo.photo1 ? merchantInfo.photo1 : imgList.photo1
+                            imgList.photo2 = merchantInfo.photo2 ? merchantInfo.photo2 : imgList.photo2
+                            imgList.photo3 = merchantInfo.photo3 ? merchantInfo.photo3 : imgList.photo3
+                            imgList.photo4 = merchantInfo.photo4 ? merchantInfo.photo5 : imgList.photo4
+                            imgList.photo5 = merchantInfo.photo5 ? merchantInfo.photo5 : imgList.photo5
+                            imgList.photo6 = merchantInfo.photo6 ? merchantInfo.photo6 : imgList.photo6
+                            console.log(imgList)
+                            $('#test1').attr('src', imgList.photo1);
+                            $('#test2').attr('src', imgList.photo2);
+                            $('#test3').attr('src', imgList.photo3);
+                            $('#test4').attr('src', imgList.photo4);
+                            $('#test5').attr('src', imgList.photo5);
+                            $('#test6').attr('src', imgList.photo6);
+
+                            getArea(data1.data.citySiteID)
+                            getAround(data1.data.areaID)
+
+                            form.val('tongdao', {
+                                "id": merchantInfo.id,
+                                "merchantScal": (merchantInfo.merchantScal * 100).toFixed(0),
+                                "merchantName": merchantInfo.merchantName,
+                                "registerCell": merchantInfo.registerCell,
+                                "merchantType": merchantInfo.merchantType,
+                                "address": merchantInfo.address,
+                                "province": merchantInfo.province,
+                                "city": merchantInfo.city,
+                                "area": merchantInfo.area,
+                                "comsumerMaxScale": data1.data.comsumerMaxScale * 100,
+                                "time": merchantInfo.startTime + ' - ' + merchantInfo.endTime,
+                                "business": merchantInfo.business
+
+                            })
+                        },
+                        function(index) {
+                            form.val('tongdao', {
+                                "rebateSwitch": 1
+                            })
+                        }
+                    )
+                } else {
+                    console.log(data.value)
+                    if (data.value == 0) {
+                        $('#riskctrlDiv').show()
+                        console.log(merchantInfo)
+                        var str1 = '<option value="">请选择市</option>'
+                        for (var i3 = 0; i3 < c.length; i3++) {
+
+                            if (merchantInfo.province == c[i3].provinceCode) {
+
+                                for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                                    str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                                }
+                            }
+                        }
+
+                        $('#city').html(str1)
+                        var str2 = '<option value="">请选择县区</option>'
+                        for (var i4 = 0; i4 < aa.length; i4++) {
+                            if (merchantInfo.city == aa[i4].cityCode) {
+
+                                for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                                    str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                        '</option>'
+
+
+                                }
+                            }
+                        }
+                        $('#area').html(str2)
+                        imgList.photo1 = merchantInfo.photo1 ? merchantInfo.photo1 : imgList.photo1
+                        imgList.photo2 = merchantInfo.photo2 ? merchantInfo.photo2 : imgList.photo2
+                        imgList.photo3 = merchantInfo.photo3 ? merchantInfo.photo3 : imgList.photo3
+                        imgList.photo4 = merchantInfo.photo4 ? merchantInfo.photo5 : imgList.photo4
+                        imgList.photo5 = merchantInfo.photo5 ? merchantInfo.photo5 : imgList.photo5
+                        imgList.photo6 = merchantInfo.photo6 ? merchantInfo.photo6 : imgList.photo6
+                        console.log(imgList)
+                        $('#test1').attr('src', imgList.photo1);
+                        $('#test2').attr('src', imgList.photo2);
+                        $('#test3').attr('src', imgList.photo3);
+                        $('#test4').attr('src', imgList.photo4);
+                        $('#test5').attr('src', imgList.photo5);
+                        $('#test6').attr('src', imgList.photo6);
+
+                        getArea(data1.data.citySiteID)
+                        getAround(data1.data.areaID)
+
+                        form.val('tongdao', {
+                            "id": merchantInfo.id,
+                            "merchantScal": (merchantInfo.merchantScal * 100).toFixed(0),
+                            "rebateSwitch": merchantInfo.rebateSwitch.toString(),
+                            "merchantName": merchantInfo.merchantName,
+                            "registerCell": merchantInfo.registerCell,
+                            "merchantType": merchantInfo.merchantType,
+                            "address": merchantInfo.address,
+                            "province": merchantInfo.province,
+                            "city": merchantInfo.city,
+                            "area": merchantInfo.area,
+                            "comsumerMaxScale": data1.data.comsumerMaxScale * 100,
+                            "time": merchantInfo.startTime + ' - ' + merchantInfo.endTime,
+                            "business": merchantInfo.business
+
+                        })
+
+                    } else if (data.value == 1) {
+                        $('#riskctrlDiv').hide()
+                    }
+                }
+                // console.log(rebateSwitch)
+
+            });
+            var tjData = new Object()
+            tjData.institutionNumber = userNumber
+            tjData.merchantNumber = merchantNumber
+
+            function getArea(data) {
+                var areaData = new Object()
+                areaData.institutionNumber = userNumber
+                areaData.citySiteID = data
+                areaData.page = '0'
+                areaData.limit = '0'
+                CmsUtility.postAjaxCallJson(
+                    //系统设置
+                    'area/getRebateAreaS',
+                    JSON.stringify(areaData),
+                    function(data) {
+                        var str '<option value="">请选择</option>'
+                        var areaList = data.data.list
+                        for (var j2 = 0; j2 < areaList.length; j2++) {
+
+                            str += '<option value="' + areaList[j2].areaID + '">' + areaList[j2].areaName + '</option>'
+
+
+                        }
+                        $('#areaID').html(str)
+
+                        form.render()
+                    },
+                    function(data) {
+
+                    }
+                )
+            }
+
+            function getAround(data) {
+                var aroundData = new Object()
+                aroundData.institutionNumber = userNumber
+                aroundData.areaID = data
+                aroundData.page = '0'
+                aroundData.limit = '0'
+                CmsUtility.postAjaxCallJson(
+                    //系统设置
+                    'bDistrict/getbDistrictS',
+                    JSON.stringify(aroundData),
+                    function(data) {
+                        var str '<option value="">请选择</option>'
+                        var aroundList = data.data.list
+                        for (var j2 = 0; j2 < aroundList.length; j2++) {
+
+                            str += '<option value="' + aroundList[j2].businessDistrictID + '">' + aroundList[j2].businessDistrictName + '</option>'
+
+
+                        }
+                        $('#businessDistrictID').html(str)
+                        form.render()
+                    },
+                    function(data) {
+
+                    }
+                )
+            }
+            var p = [],
+                c = [],
+                aa = [];
+            var cityC = '0'
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Public.getAreajson, {},
+                function(data) {
+                    sessionStorage.setItem("address", data.data);
+                    address = JSON.parse(data.data)
+                    for (var i = 0; i < address.length; i++) {
+                        var a = new Object()
+                        a.provinceCode = address[i].value
+                        a.provinceName = address[i].text
+                        p.push(a)
+                        var b = new Object()
+                        b.provinceCode = address[i].text
+                        b.children = []
+                        for (var k = 0; k < address[i].children.length; k++) {
+                            var d = new Object()
+                            d.cityCode = address[i].children[k].value
+                            d.cityName = address[i].children[k].text
+                            b.children.push(d)
+                            var e = new Object()
+                            e.cityCode = address[i].children[k].text
+                            e.childeren = []
+                            for (var j = 0; j < address[i].children[k].children.length; j++) {
+                                var t = new Object()
+                                t.areaCode = address[i].children[k].children[j].value
+                                t.areaName = address[i].children[k].children[j].text
+                                e.childeren.push(t)
+                            }
+                            aa.push(e)
+                        }
+                        c.push(b)
+
+                    }
+                    var str = '<option value="">请选择省</option>'
+                    for (var i1 = 0; i1 < p.length; i1++) {
+
+                        str += '<option value="' + p[i1].provinceName + '">' + p[i1].provinceName + '</option>'
+
+
+                    }
+                    $('#provice').html(str)
+                    var str1 = '<option value="">请选择市</option>'
+                    for (var i3 = 0; i3 < c.length; i3++) {
+
+                        if (p[0].provinceCode == c[i3].provinceCode) {
+                            console.log(c[i3])
+                            for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+                                cityC = c[i3].children[0].cityCode
+
+                                str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+                            }
+
+                        }
+                    }
+                    $('#city').html(str1)
+                    var str2 = '<option value="">请选择县区</option>'
+                    for (var i4 = 0; i4 < aa.length; i4++) {
+
+                        if (cityC == aa[i4].cityCode) {
+
+                            for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                                str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                    '</option>'
+
+
+                            }
+                        }
+                    }
+                    $('#area').html(str2)
+
+
+                    form.render()
+                },
+                function(data) {
+                    console.log(data)
+                }
+            )
+            setTimeout(function() {
+                CmsUtility.postAjaxCallJson(
+                    //系统设置
+                    'rebateCardMerSet/getrebateCardMer',
+                    JSON.stringify(tjData),
+                    function(data1) {
+                        if (data1.code == 1000) {
+                            merchantInfo = data1.data
+                            if (data1.data.rebateSwitch == 0) {
+                                $('#riskctrlDiv').show()
+
+                                var str1 = '<option value="">请选择市</option>'
+                                for (var i3 = 0; i3 < c.length; i3++) {
+
+                                    if (data1.data.province == c[i3].provinceCode) {
+
+                                        for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                                            str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                                        }
+                                    }
+                                }
+
+                                $('#city').html(str1)
+                                var str2 = '<option value="">请选择县区</option>'
+                                for (var i4 = 0; i4 < aa.length; i4++) {
+                                    if (data1.data.city == aa[i4].cityCode) {
+
+                                        for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                                            str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                                '</option>'
+
+
+                                        }
+                                    }
+                                }
+                                $('#area').html(str2)
+                                merchantInfo = data1.data
+                                rebateSwitch = data1.data.rebateSwitch
+                                imgList.photo1 = data1.data.photo1 ? data1.data.photo1 : imgList.photo1
+                                imgList.photo2 = data1.data.photo2 ? data1.data.photo2 : imgList.photo2
+                                imgList.photo3 = data1.data.photo3 ? data1.data.photo3 : imgList.photo3
+                                imgList.photo4 = data1.data.photo4 ? data1.data.photo5 : imgList.photo4
+                                imgList.photo5 = data1.data.photo5 ? data1.data.photo5 : imgList.photo5
+                                imgList.photo6 = data1.data.photo6 ? data1.data.photo6 : imgList.photo6
+                                console.log(imgList)
+                                $('#test1').attr('src', imgList.photo1);
+                                $('#test2').attr('src', imgList.photo2);
+                                $('#test3').attr('src', imgList.photo3);
+                                $('#test4').attr('src', imgList.photo4);
+                                $('#test5').attr('src', imgList.photo5);
+                                $('#test6').attr('src', imgList.photo6);
+
+
+                                console.log(rList)
+
+                                getArea(data1.data.citySiteID)
+                                getAround(data1.data.areaID)
+                                setTimeout(function() {
+                                    form.val('tongdao', {
+                                        "id": data1.data.id,
+                                        "merchantScal": (data1.data.merchantScal * 100).toFixed(0),
+                                        "rebateSwitch": data1.data.rebateSwitch.toString(),
+                                        "merchantName": data1.data.merchantName,
+                                        "registerCell": data1.data.registerCell,
+                                        "merchantType": data1.data.merchantType,
+                                        "address": data1.data.address,
+                                        "province": data1.data.province,
+                                        "city": data1.data.city,
+                                        "area": data1.data.area,
+                                        "comsumerMaxScale": data1.data.comsumerMaxScale * 100,
+                                        "time": data1.data.startTime + ' - ' + data1.data.endTime,
+                                        "business": merchantInfo.business
+
+                                    })
+                                }, 300)
+
+
+                            }
+                            // setTimeout(function(){
+                            //  // parent.layer.close(index)
+                            //  parent.location.reload()
+                            // },500); 
+
+
+                        } else {
+
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+            }, 300)
+            form.on('select(provice)', function(data) {
+
+                var str1 = '<option value="">请选择市</option>'
+                for (var i3 = 0; i3 < c.length; i3++) {
+                    console.log(data.value, c[i3])
+                    if (data.value == c[i3].provinceCode) {
+
+                        for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                            str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                        }
+                    }
+                }
+                $('#city').html(str1)
+                var str2 = '<option value="">请选择县区</option>'
+                $('#area').html(str2)
+                form.render()
+
+            })
+            form.on('select(city)', function(data) {
+
+                var str2 = '<option value="">请选择县区</option>'
+                for (var i4 = 0; i4 < aa.length; i4++) {
+                    if (data.value == aa[i4].cityCode) {
+                        console.log(aa[i4])
+                        for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                            str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                '</option>'
+
+
+                        }
+                    }
+                }
+                $('#area').html(str2)
+                form.render()
+
+            })
+
+
+            var uploadInst = upload.render({
+                elem: '#photo1',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test1').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo1 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#photo2',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test2').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo2 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#photo3',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test3').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo3 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#photo4',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test4').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo4 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#photo5',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test5').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo5 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#photo6',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test6').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo6 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test1',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test1').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo1 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test2',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test2').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo2 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test3',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test3').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo3 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test4',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test4').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo4 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test5',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test5').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo5 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test6',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test6').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo6 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            /*---------- 自定义验证规则 ----------*/
+            form.verify({
+                title: function(value) {
+                    if (value.length == "") {
+                        return '不能为空！';
+                    }
+                },
+                pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                content: function(value) {
+                    layedit.sync(editIndex);
+                }
+            });
+
+            /*---------- 监听提交 ----------*/
+            form.on('submit(add)', function(data, index) {
+                var addData = data.field
+                console.log()
+                if (imgList.length == '') {
+                    layer.msg('请至少上传一张店内照')
+                    return false
+                }
+                var arr_box = [];
+                $('input[type=checkbox]:checked').each(function() {
+                    arr_box.push($(this).val());
+                });
+                console.log(arr_box.indexOf('recharge'));
+
+                var infoData = new Object()
+
+                infoData.institutionNumber = userNumber
+                infoData.merchantName = addData.merchantName
+                infoData.registerCell = addData.registerCell
+                infoData.province = addData.province
+                infoData.city = addData.city
+                infoData.area = addData.area
+                infoData.merchantType = addData.merchantType
+                infoData.address = addData.address
+
+                infoData.merchantNumber = merchantInfo.merchantNumber
+                infoData.id = merchantInfo.id ? merchantInfo.id : ''
+                infoData.rebateSwitch = rebateSwitch
+                infoData.startTime = addData.time.split(' - ')[0]
+                infoData.endTime = addData.time.split(' - ')[1]
+                infoData.photo1 = imgList.photo1.indexOf('../..') >= 0 ? '' : imgList.photo1
+                infoData.photo2 = imgList.photo2.indexOf('../..') >= 0 ? '' : imgList.photo2
+                infoData.photo3 = imgList.photo3.indexOf('../..') >= 0 ? '' : imgList.photo3
+                infoData.photo4 = imgList.photo4.indexOf('../..') >= 0 ? '' : imgList.photo4
+                infoData.photo5 = imgList.photo5.indexOf('../..') >= 0 ? '' : imgList.photo5
+                infoData.photo6 = imgList.photo6.indexOf('../..') >= 0 ? '' : imgList.photo6
+
+                infoData.comsumerMaxScale = addData.comsumerMaxScale / 100
+                infoData.business = addData.business
+                console.log(infoData)
+                layer.confirm('确定要保存设置?', function(index) {
+                    CmsUtility.postAjaxCallJson(
+                        //系统设置
+                        'rebateCardMerSet/addrebateCardMer',
+                        JSON.stringify(infoData),
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                parent.layer.msg('设置成功')
+                                setTimeout(function() {
+                                    $('#quxiao').click()
+                                }, 16);
+                                parent.layui.table.reload('vip_cardList')
+
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                })
+
+                return false;
+            });
+
+        });
+    }
+    </script>
+</body>
+
+</html>

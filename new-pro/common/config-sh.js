@@ -1,15 +1,15 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty';
+var Edition = 'prd';
 // var Edition = 'zyh';
 var server;
 if (Edition == 'qty') {
-	server = 'http://192.168.1.250:6007/shanhe-merchant/'
-	publicUrl = 'http://192.168.1.167:5006/shanhe-common/'
+	server = 'http://192.168.110.25:6007/shanhe-merchant/'
+	publicUrl = 'http://192.168.110.167:5006/shanhe-common/'
 } else if (Edition == 'prd') {
-	server = 'https://nb.51shanhe.com/shanhe-merchant/'
-	publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
+	server = 'https://nb.hongsou.com.cn/shanhe-merchant/'
+	publicUrl = 'https://nb.hongsou.com.cn/shanhe-common/'
 } else if (Edition == 'zyh') {
-	server = 'http://192.168.1.66:80/shanhe-member/'
+	server = 'http://192.168.110.66:80/shanhe-member/'
 	publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
 }
 /* 
@@ -23,10 +23,10 @@ var CmsConfig = {
 
 	ServiceUrl: {
 		//ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
-		//ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
-		// ApiRootUrlMeb: 'http://192.168.1.66:6019/p-member/',
-		// ApiRootUrlMeb: 'http://192.168.1.110:8088/shanhe-member/',
-		ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
+		//ApiRootUrl:'http://192.168.110.116:8080/IkkyuChegjtrack1/'
+		//ApiRootUrlMeb: 'http://192.168.110.250:6019/p-member/',
+		 ApiRootUrlMeb: 'http://192.168.110.110:8088/shanhe-member/',
+		//ApiRootUrlMeb: 'http://api.51shanhe.com/p-member/',
 		ApiRootUrl: server,
 		PubUrl: publicUrl
 		// imgUrl:imgAdd

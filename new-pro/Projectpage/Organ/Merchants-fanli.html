@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .layui-upload-img {
+        width: 200px;
+        height: 200px;
+        margin: 0 10px 40px 0;
+    }
+
+    .layui-upload-img img {
+        width: 100%;
+        height: 100%;
+    }
+    .fanliSet .layui-form-label{
+        width: 140px
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row" style="margin-bottom:200px">
+            <form class="layui-form" action="" lay-filter="tongdao">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">选择商户</label>
+                    <div class="layui-input-block" style="width:500px">
+                        <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                        <input type="text" name="agName" lay-verify="agentName" autocomplete="off" placeholder="请输入名称搜索并选择商户" class="layui-input" id="agName" onblur="bl()" onfocus="fc()">
+                        <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:190px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBox">
+                            <!-- <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div>
+                                <div class="layui-btn layui-btn-primary" style="width:100%;margin-left:0" >121212</div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" id="fanliOff" style="display:none">
+                    <label class="layui-form-label">返利卡</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="rebateSwitch" value="1" lay-filter="riskctrl" title="关闭" checked="">
+                        <input type="radio" name="rebateSwitch" value="0" lay-filter="riskctrl" title="开启">
+                    </div>
+                </div>
+                <div id="riskctrlDiv" style="display: none;">
+                    <blockquote class="layui-elem-quote">商家信息</blockquote>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block;width:500px;position:relative;">
+                            <label class="layui-form-label">商户名称</label>
+                            <div class="layui-input-block">
+                                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                <input type="text" lay-verType="tips" name="merchantName" lay-verify="title" autocomplete="off" placeholder="商户名称" class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px;position:relative;">
+                            <label class="layui-form-label">联系方式</label>
+                            <div class="layui-input-block">
+                                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                <input type="text" lay-verType="tips" name="registerCell" lay-verify="phone" autocomplete="off" placeholder="联系方式" class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block;width:500px">
+                            <label class="layui-form-label">经营范围</label>
+                            <div class="layui-input-block widthauto">
+                                <div class="layui-input-inline" style="width:185px !important">
+                                    <select name="oneIndustryID" id="oneIndustryID" lay-filter="oneIndustryID" lay-verify="">
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline" style="width:185px !important;margin-right:0">
+                                    <select name="twoIndustryID" id="twoIndustryID" lay-filter="twoIndustryID" lay-verify="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" style="display:inline-block;width:500px;margin-left:30px;vertical-align: top;">
+                            <label class="layui-form-label">营业时间</label>
+                            <div class="layui-input-block widthauto">
+                                <input type="text" lay-verType="tips" name="time" lay-verify="title" autocomplete="off" placeholder="营业时间" class="layui-input" value="" id="time">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-item">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商户分类</label>
+                            <div class="layui-input-block widthauto">
+                                <div class="layui-input-inline" style="width:380px;">
+                                    <select name="classifyID" id="classifyID" lay-filter="classifyID" lay-verify="title">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="suozaidi">
+                        <label class="layui-form-label" style="width:100px">省市区</label>
+                        <div class="layui-input-block" style="display: flex;">
+                            <div class="layui-input-inline">
+                                <select name="province" id="provice" lay-filter="provice" lay-verify="title">
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="city" id="city" lay-filter="city" lay-verify="title">
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="area" id="area" lay-verify="title">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:100px">详细地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="address" lay-verify="title" autocomplete="off" placeholder="请输入详细地址" class="layui-input" value="" style="width:67.2%">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:100px">中心坐标</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="lnglat" lay-verify="title" autocomplete="off" placeholder="请选择中心坐标" class="layui-input" value="" readonly="readonly" id="getlog">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="suozaidi">
+                        <label class="layui-form-label" style="width:100px">所属商圈</label>
+                        <div class="layui-input-block" style="display: flex;">
+                            <div class="layui-input-inline">
+                                <select name="citySiteID" id="citySiteID" lay-filter="citySiteID" lay-verify="">
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="areaID" id="areaID" lay-filter="areaID" lay-verify="">
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <select name="businessDistrictID" id="businessDistrictID" lay-verify="">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label">商家Logo</label>
+                        <div class="layui-input-inline" style="margin-left:15px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test7" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="logo" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">商家Logo</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense11">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label">Logo缩略图</label>
+                        <div class="layui-input-inline" style="margin-left:15px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="logothumbnail" style="width:345px;height:180px">
+                                <div class="layui-btn layui-btn-sm block" id="goCaijian" style="width:345px;text-align:center">上传并裁剪图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:345px">商家Logo缩略图</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label">店内照</label>
+                        <div class="layui-input-inline" style="margin-left:15px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test1" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo1" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照1</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test2" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo2" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照2</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test3" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo3" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照3</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-inline" style="margin-left:15px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test4" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo4" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照4</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test5" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo5" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照5</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test6" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo6" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">店内照6</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label">特色产品</label>
+                        <div class="layui-input-inline" style="margin-left:15px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test8" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="specialProducts1" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">特色产品1</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test9" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="specialProducts2" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">特色产品2</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test10" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="specialProducts3" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">特色产品3</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-inline" style="margin-left:15px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test11" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="specialProducts4" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">特色产品4</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test12" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="specialProducts5" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">特色产品5</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test13" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="specialProducts6" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">特色产品6</div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote">返利设置</blockquote>
+                    <div class="box-item fanliSet">
+                        <div class="layui-form-item" style="display:inline-block;width:700px;position:relative;">
+                            <label class="layui-form-label">商家分账比例(%)</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verType="tips" name="merchantsBenefit" id="merchantsBenefit" lay-verify="merchantsBenefit" autocomplete="off" placeholder="商家分账比例" class="layui-input" onblur="xfzBlur()"  oninput="xfzBlur()" value="" style="width:350px;display:inline-block" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+                                <span style="display:inline-block;color:red"> 单位(%)</span>
+                                <span style="display:block;color:red">分账比例1-20%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-item fanliSet">
+                        <div class="layui-form-item" style="display:inline-block;width:700px;position:relative;">
+                            <label class="layui-form-label">服务商抽成比例(%)</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verType="tips" id="agencyCommissio" name="agencyCommissio" lay-verify="agencyCustom" autocomplete="off" placeholder="服务商抽成比例" class="layui-input" value="" style="width:350px;display:inline-block" onblur="xfzBlur()" oninput="xfzBlur()" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+                                <span style="display:inline-block;color:red"> 单位(%)</span>
+                                <span style="display:block;color:red">服务商抽成比例不能超过商户分账比例的一半</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-item fanliSet">
+                        <div class="layui-form-item" style="display:inline-block;width:700px;position:relative;">
+                            <label class="layui-form-label">消费者预计返现(%)</label>
+                            <div class="layui-input-block">
+                                <input type="text" id="xiaofeizhe" lay-verType="" name="" lay-verify="" autocomplete="off" placeholder="消费者返现比例" class="layui-input" readonly="readonly" value="" style="width:350px;display:inline-block"  onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+                                <span style="display:inline-block;color:red"> 单位(%)</span>
+                                <span style="display:block;color:red"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="box-item fanliSet">
+                        <div class="layui-form-item" style="display:inline-block;width:700px;position:relative;">
+                            <label class="layui-form-label">联盟商家ID</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verType="tips" name="id" lay-verify="" autocomplete="off" placeholder="联盟商家ID,设置完成之后分配" class="layui-input" value="" disabled="disabled" style="width:350px;display:inline-block">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var rebateSwitch = 1
+    var imgList = {
+        photo1: '../../public/images/add.jpg',
+        photo2: '../../public/images/add.jpg',
+        photo3: '../../public/images/add.jpg',
+        photo4: '../../public/images/add.jpg',
+        photo5: '../../public/images/add.jpg',
+        photo6: '../../public/images/add.jpg'
+    }
+    var productsList = {
+        specialProducts1: '../../public/images/add.jpg',
+        specialProducts2: '../../public/images/add.jpg',
+        specialProducts3: '../../public/images/add.jpg',
+        specialProducts4: '../../public/images/add.jpg',
+        specialProducts5: '../../public/images/add.jpg',
+        specialProducts6: '../../public/images/add.jpg'
+    }
+    var logo = '../../public/images/add.jpg'
+
+    var logothumbnail = '../../public/images/add.jpg'
+    var merchantInfo;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var rList = []
+    var merchantNumber = '';
+    var agentNumber = ''
+    var agencyCustom = 1
+    var subInfo = ''
+
+    function toDecimal2(x) {
+        var f = parseFloat(x);
+        if (isNaN(f)) {
+            return false;
+        }
+        var f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        return s;
+    }
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+    //  $('#iosiframe').click(function() {
+    //     $('#searchBox').hide()
+    // })
+    function fc() {
+        if ($('#agName').val() == '') {
+            return
+        }
+        $('#searchBox').show()
+        event.stopPropagation();
+
+
+    }
+
+    function bl() {
+        setTimeout(function() {
+            $('#searchBox').hide()
+        }, 200)
+    }
+
+    var shFenlei = []
+
+    function getShFenlei() {
+        var cityData = new Object()
+        cityData.institutionNumber = userNumber
+        cityData.page = '1'
+        cityData.limit = '10'
+        CmsUtility.postAjaxCallJson(
+            //系统设置
+            'rebateCard/getClassificationList',
+            JSON.stringify(cityData),
+            function(data) {
+                var str = '<option value="">请选择</option>'
+                var cityList = data.data.list
+                shFenlei = cityList
+                for (var j1 = 0; j1 < cityList.length; j1++) {
+
+                    str += '<option value="' + cityList[j1].classifyID + '">' + cityList[j1].classifyName + '-' + cityList[j1].classifyAlias + '</option>'
+
+
+                }
+
+                $('#classifyID').html(str)
+            },
+            function(data) {
+
+            }
+        )
+    }
+    getShFenlei()
+
+    function getclassName(data) {
+        var id = data
+        var name = '--'
+        for (var i = 0; i < shFenlei.length; i++) {
+            if (id == shFenlei[i].classifyID) {
+                name = shFenlei[i].classifyName
+                break
+            }
+        }
+        return name
+    }
+
+    function xfzBlur() {
+        console.log(this.value)
+        var sh = $('#merchantsBenefit').val()
+        var dl = $('#agencyCommissio').val()
+        console.log(sh, dl)
+        if(dl > sh *0.5){
+            layer.msg('服务商分账比例不能大于商户分账比例的50%')
+            $('#xiaofeizhe').val('')
+            return 
+        }
+        if (sh != '' && dl != '') {
+            $('#xiaofeizhe').val(sh - dl)
+        }
+
+    }
+
+
+
+
+
+    function getCity(data) {
+        var cityData = new Object()
+        cityData.institutionNumber = userNumber
+        cityData.agentNumber = agentNumber
+        cityData.page = '0'
+        cityData.limit = '0'
+        CmsUtility.postAjaxCallJson(
+            //系统设置
+            'citySite/getCitySiteS',
+            JSON.stringify(cityData),
+            function(data) {
+                var str = '<option value="">请选择</option>'
+                var cityList = data.data.list
+                for (var j1 = 0; j1 < cityList.length; j1++) {
+                    if (cityList[j1].enable == '1') {
+                        continue;
+                    }
+                    str += '<option value="' + cityList[j1].citySiteID + '">' + cityList[j1].citySiteName + '</option>'
+
+
+                }
+
+                $('#citySiteID').html(str)
+            },
+            function(data) {
+
+            }
+        )
+    }
+
+
+
+    var shopNumber,
+        clerkNumber,
+        oldVal,
+        newVal
+    var clerkNumbers = []
+    var shopNumbers = []
+    layui.use(['laydate', 'table', 'upload', 'form', 'element'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        var tableSelect = layui.tableSelect;
+        laydate.render({
+            elem: '#time',
+            type: 'time',
+            range: true
+        });
+        // 裁剪图片
+        $('#goCaijian').click(function(){
+            layer.open({
+                type: 2,
+                title: '裁剪图片',
+                shade: 0.5,
+                area: ['90%', '90%'],
+                maxmin: false,
+                resize: false,
+                content: ['caijian.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                }
+            });
+        })
+        // 3.0新增
+        $('#getlog').click(function() {
+            layer.open({
+                type: 2,
+                title: '获取坐标',
+                shade: 0.5,
+                area: ['600px', '600px'],
+                maxmin: false,
+                resize: false,
+                content: ['getlnglot.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                }
+            });
+        })
+        window.getlnglot = function(data1, data2) {
+            console.log('成功获取到经纬度了')
+            console.log(data1, data2)
+            form.val('tongdao', {
+                "lnglat": data1 + ',' + data2
+            })
+        }
+        window.getSL = function(data){
+            $('#logothumbnail').attr('src',data)
+            logothumbnail = data
+        }
+        // 查询代理商是否开通返利
+        window.clickS = function(e) {
+            console.log(e)
+            $('#agName').val(e.getAttribute('data-name'))
+            merchantNumber = e.getAttribute('data-id')
+            agentNumber = e.getAttribute('data-agentNumber')
+            $('#agName').attr('merchantNumber', e.getAttribute('data-id'))
+            $('#agName').attr('merchantName', e.getAttribute('data-name'))
+            $('#searchBox').hide()
+            $('#fanliOff').show()
+            getRebateCardMer()
+            getCity()
+            getIsFan()
+            getSub()
+        }
+        window.getSub = function() {
+            var tjData = new Object()
+            tjData.institutionNumber = userNumber
+            tjData.merchantNumber = merchantNumber
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'rebateCardMerSet/selectAuthorityBind',
+                JSON.stringify(tjData),
+                function(data) {
+                    console.log(data)
+                    subInfo = data.data
+                    if (subInfo.aliPaySubaccountNumber != '' && subInfo.aliPayType == 1) {
+                        aliBind()
+                    }
+                    if (subInfo.weChatSubaccountNumber != '' && subInfo.weChatType == 1) {
+                        wxBind()
+                    }
+                },
+                function(data) {
+
+                }
+            )
+        }
+        window.aliBind = function() {
+            var tjData = new Object()
+            tjData.insNumber = userNumber
+            tjData.merchantNumber = merchantNumber
+            tjData.account = subInfo.aliPayAccountNumber
+            tjData.describe = ''
+            tjData.accountName = subInfo.aliSeparateName
+            tjData.accountType = 2
+            tjData.subNumber = subInfo.aliPaySubaccountNumber
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'sepAccount/aliRoyaltyBind',
+                JSON.stringify(tjData),
+                function(data) {
+
+                },
+                function(data) {
+
+                }
+            )
+        }
+        window.wxBind = function() {
+            var tjData = new Object()
+            tjData.insNumber = userNumber
+            tjData.merchantNum = merchantNumber
+            tjData.merchantSub = subInfo.weChatSubaccountNumber
+            tjData.receiverType = 1
+            // 系统分账人子账号
+            tjData.receiverAccount = subInfo.weChatSeparateSubaccount
+            tjData.receiverName = subInfo.weChatSeparateName
+
+
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'sepAccount/weChatRoyaltyBind',
+                JSON.stringify(tjData),
+                function(data) {
+
+                },
+                function(data) {
+
+                }
+            )
+        }
+        window.getIsFan = function(data) {
+            var tjData = new Object()
+            tjData.agentNumber = agentNumber
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'rebateCardMerSet/selectAgencyCustom',
+                JSON.stringify(tjData),
+                function(data) {
+                    console.log(data)
+                    if (data.code == 1000) {
+                        agencyCustom = data.data.agencyCustom
+                        if (agencyCustom == 0) {
+                            $('#agBox').show()
+                        } else {
+                            $('#agBox').hide()
+                        }
+                    }
+                },
+                function(data) {
+
+                }
+            )
+        }
+
+        window.getArea = function(data) {
+            var areaData = new Object()
+            areaData.institutionNumber = userNumber
+            areaData.citySiteID = data
+            areaData.page = '0'
+            areaData.limit = '0'
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'area/getRebateAreaS',
+                JSON.stringify(areaData),
+                function(data) {
+                    var str = '<option value="">请选择</option>'
+                    var areaList = data.data.list
+                    for (var j2 = 0; j2 < areaList.length; j2++) {
+
+                        str += '<option value="' + areaList[j2].areaID + '">' + areaList[j2].areaName + '</option>'
+
+
+                    }
+                    $('#areaID').html(str)
+
+                    form.render()
+                },
+                function(data) {
+
+                }
+            )
+        }
+        window.getAround = function(data) {
+            var aroundData = new Object()
+            aroundData.institutionNumber = userNumber
+            aroundData.areaID = data
+            aroundData.page = '0'
+            aroundData.limit = '0'
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'bDistrict/getbDistrictS',
+                JSON.stringify(aroundData),
+                function(data) {
+                    var str = '<option value="">请选择</option>'
+                    var aroundList = data.data.list
+                    for (var j2 = 0; j2 < aroundList.length; j2++) {
+
+                        str += '<option value="' + aroundList[j2].businessDistrictID + '">' + aroundList[j2].businessDistrictName + '</option>'
+
+
+                    }
+                    $('#businessDistrictID').html(str)
+                    form.render()
+                },
+                function(data) {
+
+                }
+            )
+        }
+        $("#agName").bind('input propertychange', function() {
+
+            if (this.value == '') {
+                var str = ''
+                document.getElementById('searchBox').innerHTML = str
+                return
+            }
+            $('#agName').removeAttr('merchantNumber')
+
+            $('#agName').removeAttr('merchantName')
+            // btOff = true
+            $('#fanliOff').hide()
+            $('#riskctrlDiv').hide()
+            document.getElementById('searchBox').innerHTML = ''
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.getMerchantInfoList, {
+                    "institutionNumber": userNumber,
+                    "agentName": '',
+                    "merchantName": $('#agName').val().trim(),
+                    "merchantNumber": '',
+                    "subsidy": '',
+                    "startTime": '',
+                    "endtime": '',
+                    "photo": '',
+                    "merchantStatus": '0',
+                    "page": 1,
+                    "limit": 50
+                },
+                function(data) {
+                    if (data.code == 1000) {
+                        if (data.data == null) {
+                            //layer.msg(data.msg)
+                            var str = ''
+                            document.getElementById('searchBox').innerHTML = str
+                            return
+                        }
+                        var str = ''
+                        for (var i = 0; i < data.data.merchantInfoList.length; i++) {
+                            str += '<div class="layui-btn layui-btn-primary" data-agentNumber="' + data.data.merchantInfoList[i].agentNumber + '"   data-id="' + data.data.merchantInfoList[i].merchantNumber + '" data-name="' + data.data.merchantInfoList[
+                                i].merchantName + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + '[' + data.data.merchantInfoList[
+                                i].merchantNumber + ']' + data.data.merchantInfoList[i].merchantName + '</div>'
+                        }
+                        document.getElementById('searchBox').innerHTML = str
+                        $('#searchBox').show()
+
+                    } else {
+                        //layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        })
+        //表单初始赋值
+        //              form.val('tongdao', {
+        //                  "preferentialSetting": 1
+        //              })
+
+        /*---------- 监听开关 ----------*/
+        form.on('radio(riskctrl)', function(data) {
+            rebateSwitch = data.value
+            console.log(data.value)
+            console.log(merchantInfo)
+            if (merchantInfo.membrStatus == 0 && data.value == 0) {
+                layer.confirm('该商家已开通会员，是否继续开通联盟返利功能?',
+                    function(index) {
+                        layer.closeAll()
+                        $('#riskctrlDiv').show()
+                        var str1 = '<option value="">请选择市</option>'
+                        for (var i3 = 0; i3 < c.length; i3++) {
+
+                            if (merchantInfo.province == c[i3].provinceCode) {
+
+                                for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                                    str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                                }
+                            }
+                        }
+
+                        $('#city').html(str1)
+                        var str2 = '<option value="">请选择县区</option>'
+                        for (var i4 = 0; i4 < aa.length; i4++) {
+                            if (merchantInfo.city == aa[i4].cityCode) {
+
+                                for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                                    str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                        '</option>'
+
+
+                                }
+                            }
+                        }
+                        $('#area').html(str2)
+                        imgList.photo1 = merchantInfo.photo1 ? merchantInfo.photo1 : imgList.photo1
+                        imgList.photo2 = merchantInfo.photo2 ? merchantInfo.photo2 : imgList.photo2
+                        imgList.photo3 = merchantInfo.photo3 ? merchantInfo.photo3 : imgList.photo3
+                        imgList.photo4 = merchantInfo.photo4 ? merchantInfo.photo4 : imgList.photo4
+                        imgList.photo5 = merchantInfo.photo5 ? merchantInfo.photo5 : imgList.photo5
+                        imgList.photo6 = merchantInfo.photo6 ? merchantInfo.photo6 : imgList.photo6
+                        console.log(imgList)
+                        $('#test1').attr('src', imgList.photo1);
+                        $('#test2').attr('src', imgList.photo2);
+                        $('#test3').attr('src', imgList.photo3);
+                        $('#test4').attr('src', imgList.photo4);
+                        $('#test5').attr('src', imgList.photo5);
+                        $('#test6').attr('src', imgList.photo6);
+
+                        logo = data1.data.logo ? data1.data.logo : logo
+                        $('#test7').attr('src', logo);
+                        logothumbnail = data1.data.logothumbnail ? data1.data.logothumbnail : logothumbnail
+                            $('#logothumbnail').attr('src',logothumbnail)
+                        productsList.specialProducts1 = data1.data.specialProducts1 ? data1.data.specialProducts1 : productsList.specialProducts1
+                        productsList.specialProducts2 = data1.data.specialProducts2 ? data1.data.specialProducts2 : productsList.specialProducts2
+                        productsList.specialProducts3 = data1.data.specialProducts3 ? data1.data.specialProducts3 : productsList.specialProducts3
+                        productsList.specialProducts4 = data1.data.specialProducts4 ? data1.data.specialProducts4 : productsList.specialProducts4
+                        productsList.specialProducts5 = data1.data.specialProducts5 ? data1.data.specialProducts5 : productsList.specialProducts5
+                        productsList.specialProducts6 = data1.data.specialProducts6 ? data1.data.specialProducts6 : productsList.specialProducts6
+
+                        $('#test8').attr('src', productsList.specialProducts1);
+                        $('#test9').attr('src', productsList.specialProducts2);
+                        $('#test10').attr('src', productsList.specialProducts3);
+                        $('#test11').attr('src', productsList.specialProducts4);
+                        $('#test12').attr('src', productsList.specialProducts5);
+                        $('#test13').attr('src', productsList.specialProducts6);
+                        var str3 = ''
+                        for (var iii1 = 0; iii1 < industryListTwo.length; iii1++) {
+
+                            if (data1.data.oneIndustryID == industryListTwo[iii1].parId) {
+
+                                for (var iii2 = 0; iii2 < industryListTwo[iii1].list.length; iii2++) {
+
+
+                                    str3 += '<option value="' + industryListTwo[iii1].list[iii2].twoIndustryID + '">' + industryListTwo[iii1].list[iii2].twoIndustryName + '</option>'
+
+
+                                }
+                            }
+                        }
+
+                        $('#twoIndustryID').html(str3)
+                        getArea(data1.data.citySiteID)
+                        getAround(data1.data.areaID)
+                        form.val('tongdao', {
+                            "id": merchantInfo.id,
+                            "merchantScal": (merchantInfo.merchantScal * 100).toFixed(2),
+                            "merchantName": merchantInfo.merchantName,
+                            "registerCell": merchantInfo.registerCell,
+                            "merchantType": merchantInfo.merchantType,
+                            "address": merchantInfo.address,
+                            "province": merchantInfo.province,
+                            "city": merchantInfo.city,
+                            "area": merchantInfo.area,
+                            "comsumerMaxScale": (data1.data.comsumerMaxScale * 100).toFixed(0),
+                            "time": merchantInfo.startTime + ' - ' + merchantInfo.endTime,
+                            "business": merchantInfo.business,
+                            "oneIndustryID": data1.data.oneIndustryID,
+                            "twoIndustryID": data1.data.twoIndustryID,
+                            "citySiteID": data1.data.citySiteID,
+                            "areaID": data1.data.areaID,
+                            "businessDistrictID": data1.data.businessDistrictID,
+                            "agencyCommissio": !isNaN(data1.data.agentCommission) ? (data1.data.agentCommission * 100).toFixed(0) :'',
+                            "classifyID": data1.data.classifyID,
+                            "merchantsBenefit": !isNaN(data1.data.merchantsBenefit)?  (data1.data.merchantsBenefit * 100).toFixed(0) :'',
+
+                            "lnglat": data1.data.longF ? data1.data.longF  + ',' + data1.data.latF :'',
+
+                        })
+                        if(!isNaN(data1.data.agentCommission) && !isNaN(data1.data.merchantsBenefit)){
+                                         var sh = data1.data.merchantsBenefit *100
+                        var dl = data1.data.agentCommission *100
+                        $('#xiaofeizhe').val((sh - dl).toFixed(0))
+                                }
+                    },
+                    function(index) {
+                        form.val('tongdao', {
+                            "rebateSwitch": 1
+                        })
+                    }
+                )
+            } else {
+                console.log(data.value)
+                if (data.value == 0) {
+                    $('#riskctrlDiv').show()
+                    console.log(merchantInfo)
+                    var str1 = '<option value="">请选择市</option>'
+                    for (var i3 = 0; i3 < c.length; i3++) {
+
+                        if (merchantInfo.province == c[i3].provinceCode) {
+
+                            for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                                str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                            }
+                        }
+                    }
+
+                    $('#city').html(str1)
+                    var str2 = '<option value="">请选择县区</option>'
+                    for (var i4 = 0; i4 < aa.length; i4++) {
+                        if (merchantInfo.city == aa[i4].cityCode) {
+
+                            for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                                str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                    '</option>'
+
+
+                            }
+                        }
+                    }
+                    $('#area').html(str2)
+                    imgList.photo1 = merchantInfo.photo1 ? merchantInfo.photo1 : imgList.photo1
+                    imgList.photo2 = merchantInfo.photo2 ? merchantInfo.photo2 : imgList.photo2
+                    imgList.photo3 = merchantInfo.photo3 ? merchantInfo.photo3 : imgList.photo3
+                    imgList.photo4 = merchantInfo.photo4 ? merchantInfo.photo4 : imgList.photo4
+                    imgList.photo5 = merchantInfo.photo5 ? merchantInfo.photo5 : imgList.photo5
+                    imgList.photo6 = merchantInfo.photo6 ? merchantInfo.photo6 : imgList.photo6
+                    console.log(imgList)
+                    $('#test1').attr('src', imgList.photo1);
+                    $('#test2').attr('src', imgList.photo2);
+                    $('#test3').attr('src', imgList.photo3);
+                    $('#test4').attr('src', imgList.photo4);
+                    $('#test5').attr('src', imgList.photo5);
+                    $('#test6').attr('src', imgList.photo6);
+
+                    logo = merchantInfo.logo ? merchantInfo.logo : logo
+                    $('#test7').attr('src', logo);
+                    logothumbnail = data1.data.logothumbnail ? data1.data.logothumbnail : logothumbnail
+                            $('#logothumbnail').attr('src',logothumbnail)
+                    productsList.specialProducts1 = merchantInfo.specialProducts1 ? merchantInfo.specialProducts1 : productsList.specialProducts1
+                    productsList.specialProducts2 = merchantInfo.specialProducts2 ? merchantInfo.specialProducts2 : productsList.specialProducts2
+                    productsList.specialProducts3 = merchantInfo.specialProducts3 ? merchantInfo.specialProducts3 : productsList.specialProducts3
+                    productsList.specialProducts4 = merchantInfo.specialProducts4 ? merchantInfo.specialProducts4 : productsList.specialProducts4
+                    productsList.specialProducts5 = merchantInfo.specialProducts5 ? merchantInfo.specialProducts5 : productsList.specialProducts5
+                    productsList.specialProducts6 = merchantInfo.specialProducts6 ? merchantInfo.specialProducts6 : productsList.specialProducts6
+
+                    $('#test8').attr('src', productsList.specialProducts1);
+                    $('#test9').attr('src', productsList.specialProducts2);
+                    $('#test10').attr('src', productsList.specialProducts3);
+                    $('#test11').attr('src', productsList.specialProducts4);
+                    $('#test12').attr('src', productsList.specialProducts5);
+                    $('#test13').attr('src', productsList.specialProducts6);
+                    var str3 = ''
+                    for (var iii1 = 0; iii1 < industryListTwo.length; iii1++) {
+
+                        if (merchantInfo.oneIndustryID == industryListTwo[iii1].parId) {
+
+                            for (var iii2 = 0; iii2 < industryListTwo[iii1].list.length; iii2++) {
+
+
+                                str3 += '<option value="' + industryListTwo[iii1].list[iii2].twoIndustryID + '">' + industryListTwo[iii1].list[iii2].twoIndustryName + '</option>'
+
+
+                            }
+                        }
+                    }
+
+                    $('#twoIndustryID').html(str3)
+                    getArea(merchantInfo.citySiteID)
+                    getAround(merchantInfo.areaID)
+                    console.log(merchantInfo)
+                    form.val('tongdao', {
+                        "id": merchantInfo.id,
+                        "merchantScal": (merchantInfo.merchantScal * 100).toFixed(2),
+                        "rebateSwitch": '0',
+                        "merchantName": merchantInfo.merchantName,
+                        "registerCell": merchantInfo.registerCell,
+                        "merchantType": merchantInfo.merchantType,
+                        "address": merchantInfo.address,
+                        "province": merchantInfo.province,
+                        "city": merchantInfo.city,
+                        "area": merchantInfo.area,
+                        "comsumerMaxScale": (merchantInfo.comsumerMaxScale * 100).toFixed(2),
+                        "time": merchantInfo.startTime + ' - ' + merchantInfo.endTime,
+                        "business": merchantInfo.business,
+
+                        "oneIndustryID": merchantInfo.oneIndustryID,
+                        "twoIndustryID": merchantInfo.twoIndustryID,
+                        "citySiteID": merchantInfo.citySiteID,
+                        "areaID": merchantInfo.areaID,
+                        "businessDistrictID": merchantInfo.businessDistrictID,
+                        "classifyID": merchantInfo.classifyID,
+                        "agencyCommissio": !isNaN(merchantInfo.agentCommission) ? (merchantInfo.agentCommission * 100).toFixed(0) :'',
+                            "merchantsBenefit": !isNaN(merchantInfo.merchantsBenefit)?  (merchantInfo.merchantsBenefit * 100).toFixed(0) :'',
+                        "lnglat": merchantInfo.longF ? merchantInfo.longF  + ',' + merchantInfo.latF :'',
+
+
+                    })
+                    if(!isNaN(merchantInfo.agentCommission) && !isNaN(merchantInfo.merchantsBenefit)){
+                                         var sh = merchantInfo.merchantsBenefit *100
+                        var dl = merchantInfo.agentCommission *100
+                        $('#xiaofeizhe').val((sh - dl).toFixed(0))
+                                }
+                   
+
+                } else if (data.value == 1) {
+                    $('#riskctrlDiv').hide()
+                }
+            }
+            // console.log(rebateSwitch)
+
+        });
+        // var tjData = new Object()
+        // tjData.institutionNumber = userNumber
+        // tjData.merchantNumber = merchantNumber
+
+
+        var p = [],
+            c = [],
+            aa = [];
+        var cityC = '0'
+        CmsUtility.postAjaxCall(
+            //系统设置
+            CmsConfig.addressUrl.Public.getAreajson, {},
+            function(data) {
+                sessionStorage.setItem("address", data.data);
+                address = JSON.parse(data.data)
+                for (var i = 0; i < address.length; i++) {
+                    var a = new Object()
+                    a.provinceCode = address[i].value
+                    a.provinceName = address[i].text
+                    p.push(a)
+                    var b = new Object()
+                    b.provinceCode = address[i].text
+                    b.children = []
+                    for (var k = 0; k < address[i].children.length; k++) {
+                        var d = new Object()
+                        d.cityCode = address[i].children[k].value
+                        d.cityName = address[i].children[k].text
+                        b.children.push(d)
+                        var e = new Object()
+                        e.cityCode = address[i].children[k].text
+                        e.childeren = []
+                        for (var j = 0; j < address[i].children[k].children.length; j++) {
+                            var t = new Object()
+                            t.areaCode = address[i].children[k].children[j].value
+                            t.areaName = address[i].children[k].children[j].text
+                            e.childeren.push(t)
+                        }
+                        aa.push(e)
+                    }
+                    c.push(b)
+
+                }
+                var str = '<option value="">请选择省</option>'
+                for (var i1 = 0; i1 < p.length; i1++) {
+
+                    str += '<option value="' + p[i1].provinceName + '">' + p[i1].provinceName + '</option>'
+
+
+                }
+                $('#provice').html(str)
+                var str1 = '<option value="">请选择市</option>'
+                for (var i3 = 0; i3 < c.length; i3++) {
+
+                    if (p[0].provinceCode == c[i3].provinceCode) {
+                        console.log(c[i3])
+                        for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+                            cityC = c[i3].children[0].cityCode
+
+                            str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+                        }
+
+                    }
+                }
+                $('#city').html(str1)
+                var str2 = '<option value="">请选择县区</option>'
+                for (var i4 = 0; i4 < aa.length; i4++) {
+
+                    if (cityC == aa[i4].cityCode) {
+
+                        for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                            str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                '</option>'
+
+
+                        }
+                    }
+                }
+                $('#area').html(str2)
+
+
+                form.render()
+            },
+            function(data) {
+                console.log(data)
+            }
+        )
+
+
+        var industryListOne = []
+        var industryListTwo = []
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'rebate/getIndustryName', {},
+            function(data) {
+                console.log(data)
+                var indList = data.data
+                for (var i = 0; i < indList.length; i++) {
+                    var oneObj = new Object()
+                    oneObj.name = indList[i].oneIndustryName
+                    oneObj.id = indList[i].oneIndustryID
+                    var twoObj = new Object()
+                    twoObj.parId = indList[i].oneIndustryID
+                    twoObj.list = indList[i].TwoIndustry
+                    industryListOne.push(oneObj)
+                    industryListTwo.push(twoObj)
+                }
+                console.log(industryListOne)
+                console.log(industryListTwo)
+                var str = ''
+                for (var ii1 = 0; ii1 < industryListOne.length; ii1++) {
+
+                    str += '<option value="' + industryListOne[ii1].id + '">' + industryListOne[ii1].name + '</option>'
+                }
+                $('#oneIndustryID').html(str)
+                var str1 = ''
+                for (var ii2 = 0; ii2 < industryListTwo[0].list.length; ii2++) {
+
+                    str1 += '<option value="' + industryListTwo[0].list[ii2].twoIndustryID + '">' + industryListTwo[0].list[ii2].twoIndustryName + '</option>'
+                }
+                $('#twoIndustryID').html(str1)
+                form.render()
+            },
+            function(data) {
+                console.log(data)
+            }
+        )
+
+        function getRebateCardMer() {
+            var tjData = new Object()
+            tjData.merchantNumber = merchantNumber
+            tjData.institutionNumber = userNumber
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'rebateCardMerSet/getrebateCardMer',
+                JSON.stringify(tjData),
+                function(data1) {
+                    if (data1.code == 1000) {
+                        merchantInfo = data1.data
+                        if (data1.data.rebateSwitch == 0) {
+                            $('#riskctrlDiv').show()
+
+                            var str1 = '<option value="">请选择市</option>'
+                            for (var i3 = 0; i3 < c.length; i3++) {
+
+                                if (data1.data.province == c[i3].provinceCode) {
+
+                                    for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                                        str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                                    }
+                                }
+                            }
+
+                            $('#city').html(str1)
+                            var str2 = '<option value="">请选择县区</option>'
+                            for (var i4 = 0; i4 < aa.length; i4++) {
+                                if (data1.data.city == aa[i4].cityCode) {
+
+                                    for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                                        str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                                            '</option>'
+
+
+                                    }
+                                }
+                            }
+                            $('#area').html(str2)
+                            merchantInfo = data1.data
+                            rebateSwitch = data1.data.rebateSwitch
+                            imgList.photo1 = data1.data.photo1 ? data1.data.photo1 : imgList.photo1
+                            imgList.photo2 = data1.data.photo2 ? data1.data.photo2 : imgList.photo2
+                            imgList.photo3 = data1.data.photo3 ? data1.data.photo3 : imgList.photo3
+                            imgList.photo4 = data1.data.photo4 ? data1.data.photo4 : imgList.photo4
+                            imgList.photo5 = data1.data.photo5 ? data1.data.photo5 : imgList.photo5
+                            imgList.photo6 = data1.data.photo6 ? data1.data.photo6 : imgList.photo6
+                            console.log(imgList)
+                            $('#test1').attr('src', imgList.photo1);
+                            $('#test2').attr('src', imgList.photo2);
+                            $('#test3').attr('src', imgList.photo3);
+                            $('#test4').attr('src', imgList.photo4);
+                            $('#test5').attr('src', imgList.photo5);
+                            $('#test6').attr('src', imgList.photo6);
+
+                            logo = data1.data.logo ? data1.data.logo : logo
+                            $('#test7').attr('src', logo);
+                            logothumbnail = data1.data.logothumbnail ? data1.data.logothumbnail : logothumbnail
+                            $('#logothumbnail').attr('src',logothumbnail)
+                            productsList.specialProducts1 = data1.data.specialProducts1 ? data1.data.specialProducts1 : productsList.specialProducts1
+                            productsList.specialProducts2 = data1.data.specialProducts2 ? data1.data.specialProducts2 : productsList.specialProducts2
+                            productsList.specialProducts3 = data1.data.specialProducts3 ? data1.data.specialProducts3 : productsList.specialProducts3
+                            productsList.specialProducts4 = data1.data.specialProducts4 ? data1.data.specialProducts4 : productsList.specialProducts4
+                            productsList.specialProducts5 = data1.data.specialProducts5 ? data1.data.specialProducts5 : productsList.specialProducts5
+                            productsList.specialProducts6 = data1.data.specialProducts6 ? data1.data.specialProducts6 : productsList.specialProducts6
+
+                            $('#test8').attr('src', productsList.specialProducts1);
+                            $('#test9').attr('src', productsList.specialProducts2);
+                            $('#test10').attr('src', productsList.specialProducts3);
+                            $('#test11').attr('src', productsList.specialProducts4);
+                            $('#test12').attr('src', productsList.specialProducts5);
+                            $('#test13').attr('src', productsList.specialProducts6);
+                            var str3 = ''
+                            for (var iii1 = 0; iii1 < industryListTwo.length; iii1++) {
+
+                                if (data1.data.oneIndustryID == industryListTwo[iii1].parId) {
+
+                                    for (var iii2 = 0; iii2 < industryListTwo[iii1].list.length; iii2++) {
+
+
+                                        str3 += '<option value="' + industryListTwo[iii1].list[iii2].twoIndustryID + '">' + industryListTwo[iii1].list[iii2].twoIndustryName + '</option>'
+
+
+                                    }
+                                }
+                            }
+
+                            $('#twoIndustryID').html(str3)
+                            getArea(data1.data.citySiteID)
+                            getAround(data1.data.areaID)
+                            setTimeout(function() {
+                                form.val('tongdao', {
+                                    "id": data1.data.id,
+                                    "merchantScal": (data1.data.merchantScal * 100).toFixed(2),
+                                    "rebateSwitch": data1.data.rebateSwitch.toString(),
+                                    "merchantName": data1.data.merchantName,
+                                    "registerCell": data1.data.registerCell,
+                                    "merchantType": data1.data.merchantType,
+                                    "address": data1.data.address,
+                                    "province": data1.data.province,
+                                    "city": data1.data.city,
+                                    "area": data1.data.area,
+                                    "comsumerMaxScale": (data1.data.comsumerMaxScale * 100).toFixed(2),
+                                    "time": data1.data.startTime + ' - ' + data1.data.endTime,
+                                    "business": merchantInfo.business,
+                                    "oneIndustryID": data1.data.oneIndustryID,
+                                    "twoIndustryID": data1.data.twoIndustryID,
+                                    "citySiteID": data1.data.citySiteID,
+                                    "areaID": data1.data.areaID,
+                                    "businessDistrictID": data1.data.businessDistrictID,
+                                     "agencyCommissio": !isNaN(data1.data.agentCommission) ? (data1.data.agentCommission * 100).toFixed(0) :'',
+                            "classifyID": data1.data.classifyID,
+                            "merchantsBenefit": !isNaN(data1.data.merchantsBenefit)?  (data1.data.merchantsBenefit * 100).toFixed(0) :'',
+                                    "lnglat": data1.data.longF ? data1.data.longF  + ',' + data1.data.latF :'',
+                                })
+                                if(!isNaN(data1.data.agentCommission) && !isNaN(data1.data.merchantsBenefit)){
+                                         var sh = data1.data.merchantsBenefit *100
+                        var dl = data1.data.agentCommission *100
+                        $('#xiaofeizhe').val((sh - dl).toFixed(0))
+                                }
+                               
+                            }, 300)
+
+
+                        }
+                        // setTimeout(function(){
+                        //  // parent.layer.close(index)
+                        //  parent.location.reload()
+                        // },500); 
+
+
+                    } else {
+                        // layer.msg(data1.msg)
+                        // form.val('tongdao', {
+                        //     "rebateSwitch": '1'
+                        // })
+                        var oob = new Object()
+                        oob.memberStatus = 1
+                        merchantInfo = oob
+                        console.log(merchantInfo)
+                        imgList.photo1 = '../../public/images/add.jpg'
+                        imgList.photo2 = '../../public/images/add.jpg',
+                            imgList.photo3 = '../../public/images/add.jpg',
+                            imgList.photo4 = '../../public/images/add.jpg',
+                            imgList.photo5 = '../../public/images/add.jpg',
+                            imgList.photo6 = '../../public/images/add.jpg',
+
+                            logo = '../../public/images/add.jpg'
+                        productsList.specialProducts1 = '../../public/images/add.jpg'
+                        productsList.specialProducts2 = '../../public/images/add.jpg'
+                        productsList.specialProducts3 = '../../public/images/add.jpg'
+                        productsList.specialProducts4 = '../../public/images/add.jpg'
+                        productsList.specialProducts5 = '../../public/images/add.jpg'
+                        productsList.specialProducts6 = '../../public/images/add.jpg'
+                        $('#test1').attr('src', imgList.photo1);
+                        $('#test2').attr('src', imgList.photo2);
+                        $('#test3').attr('src', imgList.photo3);
+                        $('#test4').attr('src', imgList.photo4);
+                        $('#test5').attr('src', imgList.photo5);
+                        $('#test6').attr('src', imgList.photo6);
+                        $('#test7').attr('src', logo);
+                        $('#test8').attr('src', productsList.specialProducts1);
+                        $('#test9').attr('src', productsList.specialProducts2);
+                        $('#test10').attr('src', productsList.specialProducts3);
+                        $('#test11').attr('src', productsList.specialProducts4);
+                        $('#test12').attr('src', productsList.specialProducts5);
+                        $('#test13').attr('src', productsList.specialProducts6);
+                        // getArea(data1.data.citySiteID)
+                        //        getAround(data1.data.areaID)
+                        form.val('tongdao', {
+                            "id": '',
+                            "merchantScal": '',
+                            "rebateSwitch": '1',
+                            "merchantName": '',
+                            "registerCell": '',
+                            "merchantType": '',
+                            "address": '',
+                            "province": '',
+                            "city": '',
+                            "area": '',
+                            "comsumerMaxScale": '',
+                            "time": '',
+                            "business": '',
+                            "oneIndustryID": '',
+                            "twoIndustryID": '',
+                            "agencyCommissio": '',
+                            "merchantsBenefit": '',
+                            "agentCommission": '',
+                            "lnglat": '',
+
+                        })
+                        $('#xiaofeizhe').val('')
+                        $('#fanliOff').show()
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+
+        form.on('select(provice)', function(data) {
+
+            var str1 = '<option value="">请选择市</option>'
+            for (var i3 = 0; i3 < c.length; i3++) {
+                console.log(data.value, c[i3])
+                if (data.value == c[i3].provinceCode) {
+
+                    for (var i2 = 0; i2 < c[i3].children.length; i2++) {
+
+
+                        str1 += '<option value="' + c[i3].children[i2].cityName + '">' + c[i3].children[i2].cityName + '</option>'
+
+
+                    }
+                }
+            }
+            $('#city').html(str1)
+            var str2 = '<option value="">请选择县区</option>'
+            $('#area').html(str2)
+            form.render()
+
+        })
+        form.on('select(city)', function(data) {
+
+            var str2 = '<option value="">请选择县区</option>'
+            for (var i4 = 0; i4 < aa.length; i4++) {
+                if (data.value == aa[i4].cityCode) {
+                    console.log(aa[i4])
+                    for (var i5 = 0; i5 < aa[i4].childeren.length; i5++) {
+
+
+                        str2 += '<option value="' + aa[i4].childeren[i5].areaName + '">' + aa[i4].childeren[i5].areaName +
+                            '</option>'
+
+
+                    }
+                }
+            }
+            $('#area').html(str2)
+            form.render()
+
+        })
+        form.on('select(oneIndustryID)', function(data) {
+            console.log(data.value)
+            var str2 = '<option value="">请选择</option>'
+            for (var ii3 = 0; ii3 < industryListTwo.length; ii3++) {
+                if (data.value == industryListTwo[ii3].parId) {
+                    console.log(industryListTwo[ii3])
+                    for (var ii4 = 0; ii4 < industryListTwo[ii3].list.length; ii4++) {
+
+
+                        str2 += '<option value="' + industryListTwo[ii3].list[ii4].twoIndustryID + '">' + industryListTwo[ii3].list[ii4].twoIndustryName +
+                            '</option>'
+
+
+                    }
+                }
+            }
+            $('#twoIndustryID').html(str2)
+            form.render()
+
+        })
+        form.on('select(citySiteID)', function(data) {
+            getArea(data.value)
+            $('#businessDistrictID').html('')
+            form.render()
+
+        })
+        form.on('select(areaID)', function(data) {
+            getAround(data.value)
+
+            form.render()
+
+        })
+        var uploadInst = upload.render({
+            elem: '#photo1',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test1').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo1 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#photo2',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test2').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo2 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#photo3',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test3').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo3 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#photo4',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test4').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo4 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#photo5',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test5').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo5 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#photo6',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test6').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo6 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#specialProducts1',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test8').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts1 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#specialProducts2',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test9').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts2 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#specialProducts3',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test10').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts3 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#specialProducts4',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test11').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts4 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#specialProducts5',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test12').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts5 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#specialProducts6',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test13').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts6 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#logo',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test7').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    logo = res.data
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test1',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test1').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo1 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test2',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test2').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo2 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test3',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test3').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo3 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test4',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test4').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo4 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test5',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test5').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo5 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test6',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test6').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    imgList.photo6 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test7',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test7').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    logo = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test8',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test8').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts1 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test9',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test9').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts2 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test10',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test10').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts3 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test11',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test11').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts4 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test12',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test12').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts5 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test13',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            size: 1024,
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#test13').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    productsList.specialProducts6 = res.data
+                    console.log(imgList)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+
+
+            }
+        });
+        /*---------- 自定义验证规则 ----------*/
+        form.verify({
+            title: function(value) {
+                if (rebateSwitch == 0) {
+                    if (value.length == "") {
+                        return '不能为空！';
+                    }
+                }
+
+            },
+            pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            content: function(value) {
+                layedit.sync(editIndex);
+            },
+            agencyCustom:function(value){
+
+                if(agencyCustom== 0 && rebateSwitch == 0){
+                    if (value.length == "") {
+                        return '不能为空！';
+                    }
+                    
+                }
+            },
+            comsumerMaxScale:function(value){
+                    if(rebateSwitch == 0){
+                            if (value.length == "") {
+                        return '不能为空！';
+                    }
+                    if(value >20 || value <0){
+                        return '分成比例必须在0-20%之间'
+                    }
+                    }
+                    
+                
+            }
+        });
+
+        /*---------- 监听提交 ----------*/
+        form.on('submit(add)', function(data, index) {
+            var addData = data.field
+            console.log(addData)
+            if (imgList.length == '') {
+                layer.msg('请至少上传一张店内照')
+                return false
+            }
+            if (addData.agencyCommissio > addData.merchantsBenefit * 0.5) {
+                layer.msg('服务商分账比例不能大于分账比例的50%')
+                return false
+            }
+            var arr_box = [];
+            $('input[type=checkbox]:checked').each(function() {
+                arr_box.push($(this).val());
+            });
+            console.log(arr_box.indexOf('recharge'));
+
+            var infoData = new Object()
+
+            infoData.institutionNumber = userNumber
+            infoData.merchantName = addData.merchantName
+            infoData.registerCell = addData.registerCell
+            infoData.province = addData.province
+            infoData.city = addData.city
+            infoData.area = addData.area
+            infoData.merchantType = addData.merchantType
+            infoData.address = addData.address
+
+            infoData.merchantNumber = merchantNumber
+            infoData.id = merchantInfo.id ? merchantInfo.id : ''
+            infoData.rebateSwitch = rebateSwitch
+            infoData.startTime = addData.time.split(' - ')[0]
+            infoData.endTime = addData.time.split(' - ')[1]
+            infoData.photo1 = imgList.photo1.indexOf('../..') >= 0 ? '' : imgList.photo1
+            infoData.photo2 = imgList.photo2.indexOf('../..') >= 0 ? '' : imgList.photo2
+            infoData.photo3 = imgList.photo3.indexOf('../..') >= 0 ? '' : imgList.photo3
+            infoData.photo4 = imgList.photo4.indexOf('../..') >= 0 ? '' : imgList.photo4
+            infoData.photo5 = imgList.photo5.indexOf('../..') >= 0 ? '' : imgList.photo5
+            infoData.photo6 = imgList.photo6.indexOf('../..') >= 0 ? '' : imgList.photo6
+            infoData.logo = logo.indexOf('../..') >= 0 ? '' : logo
+            infoData.logothumbnail = logothumbnail.indexOf('../..') >= 0 ? '' : logothumbnail
+            if(infoData.logo == ''){
+                layer.msg('请上传正确的logo')
+                return false
+            }
+            if(infoData.logothumbnail == ''){
+                layer.msg('请裁剪并上传正确的logo缩略图')
+                return false 
+            }
+            if (infoData.photo1 == '' && infoData.photo2 == '' && infoData.photo3 == '' && infoData.photo4 == '' && infoData.photo5 == '' && infoData.photo6 == '') {
+                layer.msg('请至少上传一张门店照')
+                return false
+            }
+
+            infoData.specialProducts1 = productsList.specialProducts1.indexOf('../..') >= 0 ? '' : productsList.specialProducts1
+            infoData.specialProducts2 = productsList.specialProducts2.indexOf('../..') >= 0 ? '' : productsList.specialProducts2
+            infoData.specialProducts3 = productsList.specialProducts3.indexOf('../..') >= 0 ? '' : productsList.specialProducts3
+            infoData.specialProducts4 = productsList.specialProducts4.indexOf('../..') >= 0 ? '' : productsList.specialProducts4
+            infoData.specialProducts5 = productsList.specialProducts5.indexOf('../..') >= 0 ? '' : productsList.specialProducts5
+            infoData.specialProducts6 = productsList.specialProducts6.indexOf('../..') >= 0 ? '' : productsList.specialProducts6
+            if (infoData.specialProducts1 == '' && infoData.specialProducts2 == '' && infoData.specialProducts3 == '' && infoData.specialProducts4 == '' && infoData.specialProducts5 == '' && infoData.specialProducts6 == '') {
+                layer.msg('请至少上传一张特色产品照！')
+                return false
+            }
+
+            infoData.oneIndustryID = addData.oneIndustryID
+            infoData.twoIndustryID = addData.twoIndustryID
+            infoData.comsumerMaxScale = 0
+            infoData.agencyCommissio = 0
+            infoData.agentCommission = addData.agencyCommissio / 100
+
+            infoData.agencyCustom = agencyCustom
+            infoData.business = addData.business
+            infoData.citySiteID = addData.citySiteID
+            infoData.areaID = addData.areaID
+            infoData.businessDistrictID = addData.businessDistrictID
+            console.log(infoData)
+            // 3.0新加参数
+            infoData.classifyID = addData.classifyID
+            infoData.classifyName = getclassName(addData.classifyID)
+            infoData.merchantsBenefit = addData.merchantsBenefit / 100
+            if (addData.lnglat == '') {
+                layer.msg('请选择坐标')
+                return false
+            }
+            if(!addData.citySiteID || !addData.areaID || !addData.businessDistrictID){
+                layer.msg('请选择正确的商圈')
+                return false
+            }
+            if(!addData.twoIndustryID){
+                layer.msg('请选择正确的分类')
+                return false
+            }
+            infoData.longF = addData.lnglat.split(',')[0]
+            infoData.latF = addData.lnglat.split(',')[1]
+            layer.confirm('确定要保存设置?', function(index) {
+
+                layer.closeAll()
+                var index = layer.load(2, { shade: [0.4, '#393D49'] })
+                CmsUtility.postAjaxCallJson(
+                    //系统设置
+                    'rebateCardMerSet/addrebateCardMer',
+                    JSON.stringify(infoData),
+                    function(data) {
+
+                        if (data.code == 1000) {
+                            getSub()
+                            setTimeout(function() {
+                                parent.layer.msg('设置成功')
+                                setTimeout(function() {
+                                    $('#quxiao').click()
+                                }, 16);
+                                parent.layui.table.reload('vip_cardList')
+                            }, 1000)
+
+
+                        } else {
+
+                            layer.msg(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        layer.closeAll()
+                        console.log('222')
+                    }
+                )
+            }, function() {
+                layer.closeAll()
+            })
+
+            return false;
+        });
+
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2679 @@
+<!--  只有微信会员卡 -->
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+body,
+html {
+    width: 100%;
+    height: 100%
+}
+
+.pay {
+    position: relative;
+}
+
+.loadzz {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.loading_k {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    background: rgba(0, 0, 0, .5);
+    border-radius: 10px
+}
+
+.loading_kz {
+    width: 100px;
+    height: 100px;
+    margin: -50px 0 0 -50px;
+}
+
+.h3 {
+    width: 300px;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    top: 65%;
+    left: calc(50% - 150px);
+    font-size: 18px
+}
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -13px 0 0 -13px;
+    width: 26px;
+    height: 26px;
+    border: 2px solid;
+    border-color: #fff #fff transparent;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: loading 1s linear infinite
+}
+
+.loadingz {
+    top: 35%;
+    margin: -15px 0 0 -15px;
+    width: 30px;
+    height: 30px;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+input {
+    border: none
+}
+
+.payNumBox {
+    border-top: 1px solid rgba(153, 153, 153, 1);
+}
+</style>
+<script type="text/javascript">
+var adiv = '<div id="loadstart" class="loadzz"><div class="loading_k"><div class="loading"></div></div></div>'
+document.write(adiv)
+</script>
+
+<head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1.0,maximum-scale=1.0,width=device-width" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link rel="stylesheet" href="./css/style-vip.css">
+    <link rel="stylesheet" href="./css/qrPay.css">
+    <title>向商户付款</title>
+    <script src="js/jquery.min.js"></script>
+    <script type="text/javascript">
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    console.log(window.location.href)
+    // var projectUrl = window.location.href.split('/oneCode')[0];
+    var clientNumber = getQueryString('outTradeNo');
+    var payNumber = getQueryString('payNumber');
+
+    var aliCode, weixinCode, merchantNumber, merInfo;
+    var oData = new Object()
+    oData.equipmentNumber = clientNumber
+
+    var payType
+    var uull;
+    var codeType
+    var code, pay, data;
+    var merNumber;
+    var insNumber;
+    var ip;
+    var isVip
+    var cardUrl = ''
+    var userInfo
+    var payChoose = 0
+    //商户是否开通会员
+    var cardEnabled = 1
+
+    // 会员微信支付是否可用
+    var wxPayState = 1
+    //会员支付宝支付是否可用   
+    var aliPayState = 1
+    //会员支付是否可用
+    var memberWallet = 1
+    //节假日会员是否可用
+    var holidayState = 1
+    //会员享受折扣
+    var disCountRate;
+    //会员享受折扣的最低消费
+    var minConsumMoney;
+    // 是否返利用户
+    var rebateType = 1
+    // 分账比例 
+    var rebateBili = ''
+    // 分账信息
+    var rebateInfo;
+    // 返利设置
+    var rebateSet;
+    // 唯一wxOpenId
+    var wyOpenId = ''
+    document.getElementById('loadstart').style.display = "none";
+    if (/MicroMessenger/.test(window.navigator.userAgent)) {
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady1() {
+            // 通过下面这个API隐藏右上角按钮
+            WeixinJSBridge.call('hideOptionMenu');
+        });
+        console.log(window.location.href)
+        if (window.location.href.indexOf('code=') == -1) {
+            sessionStorage.removeItem("userInfo");
+
+            $.ajax({
+                //url: "http://api-cs.hongsou.com.cn/p-server/appServer/getInfo",
+                url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                //url: "http://192.168.110.85:6017/p-server/appServer/getInfo",
+                type: "POST",
+                async: false,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify(oData),
+                success: function(data) {
+                    //alert(JSON.stringify(data))
+                    if (data.code == 1000) {
+
+
+                        cardEnabled = data.data.cardEnabled
+                        rebateSwitch = data.data.rebateSwitch
+                        // aliCode = JSON.parse(data.data.payBaseInfo).aliAppId;
+                        // weixinCode = JSON.parse(data.data.payBaseInfo).wxAppId;
+                        // merchantNumber = data.data.merchantNumber
+                        console.log(data.data.rebateSwitch)
+
+                        merInfo = data.data
+                        var ajData = new Object()
+                        ajData.paymentType = 'WeChat_Pay'
+                        ajData.merchantNumber = data.data.merchantNumber
+                        ajData.equipmentNumber = clientNumber
+                        ajData.shopNumber = data.data.storeId
+                        ajData.clerkNumber = data.data.userNumber
+                        ajData.codeType = 'PublicAddress_Pay'
+                        console.time('bbb')
+                        $.ajax({
+                            //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                            url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                            //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",
+                            type: "POST",
+                            async: false,
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            data: JSON.stringify(ajData),
+                            success: function(data) {
+                                // alert(JSON.stringify(data))
+                                console.timeEnd('bbb')
+                                //aliCode = JSON.parse(data.data.payBaseInfo).aliAppId;
+                                //weixinCode = JSON.parse(data.data.payBaseInfo).wxAppId;
+                                if (data.code != 1000) {
+                                    alert(data.msg)
+                                    return
+                                }
+                                $.ajax({
+
+                                    url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                                    type: "POST",
+                                    async: false,
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    data: JSON.stringify(ajData),
+                                    success: function(data) {
+                                        // alert(JSON.stringify(data))
+
+                                        //aliCode = JSON.parse(data.data.payBaseInfo).aliAppId;
+                                        //weixinCode = JSON.parse(data.data.payBaseInfo).wxAppId;
+                                        if (data.code != 1000) {
+                                            alert(data.msg)
+                                            return
+                                        }
+
+                                    }
+                                })
+                                if (rebateSwitch == 0) {
+                                    var redirect_uri = window.location.href + '&cardEnabled=2';
+                                    console.log("http://open.weixin.qq.com/connect/oauth2/authorize?appid=" + data.data.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_base&state=start")
+                                    window.location.href = "http://open.weixin.qq.com/connect/oauth2/authorize?appid=" + data.data.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_base&state=start"
+                                } else {
+                                    if (cardEnabled == 0) {
+                                        var scope = "auth_base";
+                                        var redirect_uri = window.location.href + '&cardEnabled=' + cardEnabled;
+                                        console.log("http://open.weixin.qq.com/connect/oauth2/authorize?appid=" + data.data.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_userinfo&state=start")
+                                        window.location.href = "http://open.weixin.qq.com/connect/oauth2/authorize?appid=" + data.data.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_userinfo&state=start"
+                                    } else {
+                                        var scope = "auth_base";
+                                        var redirect_uri = window.location.href + '&cardEnabled=' + cardEnabled;
+                                        console.log("http://open.weixin.qq.com/connect/oauth2/authorize?appid=" + data.data.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_base&state=start#wechat_redirect")
+                                        window.location.href = "http://open.weixin.qq.com/connect/oauth2/authorize?appid=" + data.data.appId + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_base&state=start#wechat_redirect"
+                                    }
+
+                                }
+
+                            }
+                        })
+
+                    } else {
+                        alert(data.msg)
+                    }
+                },
+                fail: function(data) {
+                    // alert(JSON.stringify(data))
+                }
+            })
+
+        } else {
+
+            code = window.location.href.split('code=')[1].split('&')[0];
+
+            document.getElementById('loadstart').style.display = "none";
+            console.log(!!JSON.parse(sessionStorage.getItem('userInfo')))
+            if (!!JSON.parse(sessionStorage.getItem('userInfo'))) {
+                merchantNumber = JSON.parse(sessionStorage.getItem('sInfo')).merchantNumber
+                merInfo = JSON.parse(sessionStorage.getItem('sInfo'))
+
+                if (JSON.parse(sessionStorage.getItem('userInfo')).code == 1000) {
+                    isVip = false
+                    cardUrl = JSON.parse(sessionStorage.getItem('userInfo')).data.getCardUrl
+                    userInfo = JSON.parse(sessionStorage.getItem('userInfo')).data
+                } else {
+                    isVip = true
+                    userInfo = JSON.parse(sessionStorage.getItem('userInfo')).data
+                }
+                console.log(userInfo)
+            } else {
+                $.ajax({
+                    url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                    //url:"http://192.168.110.80:6017/p-server/appServer/getInfo",
+                    type: "POST",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(oData),
+                    success: function(data) {
+                        // alert(JSON.stringify(data))
+                        // aliCode = JSON.parse(data.data.payBaseInfo).aliAppId;
+                        // weixinCode = JSON.parse(data.data.payBaseInfo).wxAppId;
+                        merchantNumber = data.data.merchantNumber
+                        merInfo = data.data
+                        if (getQueryString('cardEnabled') == 0) {
+                            var aData = new Object()
+                            aData.merchantNumber = merchantNumber
+
+                            aData.code = code
+                            var ajData = new Object()
+                            ajData.paymentType = 'WeChat_Pay'
+                            ajData.merchantNumber = data.data.merchantNumber
+                            ajData.equipmentNumber = clientNumber
+                            ajData.shopNumber = data.data.storeId
+                            ajData.clerkNumber = data.data.userNumber
+                            ajData.codeType = 'PublicAddress_Pay'
+                            $.ajax({
+                                //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                                url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                                //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",   
+                                type: "POST",
+                                async: false,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                data: JSON.stringify(ajData),
+                                success: function(data) {
+                                    // alert(JSON.stringify(data))
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        return
+                                    }
+                                    aData.appId = data.data.appId
+                                    $.ajax({
+                                        url: "http://api.hongsou.com.cn/p-member/server/getMemInfo",
+                                        //url: "http://192.168.110.250:6019/p-member/server/getMemInfo",
+                                        type: "GET",
+                                        async: false,
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        data: aData,
+                                        success: function(data) {
+                                            // alert('获取查询会员信息开始')
+                                            // alert(JSON.stringify(data))
+                                            //  alert('获取查询会员信息结束')
+                                            if (data.code == 1000) {
+                                                if (data.data.getCardUrl == '') {
+                                                    cardUrl = ''
+                                                    isVip = false
+                                                } else {
+                                                    isVip = false
+                                                    cardUrl = data.data.getCardUrl
+                                                }
+                                                userInfo = data.data
+                                            } else if (data.code == '-1') {
+                                                userInfo = data.data
+                                                cardUrl = 'http://api.hongsou.com.cn/h5-crm/againCard.html?mebNo=' + userInfo.memberNo + '&merN=' + merInfo.merchantNumber + '&insN=' + merInfo.insNumber
+
+
+                                            } else if (data.code == '-2') {
+                                                isVip = true
+                                                userInfo = data.data
+                                                wxPayState = userInfo.wxPayState
+                                                aliPayState = userInfo.aliPayState
+                                                memberWallet = userInfo.memberWallet
+
+                                                holidayState = userInfo.holidayState
+                                                disCountRate = userInfo.disCountRate
+                                                minConsumMoney = userInfo.minConsumMoney
+                                            } else if (data.code == '5000') {
+                                                alert(data.msg)
+                                                isVip = false
+                                            }
+
+
+                                            sessionStorage.setItem('userInfo', JSON.stringify(data))
+
+                                        }
+                                    })
+                                }
+                            })
+                        } else if (getQueryString('cardEnabled') == 2) {
+                            var aData = new Object()
+                            aData.merchantNumber = merchantNumber
+
+                            aData.code = code
+                            var ajData = new Object()
+                            ajData.paymentType = 'WeChat_Pay'
+                            ajData.merchantNumber = data.data.merchantNumber
+                            ajData.equipmentNumber = clientNumber
+                            ajData.shopNumber = data.data.storeId
+                            ajData.clerkNumber = data.data.userNumber
+                            ajData.codeType = 'PublicAddress_Pay'
+
+                            $.ajax({
+                                //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                                url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                                //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",   
+                                type: "POST",
+                                async: false,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                data: JSON.stringify(ajData),
+                                success: function(data) {
+                                    //alert(JSON.stringify(data))
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        return
+                                    }
+                                    var cData = new Object()
+                                    cData.onePayType = 1
+                                    cData.code = code
+                                    cData.insNumber = merInfo.insNumber
+                                    cData.merchantNumber = merInfo.merchantNumber
+                                    // alert(JSON.stringify(cData))
+                                    $.ajax({
+                                        //url: "http://api.hongsou.com.cn/p-member/server/getMemInfo",
+
+                                        url: "http://api.hongsou.com.cn/p-server/appServer/getMemberBindInfo",
+                                        // url: "http://192.168.110.85:6017/p-server//appServer/getMemberBindInfo",
+                                        type: "POST",
+                                        async: false,
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        data: JSON.stringify(cData),
+                                        success: function(data) {
+                                            // alert('获取返利信息开始')
+                                            //alert(JSON.stringify(data))
+                                            //  alert('获取返利信息结束')
+                                            if (data.code == 1000) {
+                                                rebateInfo = data.data
+                                                // var btn = $('#launch-btn')
+                                                // console.log(btn)
+                                                // btn.prop('path','pages/vip/vip.html?appId=1&openId=2')
+                                                if (data.data.rebateSetup == 'false') {
+                                                    rebateType = 1
+                                                } else {
+                                                    if (data.data.memberNumber == '') {
+                                                        rebateType = 1
+                                                    } else {
+                                                        rebateType = 0
+                                                    }
+
+                                                }
+
+                                            } else if (data.code == '5000') {
+                                                alert(data.msg)
+                                                rebateType = 1
+                                            }
+
+
+
+
+                                        }
+                                    })
+                                }
+                            })
+                        }else{
+                            var aData = new Object()
+                            aData.merchantNumber = merchantNumber
+
+                            aData.code = code
+                            var ajData = new Object()
+                            ajData.paymentType = 'WeChat_Pay'
+                            ajData.merchantNumber = data.data.merchantNumber
+                            ajData.equipmentNumber = clientNumber
+                            ajData.shopNumber = data.data.storeId
+                            ajData.clerkNumber = data.data.userNumber
+                            ajData.codeType = 'PublicAddress_Pay'
+
+                            $.ajax({
+                                //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                                url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                                //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",   
+                                type: "POST",
+                                async: false,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                data: JSON.stringify(ajData),
+                                success: function(data) {
+                                    //alert(JSON.stringify(data))
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        return
+                                    }
+                                    var cData = new Object()
+                                    cData.onePayType = 1
+                                    cData.code = code
+                                    cData.insNumber = merInfo.insNumber
+                                    cData.merchantNumber = merInfo.merchantNumber
+                                    // alert(JSON.stringify(cData))
+                                    $.ajax({
+                                        //url: "http://api.hongsou.com.cn/p-member/server/getMemInfo",
+
+                                        url: "http://api.hongsou.com.cn/p-server/appServer/getMemberBindInfo",
+                                        // url: "http://192.168.110.85:6017/p-server//appServer/getMemberBindInfo",
+                                        type: "POST",
+                                        async: false,
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        data: JSON.stringify(cData),
+                                        success: function(data) {
+                                            console.log(data)
+
+                                            wyOpenId = data.data.openId
+
+
+                                        }
+                                    })
+                                }
+                            })
+
+                        }
+
+                    }
+                })
+            }
+
+
+            payType = 'WeChat_Pay'
+            codeType = 'PublicAddress_Pay'
+        }
+
+    } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+        // AlipayJSBridge.call('hideOptionMenu');
+        if (window.location.href.indexOf('auth_code') == -1) {
+
+            $.ajax({
+                //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                //url:"http://192.168.110.80:6017/p-server/appServer/getInfo",
+                type: "POST",
+                async: false,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify(oData),
+                success: function(data) {
+                    // alert(JSON.stringify(data))
+                    if (data.code == 1000) {
+                        console.timeEnd('aaa')
+
+
+                        cardEnabled = data.data.cardEnabled
+                        rebateSwitch = data.data.rebateSwitch
+                        // aliCode = JSON.parse(data.data.payBaseInfo).aliAppId;
+                        // weixinCode = JSON.parse(data.data.payBaseInfo).wxAppId;
+                        // merchantNumber = data.data.merchantNumber
+                        merInfo = data.data
+                        var ajData = new Object()
+                        ajData.paymentType = 'Alipay_Pay'
+                        ajData.merchantNumber = data.data.merchantNumber
+                        ajData.equipmentNumber = clientNumber
+                        ajData.shopNumber = data.data.storeId
+                        ajData.clerkNumber = data.data.userNumber
+                        ajData.codeType = 'ServiceWindow_Pay'
+                        //alert(JSON.stringify(ajData))
+                        $.ajax({
+                            //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                            url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                            //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",
+                            type: "POST",
+                            async: false,
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            data: JSON.stringify(ajData),
+                            success: function(data) {
+
+                                console.timeEnd('bbb')
+
+                                //aliCode = JSON.parse(data.data.payBaseInfo).aliAppId;
+                                //weixinCode = JSON.parse(data.data.payBaseInfo).wxAppId;
+                                if (data.code != 1000) {
+                                    alert(data.msg)
+                                    return
+                                } else {
+                                    console.log(rebateSwitch)
+                                    if (rebateSwitch == 0) {
+                                        var scope = "auth_base";
+                                        var redirect_uri = window.location.href + '&cardEnabled=2';
+                                    } else {
+                                        if (cardEnabled == 0) {
+                                            var scope = "auth_user,auth_ecard,";
+
+                                        } else {
+                                            var scope = "auth_base";
+                                        }
+                                        var redirect_uri = window.location.href + '&cardEnabled=' + cardEnabled;
+                                    }
+
+                                    console.log("http://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=" + data.data.appId + "&scope=" + scope + "&redirect_uri=" + redirect_uri)
+                                    window.location.href = "http://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=" + data.data.appId + "&scope=" + scope + "&redirect_uri=" + redirect_uri
+                                }
+
+                            }
+                        })
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            })
+
+        } else {
+            window.addEventListener("popstate", function(e) {
+
+                // 支付宝
+
+                AlipayJSBridge.call('popWindow');
+
+            }, false);
+            code = window.location.href.split('auth_code=')[1];
+            // document.getElementById('loadstart').style.display = "none";
+            console.log(!!JSON.parse(sessionStorage.getItem('userInfo')))
+            if (!!JSON.parse(sessionStorage.getItem('userInfo'))) {
+                merchantNumber = JSON.parse(sessionStorage.getItem('sInfo')).merchantNumber
+                merInfo = JSON.parse(sessionStorage.getItem('sInfo'))
+
+                if (JSON.parse(sessionStorage.getItem('userInfo')).code == 1000) {
+                    isVip = false
+                    cardUrl = JSON.parse(sessionStorage.getItem('userInfo')).data.getCardUrl
+                    userInfo = JSON.parse(sessionStorage.getItem('userInfo')).data
+                } else {
+                    isVip = true
+                    userInfo = JSON.parse(sessionStorage.getItem('userInfo')).data
+                }
+                console.log(userInfo)
+            } else {
+
+                $.ajax({
+                    url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                    //url:"http://192.168.110.80:6017/p-server/appServer/getInfo",
+                    type: "POST",
+                    async: false,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    data: JSON.stringify(oData),
+                    success: function(data) {
+                        console.log(JSON.stringify(data))
+
+                        merchantNumber = data.data.merchantNumber
+                        merInfo = data.data
+                        isVip = false
+                        if (getQueryString('cardEnabled') == 2) {
+                            var aData = new Object()
+                            aData.merchantNumber = merchantNumber
+
+                            aData.code = code
+                            var ajData = new Object()
+                            ajData.paymentType = 'Alipay_Pay'
+                            ajData.merchantNumber = data.data.merchantNumber
+                            ajData.equipmentNumber = clientNumber
+                            ajData.shopNumber = data.data.storeId
+                            ajData.clerkNumber = data.data.userNumber
+                            ajData.codeType = 'ServiceWindow_Pay'
+
+                            $.ajax({
+                                //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                                url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                                //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",   
+                                type: "POST",
+                                async: false,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                data: JSON.stringify(ajData),
+                                success: function(data) {
+                                    //alert(JSON.stringify(data))
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        return
+                                    }
+                                    var cData = new Object()
+                                    cData.onePayType = 0
+                                    cData.code = getQueryString('auth_code')
+                                    cData.insNumber = merInfo.insNumber
+                                    cData.merchantNumber = merInfo.merchantNumber
+                                    // alert(JSON.stringify(cData))
+                                    $.ajax({
+                                        //url: "http://api.hongsou.com.cn/p-member/server/getMemInfo",
+
+                                        url: "http://api.hongsou.com.cn/p-server//appServer/getMemberBindInfo",
+                                        // url: "http://192.168.110.85:6017/p-server//appServer/getMemberBindInfo",
+                                        type: "POST",
+                                        async: false,
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        data: JSON.stringify(cData),
+                                        success: function(data) {
+                                            // alert('获取返利信息开始')
+                                            // alert(JSON.stringify(data))
+                                            //  alert('获取返利信息结束')
+                                            if (data.code == 1000) {
+                                                rebateInfo = data.data
+                                                if (data.data.rebateSetup == 'false') {
+                                                    rebateType = 1
+                                                } else {
+                                                    if (data.data.memberNumber == '') {
+                                                        rebateType = 1
+                                                    } else {
+                                                        rebateType = 0
+                                                    }
+
+                                                }
+
+                                            } else if (data.code == '5000') {
+                                                alert(data.msg)
+                                                rebateType = 1
+                                            }
+
+
+
+
+                                        }
+                                    })
+                                }
+                            })
+                        }
+
+                    }
+                })
+
+                payType = 'Alipay_Pay'
+                codeType = 'ServiceWindow_Pay'
+            }
+        }
+    }
+    var num = 1 / window.devicePixelRatio;
+    document.write('<meta name="viewport" content="width=device-width,initial-scale=' + num + ',minimum-scale=' + num + ',maximum-scale=' + num + ',user-scalable=no" />')
+    //          alert(document.documentElement.clientWidth);
+    var fz = document.documentElement.clientWidth / 10;
+    document.getElementsByTagName("html")[0].style.fontSize = fz + "px";
+    </script>
+    <script src="./js/alipayjsapi.inc.min.js"></script>
+    <!-- <script src="./js/jweixin-1.4.0.js"></script> -->
+    <script src="./js/fastclick.js"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <script type="text/javascript">
+    window.onload = function() {
+        FastClick.attach(document.body)
+    }
+    </script>
+    <style type="text/css">
+    .card-box-item {
+        touch-action: none
+    }
+    </style>
+</head>
+
+<body ontouchstart class="weui-wepay-pay-wrap">
+    <div id="mask123" style="height:100%;width:100%;position:fixed;background-color:rgba(116,116,116,0);z-index:100000;display:none">
+        <div style="position:absolute;left:30%;top:49%;width:40%;height:6%;line-height:1rem;text-align:center;background-color:rgba(116,116,116,.7);border-radius:10px;color:white;font-size:0.35rem">支付中,请稍后<span class="dotting"></span></div>
+    </div>
+    <div id="maskcard" style="height:100%;width:100%;position:fixed;background-color:rgba(116,116,116,0);z-index:100000;display:none">
+        <div style="position:absolute;left:30%;top:49%;width:40%;height:6%;line-height:1rem;text-align:center;background-color:rgba(116,116,116,.7);border-radius:10px;color:white;font-size:0.35rem">查询中<span class="dotting"></span></div>
+    </div>
+    <div id="mask1234" style="height:100%;width:100%;position:fixed;background-color:rgba(116,116,116,0);z-index:100000;display:none">
+        <div style="position:absolute;left:30%;top:49%;width:40%;height:6%;line-height:1rem;text-align:center;background-color:rgba(116,116,116,.7);border-radius:10px;color:white;font-size:0.35rem" id="mask12345"></div>
+    </div>
+    <div id="cardNo" style="height:100%;width:100%;position:fixed;background-color:rgba(116,116,116,0);z-index:100000;display:none">
+        <div style="position:absolute;left:30%;top:49%;width:40%;height:6%;line-height:1rem;text-align:center;background-color:rgba(116,116,116,.7);border-radius:10px;color:white;font-size:0.35rem">未满足优惠券使用条件</div>
+    </div>
+    <div class="payVip" id="payVip" style="display:none">
+        <div class="payVipBox">
+            <div class="payVip-title">
+                <div class="payVip-title-left">会员支付</div>
+                <img src="img/close.png" class="payVip-title-right">
+            </div>
+            <div class="payVip-name  shopName-is"></div>
+            <div class="payVip-money">￥460.00</div>
+            <div class="payVip-sub" id="payVip-sub">确定支付</div>
+        </div>
+    </div>
+    <div class="tianchong"></div>
+    <div class="pay-top">
+        <div class="shopBox1">
+            <img src="img/shop-icon.png" class="shop-icon">
+            <div class="shopName11 shopName-is"></div>
+        </div>
+        <!-- <div class="moneyBox1 vipTypeFalse" style="display:none">
+            <div class="moneyBox1-top">订单金额</div>
+            <div class="moneyBox1-two">
+                <div class="moneyBox-two-icon">￥ </div>
+                <div type="" name="" class="inputMoney1" id="paymoney">
+                </div>
+            </div>
+        </div> -->
+        <div class="moneyBox2 ">
+            <div class="moneyBox2-left" style="white-space:nowrap;">订单金额</div>
+            <div class="moneyBox2-right moneyBox2-right1">￥<span id="paymoney1"></span></div>
+        </div>
+        <div class="moneyBox2 vipIsPay" style="display:none">
+            <!-- <div class="moneyBox2 " > -->
+            <div class="moneyBox2-left" style="width:auto">支付金额(会员<span id="vipZhekou"></span>折)</div>
+            <div class="moneyBox2-right">￥<span id="paymoney2">0.00</span></div>
+            <div class="moneyBox2-right" style="color:red;font-size:0.3rem">(优惠<span id="youhui">0.00</span>元)</div>
+        </div>
+        <div class="moneyBox2 cardIsPay" style="display:none">
+            <!-- <div class="moneyBox2 " > -->
+            <div class="moneyBox2-left" style="width:auto">支付金额</div>
+            <div class="moneyBox2-right">￥<span id="money-card">0.00</span></div>
+            <div class="moneyBox2-right" style="color:red;font-size:0.3rem">(优惠<span id="youhui-card">0.00</span>元)</div>
+        </div>
+        <div class="wechatPay vipTypeTrue payC" data-id="0" style="display:none">
+            <div class="wechatPay-left">
+                <img class="wechatPay-left-img" id="payImg" src="img/wechat.png">
+                <div class="wechatPay-left-text" id="payText">微信支付</div>
+            </div>
+            <div class="wechatPay-right">
+                <img src="img/checktrue.png" class="wechatPay-right-img choosePay">
+            </div>
+        </div>
+        <div class="wechatPay vipTypeTrue payC" data-id="1" style="display:none" id="isVipUrl">
+            <div class="wechatPay-left">
+                <img class="wechatPay-left-img" src="img/vip.png">
+                <div class="wechatPay-left-text">会员支付<span style="font-size:0.32rem"> (余额￥<span id="allMoney"></span>)</span></div>
+            </div>
+            <div class="wechatPay-mid" id="recharge">
+                充值
+            </div>
+            <div class="wechatPay-right">
+                <img src="img/checkfalse.png" class="wechatPay-right-img choosePay">
+            </div>
+        </div>
+        <div class="noVipBox vipTypeFalse" style="display:none">
+            <div class="noVipBox-left">激活会员卡</div>
+            <div class="noVipBox-right" id="getCard"><span style="color:red;margin-right:3px">*</span>领取会员卡 > </div>
+        </div>
+        <div class="noVipBox " id="rebate" style="display:none">
+            <div class="noVipBox-left" style="width:4rem;font-size:0.35rem" id="rebateText">笔笔享()返利</div>
+            <div class="noVipBox-right" id="getRebate" style="display:none"><span style="color:red;margin-right:3px">*</span>领取返利卡 > </div>
+            <!-- <wx-open-launch-weapp   class="noVipBox-right"
+        id="launch-btn"
+        username="gh_99e3874a12f3" 
+        path="/pages/index/index.html">
+       
+        <template>
+    <style>.btn { padding: 12px }</style>
+    <button class="btn">领取返利卡</button>
+  </template>
+</wx-open-launch-weapp> -->
+            <wx-open-launch-weapp class="noVipBox-right" style="display:none" id="launch-btn" username="gh_99e3874a12f3" path="pages/index/index.html">
+                <template>
+                    <style>.btn {width:300px;
+    height: 140px;
+    font-size: 40px;
+    font-family: PingFangSC-Medium;
+    font-weight: 500;
+    color: #999999;
+    background: #fff;
+    line-height: 140px;
+    text-align: right;border:none; }</style>
+                    <button class="btn"><span style="color:red;margin-right:3px">*</span>领取返利卡 ></button>
+                </template>
+            </wx-open-launch-weapp>
+        </div>
+        <div class="noVipBox " id="rebateYes" style="display:none">
+            <div class="noVipBox-left" style="width:2rem;font-size:0.35rem" id="rebateText">返利卡用户</div>
+            <div class="noVipBox-right" style="width:6rem;padding-right:0.05rem"><span style="color:red;margin-right:3px">*</span>返利 <span id="rebatebili"></span>,预计￥<span id="rebateMoney"></span> </div>
+        </div>
+        <div class="cardBox" id="cardBox" style="display:none">
+            <div class="card-title">
+                <img src="img/youhui.png" class="card-title-img">
+                <div class="card-title-text">优惠券</div>
+            </div>
+            <div class="card-box" id="card-box">
+                <!-- <div class="card-box-item">
+                    <div class="card-box-item-left">
+                        <div class="card-box-item-min"><span class="card-biao">￥</span>20</div>
+                        <div class="card-box-item-man">满300元使用</div>
+                    </div>
+                    <div class="card-box-item-right">代金券</div>
+                </div>
+                <div class="card-box-item">
+                    <div class="card-box-item-left">
+                       <div class="card-box-item-zhekou">8<span class="card-zhe">折</span></div>
+                    </div>
+                    <div class="card-box-item-right">折扣券</div>
+                </div> -->
+            </div>
+        </div>
+        <div class="remark" style="margin-bottom:7rem">
+            <div class="remark-left">备注</div>
+            <input type="text" class="remark-right" name="" placeholder="请输入备注信息" id="mark" onblur="markBlue()" onfocus="markFocus()" />
+        </div>
+    </div>
+    <!--  <wx-open-launch-weapp
+  id="launch-btn"
+  username="gh_7c6fef40b29a"
+  path="pages/index/index.html?user=123&action=abc"
+>
+  <template>
+    <style>.btn { padding: 12px }</style>
+    <button class="btn">打开小程序</button>
+  </template>
+</wx-open-launch-weapp> -->
+    <div class="payNumBox">
+        <div class="payNum-item">
+            <div class="paynum">1</div>
+            <div class="paynum">4</div>
+            <div class="paynum">7</div>
+            <div class="paynum">.</div>
+        </div>
+        <div class="payNum-item">
+            <div class="paynum">2</div>
+            <div class="paynum">5</div>
+            <div class="paynum">8</div>
+            <div class="paynum">0</div>
+        </div>
+        <div class="payNum-item">
+            <div class="paynum">3</div>
+            <div class="paynum">6</div>
+            <div class="paynum">9</div>
+            <div class="paynum">00</div>
+        </div>
+        <div class="payNum-item payNum-item1">
+            <div class="delete" id="pay-return">
+                <img src="img/delete.png" class="delete-img">
+            </div>
+            <div class="paySub paySub-disable" id="payId">
+                支付
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    function formatDecimal(num, decimal) {
+        num = num.toString()
+        let index = num.indexOf('.')
+        if (index !== -1) {
+            num = num.substring(0, decimal + index + 1)
+        } else {
+            num = num.substring(0)
+        }
+        return parseFloat(num).toFixed(decimal)
+    }
+    $('#logo').css('left', document.body.offsetWidth / 2 - 25)
+    var a, b, c
+    var sInfo
+    var codeTypeTrue = false
+    var preNumber;
+
+    //是否使用优惠券，0表示没有，1表示满减，2表示折扣
+    var cardType = 0
+    var cardInfo = ''
+    var zhekou
+
+    if (payType == 'WeChat_Pay') {
+        // $('#payImg').attr('src', 'img/wechat.png')
+        $('#payText').html('微信支付')
+    } else {
+        // $('#payImg').attr('src', 'img/zhifubao.png')
+        $('#payText').html('支付宝支付')
+    }
+    $.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
+        console.log(returnCitySN)
+        ip = returnCitySN.cip
+    });
+
+    function markBlue() {
+        setTimeout(function() {
+            $('.payNumBox').show()
+        }, 200)
+
+    }
+
+    function markFocus() {
+        setTimeout(function() {
+            $('.payNumBox').hide()
+        }, 200)
+    }
+    //保留两位小数
+    function toFloat(value) {
+
+        value = Math.round(parseFloat(value) * 100) / 100;
+
+        if (value.toString().indexOf(".") < 0) {
+
+            value = value.toString() + ".00";
+
+        }
+
+        return value;
+
+    }
+
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
+    $('#payinfokey td').click(function(data) {
+        console.log(this)
+    })
+
+    function ob() {
+        $('#payinfokey').show()
+
+    }
+    // function getR(){
+    //     var oData = new Object()
+    //     oData.institutionNumber = 1004
+    //     $.ajax({
+    //         url: "http://nb.hongsou.com.cn/shanhe-admin/rebateCard/getrebateCard",
+    //         //url:"http://192.168.110.80:6017/p-server/appServer/getInfo",
+    //         type: "POST",
+    //         async: false,
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         data: JSON.stringify(oData),
+    //         success: function(data) {
+                
+    //             rebateSet = data.data
+    //             console.log(rebateSet)
+    //         }
+    //     })
+    // }
+    function getF(){
+        var oData = new Object()
+        if(rebateInfo == undefined){
+            return
+        }
+        console.log(rebateInfo)
+        oData.institutionNumber = '1004'
+        oData.merchantNumber = merchantNumber
+       oData.memberNumber = rebateInfo.memberNumber
+       $.ajax({
+            url: "http://nb.hongsou.com.cn/shanhe-admin/sepAccount/getRebateCardSet",
+            //url:"http://192.168.110.80:6017/p-server/appServer/getInfo",
+            type: "POST",
+            async: false,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify(oData),
+            success: function(data) {
+                
+                rebateSet = data.data
+                console.log(data)
+            }
+        })
+    }
+    // getR()
+    function of () {
+        $('#payinfokey').hide()
+    }
+
+    function oc() {
+        console.log('123')
+    }
+    $('#addMark').click(function() {
+        $('#payinfokey').hide()
+        var value = $('#mark').html().replace(',', '')
+        console.log(value)
+        layer.prompt({
+            title: '请输入备注信息',
+            formType: 3,
+            value: value,
+            yes: function(index, layero) {
+                // 获取文本框输入的值
+                var value = layero.find(".layui-layer-input").val();
+                if (value) {
+
+                    $('#mark').html(value)
+                    $('#addMark').html('修改')
+                    layer.close(index)
+                    $('#payinfokey').show()
+                } else {
+                    $('#mark').html('')
+                    $('#addMark').html('添加备注信息')
+                    layer.close(index)
+                    $('#payinfokey').show()
+                }
+            },
+            btn2: function(pass, index) { //这里就是你要的
+                console.log(pass, index)
+                $('#payinfokey').show()
+            },
+        });
+
+    })
+    $(document).ready(function() {
+        // var projectName = window.location.href.split('/oneCode')[0];
+        var clientNumber = getQueryString('outTradeNo');
+        var oData = new Object()
+        oData.equipmentNumber = clientNumber
+
+        //采用get方式调用服务
+        var ggNum = payType == 'WeChat_Pay' ? 1 : 2
+
+        $.ajax({
+            url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+            //url:"http://192.168.110.80:6017/p-server/appServer/getInfo",
+            type: "POST",
+            async: false,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify(oData),
+            success: function(data) {
+
+                if (data.code != 1000) {
+
+                    alert(data.msg)
+                    return
+                }
+                $("#shopName").html(data.data.storeName);
+                sInfo = data.data
+                merchantNumber = data.data.merchantNumber
+                merInfo = data.data
+                if (merInfo.storeName.length > 16) {
+                    $('.shopName-is').text(merInfo.storeName.substr(0, 16) + '..')
+                } else {
+                    $('.shopName-is').text(merInfo.storeName)
+                }
+
+                merNumber = data.data.merchantNumber
+                insNumber = data.data.insNumber
+                a = data.data.appPushClerkKey
+                b = data.data.appPushMechantKey
+                c = data.data.pcPushKey
+                sInfo.clientNumber = clientNumber
+                sInfo.institutionNumber = insNumber
+                sessionStorage.setItem('sInfo', JSON.stringify(sInfo))
+                getF()
+            }
+        });
+    })
+
+    $(function() {
+        //         if(rebate
+        // rebateInfo)
+        // alert(rebateType)
+        if (getQueryString('cardEnabled') == 2) {
+            if (rebateType == 1) {
+                $('#rebate').show()
+                // $('#rebateText').html('笔笔享(' + (((rebateInfo.consumerRebate-rebateSet.personalRebate-rebateSet.agentRebate-rebateSet.platformRebate-rebateSet.systemRebate) * 100).toFixed(2)) + '%)返利')
+                $('#rebateText').html('笔笔享(' + (rebateSet.rebatePerc * 100).toFixed(2) + '%)返利')
+            } else if (rebateType == 0) {
+                $('#rebateYes').show()
+                // $('#rebatebili').html('(' + (((rebateInfo.consumerRebate-rebateSet.personalRebate-rebateSet.agentRebate-rebateSet.platformRebate-rebateSet.systemRebate)  * 100).toFixed(2)) + '%)')
+                $('#rebatebili').html('(' + (rebateSet.rebatePerc  * 100).toFixed(2) + '%)')
+                $('#rebateMoney').html('0')
+            }
+
+        } else {
+            if (isVip == true) {
+
+                $('.vipTypeTrue').show()
+                $('#allMoney').html(userInfo.allBalance)
+                $('#vipZhekou').html(parseFloat(userInfo.disCountRate) * 10)
+
+            } else {
+                // alert('cardUrl')
+                // alert(cardUrl)
+                if (cardUrl != '') {
+                    $('.vipTypeFalse').show()
+                }
+                // if (userInfo.getCardUrl != '') {
+                //     $('.vipTypeFalse').show()
+                // }
+
+            }
+        }
+        if (payType == 'WeChat_Pay') {
+            // 获取微信config信息
+        var configData = new Object()
+        configData.url = window.location.href
+        configData.institutionNumber = '1004'
+        configData.appId = 'wx6ffebc6d59098add'
+        $.ajax({
+            url: "http://nb.hongsou.com.cn/shanhe-admin/wehatCard/getTicket",
+
+            //url: "http://192.168.110.250:6005/shanhe-admin/wehatCard/getTicket",
+            // url: "http://192.168.110.85:6017/p-server//appServer/getMemberBindInfo",
+            type: "POST",
+            async: false,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify(configData),
+            success: function(data) {
+                // alert('获取返利信息开始')
+                // alert(JSON.stringify(data))
+                //  alert('获取返利信息结束')
+                console.log(data)
+                var info = data.data
+                console.log(info)
+                wx.config({
+                    debug: false,
+                    appId: info.appId, // 必填，公众号的唯一标识
+                    timestamp: info.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: info.nonce_str, // 必填，生成签名的随机串
+                    signature: info.signature, // 必填，签名
+                    jsApiList: ["onMenuShareTimeline",
+                        "onMenuShareAppMessage",
+                        "checkJsApi",
+                        "scanQRCode"
+                    ], // 必填，需要使用的JS接口列表
+                    openTagList: ['wx-open-launch-weapp']
+                });
+
+                if (payType == 'WeChat_Pay') {
+                    if (getQueryString('cardEnabled') == 2) {
+                        $('#launch-btn').show()
+                        var btn = document.getElementById('launch-btn');
+                        btn.setAttribute('path', 'pages/vip/vip.html?appid=wx6ffebc6d59098add&openid=' + rebateInfo.openId + '&merchantNumber=' + merInfo.merchantNumber + '&query=addvip')
+                        btn.addEventListener('launch', function(e) {
+                            console.log('success');
+                        });
+                        btn.addEventListener('error', function(e) {
+                            console.log('fail', e.detail);
+                        });
+                    }
+
+
+                } 
+
+
+            }
+        })
+        }else {
+                    $('#getRebate').show()
+                }
+        
+        // wx.ready(function(){
+        //   var dom = document.getElementById('wxOpenInAPP') 
+        //  dom.innerHTML = '<wx-open-launch-weapp id="launch-btn" username="gh_7c6fef40b29a" path="pages/index/index/main.html"><template><style>  .wx-btn {   color: #666; width: 100%; height:100%; display: block; text-aligin:center; }</style><button class="wx-btn">跳转小程序</button></template></wx-open-launch-weapp>'
+        //     var launchBtn = document.getElementById('launch-btn')
+        //     if (!launchBtn) {
+        //       return
+        //     }
+        //     console.log(launchBtn)
+        //     launchBtn.addEventListener('launch', function (e) {
+        //       console.log('eee',e);
+        //     })
+        //     launchBtn.addEventListener('error', function (e) {
+        //       console.log('fail', e.detail)
+        //     })
+        // });
+
+
+
+
+
+
+        //支付宝使用折扣
+        function aliMember() {
+            var paymoney1 = $('#paymoney1')
+            var paymoney2 = $('#paymoney2')
+            var youhui = $('#youhui')
+            console.log()
+            var youhui = $('#youhui')
+            //不带折扣的支付框
+            var cardIsPay = $('#cardIsPay')
+            //不带折扣的支付金额
+            var moneycard = $('#money-card')
+            //不带折扣的优惠金额
+            var youhuicard = $('#youhui-card')
+
+            if (cardType == 0) {
+                $('.cardIsPay').hide()
+                //cardType 为0表示没有使用优惠券
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && aliPayState == 0) {
+                    paymoney2.text(toFloat(paymoney1.text() * disCountRate))
+                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                    $('.vipIsPay').show()
+
+                } else {
+                    $('.vipIsPay').hide()
+                    paymoney2.text(0)
+                    youhui.text(0)
+                }
+            } else if (cardType == 1) {
+                //card1满减，先看会员等级是否可以使用折扣
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && aliPayState == 0) {
+                    //如果会员折扣可用，计算折扣后的金额是否满足优惠券使用金额
+                    //计算后的折扣金额
+                    zheMoney = toFloat(paymoney1.text() * disCountRate)
+                    console.log(zheMoney)
+                    console.log(cardInfo.minmoney)
+                    if (zheMoney >= parseFloat(cardInfo.minmoney)) {
+                        paymoney2.text(toFloat(paymoney1.text() * disCountRate - toFloat(parseFloat(cardInfo.minusmoney))))
+                        youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                    } else {
+                        paymoney2.text(toFloat(paymoney1.text() * disCountRate))
+                        youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                        clearCardInfo()
+                    }
+
+                    $('.vipIsPay').show()
+                } else {
+                    $('.vipIsPay').hide()
+                    zheMoney = paymoney1.text()
+                    if (zheMoney >= parseFloat(cardInfo.minmoney)) {
+                        moneycard.text(toFloat(paymoney1.text() - toFloat(cardInfo.minusmoney)))
+                        youhuicard.text(toFloat(paymoney1.text() - moneycard.text()))
+                        $('.cardIsPay').show()
+                    } else {
+                        $('.cardIsPay').hide()
+                        clearCardInfo()
+                    }
+                }
+            } else if (cardType == 2) {
+                //cardType == 2为折扣券
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && aliPayState == 0) {
+                    //如果会员折扣可用，计算折扣后的金额是否满足优惠券使用金额
+                    //计算后的折扣金额
+                    zheMoney = toFloat(paymoney1.text() * disCountRate)
+                    console.log(zheMoney)
+                    console.log(cardInfo)
+
+                    paymoney2.text(toFloat(toFloat(paymoney1.text() * disCountRate) * toFloat(parseFloat(cardInfo.discount))))
+                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+
+
+
+
+                    $('.vipIsPay').show()
+                } else {
+                    $('.vipIsPay').hide()
+
+
+                    moneycard.text(toFloat(toFloat(paymoney1.text()) * toFloat(cardInfo.discount)))
+                    youhuicard.text(toFloat(paymoney1.text() - moneycard.text()))
+                    $('.cardIsPay').show()
+
+                }
+
+            }
+        }
+        //微信使用折扣
+        function wxMember() {
+            var paymoney1 = $('#paymoney1')
+            var paymoney2 = $('#paymoney2')
+            var youhui = $('#youhui')
+            //不带折扣的支付框
+            var cardIsPay = $('#cardIsPay')
+            //不带折扣的支付金额
+            var moneycard = $('#money-card')
+            //不带折扣的优惠金额
+            var youhuicard = $('#youhui-card')
+            if (cardType == 0) {
+                $('.cardIsPay').hide()
+                //cardType 为0表示没有使用优惠券
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && wxPayState == 0) {
+                    paymoney2.text(toFloat(paymoney1.text() * disCountRate))
+                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                    $('.vipIsPay').show()
+
+                } else {
+                    $('.vipIsPay').hide()
+                    paymoney2.text(0)
+                    youhui.text(0)
+                }
+            } else if (cardType == 1) {
+                //card1满减，先看会员等级是否可以使用折扣
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && wxPayState == 0) {
+                    //如果会员折扣可用，计算折扣后的金额是否满足优惠券使用金额
+                    //计算后的折扣金额
+                    zheMoney = toFloat(paymoney1.text() * disCountRate)
+                    console.log(zheMoney)
+                    console.log(cardInfo.minmoney)
+                    if (zheMoney >= parseFloat(cardInfo.minmoney)) {
+                        paymoney2.text(toFloat(toFloat(paymoney1.text() * disCountRate) - toFloat(parseFloat(cardInfo.minusmoney))))
+                        youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                    } else {
+                        paymoney2.text(toFloat(paymoney1.text() * disCountRate))
+                        youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                        clearCardInfo()
+                    }
+
+                    $('.vipIsPay').show()
+                } else {
+                    $('.vipIsPay').hide()
+                    zheMoney = paymoney1.text()
+                    if (zheMoney >= parseFloat(cardInfo.minmoney)) {
+                        moneycard.text(toFloat(paymoney1.text() - toFloat(cardInfo.minusmoney)))
+                        youhuicard.text(toFloat(paymoney1.text() - moneycard.text()))
+                        $('.cardIsPay').show()
+                    } else {
+                        $('.cardIsPay').hide()
+                        clearCardInfo()
+                    }
+                }
+            } else if (cardType == 2) {
+                //cardType == 2为折扣券
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && wxPayState == 0) {
+                    //如果会员折扣可用，计算折扣后的金额是否满足优惠券使用金额
+                    //计算后的折扣金额
+                    zheMoney = toFloat(paymoney1.text() * disCountRate)
+                    console.log(zheMoney)
+                    console.log(cardInfo)
+
+                    paymoney2.text(toFloat(toFloat(paymoney1.text() * disCountRate) * toFloat(parseFloat(cardInfo.discount))))
+                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+
+
+
+
+                    $('.vipIsPay').show()
+                } else {
+                    $('.vipIsPay').hide()
+
+
+                    moneycard.text(toFloat(toFloat(paymoney1.text()) * toFloat(cardInfo.discount)))
+                    youhuicard.text(toFloat(paymoney1.text() - moneycard.text()))
+                    $('.cardIsPay').show()
+
+                }
+
+            }
+
+        }
+        //会员使用折扣
+        function merMember() {
+            var paymoney1 = $('#paymoney1')
+            var paymoney2 = $('#paymoney2')
+            var youhui = $('#youhui')
+            //不带折扣的支付框
+            var cardIsPay = $('#cardIsPay')
+            //不带折扣的支付金额
+            var moneycard = $('#money-card')
+            //不带折扣的优惠金额
+            var youhuicard = $('#youhui-card')
+
+            if (cardType == 0) {
+                $('.cardIsPay').hide()
+                //cardType 为0表示没有使用优惠券
+                console.log(parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney), parseFloat(paymoney1.text()), parseFloat(minConsumMoney))
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && memberWallet == 0) {
+                    paymoney2.text(toFloat(paymoney1.text() * disCountRate))
+                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                    $('.vipIsPay').show()
+
+                } else {
+                    $('.vipIsPay').hide()
+                    paymoney2.text(0)
+                    youhui.text(0)
+                }
+            } else if (cardType == 1) {
+                //card1满减，先看会员等级是否可以使用折扣
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && memberWallet == 0) {
+                    //如果会员折扣可用，计算折扣后的金额是否满足优惠券使用金额
+                    //计算后的折扣金额
+                    zheMoney = toFloat(paymoney1.text() * disCountRate)
+                    console.log(zheMoney)
+                    console.log(cardInfo.minmoney)
+                    if (zheMoney >= parseFloat(cardInfo.minmoney)) {
+                        paymoney2.text(toFloat(paymoney1.text() * disCountRate - toFloat(parseFloat(cardInfo.minusmoney))) < 0 ? 0 : toFloat(paymoney1.text() * disCountRate - toFloat(parseFloat(cardInfo.minusmoney))))
+                        youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                    } else {
+                        paymoney2.text(toFloat(paymoney1.text() * disCountRate))
+                        youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                        clearCardInfo()
+                    }
+
+                    $('.vipIsPay').show()
+                } else {
+                    $('.vipIsPay').hide()
+                    zheMoney = paymoney1.text()
+                    if (zheMoney >= parseFloat(cardInfo.minmoney)) {
+                        moneycard.text(toFloat(paymoney1.text() - toFloat(cardInfo.minusmoney)) < 0 ? 0 : toFloat(paymoney1.text() - toFloat(cardInfo.minusmoney)))
+                        youhuicard.text(toFloat(paymoney1.text() - moneycard.text()))
+                        $('.cardIsPay').show()
+                    } else {
+                        $('.cardIsPay').hide()
+                        clearCardInfo()
+                    }
+                }
+            } else if (cardType == 2) {
+                //cardType == 2为折扣券
+                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && memberWallet == 0) {
+                    //如果会员折扣可用，计算折扣后的金额是否满足优惠券使用金额
+                    //计算后的折扣金额
+                    zheMoney = toFloat(paymoney1.text() * disCountRate)
+                    console.log(zheMoney)
+                    console.log(cardInfo)
+
+                    paymoney2.text(toFloat(toFloat(paymoney1.text() * disCountRate) * toFloat(parseFloat(cardInfo.discount))))
+                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+
+
+
+
+                    $('.vipIsPay').show()
+                } else {
+                    $('.vipIsPay').hide()
+
+
+                    moneycard.text(toFloat(toFloat(paymoney1.text()) * toFloat(cardInfo.discount)))
+                    youhuicard.text(toFloat(paymoney1.text() - moneycard.text()))
+                    $('.cardIsPay').show()
+
+                }
+
+            }
+        }
+        //支付宝使用优惠券
+        function aliUserCard() {
+
+        }
+        //微信使用优惠券
+        /*依次传入参数
+            cardNo为优惠券编号
+            cardType为优惠券种类，1是满减，2是折扣
+            minimumCharge为最低消费金额
+            discountAmount为满减金额，当cardType为1时
+            discount为折扣数，当cardType为2时
+        */
+        function wxUserCard(cardNo, cardType, minimumCharge, discountAmount, discount) {
+            var paymoney1 = $('#paymoney1')
+            var paymoney2 = $('#paymoney2')
+            var youhui = $('#youhui')
+            if (paymoney1.text() == '') {
+                alert('请输入金额')
+                return false
+            }
+            //先判断该用户会员折扣是否可用
+            if (paymoney1.text() >= minConsumMoney && holidayState == 0 && disCountRate != null && wxPayState == 0) {
+                var zhekouM = toFloat(paymoney1.text() * disCountRate)
+
+                if (zhekouM < minimumCharge) {
+                    $('#cardNo').show()
+                    setTimeout(function() {
+                        $('#cardNo').hide()
+                    }, 500)
+                    return false
+                } else {
+                    paymoney2.text(zhekouM - toFloat(discountAmount))
+                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+
+                    $('.vipIsPay').show()
+                }
+
+            } else {
+
+            }
+
+
+        }
+
+        function getMerberV() {
+            var applicablePay
+            if (payChoose == 1) {
+                applicablePay = 3
+            } else {
+                if (payType == 'WeChat_Pay') {
+                    applicablePay = 1
+                } else {
+                    applicablePay = 0
+                }
+            }
+            $('#maskcard').show()
+            $('#card-box').html('')
+            $('#cardBox').hide()
+            setTimeout(function() {
+                $('#maskcard').hide()
+            }, 1000)
+            $.ajax({
+                url: "http://api.hongsou.com.cn/p-member/voucher/getMemberVoucherIsUse",
+                // url: "http://192.168.110.250:6019/p-member/voucher/getMemberVoucherIsUse",
+                //url:"http://192.168.1.80:6017/p-server/appServer/getInfo",
+                type: "GET",
+                async: false,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: {
+                    memberNo: userInfo.memberNo,
+                    shopNo: merInfo.storeId,
+                    applicablePay: applicablePay,
+                    applicableSource: '0',
+                    page: 1,
+                    limit: 20
+                },
+                success: function(data) {
+                    setTimeout(function() {
+                        $('#maskcard').hide()
+                    }, 800)
+
+                    var str = ''
+                    if (data.code == 1000) {
+                        var dataList = data.data.voucherList
+                        for (var i = 0; i < dataList.length; i++) {
+                            if (dataList[i].voucherUse == 0) {
+                                str += '<div  data-index=' + i + ' data-id=' + dataList[i].voucherNo + ' data-cardType="2" data-discount=' + dataList[i].discount + '  class="card-box-item"><div class="card-box-item-left"> <div class="card-box-item-zhekou">' + dataList[i].discount + '<span class="card-zhe">折</span></div></div><div class="card-box-item-right">折扣券</div></div>'
+                            } else if (dataList[i].voucherUse == 1) {
+                                str += '<div   data-id=' + dataList[i].voucherNo + '  data-index=' + i + '  data-cardType="1" data-minMoney=' + dataList[i].minimumCharge + '  data-minusMoney=' + dataList[i].discountAmount + '  class="card-box-item"><div class="card-box-item-left"><div class="card-box-item-min"><span class="card-biao">￥</span>' + dataList[i].discountAmount + '</div><div class="card-box-item-man">满' + dataList[i].minimumCharge + '元使用</div></div><div class="card-box-item-right">代金券</div></div>'
+                            }
+                        }
+                        if (str == '') {
+                            $('#cardBox').hide()
+                        } else {
+                            setTimeout(function() {
+                                $('#card-box').html(str)
+                                $('#cardBox').show()
+                            }, 500)
+
+                        }
+
+                    } else {
+                        $('#cardBox').hide()
+                    }
+                    setTimeout(function() {
+                        $('.card-box-item').click(function(data) {
+                            //alert(JSON.stringify(this.dataset))
+                            $('.vipIsPay').hide()
+                            $('.cardIsPay').hide()
+                            var indexA = this.dataset.index
+                            //优惠券种类，cardType为2是折扣券，cardType为1是满减券
+
+                            var type = this.dataset.cardtype
+                            //最低消费
+                            var minimumCharge = parseFloat(this.dataset.minmoney)
+                            //优惠金额
+                            var discountAmount = parseFloat(this.dataset.minusmoney)
+                            //优惠券编号
+                            var cardNo = this.dataset.id
+                            //优惠折扣
+                            var discount = parseFloat(this.dataset.discount)
+                            var paymoney1 = $('#paymoney1')
+                            var paymoney2 = $('#paymoney2')
+                            var youhui = $('#youhui')
+                            if (paymoney1.text() == '') {
+                                alert('请输入金额')
+                                return false
+                            }
+                            var isUser = false
+                            if (payChoose == 0) {
+                                if (payType == 'WeChat_Pay') {
+                                    if (wxPayState == 0) {
+                                        isUser = true
+                                    }
+                                } else {
+                                    if (aliPayState == 0) {
+                                        isUser = true
+                                    }
+                                }
+                            } else {
+                                if (memberWallet == 0) {
+                                    isUser = true
+                                }
+                            }
+                            //点击使用优惠券
+                            if (this.getAttribute('class') == 'card-box-item') {
+
+                                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && isUser == true) {
+                                    $('.cardIsPay').hide()
+
+                                    var zhekouM = toFloat(paymoney1.text() * disCountRate)
+                                    console.log('123')
+                                    if (zhekouM < minimumCharge) {
+                                        $('#cardNo').show()
+                                        setTimeout(function() {
+                                            $('#cardNo').hide()
+                                        }, 500)
+                                        $('.vipIsPay').show()
+
+                                        return false
+                                    } else {
+                                        cardType = this.dataset.cardtype
+                                        if (cardType == 1) {
+                                            paymoney2.text(toFloat(zhekouM - toFloat(discountAmount)) < 0 ? 0 : toFloat(zhekouM - toFloat(discountAmount)))
+                                            youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                                        } else if (cardType == 2) {
+                                            paymoney2.text(toFloat(zhekouM * toFloat(discount)))
+                                            youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                                        }
+
+
+                                        $('.vipIsPay').show()
+
+                                    }
+
+                                } else {
+
+                                    if (parseFloat(paymoney1.text()) < parseFloat(minimumCharge)) {
+                                        $('#cardNo').show()
+                                        setTimeout(function() {
+                                            $('#cardNo').hide()
+                                        }, 500)
+
+
+                                        return false
+                                    } else {
+                                        cardType = this.dataset.cardtype
+                                        if (cardType == 1) {
+                                            $("#money-card").text(toFloat(paymoney1.text() - toFloat(discountAmount)) < 0 ? 0 : toFloat(paymoney1.text() - toFloat(discountAmount)))
+                                            $("#youhui-card").text(toFloat(paymoney1.text() - toFloat($("#money-card").text())))
+                                        } else if (cardType == 2) {
+                                            $("#money-card").text(toFloat(paymoney1.text() * toFloat(discount)))
+                                            $("#youhui-card").text(toFloat(paymoney1.text() - $("#money-card").text()))
+                                        }
+
+                                        $('.cardIsPay').show()
+
+                                    }
+
+                                }
+                                cardInfo = this.dataset
+                                cardType = this.dataset.cardtype
+                                $('.card-box-item').attr('class', 'card-box-item')
+                                this.setAttribute('class', 'card-box-item card-box-item1')
+
+                            } else {
+                                if (parseFloat(paymoney1.text()) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && isUser == true) {
+                                    var zhekouM = toFloat(paymoney1.text() * disCountRate)
+                                    paymoney2.text(zhekouM)
+                                    youhui.text(toFloat(paymoney1.text() - paymoney2.text()))
+                                    $('.vipIsPay').show()
+                                } else {
+                                    $("#money-card").text(0)
+                                    $("#youhui-card").text(0)
+                                }
+
+
+                                $('.card-box-item').attr('class', 'card-box-item')
+                                this.setAttribute('class', 'card-box-item')
+                                cardInfo = ''
+                                cardType = 0
+                            }
+
+
+
+
+
+
+
+                        })
+
+                    }, 1000)
+
+                }
+            })
+        }
+        //进入页面请求会员优惠券信息
+        if (getQueryString('cardEnabled') == 0 && payType == 'WeChat_Pay') {
+            getMerberV()
+        }
+
+        //清楚会员卡状态信息
+        function clearCardInfo() {
+            cardType = 0
+            cardInfo = ''
+            $('.card-box-item').attr('class', 'card-box-item')
+            $('.cardIsPay').hide()
+        }
+
+        $('#getCard').click(function() {
+            console.log(cardUrl)
+            window.location.href = cardUrl
+        })
+        $('#getRebate').click(function() {
+            var goStr = "query=addvip&merchantNumber=" + merInfo.merchantNumber
+            
+            if (payType == 'Alipay_Pay') {
+             
+              
+                window.location.href = "alipays://platformapi/startapp?appId=2021002103660352&page=pages/vip/vip&query=" + encodeURIComponent(goStr)
+            } else {
+                var href = window.location.href.split('?outTradeNo=')[0] + '?outTradeNo=' + getQueryString('outTradeNo')
+                window.location.href = 'http://api.hongsou.com.cn/h5-crm/openCard.html?merchantNumber=' + merInfo.merchantNumber + '&institutionNumber=' + merInfo.insNumber + '&href=' + href
+            }
+
+        })
+        //选择支付方式
+        $('.payC').click(function() {
+            console.dir(this)
+            cardType = 0
+            cardInfo = ''
+            if (payChoose == this.dataset.id) {
+                return
+            }
+            if (this.dataset.id == 0) {
+                console.log(0)
+                $('.choosePay').eq(1).attr('src', 'img/checkfalse.png')
+                $('.choosePay').eq(0).attr('src', 'img/checktrue.png')
+                payChoose = 0
+
+                getMerberV()
+                if (payType == 'WeChat_Pay') {
+                    wxMember()
+                } else {
+                    aliMember()
+                }
+
+
+
+            } else {
+
+                $('.choosePay').eq(1).attr('src', 'img/checktrue.png')
+                $('.choosePay').eq(0).attr('src', 'img/checkfalse.png')
+                payChoose = 1
+                merMember()
+                clearCardInfo()
+                getMerberV()
+
+            }
+        })
+
+        function onBridgeReady(appId, time, nonceStr, package, signType, paySign, ggdata) {
+
+            WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    "appId": appId,
+                    "timeStamp": time,
+                    "nonceStr": nonceStr,
+                    "package": package,
+                    "signType": signType,
+                    "paySign": paySign
+                },
+                function(res) {
+
+
+                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                        window.location.href = "http://api.hongsou.com.cn/h5-pay/lh-ad.html?insNumber=" + insNumber;
+                    } else {
+                        //alert("支付失败")
+
+                        var wlh = window.location.href.split('&code=')[0]
+
+                    }
+                }
+            );
+        }
+        var clientNumber = getQueryString('outTradeNo');
+        var isC = true;
+        //充值
+        $('#recharge').click(function() {
+            window.location.href = 'recharge1.html?money=' + userInfo.allBalance
+        })
+        //会员支付提交
+        $('#payVip-sub').click(function() {
+            var $paymoney1 = $('#paymoney1');
+            console.log($paymoney1.text())
+            $('#mask123').show()
+            var bData = new Object()
+            bData.memberNo = userInfo.memberNo
+            bData.consumMoney = $('#paymoney1').text()
+            bData.shopNumber = merInfo.storeId
+            bData.clerkNumber = merInfo.userNumber
+            bData.merchantNumber = merchantNumber
+            bData.institutionNumber = insNumber
+            bData.remarks = $('#mark').val()
+            bData.consumptionType = '3'
+            bData.useIntegral = '0'
+            bData.deductionIntegral = ''
+            bData.longitude = ''
+            bData.latitude = ''
+            bData.ip = ''
+            bData.payType = '0'
+            bData.applicablePay = '3'
+            console.log(bData)
+            if (cardInfo != '') {
+                bData.voucherId = cardInfo.id
+                bData.applicablePay = 3
+                bData.applicableSource = 0
+                bData.disMoney = zhekou
+                // bData.mermberNumber = userI
+            }
+            $.ajax({
+                //url: "http://api.hongsou.com.cn/p-member/consumption/consum",
+                url: "http://192.168.110.25:6019/p-member/consumption/consum",
+                //url:"http://192.168.110.80:6017/p-server/appServer/getInfo",
+                type: "POST",
+                async: true,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify(bData),
+                success: function(data) {
+                    console.log(JSON.stringify(data))
+
+                    if (data.code == 1000) {
+                        var sData = data
+                        sData.data.merchantName = merInfo.userName
+                        sData.data.insNumber = merInfo.insNumber
+                        setTimeout(function() {
+                            $('#mask123').hide()
+                        }, 5000)
+                        window.location.href = 'orderDetail.html?orderInfo=' + JSON.stringify(sData) + '&insNumber=' + insNumber
+                    } else {
+                        $('#mask123').hide()
+                        alert(data.msg)
+                        // $('#mask1234').show()
+                        // setTimeout(function() {
+                        //     $('#mask1234').hide()
+                        // }, 2000)
+                    }
+
+                },
+                error: function(data) {
+                    alert('网络错误，请稍后')
+                }
+            })
+            return
+        })
+        $('.payVip-title-right').click(function() {
+            $('#payVip').hide()
+        })
+        // 发起支付
+        $('#payId').click(function() {
+            if (isVip == true && payChoose == 1) {
+                if ($paymoney1.text() == '') {
+                    alert("请输入金额！");
+
+                } else if ($paymoney1.text() < 0.1) {
+                    alert("请输入正确的金额，最低为0.1元");
+                }
+                var moneyNumber
+                if (cardType == 0) {
+                    if (userInfo.memberWallet == 0 & userInfo.disCountRate != null && userInfo.holidayState == 0 && parseFloat($('#paymoney1').text()) >= parseFloat(userInfo.minConsumMoney)) {
+                        moneyNumber = $('#paymoney2').text()
+                    } else {
+                        moneyNumber = $('#paymoney1').text()
+                    }
+
+                } else if (cardType == 1) {
+
+
+                    if (userInfo.memberWallet == 0 && userInfo.disCountRate != null && userInfo.holidayState == 0 && parseFloat($('#paymoney1').text()) >= parseFloat(userInfo.minConsumMoney)) {
+                        moneyNumber = $('#paymoney2').text()
+                    } else {
+                        moneyNumber = $('#money-card').text()
+                    }
+                } else if (cardType == 2) {
+                    console.log($('#paymoney2').text())
+                    console.log($('#money-card').text())
+                    if (userInfo.memberWallet == 0 && userInfo.disCountRate != null && userInfo.holidayState == 0 && parseFloat($('#paymoney1').text()) >= parseFloat(userInfo.minConsumMoney)) {
+                        moneyNumber = $('#paymoney2').text()
+                    } else {
+                        moneyNumber = $('#money-card').text()
+                    }
+
+
+                }
+                if (parseFloat(moneyNumber) > parseFloat(userInfo.allBalance)) {
+                    $('#mask12345').html('金额不足,请充值')
+                    $('#mask1234').show()
+                    setTimeout(function() {
+                        $('#mask1234').hide()
+                    }, 2000)
+                    return
+                }
+                $('.payVip-money').text('￥' + parseFloat(moneyNumber).toFixed(2))
+                zhekou = moneyNumber
+                $('#payVip').show()
+                return
+            }
+            console.log(isC)
+            if (isC != true) {
+                return
+            }
+
+            isC = false;
+            var totalFee = parseFloat(document.getElementById("paymoney1").innerHTML);
+            if ($paymoney1.text() == '') {
+                alert("请输入金额！");
+
+            } else if ($paymoney1.text() < 0.1) {
+                alert("请输入正确的金额，最低为0.1元");
+            } else {
+                $('#mask123').show()
+                // var url = document.getElementById("payUrl");
+                // if (url.value == '' || url.value == null || url.value == undefined) {
+                //     alert("二维码未绑定成功,无法支付！");
+                // } else {
+                // document.getElementById('payId').style.display = "none";
+                //document.getElementById('loading-zf').style.display = "block";
+                var ssInfo = JSON.parse(sessionStorage.getItem('sInfo'))
+
+                if (getQueryString('cardEnabled') == 2) {
+                    var ajData = new Object()
+                    var payData = new Object()
+                    ajData.paymentType = payType
+                    ajData.merchantNumber = ssInfo.merchantNumber
+                    ajData.equipmentNumber = clientNumber
+                    ajData.shopNumber = ssInfo.storeId
+                    ajData.clerkNumber = ssInfo.userNumber
+                    if (payType == 'WeChat_Pay') {
+                        ajData.openId = rebateInfo.openId
+
+
+
+
+                    } else {
+                        ajData.aliUserId = rebateInfo.openId
+                    }
+
+                    ajData.codeType = codeType
+                    ajData.appPushClerkKey = a
+                    ajData.appPushMechantKey = b
+                    ajData.pcPushKey = c
+                    ajData.orderRemark = $('#mark').val()
+                    ajData.profitSharing = rebateType == 0 ? 'Y' : 'N'
+                    $.ajax({
+                        //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                        url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                        //url:"http://192.168.110.85:5008/p-pay/pay/payRoute",
+                        type: "POST",
+                        async: true,
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        data: JSON.stringify(ajData),
+                        success: function(data) {
+                            if (data.code != 1000) {
+                                alert(data.msg)
+                                return
+                            }
+                            preNumber = data.data.preNumber
+                            // alert(preNumber)
+                            var aad = new Object()
+                            aad.totalMoney = totalFee
+                            // aad.paymentType = payType,
+                            // aad.merchantNumber = merNumber,
+                            // aad.code = code,
+                            //     aad.codeType = codeType,
+                            //     aad.orderRemark = $('#mark').val()
+                            // aad.shopNumber = sInfo.storeId,
+                            //     aad.clerkNumber = sInfo.userNumber
+                            // aad.appPushClerkKey = a
+                            // aad.appPushMechantKey = b
+                            // aad.pcPushKey = c
+                            // aad.equipmentType = 3
+                            // aad.equipmentNumber = clientNumber
+                            // aad.ip = ip
+                            if (payType == 'WeChat_Pay') {
+
+
+                                aad.openId = rebateInfo.openId
+
+
+
+                            } else {
+
+
+                                aad.aliUserId = rebateInfo.openId
+
+                            }
+
+
+                            aad.preNumber = preNumber
+                            //alert( JSON.stringify(aad),)
+                            $.ajax({
+                                url: "http://api.hongsou.com.cn/p-pay/pay/qrCode",
+                                //url:"http://192.168.110.85:5008/p-pay/pay/qrCode",
+                                //url: "http://192.168.110.80:5008/p-pay/pay/payRoute",
+                                type: "POST",
+                                async: true,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                data: JSON.stringify(aad),
+
+                                success: function(data) {
+                                    $('#mask123').hide()
+                                    codeTypeTrue = true
+                                    setTimeout(function() {
+                                        isC = true
+                                    }, 500)
+                                    //alert(JSON.stringify(data))
+                                    //var ggdata = data.guanggao、
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        // document.getElementById('payId').style.display = "block";
+                                        // document.getElementById('loading-zf').style.display = "none";
+                                        document.getElementById('paymoney').innerHTML = "";
+                                    }
+                                    if (data.data.client == 'ALIPAY') {
+                                        ap.tradePay({
+                                            tradeNO: data.data.tradeNO
+                                        }, function(res) {
+                                            document.getElementById('payId').style.display = "block";
+
+
+                                            if (res.resultCode == 9000) {
+                                                window.location.href = "http://api.hongsou.com.cn/h5-pay/lh-ad.html?insNumber=" + insNumber;
+                                            } else {
+
+
+                                                // }
+
+                                            }
+                                        });
+                                    } else {
+                                        onBridgeReady(data.data.map.appId, data.data.map.timeStamp, data.data.map.nonceStr, data.data.map.package, data.data.map.signType, data.data.map.paySign);
+                                    }
+                                },
+                                fail: function(e) {
+
+                                },
+                                error: function(e) {
+                                    console.log(e)
+                                }
+                            })
+                        }
+                    })
+                } else {
+                    var ajData = new Object()
+                    var payData = new Object()
+                    ajData.paymentType = payType
+                    ajData.merchantNumber = ssInfo.merchantNumber
+                    ajData.equipmentNumber = clientNumber
+                    ajData.shopNumber = ssInfo.storeId
+                    ajData.clerkNumber = ssInfo.userNumber
+                    if (payType == 'WeChat_Pay') {
+                        if (getQueryString('cardEnabled') == 1) {
+                            ajData.code = code
+                            payData.code = code
+                            // 
+                             ajData.openId = wyOpenId
+                            payData.openId = wyOpenId
+                            payData.applicablePay = 1
+                        } else {
+                            ajData.openId = userInfo.subOpenId
+                            payData.openId = userInfo.subOpenId
+                            payData.applicablePay = 1
+                            //if (userInfo.subAppId == null) {
+                            // console.log('123')
+
+                            //ajData.openId = userInfo.subOpenId
+                            //} else {
+                            //  console.log('456')
+                            // ajData.openId = userInfo.openid
+                            //}
+
+
+                        }
+                    } else {
+                        // if (getQueryString('cardEnabled') == 1) {
+                        //     ajData.code = code
+                        // } else {
+                        //     if (cardUrl == '') {
+                        //         ajData.code = code
+                        //         payData.code = code
+                        //         payData.applicablePay = 0
+                        //     } else {
+                        //         ajData.aliUserId = userInfo.aliUserId
+                        //         payData.openId = userInfo.aliUserId
+                        //         payData.applicablePay = 0
+                        //     }
+                        // }
+                        ajData.code = code
+                    }
+
+                    ajData.codeType = codeType
+                    ajData.appPushClerkKey = a
+                    ajData.appPushMechantKey = b
+                    ajData.pcPushKey = c
+                    ajData.orderRemark = $('#mark').val()
+                    console.log(userInfo)
+                    if (payType != 'WeChat_Pay') {
+                        $.ajax({
+                            //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                            url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                            //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",
+                            type: "POST",
+                            async: true,
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            data: JSON.stringify(ajData),
+                            success: function(data) {
+                                if (data.code != 1000) {
+                                    alert(data.msg)
+                                    return
+                                }
+                                preNumber = data.data.preNumber
+                                // alert(preNumber)
+                                var aad = new Object()
+                                aad.totalMoney = totalFee
+                                // aad.paymentType = payType,
+                                // aad.merchantNumber = merNumber,
+                                // aad.code = code,
+                                //     aad.codeType = codeType,
+                                //     aad.orderRemark = $('#mark').val()
+                                // aad.shopNumber = sInfo.storeId,
+                                //     aad.clerkNumber = sInfo.userNumber
+                                // aad.appPushClerkKey = a
+                                // aad.appPushMechantKey = b
+                                // aad.pcPushKey = c
+                                // aad.equipmentType = 3
+                                // aad.equipmentNumber = clientNumber
+                                // aad.ip = ip
+                                console.log(userInfo)
+                                if (payType == 'WeChat_Pay') {
+                                    console.log(getQueryString('cardEnabled'))
+                                    if (getQueryString('cardEnabled') == 1) {
+                                        aad.code = code
+                                    } else {
+                                        aad.openId = userInfo.subOpenId
+
+                                    }
+
+                                } else {
+                                    if (getQueryString('cardEnabled') == 1) {
+                                        aad.code = code
+                                    } else {
+                                        if (cardUrl == '') {
+                                            aad.code = code
+                                        } else {
+                                            aad.aliUserId = userInfo.aliUserId
+                                        }
+
+                                    }
+                                }
+
+
+                                aad.preNumber = preNumber
+                                //alert( JSON.stringify(aad),)
+                                $.ajax({
+                                    url: "http://api.hongsou.com.cn/p-pay/pay/qrCode",
+                                    //url:"http://192.168.110.80:5008/p-pay/pay/qrCode",
+                                    //url: "http://192.168.110.80:5008/p-pay/pay/payRoute",
+                                    type: "POST",
+                                    async: true,
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    data: JSON.stringify(aad),
+
+                                    success: function(data) {
+                                        $('#mask123').hide()
+                                        codeTypeTrue = true
+                                        setTimeout(function() {
+                                            isC = true
+                                        }, 500)
+                                        //alert(JSON.stringify(data))
+                                        //var ggdata = data.guanggao、
+                                        if (data.code != 1000) {
+                                            alert(data.msg)
+                                            // document.getElementById('payId').style.display = "block";
+                                            // document.getElementById('loading-zf').style.display = "none";
+                                            document.getElementById('paymoney').innerHTML = "";
+                                        }
+                                        if (data.data.client == 'ALIPAY') {
+                                            ap.tradePay({
+                                                tradeNO: data.data.tradeNO
+                                            }, function(res) {
+                                                document.getElementById('payId').style.display = "block";
+
+
+                                                if (res.resultCode == 9000) {
+                                                    window.location.href = "http://api.hongsou.com.cn/h5-pay/lh-ad.html?insNumber=" + insNumber;
+                                                } else {
+
+
+                                                    // }
+
+                                                }
+                                            });
+                                        } else {
+                                            onBridgeReady(data.data.map.appId, data.data.map.timeStamp, data.data.map.nonceStr, data.data.map.package, data.data.map.signType, data.data.map.paySign);
+                                        }
+                                    },
+                                    fail: function(e) {
+
+                                    },
+                                    error: function(e) {
+                                        console.log(e)
+                                    }
+                                })
+                            }
+                        })
+                    } else if (payType == 'WeChat_Pay') {
+                        if (getQueryString('cardEnabled') != 0 || isVip == false) {
+                            $.ajax({
+                                //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                                url: "http://api.hongsou.com.cn/p-pay/pay/payRoute",
+                                //url:"http://192.168.110.80:5008/p-pay/pay/payRoute",
+                                type: "POST",
+                                async: true,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                data: JSON.stringify(ajData),
+                                success: function(data) {
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        return
+                                    }
+                                    preNumber = data.data.preNumber
+                                    // alert(preNumber)
+                                    var aad = new Object()
+                                    aad.totalMoney = totalFee
+                                    // aad.paymentType = payType,
+                                    // aad.merchantNumber = merNumber,
+                                    // aad.code = code,
+                                    //     aad.codeType = codeType,
+                                    //     aad.orderRemark = $('#mark').val()
+                                    // aad.shopNumber = sInfo.storeId,
+                                    //     aad.clerkNumber = sInfo.userNumber
+                                    // aad.appPushClerkKey = a
+                                    // aad.appPushMechantKey = b
+                                    // aad.pcPushKey = c
+                                    // aad.equipmentType = 3
+                                    // aad.equipmentNumber = clientNumber
+                                    // aad.ip = ip
+                                    console.log(userInfo)
+                                    if (payType == 'WeChat_Pay') {
+                                        console.log(getQueryString('cardEnabled'))
+                                        if (getQueryString('cardEnabled') == 1) {
+                                            // aad.code = code
+                                            aad.openId=wyOpenId
+                                        } else {
+                                            aad.openId = userInfo.subOpenId
+                                            //if (userInfo.subAppId == null) {
+                                            // console.log('123')
+
+                                            //ajData.openId = userInfo.subOpenId
+                                            //} else {
+                                            //  console.log('456')
+                                            // ajData.openId = userInfo.openid
+                                            //}
+                                        }
+
+                                    } else {
+                                        if (getQueryString('cardEnabled') == 1) {
+                                            aad.code = code
+                                        } else {
+                                            if (cardUrl == '') {
+                                                aad.code = code
+                                            } else {
+                                                aad.aliUserId = userInfo.aliUserId
+                                            }
+
+                                        }
+                                    }
+
+
+                                    aad.preNumber = preNumber
+                                    //alert( JSON.stringify(aad),)
+                                    $.ajax({
+                                        url: "http://api.hongsou.com.cn/p-pay/pay/qrCode",
+                                        //url:"http://192.168.110.80:5008/p-pay/pay/qrCode",
+                                        //url: "http://192.168.110.80:5008/p-pay/pay/payRoute",
+                                        type: "POST",
+                                        async: true,
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        data: JSON.stringify(aad),
+
+                                        success: function(data) {
+                                            $('#mask123').hide()
+                                            codeTypeTrue = true
+                                            setTimeout(function() {
+                                                isC = true
+                                            }, 500)
+                                            //alert(JSON.stringify(data))
+                                            //var ggdata = data.guanggao、
+                                            if (data.code != 1000) {
+                                                alert(data.msg)
+                                                // document.getElementById('payId').style.display = "block";
+                                                // document.getElementById('loading-zf').style.display = "none";
+                                                document.getElementById('paymoney').innerHTML = "";
+                                            }
+                                            if (data.data.client == 'ALIPAY') {
+                                                ap.tradePay({
+                                                    tradeNO: data.data.tradeNO
+                                                }, function(res) {
+                                                    document.getElementById('payId').style.display = "block";
+
+
+                                                    if (res.resultCode == 9000) {
+                                                        window.location.href = "http://api.hongsou.com.cn/h5-pay/lh-ad.html?insNumber=" + insNumber;
+                                                    } else {
+
+
+                                                    }
+                                                });
+                                            } else {
+                                                onBridgeReady(data.data.map.appId, data.data.map.timeStamp, data.data.map.nonceStr, data.data.map.package, data.data.map.signType, data.data.map.paySign);
+                                            }
+                                        },
+                                        fail: function(e) {
+
+                                        },
+                                        error: function(e) {
+                                            console.log(e)
+                                        }
+                                    })
+                                }
+                            })
+                        } else {
+                            var isUser = false
+                            if (payChoose == 0) {
+                                if (payType == 'WeChat_Pay') {
+                                    if (wxPayState == 0) {
+                                        isUser = true
+                                    }
+                                } else {
+                                    if (aliPayState == 0) {
+                                        isUser = true
+                                    }
+                                }
+                            } else {
+                                if (memberWallet == 0) {
+                                    isUser = true
+                                }
+                            }
+                            if (cardType == 0) {
+
+                                payData.voucherId = ''
+                                if (parseFloat(totalFee) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && isUser == true) {
+                                    payData.disMoney = $('#paymoney2').text()
+                                } else {
+                                    payData.disMoney = totalFee
+                                }
+                                ajData.totalMoney = payData.disMoney
+                                payData.totalMoney = totalFee
+                            } else if (cardType == 1) {
+                                var jianMoney = toFloat(parseFloat(totalFee) - parseFloat(cardInfo.minusmoney))
+                                if (parseFloat(jianMoney) >= parseFloat(minConsumMoney) && holidayState == 0 && disCountRate != null && isUser == true) {
+                                    payData.disMoney = $('#paymoney2').text()
+                                } else {
+                                    payData.disMoney = $('#money-card').text()
+                                }
+                                payData.voucherId = cardInfo.id
+                                ajData.totalMoney = payData.disMoney
+                                payData.totalMoney = totalFee
+                            } else if (cardType == 2) {
+
+                                var jianMoney = toFloat(totalFee * cardInfo.discount)
+                                // alert(jianMoney)
+                                // alert(minConsumMoney)
+                                // alert(holidayState)
+                                // alert(disCountRate)
+                                // alert(isUser)
+                                if (holidayState == 0 && disCountRate != null && isUser == true) {
+                                    payData.disMoney = $('#paymoney2').text()
+                                } else {
+                                    payData.disMoney = $('#money-card').text()
+                                }
+                                payData.voucherId = cardInfo.id
+                                ajData.totalMoney = payData.disMoney
+                                payData.totalMoney = totalFee
+                            }
+
+                            payData.institutionNumber = insNumber
+                            payData.applicableSource = 0
+                            payData.payInfo = JSON.stringify(ajData)
+                            console.log(userInfo)
+                            payData.mermberNumber = userInfo.memberNo
+                            payData.consumptionType = '3'
+                            // alert(JSON.stringify(payData))
+                            $.ajax({
+                                //url: "http://api.hongsou.com.cn/p-server/appServer/getInfo",
+                                //url: "http://api-cs.hongsou.com.cn/p-pay/pay/payRoute",
+                                //url: "http://192.168.110.250:6019/p-member/consumption/couponConsumption",
+                                url: "http://api.hongsou.com.cn/p-member/consumption/couponConsumption",
+                                type: "POST",
+                                async: true,
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                data: JSON.stringify(payData),
+                                timeout: 2000,
+                                success: function(data) {
+                                    setTimeout(function() {
+                                        isC = true
+                                    }, 500)
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        $('#mask123').hide()
+                                        return
+                                    }
+                                    $('#mask123').hide()
+                                    codeTypeTrue = true
+                                    setTimeout(function() {
+                                        isC = true
+                                    }, 500)
+                                    console.log(isC)
+                                    //alert(JSON.stringify(data))
+                                    //var ggdata = data.guanggao、
+                                    if (data.code != 1000) {
+                                        alert(data.msg)
+                                        // document.getElementById('payId').style.display = "block";
+                                        // document.getElementById('loading-zf').style.display = "none";
+                                        document.getElementById('paymoney').innerHTML = "";
+                                    }
+                                    if (data.data.client == 'ALIPAY') {
+                                        ap.tradePay({
+                                            tradeNO: data.data.tradeNO
+                                        }, function(res) {
+                                            document.getElementById('payId').style.display = "block";
+
+
+                                            if (res.resultCode == 9000) {
+                                                window.location.href = "http://api.hongsou.com.cn/h5-pay/lh-ad.html?insNumber=" + insNumber;
+                                            } else {
+
+
+                                            }
+                                        });
+                                    } else {
+                                        onBridgeReady(data.data.map.appId, data.data.map.timeStamp, data.data.map.nonceStr, data.data.map.package, data.data.map.signType, data.data.map.paySign);
+                                    }
+
+                                },
+                                error: function(data) {
+                                    console.log(data)
+                                }
+                            })
+                        }
+                    }
+                }
+
+
+            }
+        });
+        $(".payinfo").slideDown();
+        var $paymoney = $("#paymoney");
+        var $paymoney1 = $('#paymoney1')
+        var time123
+        //输入金额
+        $(".paynum").each(function() {
+            $(this).click(function() {
+
+                isC = true
+                if ($(this).text() == '.' && $paymoney1.text().indexOf('.') >= 0) {
+                    return
+                }
+                if (($paymoney1.text()).indexOf(".") != -1 && ($paymoney1.text()).substring(($paymoney1.text()).indexOf(".") + 1, ($paymoney1.text()).length).length == 2) {
+                    return;
+                }
+
+                if (parseInt($paymoney1.text()) >= 99999 && $paymoney1.text().indexOf(".") == -1) {
+                    return;
+                }
+                $('.paySub').removeClass('paySub-disable');
+                if ($(this).text() == '.' && $paymoney1.text() == '') {
+                    $paymoney1.text('0.')
+                } else {
+
+                    $paymoney1.text($paymoney1.text() + $(this).text());
+
+
+
+                }
+                if (getQueryString('cardEnabled') == 2) {
+                    var moneyNew = parseFloat($('#paymoney1').text())
+                    // if (moneyNew > 0 && moneyNew * (rebateInfo.consumerRebate-rebateSet.personalRebate-rebateSet.agentRebate-rebateSet.platformRebate-rebateSet.systemRebate)  > 0) {
+                    if (moneyNew > 0 && moneyNew * (rebateSet.rebatePerc)  > 0) {    
+                        // $('#rebateMoney').html(formatDecimal(moneyNew * (rebateInfo.consumerRebate-rebateSet.personalRebate-rebateSet.agentRebate-rebateSet.platformRebate-rebateSet.systemRebate), 2))
+                        $('#rebateMoney').html(formatDecimal(moneyNew * (rebateSet.rebatePerc), 2))
+                    }
+                } else {
+                    if (payChoose == 0) {
+                        if (payType == 'WeChat_Pay') {
+                            wxMember()
+                        } else {
+                            aliMember()
+                        }
+                    } else {
+                        merMember()
+                    }
+                }
+
+
+            });
+        });
+        //删除金额
+        $("#pay-return").click(function() {
+            $paymoney.text(($paymoney.text()).substring(0, ($paymoney.text()).length - 1));
+
+            $paymoney1.text(($paymoney1.text()).substring(0, ($paymoney1.text()).length - 1));
+            if (getQueryString('cardEnabled') == 2) {
+                var moneyNew = parseFloat($('#paymoney1').text())
+                // if (moneyNew > 0 && moneyNew * (rebateInfo.consumerRebate-rebateSet.personalRebate-rebateSet.agentRebate-rebateSet.platformRebate-rebateSet.systemRebate)  > 0) {
+                 if (moneyNew > 0 && moneyNew * (rebateInfo.rebatePerc)  > 0) {   
+                    // $('#rebateMoney').html(formatDecimal(moneyNew * (rebateInfo.consumerRebate-rebateSet.personalRebate-rebateSet.agentRebate-rebateSet.platformRebate-rebateSet.systemRebate) , 2))
+                    $('#rebateMoney').html(formatDecimal(moneyNew * (rebateInfo.rebatePerc) , 2))
+                }
+            } else {
+                if (payChoose == 0) {
+                    if (payType == 'WeChat_Pay') {
+                        wxMember()
+                    } else {
+                        aliMember()
+                    }
+                } else {
+                    merMember()
+                }
+            }
+
+
+
+            if (!$paymoney1.text()) {
+                $('.paySub').addClass('paySub-disable')
+                $('#paymoney2').text($paymoney1.text())
+                $('#youhui').text(0)
+                $('.vipIsPay').hide()
+                $('.cardIsPay').hide()
+                $('#rebateMoney').html(0)
+                clearCardInfo()
+                return
+            }
+
+        });
+        //按0
+        $("#pay-zero").click(function() {
+            if (($paymoney.text()).indexOf(".") != -1 && ($paymoney.text()).substring(($paymoney.text()).indexOf(".") + 1, ($paymoney.text()).length).length == 2) {
+                return;
+            }
+            if ($.trim($paymoney.text()) == "0") {
+                return;
+            }
+            if (parseInt($paymoney.text()) > 10000 && $paymoney.text().indexOf(".") == -1) {
+                return;
+            }
+            $paymoney.text($paymoney.text() + $(this).text());
+        });
+        //清空金额
+        $("#pay-float").click(function() {
+            if ($.trim($paymoney.text()) == "") {
+                return;
+            }
+            if (($paymoney.text()).indexOf(".") != -1) {
+                return;
+            }
+            if (($paymoney.text()).indexOf(".") != -1) {
+                return;
+            }
+            $paymoney.text($paymoney.text() + $(this).text());
+        });
+        if (!$paymoney.text()) {
+            $('.paySub').addClass('paySub-disable');
+        }
+        if (!!payNumber) {
+            $('#payinfokey').hide()
+        }
+    });
+    $(function() {
+        pushHistory();
+
+        window.addEventListener("popstate", function(e) {
+            if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                // 微信
+                WeixinJSBridge.call('closeWindow');
+                //alert('123')
+                //wx.closeWindow();
+            } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                // 支付宝
+
+                AlipayJSBridge.call('popWindow');
+            }
+        }, false);
+
+
+
+
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+
+    })
+    </script>
+</body>
+
+</html>

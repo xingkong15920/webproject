@@ -1,0 +1,197 @@
+<!doctype html>
+<html style="overflow-x: hidden; overflow-y: auto;">
+<head>
+    <meta charset="UTF-8">
+    <title>悦芸支付数据可视化监控系统</title>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <link rel="shortcut icon" href="shanhe.ico" type="image/x-icon" />
+    <script type="text/javascript" src="js/visual.js?v=1.1"></script>
+    <script type="text/javascript" src="js/times.js"></script>
+    <script type="text/javascript" src="js/totalnum.js"></script>
+    <script type="text/javascript" src="js/threeNum.js"></script>
+    <script type="text/javascript" src="js/jquery.liMarquee.js"></script>
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+<div>
+    <!-- 加载动画 -->
+    <div class="loading">
+        <div class="loadbox"><img src="images/loading.gif">loading...</div>
+    </div>
+    <div class="back"></div>
+
+    <!-- 头部设置 -->
+    <div class="top">
+        <div class="t1">悦芸支付数据可视化监控系统</div>
+       <!--  <div class="subt">ShangPinDeQin Data Visual Monitoring System for Face-brushing Payment</div> -->
+    </div>
+    <div style="clear:both;"></div>
+
+    <!-- 实时交易-->
+    <div class="sepration">
+        <div class="boxall" style="height:230px">
+            <div class="clearfix navboxall" style="height: 100%">
+                <div class="pulll_left num">
+                    <div class="numbt" style="margin-bottom: 25px">今日实时总交易额<span> (单位：元)</span><span
+                            id="showTime"></span></div>
+                    <div><span class="rmb"></span>
+                        <div class="numberRun"></div>
+                    </div>
+                </div>
+                <div class="pulll_right norm">
+                    <div class="zb1">
+                        <div align="center" style="margin: 50px auto 20px;"><img src="images/zb1.jpg"></div>
+                        <div id="zb1">888</div>
+                        <span>今日总交易笔数</span>
+                    </div>
+
+                    <div class="zb2">
+                        <div align="center" style="margin: 50px auto 20px;"><img src="images/zb2.jpg"></div>
+                        <div id="zb2">888</div>
+                        <span>今日总交易商户数</span>
+                    </div>
+                    <div class="zb3">
+                        <div align="center" style="margin: 50px auto 20px;"><img src="images/zb3.jpg" ></div>
+                        <div id="zb3">888</div>
+                        <span>今日总发卡量</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商户滚动-->
+    <div class="sepration">
+        <div class="mid_info_left">
+            <div class="boxall" style="height:320px;">
+                <div class="alltitle">商户交易实时播报</div>
+                <ul class="wraptit">
+                    <span>商户名称</span><span>交易金额</span><span>交易时间</span><span>交易方式</span><span>支付账号</span>
+                </ul>
+                <div class="wrap">
+                    <ul id="wtbody"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mid_info_right">
+        <div class="boxall" style="height:320px">
+            <div class="alltitle">每日交易量</div>
+            <div class="navboxall" id="echart3"></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 饼图区 -->
+<div class="sepration">
+    <div class="bottom_pie">
+        <div class="boxall" style="height:360px">
+            <div class="alltitle">支付通道占比</div>
+            <div class="navboxall" id="echart1"></div>
+        </div>
+    </div>
+    <div class="bottom_pie_mid">
+        <div class="boxall" style="height:360px">
+            <div class="alltitle">移动支付行业比例</div>
+            <div class="navboxall" id="echart2"></div>
+        </div>
+    </div>
+    <div class="bottom_pie">
+        <div class="boxall" style="height:360px">
+            <div class="alltitle">TOP5城市</div>
+            <div class="navboxall" id="echart4"></div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!--尚品德勤角标-->
+
+
+<script>
+    document.oncontextmenu = function (e) {
+        return false;
+    }
+</script>
+<script type="text/javascript" src="db/databases.js?v=1.6"></script>
+<script>
+    //05.商户交易实时播报;
+    function getTrans() {
+        var wtboy = '';//信息；
+        /*随机时间 -Begin*/
+        function RandomNumBoth(Min, Max) {
+            var Range = Max - Min;
+            var Rand = Math.random();
+            var num = Min + Math.round(Rand * Range);
+            if (num <= 9) {
+                num = '0' + num;
+            }
+            return num;
+        }
+
+        //分秒自动补足0；
+        function timeAdd0(str) {
+            if (str.length <= 1) {
+                str = '0' + str;
+            }
+            return str
+        }
+
+        var nowYear = new Date().getFullYear().toString()
+        var nowMonth = (new Date().getMonth() + 1).toString()
+        var nowDay = new Date().getDate().toString();
+        var nowHours = new Date().getHours().toString();
+        var nowMin = new Date().getMinutes().toString();
+        nowYear = timeAdd0(nowYear)
+        nowMonth = timeAdd0(nowMonth)
+        nowDay = timeAdd0(nowDay)
+        nowHours = timeAdd0(nowHours)
+        nowMin = timeAdd0(nowMin)
+        /*随机时间 -End*/
+
+        for (var i = 0; i < 200; i++) {
+            wtboy += "<ul><li><p><span>"
+                    + store_name[Math.floor((Math.random() * store_name.length))]
+                    + "</span><span>"
+                    + parseFloat((Math.random() * 120 + 5).toFixed(2) - 0)//随机两位数;
+                    + "</span><span>"
+                    + nowYear + "-" + nowMonth + "-" + nowDay + " " + nowHours + ":" + nowMin + ":" + RandomNumBoth(59, 0)
+                    + "</span><span>"
+                    + payway[Math.floor((Math.random() * payway.length))]
+                    + "</span><span>"
+                    + "匿名***"
+                    + "</span></p></li></ul>"
+        }
+        $('#wtbody').html(wtboy);
+    }
+
+    //自动刷新;
+    var interTrans;
+    getTrans();
+    clearInterval(interTrans);
+    interTrans = setInterval(function () {
+        getTrans();
+    }, 4000);
+
+    /*商户实时交易播报滚动控制*/
+    $('.wrap').liMarquee({
+        direction: 'up',
+        runshort: false, /*内容不足时不滚动*/
+        scrollamount: 20
+    });
+    setInterval(function(){
+        var time = new Date();
+         var h = time.getHours()
+         var m = time.getMinutes()
+         var s = time.getSeconds()
+         console.log(h,m,s)
+         if(h == '00' && m == '00' && s == '00'){
+            location.reload()
+         }
+    },800)
+    
+</script>
+</body>
+</html>

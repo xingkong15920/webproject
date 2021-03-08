@@ -8,20 +8,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
     <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> -->
-    <link rel="stylesheet" href="../../public/css/font.css">
-    <link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
-    <link rel="stylesheet" href="../../public/css/xadmin.css">
-    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="http://static.hongxiaosou.com/public/css/font.css">
+    <link rel="stylesheet" href="http://static.hongxiaosou.com/public/fonts/icon/iconfont.css">
+    <link rel="stylesheet" href="http://static.hongxiaosou.com/public/css/xadmin.css">
+    <script type="text/javascript" src="http://static.hongxiaosou.com/public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="http://static.hongxiaosou.com/public/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
-    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
-    <script src="../../common/config-agent.js"></script>
-    <script src="../../common/utility.js"></script>
-    
+    <script type="text/javascript" src="http://static.hongxiaosou.com/public/js/xadmin.js"></script>
+    <script src="http://static.hongxiaosou.com/common/config-agent.js"></script>
+    <script src="http://static.hongxiaosou.com/common/utility.js"></script>
     <script type="text/javascript">
-    //var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
-    var site = '51shanhe'
+    // var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
+    var site = '51shanhe.com'
 
     function getDateStr(dayCount) {
         var dayNumber = 0 + dayCount
@@ -44,11 +47,15 @@
         //自动获取用户IP，返回当前城市
         citysearch.getLocalCity(function(status, result) {
             console.log(status, result)
-            if (status === 'complete' && result.info === 'OK') {
+            if ( result.info === 'OK') {
                 if (result && result.city && result.bounds) {
                     cname = result.province + result.city
                     console.log(cip, cname)
-                    CmsUtility.postAjaxCall(
+                    
+                }
+            } else {}
+        })
+        CmsUtility.postAjaxCall(
                         //系统设置
                         CmsConfig.addressUrl.Login.Automaticlist, {
                             "loginClass": '1',
@@ -79,15 +86,8 @@
                             console.log('222')
                         }
                     )
-                }
-            } else {}
-        })
         // window.location.href = decodeURIComponent(window.location).split('?')[0]
     } else {
-
-
-
-
         if (!localStorage.getItem(site + "agentStorage")) {
             window.location.href = 'login.html'
         } else {
@@ -99,7 +99,6 @@
                 sessionStorage.setItem("agentUser", JSON.stringify(localData.data));
             }
         }
-
     }
 
 
@@ -200,9 +199,36 @@
                             </a>
                         </li>
                         <li>
+                            <a lay-href="wechat-renzheng-list.html">
+                                <i class="icon icon icon-paizhao"></i>
+                                <cite>微信认证</cite>
+                            </a>
+                        </li>
+                        <li>
                             <a lay-href="deviceList.html">
                                 <i class="icon icon icon-paizhao"></i>
                                 <cite>码牌管理</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a lay-href="javascript:;">
+                        <i class="icon icon icon-shanghuguanli"></i>
+                        <cite>返利商户</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu" id="shopL">
+                        <li>
+                            <a lay-href="fanli-merchantList.html">
+                                <i class="icon icon icon-shanghuguanli1"></i>
+                                <cite>商户列表</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="fanli-order.html">
+                                <i class="icon icon icon-shanghuguanli1"></i>
+                                <cite>返利订单</cite>
                             </a>
                         </li>
                     </ul>
@@ -267,6 +293,27 @@
                         </li>
                     </ul>
                 </li>
+                 <li class="layui-nav-item">
+                    <a lay-href="javascript:;">
+                        <i class="icon icon icon-shebeiguanli"></i>
+                        <cite>活动管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="active.html">
+                                <i class="icon icon icon-shouyinji"></i>
+                                <cite>活动数据</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="bluesea.html">
+                                <i class="icon icon icon-shualianzhifu"></i>
+                                <cite>蓝海行动</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="layui-nav-item" id="adv" style="display:none">
                     <a lay-href="Adware-List.html">
                         <i class="icon icon icon-xiaoshouguanli"></i>
@@ -287,6 +334,12 @@
                             </a>
                         </li>
                         <li>
+                            <a lay-href="sale-area.html">
+                                <i class="icon icon icon-xiaoshouguanli"></i>
+                                <cite>区域管理</cite>
+                            </a>
+                        </li>
+                        <li>
                             <a lay-href="sale-record.html">
                                 <i class="icon icon icon-chenggongdingdan"></i>
                                 <cite>销售佣金</cite>
@@ -294,11 +347,26 @@
                         </li>
                     </ul>
                 </li>
-                <li class="layui-nav-item" id="levA1" style="display:none">
-                    <a lay-href="dealersRecordPage.html">
+                <li class="layui-nav-item" id="levA11" style="display:none">
+                    <a lay-href="javascript:;">
                         <i class="icon icon icon-dailiguanli1" style="padding-right: 5px"></i>
                         <cite>服务商管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
                     </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="dealersRecordPage.html">
+                                <i class="icon icon icon-tixianzhanghu"></i>
+                                <cite>服务商列表</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="dl-area.html">
+                                <i class="icon icon icon-xiaoshouguanli"></i>
+                                <cite>区域管理</cite>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="layui-nav-item" id="levA" style="display:none">
                     <a lay-href="javascript:;">
@@ -352,7 +420,7 @@
                                 <cite>收益明细</cite>
                             </a>
                         </li>
-                        <li class="layui-nav-item" >
+                        <li class="layui-nav-item">
                             <a lay-href="javascript:;">
                                 <i class="icon icon icon-yewuyuan-fanyongshouyi"></i>
                                 <cite>分佣结算</cite>
@@ -365,6 +433,12 @@
                                         <cite>交易分佣</cite>
                                     </a>
                                 </li>
+                                <li>
+                                    <a lay-href="huoyuefy.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>活跃分佣</cite>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                         <li>
@@ -372,6 +446,27 @@
                                 <i class="icon icon icon-daozhangchaxun"></i>
                                 <cite>到账查询</cite>
                             </a>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a lay-href="javascript:;">
+                                <i class="icon icon icon-shanghuguanli"></i>
+                                <cite>流失商户</cite>
+                                <i class="iconfont nav_right">&#xe697;</i>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a lay-href="SusLostMer.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>疑似流失商户</cite>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a lay-href="hisLostMer.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>历史流失商户</cite>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <a lay-href="merchantLiushui.html">
@@ -383,6 +478,18 @@
                             <a lay-href="shopLiushui.html">
                                 <i class="icon icon icon-mendianxiaofeiquan"></i>
                                 <cite>门店账单</cite>
+                            </a>
+                        </li>
+                         <li>
+                            <a lay-href="yingxiao-list.html">
+                                <i class="icon icon icon-tixianzhanghu"></i>
+                                <cite>营销补贴</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="fanli-bill.html">
+                                <i class="icon icon icon-tixianzhanghu"></i>
+                                <cite>返利账单</cite>
                             </a>
                         </li>
                     </ul>
@@ -440,7 +547,7 @@
     <div class="page-content">
         <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
             <ul class="layui-tab-title">
-                <li class="layui-this layui-icon layui-icon-home">首页</li>
+                <li class="layui-this layui-icon layui-icon-home"></li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show layui-iframe">
@@ -456,11 +563,13 @@
     <script type="text/javascript">
     console.log(JSON.parse(sessionStorage.getItem("agentUser")))
     $('#userName').html(JSON.parse(sessionStorage.getItem("agentUser")).agentName)
-
+    if (JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber == '1004') {
+        $('#cash').show()
+    }
     CmsUtility.postAjaxCall(
         //系统设置
         CmsConfig.addressUrl.Public.getSitePath, {
-            "sitePath": '51shanhe.com',
+            "sitePath": 'hongxiaosou.com',
         },
         function(data) {
             console.log(data)
@@ -485,47 +594,47 @@
     if (JSON.parse(sessionStorage.getItem("agentUser")).agentLevel != 'A') {
         $('#levA').hide()
         $('#levA1').hide()
+        $('#levA11').hide()
     } else {
         $('#levA').show()
         $('#levA1').show()
+        $('#levA1').show()
     }
-
     if (JSON.parse(sessionStorage.getItem("agentUser")).advertJurisdiction == 0) {
         $('#adv').show()
     } else {
         $('#adv').hide()
     }
-
-    function onBack(res) {
-        alert(JSON.stringify(res));
-    }
-
-    function onC() {
-        $('#yishenhe').click()
-    }
- 
     layui.use(['element', 'layer', 'jquery'], function() {
         var element = layui.element;
         // var layer = layui.layer;
         var $ = layui.$;
-        window.refreshHighlight = function(data){
+        window.refreshHighlight = function(data,data1) {
+            var idd = Date.parse(new Date());
+            element.tabAdd('xbs_tab', {
+                title: '查看销售-' + data,
+                content: '<iframe src=' + 'dealersMerchantPage1.html?saleName=' + data + '&saleNumber='+ data1 +'  id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>' //支持传入html
+                    ,
+                id: idd
+            });
+            $("li[lay-id=" + idd + "]").click()
+        }
+        window.refreshHighlight1 = function(data,data1){
             var idd =  Date.parse(new Date());
             element.tabAdd('xbs_tab', {
-              title: '查看销售-'+data
-              ,content: '<iframe src='+ 'dealersMerchantPage1.html?saleName='+ data +'  id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>' //支持传入html
+              title: '查看代理商-'+data
+              ,content: '<iframe src='+ 'dealersMerchantPage2.html?agentName='+ data + '&agentNumber=' + data1 +'  id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>' //支持传入html
               ,id: idd
             });
             $("li[lay-id="+ idd +"]").click()
         }
-        
-        
+
     });
     $(function() {
-
         CmsUtility.postAjaxCall2(
             //系统设置
             // CmsConfig.ServiceUrl.ApiRootUrl.split('shanhe-service/')[0 ] +'shanhe-admin/insTpa/getThirdParty', 
-            'https://nb.51shanhe.com/shanhe-admin/insTpa/getThirdParty', {
+            'https://nb.hongxiaosou.com.cn/shanhe-admin/insTpa/getThirdParty', {
                 "institutionNumber": JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber
             },
             function(data) {

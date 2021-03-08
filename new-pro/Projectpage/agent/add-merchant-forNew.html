@@ -313,6 +313,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="box-item">
+                    <div class="layui-form-item" style="display:inline-block;margin-left:30px;vertical-align:top">
+                        <label class="layui-form-label">是否高校渠道</label>
+                        <div class="layui-input-block" style="display:inline-block;margin-left:0px;vertical-align:top">
+                            <!--  <input type="checkbox" name="isOpenYunPay" title="开通"> -->
+                            <input type="checkbox" name="collegeFlage" lay-skin="switch" lay-filter="collegeFlage" lay-text="是|否">
+                        </div>
+                    </div>
+                </div>
                 <blockquote class="layui-elem-quote">法人信息</blockquote>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">图片信息</legend>
@@ -543,6 +552,26 @@
                         </div>
                     </div>
                 </div>
+                <div class="box-item">
+                    
+                    <div class="layui-form-item" style="display:inline-block;vertical-align:top">
+                        <label class="layui-form-label">是否开通返利商家</label>
+                        <div class="layui-input-block" style="display:inline-block;margin-left:0px;vertical-align:top">
+                            <!--  <input type="checkbox" name="isOpenYunPay" title="开通"> -->
+                            <input type="checkbox" name="fanli" lay-skin="switch" lay-filter="isfanli" lay-text="开通|不开通">
+                        </div>
+                    </div>
+                </div>
+                <div class="box-item fanliBox" style="display:none">
+                    <div class="layui-form-item " style="display:inline-block;width:500px;position:relative;">
+                        <label class="layui-form-label">返佣比例(%)</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                            <input type="text" name="separateRatio" lay-verify="fanli1" autocomplete="off" placeholder="商家最大返佣比例" class="layui-input" value="">
+                        </div>
+                    </div>
+                   
+                </div>
                 <blockquote class="layui-elem-quote">其他信息</blockquote>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
@@ -599,14 +628,13 @@
         window.location.reload()
     })
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    var server = 'http://192.168.1.250:6005/shanhe-admin/'
-    //var commonServer = 'http://192.168.1.112:6008/shanhe-common/'
-    var jgServer = 'http://192.168.1.250:6005/shanhe-admin/'
-    //var server = 'https://nb.51shanhe.com/shanhe-admin/'
-    // var server = 'https://nb.51shanhe.com/shanhe-admin/'
-    var commonServer = 'https://nb.51shanhe.com/shanhe-common/'
-    // var jgServer = 'https://nb.51shanhe.com/shanhe-admin/'
-    //var server = 'https://nb.51shanhe.com/shanhe-admin/'
+    // var server = 'http://192.168.110.71:6005/shanhe-admin/'
+    //var commonServer = 'http://192.168.110.112:6008/shanhe-common/'
+    // var jgServer = 'http://192.168.110.71:6005/shanhe-admin/'
+    //var server = 'https://nb.hongsou.com.cn/shanhe-admin/'
+    // var server = 'https://nb.hongsou.com.cn/shanhe-admin/'
+     var commonServer = 'https://nb.hongsou.com.cn/shanhe-common/'
+    var jgServer = 'https://nb.hongsou.com.cn/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
     var operlistThr = []
@@ -632,6 +660,7 @@
     var juridicalPersonIDType = 1
     var businessLicenseType = 1
     var isOpenYunPay = 1
+    var collegeFlage = 1
     var merchantNumber = CmsUtility.getQueryString('merchantNumber')
     //var merchantNumber = '1004000563'
     var channelType = CmsUtility.getQueryString('type')
@@ -648,8 +677,9 @@
     var legalFlag = 0
     var acntType = '对私'
     var acntArtifIdType = 1
+    var separateType = 1
      $('#down-shouquan').click(function(){
-        window.open('http://static.hongxiaosou.com/public/file/shouquan.zip')
+        window.open('../../public/file/shouquan.zip')
     })
     function farenBox() {
         var str = ' <input type="radio" name="legalFlag" value="0" title="法人" lay-filter="legalFlag" checked=""> <input type="radio" name="legalFlag" value="1" title="非法人" lay-filter="legalFlag">'
@@ -1593,7 +1623,7 @@
             formData.append("longTime", !merchantNumber ? longTime : merchantNumber);
             formData.append("type", type);
             $.ajax({
-                // url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
+                // url: 'https://nb.hongsou.com.cn/shanhe-admin/InsMer/uploadMerchantImg',
                 url: server + 'InsMer/uploadMerchantImg',
                 type: 'POST',
                 data: formData,
@@ -1619,7 +1649,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1655,7 +1685,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1691,7 +1721,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -1725,7 +1755,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -2012,6 +2042,15 @@
             }
 
         });
+        form.on('switch(collegeFlage)', function(data) {
+            if (this.checked == true) {
+
+                collegeFlage = 0
+            } else {
+                collegeFlage = 1
+            }
+
+        });
         form.on('switch(businessLicenseType)', function(data) {
             if (this.checked == true) {
                 $('.yyNoChangqi').hide()
@@ -2208,6 +2247,7 @@
                         holdId2 = imgList.holdId2
                         letterOfAuthPic = imgList.letterOfAuthPic
                         authorizationPhoto = imgList.authorizationPhoto
+
                         $('#businessLicense').attr('src', businessLicense)
                         $('#cashier').attr('src', cashier)
                         $('#placeBusiness').attr('src', placeBusiness)
@@ -2225,7 +2265,12 @@
                         $('#authorizationPhoto').attr('src',authorizationPhoto)
                         merInfo.merchantType1 = merInfo.merchantType
                         legalFlag = merInfo.legalFlag
-                        acntType = merInfo.acntType
+                        if(merInfo.acntType == null){
+                            acntType = '对私'
+                        }else{
+                             acntType = merInfo.acntType 
+                        }
+                        
                         $('.feifaren').hide()
                         $('.kaihu').hide()
                         $('.yinhangka').show()
@@ -2260,7 +2305,8 @@
                         } else {
                             $('.feifaren').hide()
                         }
-                         if (acntType == '对私') {
+
+                        if (acntType == '对私') {
                             console.log(123)
                             if(merType != 0){
                                 $('#farenxuanze').show()
@@ -2393,6 +2439,14 @@
                         // $('#paymentBox').html(pStr)
                         // form.render()
                         isAcnt()
+                        collegeFlage = merInfo.collegeFlage
+                        separateType = merInfo.separateType 
+                        if (separateType == 0) {
+
+                            $('.fanliBox').show()
+                        } else {
+                            $('.fanliBox').hide()
+                        }
                         form.render()
                         form.val('cardAdd', {
                             "merchantType": merInfo.merchantTyp1,
@@ -2411,7 +2465,7 @@
                             "businessLicenseType": merInfo.businessLicenseType == 0 ? true : false,
                             "mailbox": merInfo.mailbox,
                             "isOpenYunPay": merInfo.isOpenYunPay == 0 ? true : false,
-
+                            "collegeFlage": merInfo.collegeFlage == 0 ? true : false,
                             "address": merInfo.address,
                             "weChatNo": merInfo.weChatNo,
                             "aliPayNo": merInfo.aliPayNo,
@@ -2438,7 +2492,9 @@
                             "acntArtifIdType": merInfo.acntArtifIdType,
                             "acntArtifIdType": merInfo.acntArtifIdType,
                             "rateType": merInfo.rateType == 'D1' ? true : false,
-                            "acntArtifIdType":merInfo.acntArtifIdType == 0 ? true : false
+                            "acntArtifIdType":merInfo.acntArtifIdType == 0 ? true : false,
+                            "fanli":merInfo.separateType == '0' ? true : false,
+                            "separateRatio" :merInfo.separateRatio *100
                         })
                         layer.closeAll()
                     } else {
@@ -2457,6 +2513,17 @@
         }else{
             $('.xdlneed').hide()
         }
+        form.on('switch(isfanli)', function(data) {
+            if (this.checked == true) {
+
+                $('.fanliBox').show()
+                separateType = 0
+            } else {
+                $('.fanliBox').hide()
+                separateType = 1
+            }
+
+        });
         form.on('submit(add)', function(data, index) {
             console.log(data)
             console.log(imgList)
@@ -2627,6 +2694,9 @@
             //5.11后新加参数
             tjData.rateType = rateType
             tjData.acntArtifIdType = acntArtifIdType
+
+            // 高校标识
+            tjData.collegeFlage = collegeFlage
             if (tjData.rate < saleRate.aliRate && saleRate.aliRate != 0) {
                 layer.msg('费率低于该销售费率，请重新填写')
                 return false
@@ -2641,6 +2711,17 @@
                     return false
                 }
             }
+            // 返利信息
+                if(separateType == 0){
+                    if(tjData.separateRatio > 30){
+                        layer.msg('返利最大不得超过30%')
+                        return  false
+                    }
+                    tjData.separateRatio = tjData.separateRatio /100
+                    
+                    tjData.separateType = separateType
+                }
+            var tipStr = ''
             tipStr += '商户名称：' + tjData.merchantName + '</br>'
             tipStr += '注册手机号：' + tjData.registerCell + '</br>'
             tipStr += '微信/支付宝费率:' + (tjData.rate * 100).toFixed(2) + '%' + '</br>'
@@ -2654,7 +2735,6 @@
 
             tipStr += '所属服务商/销售:' + tjData.agName + '/' + tjData.slName
             layer.confirm(tipStr, { icon: 0, title: '商户信息!' }, function(index) {
-                return 
                 CmsUtility.postAjaxCall2(
                     //系统设置
                     server + 'InsMer/addMerchantOrderInfo',

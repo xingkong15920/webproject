@@ -125,32 +125,33 @@
             c = [],
             aa = [],
             cityC = '0'
-        CmsUtility.postAjaxCall(
+        CmsUtility.postAjaxCall2(
             //系统设置
-            CmsConfig.addressUrl.Public.getAreajson, {},
+            'https://nb.51shanhe.com/shanhe-common/cache/getAreajson02', {},
             function(data) {
+                console.log(data)
                 sessionStorage.setItem("address", data.data);
-                address = JSON.parse(data.data)
+                address = data.data
                 for (var i = 0; i < address.length; i++) {
                     var a = new Object()
-                    a.provinceCode = address[i].value
-                    a.provinceName = address[i].text
+                    a.provinceCode = address[i].provCode
+                    a.provinceName = address[i].provName
                     p.push(a)
                     var b = new Object()
-                    b.provinceCode = address[i].value
+                    b.provinceCode = address[i].provCode
                     b.children = []
-                    for (var k = 0; k < address[i].children.length; k++) {
+                    for (var k = 0; k < address[i].cityList.length; k++) {
                         var d = new Object()
-                        d.cityCode = address[i].children[k].value
-                        d.cityName = address[i].children[k].text
+                        d.cityCode = address[i].cityList[k].cityCode
+                        d.cityName = address[i].cityList[k].cityName
                         b.children.push(d)
                         var e = new Object()
-                        e.cityCode = address[i].children[k].value
+                        e.cityCode = address[i].cityList[k].cityCode
                         e.childeren = []
-                        for (var j = 0; j < address[i].children[k].children.length; j++) {
+                        for (var j = 0; j < address[i].cityList[k].areaList.length; j++) {
                             var t = new Object()
-                            t.areaCode = address[i].children[k].children[j].value
-                            t.areaName = address[i].children[k].children[j].text
+                            t.areaCode = address[i].cityList[k].areaList[j].areaCode
+                            t.areaName = address[i].cityList[k].areaList[j].areaName
                             e.childeren.push(t)
                         }
                         aa.push(e)

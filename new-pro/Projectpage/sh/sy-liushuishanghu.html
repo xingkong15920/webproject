@@ -13,6 +13,13 @@
     <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
     <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style type="text/css">
+        #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+    </style>
 </head>
 
 <body>
@@ -45,11 +52,17 @@
                 </button>
             </div>
         </div>
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
         <div class="layui-form-item">
             <div class="layui-inline place">
                 <span style="color:red;display:block">*注:退款金额包含全部退款与部分退款</span>
-                <span style="color:red;display:block">*注:历史为非当天退款的汇总数据</span>
-                <span style="color:red;display:block">*注:交易金额-退款金额（全额+部分退款）- 手续费=实收金额</span>
+               
+                <span style="color:red;display:block">*注:订单金额 - 优惠金额 - 退款金额 - 分账金额 = 实收金额 - 手续费 = 结算金额</span>
             </div>
         </div>
         <xblock>
@@ -206,6 +219,34 @@
             return
             
         })
+        window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
         //方法级渲染
         function tableRender() {
         	if($('#billType').val()== 0||$('#billType').val()==3){
@@ -225,7 +266,7 @@
                     "billType": $('#billType').val()
                 },
                 method: "post",
-                height: "full-200",
+                height: "full-300",
                 page: true,
                 id: 'billlist',
                 response: {
@@ -286,53 +327,62 @@
                             width: 100
                         }, {
                             field: 'totalOrder',
-                            title: '汇总(笔数/交易额/退款额/手续费/实收额)',
+                            title: '汇总(笔数/订单额/优惠额/分账额/退款额/手续费/实收额/结算额)',
                             align: 'center',
                             templet: function(data) {
-                                return data.totalOrder + ' / ' + data.orderTotalMoney + ' / ' + data.refundOrderTotalMoney + ' / ' + data.poundage + ' / ' + data.shishoujine
+                                return data.totalOrder + ' / ' + data.orderTotalMoney + ' / ' + data.DiscountAmount + ' / ' + data.SeparateAccount+ ' / ' + data.refundOrderTotalMoney + ' / ' + data.poundage + ' / ' + data.shishoujine + ' / ' + data.SettlementAmount 
                             },
-                            width: 335
+                            width: 420
                         }, {
                             field: 'totalOrder',
-                            title: '微信(笔数/交易额/退款额/手续费/实收额)',
+                            title: '微信(笔数/订单额/优惠额/分账额/退款额/手续费/实收额/结算额)',
                             align: 'center',
                             templet: function(data) {
-                                return data.weChatTotalOrder + ' / ' + data.weChatTotalMoney + ' / ' + data.weChatrefundOrderTotalMoney + ' / ' + data.weChatPoundage + ' / ' + data.weChatShishoujine
+                                return data.weChatTotalOrder + ' / ' + data.weChatTotalMoney + ' / ' + data.WeChatDiscountAmount + ' / ' + data.WeChatSeparateAccount + ' / ' + data.weChatrefundOrderTotalMoney + ' / ' + data.weChatPoundage + ' / ' + data.weChatShishoujine+ ' / ' + data.WeChatSettlementAmount 
                             },
-                            width: 335
+                            width: 420
                         }, {
                             field: 'totalOrder',
-                            title: '支付宝(笔数/交易额/退款额/手续费/实收额)',
+                            title: '支付宝(笔数/订单额/优惠额/分账额/退款额/手续费/实收额/结算额)',
                             align: 'center',
                             templet: function(data) {
-                                return data.alipayTotalOrder + ' / ' + data.alipayTotalMoney + ' / ' + data.alipayrefundOrderTotalMoney + ' / ' + data.alipayPoundage + ' / ' + data.alipayShishoujine
+                                return data.alipayTotalOrder + ' / ' + data.alipayTotalMoney + ' / ' + data.AliDiscountAmount + ' / ' + data.AliSeparateAccount  + ' / ' + data.alipayrefundOrderTotalMoney + ' / ' + data.alipayPoundage + ' / ' + data.alipayShishoujine + ' / ' + data.AliSettlementAmount 
                             },
-                            width: 300
+                            width: 450
                         }, {
                             field: 'totalOrder',
-                            title: '云闪付(笔数/交易额/退款额/手续费/实收额)',
+                            title: '云闪付(笔数/订单额/优惠额/分账额/退款额/手续费/实收额/结算额)',
                             align: 'center',
                             templet: function(data) {
-                                return data.unionPayTotalOrder + ' / ' + data.unionPayOrderMoney + ' / ' + data.unionPayrefundOrderTotalMoney + ' / ' + data.unionPayPoundage + ' / ' + data.unionPayShishoujine
+                                return data.unionPayTotalOrder + ' / ' + data.unionPayOrderMoney +  ' / ' + data.UnionPayDiscountAmount + ' / ' + data.UnionPaySeparateAccount + ' / ' + data.unionPayrefundOrderTotalMoney + ' / ' + data.unionPayPoundage + ' / ' + data.unionPayShishoujine + ' / ' + data.UnionPaySettlementAmount 
                             },
-                            width: 300
+                            width: 450
                         }, {
                             field: 'totalOrder',
-                            title: '补贴(笔数/交易额)',
+                            title: '银联(笔数/订单额/优惠额/退款额/手续费/实收额/结算额)',
                             align: 'center',
                             templet: function(data) {
-                                return data.subsidyNumber + ' / ' + data.subsidyMoney
+                                return data.posTotalOrder + ' / ' + data.posOrderMoney +  ' / ' + data.PosDiscountAmount + ' / ' + data.refundOrderTotalMoney + ' / ' + data.posRefundOrderTotalMoney + ' / ' + data.posPoundage + ' / ' + data.posShishoujine + ' / ' + data.PosSettlementAmount 
                             },
-                            width: 150
-                        }, {
-                            field: 'totalOrder',
-                            title: '历史(笔数/退款额/手续费)',
-                            align: 'center',
-                            templet: function(data) {
-                                return data.historyRefundCount + ' / ' + data.historyRefundAmount + ' / ' + data.historyShopPoundage
-                            },
-                            width: 200
+                            width: 450
                         }
+                        // , {
+                        //     field: 'totalOrder',
+                        //     title: '补贴(笔数/交易额)',
+                        //     align: 'center',
+                        //     templet: function(data) {
+                        //         return data.subsidyNumber + ' / ' + data.subsidyMoney
+                        //     },
+                        //     width: 150
+                        // }, {
+                        //     field: 'totalOrder',
+                        //     title: '历史(笔数/退款额/手续费)',
+                        //     align: 'center',
+                        //     templet: function(data) {
+                        //         return data.historyRefundCount + ' / ' + data.historyRefundAmount + ' / ' + data.historyShopPoundage
+                        //     },
+                        //     width: 200
+                        // }
                     ]
                 ],
                 done: function(res, curr, count) {
@@ -347,6 +397,7 @@
         }, 500)
         $('#search').click(function() {
             tableRender()
+             $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
         })
         // 根據條件重载表格
         var $ = layui.$,

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+body,
+html {
+    width: 100%;
+    height: 100%
+}
+
+.pay {
+    position: relative;
+}
+
+.loadzz {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.loading_k {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    background: rgba(0, 0, 0, .5);
+    border-radius: 10px
+}
+
+.loading_kz {
+    width: 100px;
+    height: 100px;
+    margin: -50px 0 0 -50px;
+}
+
+.h3 {
+    width: 300px;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    top: 65%;
+    left: calc(50% - 150px);
+    font-size: 18px
+}
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -13px 0 0 -13px;
+    width: 26px;
+    height: 26px;
+    border: 2px solid;
+    border-color: #fff #fff transparent;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: loading 1s linear infinite
+}
+
+.loadingz {
+    top: 35%;
+    margin: -15px 0 0 -15px;
+    width: 30px;
+    height: 30px;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+</style>
+<script type="text/javascript">
+
+var adiv = '<div id="loadstart" class="loadzz"><div class="loading_k"><div class="loading"></div></div></div>'
+document.write(adiv)
+</script>
+
+<head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1.0,maximum-scale=1.0,width=device-width" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>支付宝授权</title>
+    <script src="http://static.hongxiaosou.com/public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript">
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+     
+     var institutionNumber = getQueryString('institutionNumber');
+      var merchantNumber = getQueryString('merchantNumber');
+      var paymentChannel = getQueryString('paymentChannel');
+      var appauthcode = getQueryString('app_auth_code');
+      var msg
+      var oData = new Object()
+      oData.institutionNumber = institutionNumber
+      oData.merchantNumber = merchantNumber
+      oData.paymentChannel = paymentChannel
+      oData.appauthcode = appauthcode
+      //alert(JSON.stringify(oData))
+      //alert("https://api.51shanhe.com/p-server/appServer/alipayAuthorize")
+      //var msg
+     $.ajax({
+        url: "https://api.51shanhe.com/p-server/appServer/alipayAuthorize",
+         type: "GET",
+         async: false,
+          headers: {
+ 				'Content-Type': "application/json"
+          }, 
+           data: JSON.stringify(oData),
+           success: function(data) {
+             	alert(data)
+                $('#loadstart').hide()
+               if(data.code == 1000){
+                   alert(data.msg)
+               }else{
+                 alert(data.msg)
+               }
+             msg = data.msg
+              
+              
+           }
+     })
+    
+    
+    
+    </script>
+    
+    <script type="text/javascript">
+    // window.onload = function() {
+    //     FastClick.attach(document.body)
+    // }
+    </script>
+</head>
+
+<body ontouchstart class="weui-wepay-pay-wrap">
+    <div id="tongzhi" style="width:100%;line-height:50px;line-height:50px;text-align:center;margin-top:30%"></div>
+    <!-- <div class="pay-top">
+        <div class="pay-shop-info">
+            <div class="content">
+                <span style="height: 30px;width: 30px;text-align: center;line-height: 30px;background: rgb(220,80,70);border-radius: 50%;">
+            <i class="iconfont icon-shangpu" style="font-size: 20px;color: #fff;"></i>
+          </span>
+                <span class="shop-myEqument_name" id="shopName" style="line-height: 30px;"></span>
+            </div>
+            <div class="content" style="display:none">
+                <span class="shop-myEqument">设备号:${clientNumber}</span>
+            </div>
+        </div>
+        <div class="pay-input-money">
+            <div class="input-left">
+                <span>输入消费金额</span>
+            </div>
+            <div class="input-right">
+                <span>￥</span>
+                <label id="paymoney" type="text"></label>
+            </div>
+        </div>
+    </div> -->
+   <!--  <input id="payUrl" style="display:none" />
+    <div class="payinfo" id="payinfokey" style="display:none">
+        <table cellspacing="0" cellpadding="0">
+            <tr>
+                <td class="paynum">1</td>
+                <td class="paynum">2</td>
+                <td class="paynum">3</td>
+                <td id="pay-return">
+                    <i class="iconfont icon-tuigejian"></i>
+                </td>
+            </tr>
+            <tr>
+                <td class="paynum">4</td>
+                <td class="paynum">5</td>
+                <td class="paynum">6</td>
+                <td rowspan="3" class="pay">
+                    <a id="payId">
+              <div class="a-pay">
+                <p>确认</p>
+                <p>支付</p>
+              </div>
+            </a>
+                    <div id="loading-zf" class="loading" style="display: none;"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="paynum">7</td>
+                <td class="paynum">8</td>
+                <td class="paynum">9</td>
+            </tr>
+            <tr>
+                <td id="pay-zero" colspan="2" class="payzero">0</td>
+                <td id="pay-float">.</td>
+            </tr>
+        </table>
+    </div> -->
+    <script type="text/javascript">
+       $('#tongzhi').html(msg)
+    // function getQueryString(name) {
+    //     var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+    //     var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+    //     if (r != null) {
+    //         return unescape(r[2]);
+    //     }
+    //     return null;
+    // }
+    // $(document).ready(function() {
+    //     // var projectName = window.location.href.split('/oneCode')[0];
+    //     var clientNumber = getQueryString('outTradeNo');
+    //     var oData = new Object()
+    //     oData.equipmentNumber = clientNumber
+        // var aad = new Object()
+        // aad.totalMoney = 0.01,
+        //     aad.paymentType = 'WeChat_Pay',
+        //     aad.merchantNumber = '190314188258366',
+        //     aad.code = code,
+        //     aad.codeType = "PublicAddress_Pay"
+        // $.ajax({
+        //     url: "http://hongsoutest.mynatapp.cc/pay/payRoute",
+        //     type: "POST",
+        //     async: false,
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     data: JSON.stringify(aad),
+        //     success: function(data) {
+        //         alert(data)
+        //     }
+        // })
+        //采用get方式调用服务
+    //     $.ajax({
+    //         url: "http://192.168.1.66:5017/appServer/getInfo",
+    //         type: "POST",
+    //         async: false,
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         data: JSON.stringify(oData),
+    //         success: function(data) {
+    //             console.log(data)
+    //             $("#shopName").html(data.data.storeName);
+    //           merNumber = data.data.merchantNumber
+    //             // var JsonObjs = eval("(" + data + ")");
+    //             // var redirect = JsonObjs['redirect'];
+    //             // if (redirect === undefined || redirect === null) {
+    //             //     //如果为空，证明该设备码是绑定的
+    //             //     $("#payUrl").attr("value", JsonObjs['url']);
+    //             //     $(".shop-logo").attr("src", JsonObjs['logUrl']);
+    //             //     $("#shopName").html(JsonObjs['shopName']);
+    //             // } else {
+    //             //     //如果是非空，证明该设备码是未绑定的，跳转到销售助手页面绑定二维码
+    //             //     if (JsonObjs['msg'] != null || JsonObjs['msg'] != undefined) {
+    //             //         alert(JsonObjs['msg']);
+    //             //         window.location.href = redirect;
+    //             //     } else {
+    //             //         alert('该二维码未绑定,即将跳转绑定页面');
+    //             //         window.location.href = redirect;
+    //             //     }
+    //             // }
+    //         }
+    //     });
+    // })
+
+    // $(function() {
+    //     var clientNumber = getQueryString('outTradeNo');
+    //     var isC = true;
+    //     $('#payId').click(function() {
+    //         if (isC != true) {
+    //             return
+    //         }
+    //         isC = false;
+    //         var totalFee = document.getElementById("paymoney").innerHTML;
+    //         if ($paymoney.text() == 0) {
+    //             alert("请输入金额！");
+    //         } else if ($paymoney.text() < 0.01) {
+    //             alert("请输入正确的金额，最低为0.1元");
+    //         } else {
+    //             var url = document.getElementById("payUrl");
+    //             // if (url.value == '' || url.value == null || url.value == undefined) {
+    //             //     alert("二维码未绑定成功,无法支付！");
+    //             // } else {
+    //             document.getElementById('payId').style.display = "none";
+    //             document.getElementById('loading-zf').style.display = "block";
+    //             console.log(uull)
+    //             var aad = new Object()
+    //             aad.totalMoney = 0.01,
+    //                 aad.paymentType = payType,
+    //                 aad.merchantNumber = merNumber,
+    //                 aad.code = code,
+    //                 aad.codeType = codeType
+
+    //             $.ajax({
+    //                 url: "http://hongsoutest.mynatapp.cc/pay/payRoute",
+    //                 type: "POST",
+    //                 async: false,
+    //                 headers: {
+    //                     "Content-Type": "application/json"
+    //                 },
+    //                 data: JSON.stringify(aad),
+    //                 // data: {
+    //                 //     'totalFee': totalFee,
+    //                 //     'code': code,
+    //                 //     "pay_type": payType,
+    //                 //     'deviceNumber': '0001340F1557497',
+    //                 //     'orderId': new Date().getTime(),
+    //                 //     'codeNumber': clientNumber,
+    //                 //     'storeId': '123456'
+    //                 // },
+    //                 success: function(data) {
+    //                     alert(JSON.stringify(data))
+                        
+    //                     alert(data.data)
+    //                     alert(data.data.client)
+    //                     //var ggdata = data.guanggao、
+    //                     if (data.client == 'ali') {
+    //                         alert(data.tradeNO)
+    //                         ap.tradePay({
+    //                             tradeNO: data.tradeNO
+    //                         }, function(res) {
+    //                             document.getElementById('payId').style.display = "block";
+    //                             document.getElementById('loading-zf').style.display = "none";
+    //                             document.getElementById('paymoney').innerHTML = "";
+    //                             if (res.resultCode == 9000) {
+    //                                 window.location.href = "http://h5.51shanhe.com/syad/";
+    //                             } else {
+    //                                 alert('支付失败')
+    //                             }
+    //                         });
+    //                     } else {
+    //                         onBridgeReady(data.data.map.appId, data.data.map.timeStamp, data.data.map.nonceStr, data.data.map.package, data.data.map.signType, data.data.map.paySign);
+    //                     }
+    //                 },
+    //                 fail: function(e) {
+    //                     alert('111111')
+    //                 },
+    //                 error: function(e) {
+    //                     console.log(e)
+    //                 }
+    //             })
+
+    //         }
+    //     });
+    //     $(".payinfo").slideDown();
+    //     var $paymoney = $("#paymoney");
+    //     $(".paynum").each(function() {
+    //         $(this).click(function() {
+    //             isC = true
+    //             if (($paymoney.text()).indexOf(".") != -1 && ($paymoney.text()).substring(($paymoney.text()).indexOf(".") + 1, ($paymoney.text()).length).length == 2) {
+    //                 return;
+    //             }
+    //             if ($.trim($paymoney.text()) == "0") {
+    //                 return;
+    //             }
+    //             if (parseInt($paymoney.text()) > 10000 && $paymoney.text().indexOf(".") == -1) {
+    //                 return;
+    //             }
+    //             $('.pay').removeClass('pay-disabled');
+    //             $paymoney.text($paymoney.text() + $(this).text());
+    //         });
+    //     });
+
+    //     $("#pay-return").click(function() {
+    //         $paymoney.text(($paymoney.text()).substring(0, ($paymoney.text()).length - 1));
+    //         if (!$paymoney.text()) {
+    //             $('.pay').addClass('pay-disabled').find('a').attr('href', 'javascript:return false;');
+    //         }
+    //     });
+
+    //     $("#pay-zero").click(function() {
+    //         if (($paymoney.text()).indexOf(".") != -1 && ($paymoney.text()).substring(($paymoney.text()).indexOf(".") + 1, ($paymoney.text()).length).length == 2) {
+    //             return;
+    //         }
+    //         if ($.trim($paymoney.text()) == "0") {
+    //             return;
+    //         }
+    //         if (parseInt($paymoney.text()) > 10000 && $paymoney.text().indexOf(".") == -1) {
+    //             return;
+    //         }
+    //         $paymoney.text($paymoney.text() + $(this).text());
+    //     });
+
+    //     $("#pay-float").click(function() {
+    //         if ($.trim($paymoney.text()) == "") {
+    //             return;
+    //         }
+    //         if (($paymoney.text()).indexOf(".") != -1) {
+    //             return;
+    //         }
+    //         if (($paymoney.text()).indexOf(".") != -1) {
+    //             return;
+    //         }
+    //         $paymoney.text($paymoney.text() + $(this).text());
+    //     });
+    //     if (!$paymoney.text()) {
+    //         $('.pay').addClass('pay-disabled');
+    //     }
+    // });
+
+    // function onBridgeReady(appId, time, nonceStr, package, signType, paySign, ggdata) {
+    //     WeixinJSBridge.invoke(
+    //         'getBrandWCPayRequest', {
+    //             "appId": appId,
+    //             "timeStamp": time,
+    //             "nonceStr": nonceStr,
+    //             "package": package,
+    //             "signType": signType,
+    //             "paySign": paySign
+    //         },
+    //         function(res) {
+    //             document.getElementById('payId').style.display = "block";
+    //             document.getElementById('loading-zf').style.display = "none";
+    //             document.getElementById('paymoney').innerHTML = "";
+    //             if (res.err_msg == "get_brand_wcpay_request:ok") {
+    //                 window.location.href = "http://h5.51shanhe.com/syad/";
+    //             } else {
+    //                 alert("支付失败")
+    //             }
+    //         }
+    //     );
+    // }
+     $(function() {
+         pushHistory();
+         window.addEventListener("popstate", function(e) {
+             if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                 // 微信
+                 WeixinJSBridge.call('closeWindow');
+             } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                 // 支付宝
+                 AlipayJSBridge.call('popWindow');
+             }
+         }, false);
+
+         function pushHistory() {
+             var state = {
+                 title: "title",
+                 url: "#"
+             };
+             window.history.pushState(state, "title", "#");
+         }
+     });
+    </script>
+</body>
+
+</html>

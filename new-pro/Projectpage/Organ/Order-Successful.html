@@ -28,6 +28,11 @@
 			.layui-input-inline{
 				margin-right: 20px;
 			}
+			#btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
 		</style>
 	</head>
 
@@ -80,6 +85,7 @@
 							<option value="Alipay_Pay">支付宝</option>
 							<option value="WeChat_Pay">微信</option>
 							<option value="Yun_Pay">云闪付</option>
+							<option value="Pos_Pay">银联</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -92,6 +98,7 @@
                             <option value="6">服务窗支付</option>
                             <option value="7">预授权</option>
                             <option value="8">刷脸支付</option>
+                             <option value="11">刷卡支付</option>
                         </select>
                     </div>
 					<!-- begin -->
@@ -147,23 +154,39 @@
 					</div>
 				</div>
 			</div>
+			<div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="toolbar">
+			<a class="layui-btn layui-btn-xs" id="Toview" lay-event="tuikuan">退款</a>
 			<a class="layui-btn layui-btn-xs" id="Toview" lay-event="Toview">查看</a>
 			
 		</script>
 		<script src="../../common/config-organ.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
-			function fun_date(aa){
-		        var date1 = new Date(),
-		        time1=date1.getFullYear()+"-"+(date1.getMonth()+1)+"-"+date1.getDate();//time1表示当前时间
-		        var date2 = new Date(date1);
-		        date2.setDate(date1.getDate()+aa);
-		        var time2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate();
-		        return time2
-		    }
+			function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+        var a = time2.split('-')[0],
+                    b = time2.split('-')[1],
+                    c = time2.split('-')[2]
+                if (b < 10) {
+                    b = 0 + b
+                }
+                if (c < 10) {
+                    c = 0 + c
+                }
+                return a + '-' + b + '-' + c
+    }
 		    $('#startTime').val(fun_date(-6) + ' ' +  '00:00:00')
 		     $('#endTime').val(fun_date(0)+' ' + '23:59:59')
 			// <a class="layui-btn layui-btn-xs" id="Sync" lay-event="Sync">同步</a>
@@ -226,12 +249,36 @@
 							console.log('222')
 						}
 					)
-					laydate.render({
-						elem:"#newTime"
-					})
-					laydate.render({
-						elem:"#successTime"
-					})
+				
+					 window.jyClick = function(data, data1) {
+            console.log(data)
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(-1)+' ' + '23:59:59')
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
 				//方法级渲染  
 				function tableRender(){
 					var index = layer.load(2, {shade: [0.4, '#393D49']})
@@ -342,6 +389,9 @@
 										case '3':
 										oneZ = '云闪付'
 											break;
+										case '7':
+										oneZ = '银联'
+											break;	
 										default:
 											oneZ = '--'
 											break;
@@ -374,6 +424,12 @@
 										case '8':
 											twoZ = '刷脸支付'
 											break;
+										case '11':
+											twoZ = '刷卡支付'
+											break;
+										case '12':
+											twoZ = '刷卡支付'
+											break;
 										default:
 											twoZ = '--'
 											break;
@@ -381,7 +437,7 @@
 									return  oneZ+ '</br>' + twoZ
 								}
 								//1级+2级
-							}, 
+							},
 							{
 								align: 'center',
 								field: '吃',
@@ -407,6 +463,7 @@
 				tableRender()
 				$('#search').click(function(){
 					tableRender()
+					$('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 				})
 				laydate.render({
 					elem:"#startTime",
@@ -436,7 +493,23 @@
 								iframe.subPage(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'Sync') { //同步
+					} else if(obj.event === 'tuikuan') { //费率
+						layer.open({
+							type: 2,
+							title: '退款',
+							shade: 0.5,
+							area: ['35%', '40%'],
+							maxmin: false,
+							resize: false,
+							content: ['order-tuikuan.html'],
+							success: function(layero, index) {
+								// 获取子页面的iframe
+								var iframe = window['layui-layer-iframe' + index];
+								// 向子页面的全局函数child传w参
+								iframe.subPage(data, userNumber)
+							}
+						});
+					}else if(obj.event === 'Sync') { //同步
 						var zhuxiaoData = {
 							card: data.card,
 							cardType: 5

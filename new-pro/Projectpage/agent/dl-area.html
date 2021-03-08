@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style type="text/css">
+    .layui-table-cell {
+        height: auto;
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+
+    .tipTop {
+        width: 100%;
+        height: 50px;
+        margin-bottom: 10px;
+
+    }
+
+    .top-item {
+        width: 25%;
+        padding: 0 2.5%;
+        float: left;
+    }
+
+    .top-item-num {
+        color: #d6dde8;
+        font-size: 40px;
+    }
+
+    .top-item-text {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .tip-bot {
+        width: 100%;
+        height: 100px;
+
+    }
+
+    .bot-item {
+        width: 25%;
+        padding: 0 2.5%;
+        height: 100px;
+        float: left;
+        border-right: 1px solid #cccccc;
+    }
+
+    .bot-item:last-child {
+        border-right: none;
+    }
+
+    .bot-item-text {
+        color: #54667a;
+    }
+    .hi {
+        display: none;
+    }
+
+    .sh {
+        display: inline-block;
+    }
+
+    </style>
+</head>
+
+<body>
+    <div class="x-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a><cite>销售管理</cite></a>
+            <a><cite>区域管理</cite></a>
+        </span>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <div class="layui-row layui-form x-so">
+            <div class="layui-input-inline">
+                <input type="text" id="regionName" name="shopname" placeholder="区域名称" autocomplete="off" class="layui-input">
+            </div>
+            <button class="layui-btn" lay-submit="" lay-filter="sreach" id="search" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+        </div>
+        <xblock>
+            <button class="layui-btn" data-type="generateCode"><i class="layui-icon"></i>添加区域</button>
+        </xblock>
+        <table class="layui-hide" id="table1" lay-filter="useruv"></table>
+    </div>
+    <script type="text/html" id="tool">
+        <a class="layui-btn layui-btn-xs  {{d.type=='0'?'hi':'sh'}}" lay-event="edit">编辑</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger {{d.type=='0'?'hi':'sh'}}" lay-event="delete">删除</a>
+		</script>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    //列表
+    layui.use(['table', 'layer'], function() {
+
+        $ = layui.jquery;
+        var layer = layui.layer;
+        var table = layui.table;
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+        var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+        var institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+        var jData;
+        //方法级渲染
+        function tableRender() {
+            table.render({
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'agAreaManger/getAgnetArea' + '?agentNumber=' + userNumber,
+                where: {
+                	"regionName":$('#regionName').val().trim()
+                },
+
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+
+                parseData: function(res) {
+                    //res 即为原始返回的数据
+                    if(res.code != 1000 || res.data == null){
+                    	return
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data.areaList, //解析数据列表
+                    };
+                },
+                elem: '#table1',
+                page: true,
+                height: 'full-320',
+                //method: "post",
+                id: 'deviceInfo',
+                cols: [
+                    [{
+                        field: 'regionName',
+                        title: '区域名称',
+                        align: 'center',
+                    }, {
+                        field: 'insertTime',
+                        title: '创建时间',
+                        align: 'center'
+                    }, {
+                        title: '操作',
+                        align: 'center',
+                        toolbar: "#tool",
+                        minWidth: 300
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    //得到数据总量
+                    console.log(count);
+                    $("#getAllcount").val(res.nobandRows);
+                    jData = res.data
+                    console.log(jData)
+                }
+            })
+        }
+        tableRender()
+        $('#search').click(function() {
+            tableRender()
+        })
+
+        // 根據條件重载表格
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    // 获取上面查询框的值
+                    var status = $("#status option:selected").val();
+                    var shopname = $("#shopname").val();
+                    //执行重载
+                    table.reload('deviceInfo', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            status: status,
+                            shopname: shopname.trim()
+                        }
+                    });
+                },
+                generateCode: function() {
+
+                    layer.prompt({
+                        title: '请输入区域名称'
+                    }, function(pass, index) {
+                        console.log(pass, index)
+                        CmsUtility.postAjaxCall(
+                            //系统设置
+                            'agAreaManger/insertAgnetArea', {
+
+                                "regionName": pass,
+                                "agentNumber": userNumber
+                            },
+                            function(data) {
+                                layer.closeAll()
+                                if (data.code == 1000) {
+                                    console.log(data)
+                                    layer.closeAll()
+                                    layer.msg('服务成功')
+
+                                    layui.table.reload('deviceInfo')
+                                    l
+                                } else {
+                                    layer.msg(data.msg)
+
+                                }
+                            },
+                            function(data) {
+                                console.log('222')
+                            }, 'get'
+                        )
+                        // layui.table.reload('YLBlist');
+                    });
+                }
+            };
+
+        table.on('tool(useruv)', function(obj) {
+            var data = obj.data;
+            console.log(data)
+            var url = data.QRAdress;
+            var id = data.QRCode;
+            if (obj.event === 'edit') {
+                
+                if (data.type == 0) {
+                    layer.msg('该区域为默认区域，禁止编辑')
+                    return
+                }
+                layer.prompt({
+                    title: '请输入区域名称',
+                    value: data.regionName
+                }, function(pass, index) {
+                    console.log(pass, index)
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        'agAreaManger/upDateAgentArea', {
+
+                            "regionName": pass,
+                            "agentNumber": userNumber,
+                            "regionId": data.regionId,
+                        },
+                        function(data) {
+                            layer.closeAll()
+                            if (data.code == 1000) {
+                                console.log(data)
+                                layer.closeAll()
+                                layer.msg('服务成功')
+
+                                layui.table.reload('deviceInfo')
+                                l
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }, 'get'
+                    )
+                    // layui.table.reload('YLBlist');
+                });
+
+
+            } else if (obj.event == 'delete') {
+                if (data.type == 0) {
+                    layer.msg('该区域为默认区域，禁止删除')
+                    return
+                }
+                layer.confirm('是否要删除该区域?', function(index) {
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        'agAreaManger/upDateAgentArea', {
+                            "agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number,
+                            "regionId": data.regionId,
+                            "deletionFlag": 1
+                        },
+                        function(data) {
+                            layer.closeAll()
+                            if (data.code == 1000) {
+                                layer.closeAll()
+                                layer.msg(data.msg)
+
+                                layui.table.reload('deviceInfo')
+
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                })
+
+            }
+        });
+        $('.x-body .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+    function generateCode() {
+        var num = 100;
+        $.ajax({
+            type: "post",
+            url: ".generateCode",
+            data: {
+                "num": num
+            },
+            async: true,
+            success: function(data) {
+                if (data.result == "success") {
+                    layer.msg("生成成功", {
+                        icon: 1,
+                        time: 1000
+                    }, function() {
+                        window.location.reload();
+                    });
+                } else {
+                    layer.alert(data.msg, {
+                        icon: 6
+                    }, function() {
+                        return
+                    });
+                }
+            }
+        });
+    }
+    </script>
+</body>
+
+</html>

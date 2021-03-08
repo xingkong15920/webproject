@@ -21,7 +21,7 @@
 		<script src="../../common/utility.js"></script>
 		<script type="text/javascript">
 			//var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
-			var site = '51shanhe'
+			var site = '51shanhe.com'
 
 			function getDateStr(dayCount) {
 				var dayNumber = 0 + dayCount
@@ -32,8 +32,8 @@
 			}
 			var number = CmsUtility.getQueryString('number')
 			var ins = CmsUtility.getQueryString('ins')
-			var cname = ''
-			var cip = ''
+			var cname = '--'
+			var cip = '--'
 			if (CmsUtility.getQueryString('number') != null) {
 				$.getScript('http://pv.sohu.com/cityjson?ie=utf-8', function() {
 					console.log(returnCitySN)
@@ -48,7 +48,11 @@
 						if (result && result.city && result.bounds) {
 							cname = result.province + result.city
 							console.log(cip, cname)
-							CmsUtility.postAjaxCall(
+							
+						}
+					} else {}
+				})
+				CmsUtility.postAjaxCall(
 								//系统设置
 								CmsConfig.addressUrl.Login.Automaticlist, {
 									"loginClass": '3',
@@ -83,9 +87,6 @@
 									console.log('222')
 								}
 							)
-						}
-					} else {}
-				})
 				// window.location.href = decodeURIComponent(window.location).split('?')[0]
 			} else {
 
@@ -206,7 +207,14 @@
 			<div class="left_refresh" style="margin-left: 15px;">
 				<i title="刷新" class="layui-icon layui-icon-refresh"></i>
 			</div>
+			
 			<ul class="layui-nav right" lay-filter="">
+				<!-- <li class="layui-nav-item">
+					<a href="javascript:;" id="userName">代理商：</a>
+				</li>
+				<li class="layui-nav-item">
+					<a href="javascript:;" id="userName">联系电话：</a>
+				</li> -->
 				<li class="layui-nav-item">
 					<a href="javascript:;" data-method="notice" id="msgConBtn">
 						<i title="消息中心" class="layui-icon layui-icon-notice"></i> 消息中心
@@ -215,12 +223,26 @@
 					</a>
 				</li>
 				<li class="layui-nav-item">
+					
 					<a href="javascript:;" id="userName"></a>
 					<dl class="layui-nav-child">
 						<dd>
 							<a href="javascript:;" id="logout">退出</a>
 						</dd>
 					</dl>
+				</li>
+			</ul>
+			<ul class="layui-nav right" lay-filter="" style="margin-right:50px">
+				
+				<li class="layui-nav-item">
+					
+					<a href="javascript:;" id="agentName"></a>
+					
+				</li>
+				<li class="layui-nav-item">
+					
+					<a href="javascript:;" id="agentTel"></a>
+					
 				</li>
 			</ul>
 		</div>
@@ -297,7 +319,7 @@
 							<li>
 								<a lay-href="sy-liushui.html">
 									<i class="icon icon icon-wodedingdan-quanbu"></i>
-									<cite>全部订单</cite>
+									<cite>支付订单</cite>
 								</a>
 							</li>
 							<li>
@@ -310,6 +332,12 @@
 								<a lay-href="Order-Unusual.html">
 									<i class="icon icon icon-order-error"></i>
 									<cite>异常订单</cite>
+								</a>
+							</li>
+							<li>
+								<a lay-href="order-check.html">
+									<i class="icon icon icon-order-error"></i>
+									<cite>订单校验</cite>
 								</a>
 							</li>
 						</ul>
@@ -380,6 +408,65 @@
 							<cite>门店管理</cite>
 						</a>
 					</li>
+					<li class="layui-nav-item">
+                    <a lay-href="javascript:;">
+                        <i class="icon icon icon-jiaoyishuju"></i>
+                        <cite>场景模式</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        
+                        <li class="layui-nav-item">
+                            <a lay-href="javascript:;">
+                                <i class="icon icon icon-yewuyuan-fanyongshouyi"></i>
+                                <cite>加油站</cite>
+                                <i class="iconfont nav_right">&#xe697;</i>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a lay-href="cj-setYoupin.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>油品设置</cite>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a lay-href="cj-youpinList.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>订单列表</cite>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+                         <li class="layui-nav-item">
+                            <a lay-href="javascript:;">
+                                <i class="icon icon icon-yewuyuan-fanyongshouyi"></i>
+                                <cite>景区</cite>
+                                <i class="iconfont nav_right">&#xe697;</i>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a lay-href="cj-setjingqu.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>景区信息</cite>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a lay-href="cj-jingqumenpiaoList.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>票务管理</cite>
+                                    </a>
+                                </li>
+								<li>
+                                    <a lay-href="cj-jingquList.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>订单列表</cite>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
 					<li class="layui-nav-item">
 						<a lay-href="clerk-list.html">
 							<i class="icon icon icon-mendianguanli"></i>
@@ -703,6 +790,9 @@
 			$('#adv').hide()
 		}
 
+		$('#agentName').html('服务商名称：' + JSON.parse(sessionStorage.getItem("userSh")).agentName )
+// agentTel
+$('#agentTel').html('联系电话：' + JSON.parse(sessionStorage.getItem("userSh")).registerCell )
 		var vipList = JSON.parse(sessionStorage.getItem("userSh")).list
 		var msgD = []
 		for (let i = 0; i < vipList.length; i++) {
@@ -748,7 +838,7 @@
 		CmsUtility.postAjaxCall(
 			//系统设置
 			CmsConfig.addressUrl.Public.getSitePath, {
-				"sitePath": '51shanhe.com',
+				"sitePath": 'hongxiaosou.com',
 				// "sitePath": 'hongxiaosou.cn',
 			},
 			function(data) {

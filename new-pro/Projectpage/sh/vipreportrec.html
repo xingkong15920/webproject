@@ -23,6 +23,11 @@
 				font-size: 20px;
 				margin-right: 5px;
 			}
+			#btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
 		</style>
 	</head>
 
@@ -72,6 +77,12 @@
                 <i class="layui-icon"></i>报表
             </button>
         </xblock> -->
+         <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
 		</div>
 		<script src="../../common/config-meb.js"></script>
@@ -245,7 +256,7 @@
 
 				})
 				//方法级渲染
-				// function tableRender() {
+				 function tableRender() {
 				if ($('#billType').val() == 0 || $('#billType').val() == 3) {
 					if (!verTime()) {
 						layer.msg('只能查询三个月以内数据')
@@ -255,17 +266,19 @@
 				var index = layer.load(2, {
 					shade: [0.4, '#393D49']
 				})
+
+						var startendTime = $('#startendTime');
 				table.render({
 					elem: '#LAY_table_bill',
 					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getTurnovers,
-					method: "get",
+					method: "get",					
 					height: "full-130",
 					page: true,
 					id: 'billlist',
 					where: {
 						"merchantNumber": merNumber,
-						"startTime": fun_date(-6) + ' 00:00:00',
-						"endTime": fun_date(0) + ' 23:59:59',
+						startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+						endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
 					},
 					response: {
 						"statusCode": "1000", //解析接口状态
@@ -492,7 +505,36 @@
 						layer.closeAll()
 					}
 				});
+				}
+				tableRender()
+        window.jyClick = function(data, data1) {
 
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startendTime').val(CmsUtility.fun_date(0) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startendTime').val(CmsUtility.fun_date(-1) +
+                        ' - ' + CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startendTime').val(CmsUtility.fun_date(-6) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startendTime').val(CmsUtility.fun_date(-29) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
 				// 根據條件重载表格
 				var $ = layui.$,
 					active = {
@@ -526,6 +568,7 @@
 									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
 								}
 							});
+							 $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 							layer.closeAll()
 						}
 					};

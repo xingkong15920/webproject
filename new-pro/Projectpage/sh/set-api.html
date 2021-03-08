@@ -155,6 +155,11 @@
     <div class="x-body">
         <div class="layui-row">
             <div class="layui-form" lay-filter="basic">
+                <div class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-form-mid x-red">备注：接口配置适用于拥有自己系统的中大型商户，通过设置接口信息连接开放平台接口。不需要对接商户系统用户无需设置此信息。</div>
+                    </div>
+                </div>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">接口信息</legend>
                 </fieldset>
@@ -175,7 +180,8 @@
                     <div class="layui-input-block">
                         <input type='text' style='display:none'>
                         <!--  <input type="text" name="merchantNumber" lay-verify="title"  placeholder="商户编号" class="layui-input" id="merchantNumber"> -->
-                        <input type="text" name="merchantNumber" lay-verify="title" placeholder="商户编号" class="layui-input" id="merchantNumber" disabled="disabled">
+                        <input type="text" name="merchantNumber" lay-verify="title" placeholder="商户编号" class="layui-input" id="merchantNumber" disabled="disabled"  style="width:50%;display: inline-block">
+                        <span id="copyName" style="width:100px;display:inline-block" class="layui-btn">复制编号</span>
                     </div>
                 </div>
                 <div class="layui-form-item" style="width:60%">
@@ -191,7 +197,7 @@
     <script src="../../common/config-sh.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
-    var serverUrl = 'http://192.168.1.190:5002/'
+    var serverUrl = 'http://192.168.110.190:5002/'
     // var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
 
     var code1;
@@ -199,6 +205,32 @@
     var merchantca = false;
     var type;
     var logoUrl = '';
+    function copyText(text) {
+        var textarea = document.createElement("input"); //创建input对象
+        textarea.className = "copyInput"
+        var currentFocus = document.activeElement; //当前获得焦点的元素
+        document.body.appendChild(textarea); //添加元素
+        textarea.value = text;
+        textarea.focus();
+        if (textarea.setSelectionRange)
+            textarea.setSelectionRange(0, textarea.value.length); //获取光标起始位置到结束位置
+        else
+            textarea.select();
+        try {
+            var flag = document.execCommand("copy"); //执行复制
+        } catch (eo) {
+            var flag = false;
+        }
+        document.body.removeChild(textarea); //删除元素
+        currentFocus.focus();
+        return flag;
+    }
+    $('#copyName').click(function(){
+        var flag = copyText(copyName); //传递文本
+    layer.msg(flag ? "复制成功！" : "复制失败！");
+    })
+    var copyName = ''
+
     function switchPwd() {
 	   var passwordeye = $('#passwordeye');
 	   var showPwd = $("#miyao");
@@ -288,6 +320,7 @@
             "merchantNumber": JSON.parse(sessionStorage.getItem('userSh')).Number
         })
 
+        copyName =  JSON.parse(sessionStorage.getItem('userSh')).Number
         //监听提交
     })
     </script>

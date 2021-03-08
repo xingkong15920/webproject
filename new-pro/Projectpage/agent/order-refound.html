@@ -15,12 +15,12 @@
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
     <style>
     /* *{
-				font-size: 14px;
-			} */
+                font-size: 14px;
+            } */
     /* .layui-table-cell {
-				height: auto;
-				line-height: initial;
-			} */
+                height: auto;
+                line-height: initial;
+            } */
     .layui-table-cell {
         height: auto;
     }
@@ -61,17 +61,22 @@
     p {
         font-size: 16px;
     }
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
     </style>
 </head>
 
 <body>
     <div class="x-nav">
         <span class="layui-breadcrumb">
-				<a href="">首页</a>
-				<a><cite>订单管理</cite></a>
-			</span>
+            <a href="">首页</a>
+            <a><cite>订单管理</cite></a>
+        </span>
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
+            <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
     <div class="x-body">
         <div class="layui-form layui-row">
@@ -99,20 +104,29 @@
                     <option value="Alipay_Pay">支付宝支付</option>
                     <option value="WeChat_Pay">微信支付</option>
                     <option value="UnionPay_Pay">云闪付</option>
+
+                    <option value="Pos_Pay">银联</option>
                 </select>
             </div>
             <div class="layui-input-inline">
-                        <select name="twoTransactionType" id="twoTransactionType">
-                            <option value="">支付类型</option>
-                            <option value="0">条码支付</option>
-                            <option value="1">动态二维码支付</option>
-                            <option value="2">小程序支付</option>
-                            <option value="5">公众号支付</option>
-                            <option value="6">服务窗支付</option>
-                            <option value="7">预授权</option>
-                            <option value="8">刷脸支付</option>
-                        </select>
-                    </div>
+                <select name="twoTransactionType" id="twoTransactionType">
+                    <option value="">支付类型</option>
+                    <option value="0">条码支付</option>
+                    <option value="1">动态二维码支付</option>
+                    <option value="2">小程序支付</option>
+                    <option value="5">公众号支付</option>
+                    <option value="6">服务窗支付</option>
+                    <option value="7">预授权</option>
+                    <option value="8">刷脸支付</option>
+                    <option value="11">刷卡支付</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="orderState" id="orderState">
+                    <option value="4">全部退款</option>
+                    <option value="5">部分退款</option>
+                </select>
+            </div>
             <!-- <div class="layui-input-inline">
                 <select id="orderState" name="orderState">
                     <option value="10">订单类型</option>
@@ -123,7 +137,13 @@
             </div> -->
             <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
-       <!--  <div class="baobiao" style="width:100%;height:143px">
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px;margin-top:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
+        <!--  <div class="baobiao" style="width:100%;height:143px">
             <div class="baobiao-col-1" style="padding-left: 0;">
                 <div class="baobiaoK">
                     <div class="baobiaolist" style="line-height:52px;font-size:16px">
@@ -188,8 +208,8 @@
     </div>
     <script type="text/html" id="tool">
         <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-			
-		</script>
+            
+        </script>
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
@@ -271,7 +291,34 @@
             var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
             //方法级渲染
             console.log($('#startTime').val())
+            window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
 
+        }
             function tableRender() {
                 var index = layer.load(2, { shade: [0.4, '#393D49'] })
                 table.render({
@@ -283,9 +330,9 @@
                         "startTime": $('#startTime').val() + ' ' + '00:00:00',
                         "endTime": $('#endTime').val() + ' ' + '23:59:59',
                         "oneTransactionType": $('#oneTransactionType').val(),
-                        "orderState": '4',
-                        "refundOrderNumber":$('#refundOrderNumber').val().trim(),
-                        "twoTransactionType":$('#twoTransactionType').val()
+                        "orderState": $('#orderState').val(),
+                        "refundOrderNumber": $('#refundOrderNumber').val().trim(),
+                        "twoTransactionType": $('#twoTransactionType').val()
                     },
                     elem: '#LAY_table_bill',
                     page: true,
@@ -314,7 +361,7 @@
                             },
                         }, {
                             templet: function(data) {
-                                return  data.batch
+                                return data.batch
                             },
                             title: '订单号',
                             align: 'center',
@@ -355,7 +402,10 @@
                                         oneZ = '京东钱包'
                                         break;
                                     case '3':
-                                        oneZ = '银联支付'
+                                        oneZ = '云闪付'
+                                        break;
+                                    case '7':
+                                        oneZ = '银联'
                                         break;
                                     default:
                                         oneZ = '--'
@@ -386,6 +436,15 @@
                                     case '7':
                                         twoZ = '预授权'
                                         break;
+                                    case '8':
+                                        twoZ = '刷脸支付'
+                                        break;
+                                    case '11':
+                                        twoZ = '刷卡支付'
+                                        break;
+                                    case '12':
+                                        twoZ = '刷卡支付'
+                                        break;
                                     default:
                                         twoZ = '--'
                                         break;
@@ -412,21 +471,21 @@
                     done: function(res, curr, count) {
                         // console.log(newData)
                         // console.log(curr)
-                         if(res.code != 1000){
-                             $("#count").html('0')
+                        if (res.code != 1000) {
+                            $("#count").html('0')
                             $("#transactionAmount").html('0元')
                             $("#refundAmount").html('0元')
                             $("#shopPoundage").html('0元')
                             $("#settlementAmount").html('0元')
-                        }else{
+                        } else {
                             $("#count").html(newData.count)
                             $("#transactionAmount").html(newData.transactionAmount + '元')
                             $("#refundAmount").html(newData.refundAmount + '元')
                             $("#shopPoundage").html(newData.shopPoundage + '元')
                             $("#settlementAmount").html(newData.settlementAmount + '元')
                         }
-                           
-                        
+
+
 
 
                         layer.closeAll()
@@ -439,6 +498,7 @@
 
             $('#search').click(function() {
                 tableRender()
+                $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
             })
             // 根據條件重载表格
             var $ = layui.$,

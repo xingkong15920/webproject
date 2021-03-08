@@ -67,11 +67,11 @@
                 margin-top: 0;
             }
             .layui-form-item .layui-input-inline{
-                width: 80px;
+                width: 135px;
             }
-            .layui-form-item .layui-input-inline{
+            /* .layui-form-item .layui-input-inline{
                 width: 80px;
-            }
+            } */
             #suozaidi  .layui-input-inline{
                 width: 190px;
             }
@@ -87,7 +87,6 @@
             <div class="layui-form" action="" lay-filter="cardAdd">
                 <blockquote class="layui-elem-quote">费率设置(费率单位为百分比，示例：0.38%)</blockquote>
                 <div class="layui-form-item">
-                    
                     <div class="layui-input-item">
                         <span style="color:red;display:block;margin-left:30px">*云闪付费率1为单笔1000以内包括1000所设置</span>
                     </div>
@@ -160,7 +159,6 @@
                         </div>
                     </div>
                 </fieldset>
-                
                 <fieldset class="layui-elem-field layui-field-title xdl" style="display:none">
                     <legend>新大陆通道</legend>
                     <div class="layui-form-item">
@@ -257,48 +255,89 @@
                 </fieldset>
                 <fieldset class="layui-elem-field layui-field-title ls" style="display:none">
                     <legend>乐刷通道</legend>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">微信费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsweChatRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                    <fieldset style="border-color: #fff;">
+                        <legend style="font-size:12px">扫码成本</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">支/微费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsweChatRate" lay-verify="aliorwxRate" autocomplete="off" placeholder="建议费率 0.23-0.60" class="layui-input" value="">
+                                </div>
                             </div>
-                        </div>
-                        <div class="layui-inline">
+                            <!-- <div class="layui-inline">
                             <label class="layui-form-label">支付宝费率(%)</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="lsaliRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
                             </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">云闪付费率1(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsUnionPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                        </div> -->
+                            <div class="layui-inline">
+                                <label class="layui-form-label">云闪付费率1(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsUnionPayRate" lay-verify="ysf1Rate" autocomplete="off" placeholder="建议费率 0.23-1.00" class="layui-input" value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">云闪付费率2(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsUnionPayRatetwo" lay-verify="ysf2Rate" autocomplete="off" placeholder="建议费率 0.52-1.00" class="layui-input" value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">京东钱包费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsJDWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">qq钱包费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsQQWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">翼支付费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsWingPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                                </div>
                             </div>
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">云闪付费率2(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsUnionPayRatetwo" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                    </fieldset>
+                    <fieldset style="border-color: #fff">
+                        <legend style="font-size:12px">刷卡成本</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">借记卡D1(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsDebitCardD1" lay-verify="lsDebitCardD1" autocomplete="off" placeholder="建议费率 0.40-1" class="layui-input" value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">贷记卡D1(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsCreditCardD1" lay-verify="lsCreditCardD1" autocomplete="off" placeholder="建议费率 0.51-1.00" class="layui-input" value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">借记卡D0(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsDebitCardD0" lay-verify="lsDebitCardD0" autocomplete="off" placeholder="建议费率 0.42-1.00" class="layui-input" value="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">贷记卡D0(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsCreditCardD0" lay-verify="lsCreditCardD0" autocomplete="off" placeholder="建议费率 0.53-1.00" class="layui-input" value="">
+                                </div>
                             </div>
                         </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">京东钱包费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsJDWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
-                            </div>
-                        </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">qq钱包费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsQQWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
-                            </div>
-                        </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">翼支付费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsWingPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
-                            </div>
+                    </fieldset>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title ls" style="display:none">
+                    <legend>花呗分期抽成比例</legend>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">花呗分期抽成比例(%)</label>
+                        <div class="layui-input-inline" style="width:200px">
+                            <input type="number" id="proportional" name="proportional" required="" lay-verify="percentage" autocomplete="off" class="layui-input" placeholder="建议1-100之间" onmousewheel="return false;">
                         </div>
                     </div>
                 </fieldset>
@@ -355,110 +394,110 @@
                 element = layui.element,
                 layer = layui.layer;
             var tableSelect = layui.tableSelect;
-            
-         CmsUtility.postAjaxCall(
-            //系统设置
-           CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber, {
-                "page": 1,
-                "limit": 10
-            },
-            function(data) {
-                console.log(data)
-                if (data.code == '1000') {
 
-                    for (var i = 0; i < data.data.PaymentChannellist.length; i++) {
-                        switch (data.data.PaymentChannellist[i].paymentChannelType) {
-                            case 0:
-                                console.log('123')
-                                if (data.data.PaymentChannellist[i].disable == 0) {
-                                    $('.alipay').show()
-                                    pyList.push(0)
-                                }
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber, {
+                    "page": 1,
+                    "limit": 10
+                },
+                function(data) {
+                    console.log(data)
+                    if (data.code == '1000') {
 
-                                break;
-                            case 1:
-                                if (data.data.PaymentChannellist[i].disable == 0) {
-                                    $('.wechatpay').show()
-                                    pyList.push(1)
-                                }
+                        for (var i = 0; i < data.data.PaymentChannellist.length; i++) {
+                            switch (data.data.PaymentChannellist[i].paymentChannelType) {
+                                case 0:
+                                    console.log('123')
+                                    if (data.data.PaymentChannellist[i].disable == 0) {
+                                        $('.alipay').show()
+                                        pyList.push(0)
+                                    }
 
-                                break;
-                            case 2:
-                                if (data.data.PaymentChannellist[i].disable == 0) {
-                                    $('.fuyou').show()
-                                    pyList.push(2)
-                                }
+                                    break;
+                                case 1:
+                                    if (data.data.PaymentChannellist[i].disable == 0) {
+                                        $('.wechatpay').show()
+                                        pyList.push(1)
+                                    }
 
-                                break;
-                            case 3:
-                                if (data.data.PaymentChannellist[i].disable == 0) {
-                                    $('.yrm').show()
-                                    pyList.push(3)
-                                }
+                                    break;
+                                case 2:
+                                    if (data.data.PaymentChannellist[i].disable == 0) {
+                                        $('.fuyou').show()
+                                        pyList.push(2)
+                                    }
 
-                                break;
-                            case 4:
-                                if (data.data.PaymentChannellist[i].disable == 0) {
-                                    $('.xdl').show()
-                                    pyList.push(4)
-                                }
+                                    break;
+                                case 3:
+                                    if (data.data.PaymentChannellist[i].disable == 0) {
+                                        $('.yrm').show()
+                                        pyList.push(3)
+                                    }
 
-                                break;
-                            case 5:
-                                if (data.data.PaymentChannellist[i].disable == 0) {
-                                    $('.sxf').show()
-                                    pyList.push(5)
-                                }
+                                    break;
+                                case 4:
+                                    if (data.data.PaymentChannellist[i].disable == 0) {
+                                        $('.xdl').show()
+                                        pyList.push(4)
+                                    }
 
-                                break;
-                            case 6:
-                                if (data.data.PaymentChannellist[i].disable == 0) {
-                                    $('.ls').show()
-                                    pyList.push(6)
-                                }
+                                    break;
+                                case 5:
+                                    if (data.data.PaymentChannellist[i].disable == 0) {
+                                        $('.sxf').show()
+                                        pyList.push(5)
+                                    }
 
-                                break;
-                            default:
-                                // statements_def
-                                break;
+                                    break;
+                                case 6:
+                                    if (data.data.PaymentChannellist[i].disable == 0) {
+                                        $('.ls').show()
+                                        pyList.push(6)
+                                    }
+
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
+                            }
                         }
-                    }
-                    console.log(pyList)
-                    if (pyList.indexOf(0) < 0) {
-                        removeElementsByClass('alipay')
-                    }
-                    if (pyList.indexOf(1) < 0) {
-                        removeElementsByClass('wechatpay')
-                    }
-                    if (pyList.indexOf(2) < 0) {
-                        removeElementsByClass('fuyou')
-                    }
-                    if (pyList.indexOf(3) < 0) {
-                        removeElementsByClass('yrm')
-                    }
-                    if (pyList.indexOf(4) < 0) {
-                        removeElementsByClass('xdl')
-                    }
-                    if (pyList.indexOf(5) < 0) {
-                        removeElementsByClass('sxf')
-                    }
-                    if (pyList.indexOf(6) < 0) {
-                        removeElementsByClass('ls')
-                    }
-                } else {
+                        console.log(pyList)
+                        if (pyList.indexOf(0) < 0) {
+                            removeElementsByClass('alipay')
+                        }
+                        if (pyList.indexOf(1) < 0) {
+                            removeElementsByClass('wechatpay')
+                        }
+                        if (pyList.indexOf(2) < 0) {
+                            removeElementsByClass('fuyou')
+                        }
+                        if (pyList.indexOf(3) < 0) {
+                            removeElementsByClass('yrm')
+                        }
+                        if (pyList.indexOf(4) < 0) {
+                            removeElementsByClass('xdl')
+                        }
+                        if (pyList.indexOf(5) < 0) {
+                            removeElementsByClass('sxf')
+                        }
+                        if (pyList.indexOf(6) < 0) {
+                            removeElementsByClass('ls')
+                        }
+                    } else {
 
+                    }
+                },
+                function(data) {
+                    console.log('222')
                 }
-            },
-            function(data) {
-                console.log('222')
+            )
+            window.removeElementsByClass = function(className) {
+                var elements = document.getElementsByClassName(className);
+                while (elements.length > 0) {
+                    elements[0].parentNode.removeChild(elements[0]);
+                }
             }
-        )
-        window.removeElementsByClass = function(className) {
-            var elements = document.getElementsByClassName(className);
-            while (elements.length > 0) {
-                elements[0].parentNode.removeChild(elements[0]);
-            }
-        }
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Public.getAreajson, {},
@@ -602,7 +641,7 @@
 
 
                             console.log()
-                            
+
                             switch (data.data[i].onePaymentTypeINT) {
                                 case 0:
                                     form.val('cardAdd', {
@@ -651,155 +690,168 @@
 
 
                         }
-                        
+
                         if (data.data[i].paymentChanneltype == 4) {
-                                    switch (data.data[i].onePaymentTypeINT) {
-                                        case 0:
-                                            form.val('cardAdd', {
+                            switch (data.data[i].onePaymentTypeINT) {
+                                case 0:
+                                    form.val('cardAdd', {
 
-                                                "xdlaliRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 1:
-                                            form.val('cardAdd', {
+                                        "xdlaliRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 1:
+                                    form.val('cardAdd', {
 
-                                                "xdlweChatRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 2:
-                                            form.val('cardAdd', {
+                                        "xdlweChatRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 2:
+                                    form.val('cardAdd', {
 
-                                                "xdlJDWallet": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 3:
-                                            form.val('cardAdd', {
+                                        "xdlJDWallet": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 3:
+                                    form.val('cardAdd', {
 
-                                                "xdlUnionPayRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            form.val('cardAdd', {
+                                        "xdlUnionPayRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    form.val('cardAdd', {
 
-                                                "XdlUnionPayRatetwo": (data.data[i].ysfrate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 5:
-                                            form.val('cardAdd', {
+                                        "XdlUnionPayRatetwo": (data.data[i].ysfrate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 5:
+                                    form.val('cardAdd', {
 
-                                                "xdlQQWallet": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 6:
-                                            form.val('cardAdd', {
+                                        "xdlQQWallet": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 6:
+                                    form.val('cardAdd', {
 
-                                                "xdlWingPayRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        default:
-                                            // statements_def
-                                            break;
-                                    }
-
-
-                                }
-                            if (data.data[i].paymentChanneltype == 5) {
-                                    switch (data.data[i].onePaymentTypeINT) {
-                                        case 0:
-                                            form.val('cardAdd', {
-
-                                                "sxfaliRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 1:
-                                            form.val('cardAdd', {
-
-                                                "sxfweChatRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 2:
-                                            form.val('cardAdd', {
-
-                                                "sxfJDWallet": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 3:
-                                            form.val('cardAdd', {
-
-                                                "sxfUnionPayRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            form.val('cardAdd', {
-
-                                                "sxfUnionPayRatetwo": (data.data[i].ysfrate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 5:
-                                            form.val('cardAdd', {
-
-                                                "sxfQQWallet": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 6:
-                                            form.val('cardAdd', {
-
-                                                "sxfWingPayRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        default:
-                                            // statements_def
-                                            break;
-                                    }
+                                        "xdlWingPayRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
+                            }
 
 
-                                }
-                                if (data.data[i].paymentChanneltype == 6) {
-                                    switch (data.data[i].onePaymentTypeINT) {
-                                        case 0:
-                                            form.val('cardAdd', {
+                        }
+                        if (data.data[i].paymentChanneltype == 5) {
+                            switch (data.data[i].onePaymentTypeINT) {
+                                case 0:
+                                    form.val('cardAdd', {
 
-                                                "lsweChatRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 1:
-                                            form.val('cardAdd', {
+                                        "sxfaliRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 1:
+                                    form.val('cardAdd', {
 
-                                                "lsaliRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 2:
-                                            form.val('cardAdd', {
+                                        "sxfweChatRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 2:
+                                    form.val('cardAdd', {
 
-                                                "lsJDWallet": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 3:
-                                            form.val('cardAdd', {
+                                        "sxfJDWallet": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 3:
+                                    form.val('cardAdd', {
 
-                                                "lsUnionPayRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            form.val('cardAdd', {
+                                        "sxfUnionPayRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    form.val('cardAdd', {
 
-                                                "lsUnionPayRatetwo": (data.data[i].ysfrate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 5:
-                                            form.val('cardAdd', {
+                                        "sxfUnionPayRatetwo": (data.data[i].ysfrate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 5:
+                                    form.val('cardAdd', {
 
-                                                "lsQQWallet": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        case 6:
-                                            form.val('cardAdd', {
+                                        "sxfQQWallet": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 6:
+                                    form.val('cardAdd', {
 
-                                                "lsWingPayRate": (data.data[i].rate * 100).toFixed(2),
-                                            })
-                                            break;
-                                        default:
-                                            // statements_def
-                                            break;
-                                    }
+                                        "sxfWingPayRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
+                            }
 
 
-                                }
+                        }
+                        if (data.data[i].paymentChanneltype == 6) {
+                            switch (data.data[i].onePaymentTypeINT) {
+                                case 0:
+                                    form.val('cardAdd', {
+
+                                        "lsweChatRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 1:
+                                    form.val('cardAdd', {
+
+                                        "lsaliRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 2:
+                                    form.val('cardAdd', {
+
+                                        "lsJDWallet": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 3:
+                                    form.val('cardAdd', {
+
+                                        "lsUnionPayRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    form.val('cardAdd', {
+
+                                        "lsUnionPayRatetwo": (data.data[i].ysfrate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 5:
+                                    form.val('cardAdd', {
+
+                                        "lsQQWallet": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 6:
+                                    form.val('cardAdd', {
+
+                                        "lsWingPayRate": (data.data[i].rate * 100).toFixed(2),
+                                    })
+                                    break;
+                                case 7:
+                                    form.val('cardAdd', {
+
+                                        "lsCreditCardD0": (data.data[i].lsCreditCardD0 * 100).toFixed(2),
+                                        "lsCreditCardD1": (data.data[i].lsCreditCardD1 * 100).toFixed(2),
+                                        "lsDebitCardD0": (data.data[i].lsDebitCardD0 * 100).toFixed(2),
+                                        "lsDebitCardD1": (data.data[i].lsDebitCardD1 * 100).toFixed(2),
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
+                            }
+
+
+                        }
                     }
+                    form.val('cardAdd', {
+
+                        "proportional": (jgData.proportional * 100).toFixed(2),
+                    })
                     // form.val('cardAdd', {
 
                     //     // "T1Rate": T1,
@@ -917,7 +969,38 @@
                     //     }
                     // }
 
-                }
+                },
+                percentage: function(value) {
+                    if (!value.length) {
+                        return '花呗分期抽成比例不能为空'
+                    }
+                    if (isNaN(value) == true) {
+                        return '请输入数字'
+                    }
+                    if (value < 0 || value > 100) {
+                        return '花呗分期抽成比例需在0-100之间'
+                    }
+                },
+                lsDebitCardD1: function(value) {
+                    if (parseFloat(value) < 0.40 || parseFloat(value) > 1 || value == '') {
+                        return '借记卡D1费率只能在 0.40~1.00 之间'
+                    }
+                },
+                lsCreditCardD1: function(value) {
+                    if (parseFloat(value) < 0.51 || parseFloat(value) > 1 || value == '') {
+                        return '贷记卡D1费率只能在 0.51~1.00 之间'
+                    }
+                },
+                lsDebitCardD0: function(value) {
+                    if (parseFloat(value) < 0.42 || parseFloat(value) > 1 || value == '') {
+                        return '借记卡D0费率只能在 0.42~1.00 之间'
+                    }
+                },
+                lsCreditCardD0: function(value) {
+                    if (parseFloat(value) < 0.53 || parseFloat(value) > 1 || value == '') {
+                        return '贷记卡D0费率只能在 0.53~1.00 之间'
+                    }
+                },
             });
             /*---------- 监听提交 ----------*/
             form.on('submit(add)', function(data, index) {
@@ -940,13 +1023,13 @@
                 }
                 if (pyList.indexOf(0) >= 0) {
                     addData.gfAliRate = (addData.gfAliRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(0) < 0){
-                    addData.gfAliRate = '0'
+                } else if (pyList.indexOf(0) < 0) {
+                    delete addData.gfAliRate
                 }
                 if (pyList.indexOf(1) >= 0) {
                     addData.gfWeChatRate = (addData.gfWeChatRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(1) < 0){
-                    addData.gfWeChatRate = 0 
+                } else if (pyList.indexOf(1) < 0) {
+                    delete addData.gfWeChatRate
                 }
                 if (pyList.indexOf(2) >= 0) {
                     addData.fyweChatRate = (addData.fyweChatRate / 10000 * 100).toFixed(4)
@@ -956,14 +1039,14 @@
                     addData.fyQQWallet = (addData.fyQQWallet / 10000 * 100).toFixed(4)
                     addData.fyUnionPayRatetwo = (addData.fyUnionPayRatetwo / 10000 * 100).toFixed(4)
                     addData.fyWingPayRate = (addData.fyWingPayRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(2) < 0){
-                    addData.fyweChatRate = 0
-                    addData.fyaliRate = 0
-                    addData.fyUnionPayRate = 0
-                    addData.fyJDWallet = 0
-                    addData.fyQQWallet = 0
-                    addData.fyUnionPayRatetwo = 0
-                    addData.fyWingPayRate = 0
+                } else if (pyList.indexOf(2) < 0) {
+                    delete addData.fyweChatRate
+                    delete addData.fyaliRate
+                    delete addData.fyUnionPayRate
+                    delete addData.fyJDWallet
+                    delete addData.fyQQWallet
+                    delete addData.fyUnionPayRatetwo
+                    delete addData.fyWingPayRate
                 }
                 if (pyList.indexOf(3) < 0) {
 
@@ -986,14 +1069,14 @@
                     addData.xdlWingPayRate = (addData.xdlWingPayRate / 10000 * 100).toFixed(4)
 
 
-                }else if (pyList.indexOf(4) < 0){
-                    addData.xdlweChatRate = 0
-                    addData.xdlaliRate = 0
-                    addData.xdlUnionPayRate = 0
-                    addData.xdlJDWallet = 0
-                    addData.xdlQQWallet = 0
-                    addData.XdlUnionPayRatetwo = 0
-                    addData.xdlWingPayRate = 0
+                } else if (pyList.indexOf(4) < 0) {
+                    delete addData.xdlweChatRate
+                    delete addData.xdlaliRate
+                    delete addData.xdlUnionPayRate
+                    delete addData.xdlJDWallet
+                    delete addData.xdlQQWallet
+                    delete addData.XdlUnionPayRatetwo
+                    delete addData.xdlWingPayRate
                 }
                 if (pyList.indexOf(5) >= 0) {
 
@@ -1011,54 +1094,68 @@
                     addData.sxfWingPayRate = (addData.sxfWingPayRate / 10000 * 100).toFixed(4)
 
 
-                }else if (pyList.indexOf(5) < 0){
-                    addData.sxfweChatRate = 0
-                    addData.sxfaliRate = 0
-                    addData.sxfUnionPayRate = 0
-                    addData.sxfJDWallet = 0
-                    addData.sxfQQWallet = 0
-                    addData.sxfUnionPayRatetwo = 0
-                    addData.sxfWingPayRate = 0
+                } else if (pyList.indexOf(5) < 0) {
+                    delete addData.sxfweChatRate
+                    delete addData.sxfaliRate
+                    delete addData.sxfUnionPayRate
+                    delete addData.sxfJDWallet
+                    delete addData.sxfQQWallet
+                    delete addData.sxfUnionPayRatetwo
+                    delete addData.sxfWingPayRate
                 }
                 if (pyList.indexOf(6) >= 0) {
-                    addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo / 10000 * 100).toFixed(4)
+                    addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo / 100).toFixed(4)
 
 
 
-                    addData.lsweChatRate = (addData.lsweChatRate / 10000 * 100).toFixed(4)
+                    addData.lsweChatRate = (addData.lsweChatRate / 100).toFixed(4)
                     addData.lsaliRate = addData.lsweChatRate
-                    addData.lsUnionPayRate = (addData.lsUnionPayRate / 10000 * 100).toFixed(4)
+                    addData.lsUnionPayRate = (addData.lsUnionPayRate / 100).toFixed(4)
 
-                    addData.lsJDWallet = (addData.lsJDWallet / 10000 * 100).toFixed(4)
-                    addData.lsQQWallet = (addData.lsQQWallet / 10000 * 100).toFixed(4)
+                    addData.lsJDWallet = (addData.lsJDWallet / 100).toFixed(4)
+                    addData.lsQQWallet = (addData.lsQQWallet / 100).toFixed(4)
 
 
 
-                    addData.lsWingPayRate = (addData.lsWingPayRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(6) < 0){
-                    addData.lsUnionPayRatetwo = 0
-                    addData.lsweChatRate = 0
-                    addData.lsaliRate = 0
-                    addData.lsUnionPayRate = 0
-                    addData.lsJDWallet = 0
-                    addData.lsQQWallet = 0
-                    addData.lsWingPayRate = 0
+                    addData.lsWingPayRate = (addData.lsWingPayRate / 100).toFixed(4)
+                    addData.lsDebitCardD0 = (addData.lsDebitCardD0 / 100).toFixed(4)
+                    addData.lsCreditCardD0 = (addData.lsCreditCardD0 / 100).toFixed(4)
+                    addData.lsDebitCardD1 = (addData.lsDebitCardD1 / 100).toFixed(4)
+                    addData.lsCreditCardD1 = (addData.lsCreditCardD1 / 100).toFixed(4)
+
+                } else if (pyList.indexOf(6) < 0) {
+                    delete addData.lsUnionPayRatetwo
+                    delete addData.lsweChatRate
+                    delete addData.lsaliRate
+                    delete addData.lsUnionPayRate
+                    delete addData.lsJDWallet
+                    delete addData.lsQQWallet
+                    delete addData.lsWingPayRate
+                    delete addData.lsDebitCardD0
+                    delete addData.lsCreditCardD0
+                    delete addData.lsDebitCardD1
+                    delete addData.lsCreditCardD1
                 }
 
                 addData.pAgentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
                 addData.agentLevel = jgData.agentLevel
+                addData.proportional = (addData.proportional / 10000 * 100).toFixed(4)
+
                 console.log(addData)
+                var index = layer.load(2, { shade: [0.4, '#393D49'] })
                 // 发送请求
                 CmsUtility.postAjaxCall(
                     //系统设置
                     CmsConfig.addressUrl.Agent.updataAgentRate,
                     addData,
                     function(data) {
+                        layer.closeAll()
                         if (data.code == 1000) {
                             setTimeout(function() {
                                 $('#quxiao').click()
                             }, 16);
                             parent.layer.msg('更改成功')
+                            parent.layui.table.reload('salesmanList')
                         } else {
                             layer.msg(data.msg)
                         }

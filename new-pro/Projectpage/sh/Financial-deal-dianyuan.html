@@ -13,81 +13,92 @@
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
     <style>
         .x-so input.layui-input {
-				width: 100%;
-			}
-			
-			.layui-col-md4 .layui-input-inline {
-				width: 32%;
-			}
-			
-			.homelist {
-				text-align: center;
-			}
-			
-			.homelistitle {
-				font-size: 1.2rem;
-				margin-bottom: 20px;
-				color: #999;
-			}
-			
-			.homelistct {
-				font-size: 1.6rem;
-				font-weight: 600;
-			}
-			
-			.homelistc .layui-btn {
-				margin-left: 20px;
-			}
-			
-			.layui-col-md5 {
-				width: 20%;
-			}
-			
-			.Trad {
-				padding: 20px;
-				background-color: #f2f2f2;
-			}
-			
-			.layui-btn+.layui-btn {
-				margin-left: -2px;
-			}
-			
-			.border {
-				box-shadow: 0 0 30px rgba(0, 0, 0, .1);
-				padding: 15px;
-			}
-			
-			.huizongTit {
-				font-size: 20px;
-				margin-bottom: 20px;
-			}
-			
-			.huizongCon {
-				font-size: 20px;
-			}
-			
-			.huizongCon span {
-				font-size: 20px;
-			}
-		</style>
+                width: 100%;
+            }
+            
+            .layui-col-md4 .layui-input-inline {
+                width: 32%;
+            }
+            
+            .homelist {
+                text-align: center;
+            }
+            
+            .homelistitle {
+                font-size: 1.2rem;
+                margin-bottom: 20px;
+                color: #999;
+            }
+            
+            .homelistct {
+                font-size: 1.6rem;
+                font-weight: 600;
+            }
+            
+            .homelistc .layui-btn {
+                margin-left: 20px;
+            }
+            
+            .layui-col-md5 {
+                width: 20%;
+            }
+            
+            .Trad {
+                padding: 20px;
+                background-color: #f2f2f2;
+            }
+            
+            .layui-btn+.layui-btn {
+                margin-left: -2px;
+            }
+            
+            .border {
+                box-shadow: 0 0 30px rgba(0, 0, 0, .1);
+                padding: 15px;
+            }
+            
+            .huizongTit {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .huizongCon {
+                font-size: 20px;
+            }
+            
+            .huizongCon span {
+                font-size: 20px;
+            }
+            #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+        </style>
 </head>
 
 <body id="iosiframe">
     <div class="x-nav">
         <span class="layui-breadcrumb">
-				<a href="">首页</a>
-                <a href="">数据统计</a>
-                <a><cite>店员统计</cite></a>
-			</span>
+            <a href="">首页</a>
+            <a href="">数据统计</a>
+            <a><cite>店员统计</cite></a>
+        </span>
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-				<i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
     </div>
     <div class="x-body">
         <div class="layui-row">
             <div class="layui-form x-so">
                 <div class="layui-input-inline">
                     <!-- 需要数据对接(完成) -->
-                    <select name="shopName" id="shopNumber" lay-search>
+                    <select name="shopName" id="shopNumber" lay-search lay-filter="chooseshop">
+                        <option value="">--请选择门店--</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <!-- 需要数据对接(完成) -->
+                    <select name="clerkName" id="clerkNumber" lay-search>
                         <option value="">--请选择店员--</option>
                     </select>
                 </div>
@@ -95,8 +106,8 @@
                     <select name="source" id="source">
                         <option value="">支付渠道</option>
                         <option value="2">支付宝</option>
-                            <option value="1">微信</option>
-                            <option value="3">云闪付</option>
+                        <option value="1">微信</option>
+                        <option value="3">云闪付</option>
                     </select>
                 </div>
                 <div class="layui-input-inline">
@@ -113,73 +124,126 @@
                 </div> -->
             </div>
         </div>
+         <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
         <div class="layui-row Trad">
-            <div class="layui-col-md3" style="width:17%">
+            <div class="layui-col-md3" style="width:12%">
                 <div class="homelist">
-                    <p class="homelistitle">交易笔数</p>
+                    <p class="homelistitle">订单笔数</p>
                     <div class="homelistc">
-                        <span class="x-left homelistct" style="line-height:40px;" id="totalOrder"></span>
+                        <span class="x-left homelistct" style="line-height:40px;" id="orderNumber"></span>
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md3" style="width:17%">
+            <div class="layui-col-md3" style="width:12%">
                 <div class="homelist">
-                    <p class="homelistitle">交易金额</p>
+                    <p class="homelistitle">订单金额</p>
                     <div class="homelistc">
-                        <span class="x-left homelistct" style="line-height:40px;" id="orderTotalMoney"></span>
+                        <span class="x-left homelistct" style="line-height:40px;" id="orderAmount"></span>
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md3" style="width:17%">
+            <div class="layui-col-md3" style="width:12%">
+                <div class="homelist">
+                    <p class="homelistitle">优惠金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="discountAmount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:12%">
+                <div class="homelist">
+                    <p class="homelistitle">分账金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="rebateAmount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:12%">
                 <div class="homelist">
                     <p class="homelistitle">退款金额</p>
                     <div class="homelistc">
-                        <span class="x-left homelistct" style="line-height:40px;" id="refundOrderTotalMoney"></span>
+                        <span class="x-left homelistct" style="line-height:40px;" id="refundAmount"></span>
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md3" style="width:17%">
-                <div class="homelist">
-                    <p class="homelistitle">手续费</p>
-                    <div class="homelistc">
-                        <span class="x-left homelistct" style="line-height:40px;" id="poundageTotalMoney"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-col-md3" style="width:17%">
+            <div class="layui-col-md3" style="width:12%">
                 <div class="homelist">
                     <p class="homelistitle">实收金额</p>
                     <div class="homelistc">
-                        <span class="x-left homelistct" style="line-height:40px;" id="shishou"></span>
+                        <span class="x-left homelistct" style="line-height:40px;" id="receiptAmount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:12%">
+                <div class="homelist">
+                    <p class="homelistitle">手续费</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="poundageAmount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:12%">
+                <div class="homelist">
+                    <p class="homelistitle">结算金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="settleAmount"></span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="layui-tab layui-tab-card">
             <ul class="layui-tab-title">
-                <li class="layui-this qiehuan" style="width:60px" onclick="tab(0)">交易金额</li>
-                <li style="width:60px" class="qiehuan" onclick="tab(1)">交易笔数</li>
-                <li style="width:60px" class="qiehuan" onclick="tab(2)">退款金额</li>
-                <li style="width:60px" class="qiehuan" onclick="tab(3)">手续费</li>
-                <li style="width:60px" class="qiehuan" onclick="tab(4)">实收金额</li>
+                <li class="layui-this qiehuan" style="width:90px" onclick="tab(0)">订单笔数</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(1)">订单金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(2)">优惠金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(3)">分账笔数</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(4)">分账金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(5)">退款笔数</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(6)">退款金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(7)">实收金额</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(8)">手续费</li>
+                <li style="width:90px" class="qiehuan" onclick="tab(9)">结算金额</li>
             </ul>
         </div>
         <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
         <div class="grid-demo border">
             <div id="main" style="height: 500px"></div>
         </div>
+        <table class="layui-table" id="LAY_table_fina" lay-filter="fina">
+        </table>
     </div>
-    <script type="text/javascript" src="http://static.hongxiaosou.com/public/js/echarts.min.js"></script>
+    <script type="text/javascript" src="../../public/js/echarts.min.js"></script>
     <script src="../../common/config-sh.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
-    var Statement_Date = []
+    var statementDate = []
+    // 折线图用数据
     var orderTotalMoney = []
-    var jyMoney = []
-    var jyCount = []
-    var reMoney = []
-    var shouMoney = []
-    var shishou = []
+    // 交易笔数
+    var orderNumber = []
+    // 交易金额
+    var orderAmount = []
+    // 优惠金额
+    var discountAmount = []
+    // 分账笔数
+    var separateNumber = []
+    // 分账金额
+    var rebateAmount = []
+    // 退款笔数
+    var refundNumber = []
+    // 退款金额
+    var refundAmount = []
+    // 实收金额
+    var receiptAmount = []
+    // 手续费
+    var poundageAmount = []
+    // 结算金额
+    var settleAmount = []
     var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
     var myChart
     //var userNumber = '1000795634';
@@ -187,22 +251,23 @@
     dataO.merchantNumber = userNumber
     // //获取商户下门店名称
     // CmsUtility.postAjaxCall(
-    // 	CmsConfig.addressUrl.Merchant.getShopNames,
-    // 	dataO,
-    // 	function(data) {
-    // 		var shopData = data.data
-    // 		for(var i = 0; i < shopData.length; i++) {
-    // 			$("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
-    // 		}
-    // 	}
+    //  CmsConfig.addressUrl.Merchant.getShopNames,
+    //  dataO,
+    //  function(data) {
+    //      var shopData = data.data
+    //      for(var i = 0; i < shopData.length; i++) {
+    //          $("#shopName").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
+    //      }
+    //  }
     // )
+
     function tab(id) {
         switch (id) {
             case 0:
 
                 CmsUtility.clearListArr(orderTotalMoney)
-                for (let i = 0; i < jyMoney.length; i++) {
-                    orderTotalMoney.push(jyMoney[i])
+                for (let i = 0; i < orderNumber.length; i++) {
+                    orderTotalMoney.push(orderNumber[i])
                 }
 
                 myChart.clear()
@@ -211,8 +276,8 @@
                 break;
             case 1:
                 CmsUtility.clearListArr(orderTotalMoney)
-                for (let i = 0; i < jyCount.length; i++) {
-                    orderTotalMoney.push(jyCount[i])
+                for (let i = 0; i < orderAmount.length; i++) {
+                    orderTotalMoney.push(orderAmount[i])
                 }
 
                 myChart.clear()
@@ -222,8 +287,8 @@
             case 2:
 
                 CmsUtility.clearListArr(orderTotalMoney)
-                for (let i = 0; i < reMoney.length; i++) {
-                    orderTotalMoney.push(reMoney[i])
+                for (let i = 0; i < discountAmount.length; i++) {
+                    orderTotalMoney.push(discountAmount[i])
                 }
 
                 myChart.clear()
@@ -233,8 +298,8 @@
             case 3:
 
                 CmsUtility.clearListArr(orderTotalMoney)
-                for (let i = 0; i < shouMoney.length; i++) {
-                    orderTotalMoney.push(shouMoney[i])
+                for (let i = 0; i < separateNumber.length; i++) {
+                    orderTotalMoney.push(separateNumber[i])
                 }
 
                 myChart.clear()
@@ -244,8 +309,63 @@
             case 4:
 
                 CmsUtility.clearListArr(orderTotalMoney)
-                for (let i = 0; i < shishou.length; i++) {
-                    orderTotalMoney.push(shishou[i])
+                for (let i = 0; i < rebateAmount.length; i++) {
+                    orderTotalMoney.push(rebateAmount[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 5:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < refundNumber.length; i++) {
+                    orderTotalMoney.push(refundNumber[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 6:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < refundAmount.length; i++) {
+                    orderTotalMoney.push(refundAmount[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 7:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < receiptAmount.length; i++) {
+                    orderTotalMoney.push(receiptAmount[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 8:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < poundageAmount.length; i++) {
+                    orderTotalMoney.push(poundageAmount[i])
+                }
+
+                myChart.clear()
+                myChart.setOption(option);
+                // statements_1
+                break;
+            case 9:
+
+                CmsUtility.clearListArr(orderTotalMoney)
+                for (let i = 0; i < settleAmount.length; i++) {
+                    orderTotalMoney.push(settleAmount[i])
                 }
 
                 myChart.clear()
@@ -278,32 +398,70 @@
             "startTime": $('#startTime').val(),
             "endTime": $('#endTime').val(),
             "shopNumber": $('#shopNumber').val(),
+            "clerkNumber": $('#clerkNumber').val().split('/')[0],
             "source": $('#source').val(),
             "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
         }
         reloadres();
+
         CmsUtility.postAjaxCall(
-            CmsConfig.addressUrl.Merchant.getClerkList,
+            CmsConfig.addressUrl.Merchant.getShopNames,
             dataO,
             function(data) {
                 var shopData = data.data
                 for (var i = 0; i < shopData.length; i++) {
-                    $("#shopNumber").append("<option value='" + shopData[i].clerkNumber + "'>" + shopData[i].clerkName + "</option>");
+                    $("#shopNumber").append("<option value='" + shopData[i].shopNumber + "'>" + shopData[i].shopName + "</option>");
                 }
                 form.render()
             }
         )
+        window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            reloadres();
+                    tableRender()
+            
+            var qiehuan = document.getElementsByClassName('qiehuan')
+            for (let i = 0; i < qiehuan.length; i++) {
+                qiehuan[i].setAttribute('class', 'qiehuan')
+            }
+            qiehuan[0].setAttribute('class', 'layui-this qiehuan')        
 
+        }
         function reloadres() {
-            CmsUtility.postAjaxCall(
+            var tjData = new Object()
+            tjData.startTime = $('#startTime').val()
+            tjData.endTime =  $('#endTime').val(),
+            tjData.shopNumber =  $('#shopNumber').val(),
+            tjData.clerkNumber =  $('#clerkNumber').val().split('/')[0],
+            tjData.zhifuType =  $('#source').val(),
+            tjData.merchantNumber = userNumber
+            CmsUtility.postAjaxCallJson(
                 //系统设置
-                CmsConfig.addressUrl.Merchant.getClerkStatistics + '?merchantNumber=' + userNumber, {
-                    "startTime": $('#startTime').val(),
-                    "endTime": $('#endTime').val(),
-                    "clerkNumber": $('#shopNumber').val(),
-                    "zhifuType": $('#source').val(),
-                    // "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
-                },
+                '/statistics/getClerkStatistic',
+                JSON.stringify(tjData),
                 function(data) {
                     if (data.code != 1000) {
                         layer.msg(data.msg)
@@ -312,48 +470,76 @@
                         $('#totalOrder').text(0) //交易笔数
                         $('#poundageTotalMoney').text(0) //退款笔数
                         $('#shishou').text(0) //退款笔数
-                        CmsUtility.clearListArr(Statement_Date)
+                        $('#orderNumber').text(0)
+                        $('#orderAmount').text(0)
+                        $('#discountAmount').text(0)
+                        $('#rebateAmount').text(0)
+                        $('#refundAmount').text(0)
+                        $('#receiptAmount').text(0)
+                        $('#poundageAmount').text(0)
+                        $('#settleAmount').text(0)
+                        // 日期
+                        CmsUtility.clearListArr(statementDate)
                         CmsUtility.clearListArr(orderTotalMoney)
-                        CmsUtility.clearListArr(orderTotalMoney)
-                        CmsUtility.clearListArr(jyMoney)
-                        CmsUtility.clearListArr(jyCount)
-                        CmsUtility.clearListArr(reMoney)
-                        CmsUtility.clearListArr(shouMoney)
-                        CmsUtility.clearListArr(shishou)
+                        CmsUtility.clearListArr(orderNumber)
+                        CmsUtility.clearListArr(orderAmount)
+                        CmsUtility.clearListArr(discountAmount)
+                        CmsUtility.clearListArr(separateNumber)
+                        CmsUtility.clearListArr(rebateAmount)
+                        CmsUtility.clearListArr(refundNumber)
+                        CmsUtility.clearListArr(refundAmount)
+                        CmsUtility.clearListArr(receiptAmount)
+                        CmsUtility.clearListArr(poundageAmount)
+                        CmsUtility.clearListArr(settleAmount)
                         myChart.clear()
                         myChart.setOption(option);
                         return
                     }
-                    CmsUtility.clearListArr(Statement_Date)
+                    CmsUtility.clearListArr(statementDate)
                     CmsUtility.clearListArr(orderTotalMoney)
-                    CmsUtility.clearListArr(orderTotalMoney)
-                    CmsUtility.clearListArr(jyMoney)
-                    CmsUtility.clearListArr(jyCount)
-                    CmsUtility.clearListArr(reMoney)
-                    CmsUtility.clearListArr(shouMoney)
-                    CmsUtility.clearListArr(shishou)
-                    console.log(data)
-                    console.log(data.data.map2)
-                    console.log(data.data.maps)
-                    $('#totalOrder').text(data.data.merClerkBill[0].totalOrder)
-                    $('#orderTotalMoney').text(parseFloat(data.data.merClerkBill[0].orderTotalMoney).toFixed(2))
-                    $('#refundOrderTotalMoney').text(parseFloat(data.data.merClerkBill[0].refundOrderTotalMoney).toFixed(2))
-                    $('#poundageTotalMoney').text(parseFloat(data.data.merClerkBill[0].poundageTotalMoney).toFixed(2))
-                    $('#shishou').text(parseFloat(data.data.merClerkBill[0].shishouMoney).toFixed(2))
+                     CmsUtility.clearListArr(orderNumber)
+                        CmsUtility.clearListArr(orderAmount)
+                        CmsUtility.clearListArr(discountAmount)
+                        CmsUtility.clearListArr(separateNumber)
+                        CmsUtility.clearListArr(rebateAmount)
+                        CmsUtility.clearListArr(refundNumber)
+                        CmsUtility.clearListArr(refundAmount)
+                        CmsUtility.clearListArr(receiptAmount)
+                        CmsUtility.clearListArr(poundageAmount)
+                        CmsUtility.clearListArr(settleAmount)
+                    
+                    // $('#totalOrder').text(data.data.merClerkBill[0].totalOrder)
+                    // $('#orderTotalMoney').text(parseFloat(data.data.merClerkBill[0].orderTotalMoney).toFixed(2))
+                    // $('#refundOrderTotalMoney').text(parseFloat(data.data.merClerkBill[0].refundOrderTotalMoney).toFixed(2))
+                    // $('#poundageTotalMoney').text(parseFloat(data.data.merClerkBill[0].poundageTotalMoney).toFixed(2))
+                    // $('#shishou').text(parseFloat(data.data.merClerkBill[0].shishouMoney).toFixed(2))
+                    $('#orderNumber').text(parseFloat(data.data.merClerkBill[0].orderNumber))
+                    $('#orderAmount').text(parseFloat(data.data.merClerkBill[0].orderAmount).toFixed(2))
+                    $('#discountAmount').text(parseFloat(data.data.merClerkBill[0].discountAmount).toFixed(2))
+                    $('#rebateAmount').text(parseFloat(data.data.merClerkBill[0].rebateAmount).toFixed(2))
+                    $('#refundAmount').text(parseFloat(data.data.merClerkBill[0].refundAmount).toFixed(2))
+                    $('#receiptAmount').text(parseFloat(data.data.merClerkBill[0].receiptAmount).toFixed(2))
+                    $('#poundageAmount').text(parseFloat(data.data.merClerkBill[0].poundageAmount).toFixed(2))
+                    $('#settleAmount').text(parseFloat(data.data.merClerkBill[0].settleAmount).toFixed(2))
                     var data = data.data.merClerkBillList
                     if (!data) {
                         return
                     }
                     for (var j = 0; j < data.length; j++) {
-                        Statement_Date.push(data[j].statementDate)
-                        orderTotalMoney.push(data[j].orderTotalMoney)
-                        jyMoney.push(data[j].orderTotalMoney)
-                        jyCount.push(data[j].totalOrder)
-                        reMoney.push(data[j].refundOrderTotalMoney)
-                        shouMoney.push(data[j].poundageTotalMoney)
-                        shishou.push((data[j].shishouMoney))
+                        statementDate.push(data[j].statementDate)
+                        orderTotalMoney.push(data[j].orderNumber)
+                        orderNumber.push(data[j].orderNumber)
+                        orderAmount.push(data[j].orderAmount)
+                        discountAmount.push(data[j].discountAmount)
+                        separateNumber.push(data[j].separateNumber)
+                        rebateAmount.push(data[j].rebateAmount)
+                        refundNumber.push(data[j].refundNumber)
+                        refundAmount.push(data[j].refundAmount)
+                        receiptAmount.push(data[j].receiptAmount)
+                        poundageAmount.push(data[j].poundageAmount)
+                        settleAmount.push(data[j].settleAmount)
                     }
-                    Statement_Date.sort()
+                    statementDate.sort()
                     myChart.clear()
                     // 为echarts对象加载数据
                     myChart.setOption(option);
@@ -364,12 +550,180 @@
             )
         }
 
+        function getclerk(shopNum) {
+            console.log(shopNum)
+            var clerkList = []
+            var dataO = new Object();
+            dataO.merchantNumber = userNumber
+            dataO.shopNumber = shopNum
+            dataO.page = 1
+            dataO.limit = 999
+            CmsUtility.postAjaxCall(
+                CmsConfig.addressUrl.Merchant.getClerks,
+                dataO,
+                function(data) {
+                    if (data.code != 1000 || data.data.result.length == 0) {
+                        $("#clerkNumber").append('<option value=""> 请选择店员</option>')
+                        return
+                    }
+                    clerkList = data.data.result
+                    $("#clerkNumber").append('<option value=""> 请选择店员</option>')
+                    console.log(clerkList)
+                    for (var i = 0; i < clerkList.length; i++) {
+                        $("#clerkNumber").append("<option value='" + clerkList[i].clerkNumber + '/' + clerkList[i].clerkName + "'>" +
+                            clerkList[i].clerkNumber + '/' + clerkList[i].clerkName + "</option>");
+                    }
+                    form.render('select')
+                }
+            )
+        }
+        form.on('select(chooseshop)', function(data) {
+            if(data.value == ''){
+                return
+            }
+            getclerk(data.value.split('/')[0])
+
+            var select = $("#clerkNumber")[0];
+            select.length = 0;
+            form.render('select')
+        });
+
+        function tableRender() {
+            table.render({
+                elem: '#LAY_table_fina',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + '/statistics/getClerkStatisticList',
+                where: {
+                    "merchantNumber":userNumber,
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
+                    "shopNumber": $('#shopNumber').val(),
+                    "clerkNumber": $('#clerkNumber').val().split('/')[0],
+                    "zhifuType": $('#source').val(),
+            "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
+                },
+                method: "post",
+                height: 'full-220',
+                contentType: 'application/json',
+                page: true,
+                id: 'finalist',
+                response: {
+                    "statusCode": "1000", //解析接口状态
+                },
+                parseData: function(res) {
+                    if (res.data == null) {
+                        return
+                    }
+                    return {
+                        "code": res.code,
+                        "count": res.data.count,
+                        "data": res.data.clerkBillList,
+                    }
+                },
+                cols: [
+                    [{
+                            field: 'shopName',
+                            title: '门店名称',
+                            align: 'center',
+                        }, {
+                            field: 'clerkName',
+                            title: '店员名称',
+                            align: 'center',
+                        },
+                        {
+                            field: 'wechatOrderTotalMoney',
+                            title: '微信',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.weChatOrderAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'zfbOrderTotalMoney',
+                            title: '支付宝',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.aliPayOrderAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'unionOrderTotalMoney',
+                            title: '云闪付',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.unionPayOrderAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'unionOrderTotalMoney',
+                            title: '银联刷卡',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.posPayOrderAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'orderNumber',
+                            title: '订单笔数',
+                            align: 'center',
+                        },
+                        {
+                            field: 'orderAmount',
+                            title: '订单金额',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.orderAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'discountAmount',
+                            title: '优惠金额',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.discountAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'rebateAmount',
+                            title: '分账金额',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.rebateAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'refundNumber',
+                            title: '退款笔数',
+                            align: 'center',
+                        },
+                        {
+                            field: 'refundAmount',
+                            title: '退款金额',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.refundAmount).toFixed(2)
+                            }
+                        },
+                        {
+                            field: 'receiptAmount',
+                            title: '实收金额',
+                            align: 'center',
+                            templet: function(data) {
+                                return '￥' + parseFloat(data.receiptAmount).toFixed(2)
+                            }
+                        }
+                    ]
+                ]
+            });
+        }
+        tableRender()
         //方法级渲染  
         var $ = layui.$,
             active = {
                 reload: function() {
                     // 发送请求
                     reloadres();
+                    tableRender()
+                    $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
                     var qiehuan = document.getElementsByClassName('qiehuan')
                     for (let i = 0; i < qiehuan.length; i++) {
                         qiehuan[i].setAttribute('class', 'qiehuan')
@@ -416,7 +770,7 @@
             axisLine: {
                 onZero: false
             },
-            data: Statement_Date
+            data: statementDate
         }],
         yAxis: [{
             splitLine: {

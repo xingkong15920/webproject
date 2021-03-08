@@ -22,6 +22,11 @@
 			.layui-btn+.layui-btn {
 				margin-left: -2px;
 			}
+			#btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
 		</style>
 	</head>
 
@@ -74,6 +79,12 @@
 					</div>
 				</div>
 			</div>
+			<div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			 <xblock>
             <button class="layui-btn" id="addzhangdan"><i class="layui-icon"></i>添加账单</button>
         </xblock>
@@ -122,6 +133,35 @@
 					laydate.render({
 						elem:"#updateTime"
 					})
+					window.jyClick = function(data, data1) {
+            
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#inserttime').val(CmsUtility.fun_date(0))
+                    $('#updateTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#inserttime').val(CmsUtility.fun_date(-1))
+                    $('#updateTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#inserttime').val(CmsUtility.fun_date(-6))
+                    $('#updateTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#inserttime').val(CmsUtility.fun_date(-29))
+                    $('#updateTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
 				//方法级渲染 
 				function tableRender(){
 					table.render({
@@ -262,6 +302,7 @@
 				tableRender()
 				$('#reload1').click(function(){
 					tableRender()
+					$('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 				})
 				$('#addzhangdan').click(function() {
 		            layer.open({

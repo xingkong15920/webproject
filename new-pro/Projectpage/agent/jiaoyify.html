@@ -77,7 +77,8 @@
        <div class="layui-form-item">
                    
                     <div class="layui-input-item">
-                        <span style="color:red;display:block">*每个月25号导入上月的数据</span>
+                        <span style="color:red;display:inline-block">*每个月25号导入上月的数据</span>
+                        <span id="cjwenti" style="display:none;color:rgb(62, 132, 233);display:inline-block;margin-left:20px;cursor:pointer">分润结算常见问题？</span>
                     </div>
                     
                 </div>
@@ -252,6 +253,12 @@
 
             var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
             var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+            if(JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber == '1004'){
+                $('#cjwenti').show()
+            }
+            $('#cjwenti').click(function(){
+                window.open('https://www.yuque.com/docs/share/5333c33f-c1c5-411b-95d3-d62a092c1b57?#')
+            })
             //方法级渲染
             console.log($('#startTime').val())
 			
@@ -297,7 +304,7 @@
                     },
                     elem: '#LAY_table_bill',
                     page: true,
-                    height: 'full-200',
+                    height: 'full-300',
                     id: 'billlist',
                     response: {
                         "statusCode": "1000", //解析接口状态
@@ -331,16 +338,42 @@
                             field: 'orderTotalMoney',
                             title: '交易金额(元)',
                             align: 'center',
+                            templet:function(data){
+                                
+                                return '￥' + data.orderTotalMoney.toFixed(2)
+                            }
                         }, {
                             field: 'jlsettlementMoney',
                             title: '间连佣金(元)',
                             align: 'center',
+                            templet:function(data){
+                                return  '￥' + data.jlsettlementMoney
+                            }
                         }, {
                             field: 'zlsettlementMoney',
                             title: '直连佣金(元)',
                             align: 'center',
+                            templet:function(data){
+                                return  '￥' + data.zlsettlementMoney
+                            }
                         }
                         , {
+                            field: 'hdSettlementMoney',
+                            title: '活动佣金(元)',
+                            align: 'center',
+                            templet:function(data){
+                                return  '￥' + data.hdSettlementMoney
+                            }
+                        }
+                        ,{
+                            field: 'settlementCountMoney',
+                            title: '佣金汇总(元)',
+                            align: 'center',
+                            templet:function(data){
+                                return  '￥' + data.settlementCountMoney
+                            }
+                        }
+                        ,{
                             field: 'statementDate',
                             title: '返佣时间',
                             align: 'center',

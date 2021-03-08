@@ -39,6 +39,11 @@
 			td{
 				overflow: hidden
 			}
+			#btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
 		</style>
 	</head>
 
@@ -70,7 +75,7 @@
 					<div class="layui-input-inline">
 						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
 					</div>
-					<div class="layui-input-inline">
+					<!-- <div class="layui-input-inline">
 						<select name="type" id="auditStatus">
 							<option value="">状态</option>
 							<option value="0">未通过</option>
@@ -78,7 +83,7 @@
 							<option value="4">已提交第三方</option>
 							<option value="5">待三方人工审核</option>
 						</select>
-					</div>
+					</div> -->
 					<!-- <div class="layui-input-inline">
 						<select name="cardVoucherName" id="auditStatus">
 							<option value="">审核状态</option>
@@ -94,6 +99,12 @@
 					</div>
 				</div>
 			</div>
+			<div class="layui-row" id="btnBox" style="margin-bottom:10px">
+	            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+	            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+	            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+	            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+	        </div>
 			<xblock>
 				<!-- <button class="layui-btn" onclick="x_admin_show('添加商户','./Merchants-add.html')"><i class="layui-icon"></i>添加商户</button> -->
 			</xblock>
@@ -126,10 +137,13 @@
 			<a class="layui-btn layui-btn-xs " id="edit" lay-event="edit">查看</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 			<span class="{{d.auditStatus !=4 ? 'hiide' : ''}}">已提交</span>
+			<a class="layui-btn layui-btn-xs" id="getType" lay-event="getType">更新状态</a>
 		</script>
 		<script src="../../common/config-organ.js"></script>
         <script src="../../common/utility.js"></script>
 		<script>
+			var state = CmsUtility.getQueryString('state')
+			console.log(state)
 			// <a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">登录</a>
 			// <a class="layui-btn layui-btn-xs" id="channelSet" lay-event="channelSet">通道</a>
 			// <a class="layui-btn layui-btn-xs" id="childaccount" lay-event="childaccount">子帐号</a>
@@ -228,9 +242,38 @@
 				laydate.render({
 					elem:"#endTime"
 				})
-					var index = layer.load(2, {shade: [0.4, '#393D49']})
+				 window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
+					
 				//方法级渲染  
 				function tableRender(){
+					var index = layer.load(2, {shade: [0.4, '#393D49']})
 					table.render({
 						//url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
 						// url: 'https://easy-mock.com/mock/5be8d89ba5f5e073df414199/example/shList',
@@ -239,7 +282,7 @@
 						where:{
 							"agentName":$('#agentName').val().trim(),
 							"merchantName":$('#merchantName').val().trim(),
-							"auditStatus":$('#auditStatus').val(),
+							"auditStatus":state,
 							"subsidy":'',
 							"startTime":$('#startTime').val().trim(),
 							"endtime":$('#endTime').val().trim(),
@@ -375,7 +418,7 @@
 								layer.closeAll()
 							}
 							form.render()
-							
+							layer.closeAll()
 						}
 					});
 
@@ -386,14 +429,13 @@
 				
 				$('#search').click(function(){
 					tableRender()
-					
+					$('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 				})
 				
 				//状态的修改
 				form.on('switch(consumptionPreferences)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					console.log(this.checked)
-					console.log(data)
 					console.log(data.elem.getAttribute("shopNumber"))
 					var tjData = new Object();
 					tjData.merchantNumber = data.value;
@@ -422,7 +464,6 @@
 				form.on('select(shopSel)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					console.log(data.elem.getAttribute("shopNumber"))
-					console.log(data)
 					var tjData = new Object();
 					tjData.merchantNumber = data.elem.getAttribute("shopNumber");
 					tjData.orderNumber = data.elem.getAttribute("orderNumber");
@@ -449,7 +490,7 @@
 				form.on('select(cardVoucherName)', function(data) {
 					// layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
 					console.log(data.elem.getAttribute("shopNumber"))
-					console.log(data)
+					
 					var tjData = new Object();
 					tjData.merchantNumber = data.elem.getAttribute("shopNumber");
 					tjData.orderNumber = data.elem.getAttribute("orderNumber");
@@ -476,7 +517,7 @@
 				//监听工具条
 				table.on('tool(members)', function(obj) {
 					var data = obj.data;
-					console.log(data)
+					
 					if(obj.event === 'loginTo') { //直接登录商户后台
 						window.open("../sh/index.html?number="+data.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('organUser')).institutionNumber)
 					} else if(obj.event === 'channelSet') { //通道
@@ -595,9 +636,44 @@
 								iframe.subPage(data, userNumber)
 							}
 						});
-					} else if(obj.event === 'failMessage') { //秘钥secretkey
-						console.log(data)
-						layer.msg(data.msg)
+					} else if(obj.event === 'getType') { //秘钥secretkey
+						
+						// var index = layer.load(2, { shade: [0.4, '#393D49'] })
+						var tjData = new Object();
+							tjData.orderNumber = data.orderNumber;
+							tjData.paymentType = data.paymentType
+							tjData.paymentChannel = data.paymentChannel
+							$.ajax({
+						            type: 'POST',
+						            //url: 'https://api.51shanhe.com/shanhe-admin/register/intoSubmission', 
+						            // url: 'https://api.51shanhe.com/shanhe-admin/audit/submitMerchant', 
+						            url: 'http://192.168.110.71:6005/shanhe-admin/audit/handCheck', 
+						            data: tjData,
+						            async: 'false',
+						            dataType: 'json', 
+						            headers:{
+						                contentType:"application/x-www-form-urlencoded"
+						            },
+						            beforeSend: function() {
+						                
+						            },
+						            success: function(data) {
+						                layer.closeAll() 
+						                if(data.code == 1000){
+											
+											layer.msg(data.msg)
+											// setTimeout(function(){
+											// 	layui.table.reload('vip_cardList')
+											// },1000)
+											
+										}else{
+											layer.msg(data.msg)
+											// setTimeout(function(){
+											// 	layui.table.reload('vip_cardList')
+											// },1000)
+										}
+						            },
+						        });
 					}else if(obj.event === 'secretkey') { //秘钥secretkey
 						layer.open({
 							type: 2,
@@ -616,7 +692,7 @@
 						});
 					}else if(obj.event === 'success') { //秘钥secretkey
 						// layer.msg("通过")
-						console.log(data)
+						
 						var index = layer.load(2, { shade: [0.4, '#393D49'] })
 						var tjData = new Object();
 							tjData.orderNumber = data.orderNumber;
@@ -626,7 +702,7 @@
 						            type: 'POST',
 						            //url: 'https://api.51shanhe.com/shanhe-admin/register/intoSubmission', 
 						            // url: 'https://api.51shanhe.com/shanhe-admin/audit/submitMerchant', 
-						            url: 'http://192.168.1.250:6005/shanhe-admin/audit/submitMerchant', 
+						            url: 'http://192.168.110.250:6005/shanhe-admin/audit/submitMerchant', 
 						            data: tjData,
 						            async: 'false',
 						            dataType: 'json', 

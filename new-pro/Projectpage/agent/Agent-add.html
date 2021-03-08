@@ -20,63 +20,63 @@
     <![endif]-->
     <style>
         .widthauto {
-				width: auto !important;
-			}
-			.tips_red {
-				color: red;
-			}
-			
-			.layui-form-label {
-				padding-left: 0;
-				width: 120px;
-			}
-			
-			.layui-input-block {
-				margin-left: 115px;
-			}
-			
-			.layui-elem-quote {
-				font-size: 18px;
-			}
-			
-			.layui-elem-field {
-				margin: 0;
-			}
-			
-			.layui-elem-field legend {
-				font-size: 16px;
-				margin-bottom: 15px;
-			}
-			
-			.layui-upload-img {
-				width: 92px;
-				height: 92px;
-				margin: 0 10px 10px 0;
-			}
-			
-			.Since_inline {
-				display: inline-block;
-				width: auto !important;
-				line-height: 38px;
-			}
-			
-			.layui-elem-quote .layui-form-switch {
-				margin: 0 15px;
-				margin-top: 0;
-			}
-			.sxf{
-				/* margin-bottom: 40px; */
-			}
-			.layui-form-item .layui-input-inline{
-				width: 80px;
-			}
-			#suozaidi  .layui-input-inline{
-				width: 190px;
-			}
+                width: auto !important;
+            }
+            .tips_red {
+                color: red;
+            }
+            
+            .layui-form-label {
+                padding-left: 0;
+                width: 120px;
+            }
+            
+            .layui-input-block {
+                margin-left: 115px;
+            }
+            
+            .layui-elem-quote {
+                font-size: 18px;
+            }
+            
+            .layui-elem-field {
+                margin: 0;
+            }
+            
+            .layui-elem-field legend {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            
+            .layui-upload-img {
+                width: 92px;
+                height: 92px;
+                margin: 0 10px 10px 0;
+            }
+            
+            .Since_inline {
+                display: inline-block;
+                width: auto !important;
+                line-height: 38px;
+            }
+            
+            .layui-elem-quote .layui-form-switch {
+                margin: 0 15px;
+                margin-top: 0;
+            }
+            .sxf{
+                /* margin-bottom: 40px; */
+            }
+            .layui-form-item .layui-input-inline{
+                width: 135px;
+            }
+            #suozaidi  .layui-input-inline{
+                width: 190px;
+            }
             .nowHide{
                 display: none;
             }
-		</style>
+        </style>
 </head>
 
 <body id="iosiframe" style="padding-bottom:20rpx;">
@@ -86,8 +86,8 @@
                 <!--隐藏-->
                 <!--基本信息-->
                 <blockquote class="layui-elem-quote">基本信息</blockquote>
-                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:100px">服务商类型</label>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">服务商类型</label>
                     <div class="layui-input-block" id="typeBox">
                         <!-- <input type="radio" name="agentType" value="0" title="全国服务商" lay-filter="cardvalid" checked="">
                             <input type="radio" name="agentType" value="1" title="省级服务商" lay-filter="cardvalid">
@@ -125,8 +125,15 @@
                         <input type="password" name="rePass_Word" lay-verify="repassword" autocomplete="off" placeholder="请确认密码" class="layui-input" id="repass">
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:100px">所在区域</label>
+                    <div class="layui-input-block" style="display: flex;">
+                        <select name="regionId" id="regionId">
+                        </select>
+                    </div>
+                </div>
                 <div class="layui-form-item" id="suozaidi">
-                    <label class="layui-form-label"  style="width:100px">所在地</label>
+                    <label class="layui-form-label" style="width:100px">省市区</label>
                     <div class="layui-input-block" style="display: flex;">
                         <div class="layui-input-inline">
                             <select name="province" id="provice" lay-filter="provice" lay-verify="title">
@@ -143,14 +150,13 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label"  style="width:100px">详细地址</label>
+                    <label class="layui-form-label" style="width:100px">详细地址</label>
                     <div class="layui-input-block">
                         <input type="text" name="Address" lay-verify="title" autocomplete="off" placeholder="请输入详细地址" class="layui-input" value="">
                     </div>
                 </div>
                 <blockquote class="layui-elem-quote">费率设置(费率单位为百分比，示例：0.38%)</blockquote>
                 <div class="layui-form-item">
-                    
                     <div class="layui-input-item">
                         <span style="color:red;display:block;margin-left:30px">*云闪付费率1为单笔1000以内包括1000所设置</span>
                     </div>
@@ -223,7 +229,6 @@
                         </div>
                     </div>
                 </fieldset>
-                
                 <fieldset class="layui-elem-field layui-field-title xdl" style="display:none">
                     <legend>新大陆通道</legend>
                     <div class="layui-form-item">
@@ -318,50 +323,92 @@
                         </div>
                     </div>
                 </fieldset>
-                <fieldset class="layui-elem-field layui-field-title ls" style="display:none">
+               <fieldset class="layui-elem-field layui-field-title ls" style="display:none">
                     <legend>乐刷通道</legend>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">微信费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsweChatRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                    <fieldset style="border-color: #fff;">
+                        <legend  style="font-size:12px">扫码成本</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">支/微费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsweChatRate" lay-verify="aliorwxRate" autocomplete="off" placeholder="建议费率 0.23-0.60" class="layui-input" value="0.30">
+                                </div>
                             </div>
-                        </div>
-                        <div class="layui-inline">
+                            <!-- <div class="layui-inline">
                             <label class="layui-form-label">支付宝费率(%)</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="lsaliRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
                             </div>
+                        </div> -->
+                            <div class="layui-inline">
+                                <label class="layui-form-label">云闪付费率1(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsUnionPayRate" lay-verify="ysf1Rate" autocomplete="off" placeholder="建议费率 0.23-1.00" class="layui-input" value="0.23">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">云闪付费率2(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsUnionPayRatetwo" lay-verify="ysf2Rate" autocomplete="off" placeholder="建议费率 0.52-1.00" class="layui-input" value="0.52">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">京东钱包费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsJDWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">qq钱包费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsQQWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">翼支付费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsWingPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset style="border-color: #fff">
+                        <legend style="font-size:12px">刷卡成本</legend>
+                        <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">借记卡D1(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="lsDebitCardD1" lay-verify="lsDebitCardD1" autocomplete="off" placeholder="建议费率 0.40-1" class="layui-input" value="0.40">
+                            </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">云闪付费率1(%)</label>
+                            <label class="layui-form-label">贷记卡D1(%)</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="lsUnionPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                <input type="text" name="lsCreditCardD1" lay-verify="lsCreditCardD1" autocomplete="off" placeholder="建议费率 0.51-1.00" class="layui-input" value="0.51">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">云闪付费率2(%)</label>
+                            <label class="layui-form-label">借记卡D0(%)</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="lsUnionPayRatetwo" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.52">
+                                <input type="text" name="lsDebitCardD0" lay-verify="lsDebitCardD0" autocomplete="off" placeholder="建议费率 0.42-1.00" class="layui-input" value="0.42">
                             </div>
                         </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">京东钱包费率(%)</label>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">贷记卡D0(%)</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="lsJDWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                <input type="text" name="lsCreditCardD0" lay-verify="lsCreditCardD0" autocomplete="off" placeholder="建议费率 0.53-1.00" class="layui-input" value="0.53">
                             </div>
                         </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">qq钱包费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsQQWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
-                            </div>
-                        </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">翼支付费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsWingPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
-                            </div>
+                    </div>
+                      </fieldset>
+                    
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title ls" style="display:none">
+                    <legend>花呗分期抽成比例</legend>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">花呗分期抽成比例(%)</label>
+                        <div class="layui-input-inline" style="width:200px">
+                            <input type="number" id="proportional" name="proportional" required="" lay-verify="percentage" autocomplete="off" class="layui-input" placeholder="建议1-100之间" onmousewheel="return false;">
                         </div>
                     </div>
                 </fieldset>
@@ -389,7 +436,7 @@
         }, 16);
     })
 
-    
+
     var serverUrl = window.parent.serverUrl
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
     layui.use(['laydate', 'table', 'upload', 'form'], function() {
@@ -401,6 +448,12 @@
             admin = layui.admin,
             element = layui.element,
             layer = layui.layer;
+        laydate.render({
+            elem: '#startTime' //指定元素
+        });
+        laydate.render({
+            elem: '#endTime' //指定元素
+        });
         var dlList = [{
                 "name": '全国服务商',
                 "type": '0'
@@ -453,7 +506,7 @@
 
 
 
-         CmsUtility.postAjaxCall(
+        CmsUtility.postAjaxCall(
             //系统设置
             CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber, {
                 "page": 1,
@@ -556,9 +609,9 @@
                 elements[0].parentNode.removeChild(elements[0]);
             }
         }
-        
-        
-        
+
+
+
         var p = [],
             c = [],
             aa = [],
@@ -641,6 +694,32 @@
                 console.log(data)
             }
         )
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'agAreaManger/getAgnetArea', {
+
+                "agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number
+            },
+            function(data) {
+                layer.closeAll()
+                if (data.code == 1000) {
+                    console.log(data)
+                    var areaList = data.data.areaList
+                    var str = ''
+                    for (var i = 0; i < areaList.length; i++) {
+                        str += '<option value="' + areaList[i].regionId + '">' + areaList[i].regionName + '</>'
+                    }
+                    $('#regionId').html(str)
+                    form.render()
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }, 'get'
+        )
         form.on('select(provice)', function(data) {
             console.log(data)
             var str1 = '<option value="">请选择市</option>'
@@ -701,7 +780,37 @@
             content: function(value) {
                 layedit.sync(editIndex);
             },
-
+            percentage: function(value) {
+                if (!value.length) {
+                    return '花呗分期抽成比例不能为空'
+                }
+                if (isNaN(value) == true) {
+                    return '请输入数字'
+                }
+                if (value < 0 || value > 100) {
+                    return '花呗分期抽成比例需在0-100之间'
+                }
+            },
+            lsDebitCardD1: function(value) {
+                if (parseFloat(value) < 0.40 || parseFloat(value) > 1 || value == '') {
+                    return '借记卡D1费率只能在 0.40~1.00 之间'
+                }
+            },
+            lsCreditCardD1: function(value) {
+                if (parseFloat(value) < 0.51 || parseFloat(value) > 1 || value == '') {
+                    return '贷记卡D1费率只能在 0.51~1.00 之间'
+                }
+            },
+            lsDebitCardD0: function(value) {
+                if (parseFloat(value) < 0.42 || parseFloat(value) > 1 || value == '') {
+                    return '借记卡D0费率只能在 0.42~1.00 之间'
+                }
+            },
+            lsCreditCardD0: function(value) {
+                if (parseFloat(value) < 0.53 || parseFloat(value) > 1 || value == '') {
+                    return '贷记卡D0费率只能在 0.53~1.00 之间'
+                }
+            },
         });
 
 
@@ -717,116 +826,125 @@
             addData.institutionNumber = userNumber
             addData.pAgentNumber = JSON.parse(sessionStorage.getItem("agentUser")).Number
             addData.pAgentLevel = JSON.parse(sessionStorage.getItem("agentUser")).agentLevel
-            
+
             if (pyList.indexOf(0) >= 0) {
-                    addData.gfAliRate = (addData.gfAliRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(0) < 0){
-                    addData.gfAliRate = '0'
-                }
-                if (pyList.indexOf(1) >= 0) {
-                    addData.gfWeChatRate = (addData.gfWeChatRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(1) < 0){
-                    addData.gfWeChatRate = 0 
-                }
-                if (pyList.indexOf(2) >= 0) {
-                    addData.fyweChatRate = (addData.fyweChatRate / 10000 * 100).toFixed(4)
-                    addData.fyaliRate = addData.fyweChatRate
-                    addData.fyUnionPayRate = (addData.fyUnionPayRate / 10000 * 100).toFixed(4)
-                    addData.fyJDWallet = (addData.fyJDWallet / 10000 * 100).toFixed(4)
-                    addData.fyQQWallet = (addData.fyQQWallet / 10000 * 100).toFixed(4)
-                    addData.fyUnionPayRatetwo = (addData.fyUnionPayRatetwo / 10000 * 100).toFixed(4)
-                    addData.fyWingPayRate = (addData.fyWingPayRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(2) < 0){
-                    addData.fyweChatRate = 0
-                    addData.fyaliRate = 0
-                    addData.fyUnionPayRate = 0
-                    addData.fyJDWallet = 0
-                    addData.fyQQWallet = 0
-                    addData.fyUnionPayRatetwo = 0
-                    addData.fyWingPayRate = 0
-                }
-                if (pyList.indexOf(3) < 0) {
+                addData.gfAliRate = (addData.gfAliRate / 10000 * 100).toFixed(4)
+            } else if (pyList.indexOf(0) < 0) {
+               delete addData.gfAliRate 
+            }
+            if (pyList.indexOf(1) >= 0) {
+                addData.gfWeChatRate = (addData.gfWeChatRate / 10000 * 100).toFixed(4)
+            } else if (pyList.indexOf(1) < 0) {
+               delete addData.gfWeChatRate 
+            }
+            if (pyList.indexOf(2) >= 0) {
+                addData.fyweChatRate = (addData.fyweChatRate / 10000 * 100).toFixed(4)
+                addData.fyaliRate = addData.fyweChatRate
+                addData.fyUnionPayRate = (addData.fyUnionPayRate / 10000 * 100).toFixed(4)
+                addData.fyJDWallet = (addData.fyJDWallet / 10000 * 100).toFixed(4)
+                addData.fyQQWallet = (addData.fyQQWallet / 10000 * 100).toFixed(4)
+                addData.fyUnionPayRatetwo = (addData.fyUnionPayRatetwo / 10000 * 100).toFixed(4)
+                addData.fyWingPayRate = (addData.fyWingPayRate / 10000 * 100).toFixed(4)
+            } else if (pyList.indexOf(2) < 0) {
+               delete addData.fyweChatRate 
+               delete addData.fyaliRate 
+               delete addData.fyUnionPayRate 
+               delete addData.fyJDWallet 
+               delete addData.fyQQWallet 
+               delete addData.fyUnionPayRatetwo 
+               delete addData.fyWingPayRate 
+            }
+            if (pyList.indexOf(3) < 0) {
 
 
 
 
-                }
-                if (pyList.indexOf(4) >= 0) {
-                    addData.xdlweChatRate = (addData.xdlweChatRate / 10000 * 100).toFixed(4)
+            }
+            if (pyList.indexOf(4) >= 0) {
+                addData.xdlweChatRate = (addData.xdlweChatRate / 10000 * 100).toFixed(4)
 
-                    addData.xdlaliRate = addData.xdlweChatRate
+                addData.xdlaliRate = addData.xdlweChatRate
 
-                    addData.xdlUnionPayRate = (addData.xdlUnionPayRate / 10000 * 100).toFixed(4)
+                addData.xdlUnionPayRate = (addData.xdlUnionPayRate / 10000 * 100).toFixed(4)
 
-                    addData.xdlJDWallet = (addData.xdlJDWallet / 10000 * 100).toFixed(4)
+                addData.xdlJDWallet = (addData.xdlJDWallet / 10000 * 100).toFixed(4)
 
-                    addData.xdlQQWallet = (addData.xdlQQWallet / 10000 * 100).toFixed(4)
+                addData.xdlQQWallet = (addData.xdlQQWallet / 10000 * 100).toFixed(4)
 
-                    addData.XdlUnionPayRatetwo = (addData.XdlUnionPayRatetwo / 10000 * 100).toFixed(4)
-                    addData.xdlWingPayRate = (addData.xdlWingPayRate / 10000 * 100).toFixed(4)
-
-
-                }else if (pyList.indexOf(4) < 0){
-                    addData.xdlweChatRate = 0
-                    addData.xdlaliRate = 0
-                    addData.xdlUnionPayRate = 0
-                    addData.xdlJDWallet = 0
-                    addData.xdlQQWallet = 0
-                    addData.XdlUnionPayRatetwo = 0
-                    addData.xdlWingPayRate = 0
-                }
-                if (pyList.indexOf(5) >= 0) {
-
-                    addData.sxfweChatRate = (addData.sxfweChatRate / 10000 * 100).toFixed(4)
-
-                    addData.sxfaliRate = addData.sxfweChatRate
-
-                    addData.sxfUnionPayRate = (addData.sxfUnionPayRate / 10000 * 100).toFixed(4)
-
-                    addData.sxfJDWallet = (addData.sxfJDWallet / 10000 * 100).toFixed(4)
-
-                    addData.sxfQQWallet = (addData.sxfQQWallet / 10000 * 100).toFixed(4)
-
-                    addData.sxfUnionPayRatetwo = (addData.sxfUnionPayRatetwo / 10000 * 100).toFixed(4)
-                    addData.sxfWingPayRate = (addData.sxfWingPayRate / 10000 * 100).toFixed(4)
+                addData.XdlUnionPayRatetwo = (addData.XdlUnionPayRatetwo / 10000 * 100).toFixed(4)
+                addData.xdlWingPayRate = (addData.xdlWingPayRate / 10000 * 100).toFixed(4)
 
 
-                }else if (pyList.indexOf(5) < 0){
-                    addData.sxfweChatRate = 0
-                    addData.sxfaliRate = 0
-                    addData.sxfUnionPayRate = 0
-                    addData.sxfJDWallet = 0
-                    addData.sxfQQWallet = 0
-                    addData.sxfUnionPayRatetwo = 0
-                    addData.sxfWingPayRate = 0
-                }
-                if (pyList.indexOf(6) >= 0) {
-                    addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo / 10000 * 100).toFixed(4)
+            } else if (pyList.indexOf(4) < 0) {
+               delete addData.xdlweChatRate 
+               delete addData.xdlaliRate 
+               delete addData.xdlUnionPayRate 
+               delete addData.xdlJDWallet 
+               delete addData.xdlQQWallet 
+               delete addData.XdlUnionPayRatetwo 
+               deleteaddData.xdlWingPayRate 
+            }
+            if (pyList.indexOf(5) >= 0) {
+
+                addData.sxfweChatRate = (addData.sxfweChatRate / 10000 * 100).toFixed(4)
+
+                addData.sxfaliRate = addData.sxfweChatRate
+
+                addData.sxfUnionPayRate = (addData.sxfUnionPayRate / 10000 * 100).toFixed(4)
+
+                addData.sxfJDWallet = (addData.sxfJDWallet / 10000 * 100).toFixed(4)
+
+                addData.sxfQQWallet = (addData.sxfQQWallet / 10000 * 100).toFixed(4)
+
+                addData.sxfUnionPayRatetwo = (addData.sxfUnionPayRatetwo / 10000 * 100).toFixed(4)
+                addData.sxfWingPayRate = (addData.sxfWingPayRate / 10000 * 100).toFixed(4)
 
 
-
-                    addData.lsweChatRate = (addData.lsweChatRate / 10000 * 100).toFixed(4)
-                    addData.lsaliRate = addData.lsweChatRate
-                    addData.lsUnionPayRate = (addData.lsUnionPayRate / 10000 * 100).toFixed(4)
-
-                    addData.lsJDWallet = (addData.lsJDWallet / 10000 * 100).toFixed(4)
-                    addData.lsQQWallet = (addData.lsQQWallet / 10000 * 100).toFixed(4)
+            } else if (pyList.indexOf(5) < 0) {
+               delete addData.sxfweChatRate 
+               delete addData.sxfaliRate 
+               delete addData.sxfUnionPayRate 
+               delete addData.sxfJDWallet 
+               delete addData.sxfQQWallet 
+               delete addData.sxfUnionPayRatetwo 
+               delete addData.sxfWingPayRate 
+            }
+            if (pyList.indexOf(6) >= 0) {
+                addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo /100).toFixed(4)
 
 
 
-                    addData.lsWingPayRate = (addData.lsWingPayRate / 10000 * 100).toFixed(4)
-                }else if (pyList.indexOf(6) < 0){
-                    addData.lsUnionPayRatetwo = 0
-                    addData.lsweChatRate = 0
-                    addData.lsaliRate = 0
-                    addData.lsUnionPayRate = 0
-                    addData.lsJDWallet = 0
-                    addData.lsQQWallet = 0
-                    addData.lsWingPayRate = 0
-                }
+                addData.lsweChatRate = (addData.lsweChatRate /100).toFixed(4)
+                addData.lsaliRate = addData.lsweChatRate
+                addData.lsUnionPayRate = (addData.lsUnionPayRate /100).toFixed(4)
+
+                addData.lsJDWallet = (addData.lsJDWallet /100).toFixed(4)
+                addData.lsQQWallet = (addData.lsQQWallet /100).toFixed(4)
 
 
 
+                addData.lsWingPayRate = (addData.lsWingPayRate /100).toFixed(4)
+                addData.lsDebitCardD0 = (addData.lsDebitCardD0 /100).toFixed(4)                
+                addData.lsCreditCardD0 = (addData.lsCreditCardD0 /100).toFixed(4)
+                addData.lsDebitCardD1 = (addData.lsDebitCardD1 /100).toFixed(4)
+                addData.lsCreditCardD1 = (addData.lsCreditCardD1 /100).toFixed(4)
+
+            } else if (pyList.indexOf(6) < 0) {
+               delete addData.lsUnionPayRatetwo 
+               delete addData.lsweChatRate 
+               delete addData.lsaliRate 
+               delete addData.lsUnionPayRate 
+               delete addData.lsJDWallet 
+               delete addData.lsQQWallet 
+               delete addData.lsWingPayRate 
+               delete addData.lsDebitCardD0
+               delete addData.lsCreditCardD0
+               delete addData.lsDebitCardD1
+               delete addData.lsCreditCardD1
+            }
+
+
+            addData.proportional = (addData.proportional / 10000 * 100).toFixed(4)
 
 
 

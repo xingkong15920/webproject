@@ -121,7 +121,7 @@
         <div id="formVal"></div>
         <div class="layui-row" style="position:relative">
             <div class="layui-form" action="" lay-filter="cardAdd">
-                <blockquote class="layui-elem-quote">商户信息</blockquote>
+                <blockquote class="layui-elem-quote">商户信息<span style="color:red;margin-left:50px">*为必填项</span></blockquote>
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">注册信息</legend>
                 </fieldset>
@@ -214,6 +214,11 @@
                 <div class="box-item">
                     <div class="layui-form-item" id="paymentType2" style="display:inline-block;width:auto">
                         <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>经营范围</label>
+                        <div class="layui-input-block" style="display:inline-block;margin-left:0px;" id="qustOperate">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="paymentType2" style="width:auto">
+                        <label class="layui-form-label"></label>
                         <div class="layui-input-block" style="display:inline-block;width:200px;margin-left:0px;">
                             <select name="oneOperate" id="chOne" lay-filter="chOne" lay-verify="title">
                                 <!-- <option value="">一级类目</option>
@@ -291,7 +296,9 @@
                         <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>邮箱</label>
                         <div class="layui-input-block">
                             <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
-                            <input type="text" lay-verType="tips" name="mailbox" lay-verify="title" autocomplete="off" placeholder="请输入邮箱" class="layui-input" value="">
+                            <input type="text" lay-verType="tips" name="mailbox" lay-verify="title" autocomplete="off" placeholder="请输入邮箱" class="layui-input" value="" id="mailInput" onblur="blmail()" onfocus="fcmail()">
+                            <div class="layui-input-block" style="position:absolute;top:34px;left:0;z-index:500;max-height:152px;overflow:auto;background-color:#fff;width:100%;margin-left:0;display:none" id="searchBoxmail">
+                            </div>
                         </div>
                     </div>
                     <div class="layui-form-item" style="display:inline-block;margin-left:30px;vertical-align:top">
@@ -375,6 +382,15 @@
                             <input type="text" name="aliPayNo" lay-verify="" autocomplete="off" placeholder="请输入支付宝号" class="layui-input">
                         </div>
                         <i class="layui-icon" id="alitTips" style="position:absolute;right:-25px;top:8px;color:red;cursor:pointer;font-size: 20px;">&#xe60b;</i>
+                    </div>
+                </div>
+                <div class="box-item">
+                    <div class="layui-form-item" style="display:inline-block;margin-left:30px;vertical-align:top">
+                        <label class="layui-form-label">是否高校渠道</label>
+                        <div class="layui-input-block" style="display:inline-block;margin-left:0px;vertical-align:top">
+                            <!--  <input type="checkbox" name="isOpenYunPay" title="开通"> -->
+                            <input type="checkbox" name="collegeFlage" lay-skin="switch" lay-filter="collegeFlage" lay-text="是|否">
+                        </div>
                     </div>
                 </div>
                 <blockquote class="layui-elem-quote">法人信息</blockquote>
@@ -647,6 +663,26 @@
                         </div>
                     </div>
                 </div> -->
+                <div class="box-item">
+                    
+                    <div class="layui-form-item" style="display:inline-block;vertical-align:top">
+                        <label class="layui-form-label">是否开通返利商家</label>
+                        <div class="layui-input-block" style="display:inline-block;margin-left:0px;vertical-align:top">
+                            <!--  <input type="checkbox" name="isOpenYunPay" title="开通"> -->
+                            <input type="checkbox" name="fanli" lay-skin="switch" lay-filter="isfanli" lay-text="开通|不开通">
+                        </div>
+                    </div>
+                </div>
+                <div class="box-item fanliBox" style="display:none">
+                    <div class="layui-form-item " style="display:inline-block;width:500px;position:relative;">
+                        <label class="layui-form-label">返佣比例(%)</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                            <input type="text" name="separateRatio" lay-verify="fanli1" autocomplete="off" placeholder="商家最大返佣比例" class="layui-input" value="">
+                        </div>
+                    </div>
+                   
+                </div>
                 <blockquote class="layui-elem-quote">其他信息</blockquote>
                 <div class="box-item">
                     <div class="layui-form-item" style="display:inline-block;width:500px">
@@ -679,6 +715,9 @@
                         <div class="layui-input-block" id="paymentBox">
                         </div>
                     </div>
+                    <div class="layui-input-item lsTips" style="display:none">
+                        <span style="color:red;display:block;margin-left:30px">*提示：（乐刷）新入驻的商户日微信交易金额超五万元(≥50000)，次日微信交易会被关闭，需完成实名认证，才能进行微信交易。</span>
+                    </div>
                 </div>
                 <div class="layui-form-item layui-layout-admin">
                     <div class="layui-input-block">
@@ -696,13 +735,13 @@
     <script src="../../common/utility.js"></script>
     <script>
     var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
-    var server = 'http://192.168.1.250:6005/shanhe-admin/'
-    //var commonServer = 'http://192.168.1.112:6008/shanhe-common/'
-    var jgServer = 'http://192.168.1.250:6005/shanhe-admin/'
-    //var server = 'https://nb.51shanhe.com/shanhe-admin/'
-    // var server = 'https://nb.51shanhe.com/shanhe-admin/'
-    var commonServer = 'https://nb.51shanhe.com/shanhe-common/'
-    // var jgServer = 'https://nb.51shanhe.com/shanhe-admin/'
+    // var server = 'http://192.168.110.71:6005/shanhe-admin/'
+    //var commonServer = 'http://192.168.110.112:6008/shanhe-common/'
+    // var jgServer = 'http://192.168.110.71:6005/shanhe-admin/'
+    // //var server = 'https://nb.hongsou.com.cn/shanhe-admin/'
+    var server = 'https://nb.hongsou.com.cn/shanhe-admin/'
+     var commonServer = 'https://nb.hongsou.com.cn/shanhe-common/'
+    var jgServer = 'https://nb.hongsou.com.cn/shanhe-admin/'
     var operlistOne = []
     var operlistTwo = []
     var operlistThr = []
@@ -727,6 +766,7 @@
     var juridicalPersonIDType = 1
     var businessLicenseType = 1
     var isOpenYunPay = 1
+    var collegeFlage = 1
     var merchantNumber = ''
     var merType = 0
     var baidu = JSON.parse(sessionStorage.getItem('baidu'))
@@ -770,8 +810,47 @@
     var legalFlag = 0
     var acntType = '对私'
     var acntArtifIdType = 1
-    $('#down-shouquan').click(function(){
-        window.open('http://static.hongxiaosou.com/public/file/shouquan.zip')
+    var quesId = ''
+    var separateType = 1
+    var mailList = ['@163.com', '@qq.com', '@yahoo.com', '@hotmail.com', '@163.net', '@gmail.com']
+
+    function fcmail() {
+
+        if ($('#mailInput').val() == '' || $('#mailInput').val().indexOf('@') > 0) {
+            return
+        }
+        $('#searchBoxmail').show()
+    }
+
+    function blmail() {
+        console.log('bl')
+        setTimeout(function() {
+            $('#searchBoxmail').hide()
+        }, 200)
+
+    }
+
+    function clickSmail(e) {
+        $('#mailInput').val(e.getAttribute('data-name'))
+    }
+    $("#mailInput").bind('input propertychange', function() {
+        console.log(this.value.indexOf('@') > 0)
+        if (this.value.indexOf('@') > 0) {
+            $('#searchBoxmail').hide()
+            return
+        }
+        $('#searchBoxmail').show()
+        console.log(this.value)
+        document.getElementById('searchBox').innerHTML = ''
+        var str = ''
+        for (var i = 0; i < mailList.length; i++) {
+            str += '<div class="layui-btn layui-btn-primary"  data-name="' + this.value + mailList[i] +
+                '" style="width:100%;margin-left:0" onclick="clickSmail(this)" >' + this.value + mailList[i] + '</div>'
+        }
+        document.getElementById('searchBoxmail').innerHTML = str
+    })
+    $('#down-shouquan').click(function() {
+        window.open('../../public/file/shouquan.zip')
     })
 
 
@@ -815,6 +894,15 @@
         '../../public/images/shili-sfz-fan.png',
         '../../public/images/shili-shouchi.png',
     ]
+    //经营范围快捷选择
+    function compare(property) {
+        return function(a, b) {
+            var value1 = a[property];
+            var value2 = b[property];
+            return value1 - value2;
+        }
+    }
+
 
     var shiliNumList = []
 
@@ -1123,8 +1211,7 @@
 
                 }
             },
-            function(data) {
-            }
+            function(data) {}
         )
     }
 
@@ -1231,8 +1318,7 @@
 
                 }
             },
-            function(data) {
-            }
+            function(data) {}
         )
 
     }
@@ -1261,7 +1347,7 @@
 
         CmsUtility.postAjaxCall2(
             //系统设置
-            // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
+            // 'https://nb.hongsou.com.cn/shanhe-common/cache/getBank',
             commonServer + 'cache/getBank', {
                 "bankCode": $('#openingBank').val().split('|')[0],
                 "paymentType": '4',
@@ -1293,8 +1379,7 @@
 
                 }
             },
-            function(data) {
-            }
+            function(data) {}
         )
 
     }
@@ -1469,8 +1554,7 @@
 
                     }
                 },
-                function(data) {
-                }
+                function(data) {}
             )
         })
         var timer;
@@ -1720,6 +1804,130 @@
 
 
         })
+
+
+        $("#acntArtifidStartTime").bind('input propertychange', function() {
+            var val = this.value.replace('-', '')
+            console.log(val)
+            if (val.length == 4 && this.value.indexOf('-') < 0) {
+                clearTimeout(timer)
+                timer = setTimeout(function() {
+                    form.val('cardAdd', {
+                        "acntArtifidStartTime": val + '-',
+                    })
+                }, 550)
+
+            } else if (val.length == 6) {
+                clearTimeout(timer)
+                var mon = val.substring(4, 6)
+                console.log(mon)
+                timer = setTimeout(function() {
+                    if (mon > 12) {
+                        form.val('cardAdd', {
+                            "acntArtifidStartTime": val.substring(0, 4) + '-0' + val.substring(4, 5) + '-' + val.substring(5, 6),
+                        })
+                    } else {
+                        form.val('cardAdd', {
+                            "acntArtifidStartTime": val.substring(0, 4) + '-' + val.substring(4, 6) + '-',
+                        })
+                    }
+                }, 500)
+
+            } else if (val.length == 7) {
+                clearTimeout(timer)
+                var mon = val.substring(4, 6)
+                console.log(mon)
+                timer = setTimeout(function() {
+                    if (mon > 12) {
+                        form.val('cardAdd', {
+                            "acntArtifidStartTime": val.substring(0, 4) + '-0' + val.substring(4, 5) + '-' + val.substring(5, 7),
+                        })
+                    } else {
+                        form.val('cardAdd', {
+                            "acntArtifidStartTime": val.substring(0, 4) + '-' + val.substring(4, 6) + '-0' + +val.substring(6, 7),
+                        })
+                    }
+                }, 500)
+
+            } else if (val.length == 8) {
+                clearTimeout(timer)
+                timer = setTimeout(function() {
+
+
+                    form.val('cardAdd', {
+                        "acntArtifidStartTime": val.substring(0, 4) + '-' + val.substring(4, 6) + '-' + val.substring(6, 8),
+
+                    })
+                }, 500)
+
+            } else {
+                clearTimeout(timer)
+
+            }
+
+
+        })
+        $("#acntArtifidTime").bind('input propertychange', function() {
+            var val = this.value.replace('-', '')
+            console.log(val)
+            if (val.length == 4 && this.value.indexOf('-') < 0) {
+                clearTimeout(timer)
+                timer = setTimeout(function() {
+                    form.val('cardAdd', {
+                        "acntArtifidTime": val + '-',
+                    })
+                }, 550)
+
+            } else if (val.length == 6) {
+                clearTimeout(timer)
+                var mon = val.substring(4, 6)
+                console.log(mon)
+                timer = setTimeout(function() {
+                    if (mon > 12) {
+                        form.val('cardAdd', {
+                            "acntArtifidTime": val.substring(0, 4) + '-0' + val.substring(4, 5) + '-' + val.substring(5, 6),
+                        })
+                    } else {
+                        form.val('cardAdd', {
+                            "acntArtifidTime": val.substring(0, 4) + '-' + val.substring(4, 6) + '-',
+                        })
+                    }
+                }, 500)
+
+            } else if (val.length == 7) {
+                clearTimeout(timer)
+                var mon = val.substring(4, 6)
+                console.log(mon)
+                timer = setTimeout(function() {
+                    if (mon > 12) {
+                        form.val('cardAdd', {
+                            "acntArtifidTime": val.substring(0, 4) + '-0' + val.substring(4, 5) + '-' + val.substring(5, 7),
+                        })
+                    } else {
+                        form.val('cardAdd', {
+                            "acntArtifidTime": val.substring(0, 4) + '-' + val.substring(4, 6) + '-0' + +val.substring(6, 7),
+                        })
+                    }
+                }, 500)
+
+            } else if (val.length == 8) {
+                clearTimeout(timer)
+                timer = setTimeout(function() {
+
+
+                    form.val('cardAdd', {
+                        "acntArtifidTime": val.substring(0, 4) + '-' + val.substring(4, 6) + '-' + val.substring(6, 8),
+
+                    })
+                }, 500)
+
+            } else {
+                clearTimeout(timer)
+
+            }
+
+
+        })
         $("#slName").bind('input propertychange', function() {
             console.log(this.value)
             if (!$('#agName').attr('agentnumber')) {
@@ -1778,7 +1986,7 @@
             document.getElementById('searchBox2').innerHTML = ''
             CmsUtility.postAjaxCall2(
                 //系统设置
-                // 'https://nb.51shanhe.com/shanhe-common/cache/getBank',
+                // 'https://nb.hongsou.com.cn/shanhe-common/cache/getBank',
                 commonServer + 'cache/getBank', {
                     "bankCode": $('#openingBank').val().split('|')[0],
                     "paymentType": '4',
@@ -1817,6 +2025,162 @@
                 }
             )
         })
+
+        function getoperId(str) {
+            var list = ['便利店', '超市', '百货商店', '饭店', '酒店', '药店', '医院', '加油站']
+            var strList = str
+            var noList = new Array()
+            for (var i = 0; i < strList.length; i++) {
+
+                for (var j = 0; j < strList[i].list.length; j++) {
+                    for (var k = 0; k < strList[i].list[j].ids.length; k++) {
+                        var oob = new Object()
+                        if (strList[i].list[j].ids[k].MccNm == '各类杂货店、便利店') {
+                            oob.name = '便利店'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 1
+                            noList.push(oob)
+                        }
+                        if (strList[i].list[j].ids[k].MccNm == '大型仓储式超级市场') {
+                            oob.name = '超市'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 2
+                            noList.push(oob)
+                        }
+                        if (strList[i].list[j].ids[k].MccNm == '百货商店') {
+                            oob.name = '百货商店'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 3
+                            noList.push(oob)
+                        }
+                        if (strList[i].list[j].ids[k].MccNm == '就餐场所和餐馆') {
+                            oob.name = '饭店'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 4
+                            noList.push(oob)
+                        }
+                        if (strList[i].list[j].ids[k].MccNm == '住宿服务（旅馆、酒店、汽车旅馆、度假村等）') {
+                            oob.name = '酒店'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 5
+                            noList.push(oob)
+                        }
+                        if (strList[i].list[j].ids[k].MccNm == '药房、药店') {
+                            oob.name = '药店'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 6
+                            noList.push(oob)
+                        }
+                        if (strList[i].list[j].ids[k].MccNm == '公立医院') {
+                            oob.name = '医院'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 7
+                            noList.push(oob)
+                        }
+                        if (strList[i].list[j].ids[k].MccNm == '加油站、服务站') {
+                            oob.name = '加油站'
+                            oob.id = strList[i].list[j].ids[k].MccCd
+                            oob.pid = strList[i].list[j].MccType
+                            oob.ppid = strList[i].supMccCd
+                            oob.sid = 8
+                            noList.push(oob)
+                        }
+                    }
+                }
+            }
+            var sortList = noList.sort(compare('sid'))
+            var quesStr = ''
+            for (var n = 0; n < sortList.length; n++) {
+                quesStr += '<button type="button" class="layui-btn layui-btn-primary ques" id="' + sortList[n].id + '" pid="' + sortList[n].pid + '" ppid="' + sortList[n].ppid + '" onclick="questopear(' + n + ',' + sortList[n].id + ',' + sortList[n].pid + ',' + sortList[n].ppid + ')" >' + sortList[n].name + '</button>'
+            }
+            $('#qustOperate').html(quesStr)
+            form.render()
+        }
+
+        window.questopear = function(index, id, pid, ppid) {
+
+            if (quesId == id) {
+                var str = '<option value="">请选择</option>'
+                for (var i = 0; i < operlistOne.length; i++) {
+                    str += "<option value=" + operlistOne[i].id + " >" + operlistOne[i].name + "</option>"
+                }
+                $('#chOne').html(str)
+                var str1 = '<option value="">请选择</option>'
+
+                $('#chTwo').html(str1)
+                var str2 = '<option value="">请选择</option>'
+
+                $('#chThr').html(str2)
+                form.render()
+                $('.ques').attr('class', 'layui-btn layui-btn-primary ques')
+                quesId = ''
+                return
+
+            }
+            quesId = id
+            $('.ques').attr('class', 'layui-btn layui-btn-primary ques')
+            $('.ques').eq(index).attr('class', 'layui-btn ques')
+            var str = '<option value="">请选择</option>'
+            for (var i = 0; i < operlistOne.length; i++) {
+                if (ppid == operlistOne[i].id) {
+                    str += "<option selected='true' value=" + operlistOne[i].id + " >" + operlistOne[i].name + "</option>"
+
+
+                } else {
+                    str += "<option value=" + operlistOne[i].id + " >" + operlistOne[i].name + "</option>"
+                }
+
+            }
+            $('#chOne').html(str)
+            var str1 = '<option value="">请选择</option>'
+            for (var k = 0; k < operlistTwo.length; k++) {
+                if (operlistTwo[k].parId == ppid) {
+
+                    for (var j = 0; j < operlistTwo[k].childList.length; j++) {
+
+                        if (operlistTwo[k].childList[j].id == pid) {
+                            str1 += "<option selected='true' value=" + operlistTwo[k].childList[j].id + " >" + operlistTwo[k].childList[j].name +
+                                "</option>"
+                        } else {
+                            str1 += "<option value=" + operlistTwo[k].childList[j].id + " >" + operlistTwo[k].childList[j].name +
+                                "</option>"
+                        }
+
+                    }
+                }
+            }
+            $('#chTwo').html(str1)
+            var str2 = '<option value="">请选择</option>'
+
+            for (var s = 0; s < operlistThr.length; s++) {
+                if (operlistThr[s].parId == pid) {
+                    for (var d = 0; d < operlistThr[s].childList.length; d++) {
+                        if (operlistThr[s].childList[d].id == id) {
+                            str2 += "<option selected='true' value=" + operlistThr[s].childList[d].id + " >" + operlistThr[s].childList[d].name + "</option>"
+                        } else {
+                            str2 += "<option value=" + operlistThr[s].childList[d].id + " >" + operlistThr[s].childList[d].name + "</option>"
+                        }
+                    }
+                }
+
+            }
+            $('#chThr').html(str2)
+            form.render()
+        }
         CmsUtility.postAjaxCall2(
             //系统设置
             commonServer + 'cache/getOperationIds', {
@@ -1825,6 +2189,7 @@
             },
             function(data) {
                 operlist = data.data
+                getoperId(operlist)
                 for (var i = 0; i < operlist.length; i++) {
                     var ob1 = new Object()
                     var ob2 = new Object()
@@ -1855,22 +2220,22 @@
                     ob2.childList = ob2List
                     operlistTwo.push(ob2)
                 }
-                var str = ''
+                var str = '<option value="">请选择</option>'
                 for (var i = 0; i < operlistOne.length; i++) {
                     str += "<option value=" + operlistOne[i].id + " >" + operlistOne[i].name + "</option>"
                 }
                 $('#chOne').html(str)
-                var str1 = ''
-                for (var j = 0; j < operlistTwo[0].childList.length; j++) {
-                    str1 += "<option value=" + operlistTwo[0].childList[j].id + " >" + operlistTwo[0].childList[j].name +
-                        "</option>"
-                }
+                var str1 = '<option value="">请选择</option>'
+                // for (var j = 0; j < operlistTwo[0].childList.length; j++) {
+                //     str1 += "<option value=" + operlistTwo[0].childList[j].id + " >" + operlistTwo[0].childList[j].name +
+                //         "</option>"
+                // }
                 $('#chTwo').html(str1)
-                var str2 = ''
-                for (var j = 0; j < operlistThr[0].childList.length; j++) {
-                    str2 += "<option value=" + operlistThr[0].childList[j].id + " >" + operlistThr[0].childList[j].name +
-                        "</option>"
-                }
+                var str2 = '<option value="">请选择</option>'
+                // for (var j = 0; j < operlistThr[0].childList.length; j++) {
+                //     str2 += "<option value=" + operlistThr[0].childList[j].id + " >" + operlistThr[0].childList[j].name +
+                //         "</option>"
+                // }
                 $('#chThr').html(str2)
                 form.render()
             },
@@ -1880,8 +2245,9 @@
         )
         form.on('select(chOne)', function(data) {
             console.log(data.value)
-            var str = ''
-            var str1 = ''
+
+            var str = '<option value="">请选择</option>'
+            var str1 = '<option value="">请选择</option>'
             var childId
             for (var i = 0; i < operlistTwo.length; i++) {
                 if (operlistTwo[i].parId == data.value) {
@@ -1894,22 +2260,22 @@
                 }
             }
             console.log(childId)
-            for (var k = 0; k < operlistThr.length; k++) {
-                if (operlistThr[k].parId == childId) {
-                    for (var h = 0; h < operlistThr[k].childList.length; h++) {
+            // for (var k = 0; k < operlistThr.length; k++) {
+            //     if (operlistThr[k].parId == childId) {
+            //         for (var h = 0; h < operlistThr[k].childList.length; h++) {
 
-                        str1 += "<option value=" + operlistThr[k].childList[h].id + " >" + operlistThr[k].childList[h].name +
-                            "</option>"
-                    }
-                }
-            }
+            //             str1 += "<option value=" + operlistThr[k].childList[h].id + " >" + operlistThr[k].childList[h].name +
+            //                 "</option>"
+            //         }
+            //     }
+            // }
             $('#chTwo').html(str)
             $('#chThr').html(str1)
             form.render()
         })
         form.on('select(chTwo)', function(data) {
             console.log(data.value)
-            var str = ''
+            var str = '<option value="">请选择</option>'
             for (var k = 0; k < operlistThr.length; k++) {
                 if (operlistThr[k].parId == data.value) {
                     for (var h = 0; h < operlistThr[k].childList.length; h++) {
@@ -1961,25 +2327,25 @@
                     ob2.childList = ob2List
                     city.push(ob2)
                 }
-                var str = ''
+                var str = '<option value="">请选择</option>'
                 for (var i = 0; i < prov.length; i++) {
                     str += "<option value=" + prov[i].id + '|' + prov[i].name + " >" + prov[i].name + "</option>"
                 }
                 $('#prov').html(str)
                 $('#prov1').html(str)
                 // console.log(operlistTwo)
-                var str1 = ''
-                for (var j = 0; j < city[0].childList.length; j++) {
-                    str1 += "<option value=" + city[0].childList[j].id + '|' + city[0].childList[j].name + " >" + city[0].childList[
-                        j].name + "</option>"
-                }
+                var str1 = '<option value="">请选择</option>'
+                // for (var j = 0; j < city[0].childList.length; j++) {
+                //     str1 += "<option value=" + city[0].childList[j].id + '|' + city[0].childList[j].name + " >" + city[0].childList[
+                //         j].name + "</option>"
+                // }
                 $('#city').html(str1)
                 $('#city1').html(str1)
-                var str2 = ''
-                for (var j = 0; j < area[0].childList.length; j++) {
-                    str2 += "<option value=" + area[0].childList[j].id + '|' + area[0].childList[j].name + " >" + area[0].childList[
-                        j].name + "</option>"
-                }
+                var str2 = '<option value="">请选择</option>'
+                // for (var j = 0; j < area[0].childList.length; j++) {
+                //     str2 += "<option value=" + area[0].childList[j].id + '|' + area[0].childList[j].name + " >" + area[0].childList[
+                //         j].name + "</option>"
+                // }
                 $('#area').html(str2)
                 form.render()
             },
@@ -1989,8 +2355,8 @@
         )
         form.on('select(prov)', function(data) {
             console.log(data.value)
-            var str = ''
-            var str1 = ''
+            var str = '<option value="">请选择</option>'
+            var str1 = '<option value="">请选择</option>'
             var childId
             for (var i = 0; i < city.length; i++) {
                 if (city[i].parId == data.value.split('|')[0]) {
@@ -2003,23 +2369,23 @@
                 }
             }
             console.log(childId)
-            for (var k = 0; k < area.length; k++) {
-                if (area[k].parId == childId) {
-                    for (var h = 0; h < area[k].childList.length; h++) {
+            // for (var k = 0; k < area.length; k++) {
+            //     if (area[k].parId == childId) {
+            //         for (var h = 0; h < area[k].childList.length; h++) {
 
-                        str1 += "<option value=" + area[k].childList[h].id + '|' + area[k].childList[h].name + " >" + area[k].childList[
-                            h].name + "</option>"
-                    }
-                }
-            }
+            //             str1 += "<option value=" + area[k].childList[h].id + '|' + area[k].childList[h].name + " >" + area[k].childList[
+            //                 h].name + "</option>"
+            //         }
+            //     }
+            // }
             $('#city').html(str)
             $('#area').html(str1)
             form.render()
         })
         form.on('select(prov1)', function(data) {
             console.log(data.value)
-            var str = ''
-            var str1 = ''
+            var str = '<option value="">请选择</option>'
+            var str1 = '<option value="">请选择</option>'
             var childId
             for (var i = 0; i < city.length; i++) {
                 if (city[i].parId == data.value.split('|')[0]) {
@@ -2037,7 +2403,7 @@
         })
         form.on('select(city)', function(data) {
             console.log(data.value)
-            var str = ''
+            var str = '<option value="">请选择</option>'
             for (var k = 0; k < area.length; k++) {
                 if (area[k].parId == data.value.split('|')[0]) {
                     for (var h = 0; h < area[k].childList.length; h++) {
@@ -2105,25 +2471,25 @@
 
         form.on('radio(acntType)', function(data) { //设置会员卡的有效期
             console.log(data)
-            if(data.value == 0 && acntType == '对私'){
-                return 
+            if (data.value == 0 && acntType == '对私') {
+                return
             }
-            if(data.value == 1 && acntType == '对公'){
-                return 
+            if (data.value == 1 && acntType == '对公') {
+                return
             }
             farenBox()
             form.render()
             if (data.value == 0) {
-               
-                if(merType != 0){
+
+                if (merType != 0) {
                     $('#farenxuanze').show()
                 }
-                
+
                 acntType = '对私'
                 $('.kaihu').hide()
                 $('.yinhangka').show()
             } else {
-                
+
                 $('#farenxuanze').hide()
                 acntType = '对公'
                 legalFlag = 0
@@ -2149,7 +2515,7 @@
             formData.append("longTime", longTime);
             formData.append("type", type);
             $.ajax({
-                // url: 'https://nb.51shanhe.com/shanhe-admin/InsMer/uploadMerchantImg',
+                // url: 'https://nb.hongsou.com.cn/shanhe-admin/InsMer/uploadMerchantImg',
                 url: jgServer + 'InsMer/uploadMerchantImg',
                 type: 'POST',
                 data: formData,
@@ -2214,7 +2580,7 @@
                         // })
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -2252,7 +2618,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -2288,7 +2654,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -2322,7 +2688,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -2358,7 +2724,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -2394,7 +2760,7 @@
 
                         $.ajax({
                             type: 'post',
-                            url: 'http://api.51shanhe.com/p-server/appServer/getIdCard',
+                            url: 'http://api.hongsou.com.cn/p-server/appServer/getIdCard',
                             data: JSON.stringify(aData),
                             headers: {
                                 'Content-Type': "application/json"
@@ -2629,9 +2995,13 @@
 
                 console.log(payList)
                 var xdlNum = 0
+                var lsNum = 0
                 for (var k = 0; k < payList.length; k++) {
-                    if(payList[k].paymentType == 4){
+                    if (payList[k].paymentType == 4) {
                         xdlNum++
+                    }
+                    if (payList[k].paymentType == 6) {
+                        lsNum++
                     }
                     if (payList[k].paymentType == 4 || payList[k].paymentType == 5 || payList[k].paymentType == 6) {
                         str += '<input type="checkbox"   data-type=' + payList[k].paymentType + ' name="payment" value=' + payList[k]
@@ -2644,10 +3014,15 @@
 
                 }
                 console.log(xdlNum)
-                if(xdlNum != 0){
+                if (xdlNum != 0) {
                     $('.xdlneed').show()
-                }else{
+                } else {
                     $('.xdlneed').hide()
+                }
+                if (lsNum != 0) {
+                    $('.lsTips').show()
+                } else {
+                    $('.lsTips').hide()
                 }
                 $('#paymentBox').html(str)
                 form.render()
@@ -2666,6 +3041,17 @@
             } else {
                 isOpenYunPay = 1
                 $('.ysfRate').hide()
+            }
+
+        });
+
+        
+        form.on('switch(collegeFlage)', function(data) {
+            if (this.checked == true) {
+
+                collegeFlage = 0
+            } else {
+                collegeFlage = 1
             }
 
         });
@@ -2709,7 +3095,17 @@
             }
 
         });
+        form.on('switch(isfanli)', function(data) {
+            if (this.checked == true) {
 
+                $('.fanliBox').show()
+                separateType = 0
+            } else {
+                $('.fanliBox').hide()
+                separateType = 1
+            }
+
+        });
         //验证
         form.verify({
                 merchantName: function(value) {
@@ -2874,7 +3270,7 @@
                     }
                 }
                 if (legalFlag == 1) {
-                    if (settlementPersonPositive == '' || settlementPersonReverseside == ''  || letterOfAuthPic == '') {
+                    if (settlementPersonPositive == '' || settlementPersonReverseside == '' || letterOfAuthPic == '') {
                         layer.msg('请补充非法人结算相关图片信息')
                         return false
                     }
@@ -2886,11 +3282,11 @@
                 console.log(arr)
                 var pyList = []
                 var isAli = false
-                var xdlpayNum = 0 
+                var xdlpayNum = 0
                 for (var j = 0; j < arr.length; j++) {
                     var pb = new Object()
                     pb.paymentType = arr[j].split('|')[1]
-                    if(pb.paymentType == 4){
+                    if (pb.paymentType == 4) {
                         xdlpayNum++
                     }
                     pb.paymentChannel = arr[j].split('|')[0]
@@ -2899,7 +3295,7 @@
                     }
                     pyList.push(pb)
                 }
-                if(xdlpayNum != 0 && legalFlag == 1){
+                if (xdlpayNum != 0 && legalFlag == 1) {
                     if (authorizationPhoto == '') {
                         layer.msg('请补充新大陆授权书合影')
                         return false
@@ -2994,8 +3390,8 @@
                 //银行预留手机号
                 //如果法人结算，传注册手机号
                 //非法人需要输入
-                
-                if(legalFlag == 0){
+
+                if (legalFlag == 0) {
                     tjData.reserveCell = tjData.registerCell
                 }
 
@@ -3007,7 +3403,11 @@
 
                 //5.11后新加参数
                 tjData.rateType = rateType
-                tjData.acntArtifIdType  = acntArtifIdType
+                tjData.acntArtifIdType = acntArtifIdType
+
+
+                // 高校标识
+                tjData.collegeFlage = collegeFlage
                 console.log(tjData)
                 if (tjData.rate < saleRate.aliRate && saleRate.aliRate != 0) {
                     layer.msg('费率低于该销售费率，请重新填写')
@@ -3023,6 +3423,16 @@
                         return false
                     }
                 }
+                // 返利信息
+                if(separateType == 0){
+                    if(tjData.separateRatio > 30){
+                        layer.msg('返利最大不得超过30%')
+                        return  false
+                    }
+                    tjData.separateRatio = tjData.separateRatio /100
+                    
+                    tjData.separateType = separateType
+                }
                 
                 console.log(tjData)
 
@@ -3037,6 +3447,7 @@
                     tipStr += '云闪付费率(单笔1000以下)：' + '未开通' + '</br>'
                     tipStr += '云闪付费率(单笔1000以上)：' + '未开通' + '</br>'
                 }
+
 
                 tipStr += '所属服务商/销售:' + tjData.agName + '/' + tjData.slName
                 layer.confirm(tipStr, { icon: 0, title: '商户信息!' }, function(index) {

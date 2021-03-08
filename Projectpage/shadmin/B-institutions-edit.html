@@ -231,7 +231,12 @@
                 "merchantRoute": insData.merchantRoute,
                 "disable":insData.secular == 0 ? true : false
             })
-
+            if(insData.secullar != 0){
+                $('#selectTime').show()
+            }else{
+                $('#selectTime').hide()
+            }
+            form.render()
             /*---------- 监听提交 ----------*/
             form.on('submit(add)', function(data, index) {
                 // layer.alert(JSON.stringify(data.field), {
@@ -239,6 +244,7 @@
                 // })
                 data.field.institutionNumber = insData.institutionNumber
                 var addData = data.field
+                addData.secular = secular
                 console.log(addData)
                 CmsUtility.postAjaxCall(
                     //系统设置

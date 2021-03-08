@@ -106,6 +106,13 @@
                         <input type="text" name="registerCell" lay-verify="number" autocomplete="off" placeholder="请输入联系电话" class="layui-input">
                     </div>
                 </div>
+                <div class="layui-form-item">
+                        <label class="layui-form-label">所属区域</label>
+                        <div class="layui-input-block">
+                            <select name="regionId" id="regionId">
+                            </select>
+                        </div>
+                    </div>
                 <!-- <div class="layui-form-item">
                         <label class="layui-form-label">密码</label>
                         <div class="layui-input-block">
@@ -119,7 +126,7 @@
                         </div>
                     </div> -->
                 <div class="layui-form-item">
-                    <label class="layui-form-label">所在地</label>
+                    <label class="layui-form-label">省市区</label>
                     <div class="layui-input-block" style="display: flex;">
                         <div class="layui-input-inline">
                             <select name="province" id="provice" lay-filter="provice" lay-verify="title">
@@ -399,6 +406,32 @@
                 }
             )
             CmsUtility.postAjaxCall(
+            //系统设置
+            'agAreaManger/getAgnetArea', {
+
+                "agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number
+            },
+            function(data) {
+                layer.closeAll()
+                if (data.code == 1000) {
+                    console.log(data)
+                    var areaList = data.data.areaList
+                    var str = ''
+                    for(var i = 0 ; i < areaList.length;i++){
+                        str += '<option value="'+ areaList[i].regionId +'">'+ areaList[i].regionName +'</>'
+                    }
+                    $('#regionId').html(str)
+                    form.render()
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }, 'get'
+        )
+            CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Public.getAreajson, {},
                 function(data) {
@@ -483,7 +516,7 @@
                         }
                         $('#area').html(str2)
                     }
-
+                    
                     form.val('cardAdd', {
                         "agentType": jgData.agentType.toString(),
                         "agentName": jgData.agentName,
@@ -493,6 +526,7 @@
                         "city": jgData.city,
                         "area": jgData.area,
                         "address": jgData.region,
+                        "regionId":jgData.regionId
                         // "T1Rate": T1,
                         // "wechatRate":jgData.wechatRate,
                         // "aliRate":jgData.aliRate,

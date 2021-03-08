@@ -103,42 +103,45 @@ document.write(adiv)
         return null;
     }
      
-    alert(window.location.href)
-    // var projectUrl = window.location.href.split('/oneCode')[0];
-    var requestId = getQueryString('request_id');
-    var authCode = getQueryString('auth_code');
-    var outString = getQueryString('out_string');
-    var templateId = getQueryString('template_id');
-      
+     var institutionNumber = getQueryString('institutionNumber');
+      var merchantNumber = getQueryString('merchantNumber');
+      var paymentChannel = getQueryString('paymentChannel');
+      var appauthcode = getQueryString('app_auth_code');
+       var orderNumber = getQueryString('orderNumber');
       var oData = new Object()
-      oData.requestId = requestId
-      oData.authCode = authCode
-      oData.outString = outString
-      oData.templateId = templateId
+      oData.institutionNumber = institutionNumber
+      oData.merchantNumber = merchantNumber
+      oData.paymentChannel = paymentChannel
+      //oData.appauthcode = appauthcode
+      oData.subaccountNumber = appauthcode
+      oData.alipayRate = 0.0038
+      oData.channelType = 0
       var msg
-      alert( JSON.stringify(oData))
      $.ajax({
-         url: "http://192.168.1.110:8088/shanhe-member/aliCard/openCard",
-      	//url: "https://api.51shanhe.com/p-server/appServer/alipayAuthorize",
+        url:"http://192.168.1.112:6005/shanhe-admin/audit/aliPayAuthorize",
+         //url: "http://api.51shanhe.com/p-server/appServer/getPayInfo",
+       //url:"https://nb.51shanhe.com/shanhe-admin/channelSub/addChannelSubMer",
+        //url: "https://api.51shanhe.com/p-server/appServer/alipayAuthorize",
+       // url: "http://hstest123.natapp1.cc/p-server/appServer/alipayAuthorize",
          type: "POST",
          async: false,
            headers: {
-               "Content-Type": "application/json"
+               "Content-Type": "application/x-www-form-urlencoded"
            },
-           data: JSON.stringify(oData),
+           data: oData,
            success: function(data) {
-                alert(data)
-				$('#loadstart').hide()
-               // if(data.code == 1000){
-               //     alert(data.data)
-               // }else{
-               //   alert(data.msg)
-               // }
+                $('#loadstart').hide()
+               if(data.code == 1000){
+                   alert(data.msg)
+               }else{
+                 alert(data.msg)
+               }
              msg = data.msg
               
               
            }
      })
+    
     
     
     </script>

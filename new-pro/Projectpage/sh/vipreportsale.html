@@ -1,344 +1,388 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title></title>
-		<meta name="renderer" content="webkit|ie-comp|ie-stand">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-		<meta http-equiv="Cache-Control" content="no-siteapp" />
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<link rel="stylesheet" href="../../public/css/vipS.css">
-		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-		<style type="text/css">
-			.layui-table-cell {
-				height: auto;
-			}
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <link rel="stylesheet" href="../../public/css/vipS.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style type="text/css">
+    .layui-table-cell {
+        height: auto;
+    }
 
-			.moneyDown {
-				font-size: 20px;
-				margin-right: 5px;
-			}
-		</style>
-	</head>
+    .moneyDown {
+        font-size: 20px;
+        margin-right: 5px;
+    }
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+    </style>
+</head>
 
-	<body class="iframe_index_1">
-		<div class="x-body iframe_index_1_con">
-			<div class="demoTable layui-form x-so">
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="订单号" id="orderNumber">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员姓名" id="mebname">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="会员手机号" id="cell">
-				</div>
-				<div class="layui-input-inline">
-					<!-- 需要数据对接(完成) -->
-					<select name="shopName" id="shopName" lay-search>
-						<option value="">--请选择门店--</option>
-					</select>
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始日" name="startendTime" id="startendTime">
-				</div>
-				<div class="layui-input-inline">
-					<button class="layui-btn" id="search" data-type="reload">
-						<i class="layui-icon">&#xe615;</i>
-					</button>
-				</div>
-			</div>
-			<!-- <xblock>
+<body class="iframe_index_1">
+    <div class="x-body iframe_index_1_con">
+        <div class="demoTable layui-form x-so">
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="订单号" id="orderNumber">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="会员姓名" id="mebname">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="会员手机号" id="cell">
+            </div>
+            <div class="layui-input-inline">
+                <!-- 需要数据对接(完成) -->
+                <select name="shopName" id="shopName" lay-search>
+                    <option value="">--请选择门店--</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="开始日" name="startendTime" id="startendTime">
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn" id="search" data-type="reload">
+                    <i class="layui-icon">&#xe615;</i>
+                </button>
+            </div>
+        </div>
+        <!-- <xblock>
             <button class="layui-btn" id="baobiao">
                 <i class="layui-icon"></i>报表
             </button>
         </xblock> -->
-			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
-		</div>
-		<script src="../../common/config-meb.js"></script>
-		<script src="../../common/utility.js"></script>
-		<script>
-			function fun_date(aa) {
-				var date1 = new Date(),
-					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
-				var date2 = new Date(date1);
-				date2.setDate(date1.getDate() + aa);
-				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
+        <table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
+    </div>
+    <script src="../../common/config-meb.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
 
-				var a = time2.split('-')[0],
-					b = time2.split('-')[1],
-					c = time2.split('-')[2]
-				if (b < 10) {
-					b = 0 + b
-				}
-				if (c < 10) {
-					c = 0 + c
-				}
-				return a + '-' + b + '-' + c
-			}
-			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
-			var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var startDate = fun_date(-6);
-			var endDate = fun_date(0);
-			var nowTime = new Date().valueOf();
-			var dataO = new Object();
-			dataO.merchantNumber = merNumber
-			layui.use(['table', 'laydate', 'form'], function() {
-				var table = layui.table,
-					$ = layui.$,
-					form = layui.form,
-					laydate = layui.laydate;
+        var a = time2.split('-')[0],
+            b = time2.split('-')[1],
+            c = time2.split('-')[2]
+        if (b < 10) {
+            b = 0 + b
+        }
+        if (c < 10) {
+            c = 0 + c
+        }
+        return a + '-' + b + '-' + c
+    }
+    var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+    var merNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+    var startDate = fun_date(-6);
+    var endDate = fun_date(0);
+    var nowTime = new Date().valueOf();
+    var dataO = new Object();
+    dataO.merchantNumber = merNumber
+    layui.use(['table', 'laydate', 'form'], function() {
+        var table = layui.table,
+            $ = layui.$,
+            form = layui.form,
+            laydate = layui.laydate;
 
-				// 选择日期插件  
-				laydate.render({
-					elem: '#startendTime',
-					type: 'date',
-					range: true,
-					value: fun_date(-6) + ' - ' + fun_date(0),
-				});
-				CmsUtility.postAjaxCall(
-					CmsConfig.addressUrl.Merchant.getShopNames,
-					dataO,
-					function(data) {
-						var shopData = data.data
-						for (var i = 0; i < shopData.length; i++) {
-							$("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
-								shopData[i].shopName + '/' + shopData[i].shopNumber + "</option>");
-						}
-						form.render()
-					}
-				)
+        // 选择日期插件  
+        laydate.render({
+            elem: '#startendTime',
+            type: 'date',
+            range: true,
+            value: fun_date(-6) + ' - ' + fun_date(0),
+        });
+        CmsUtility.postAjaxCall(
+            CmsConfig.addressUrl.Merchant.getShopNames,
+            dataO,
+            function(data) {
+                var shopData = data.data
+                for (var i = 0; i < shopData.length; i++) {
+                    $("#shopName").append("<option value='" + shopData[i].shopNumber + '/' + shopData[i].shopName + "'>" +
+                        shopData[i].shopName + '/' + shopData[i].shopNumber + "</option>");
+                }
+                form.render()
+            }
+        )
 
-				//方法级渲染
-				var index = layer.load(2, {
-					shade: [0.4, '#393D49']
-				})
-				table.render({
-					elem: '#LAY_table_bill',
-					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getConTurnovers,
-					method: "get",
-					height: "full-130",
-					page: true,
-					id: 'billlist',
-					where: {
-						"merchantNumber": merNumber,
-						"startTime": fun_date(-6) + ' 00:00:00',
-						"endTime": fun_date(0) + ' 23:59:59',
-					},
-					response: {
-						"statusCode": "1000", //解析接口状态
-					},
-					parseData: function(res) {
-						if (res.data == null) {
-							return
-						}
-						if (res.data == '查询数据为空') {
-							return
-						}
-						return {
-							"code": res.code,
-							"count": res.data.count,
-							"data": res.data.consumTurnovers,
-						}
-					},
-					cols: [
-						[{
-							field: 'orderNumber',
-							title: '订单号',
-							align: 'center',
-							width: 190,
-						}, {
-							field: 'shopName',
-							title: '消费门店',
-							align: 'center',
-							width: 140,
-							templet: function(data) {
-								if (data.shopName) {
-									return data.shopName
-								} else {
-									return '--'
-								}
-							}
-						}, {
-							field: 'name',
-							title: '会员姓名',
-							align: 'center',
-							width: 90,
-						}, {
-							field: 'cell',
-							title: '会员手机号',
-							align: 'center',
-							width: 120,
-						}, {
-							field: 'memberGrade',
-							title: '会员等级',
-							align: 'center',
-							width: 120,
-						}, {
-							field: 'money',
-							title: '订单金额',
-							align: 'center',
-							sort: true,
-							width: 120,
-							templet: function(data) {
-								if (data.orderState == -2) {
-									return '<span class="moneyDown">-</span>¥ ' + data.money
-								} else if (data.money) {
-									return '¥ ' + data.money
-								} else {
-									return '--'
-								}
-							}
-						}, {
-							field: 'discountMoney',
-							title: '优惠金额',
-							align: 'center',
-							sort: true,
-							width: 120,
-							templet: function(data) {
-								if (data.orderState == -2) {
-									return '<span class="moneyDown">-</span>¥ ' + data.discountMoney
-								} else if (data.discountMoney) {
-									return '¥ ' + data.discountMoney
-								} else {
-									return '--'
-								}
-							}
-						}, {
-							field: 'payMoney',
-							title: '实收金额',
-							align: 'center',
-							sort: true,
-							width: 120,
-							templet: function(data) {
-								if (data.orderState == -2) {
-									return '<span class="moneyDown">-</span>¥ ' + data.payMoney
-								} else if (data.payMoney) {
-									return '¥ ' + data.payMoney
-								} else {
-									return '--'
-								}
-							}
-						}, {
-							field: 'principalMoney',
-							title: '实充消费',
-							align: 'center',
-							sort: true,
-							width: 120,
-							templet: function(data) {
-								if (data.orderState == -2) {
-									return '<span class="moneyDown">-</span>¥ ' + data.principalMoney
-								} else if (data.principalMoney) {
-									return '¥ ' + data.principalMoney
-								} else {
-									return '--'
-								}
-							}
-						}, {
-							field: 'giveMoney',
-							title: '赠送消费',
-							align: 'center',
-							sort: true,
-							width: 120,
-							templet: function(data) {
-								if (data.orderState == -2) {
-									return '<span class="moneyDown">-</span>¥ ' + data.giveMoney
-								} else if (data.giveMoney) {
-									return '¥ ' + data.giveMoney
-								} else {
-									return '--'
-								}
-							}
-						}, {
-							field: 'orderTime',
-							title: '消费时间',
-							align: 'center',
-							sort: true,
-							width: 160,
-							templet: function(data) {
-								if (data.orderTime) {
-									return data.orderTime
-								} else {
-									return '--'
-								}
-							}
-						}, {
-							field: 'orderState',
-							title: '订单状态',
-							align: 'center',
-							width: 90,
-							templet: function(data) {
-								switch (data.orderState) {
-									case 1:
-										return '已完成'
-										break;
-									case -2:
-										return '已撤销'
-										break;
-								}
-							}
-						}, {
-							field: 'clerkName',
-							title: '收银员',
-							align: 'center',
-							width: 120,
-							templet: function(data) {
-								if (data.clerkName) {
-									return data.clerkName
-								} else {
-									return '--'
-								}
-							}
-						}]
-					],
-					done: function(res, curr, count) {
-						// console.log(res)
-						layer.closeAll()
-					}
-				});
+        function tableRender() {
+            var index = layer.load(2, {
+                shade: [0.4, '#393D49']
+            })
+            var startendTime = $('#startendTime');
+            table.render({
+                elem: '#LAY_table_bill',
+                url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getConTurnovers,
+                where: {
+                	 "merchantNumber": merNumber,
+                    startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+                    endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+                },
+                method: "get",
+                height: "full-130",
+                page: true,
+                id: 'billlist',
+                response: {
+                    "statusCode": "1000", //解析接口状态
+                },
+                parseData: function(res) {
+                    if (res.data == null) {
+                        return
+                    }
+                    if (res.data == '查询数据为空') {
+                        return
+                    }
+                    return {
+                        "code": res.code,
+                        "count": res.data.count,
+                        "data": res.data.consumTurnovers,
+                    }
+                },
+                cols: [
+                    [{
+                        field: 'orderNumber',
+                        title: '订单号',
+                        align: 'center',
+                        width: 190,
+                    }, {
+                        field: 'shopName',
+                        title: '消费门店',
+                        align: 'center',
+                        width: 140,
+                        templet: function(data) {
+                            if (data.shopName) {
+                                return data.shopName
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        field: 'name',
+                        title: '会员姓名',
+                        align: 'center',
+                        width: 90,
+                    }, {
+                        field: 'cell',
+                        title: '会员手机号',
+                        align: 'center',
+                        width: 120,
+                    }, {
+                        field: 'memberGrade',
+                        title: '会员等级',
+                        align: 'center',
+                        width: 120,
+                    }, {
+                        field: 'money',
+                        title: '订单金额',
+                        align: 'center',
+                        sort: true,
+                        width: 120,
+                        templet: function(data) {
+                            if (data.orderState == -2) {
+                                return '<span class="moneyDown">-</span>¥ ' + data.money
+                            } else if (data.money) {
+                                return '¥ ' + data.money
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        field: 'discountMoney',
+                        title: '优惠金额',
+                        align: 'center',
+                        sort: true,
+                        width: 120,
+                        templet: function(data) {
+                            if (data.orderState == -2) {
+                                return '<span class="moneyDown">-</span>¥ ' + data.discountMoney
+                            } else if (data.discountMoney) {
+                                return '¥ ' + data.discountMoney
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        field: 'payMoney',
+                        title: '实收金额',
+                        align: 'center',
+                        sort: true,
+                        width: 120,
+                        templet: function(data) {
+                            if (data.orderState == -2) {
+                                return '<span class="moneyDown">-</span>¥ ' + data.payMoney
+                            } else if (data.payMoney) {
+                                return '¥ ' + data.payMoney
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        field: 'principalMoney',
+                        title: '实充消费',
+                        align: 'center',
+                        sort: true,
+                        width: 120,
+                        templet: function(data) {
+                            if (data.orderState == -2) {
+                                return '<span class="moneyDown">-</span>¥ ' + data.principalMoney
+                            } else if (data.principalMoney) {
+                                return '¥ ' + data.principalMoney
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        field: 'giveMoney',
+                        title: '赠送消费',
+                        align: 'center',
+                        sort: true,
+                        width: 120,
+                        templet: function(data) {
+                            if (data.orderState == -2) {
+                                return '<span class="moneyDown">-</span>¥ ' + data.giveMoney
+                            } else if (data.giveMoney) {
+                                return '¥ ' + data.giveMoney
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        field: 'orderTime',
+                        title: '消费时间',
+                        align: 'center',
+                        sort: true,
+                        width: 160,
+                        templet: function(data) {
+                            if (data.orderTime) {
+                                return data.orderTime
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        field: 'orderState',
+                        title: '订单状态',
+                        align: 'center',
+                        width: 90,
+                        templet: function(data) {
+                            switch (data.orderState) {
+                                case 1:
+                                    return '已完成'
+                                    break;
+                                case -2:
+                                    return '已撤销'
+                                    break;
+                            }
+                        }
+                    }, {
+                        field: 'clerkName',
+                        title: '收银员',
+                        align: 'center',
+                        width: 120,
+                        templet: function(data) {
+                            if (data.clerkName) {
+                                return data.clerkName
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    // console.log(res)
+                    layer.closeAll()
+                }
+            });
+        }
+        //方法级渲染
 
-				// 根據條件重载表格
-				var $ = layui.$,
-					active = {
-						reload: function() {
-							layer.load(2, {
-								shade: [0.4, '#393D49']
-							})
-							// 获取上面查询框的值
-							var mebname = $('#mebname')
-							var orderNumber = $('#orderNumber')
-							var cell = $('#cell')
-							var shopName = $('#shopName')
-							var startendTime = $('#startendTime');
-							//执行重载
-							table.reload('billlist', {
-								page: {
-									curr: 1 //重新从第 1 页开始
-								},
-								where: {
-									name: mebname.val(),
-									consumOrderNumber: orderNumber.val(),
-									cell: cell.val(),
-									shopNumber: shopName.val().split('/')[0],
-									startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
-									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
-								}
-							});
-							layer.closeAll()
-						}
-					};
+        tableRender()
+        window.jyClick = function(data, data1) {
 
-				$('.layui-btn').on('click', function() {
-					var type = $(this).data('type');
-					active[type] ? active[type].call(this) : '';
-				});
-			});
-		</script>
-	</body>
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startendTime').val(CmsUtility.fun_date(0) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startendTime').val(CmsUtility.fun_date(-1) +
+                        ' - ' + CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startendTime').val(CmsUtility.fun_date(-6) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startendTime').val(CmsUtility.fun_date(-29) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
+        // 根據條件重载表格
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    layer.load(2, {
+                        shade: [0.4, '#393D49']
+                    })
+                    // 获取上面查询框的值
+                    var mebname = $('#mebname')
+                    var orderNumber = $('#orderNumber')
+                    var cell = $('#cell')
+                    var shopName = $('#shopName')
+                    var startendTime = $('#startendTime');
+                    //执行重载
+                    table.reload('billlist', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            name: mebname.val(),
+                            consumOrderNumber: orderNumber.val(),
+                            cell: cell.val(),
+                            shopNumber: shopName.val().split('/')[0],
+                            startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+                            endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+                        }
+                    });
+                    $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+                    layer.closeAll()
+                }
+            };
+
+        $('.layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+    </script>
+</body>
 
 </html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+      <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    html,body{
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+    }
+    .map{
+        height: 100%;
+        width: 100%;
+        float: left;
+    }
+</style>
+</head>
+
+<body id="iosiframe" style="padding-bottom:20rpx;">
+    <div id="container" class="map"></div>
+<div class="input-card">
+    <h4>设置地图当前行政区</h4>
+    <div class="input-item">
+      <input id='city-name' placeholder="北京市" type="text" style="margin-right:1rem;"><button class="btn" id="query">去指定城市</button>
+    </div>
+    <h4>左击获取经纬度：</h4>
+    <div class="input-item">
+
+      <input type="text" readonly="true" id="lnglat">
+    </div>
+
+    <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <a class="layui-btn layui-btn-primary" id="quxiao">取消</a>
+                            <a class="layui-btn " id="queding">确定</a>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+</div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.Autocomplete"></script>
+    <script>
+    // 
+        var index = parent.layer.getFrameIndex(window.name);
+    
+    var map = new AMap.Map("container", {
+        resizeEnable: true,
+        resizeEnable: true,
+          center: [116.405285,39.904989],
+          zoom:12
+    });
+    var lng = '';
+    var lat = '';
+    //为地图注册click事件获取鼠标点击出的经纬度坐标
+    map.on('click', function(e) {
+        document.getElementById("lnglat").value = e.lnglat.getLng() + ',' + e.lnglat.getLat()
+        lng = e.lnglat.getLng()
+        lat = e.lnglat.getLat()
+    });
+     //根据cityname、adcode、citycode设置地图位置
+    function gotoCity() {
+      var val = document.querySelector('#city-name').value; //可以是cityname、adcode、citycode
+      if (!val) {
+        val = "北京市";
+      }
+      map.setCity(val);
+      log.info(`已跳转至${val}`);
+    }
+
+    //绑定查询点击、回车事件
+    document.querySelector('#query').onclick = gotoCity;
+    document.querySelector('#city-name').onkeydown = function(e) {
+      if (e.keyCode === 13) {
+        gotoCity();
+        return false;
+      }
+      return true;
+    };
+    var pyList = new Array()
+    var serverUrl = window.parent.serverUrl
+    // var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+    $('#quxiao').click(function() {
+        
+        setTimeout(function() {
+            parent.layer.close(index)
+        }, 16);
+    })
+    $('#queding').click(function() {
+        if(lng == '' || lat == ''){
+            layer.msg('请选择坐标 ')
+            return 
+        }
+        parent.getlnglot(lng,lat)
+        setTimeout(function() {
+            parent.layer.close(index)
+        }, 16);
+    })
+    layui.use(['laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        
+
+    });
+    </script>
+</body>
+
+</html>

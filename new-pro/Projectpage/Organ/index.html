@@ -1,370 +1,473 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title id="title">机构管理系统</title>
-		<meta name="renderer" content="webkit|ie-comp|ie-stand">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-		<meta http-equiv="Cache-Control" content="no-siteapp" />
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title id="title">机构管理系统</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> -->
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script type="text/javascript">
+    //var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
+    var site = 'hongsou.com'
 
-		<!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /> -->
-		<link rel="stylesheet" href="../../public/css/font.css">
-		<link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-		<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.CitySearch"></script>
-		<script src="../../common/config-organ.js"></script>
-		<script src="../../common/utility.js"></script>
-		<script type="text/javascript">
-			//var site = window.location.hostname.split('.')[1] + '.' + window.location.hostname.split('.')[2]
-			var site = '51shanhe'
-			function getDateStr(dayCount) {
-					var dayNumber = 0+dayCount
-				    let dd = new Date()
-				    dd.setDate(dd.getDate() + dayCount)
-				    let time = dd.getTime()
-				    return time + ''
-			}
-			console.log(localStorage.getItem(site+"organStorage"))
-			if(!localStorage.getItem(site+"organStorage")){
-				console.log(localStorage.getItem(site+"organStorage"))
-				window.location.href = 'login.html' 
-			}else{
-				var nowTime = getDateStr(0)
-				var localData = JSON.parse(localStorage.getItem(site+"organStorage"))
-				if(nowTime >= localData.time){
-					window.location.href = 'login.html' 
-				}else{
-					sessionStorage.setItem("organUser", JSON.stringify(localData.data));
-				}
-			}
-			var dw = $(window).width(),
-				dh = $(window).height(),
-				ifmbox = $(".layui-iframe"),
-				iframe = $("#iframepage");
+    function getDateStr(dayCount) {
+        var dayNumber = 0 + dayCount
+        let dd = new Date()
+        dd.setDate(dd.getDate() + dayCount)
+        let time = dd.getTime()
+        return time + ''
+    }
+    console.log(localStorage.getItem(site + "organStorage"))
+    if (!localStorage.getItem(site + "organStorage")) {
+        console.log(localStorage.getItem(site + "organStorage"))
+        window.location.href = 'login.html'
+    } else {
+        var nowTime = getDateStr(0)
+        var localData = JSON.parse(localStorage.getItem(site + "organStorage"))
+        if (nowTime >= localData.time) {
+            window.location.href = 'login.html'
+        } else {
+            sessionStorage.setItem("organUser", JSON.stringify(localData.data));
+        }
+    }
+    var dw = $(window).width(),
+        dh = $(window).height(),
+        ifmbox = $(".layui-iframe"),
+        iframe = $("#iframepage");
 
-			var cssText = "width:" + dw + "px !important;";
-			iframe.css("cssText", cssText);
+    var cssText = "width:" + dw + "px !important;";
+    iframe.css("cssText", cssText);
 
-			if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //判断是苹果设备还是其他设备 
-				ifmbox.addClass('ifm-ios');
-				iframe.attr("scrolling", "no") //评估设置设置为no
-			} else {
-				iframe.attr("scrolling", "yes") //安卓设备设置为yes
-				iframe.height(dh)
-			}
-			var userNumber = '00115603209193'
-			var serverUrl = 'http://192.168.1.190:5002/'
-		</script>
-	</head>
+    if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { //判断是苹果设备还是其他设备 
+        ifmbox.addClass('ifm-ios');
+        iframe.attr("scrolling", "no") //评估设置设置为no
+    } else {
+        iframe.attr("scrolling", "yes") //安卓设备设置为yes
+        iframe.height(dh)
+    }
+    var userNumber = '00115603209193'
+    var serverUrl = 'http://192.168.110.190:5002/'
+    </script>
+</head>
 
-	<body>
-		<!-- 顶部开始 -->
-		<div class="container">
-			<div class="logo">
-				<a href="./index.html" id="titName"   style="width:250px">机构管理系统</a>
-			</div>
-			<div class="left_open">
-				<i title="展开左侧栏" class="iconfont">&#xe699;</i>
-			</div>
-			<ul class="layui-nav right" lay-filter="">
-				<li class="layui-nav-item">
-					<a href="javascript:;" id="userName"></a>
-					<dl class="layui-nav-child">
-						<dd>
-							<a href="javascript:;" id="logout">退出</a>
-						</dd>
-					</dl>
-				</li>
-			</ul>
-		</div>
-		<!-- 顶部结束 -->
-		<!-- 中部开始 -->
-		<!-- 左侧菜单开始 -->
-		<div class="left-nav">
-			<div id="side-nav">
-				<ul class="layui-nav layui-nav-tree" id="nav">
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-fengkongshezhi"></i>
-							<cite>系统设置</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a lay-href="Settings-Basic.html">
-									<i class="icon icon icon-sysset"></i>
-									<cite>基本设置</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="setCode.html">
-									<i class="icon icon icon-mashangfu"></i>
-									<cite>二维码设置</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Settings-Mail.html">
-									<i class="icon icon icon-youjianshezhi"></i>
-									<cite>邮件设置</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Settings-api.html">
-									<i class="icon icon icon-jiekou"></i>
-									<cite>接口设置</cite>
-								</a>
-							</li>
-							
-							
-							<li class="level1">
-								<a lay-href="setWechat.html">
-									<i class="icon icon icon-weixinzhifu"></i>
-									<cite>授权配置</cite>
-								</a>
-							</li>
-							<li class="level1">
-								<a lay-href="messagepush.html">
-									<i class="icon icon icon-mimashezhi"></i>
-									<cite>消息配置</cite>
-								</a>
-							</li>
-							<!-- <li>
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo">
+            <a href="./index.html" id="titName" style="width:250px">机构管理系统</a>
+        </div>
+        <div class="left_open">
+            <i title="展开左侧栏" class="iconfont">&#xe699;</i>
+        </div>
+        <ul class="layui-nav right" lay-filter="">
+            <li class="layui-nav-item">
+                <a href="javascript:;" id="userName"></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;" id="logout">退出</a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 中部开始 -->
+    <!-- 左侧菜单开始 -->
+    <div class="left-nav">
+        <div id="side-nav">
+            <ul class="layui-nav layui-nav-tree" id="nav">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-fengkongshezhi"></i>
+                        <cite>系统设置</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="Settings-Basic.html">
+                                <i class="icon icon icon-sysset"></i>
+                                <cite>基本设置</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="setCode.html">
+                                <i class="icon icon icon-mashangfu"></i>
+                                <cite>二维码设置</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Settings-Mail.html">
+                                <i class="icon icon icon-youjianshezhi"></i>
+                                <cite>邮件设置</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Settings-api.html">
+                                <i class="icon icon icon-jiekou"></i>
+                                <cite>接口设置</cite>
+                            </a>
+                        </li>
+                        <li class="level1">
+                            <a lay-href="setWechat.html">
+                                <i class="icon icon icon-weixinzhifu"></i>
+                                <cite>授权配置</cite>
+                            </a>
+                        </li>
+                        <li class="level1">
+                            <a lay-href="messagepush.html">
+                                <i class="icon icon icon-mimashezhi"></i>
+                                <cite>消息配置</cite>
+                            </a>
+                        </li>
+                        <!-- <li>
 								<a lay-href="setAli.html">
 									<i class="icon icon icon-zhifubao"></i>
 									<cite>支付宝设置</cite>
 								</a>
 							</li> -->
-							<li>
-								<a lay-href="Settings-Password.html">
-									<i class="icon icon icon-mimashezhi"></i>
-									<cite>修改密码</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="MembersList.html">
-									<i class="icon icon icon-guanliyuanguanli"></i>
-									<cite>管理员管理</cite>
-								</a>
-							</li>
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-shanghuguanli"></i>
-							<cite>商户管理</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a lay-href="Merchants-List.html">
-									<i class="icon icon icon-yishenhe"></i>
-									<cite>已审核商户</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Merchants-List-wait.html">
-									<i class="icon icon icon-daishen"></i>
-									<cite>待审核商户</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Merchants-Riskctrl.html">
-									<i class="icon icon icon-fengkongshezhi"></i>
-									<cite>风控设置</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Merchants-Loginrec.html">
-									<i class="icon icon icon-denglujilu"></i>
-									<cite>登录记录</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Channel-Risk.html">
-									<i class="icon icon icon-tubiaolunkuohua13"></i>
-									<cite>风控实况 </cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Merchants-Operationlog.html">
-									<i class="icon icon icon-caozuorizhi"></i>
-									<cite>商户操作日志</cite>
-								</a>
-							</li>
-							<!-- <li>
+                        <li>
+                            <a lay-href="Settings-Password.html">
+                                <i class="icon icon icon-mimashezhi"></i>
+                                <cite>修改密码</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="MembersList.html">
+                                <i class="icon icon icon-guanliyuanguanli"></i>
+                                <cite>管理员管理</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-shanghuguanli"></i>
+                        <cite>商户管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="Merchants-List.html">
+                                <i class="icon icon icon-yishenhe"></i>
+                                <cite>已审核商户</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="merchant-wait-center.html">
+                                <i class="icon icon icon-daishen"></i>
+                                <cite>待审核商户</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Merchants-Riskctrl.html">
+                                <i class="icon icon icon-fengkongshezhi"></i>
+                                <cite>风控设置</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Merchants-Loginrec.html">
+                                <i class="icon icon icon-denglujilu"></i>
+                                <cite>登录记录</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Channel-Risk.html">
+                                <i class="icon icon icon-tubiaolunkuohua13"></i>
+                                <cite>风控实况 </cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Merchants-Operationlog.html">
+                                <i class="icon icon icon-caozuorizhi"></i>
+                                <cite>商户操作日志</cite>
+                            </a>
+                        </li>
+                        <!-- <li>
 								<a lay-href="shop-echarts.html">
 									<i class="icon icon icon-caozuorizhi"></i>
 									<cite>商户分析</cite>
 								</a>
 							</li> -->
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-dailiguanli1"></i>
-							<cite>服务商管理</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a lay-href="Agent-List.html">
-									<i class="icon icon icon-dailiguanli"></i>
-									<cite>服务商管理</cite>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-dailiguanli1"></i>
+                        <cite>服务商管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="Agent-List.html">
+                                <i class="icon icon icon-dailiguanli"></i>
+                                <cite>服务商管理</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Agent-Changemoney.html">
+                                <i class="icon icon icon-zhanghuzijinbiandongbiao"></i>
+                                <cite>服务商账单</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Codecard-List.html">
+                                <i class="icon icon icon-paizhao"></i>
+                                <cite>码牌管理</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="btBill.html">
+                                <i class="icon icon icon-paizhao"></i>
+                                <cite>补贴明细</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon layui-icon-group"></i>
+                        <cite>联盟返利</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="card-set.html">
+                                <i class="icon icon layui-icon-list"></i>
+                                <cite>会员卡管理</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="vip-card-wechat.html">
+                                <i class="icon icon icon-weixinhuiyuanqia"></i>
+                                <cite>微信会员卡</cite>
+                            </a>
+                        </li>
+                        <!-- <li>
+								<a lay-href="LedgerAccount-set.html">
+									<i class="icon icon layui-icon-chart-screen"></i>
+									<cite>分账设置</cite>
 								</a>
-							</li>
-							<li>
-								<a lay-href="Agent-Changemoney.html">
-									<i class="icon icon icon-zhanghuzijinbiandongbiao"></i>
-									<cite>服务商账单</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Codecard-List.html">
-									<i class="icon icon icon-paizhao"></i>
-									<cite>码牌管理</cite>
-								</a>
-							</li>
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-dingdanguanli"></i>
-							<cite>订单管理</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							
-							<li>
-								<a lay-href="Order-Successful.html">
-									<i class="icon icon icon-chenggongdingdan"></i>
-									<cite>成功订单</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Order-All.html">
-									<i class="icon icon icon-quanbudingdan"></i>
-									<cite>退款订单</cite>
-								</a>
-							</li>
-							<!-- <li>
+							</li> -->
+                        <li>
+                            <a lay-href="LedgerAccount-set-new.html">
+                                <i class="icon icon icon-weixinhuiyuanqia"></i>
+                                <cite>分账设置(新)</cite>
+                            </a>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a lay-href="fanli-advList.html">
+                                <i class="icon icon icon-guanggao-"></i>
+                                <cite>广告管理</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="fanli-city.html">
+                                <i class="icon icon icon-weixinhuiyuanqia"></i>
+                                <cite>城市管理</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="fanli-area.html">
+                                <i class="icon icon icon-weixinhuiyuanqia"></i>
+                                <cite>区域管理</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="fanli-fenlei.html">
+                                <i class="icon icon icon-weixinhuiyuanqia"></i>
+                                <cite>商户分类</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="fanli-merchantList.html">
+                                <i class="icon icon layui-icon-list"></i>
+                                <cite>商户管理</cite>
+                            </a>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a lay-href="javascript:;">
+                                <i class="icon icon icon-shanghuguanli"></i>
+                                <cite>返利卡报表</cite>
+                                <i class="iconfont nav_right">&#xe697;</i>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a lay-href="vip-buyCard-list.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>购买记录</cite>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a lay-href="fanli-audit.html">
+                                <i class="icon icon icon-chenggongdingdan"></i>
+                                <cite>提现审核</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="fanli-orderList.html">
+                                <i class="icon icon icon-chenggongdingdan"></i>
+                                <cite>返佣订单</cite>
+                            </a>
+                        </li>
+                        <li class="layui-nav-item">
+                            <a lay-href="javascript:;">
+                                <i class="icon icon icon-shanghuguanli"></i>
+                                <cite>会员管理</cite>
+                                <i class="iconfont nav_right">&#xe697;</i>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a lay-href="vip-list.html" style="padding-left:25px !important">
+                                        <i class="icon icon icon-dingdanyichang"></i>
+                                        <cite>会员列表</cite>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-dingdanguanli"></i>
+                        <cite>订单管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="Order-Successful.html">
+                                <i class="icon icon icon-chenggongdingdan"></i>
+                                <cite>成功订单</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Order-All.html">
+                                <i class="icon icon icon-quanbudingdan"></i>
+                                <cite>退款订单</cite>
+                            </a>
+                        </li>
+                        <!-- <li>
 								<a lay-href="Order-Nopay.html">
 									<i class="icon icon icon-weizhifudingdan"></i>
 									<cite>未支付订单</cite>
 								</a>
 							</li> -->
-							<li>
-								<a lay-href="Order-Unusual.html">
-									<i class="icon icon icon-order-error"></i>
-									<cite>异常订单</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="order-check.html">
-									<i class="icon icon icon-order-error"></i>
-									<cite>订单校验</cite>
-								</a>
-							</li>
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a lay-href="yajin.html">
-							<i class="icon icon icon-weixinzhifu"></i>
-							<cite>预授权订单</cite>
-							
-						</a>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-weixinzhifu"></i>
-							<cite>花呗分期</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a lay-href="setHuabei.html">
-									<i class="icon icon icon-shebei"></i>
-									<cite>花呗分期设置</cite>
-								</a>
-							</li>
-							
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-shebeiguanli"></i>
-							<cite>设备管理</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a lay-href="equemant-List.html">
-									<i class="icon icon icon-shebei"></i>
-									<cite>设备列表</cite>
-								</a>
-							</li>
-							
-						</ul>
-					</li>
-
-					<li class="layui-nav-item level1" >
-						<a href="javascript:;">
-							<i class="icon icon icon-tuisongtongdao"></i>
-							<cite>通道管理</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							
-							<li>
-								<a lay-href="Channel-Management.html">
-									<i class="icon icon icon-tongdaoguanli"></i>
-									<cite>通道管理</cite>
-								</a>
-							</li>
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a lay-href="Adware-List.html">
-							<i class="icon icon icon-guanggao-"></i>
-							<cite>广告管理</cite>
-						</a>
-					</li>
-					<li class="layui-nav-item">
-						<a lay-href="messageList.html">
-							<i class="icon icon icon-tongzhi1"></i>
-							<cite>消息通知</cite>
-						</a>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-tikuanguanli"></i>
-							<cite>提款管理</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a lay-href="setBill.html">
-									<i class="icon icon icon-tixianshenhe"></i>
-									<cite>发票信息</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Agent-Audit.html">
-									<i class="icon icon icon-tixianshenhe"></i>
-									<cite>服务商提现审核</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="Agent-Bill.html">
-									<i class="icon icon icon-tixianjilu1"></i>
-									<cite>服务商提现账单</cite>
-								</a>
-							</li>
-						<!-- 	<li>
+                        <li>
+                            <a lay-href="Order-Unusual.html">
+                                <i class="icon icon icon-order-error"></i>
+                                <cite>异常订单</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="order-check.html">
+                                <i class="icon icon icon-order-error"></i>
+                                <cite>订单校验</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a lay-href="yajin.html">
+                        <i class="icon icon icon-weixinzhifu"></i>
+                        <cite>预授权订单</cite>
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-weixinzhifu"></i>
+                        <cite>花呗分期</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="setHuabei.html">
+                                <i class="icon icon icon-shebei"></i>
+                                <cite>花呗分期设置</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-shebeiguanli"></i>
+                        <cite>设备管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="equemant-List.html">
+                                <i class="icon icon icon-shebei"></i>
+                                <cite>设备列表</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item level1">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-tuisongtongdao"></i>
+                        <cite>通道管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="Channel-Management.html">
+                                <i class="icon icon icon-tongdaoguanli"></i>
+                                <cite>通道管理</cite>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a lay-href="Adware-List.html">
+                        <i class="icon icon icon-guanggao-"></i>
+                        <cite>广告管理</cite>
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a lay-href="messageList.html">
+                        <i class="icon icon icon-tongzhi1"></i>
+                        <cite>消息通知</cite>
+                    </a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-tikuanguanli"></i>
+                        <cite>提款管理</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="setBill.html">
+                                <i class="icon icon icon-tixianshenhe"></i>
+                                <cite>发票信息</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Agent-Audit.html">
+                                <i class="icon icon icon-tixianshenhe"></i>
+                                <cite>服务商提现审核</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="Agent-Bill.html">
+                                <i class="icon icon icon-tixianjilu1"></i>
+                                <cite>服务商提现账单</cite>
+                            </a>
+                        </li>
+                        <!-- 	<li>
 								<a lay-href="vip-cancel.html">
 									<i class="icon icon icon-shoudongjiesuan"></i>
 									<cite>手动结算</cite>
@@ -388,105 +491,105 @@
 									<cite>商户代付审核</cite>
 								</a>
 							</li> -->
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-caiwufenxi"></i>
-							<cite>通道分析</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li class="alipay" style="display:none">
-								<a lay-href="Financial-channel-ali.html">
-									<i class="icon icon icon-zhifubao"></i>
-									<cite>官方支付宝</cite>
-								</a>
-							</li>
-							<li class="wechatpay" style="display:none">
-								<a lay-href="Financial-channel-wechar.html">
-									<i class="icon icon icon-weixin"></i>
-									<cite>官方微信</cite>
-								</a>
-							</li>
-							<li class="fuyou" style="display:none">
-								<a lay-href="Financial-channel-fuyou.html">
-									<i class="icon icon icon-fuyouzhifu"></i>
-									<cite>富友通道</cite>
-								</a>
-							</li>
-							<!-- <li class="yrm" style="display:none">
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-caiwufenxi"></i>
+                        <cite>通道分析</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="alipay" style="display:none">
+                            <a lay-href="Financial-channel-ali.html">
+                                <i class="icon icon icon-zhifubao"></i>
+                                <cite>官方支付宝</cite>
+                            </a>
+                        </li>
+                        <li class="wechatpay" style="display:none">
+                            <a lay-href="Financial-channel-wechar.html">
+                                <i class="icon icon icon-weixin"></i>
+                                <cite>官方微信</cite>
+                            </a>
+                        </li>
+                        <li class="fuyou" style="display:none">
+                            <a lay-href="Financial-channel-fuyou.html">
+                                <i class="icon icon icon-fuyouzhifu"></i>
+                                <cite>富友通道</cite>
+                            </a>
+                        </li>
+                        <!-- <li class="yrm" style="display:none">
 								<a lay-href="Financial-channel-yrm.html">
 									<i class="icon icon icon-disanfang"></i>
 									<cite>易融码通道</cite>
 								</a>
 							</li> -->
-							<li class="xdl" style="display:none">
-								<a lay-href="Financial-channel-xdl.html">
-									<i class="icon icon icon-shishishuaqia_xindalu"></i>
-									<cite>新大陆通道</cite>
-								</a>
-							</li>
-							<li class="sxf" style="display:none">
-								<a lay-href="Financial-channel-sxf.html">
-									<i class="icon icon icon-disanfang"></i>
-									<cite>随行付通道</cite>
-								</a>
-							</li>
-							<li class="ls" style="display:none">
-								<a lay-href="Financial-channel-ls.html">
-									<i class="icon icon icon-disanfang"></i>
-									<cite>乐刷通道</cite>
-								</a>
-							</li>
-							<!--<li>
+                        <li class="xdl" style="display:none">
+                            <a lay-href="Financial-channel-xdl.html">
+                                <i class="icon icon icon-shishishuaqia_xindalu"></i>
+                                <cite>新大陆通道</cite>
+                            </a>
+                        </li>
+                        <li class="sxf" style="display:none">
+                            <a lay-href="Financial-channel-sxf.html">
+                                <i class="icon icon icon-disanfang"></i>
+                                <cite>随行付通道</cite>
+                            </a>
+                        </li>
+                        <li class="ls" style="display:none">
+                            <a lay-href="Financial-channel-ls.html">
+                                <i class="icon icon icon-disanfang"></i>
+                                <cite>乐刷通道</cite>
+                            </a>
+                        </li>
+                        <!--<li>
 								<a lay-href="Financial-flowrecord.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>流水记录</cite>
 								</a>
 							</li>-->
-						</ul>
-					</li>
-					<li class="layui-nav-item">
-						<a href="javascript:;">
-							<i class="icon icon icon-caiwufenxi1"></i>
-							<cite>财务分析</cite>
-							<i class="iconfont nav_right">&#xe697;</i>
-						</a>
-						<ul class="sub-menu">
-							<li>
-								<a lay-href="Financial-deal.html">
-									<i class="icon icon icon-jiaoyitongji1"></i>
-									<cite>交易统计分析</cite>
-								</a>
-							</li>
-							<li>
-								<a lay-href="agent-deal.html">
-									<i class="icon icon icon-pingtaibaobiao"></i>
-									<cite>服务商统计分析</cite>
-								</a>
-							</li>
-							<!-- <li>
+                    </ul>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="icon icon icon-caiwufenxi1"></i>
+                        <cite>财务分析</cite>
+                        <i class="iconfont nav_right">&#xe697;</i>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a lay-href="Financial-deal.html">
+                                <i class="icon icon icon-jiaoyitongji1"></i>
+                                <cite>交易统计分析</cite>
+                            </a>
+                        </li>
+                        <li>
+                            <a lay-href="agent-deal.html">
+                                <i class="icon icon icon-pingtaibaobiao"></i>
+                                <cite>服务商统计分析</cite>
+                            </a>
+                        </li>
+                        <!-- <li>
 								<a lay-href="Financial-channel.html">
 									<i class="icon icon icon-jiaoyitongji"></i>
 									<cite>通道统计分析</cite>
 								</a>
 							</li> -->
-							<!--<li>
+                        <!--<li>
 								<a lay-href="Financial-flowrecord.html">
 									<i class="iconfont">&#xe6a7;</i>
 									<cite>流水记录</cite>
 								</a>
 							</li>-->
-						</ul>
-					</li>
-					<li class="layui-nav-item level1">
-						<a lay-href="Third-List.html">
-							<i class="icon icon icon-disanfang"></i>
-							<cite>第三方管理</cite>
-						</a>
-					</li>
-					<!-- <li class="layui-nav-item">
+                    </ul>
+                </li>
+                <li class="layui-nav-item level1">
+                    <a lay-href="Third-List.html">
+                        <i class="icon icon icon-disanfang"></i>
+                        <cite>第三方管理</cite>
+                    </a>
+                </li>
+                <!-- <li class="layui-nav-item">
 						<a href="javascript:;">
 							<i class="icon icon icon-disanfang"></i>
 							<cite>第三方管理</cite>
@@ -531,155 +634,191 @@
 							</li>
 						</ul>
 					</li> -->
-				</ul>
-			</div>
-		</div>
-		<!-- <div class="x-slide_left"></div> -->
-		<!-- 左侧菜单结束 -->
-		<!-- 右侧主体开始 -->
-		<div class="page-content">
-			<div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
-				<ul class="layui-tab-title">
-					<li class="layui-this layui-icon layui-icon-home"></li>
-				</ul>
-				<div class="layui-tab-content">
-					<div class="layui-tab-item layui-show layui-iframe">
-						<iframe src='./welcome.html' id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="page-content-bg"></div>
-		<!-- 右侧主体结束 -->
-		<!-- 中部结束 -->
-		<!-- 底部开始 -->
-		
-		<script type="text/javascript">
-			console.log(sessionStorage.getItem("organ-level"))
-			
-			if(sessionStorage.getItem("organ-level") == 0){
-				
-				$('.level1').hide()
-			}
-			CmsUtility.postAjaxCall(
-						//系统设置
-				CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("organUser")).institutionNumber,
-				{
-					"page":1,
-					"limit":10
-				},
-				function(data) {
-					console.log(data)
-					if(data.code == '1000') {
-						
-						for(var i = 0 ; i < data.data.PaymentChannellist.length;i++){
-							switch (data.data.PaymentChannellist[i].paymentChannelType) {
-								case 0:
-								console.log('123')
-									$('.alipay').show()
-									break;
-								case 1:
-									$('.wechatpay').show()
-									break;
-								case 2:
-									$('.fuyou').show()
-									break;
-								case 3:
-									$('.yrm').show()
-									break;
-								case 4:
-									$('.xdl').show()
-									break;
-								case 5:
-									$('.sxf').show()
-									break;
-								case 6:
-									$('.ls').show()
-									break;
-								default:
-									// statements_def
-									break;
-							}
-						}
-						
+            </ul>
+        </div>
+    </div>
+    <!-- <div class="x-slide_left"></div> -->
+    <!-- 左侧菜单结束 -->
+    <!-- 右侧主体开始 -->
+    <div class="page-content">
+        <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+            <ul class="layui-tab-title">
+                <li class="layui-this layui-icon layui-icon-home"></li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show layui-iframe">
+                    <iframe src='./welcome.html' id="iframepage" frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content-bg"></div>
+    <!-- 右侧主体结束 -->
+    <!-- 中部结束 -->
+    <!-- 底部开始 -->
+    <script type="text/javascript">
+    console.log(sessionStorage.getItem("organ-level"))
 
-					} else {
+    if (sessionStorage.getItem("organ-level") == 0) {
 
-					}
-				},
-				function(data) {
-					console.log('222')
-				}
-			)
-			$('#userName').html(JSON.parse(sessionStorage.getItem("organUser")).merchantName)
-			var  reg = new RegExp('(?<=[^.]*[.]+).*?(?=[.]+)')
-					var loc = window.location.href
-					console.log(loc)
-					console.log(loc.match(reg))
-					CmsUtility.postAjaxCall(
-								//系统设置
-						CmsConfig.addressUrl.Public.getSitePath,
-						{
-							"sitePath":'51shanhe.com',
-							//"sitePath":'hongxiaosou.cn'
-						},
-						function(data) {
-							console.log(data)
-							if(data.code == '1000') {
-								$('#titName').html(data.data[0].websiteName +'-机构管理平台')
-								$('#title').html(data.data[0].websiteName +'-机构管理平台')
-								sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));
-								// document.write('<title>机构后台管理系统</title>')
-							} else {
-								layer.msg(data.msg)
-							}
-						},
-						function(data) {
-							console.log('222')
-						}
-					)
-			console.log(JSON.parse(sessionStorage.getItem("organUser")).login)
-			layui.use('layer', function() {
+        $('.level1').hide()
+    }
+    layui.use('layer', function(){ //独立版的layer无需执行这一句
+  var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+  // layer.open({
+  //       type: 1
+  //       ,title: false //不显示标题栏
+  //       ,closeBtn: false
+  //       ,area: '500px;'
+  //       ,shade: 0.8
+  //       ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+  //       ,btn: ['知道了']
+  //       ,btnAlign: 'c'
+  //       ,moveType: 1 //拖拽模式，0或者1
+  //       ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">重要通知！<br><br><br>由于系统升级，即日起机构后台地址更新为  https://bcrm.hongsou.com.cn/ <br><br>为不影响您的后续使用，建议您保存新地址<br><br>感谢您的配合！</div>'
+  //       ,success: function(layero){
+          
+  //       }	
+  //     });
 
-				var layer = layui.layer
-				layer.config({
-					  extend: 'myskin/style.css', //加载新皮肤
-					  skin: 'layer-ext-myskin' //一旦设定，所有弹层风格都采用此主题。
-					});
-			})
-			$(function() {
-				$('#logout').click(function() {
-					console.log('退出')
-					CmsUtility.postAjaxCall(
-						//系统设置
-						CmsConfig.addressUrl.Login.exitLogin,
-						{
-							"institutionNumber":JSON.parse(sessionStorage.getItem("organUser")).institutionNumber,
-							"number":JSON.parse(sessionStorage.getItem("organUser")).Number,
-						},
-						function(data) {
-							if(data.code == '1000') {
-								// layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
-								// 	title: ''
-								// })
-								
+})
+    
+    CmsUtility.postAjaxCall(
+        //系统设置
+        CmsConfig.addressUrl.Mechanism.getOfficial + '?institutionNumber=' + JSON.parse(sessionStorage.getItem("organUser")).institutionNumber, {
+            "page": 1,
+            "limit": 10
+        },
+        function(data) {
+            console.log(data)
+            if (data.code == '1000') {
 
-							} else {
+                for (var i = 0; i < data.data.PaymentChannellist.length; i++) {
+                    switch (data.data.PaymentChannellist[i].paymentChannelType) {
+                        case 0:
+                            console.log('123')
+                            $('.alipay').show()
+                            break;
+                        case 1:
+                            $('.wechatpay').show()
+                            break;
+                        case 2:
+                            $('.fuyou').show()
+                            break;
+                        case 3:
+                            $('.yrm').show()
+                            break;
+                        case 4:
+                            $('.xdl').show()
+                            break;
+                        case 5:
+                            $('.sxf').show()
+                            break;
+                        case 6:
+                            $('.ls').show()
+                            break;
+                        default:
+                            // statements_def
+                            break;
+                    }
+                }
 
-							}
-						},
-						function(data) {
-							console.log('222')
-						}
-					)
-					layer.msg('退出成功，即将跳转登录页')
-						sessionStorage.clear();
-						setTimeout(function() {
-							window.location.href = 'login.html'
-						}, 500)
-				})
-			})
-		</script>
-	</body>
+
+            } else {
+
+            }
+        },
+        function(data) {
+            console.log('222')
+        }
+    )
+    $('#userName').html(JSON.parse(sessionStorage.getItem("organUser")).merchantName)
+    var reg = new RegExp('(?<=[^.]*[.]+).*?(?=[.]+)')
+    var loc = window.location.href
+    console.log(loc)
+    console.log(loc.match(reg))
+    CmsUtility.postAjaxCall(
+        //系统设置
+        CmsConfig.addressUrl.Public.getSitePath, {
+            "sitePath": 'hongsou.com',
+            //"sitePath":'hongxiaosou.cn'
+        },
+        function(data) {
+            console.log(data)
+            if (data.code == '1000') {
+                $('#titName').html(data.data[0].websiteName + '-机构管理平台')
+                $('#title').html(data.data[0].websiteName + '-机构管理平台')
+                sessionStorage.setItem("jgInfo", JSON.stringify(data.data[0]));
+                // document.write('<title>机构后台管理系统</title>')
+            } else {
+                layer.msg(data.msg)
+            }
+        },
+        function(data) {
+            console.log('222')
+        }
+    )
+    console.log(JSON.parse(sessionStorage.getItem("organUser")).login)
+    layui.use('layer', function() {
+
+        var layer = layui.layer
+        layer.config({
+            extend: 'myskin/style.css', //加载新皮肤
+            skin: 'layer-ext-myskin' //一旦设定，所有弹层风格都采用此主题。
+        });
+    })
+    $(function() {
+        CmsUtility.postAjaxCall2(
+            //系统设置
+            // CmsConfig.ServiceUrl.ApiRootUrl.split('shanhe-service/')[0 ] +'shanhe-admin/insTpa/getThirdParty', 
+            'https://nb.51shanhe.com/shanhe-admin/insTpa/getThirdParty', {
+                "institutionNumber": JSON.parse(sessionStorage.getItem("organUser")).institutionNumber
+            },
+            function(data) {
+                if (data.code == 1000) {
+                    sessionStorage.setItem("baidu", JSON.stringify(data.data));
+                } else {
+
+                    sessionStorage.setItem("baidu", 'no');
+                }
+
+
+            },
+            function(data) {
+
+            }
+        )
+        $('#logout').click(function() {
+            console.log('退出')
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Login.exitLogin, {
+                    "institutionNumber": JSON.parse(sessionStorage.getItem("organUser")).institutionNumber,
+                    "number": JSON.parse(sessionStorage.getItem("organUser")).Number,
+                },
+                function(data) {
+                    if (data.code == '1000') {
+                        // layer.alert(JSON.stringify('退出成功，即将跳转登录页'), {
+                        // 	title: ''
+                        // })
+
+
+                    } else {
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            layer.msg('退出成功，即将跳转登录页')
+            sessionStorage.clear();
+            setTimeout(function() {
+                window.location.href = 'login.html'
+            }, 500)
+        })
+    })
+    </script>
+</body>
 
 </html>

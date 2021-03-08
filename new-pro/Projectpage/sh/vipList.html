@@ -127,6 +127,11 @@
 				color: #fff;
 				font-weight: 600;
 			}
+			#btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
 		</style>
 	</head>
 
@@ -193,6 +198,12 @@
 					</div>
 				</div>
 			</div> -->
+			<div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			<table class="layui-hide" id="LAY_table_shop" lay-filter="shop"></table>
 		</div>
 		<script type="text/html" id="tool">
@@ -242,12 +253,16 @@
 					max: '',
 					range: true,
 				});
-
-				//方法级渲染
-				table.render({
+				function tableRender(){
+					var startendTime = $('#startendTime');
+					table.render({
 					elem: '#LAY_table_shop',
 					url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.getMembers + '?merchantNumber=' +
 						merNumber,
+					where:{
+						startTime: startendTime.val() ? startendTime.val().split(' - ')[0] + ' 00:00:00' : '',
+									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
+								},
 					method: "get",
 					// height: 'full-287',
 					height: 'full-87',
@@ -428,6 +443,37 @@
 						}
 					}
 				});
+				}
+				//方法级渲染
+				 tableRender()
+				window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+		                case 0:
+		                    $('#startendTime').val(CmsUtility.fun_date(0) 
+		                    	+ ' - ' +CmsUtility.fun_date(0))
+		                    break;
+		                case 1:
+		                    $('#startendTime').val(CmsUtility.fun_date(-1) 
+		                    	+  ' - '  +CmsUtility.fun_date(-1))
+		                    break;
+		                case 2:
+		                    $('#startendTime').val(CmsUtility.fun_date(-6) 
+		                    	+  ' - '  +CmsUtility.fun_date(0))
+		                    break;
+		                case 3:
+		                    $('#startendTime').val(CmsUtility.fun_date(-29) 
+		                    	+  ' - '  +CmsUtility.fun_date(0))
+		                    break;
+		                default:
+		                    // statements_def
+		                    break;
+		            }
+            tableRender()
+
+        }
 
 				//监听工具条
 				table.on('tool(shop)', function(obj) {
@@ -573,6 +619,7 @@
 									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] + ' 23:59:59' : '',
 								}
 							});
+							 $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 							top3Height()
 						}
 					};

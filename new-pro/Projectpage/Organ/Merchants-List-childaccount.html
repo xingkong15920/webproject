@@ -179,11 +179,23 @@
                                 align: 'center',
                                 title: '通道子商户',
                                 toolbar: '#toolbar',
-                                minWidth: 400
+                                minWidth: 300
                             }, {
                                 align: 'center',
                                 title: '费率(%)',
                                 field: 'rate1',
+                            }, {
+                                align: 'center',
+                                title: '刷卡费率(%)' + '</br>' + '借记卡D1/贷记卡D1',
+                                field: 'rate1',
+                                templet:function(data){
+                                    if(data.paymentChannelType != 6){
+                                        return ' -- ' + '/' + ' -- '
+                                    }else{
+                                        return (data.lsDebitCardD1 * 100).toFixed(2) + '/' + (data.lsCreditCardD1* 100).toFixed(2)
+                                    }
+                                    
+                                }
                             }, {
                                 align: 'center',
                                 title: '结算方式',

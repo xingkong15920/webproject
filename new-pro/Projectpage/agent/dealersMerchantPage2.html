@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    
+     <link rel="stylesheet" href="../../public/css/style-baobiao.css">
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+</head>
+<style type="text/css">
+.layui-table-cell {
+    height: auto;
+}
+
+.payBox span {
+    padding: 2px 2px;
+    margin-right: 5px;
+    color: white;
+}
+
+.layui-btn .layui-btn-xs {
+    margin-left: 3px;
+}
+.layui-btn+.layui-btn {
+    margin-left: 5px;
+}
+</style>
+<style type="text/css">
+    .index-zs .layui-col-md5 {
+        width: 20%;
+        text-align: center;
+    }
+
+    .homelistitle {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #999;
+    }
+
+    .homelistc:last-child {
+        margin-bottom: 20px;
+    }
+
+    .homelistc {
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .homelistc span i {
+        font-style: normal;
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    p {
+        font-size: 16px;
+    }
+    .baobiaoK{
+        height: 86px;
+    }
+    #tips{
+        width: 14px;
+        height: 14px;
+        line-height: 14px;
+        text-align: center;
+        color: red;
+        border-radius: 50%;
+        margin-left: 10px;
+        display: inline-block;
+        cursor: pointer;
+        z-index: 999;
+    }
+    </style>
+<body>
+    <div class="x-nav">
+        <span class="layui-breadcrumb"><a href="">首页</a><a><cite>商户管理</cite></a></span>
+        <a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);" title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        
+       
+        <table class="layui-hide" id="LAY_table_merchant" lay-filter="merchant"></table>
+        <!-- <xblock class="layui-row">
+            <button class="layui-btn layui-btn-xs downCode" data-type="getCheckDataall"><i class="layui-icon ">&#xe601;</i>批量禁用商户</button>
+            <button class="layui-btn layui-btn-xs downCode" data-type="saleChange"><i class="layui-icon ">&#xe601;</i>批量更换服务商及销售</button>
+        </xblock> -->
+    </div>
+   <script type="text/html" id="shopName">
+        <span>{{d.merchantNumber1}}</span></br>
+        <span onclick="clickMer(this)" data-id="{{d.merchantNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.merchantName}}</span>
+            </br>
+            
+        </script>
+    <!-- <script type="text/html" id="paymentList">
+
+            <span onclick="clickMer(this)" data-id="{{d.merchantNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.merchantName}}</span>
+            </br>
+            <span>{{d.registerCell}}</span>
+        </script> -->
+     <script type="text/html" id="tool">
+            
+                <a class="layui-btn layui-btn-xs" lay-event="look">订单</a>
+            
+            <a class="layui-btn layui-btn-xs" lay-event="resetpass">密码</a>
+            
+            <a class="layui-btn layui-btn-xs" lay-event="codecard">码牌</a>
+            <a class="layui-btn layui-btn-xs" lay-event="horn">设备</a>
+            <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
+            <a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
+            <a class="layui-btn layui-btn-xs" lay-event="feilvset">子商户号</a>
+            <a class="layui-btn layui-btn-xs" lay-event="model">增值功能</a>
+            <a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">商户后台</a>
+            
+        </script>
+    <script type="text/html" id="toolbar_switch">
+        <input type="checkbox" name="switch" value="{{d.merchantStatus}}" lay-skin="switch" lay-filter="consumptionPreferences" data-mername="{{d.merchantNumber}}" lay-text="开|关" {{ d.merchantStatus==0 ? 'checked' : '' }}>
+        </script>
+    <script type="text/html" id="toolbar_switch1">
+        <input type="checkbox" name="switch1" value="{{d.advertJurisdiction}}" lay-skin="switch" lay-filter="consumptionPreferences1" data-mername="{{d.merchantNumber}}" lay-text="开|关" {{ d.advertJurisdiction==0 ? 'checked' : '' }}>
+        </script>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    // <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
+    //<a class="layui-btn layui-btn-xs" lay-event="recomId">ID</a>
+    //<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    var server = 'http://192.168.110.200:6005/../../'
+    var paymentList = []
+    var agentName = CmsUtility.getQueryString('agentName')
+    var agentNumber = CmsUtility.getQueryString('agentNumber')
+    
+    function changeS(data) {
+        var data = data
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].merchantType == 0) {
+                data[i].merchantType1 = '个人'
+            }
+            if (data[i].merchantType == 1) {
+                data[i].merchantType1 = '个体'
+            }
+            if (data[i].merchantType == 2) {
+                data[i].merchantType1 = '企业'
+            }
+            if (data[i].merchantNumber.length == 10) {
+                var length = data[i].merchantNumber.length
+                var num = data[i].merchantNumber.substring(4, length)
+                data[i].merchantNumber1 =  parseInt(num)
+            } else {
+                data[i].merchantNumber1 = data[i].merchantNumber
+            }
+        }
+        return data
+    }
+    CmsUtility.postAjaxCall(
+        //系统设置
+        CmsConfig.addressUrl.Public.getInfoRate, {
+            "institutionNumber": JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+        },
+        function(data) {
+            sessionStorage.setItem("rate", JSON.stringify(data.data));
+
+        },
+        function(data) {
+
+        },
+        'post',
+        'false'
+    )
+
+    function clickMer(id) {
+        var id = id.dataset.id
+        var shHref = ''
+        CmsUtility.postAjaxCall2(
+            //系统设置
+            'https://nb.hongsou.com.cn/shanhe-admin/basicSetting/getInsRegInfo', {
+                'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+            },
+            function(data) {
+                if (data.code == 1000) {
+                    shHref = data.data[0].merchantRoute
+                    if (shHref == '') {
+                        layer.msg('未获取到商户路径')
+                    }
+                    var merHref = shHref + '/index.html?number=' + id + '&ins=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                    window.open(merHref)
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }
+        )
+    }
+    //          // 选择日期插件  
+    layui.use(['form', 'table','laydate',  'laytpl'], function() {
+        var table = layui.table,
+        laydate = layui.laydate,            form = layui.form,
+            laytpl = layui.laytpl,
+            $ = layui.jquery;
+        var index = layer.load(2, { shade: [0.4, '#393D49'] })
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+        var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+
+        laydate.render({
+                    elem:"#startTime"
+                })
+                laydate.render({
+                    elem:"#endTime"
+                })
+        //方法级渲染
+        console.log($('#merchantName').val())
+    //     CmsUtility.postAjaxCall(
+    //                 //系统设置
+    //     'agMerchant/getAgMerchantSummary?institutionNumber=' +JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber+ '&agentNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).Number ,
+    //     {},
+    //     function(data) {
+    //         console.log(data)
+    //         if (data.code == 1000) {
+    //             $('#merchantCount').html(data.data.merchantCount)                
+    //             $('#auditPassMerchant').html(data.data.auditPassMerchant)
+    //             $('#auditedMerchant').html(data.data.auditedMerchant)
+    //             $('#notpassMerchant').html(data.data.notpassMerchant)
+    //             $('#monthMerchant').html(data.data.monthMerchant)
+    //             $('#dayMerchant').html(data.data.dayMerchant)
+
+    //             $('#baobiao1').show()
+    //             form.render()
+    //         } else {
+    //             layer.msg(data.msg)
+    //         }
+    //     },
+    //     function(data) {
+    //         console.log('222')
+    //     },'get'
+    // )
+        function tableRender() {
+            table.render({
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.getMerchantlist + '?agentNumber=' + userNumber,
+                where: {
+                    "institutionNumber": JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+                    "merchantName": '',
+                    "saleName": '',
+                    "merchantNumber": '',
+                    "merchantStatus": '',
+                    "agentName": '',
+                    "dbAgentNumber":agentNumber,
+                    "registerCell": '',
+                    "agentLevel": agentLevel,
+                    "startTime":'',
+                    "endTime":'',
+                },
+                elem: '#LAY_table_merchant',
+                height: 'full-100',
+                //method: "post",
+                page: true,
+                id: 'merchantlist',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                parseData: function(res) {
+                    //res 即为原始返回的数据
+                    if (res.data == null) {
+                        return
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": changeS(res.data.agentmerchants), //解析数据列表
+                    };
+                },
+                cols: [
+                    [{
+                        type: 'checkbox'
+                    }, {
+                        field: 'merchantNumber',
+                        title: '商户编号/商户名称',
+                        align: 'center',
+                        // templet: function(data) {
+                        //     var top = ''
+
+                        //     if (data.merchantNumber.length == 10) {
+                        //         var length = data.merchantNumber.length
+                        //         var num = data.merchantNumber.substring(4, length)
+                        //         console.log(parseInt(num))
+                        //         top =  parseInt(num)
+                        //     } else {
+                        //         top = data.merchantNumber
+                        //     }
+                        //     return top + '</br>' + data.merchantName
+
+                        // },
+                        toolbar: '#shopName',
+                        width: 200,
+                    }, {
+                        align: 'center',
+                        field: 'merchantName',
+                        title: '联系人/手机号',
+                        templet:function(data){
+                            return data.juridicalPersonName + '</br>' + data.registerCell
+                        } ,
+                        width:150
+                    }, {
+                        field: 'agentLevel',
+                        title: '所属服务商'+ '</br>' +'(服务商/销售)',
+                        align: 'center',
+                        templet: function(data) {
+                            return data.agentName + '</br>' + data.saleName
+                        },
+                        width: 150
+                    }, {
+                        field: 'products',
+                        title: '支付通道',
+                        align: 'center',
+                        templet: function(data) {
+                            // console.log('123')
+                            // var list = data.products.split('|')
+                            // var str = ''
+                            // for(var i = 0 ; i < list.length;i++){
+                            //     if(list[i].indexOf('云闪付') >=0){
+                            //                 continue;
+                            //             }
+                            //     if(i == list.length){
+                            //         str += list[i] 
+                            //     }else{
+                            //         str += list[i] + '</br>'
+                            //     }
+                            // }
+                            // str = str.replace('官方支付宝','直-支')
+                            // str = str.replace('官方微信','直-微')
+                            // str = str.replace('富友','间-富')
+                            // str = str.replace('新大陆','间-新')
+                            // str = str.replace('随行付','间-随')
+                            // str = str.replace('乐刷','间-乐')
+                            // return str
+                            if (data.products.indexOf('|') >= 0) {
+                                    var list = data.products.split('|')
+                                    if(list[0].split(':')[1] == '无通道'){
+                                          var  str = '<span>'+ list[0].split(':')[0]+ ':<span style="color:red">'+ list[0].split(':')[1] +'</span>' +'</span>'+ '</br>'
+                                        }else{
+                                             var  str = list[0] + '</br>'
+                                        }
+                                    for (var i = 1; i < list.length; i++) {
+                                        
+                                        if(list[i].indexOf('云闪付') >=0){
+                                            continue;
+                                        }
+                                        if(list[i].split(':')[1] == '无通道'){
+                                            str += '<span>'+ list[i].split(':')[0]+ ':<span style="color:red">'+ list[i].split(':')[1] +'</span>' +'</span>'+ '</br>'
+                                        }else{
+                                            str += list[i] + '</br>'
+                                        }
+                                        
+                                    }
+                                    str = str.replace(/官方支付宝/g,'直-支')
+                                    str = str.replace(/官方微信/g,'直-微')
+                                    str = str.replace(/富友/g,'间-富')
+                                    str = str.replace(/新大陆/g,'间-新')
+                                    str = str.replace(/随行付/g,'间-随')
+                                    str = str.replace(/乐刷/g,'间-乐')
+                                    console.log(str)
+                                    return str
+                                } else {
+                                    return data.products
+                                }
+                        },
+                        width: 120
+                    }, {
+                        field: 'agentLevel',
+                        title: '可用通道' + '<i class="layui-icon" id="tips">&#xe702;</i>',
+                        align: 'center',
+                        templet: function(data) {
+                            if (data.paymentChannels == '') {
+                                return '暂无可用通道'
+                            } else {
+                                var nArr = new Array()
+                                var listArr = data.paymentChannels.split('|')
+                                for(var j = 0 ; j < listArr.length;j++){
+                                    var nO = new Object()
+                                    var nList = listArr[j].split(':')
+                                     var num = 0
+                                     for(var n = 0 ; n < nArr.length;n++){
+                                         if(nArr[n].paymentChannelName == nList[2]){
+                                             num++
+                                         }
+                                     }
+
+                                    // console.log(num)
+                                     if(num != 0){
+                                         continue;
+                                     }
+                                    nO.paymentChannel = nList[0]
+                                    nO.paymentType = nList[1]
+                                    nO.paymentChannelName = nList[2]
+                                    nO.subaccountNumber = nList[3] == 'S'?'': nList[3]
+                                    nO.orderNumber = nList[4] == 'O'?'': nList[4]
+                                    nO.auditStatus = nList[3] == 'S'? nList[5]:2
+                                    nArr.push(nO)
+                                }
+                                var thisPayment = nArr
+                                var str = ''
+                                var str1 = ''
+                                paymentList = thisPayment
+                                console.log(paymentList)
+                                for (var i = 0; i < thisPayment.length; i++) {
+                                    var addStr = "'" + thisPayment[i].paymentChannel + '|' + thisPayment[i].orderNumber + '|' + data.merchantNumber + "'"
+                                    if (thisPayment[i].paymentType == 0 || thisPayment[i].paymentType == 1) {
+                                        if (thisPayment[i].auditStatus == 0 || thisPayment[i].auditStatus == 3) {
+                                            str += '<span style="background:red;cursor:pointer" onclick="addMerchant(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                            continue
+                                        }
+                                        if (thisPayment[i].auditStatus == 2) {
+                                            str += '<span style="background:green;cursor:pointer" onclick="addMerchant2(' + addStr + ')" >' + thisPayment[i].paymentChannelName + '</span>'
+                                            continue
+                                        }
+                                        if (thisPayment[i].auditStatus == 1 || thisPayment[i].auditStatus == 4 || thisPayment[i].auditStatus == 5) {
+                                            str += '<span style="background:#FFA20A">' + thisPayment[i].paymentChannelName + '</span>'
+                                            continue
+                                        }
+                                        if (thisPayment[i].auditStatus == -1) {
+                                            str += '<span style="background:#ccc;cursor:pointer" onclick="addMerchant1(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                        }
+                                    } else {
+                                        if (thisPayment[i].auditStatus == 0 || thisPayment[i].auditStatus == 3) {
+                                            str1 += '<span style="background:red;cursor:pointer" onclick="addMerchant(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                            continue
+                                        }
+                                        if (thisPayment[i].auditStatus == 2) {
+                                            str1 += '<span style="background:green;cursor:pointer" onclick="addMerchant2(' + addStr + ')" >' + thisPayment[i].paymentChannelName + '</span>'
+                                            continue
+                                        }
+                                        if (thisPayment[i].auditStatus == 1 || thisPayment[i].auditStatus == 4 || thisPayment[i].auditStatus == 5) {
+                                            str1 += '<span style="background:#FFA20A">' + thisPayment[i].paymentChannelName + '</span>'
+                                            continue
+                                        }
+                                        if (thisPayment[i].auditStatus == -1) {
+                                            str1 += '<span style="background:#ccc;cursor:pointer" onclick="addMerchant1(' + addStr + ')">' + thisPayment[i].paymentChannelName + '</span>'
+                                        }
+                                    }
+                                }
+                                str = str.replace('官方支付宝','直-支')
+                                str = str.replace('官方微信','直-微')
+                                str1 = str1.replace('富友','间-富')
+                                str1 = str1.replace('新大陆','间-新')
+                                str1 = str1.replace('随行付','间-随')
+                                str1 = str1.replace('乐刷','间-乐')
+                                return '<div class="payBox">' + str + '</div><div  class="payBox">' + str1 + '</div>'
+                            }
+
+                        },
+                        width: 220
+                    }, {
+                        field: 'insertTime',
+                        title: '创建时间',
+                        align: 'center',
+                        width: 150
+                    },
+                    //  {
+                    //     toolbar: '#toolbar_switch1',
+                    //     title: '刷脸广告',
+                    //     align: 'center',
+                    //     field: 'adv',
+                    //     width: 100
+                    // },
+                     {
+                        toolbar: '#toolbar_switch',
+                        title: '状态',
+                        align: 'center',
+                        width: 100
+                    }, {
+                        field: 'operation',
+                        title: '操作',
+                        toolbar: "#tool",
+                        width: 550,
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    console.log(res)
+                    layer.closeAll()
+                    
+                    $('#tips').mouseover(function() {
+                        var that = this;
+                        layer.tips('展示背景绿色为开通状态；'+ '</br>' +'灰色为未开通状态；'+ '</br>' +'黄色为待审核状态；'+ '</br>' +'红色为驳回状态。'+ '</br>' +'红色和灰色为可编辑状态', that, {
+                            tips: [2],
+                            time: 20000
+                        });
+                    })
+                    $('#tips').mouseout(function() {
+                        layer.closeAll()
+                    })
+                }
+            });
+        }
+        setTimeout(function() {
+            tableRender()
+        }, 500)
+        window.addEventListener("storage", function (e) {
+        $('#saleName').val(e.newValue);
+            tableRender()
+            localStorage.removeItem("saleN")
+    });
+        $('#search').click(function() {
+            tableRender()
+        })
+        // 根據條件重载表格
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    // 获取上面查询框的值
+                    var channel = $('#channel').val().trim(); // 经销商标号
+                    var merchantName = $('#merchantName').val().trim(); // 商户名称
+                    var state = $('#state').val().trim();
+                    var clerk = $('#clerk').val().trim(); // 业务员编号
+                    var ylbNumber = $("#ylbNumber").val().trim();
+
+                    //执行重载
+                    table.reload('merchantlist', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            channel: channel,
+                            merchantName: merchantName,
+                            state: state,
+                            clerk: clerk,
+                            ylbNumber: ylbNumber
+                        }
+                    });
+                },
+                getCheckDataall: function() {
+                    var b = table.checkStatus('merchantlist').data;
+                    console.log(b)
+                    if (b.length == 0) {
+                        layer.msg('请选择商户')
+                        return
+                    }
+                    var mer = b[0].merchantNumber
+                    for (var i = 1; i < b.length; i++) {
+                        mer += '&' + b[i].merchantNumber
+                    }
+                    var tjData = new Object()
+                    tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+                    tjData.merchantNumbers = mer
+                    tjData.merchantStatus = 1
+                    tjData.deletionFlag = 0
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Agent.stateMerchants,
+                        tjData,
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                layer.msg(data.msg)
+                                setTimeout(function() {
+                                    layui.table.reload('merchantlist')
+                                }, 1000)
+                            }
+
+
+                        },
+                        function(data) {
+
+                        },
+                        'post',
+                        'false'
+                    )
+
+
+                },
+                AllgetCheckDataall: function() {
+                    var b = table.checkStatus('merchantlist').data;
+                    console.log(b)
+                    if (b.length == 0) {
+                        layer.msg('请选择商户')
+                        return
+                    }
+
+                },
+                saleChange: function() {
+                    var b = table.checkStatus('merchantlist').data;
+                    if (b.length == 0) {
+                        layer.msg('请选择商户')
+                        return
+                    }
+
+                    console.log(b)
+                    var newArr = new Array()
+                    for (var i = 0; i < b.length; i++) {
+                        var newO = new Object()
+                        newO.name = b[i].merchantName
+                        newO.number = b[i].merchantNumber
+                        newO.sale = b[i].saleNumber
+                        newArr.push(newO)
+                    }
+                    console.log(newArr)
+                    layer.open({
+                        type: 2,
+                        title: '批量更换销售',
+                        shade: 0.5,
+                        area: ['40%', '50%'],
+                        maxmin: false,
+                        resize: false,
+                        content: ['saleChange.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传w参
+                            iframe.subPage(newArr)
+
+
+                        }
+                    });
+                }
+            };
+        table.on('tool(merchant)', function(obj) {
+            var data = obj.data;
+            if (obj.event === 'loginTo') { //直接登录商户后台
+                var shHref = ''
+                var aData = data
+                CmsUtility.postAjaxCall2(
+                    //系统设置
+                    'https://nb.hongsou.com.cn/shanhe-admin/basicSetting/getInsRegInfo', {
+                'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+            },
+                    function(data) {
+                        if (data.code == 1000) {
+                    shHref = data.data[0].merchantRoute
+                    if (shHref == '') {
+                        layer.msg('未获取到商户路径')
+                    }
+                    var merHref = shHref + '/index.html?number=' + aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                    window.open(merHref)
+                } else {
+                    layer.msg(data.msg)
+
+                }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+
+            } else if (obj.event === 'look') {
+                //查看统计信息订单列表
+                layer.open({
+                    type: 2,
+                    title: '账单统计 - ' + data.merchantName,
+                    area: ['90%', '90%'], //宽高
+                    content: 'shopCount.html',
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.subPageClerkpass(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'edit') {
+                //跳转商户详情页面
+                // layer.open({
+                //  type: 2,
+                //  title: '编辑 : ' + data.merchantName,
+                //  area: ['90%', '90%'], //宽高
+                //  content: 'dealersMerchantEdit.html',
+                //  success: function(layero, index) {
+                //      var iframe = window['layui-layer-iframe' + index];
+                //      iframe.subPage(data, userNumber)
+                //  }
+                // });
+                layer.open({
+                    type: 2,
+                    title: '编辑 : ' + data.merchantName,
+                    area: ['90%', '90%'], //宽高
+                    content: 'edit-merchant.html?merchantNumber=' + data.merchantNumber,
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        // iframe.subPage(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'resetpass') {
+                // 跳转商户详情页面
+                layer.open({
+                    type: 2,
+                    title: '重置密码',
+                    area: ['460px', '350px'], //宽高
+                    content: 'Merchants-List-pass.html',
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.subPageClerkpass(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'feilvset') {
+                // 跳转商户详情页面
+                layer.open({
+                    type: 2,
+                    title: '子账号',
+                    area: ['90%', '90%'], //宽高
+                    content: 'Merchants-List-rate-new.html',
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.subPageClerkpass(data)
+                    }
+                });
+            } else if (obj.event == 'codecard') {
+                // 跳转修改商户页面
+                layer.open({
+                    type: 2,
+                    title: '码牌管理',
+                    area: ['80%', '80%'], //宽高
+                    content: 'MP-configuration.html',
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.subPageClerkpass(data, userNumber)
+                    }
+                });
+            } else if (obj.event == 'horn') {
+                // 跳转修改商户页面
+                layer.open({
+                    type: 2,
+                    title: '设备绑定-' + data.merchantName,
+                    area: ['90%', '80%'], //宽高
+                    content: 'configuration.html',
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.subPageClerkpass(data, data.merchantNumber)
+                    }
+                });
+            } else if (obj.event == 'secretkey') {
+                // 秘钥
+                layer.open({
+                    type: 2,
+                    title: '秘钥',
+                    area: ['400px', '270px'], //宽高
+                    content: 'Merchants-List-secretkey.html',
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.subPageClerkpass(data, userNumber)
+                    }
+                });
+            } else if (obj.event == 'recomId') {
+                // 秘钥
+                layer.open({
+                    type: 2,
+                    title: '秘钥',
+                    area: ['400px', '270px'], //宽高
+                    content: 'Merchants-List-recomId.html',
+                    success: function(layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.subPageClerkpass(data, userNumber)
+                    }
+                });
+            }else if(obj.event === 'tongdao') { //通道
+                        layer.open({
+                            type: 2,
+                            title: '通道-' + data.merchantName,
+                            shade: 0.5,
+                            area: ['90%', '90%'],
+                            maxmin: false,
+                            resize: false,
+                            content: ['Merchants-List-channel.html'],
+                            success: function(layero, index) {
+                                // 获取子页面的iframe
+                                var iframe = window['layui-layer-iframe' + index];
+                                // 向子页面的全局函数child传参
+                                iframe.subPage(data, userNumber)
+                            }
+                        });
+                    } else if (obj.event == 'push') {
+                // 秘钥
+                layer.open({
+                    type: 2,
+                    title: '微信推送(商户)',
+                    area: ['620px', '80%'], //宽高
+                    content: 'AssistantwxPushsh.html',
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPageClerkpush(data, userNumber)
+                    }
+                });
+            } 
+            else if(obj.event == 'model'){                //模块
+                layer.open({
+                    type: 2,
+                    title: '模块-' + data.merchantName,
+                    shade: 0.5,
+                    area: ['700px', '570px'],
+                    maxmin: false,
+                    resize: false,
+                    content: 'Merchants-model.html',
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                        sessionStorage.setItem(data.merchantNumber, JSON.stringify(data));
+                    }
+                });
+            } 
+            else if (obj.event == 'delete') {
+                // 发送请求,将商户进行禁用
+                layer.confirm('真的要删除(' + data.merchantName + ')此商户吗?', function(index) {
+                    console.log(data)
+                    console.log(index)
+                    var tjData = new Object();
+                    tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+                    tjData.merchantNumber = data.merchantNumber;
+                    tjData.deletionFlag = 1
+                    console.log(tjData)
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Agent.delMerchant,
+                        tjData,
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                parent.layer.msg('删除成功')
+                                layui.table.reload('merchantlist')
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                });
+            }
+        });
+        $('#changeSale').click(function() {
+
+        })
+        window.addMerchant = function(data) {
+            console.log(data)
+            var type, channel, name
+            for (var i = 0; i < paymentList.length; i++) {
+                if (paymentList[i].paymentChannel == data.split('|')[0]) {
+                    type = paymentList[i].paymentType
+                    channel = paymentList[i].paymentChannel
+                    name = paymentList[i].paymentChannelName
+                }
+            }
+            layer.open({
+                type: 2,
+                title: '通道 : ' + name,
+                area: ['90%', '90%'], //宽高
+                content: 'edit-merchant.html?name=' + name + '&type=' + type + '&channel=' + channel + '&merchantNumber=' + data.split('|')[2] + '&orderNumber=' + data.split('|')[1],
+                success: function(layero, index) {
+                    var iframe = window['layui-layer-iframe' + index];
+                    // iframe.subPage(data, userNumber)
+                }
+            });
+        }
+        window.addMerchant2 = function(data) {
+            console.log(data)
+             if(data.split('|')[1] == ''){
+                layer.msg('该通道暂未查询到流水号')
+                return
+            }
+            var type, channel, name
+            for (var i = 0; i < paymentList.length; i++) {
+                if (paymentList[i].paymentChannel == data.split('|')[0]) {
+                    type = paymentList[i].paymentType
+                    channel = paymentList[i].paymentChannel
+                    name = paymentList[i].paymentChannelName
+                }
+            }
+            layer.open({
+                type: 2,
+                title: '通道 : ' + name,
+                area: ['90%', '90%'], //宽高
+                content: 'edit-merchant-for.html?name=' + name + '&type=' + type + '&channel=' + channel + '&merchantNumber=' + data.split('|')[2] + '&orderNumber=' + data.split('|')[1],
+                success: function(layero, index) {
+                    var iframe = window['layui-layer-iframe' + index];
+                    // iframe.subPage(data, userNumber)
+                }
+            });
+        }
+        window.addMerchant1 = function(data) {
+            console.log(data)
+            var type, channel, name
+            for (var i = 0; i < paymentList.length; i++) {
+                if (paymentList[i].paymentChannel == data.split('|')[0]) {
+                    type = paymentList[i].paymentType
+                    channel = paymentList[i].paymentChannel
+                    name = paymentList[i].paymentChannelName
+                }
+            }
+            console.log('add-merchant-forNew.html?name=' + name + '&type=' + type + '&channel=' + channel + '&merchantNumber=' + data.split('|')[2])
+            layer.open({
+                type: 2,
+                title: '添加通道 : ' + name,
+                area: ['90%', '90%'], //宽高
+                content: 'add-merchant-forNew.html?name=' + name + '&type=' + type + '&channel=' + channel + '&merchantNumber=' + data.split('|')[2],
+                success: function(layero, index) {
+                    var iframe = window['layui-layer-iframe' + index];
+                    // iframe.subPage(data, userNumber)
+                }
+            });
+        }
+        form.on('switch(consumptionPreferences)', function(data) {
+            // layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            var tjData = new Object();
+            tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+            tjData.merchantNumber = data.elem.dataset.mername;
+            tjData.merchantStatus = this.checked ? '0' : '1';
+            tjData.deletionFlag = 0
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Agent.stateMerchant,
+                tjData,
+                function(data) {
+                    if (data.code == 1000) {
+
+                        parent.layer.msg('更改成功')
+                        layui.table.reload('merchantlist')
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        });
+        form.on('switch(consumptionPreferences1)', function(data) {
+            // layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            var tjData = new Object();
+            // tjData.agentNumber = userNumber;
+            tjData.merchantNumber = data.elem.dataset.mername;
+            tjData.advertJurisdiction = this.checked ? '0' : '1';
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Agent.changeMerAdState,
+                tjData,
+                function(data) {
+                    if (data.code == 1000) {
+
+                        parent.layer.msg('更改成功')
+                        layui.table.reload('merchantlist')
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        });
+        $('.layui-row .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //这里才是重点...
+        (function($, doc, o) {
+            var tk;
+            var obj;
+            var otd;
+            var callback;
+            o.show = function(h, e, c) {
+
+                callback = c;
+                var d = doc.getElementById('table_type_select');
+                if (d) {
+                    d.remove();
+                }
+                otd = e;
+                var s;
+                if (h.value == "0") {
+                    s = '<div id="table_type_select" class="table-select"><dl class="layui-anim layui-anim-upbit" style="padding: 0px;top: 0px"><dd lay-value="0" class="layui-this">关闭 </dd><dd lay-value="1">0费率 </dd></dl></div>';
+                } else {
+                    s = '<div id="table_type_select" class="table-select"><dl class="layui-anim layui-anim-upbit" style="padding: 0px;top: 0px"><dd lay-value="0">关闭 </dd><dd lay-value="1" class="layui-this">0费率 </dd></dl></div>';
+                }
+
+                otd.innerHTML = s + otd.innerHTML;
+                obj = doc.getElementById('table_type_select');
+                console.log($(obj));
+
+                obj.addEventListener('click', function(e) {
+                    var value = $(e.srcElement).attr('lay-value');
+                    var text = e.srcElement.innerHTML;
+                    obj.remove();
+                    callback({
+                        value: value,
+                        text: text
+                    });
+                });
+            }
+        })($, document, window.type_select = {});
+    });
+    </script>
+</body>
+
+</html>

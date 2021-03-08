@@ -42,7 +42,11 @@
         cursor: pointer;
         z-index: 999;
     }
-    
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
     </style>
 </head>
 
@@ -82,6 +86,12 @@
                 
                 <button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
             </xblock> -->
+             <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
         <table class="layui-hide" id="members" lay-filter="members"></table>
     </div>
     <script type="text/html" id="switchBar">
@@ -200,7 +210,34 @@
                 }
             });
         })
+         window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
 
+        }
         //方法级渲染  
         function tableRender() {
             var sTiem = $('#startTime').val()
@@ -277,27 +314,30 @@
                         field: 'importExportAmount',
                         title: '微信金额/笔数',
                         templet:function(data){
-                            return '￥' +  (data.weChatOrderTotalMoney).toFixed(2) + ' / ' + '￥' +(data.weChatTotalOrder).toFixed(2)
+                            return '￥' +  (data.weChatOrderTotalMoney).toFixed(2) + ' / ' +(data.weChatTotalOrder)
                         }
                     }, {
                         align: 'center',
                         field: 'earlyStageBalance',
                         title: '支付宝金额/笔数',
                         templet:function(data){
-                            return '￥' + (data.alipayOrderTotalMoney).toFixed(2) + ' / ' +'￥' + (data.alipayTotalOrder).toFixed(2)
+                            return '￥' + (data.alipayOrderTotalMoney).toFixed(2) + ' / ' + (data.alipayTotalOrder)
                         }
                     }, {
                         align: 'center',
                         field: 'endTermBalance',
                         title: '云闪付金额/笔数',
                         templet:function(data){
-                            return '￥' + (data.unionPayOrderMoney).toFixed(2) + ' / ' + '￥' + (data.unionPayOrder).toFixed(2)
+                            return '￥' + (data.unionPayOrderMoney).toFixed(2) + ' / ' +  (data.unionPayOrder)
                         }
                     }, {
                         align: 'center',
                         field: 'guestPiece',
                         title: '客单价' + '<i class="layui-icon" id="tips">&#xe702;</i>',
-                        width:100
+                        width:100,
+                        templet:function(data){
+                            return '￥' + (data.guestPiece).toFixed(2)
+                        }
                     }, {
                         align: 'center',
                         field: 'growthRate',
@@ -358,6 +398,7 @@
         tableRender()
         $('#search').click(function() {
             tableRender()
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
         })
         //监听状态操作
         form.on('switch(consumptionPreferences)', function(data) {
@@ -419,7 +460,7 @@
                 var aData = data
                 CmsUtility.postAjaxCall2(
                     //系统设置
-                    'https://nb.51shanhe.com/shanhe-admin/basicSetting/getInsRegInfo', {
+                    'https://nb.hongsou.com.cn/shanhe-admin/basicSetting/getInsRegInfo', {
                 'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
             },
                     function(data) {

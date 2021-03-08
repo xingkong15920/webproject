@@ -94,6 +94,10 @@ var hangbie = [{
     value: '0402',
     text: '其他农村信用合作社',
     children: [{}]
+}, {
+    value: '0320',
+    text: '村镇银行',
+    children: [{}]
 }]
 module.exports = {
     hangbie: hangbie,

@@ -285,6 +285,9 @@
 												layer.msg('获取授权地址为空')
 												return
 											}
+											// var jumphref = 'http://api.51shanhe.com/h5-pay/alioauth/oauthtest.html' + '?institutionNumber=' + userNumber +
+											// 	'&merchantNumber=' + e.getAttribute('data-name') + '&paymentChannel=' + channel +
+											// 	'&orderNumber='
 											var jumphref = sjData.notifyUrl + '?institutionNumber=' + userNumber +
 												'&merchantNumber=' + e.getAttribute('data-name') + '&paymentChannel=' + channel +
 												'&orderNumber='
@@ -490,7 +493,7 @@
 						console.log('12121')
 					}
 				/*---------- 自定义验证规则 ----------*/
-				if (type == 1) {
+				if (payment == 1) {
 					form.verify({
 
 						subaccountNumber: function(value) {
@@ -535,7 +538,7 @@
 						// 	}
 						// },
 					});
-				} else if (type != 1) {
+				} else if (payment != 1) {
 					form.verify({
 						merchantNumber: function(value) {
 							console.log($('#search').attr('shopNumber'))
@@ -550,7 +553,7 @@
 							}
 						},
 						terminalNumber: function(value) {
-							if (type == 5) {
+							if (payment == 5) {
 								if (value.length == "") {
 									return '请输入随行付任务单号';
 								}

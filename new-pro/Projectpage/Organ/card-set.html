@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/fonts/icon/iconfont.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <link rel="stylesheet" href="../../public/css/card.css">
+    <link rel="stylesheet" href="../../public/css/vipS.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    <style type="text/css">
+    .flex_cc {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .layui-input-inline.widthauto,
+    .layui-form-mid.widthauto {
+        margin: 0;
+    }
+
+    .layui-form-checkbox span {
+        width: 75px;
+    }
+
+    .mLines {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 5px 15px;
+        padding-left: 0;
+    }
+
+    .mLines span {
+        margin-right: 5px;
+        line-height: 1;
+    }
+
+    .card_boby {
+        background: transparent;
+        /* background-image: url(../../public/images/vip_bg.png); */
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 100% auto;
+    }
+    </style>
+</head>
+
+<body id="iosiframe" class="iframe_index_1 autoHeight">
+    <script type="text/javascript">
+    $(function() {
+        var navH = $(".cardSetpreview").offset().top;
+        $(window).scroll(function() {
+            var scroH = $(this).scrollTop();
+            if (scroH >= navH) {
+                $(".cardSetpreview").css({
+                    'top': '10px'
+                });
+            } else if (scroH < navH) {
+                $(".cardSetpreview").css({
+                    'top': '40px'
+                });
+            }
+        })
+    })
+    </script>
+    <div class="x-body iframe_index_1_con">
+        <div class="layui-row">
+            <div class="layui-form" lay-filter="basic">
+                <div class="layui-col-xs3 layui-col-sm3 layui-col-md3 cardSetpreview">
+                    <div class="card_boby">
+                        <div class="card_b card_bc1">
+                            <div class="card_b_bg" id="cardBimg">
+                                <!-- <img src="./images/cardBg_default.png"> -->
+                            </div>
+                            <div class="card_b_lt card_posi">
+                                <img src="../../public/images/card_logo.png" id="cardLimg">
+                                <p class="ltNamepv"></p>
+                            </div>
+                            <div class="card_b_ld card_posi">
+                                <!-- <p><i class="icon icon icon-dailiguanli1"></i>黄金会员</p> -->
+                                <p>NO.8888 8888 8888 8888</p>
+                            </div>
+                            <div class="card_b_rt card_posi">
+                                <span><i class="icon icon icon-dailiguanli1"></i></span>
+                                <p>黄金会员</p>
+                            </div>
+                            <!-- <div class="card_b_rd card_posi">
+								<span><i class="icon icon icon-dailiguanli1"></i></span>
+								<p>黄金会员</p>
+							</div> -->
+                        </div>
+                        <ul class="card_qList">
+                            <li class="card_qListli lishow">
+                                <h3>积分</h3>
+                                <p>1200</p>
+                            </li>
+                            <li class="card_qListli lishow">
+                                <h3>余额</h3>
+                                <p>1200<span>(元)</span></p>
+                            </li>
+                            <!-- <li class="card_qListli lishow">
+								<h3>优惠券</h3>
+								<p>12<span>(张)</span></p>
+							</li> -->
+                        </ul>
+                    </div>
+                    <div class="space10"></div>
+                    <ul class="card_fList">
+                        <li class="card_fListli">
+                            付费升级
+                            <i class="iconfont"></i>
+                        </li>
+                        <li class="card_fListli">
+                            积分记录
+                            <i class="iconfont"></i>
+                        </li>
+                        <li class="card_fListli">
+                            卡券商城
+                            <i class="iconfont"></i>
+                        </li>
+                    </ul>
+                </div>
+                <div class="layui-col-xs9 layui-col-sm9 layui-col-md9 cardSet" style="margin-bottom: 20px;">
+                    <div class="layui-form-item">
+                        <blockquote class="layui-elem-quote consumeTit">
+                            <i class="leftline"></i>
+                            基本设置
+                            <!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
+								<span class="tips_red">设置目前卡的有效期</span> -->
+                        </blockquote>
+                        <input type="file" accept="image/png, image/jpeg, image/jpg" class="input_img layui-input" style="display: none;" id="upLogo" />
+                        <input type="file" accept="image/png, image/jpeg, image/jpg" class="input_img layui-input" style="display: none;" id="upBg" />
+                        <input type="file" accept="image/png, image/jpeg, image/jpg" class="input_img layui-input" style="display: none;" id="upSysImgBtn" />
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>品牌名称 :</label>
+                            <div class="layui-input-block flex_cc">
+                                <input type="text" name="cardName" class="layui-input" lay-verify="cardName" id="ltName" value="">
+                                <!-- <div class="layui-form-mid redC" style="margin-left: 10px;width: 220px;">设置成功后不可更改！</div> -->
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>品牌logo :</label>
+                            <div class="layui-input-block pinpaiLogo">
+                                <div class="layui-upload-list">
+                                    <div class="layui-upload-img" id="cardLo">
+                                        <img src="../../public/images/card_logo.png" id="cardLoImg">
+                                        <div class="upTips">
+                                            +<br />上传logo
+                                        </div>
+                                    </div>
+                                    <div class="imgDel" data-id="cardLo" style="display: none;">
+                                        <i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-input-block layui-word-aux">尺寸120px*120px，支持JPG、JPEG、PNG图片，文件小于1M</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span class="redC">* </span>会员卡颜色 :</label>
+                            <div class="layui-input-block chooseColor" id="colorBox">
+                                <span data-color="colorC0" class="card_bc0"></span>
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label">会员卡背景 :</label>
+                            <div class="layui-input-block flexdown">
+                                <div class="layui-input-inline cardBgimg widthauto">
+                                    <div class="layui-upload-list">
+                                        <div class="layui-upload-img" id="cardBg">
+                                            <img id="cardBgImg">
+                                            <div class="upTips">
+                                                +<br />上传卡背景
+                                            </div>
+                                        </div>
+                                        <div class="imgDel" data-id="cardBg" style="display: none;">
+                                            <i class="layui-icon layui-unselect layui-tab-close">ဆ</i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-input-inline layui-word-aux">
+                                    <div class="chooseSysImg" data-type="chSysImg">选择系统图库</div>
+                                </div>
+                            </div>
+                            <div class="layui-input-block layui-word-aux">建议尺寸335px*201px，选择与卡内容相关的图片，仅支持JPG、JPEG、PNG图片文件，且文件小于1M</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span class="redC">* </span>开卡设置 :</label>
+                            <div class="layui-input-block" style="max-width: 650px;" id="cardsetList">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"><span class="redC">* </span>开卡限制 :</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="cardLimit" value="0" title="全部可领" checked="">
+                                <input type="radio" name="cardLimit" value="1" title="微信领取">
+                                <input type="radio" name="cardLimit" value="2" title="支付宝领取">
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>开卡方式 :</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="openCardMode" value="0" title="直接开卡" checked="" lay-filter="openCardMode">
+                                <input type="radio" name="openCardMode" value="1" title="预存开卡" lay-filter="openCardMode">
+                                <input type="radio" name="openCardMode" value="2" title="付费开卡" lay-filter="openCardMode">
+                            </div>
+                            <div class="layui-input-block flex_cc openCardMode1"  style="display:none">
+                                <div class="layui-form-mid redC" style="margin-left: 10px;width:100%">预存金额：该金额直接充值进会员余额非赠送金额，不参与充值优惠</div>
+                            </div>
+                            <div class="layui-input-block flex_cc openCardMode2" style="display:none">
+                                <div class="layui-form-mid redC" style="margin-left: 10px;width:100%">付费金额：该金额属机构收入不加入会员余额</div>
+                            </div>
+                            <div class="layui-input-block flex_cc max600 openCardMode0" style="display:none">
+                                <input type="text" name="openCardAccount" class="layui-input" lay-verify="number"  placeholder="请输入金额">
+                            </div>
+                        </div>
+                        <div class="layui-form-item max660">
+                            <label class="layui-form-label"><span class="redC">* </span>体验卡 :</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="experienceSwitch" value="1" title="关闭" checked="" lay-filter="experienceSwitch">
+                                <input type="radio" name="experienceSwitch" value="0" title="开启" lay-filter="experienceSwitch">
+                               
+                            </div>
+                        </div>
+                        <div class="layui-form-item max660" id="experienceSwitch" style="display:none">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>原价 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="experienceOriginal" class="layui-input" lay-verify="title" placeholder="请输入原价">
+                                </div>
+                            </div>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>付费金额 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="experienceAccount" class="layui-input" lay-verify="title" placeholder="请输入付费金额">
+                                </div>
+                            </div>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>有效天数 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="experienceDate" class="layui-input" lay-verify="title" placeholder="请输入有效天数">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item max660">
+                            <label class="layui-form-label"><span class="redC">* </span>普通年卡 :</label>
+                             <div class="layui-input-block">
+                                <input type="radio" name="annualSwitch" value="1" title="关闭" checked="" lay-filter="annualSwitch">
+                                <input type="radio" name="annualSwitch" value="0" title="开启" lay-filter="annualSwitch">
+                               
+                            </div>
+                        </div>
+                        <div class="layui-form-item max660"  id="annualSwitch" style="display:none">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>原价 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="annualOriginal" class="layui-input" lay-verify="title" placeholder="请输入原价">
+                                </div>
+                            </div>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>付费金额 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="annualAccount" class="layui-input" lay-verify="title" placeholder="请输入付费金额">
+                                </div>
+                            </div>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>有效天数 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="annualDate" class="layui-input" lay-verify="title" placeholder="请输入有效天数">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item max660">
+                            <label class="layui-form-label"><span class="redC">* </span>超级年卡 :</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="superSwitch" value="1" title="关闭" checked="" lay-filter="superSwitch">
+                                <input type="radio" name="superSwitch" value="0" title="开启" lay-filter="superSwitch">
+                               
+                            </div>
+                        </div>
+                        <div class="layui-form-item max660"    id="superSwitch" style="display:none">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>原价 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="superOriginal" class="layui-input" lay-verify="title" placeholder="请输入原价">
+                                </div>
+                            </div>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>付费金额 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="superAccount" class="layui-input" lay-verify="title" placeholder="请输入付费金额">
+                                </div>
+                            </div>
+                            <div class="layui-form-item" style="display:inline-block">
+                                <label class="layui-form-label"><span class="redC">* </span>有效天数 :</label>
+                                <div class="layui-input-block" style="width:130px">
+                                    <input type="text" name="superDate" class="layui-input" lay-verify="title" placeholder="请输入有效天数">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>卡号规则 :</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="cardRule" value="0" title="手机号" checked="" lay-filter="cardRule">
+                                <input type="radio" name="cardRule" value="1" title="系统规则" lay-filter="cardRule">
+                            </div>
+                            <div class="layui-input-block flex_cc cardRule0">
+                                <div class="layui-form-mid redC" style="margin-left: 10px;width:100%">使用注册会员手机号作为会员卡号</div>
+                            </div>
+                            <div class="layui-input-block flex_cc cardRule1">
+                                <div class="layui-form-mid redC" style="margin-left: 10px;width:100%">生成88开头数字作为卡号</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>充值限制 :</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="rechargelimit" value="0" title="不限制金额" checked="" lay-filter="rechargelimit">
+                                <input type="radio" name="rechargelimit" value="1" title="限制金额" lay-filter="rechargelimit">
+                            </div>
+                            <div class="layui-input-block flex_cc rechargelimit0">
+                                <div class="layui-form-mid redC" style="margin-left: 10px;width:100%">不限金额：会员可以随意输入重置金额</div>
+                            </div>
+                            <div class="layui-input-block flex_cc rechargelimit1">
+                                <div class="layui-form-mid redC" style="margin-left: 10px;width:100%">限制金额：只能按照储值营销活动设置的金额进行充值</div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>操作提示 :</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="operateTips" class="layui-input" lay-verify="operateTips" placeholder="请输入操作提示">
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>特权说明 :</label>
+                            <div class="layui-input-block">
+                                <textarea class="layui-textarea" name="privilege" autocomplete="off" placeholder="请输入特权说明" rows="3" lay-verify="privilege"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>使用须知 :</label>
+                            <div class="layui-input-block">
+                                <textarea class="layui-textarea" name="notice" autocomplete="off" placeholder="请输入使用须知" rows="3" lay-verify="notice"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item max600">
+                            <label class="layui-form-label"><span class="redC">* </span>联系电话 :</label>
+                            <div class="layui-input-block flex_cc">
+                                <input type="text" name="contactTell" class="layui-input" lay-verify="phone"  placeholder="请输入联系电话">
+                                <div class="layui-form-mid redC" style="margin-left: 10px;width: 220px;">例：13000000000或0311-88888888</div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit">
+                        <i class="leftline"></i>
+                        分享设置
+                        <!-- <input type="checkbox" name="timePreferences" lay-skin="switch" lay-filter="timePreferences" lay-text="开|关">
+								<span class="tips_red">设置目前卡的有效期</span> -->
+                    </blockquote>
+                    <div class="layui-form-item max600">
+                        <label class="layui-form-label"></label>
+                        <div class="layui-input-block flex_cc ">
+                            <div class="layui-form-mid redC" style="margin-left: 10px;width:110%;white-space: nowrap;
+}">设置后即刻生效，关闭或不设置值则会按照默认会员卡信息生成分享文案。</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item max600">
+                        <label class="layui-form-label"><span class="redC">* </span>分享标题 :</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="shareTitle" class="layui-input" lay-verify="shareTit"  placeholder="请输入操作提示">
+                        </div>
+                    </div>
+                    <div class="layui-form-item max600">
+                        <label class="layui-form-label"><span class="redC">* </span>分享描述 :</label>
+                        <div class="layui-input-block">
+                            <textarea class="layui-textarea" name="shareDescribe" autocomplete="off" placeholder="请输入特权说明" rows="3" lay-verify="shareCon"></textarea>
+                        </div>
+                    </div>
+                    <div class="cardQrcode" style="display: none;">
+                        <img src="./images/erweima.jpg">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <div class="layui-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn addBtn" lay-submit="" lay-filter="add">提交</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="chooseSysImg" id="upSysImg">上传系统图库</div>
+					<div class="chooseSysImg" id="delSysImg" data-type="delSysImg">删除系统图片</div> -->
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var insNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var colorNumber = ''
+    var logo = ''
+    var img = ''
+    layui.use(['laydate', 'table', 'form', 'laytpl', 'upload', 'layer'], function() {
+        layui.$.support.cors = true; //允许ajax跨域
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            layer = layui.layer,
+            laytpl = layui.laytpl;
+        var tableSelect = layui.tableSelect;
+
+        // var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+        var cardCon
+        var colorListIndex
+        // var colorList = ["63b359", "2c9f67", "509fc9", "5885cf", "9062c0", "d09a45", "e4b138", "ee903c", "f08500",
+        //     "a9d92d", "dd6549", "cc463d", "cf3e36", "5E6671"
+        // ]
+        var colorList = []
+        var cardsetVal = ["姓名", "手机号", "性别", "生日", "身份证", "邮箱", "详细地址", "教育背景", "行业", "收入", "兴趣爱好"]
+        var cardsetC = ["姓名", "手机号"]
+        var symdName = []
+        var symdList = []
+        var clerkNumbers = ''
+        var shopNumbers = ''
+        var colorC
+        var logo_id = '';
+        var image_id = ''
+        var Imgbase
+        var chooseCnum = 0
+        // 选择开卡方式
+        form.on('radio(openCardMode)', function(data) {
+        	console.log(data.value)
+        	if(data.value == 0){
+            	$('.openCardMode0').hide()
+            	$('.openCardMode1').hide()
+            	$('.openCardMode2').hide()
+            }
+            if(data.value == 1){
+            	$('.openCardMode0').show()
+            	$('.openCardMode1').show()
+            	$('.openCardMode2').hide()
+            }
+            if(data.value == 2){
+            	$('.openCardMode0').show()
+            	$('.openCardMode2').show()
+            	$('.openCardMode1').hide()
+            }
+        })
+        // 选择卡号规则
+        
+        form.on('radio(cardRule)', function(data) {
+        	console.log(data.value)
+        	if(data.value == 0){
+            	$('.cardRule0').show()
+            	$('.cardRule1').hide()
+            }
+            if(data.value == 1){
+            	$('.cardRule1').show()
+            	$('.cardRule0').hide()
+            }
+        })
+        
+        // 选择充值限制
+
+        form.on('radio(rechargelimit)', function(data) {
+        	console.log(data.value)
+        	if(data.value == 0){
+            	$('.rechargelimit0').show()
+            	$('.rechargelimit1').hide()
+            }
+            if(data.value == 1){
+            	$('.rechargelimit1').show()
+            	$('.rechargelimit0').hide()
+            }
+        })
+        function getColor() {
+            var getData = new Object()
+            getData.number = ''
+            getData.rgb = ''
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'card/getRgbNumber',
+                JSON.stringify(getData),
+                function(data) {
+                    if (data.code == 1000) {
+                         colorList = data.data
+                        var str = ''
+                        for (var i = 0; i < colorList.length; i++) {
+                            str += '<span data-color="' + colorList[i].number + '" data-col="' + colorList[i].rgb + '" style="background-color:' + colorList[i].rgb + '"></span>'
+                        }
+                        $('#colorBox').html(str)
+                        $('.chooseColor span').click(function(e) {
+                        	colorNumber = this.dataset.color
+                        	col = this.dataset.col
+                            chooseCnum = $('.chooseColor span').index(this)
+                            $(this).addClass('chooseCC layui-icon layui-icon-ok');
+                            $('.chooseColor span').not($(this)).removeClass('chooseCC layui-icon layui-icon-ok')
+                            // $(this).attr("class", "card_bc" + (chooseCnum + 1) + " chooseCC layui-icon layui-icon-ok")
+                            // // $('.card_b').attr("class", 'card_b card_bc' + chooseCnum)
+                            $('.card_b_bg').attr('style', 'background-color:'+col)
+
+                        })
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+
+        }
+
+        getColor()
+        //查询有无会员卡
+        function getCardCon() {
+            layer.load(2, {
+                shade: 0.5
+            });
+            var jjData = new Object()
+            jjData.institutionNumber = insNumber
+            $.ajax({
+                type: "post",
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'card/getCardInfo',
+                data: JSON.stringify(jjData),
+                dataType: "json",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                success: function(data) {
+                    if (data.code === 1000) {
+                        cardCon = data.data
+                        setcardCon()
+                       	
+                       
+                        logo = data.data.logo
+                        img = data.data.img
+                        console.log(colorList)
+                        var col
+                        for(var i = 0 ; i < colorList.length;i++){
+                        	if(data.data.colorNumber == colorList[i].number){
+                        		$('.chooseColor span').eq(i).attr('class', 'card_bc' + i +
+                            ' chooseCC layui-icon layui-icon-ok')
+                        		col = colorList[i].rgb
+                        	}
+                        }
+                        
+                        
+                        $('.ltNamepv').text(data.data.cardName)
+                        $('#cardLimg').attr('src', data.data.logo);
+                        $('#cardLoImg').attr('src', data.data.logo);
+                        if (data.data.img != '') {
+                            $('#cardBimg').append('<img src="' + data.data.img + '">');
+                            $('#cardBgImg').attr('src', data.data.img);
+                            $('.card_b_bg').attr('style', 'background-color:'+ col)
+                        } else {
+                            $('.cardBgimg').find('.upTips').show()
+                            $('.cardBgimg').find('img').remove()
+                            $('.card_b_bg').attr('style', 'background-color:'+ col)
+                        }
+
+                        var str = ''
+                        var cardsetlc = data.data.cardSetup.split('||')
+                        for (let i = 0; i < cardsetVal.length; i++) {
+                            // console.log(cardsetlc[i])
+                            if (cardsetC.indexOf(cardsetVal[i]) >= 0) {
+                                str += '<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="' + cardsetVal[i] +
+                                    '" title="' + cardsetVal[i] + '" checked="" disabled="">'
+                            } else if (cardsetlc.indexOf(cardsetVal[i]) >= 0) {
+                                str += '<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="' + cardsetVal[i] +
+                                    '" title="' + cardsetVal[i] + '" checked="">'
+                            } else {
+                                str += '<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="' + cardsetVal[i] +
+                                    '" title="' + cardsetVal[i] + '">'
+                            }
+                        }
+                        $('#cardsetList').html(str)
+                        form.render('checkbox')
+                        $('.addBtn').text('更新会员卡')
+                        $('.addBtn').attr('lay-filter', 'add')
+                    } else {
+                        layer.closeAll('loading');
+                        layer.msg(data.msg + '，请添加')
+                        cardCon = ''
+                        var str = ''
+                        for (let i = 0; i < cardsetVal.length; i++) {
+                            if (cardsetC.indexOf(cardsetVal[i]) >= 0) {
+                                str += '<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="' + cardsetVal[i] +
+                                    '" title="' + cardsetVal[i] + '" checked="" disabled="">'
+                            } else {
+                                str += '<input type="checkbox" class="set" lay-skin="primary" name="cardSet" value="' + cardsetVal[i] +
+                                    '" title="' + cardsetVal[i] + '">'
+                            }
+                        }
+                        $('#cardsetList').html(str)
+                        $('.upTips').show()
+                        form.render('checkbox')
+                        $('.addBtn').text('添加会员卡')
+                        $('.addBtn').attr('lay-filter', 'add')
+                    }
+                }
+            });
+        }
+
+        getCardCon()
+
+
+
+
+        /*---------- Input监听 ----------*/
+        ltname()
+
+        /*---------- 品牌logo，卡背景上传 ----------*/
+        // $('#cardLo').click(function() {
+        //     $('#upLogo').click()
+        // })
+         var uploadInst = upload.render({
+                elem: '#cardLo',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": insNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                         //图片链接（base64）
+                        $('#cardLimg').attr('src', result);
+	                    $('#cardLoImg').attr('src', result);
+	                    $('#cardLo').find('.upTips').hide();
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        logo = res.data
+                        console.log(logo)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+         var uploadInst = upload.render({
+                elem: '#cardBg',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": insNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                         //图片链接（base64）
+                        $('#cardBimg').append('<img src="' + result + '">');
+	                    $('#cardBgImg').attr('src', result);
+	                    $('#cardBg').find('.upTips').hide();
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        img = res.data
+                        console.log(img)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+        // $('#cardBg').click(function() {
+        //     $('#upBg').click()
+        // })
+        $('#upSysImg').click(function() {
+            $('#upSysImgBtn').click()
+        })
+        $('.layui-upload-img').on({
+            mouseover: function() {
+                var cardId = $(this).attr("id")
+                var cardSrc = $('#' + cardId + 'Img').attr("src")
+                if (cardId === 'cardLo' && cardSrc) {
+                    $('.pinpaiLogo .imgDel').css({
+                        "display": "block",
+                        "opacity": 1
+                    })
+                }
+                if (cardId === 'cardBg' && cardSrc) {
+                    $('.cardBgimg .imgDel').css({
+                        "display": "block",
+                        "opacity": 1
+                    })
+                }
+            }
+        })
+        $('.imgDel').on({
+            mouseleave: function() {
+                $('.imgDel').css({
+                    "display": "none",
+                    "opacity": 0
+                })
+            }
+        })
+        $('.imgDel').click(function(e) {
+            var delId = e.currentTarget.dataset.id
+            if (delId == 'cardLo') {
+                $('#cardLimg').attr('src', '../../public/images/card_logo.png')
+                $('#cardLo').find('img').removeAttr('src')
+                $('#cardLo').find('.upTips').show();
+                logo = ''
+                console.log(logo)
+            }
+            if (delId == 'cardBg') {
+                $('#cardBg').find('img').removeAttr('src')
+                $('#cardBimg').find('img').remove()
+                $('#cardBg').find(".upTips").show()
+                img = ''
+                $('.coverTit').show()
+                $('.coverCon').hide()
+                $('.coversys').css({
+                    'height': '40px',
+                    'border-bottom': '1px solid #e6e6e6'
+                })
+            }
+            $(this).hide()
+        })
+        $("#upLogo").change(function() {
+            layer.load(2, {
+                shade: 0.5
+            });
+            uploadImg(this, function(data) {
+                uploadImgajax(data, 0)
+            });
+        });
+        $("#upBg").change(function() {
+            layer.load(2, {
+                shade: 0.5
+            });
+            uploadImg(this, function(data) {
+                uploadImgajax(data, 1)
+            });
+        });
+        $("#upSysImgBtn").change(function() {
+            layer.load(2, {
+                shade: 0.5
+            });
+            uploadImg(this, function(data) {
+                uploadImgajax(data, 4)
+            });
+        });
+
+        /*---------- 监听开关 ----------*/
+        form.on('switch(timePreferences)', function(data) { //计时开关
+            if (data.elem.checked == true) {
+                $('#timing').show()
+                data.elem.value = "0"
+                console.log(data.elem.value)
+            } else if (data.elem.checked == false) {
+                data.elem.value = "1"
+                console.log(data.elem.value)
+                $('#timing').hide()
+            }
+        });
+        /*---------- 体验卡开关 ----------*/
+        
+        form.on('radio(experienceSwitch)', function(data) {
+            if(data.value == 0){
+                 $('#experienceSwitch').show()
+             }else{
+                $('#experienceSwitch').hide()
+             }
+            
+        })
+        form.on('radio(annualSwitch)', function(data) {
+            if(data.value == 0){
+                 $('#annualSwitch').show()
+             }else{
+                $('#annualSwitch').hide()
+             }
+            
+        })
+        
+        form.on('radio(superSwitch)', function(data) {
+            if(data.value == 0){
+                 $('#superSwitch').show()
+             }else{
+                $('#superSwitch').hide()
+             }
+            
+        })
+
+
+        //表单初始赋值   15629212743071660    15638668467844936
+        function setcardCon() {
+            // 设置不可编辑项
+            var unEdit = {
+                'readonly': '',
+                'disabled': ''
+            }
+            // $("input[name='cardName']").attr(unEdit)
+            if(cardCon.openCardMode == 0){
+            	$('.openCardMode0').hide()
+            	$('.openCardMode1').hide()
+            	$('.openCardMode2').hide()
+            }
+            if(cardCon.openCardMode == 1){
+            	$('.openCardMode0').show()
+            	$('.openCardMode1').show()
+            }
+            if(cardCon.openCardMode == 2){
+            	$('.openCardMode0').show()
+            	$('.openCardMode2').show()
+            }
+            if(cardCon.cardRule == 0){
+            	$('.cardRule0').show()
+            	$('.cardRule1').hide()
+            }
+            if(cardCon.cardRule == 1){
+            	$('.cardRule1').show()
+            	$('.cardRule0').hide()
+            }
+            if(cardCon.rechargelimit == 0){
+            	$('.rechargelimit0').show()
+            	$('.rechargelimit1').hide()
+            }
+            if(cardCon.rechargelimit == 1){
+            	$('.rechargelimit1').show()
+            	$('.rechargelimit0').hide()
+            }
+            colorNumber = cardCon.colorNumber
+            form.val('basic', {
+                "cardName": cardCon.cardName.toString(),
+                "cardLimit": cardCon.cardLimit.toString(),
+                "openCardMode": cardCon.openCardMode.toString(),
+                "openCardAccount": cardCon.openCardAccount.toString(),
+                "cardRule": cardCon.cardRule.toString(),
+                "rechargelimit": cardCon.rechargelimit.toString(),
+                "operateTips": cardCon.operateTips.toString(),
+                "privilege": cardCon.privilege.toString(),
+                "notice": cardCon.notice.toString(),
+                "contactTell": cardCon.contactTell.toString(),
+                "shareTitle": cardCon.shareTitle.toString(),
+                "shareDescribe": cardCon.shareDescribe.toString(),
+                "experienceAccount":cardCon.experienceAccount,
+                "experienceDate":cardCon.experienceDate,
+                "annualAccount":cardCon.annualAccount,
+                "annualDate":cardCon.annualDate,
+                "superAccount":cardCon.superAccount,
+                "superDate":cardCon.superDate,
+                "experienceOriginal":cardCon.experienceOriginal,
+                "annualOriginal":cardCon.annualOriginal,
+                "superOriginal":cardCon.superOriginal,
+                "experienceSwitch":cardCon.experienceSwitch.toString(),
+                "superSwitch":cardCon.superSwitch.toString(),
+                "annualSwitch":cardCon.annualSwitch.toString(),
+            })
+            if(cardCon.experienceSwitch == 0){
+                $('#experienceSwitch').show()
+            }
+            if(cardCon.superSwitch == 0){
+                $('#superSwitch').show()
+            }
+            if(cardCon.annualSwitch == 0){
+                $('#annualSwitch').show()
+            }
+            layer.closeAll('loading');
+        }
+        //表单验证
+        form.verify({
+            cardName: function(value) {
+                if (value == '') {
+                    return '会员卡名称不能为空！';
+                } else if (getByteLen(value) > 18) {
+                    return '会员卡名称不能超过18个字符'
+                }
+            },
+            operateTips: function(value) {
+                if (value == '') {
+                    return '操作提示不能为空！';
+                }
+            },
+            privilege: function(value) {
+                if (value == '') {
+                    return '特权说明不能为空！';
+                }
+            },
+            notice: function(value) {
+                if (value == '') {
+                    return '使用须知不能为空！';
+                }
+            },
+            phone: function(value) {
+                var rg = new RegExp(/^1(3|4|5|6|7|8|9)\d{9}$/) // 手机号正则
+                var rg2 = new RegExp(/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/) // 固话正则
+                if (value != '' && !rg.test(value) && !rg2.test(value)) {
+                    return '请填写正确的联系电话！'
+                }
+            },
+            shareTit: function(value) {
+                if (value == '') {
+                    return '分享标题不能为空！';
+                }
+            },
+            shareCon: function(value) {
+                if (value == '') {
+                    return '分享描述不能为空！';
+                }
+            },
+        });
+
+        var $ = layui.$,
+            active = {
+                chSysImg: function() {
+                    layer.open({
+                        type: 2,
+                        title: '选择系统图库',
+                        area: ['600px', '400px'],
+                        content: './vipSysImg.html?SysImgType=4',
+                        success: function(layero, index) {}
+                    });
+                },
+            };
+
+        $('.chooseSysImg').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        function changeImgId(id) {
+            console.log(id)
+            image_id = id
+        }
+        function backImg(data){
+        	img = data
+        }
+        window._changeImgId = changeImgId;
+		window._backImg = backImg
+        //监听提交-添加
+        form.on('submit(add)', function(data) {
+            var data = data.field
+            if (logo == '') {
+                layer.msg('请上传logo图片')
+                return false
+            } 
+            if(img == ''){
+            	if(colorNumber == ''){
+            		layer.msg('请选择卡片背景颜色或上传卡片背景图片')
+            		return false
+            	}
+            }
+            var arr = new Array();
+            $("input:checkbox[name='cardSet']:checked").each(function(i) {
+                arr[i] = $(this).val();
+            });
+            
+            data.institutionNumber = insNumber
+            data.logo = logo
+            data.img = img
+            data.colorNumber = colorNumber
+            data.cardSetup = arr.join('||');
+            delete data.cardSet
+
+            // return
+            // 发送请求
+            console.log(data)
+            if(data.experienceSwitch == 1){
+                data.experienceDate = ''
+                data.experienceAccount = ''
+                data.experienceOriginal = ''
+            }else{
+                if(data.experienceOriginal == '' ||data.experienceDate == '' || data.experienceAccount == ''){
+                    layer.msg('请填写体验卡相关设置')
+                    return false
+                }
+            }
+            if(data.superSwitch == 1){
+                data.superDate = ''
+                data.superAccount = ''
+                data.superOriginal = ''
+            }else{
+                if(data.superOriginal == '' || data.superDate == '' || data.superAccount == ''){
+                    layer.msg('请填写超级年卡相关设置')
+                    return false
+                }
+            }
+            if(data.annualSwitch == 1){
+                data.annualDate = ''
+                data.annualAccount = ''
+                data.annualOriginal = ''
+            }else{
+                if(data.annualOriginal == '' || data.annualDate == '' || data.annualAccount == ''){
+                    layer.msg('请填写年卡相关设置')
+                    return false
+                }
+            }
+            layer.confirm('确定要提交会员卡设置?', function(index) {
+				layer.load(2, {
+		                shade: 0.5
+		            });
+            	 $.ajax({
+                type: "post",
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'card/insertCardInfo',
+                data: JSON.stringify(data),
+                dataType: "json",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                success: function(data) {
+                    if (data.code === 1000) {
+                        layer.closeAll();
+                        layer.msg(data.msg)
+                    } else {
+                        layer.closeAll();
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+
+            })
+           
+            // var addP = new Object()
+            // addP.merchantNumber = merNumber
+            // addP.posButtOpacity = "100"
+            // addP.posButtRadius = "999"
+            // addP.posButtTextColor = "#ffffff"
+            // addP.posButtcolor = "#ff5722"
+            // addP.posterColor = "#5885cf"
+            // addP.posterEnabled = 0
+            // addP.posterImgId = "15665414888521591"
+            // addP.posterShareExplain = "可通过微信好友、朋友圈、面对面扫二维码等多种方式邀请好友领卡，好友领卡后充值或消费即可得到奖励"
+            // addP.posterTitle = data.shareTitle
+            // addP.textColor = "#ffffff"
+            // addP.titleColor = "#ffffff"
+            // $.ajax({
+            //     type: "post",
+            //     url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.addPoster,
+            //     data: JSON.stringify(addP),
+            //     dataType: "json",
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     success: function(data) {
+            //         if (data.code === 1000) {
+            //             layer.closeAll('loading');
+            //             parent.layer.msg(data.msg)
+            //         } else {
+            //             layer.closeAll('loading');
+            //             parent.layer.msg(data.msg)
+            //         }
+            //     }
+            // });
+            return false;
+        });
+        //监听提交-更新
+        form.on('submit(update)', function(data) {
+            var data = data.field
+            
+            return false
+            console.log(data)
+            // return
+            // 发送请求
+            layer.load(2, {
+                shade: 0.5
+            });
+            $.ajax({
+                type: "post",
+                url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.updateCard,
+                data: JSON.stringify(data),
+                dataType: "json",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                success: function(data) {
+                    if (data.code === 1000) {
+                        layer.closeAll('loading');
+                        parent.layer.msg(data.msg)
+                    } else {
+                        layer.closeAll('loading');
+                        parent.layer.msg(data.msg)
+                    }
+                }
+            });
+            return false;
+        });
+
+
+        $('.vipCardLink').click(function() {
+            layer.open({
+                type: 1,
+                shadeClose: true,
+                shade: 0.5,
+                title: false,
+                content: $('.cardQrcode'),
+            });
+        })
+
+        $('.chooseColor span').click(function(e) {
+
+            chooseCnum = $('.chooseColor span').index(this)
+            $(this).addClass('chooseCC layui-icon layui-icon-ok');
+            $('.chooseColor span').not($(this)).removeClass('chooseCC layui-icon layui-icon-ok')
+            // $(this).attr("class", "card_bc" + (chooseCnum + 1) + " chooseCC layui-icon layui-icon-ok")
+            // // $('.card_b').attr("class", 'card_b card_bc' + chooseCnum)
+            $('.card_b_bg').attr('class', 'card_b_bg card_bc' + chooseCnum)
+
+        })
+
+        function ltname() {
+            $('.ltNamepv').text($("#ltName").val())
+            $("#ltName").on("input", function(e) {
+                //获取input输入的值
+                console.log(e.delegateTarget.value);
+                $('.ltNamepv').text(e.delegateTarget.value)
+            });
+        }
+
+
+        function uploadImg(input_file, get_data) {
+            var file = input_file.files[0];
+            var reader = new FileReader();
+            var AllowImgFileSize = 1100000;
+            if (file.size < AllowImgFileSize) {
+                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    get_data(this.result)
+                }
+                $(input_file).val('')
+            } else {
+                layer.closeAll('loading');
+                layer.msg('上传失败<br>请上传不大于1M的图片！', function() {});
+                $(input_file).val('')
+            }
+        }
+
+        function uploadImgajax(Imgbase, upType) {
+            var datas = {
+                "imgBaseStr": Imgbase,
+                "institutionNumber": insNumber,
+                "imgType": upType,
+                "merchantNumber": merNumber
+            }
+            // 发送请求
+            $.ajax({
+                type: "post",
+                url: CmsConfig.ServiceUrl.ApiRootUrlMeb + CmsConfig.addressUrl.Mervip.uploadImg,
+                data: JSON.stringify(datas),
+                dataType: "json",
+                async: false,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                success: function(data) {
+                    layer.closeAll('loading');
+                    if (data.code === 1000) {
+                        switch (upType) {
+                            case 0:
+                                logo_id = data.data.imageId
+                                $('#cardLimg').attr('src', data.data.localImgUrl);
+                                $('#cardLoImg').attr('src', data.data.localImgUrl);
+                                $('#cardLo').find('.upTips').hide();
+                                break;
+                            case 1:
+                                image_id = data.data.imageId
+                                $('#cardBimg').append('<img src="' + data.data.localImgUrl + '">');
+                                $('#cardBgImg').attr('src', data.data.localImgUrl);
+                                $('#cardBg').find('.upTips').hide();
+                                break;
+                            case 4:
+                                layer.msg('上传系统图库成功')
+                                break
+                        }
+                    }
+                }
+            });
+        }
+        //获取字符串长度（汉字算两个字符，字母数字算一个）
+        function getByteLen(val) {
+            var len = 0;
+            for (var i = 0; i < val.length; i++) {
+                var a = val.charAt(i);
+                if (a.match(/[^\x00-\xff]/ig) != null) { //\x00-\xff→GBK双字节编码范围
+                    len += 2;
+                } else {
+                    len += 1;
+                }
+            }
+            return len;
+        }
+    });
+    </script>
+</body>
+
+</html>

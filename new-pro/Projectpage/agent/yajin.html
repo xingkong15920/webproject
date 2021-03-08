@@ -28,6 +28,11 @@
 			.layui-input-inline{
 				margin-right: 20px;
 			}
+			#btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
 		</style>
 	</head>
 
@@ -82,8 +87,8 @@
 					<div class="layui-input-inline">
 						<select name="type" id="equipmentType">
 							<option value="">订单来源</option>
-							<option value="1">PC</option>
-							<option value="2">安卓</option>
+							<option value="2">PC</option>
+							<option value="1">安卓</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -98,6 +103,12 @@
 					</div>
 				</div>
 			</div>
+			<div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="toolbar">
@@ -165,6 +176,34 @@
 					// 		console.log('222')
 					// 	}
 					// )
+					window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(-1)+' ' + '23:59:59')
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
 				function tableRender(){
 					var index = layer.load(2, {shade: [0.4, '#393D49']})
 					//方法级渲染  
@@ -210,10 +249,7 @@
 								align: 'center',
 								field: 'transactionTime',
 								title: '授权时间',
-								width:180,
-								templet:function(data){
-									return data.transactionTime.split('T')[0] + ' ' + data.transactionTime.split('T')[1].split('.')[0]
-								}
+								width:180
 							}, {
 								align: 'center',
 								field: 'shopName',
@@ -310,9 +346,9 @@
 								field: 'batch',
 								title: '完成时间/店员名称',
 								templet:function(data){
-									var time = data.endTransactionTime.split('T')[0] + ' ' + data.endTransactionTime.split('T')[1].split('.')[0]
+									
 								
-									return  time + '</br>' +   data.clerkName 
+									return  data.endTransactionTime + '</br>' +   data.clerkName 
 								}
 							}
 							]
@@ -338,6 +374,7 @@
 				
 				$('#search').click(function(){
 					tableRender()
+					$('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 				})
 				laydate.render({
 					elem:"#startTime",
@@ -356,7 +393,7 @@
 					if(obj.event === 'Toview') { //编辑
 						$.ajax({
 							type: "get",
-							url: 'https://api.51shanhe.com/p-order/sync/order',
+							url: 'https://api.hongsou.com.cn/p-order/sync/order',
 							async: true,
 							dataType: "json",
 							data: {

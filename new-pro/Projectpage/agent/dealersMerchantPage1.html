@@ -100,9 +100,10 @@
         </xblock> -->
     </div>
     <script type="text/html" id="shopName">
+        <span>{{d.merchantNumber1}}</span></br>
         <span onclick="clickMer(this)" data-id="{{d.merchantNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.merchantName}}</span>
             </br>
-            <span>{{d.registerCell}}</span>
+            
         </script>
     <!-- <script type="text/html" id="paymentList">
 
@@ -120,7 +121,7 @@
             <a class="layui-btn layui-btn-xs" lay-event="horn">设备</a>
             <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
             <a class="layui-btn layui-btn-xs" lay-event="secretkey">秘钥</a>
-            <a class="layui-btn layui-btn-xs" lay-event="feilvset">微信认证</a>
+            <a class="layui-btn layui-btn-xs" lay-event="feilvset">子商户号</a>
             <a class="layui-btn layui-btn-xs" lay-event="model">增值功能</a>
             <a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">商户后台</a>
             
@@ -137,10 +138,11 @@
     // <a class="layui-btn layui-btn-xs" lay-event="push">推送</a>
     //<a class="layui-btn layui-btn-xs" lay-event="recomId">ID</a>
     //<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    var server = 'http://192.168.1.200:6005/../../'
+    var server = 'http://192.168.110.200:6005/../../'
     var paymentList = []
     console.log(!localStorage.getItem("saleN"))
     var saleName = CmsUtility.getQueryString('saleName')
+    var saleNumber = CmsUtility.getQueryString('saleNumber')
      if(localStorage.getItem("saleN")){
         $('#saleName').val(localStorage.getItem("saleN"))
         localStorage.removeItem("saleN")
@@ -157,6 +159,13 @@
             }
             if (data[i].merchantType == 2) {
                 data[i].merchantType1 = '企业'
+            }
+            if (data[i].merchantNumber.length == 10) {
+                var length = data[i].merchantNumber.length
+                var num = data[i].merchantNumber.substring(4, length)
+                data[i].merchantNumber1 =  parseInt(num)
+            } else {
+                data[i].merchantNumber1 = data[i].merchantNumber
             }
         }
         return data
@@ -182,7 +191,7 @@
         var shHref = ''
         CmsUtility.postAjaxCall2(
             //系统设置
-            'https://nb.51shanhe.com/shanhe-admin/basicSetting/getInsRegInfo', {
+            'https://nb.hongsou.com.cn/shanhe-admin/basicSetting/getInsRegInfo', {
                 'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
             },
             function(data) {
@@ -251,7 +260,8 @@
                 where: {
                     "institutionNumber": JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
                     "merchantName": '',
-                    "saleName": saleName,
+                    "saleName": '',
+                    "saleNumber":saleNumber,
                     "merchantNumber": '',
                     "merchantStatus": '',
                     "agentName": '',
@@ -287,34 +297,97 @@
                         type: 'checkbox'
                     }, {
                         field: 'merchantNumber',
-                        title: '商户编号',
+                        title: '商户编号/商户名称',
                         align: 'center',
-                        templet: function(data) {
-                            if (data.merchantNumber.length == 10) {
-                                var length = data.merchantNumber.length
-                                var num = data.merchantNumber.substring(4, length)
-                                console.log(parseInt(num))
-                                return parseInt(num)
-                            } else {
-                                return data.merchantNumber
-                            }
+                        // templet: function(data) {
+                        //     var top = ''
 
-                        },
-                        width: 100
+                        //     if (data.merchantNumber.length == 10) {
+                        //         var length = data.merchantNumber.length
+                        //         var num = data.merchantNumber.substring(4, length)
+                        //         console.log(parseInt(num))
+                        //         top =  parseInt(num)
+                        //     } else {
+                        //         top = data.merchantNumber
+                        //     }
+                        //     return top + '</br>' + data.merchantName
+
+                        // },
+                        toolbar: '#shopName',
+                        width: 200,
                     }, {
                         align: 'center',
                         field: 'merchantName',
-                        width: 200,
-                        toolbar: '#shopName',
-                        title: '商户名称'
+                        title: '联系人/手机号',
+                        templet:function(data){
+                            return data.juridicalPersonName + '</br>' + data.registerCell
+                        } ,
+                        width:150
                     }, {
                         field: 'agentLevel',
-                        title: '所属服务商(服务商/销售)',
+                        title: '所属服务商'+ '</br>' +'(服务商/销售)',
                         align: 'center',
                         templet: function(data) {
                             return data.agentName + '</br>' + data.saleName
                         },
                         width: 150
+                    }, {
+                        field: 'products',
+                        title: '支付通道',
+                        align: 'center',
+                        templet: function(data) {
+                            // console.log('123')
+                            // var list = data.products.split('|')
+                            // var str = ''
+                            // for(var i = 0 ; i < list.length;i++){
+                            //     if(list[i].indexOf('云闪付') >=0){
+                            //                 continue;
+                            //             }
+                            //     if(i == list.length){
+                            //         str += list[i] 
+                            //     }else{
+                            //         str += list[i] + '</br>'
+                            //     }
+                            // }
+                            // str = str.replace('官方支付宝','直-支')
+                            // str = str.replace('官方微信','直-微')
+                            // str = str.replace('富友','间-富')
+                            // str = str.replace('新大陆','间-新')
+                            // str = str.replace('随行付','间-随')
+                            // str = str.replace('乐刷','间-乐')
+                            // return str
+                            if (data.products.indexOf('|') >= 0) {
+                                    var list = data.products.split('|')
+                                    if(list[0].split(':')[1] == '无通道'){
+                                          var  str = '<span>'+ list[0].split(':')[0]+ ':<span style="color:red">'+ list[0].split(':')[1] +'</span>' +'</span>'+ '</br>'
+                                        }else{
+                                             var  str = list[0] + '</br>'
+                                        }
+                                    for (var i = 1; i < list.length; i++) {
+                                        
+                                        if(list[i].indexOf('云闪付') >=0){
+                                            continue;
+                                        }
+                                        if(list[i].split(':')[1] == '无通道'){
+                                            str += '<span>'+ list[i].split(':')[0]+ ':<span style="color:red">'+ list[i].split(':')[1] +'</span>' +'</span>'+ '</br>'
+                                        }else{
+                                            str += list[i] + '</br>'
+                                        }
+                                        
+                                    }
+                                    str = str.replace(/官方支付宝/g,'直-支')
+                                    str = str.replace(/官方微信/g,'直-微')
+                                    str = str.replace(/富友/g,'间-富')
+                                    str = str.replace(/新大陆/g,'间-新')
+                                    str = str.replace(/随行付/g,'间-随')
+                                    str = str.replace(/乐刷/g,'间-乐')
+                                    console.log(str)
+                                    return str
+                                } else {
+                                    return data.products
+                                }
+                        },
+                        width: 120
                     }, {
                         field: 'agentLevel',
                         title: '可用通道' + '<i class="layui-icon" id="tips">&#xe702;</i>',
@@ -388,59 +461,6 @@
                                         }
                                     }
                                 }
-                                // for(var i = 0 ; i < paymentList.length;i++){
-                                //  var is = true
-                                //  var addStr = "'"+ paymentList[i].paymentChannel + '|' + data.merchantNumber + "'"
-                                //  if(paymentList[i].paymentType == 0 || paymentList[i].paymentType == 1){
-                                //      for(var j = 0 ; j < thisPayment.length;j++){
-                                //          addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber + '|' +  data.merchantNumber + "'"  
-                                //          if(paymentList[i].paymentChannel == thisPayment[j].paymentChannel){
-                                //              is = false
-                                //              if(thisPayment[j].auditStatus == 2){
-                                //                  str += '<span style="color:green">'+ paymentList[i].paymentChannelName +'</span>'
-                                //                  continue
-
-                                //              }else if(thisPayment[j].auditStatus == 0){
-                                //                  str += '<span style="color:red;cursor:pointer" onclick="addMerchant('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //                  continue
-
-                                //              }else if(thisPayment[j].auditStatus == 1 || thisPayment[j].auditStatus == 4 || thisPayment[j].auditStatus == 5){
-                                //                  str += '<span style="color:#FFA20A">'+ paymentList[i].paymentChannelName +'</span>'
-                                //                  continue
-
-                                //              }
-                                //          }
-                                //      }
-                                //      if(is == true){
-                                //          str += '<span style="cursor:pointer" onclick="addMerchant1('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //      }
-                                //  }else{
-                                //      for(var j = 0 ; j < thisPayment.length;j++){
-                                //      if(paymentList[i].paymentChannel == thisPayment[j].paymentChannel){
-                                //          addStr = "'"+ paymentList[i].paymentChannel + '|' + thisPayment[j].orderNumber+ '|' +  data.merchantNumber  + "'"
-                                //          is = false
-                                //          if(thisPayment[j].auditStatus == 2){
-                                //              str1 += '<span style="color:green">'+ paymentList[i].paymentChannelName +'</span>'
-                                //              continue
-
-                                //          }else if(thisPayment[j].auditStatus == 0){
-                                //              str1 += '<span style="color:red;cursor:pointer" onclick="addMerchant('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //              continue
-
-                                //          }else if(thisPayment[j].auditStatus == 1 || thisPayment[j].auditStatus == 4 || thisPayment[j].auditStatus == 5){
-                                //              str1 += '<span style="color:#FFA20A">'+ paymentList[i].paymentChannelName +'</span>'
-                                //              continue
-
-                                //          }
-                                //      }
-                                //  }
-                                //  if(is == true){
-                                //      str1 += '<span style="cursor:pointer" onclick="addMerchant1('+ addStr +')">'+ paymentList[i].paymentChannelName +'</span>'
-                                //  }
-                                //  }
-
-
-                                // }
                                 str = str.replace('官方支付宝','直-支')
                                 str = str.replace('官方微信','直-微')
                                 str1 = str1.replace('富友','间-富')
@@ -456,7 +476,7 @@
                         field: 'insertTime',
                         title: '创建时间',
                         align: 'center',
-                        width: 180
+                        width: 150
                     },
                     //  {
                     //     toolbar: '#toolbar_switch1',
@@ -622,7 +642,7 @@
                 var aData = data
                 CmsUtility.postAjaxCall2(
                     //系统设置
-                    'https://nb.51shanhe.com/shanhe-admin/basicSetting/getInsRegInfo', {
+                    'https://nb.hongsou.com.cn/shanhe-admin/basicSetting/getInsRegInfo', {
                 'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
             },
                     function(data) {
@@ -706,7 +726,7 @@
                 layer.open({
                     type: 2,
                     title: '码牌管理',
-                    area: ['50%', '70%'], //宽高
+                    area: ['80%', '80%'], //宽高
                     content: 'MP-configuration.html',
                     success: function(layero, index) {
                         var iframe = window['layui-layer-iframe' + index];

@@ -78,6 +78,14 @@ input[type="number"]{ -moz-appearance: textfield; }
 									<div class="layui-input-inline">
 										<span>待结算余额 <span id="alsoMoney" style="color:red"></span> 元<span>/可提现金额 <span id="canMoney" style="color:red"></span> 元/最小提现金额100元</span>
 									</div>
+									
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red"></span></label>
+									
+									<div class="layui-input-inline">
+										<span style="color:red">备注:因结算周期差异，可能会产生收入报表与提现金额的差异；结算时间为每月20-30号；</span>
+									</div>
 								</div>
 								<div class="layui-form-item">
 									<label class="layui-form-label"><span class="x-red">* </span>发票金额：</label>
@@ -120,6 +128,12 @@ input[type="number"]{ -moz-appearance: textfield; }
 									<label class="layui-form-label"><span class="x-red">* </span>发票信息：</label>
 									<div class="layui-input-inline">
 										<textarea class="layui-textarea" name="invoiceRemarks" autocomplete="off" placeholder="发票信息" lay-verify="title" rows="7" id="fapiaoInfo"></textarea>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label"><span class="x-red">* </span>邮寄信息：</label>
+									<div class="layui-input-inline">
+										<textarea class="layui-textarea" name="youij" autocomplete="off" placeholder="邮寄信息" lay-verify="title" rows="7" id="youjiInfo"></textarea>
 									</div>
 								</div>
 								<div class="layui-form-item">
@@ -170,7 +184,8 @@ input[type="number"]{ -moz-appearance: textfield; }
 				})
 				CmsUtility.postAjaxCall2(
 						//系统设置
-					'https://nb.51shanhe.com/shanhe-admin/insAgentWith/getInsReceiptSetting',
+					// 'https://nb.hongsou.com.cn/shanhe-admin/insAgentWith/getInsReceiptSetting',
+					// 'http://192.168.1.250:6005/shanhe-admin/insAgentWith/getInsReceiptSetting',
 					{
 						"institutionNumber":insNumber
 					},
@@ -188,7 +203,10 @@ input[type="number"]{ -moz-appearance: textfield; }
 								'电话：' + data.data.tell 
 
 							$('#fapiaoInfo').html(str)
-							
+								var str1 = '邮寄地址：' + data.data.postAdress + '\r\n' + 
+								'收件人：' + data.data.postName + '\r\n' +
+								'收件电话：' + data.data.postTell
+							$('#youjiInfo').html(str1)
 							// 河北鸿搜网络科技有限公司911130105590967608J技术服务费工商银行石家庄建华支行0402022409300450513河北省石家庄市长安区瀚科大厦512室0311-89643782
 							}
 							
@@ -253,7 +271,7 @@ input[type="number"]{ -moz-appearance: textfield; }
 				    	return 
 				    }
 				    timer = setTimeout(function(){
-				    	$('#tixian').val(parseFloat(e.delegateTarget.value) + e.delegateTarget.value/100*($('#moneyPoint').val().replace('%','')))
+				    	$('#tixian').val((parseFloat(e.delegateTarget.value) + e.delegateTarget.value/100*($('#moneyPoint').val().replace('%',''))).toFixed(2))
 				    },500)
 				  });
 				form.on('radio(cardvalid)', function(data) { //计次开关

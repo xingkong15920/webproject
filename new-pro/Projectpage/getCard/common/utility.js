@@ -18,7 +18,7 @@
         var dataType = dataType || "json";
         var isAsync = isAsync || true;
         var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
-       //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
+       //var fullUrl =  'http://192.168.110.111:5003/hs-app-server/table/getScanTableInf'
         
         postData = JSON.parse(JSON.stringify(postData).replace(/ /g,''))
         $.ajax({

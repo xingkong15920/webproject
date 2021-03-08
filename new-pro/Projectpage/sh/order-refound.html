@@ -30,6 +30,11 @@
     .layui-input-inline {
         margin-right: 20px;
     }
+     #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
     </style>
 </head>
 
@@ -72,6 +77,7 @@
                         <option value="Alipay_Pay">支付宝</option>
                         <option value="WeChat_Pay">微信</option>
 						<option value="Yun_Pay">云闪付</option>
+                            <option value="Pos_Pay">银联</option>
                     </select>
                 </div>
                 <div class="layui-input-inline">
@@ -86,14 +92,28 @@
                             <option value="6">服务窗支付</option>
                             <option value="7">预授权</option>
                             <option value="8">刷脸支付</option>
+                            <option value="11">刷卡支付</option>
                             <option value="9">花呗分期</option>
                             <option value="10">会员钱包</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <select name="orderState" id="orderState">
+                            <option value="">状态</option>
+                            <option value="4">全部退款</option>
+                            <option value="5">部分退款</option>
                         </select>
                     </div>
                 <div class="layui-input-inline coupons_screen">
                     <button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
                 </div>
             </div>
+        </div>
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
         </div>
         <table class="layui-hide" id="members" lay-filter="members"></table>
     </div>
@@ -202,6 +222,34 @@
         //               form.render()
         //           }
         //       )
+        window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0) + ' 00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+ ' 23:59:59')
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1) + ' 00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(-1)+ ' 23:59:59')
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6) + ' 00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+ ' 23:59:59')
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29) + ' 00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+ ' 23:59:59')
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
         function tableRender() {
             var index = layer.load(2, { shade: [0.4, '#393D49'] })
             //方法级渲染  
@@ -220,7 +268,8 @@
                     "oneTransactionType": $('#oneTransactionType').val().trim(),
                     "transactionPassageway": $('#transactionPassageway').val(),
                     "subaccountNumber": $('#subaccountNumber').val(),
-                    "twoTransactionType":$('#twoTransactionType').val()
+                    "twoTransactionType":$('#twoTransactionType').val(),
+                    "orderState":$('#orderState').val()
                 },
                 elem: '#members',
                 height: 'full-210',
@@ -300,6 +349,9 @@
                                 case '3':
                                     return '云闪付'
                                     break;
+                                case '7':
+                                    return '银联'
+                                    break;
                                 default:
                                     return '--'
                                     break;
@@ -338,6 +390,12 @@
                                     break;
                                 case '8':
                                     return '刷脸支付'
+                                    break;
+                                case '11':
+                                    return '刷卡支付'
+                                    break;
+                                case '12':
+                                    return '刷卡支付'
                                     break;
                                 default:
                                     return '--'
@@ -382,6 +440,7 @@
         tableRender()
         $('#search').click(function() {
             tableRender()
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
         })
         laydate.render({
             elem: "#startTime",

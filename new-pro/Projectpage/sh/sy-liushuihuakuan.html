@@ -1,387 +1,728 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title></title>
-		<meta name="renderer" content="webkit|ie-comp|ie-stand">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-		<meta http-equiv="Cache-Control" content="no-siteapp" />
-		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-		<link rel="stylesheet" href="../../public/css/xadmin.css">
-		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
-		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
-		<style type="text/css">
-			.layui-table-cell {
-				height: auto;
-				overflow: initial;
-			}
-		</style>
-	</head>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+     <link rel="stylesheet" href="../../public/css/style-baobiao.css">
+     <style type="text/css">
+    .layui-table-cell {
+        height: auto;
+        overflow: initial;
+    }
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+    </style>
+</head>
 
-	<body>
-		<!-- <div class="x-nav">
+<body>
+    <!-- <div class="x-nav">
 			<span class="layui-breadcrumb"> <a href="">账单</a> <a> <cite>划款查询</cite></a>
 			</span>
 			<a class="layui-btn layui-btn-small" style="line-height: 1.6em; margin-top: 3px; float: right" href="javascript:location.replace(location.href);"
 			 title="刷新"> <i class="layui-icon" style="line-height: 30px">ဂ</i></a>
 		</div> -->
-		<div class="x-body">
-			<div class="demoTable layui-form x-so" lay-filter="example">
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime">
-				</div>
-				<div class="layui-input-inline">
-					<input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
-				</div>
-				<div class="layui-input-inline">
-					<select name="payMentType" id="payMentType">
-						<option value="">请选择通道类型</option>
-						<option value="2">富友</option>
-						<option value="5">随行付</option>
-						<option value="4">新大陆</option>
-						<option value="6">乐刷</option>
-					</select>
-				</div>
-				<div class="layui-input-inline">
-					<button class="layui-btn" id="search" data-type="reload">
-						<i class="layui-icon">&#xe615;</i>
-					</button>
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<div class="layui-inline place">
-					<span style="color:red;display:block">*注:可快速查询名下商户结算情况</span>
-					<span style="color:red;display:block">*注:如结算失败，会显示失败原因，请根据实际情况进行变更处理</span>
-				</div>
-			</div>
-			<xblock>
-				<button class="layui-btn" id="baobiao">
-					<i class="layui-icon"></i>报表
-				</button>
-			</xblock>
-			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
-		</div>
-		<script src="../../common/config-sh.js"></script>
-		<script src="../../common/utility.js"></script>
-		<script>
-			function verTime() {
-				var arr1 = $('#startTime').val().split('-');
-				var arr2 = $('#endTime').val().split('-');
-				arr1[1] = parseInt(arr1[1]);
-				arr1[2] = parseInt(arr1[2]);
-				arr2[1] = parseInt(arr2[1]);
-				arr2[2] = parseInt(arr2[2]);
-				console.log(arr1, arr2)
-				var flag = true;
-				if (arr1[0] == arr2[0]) { //同年
-					if (arr2[1] - arr1[1] > 3) { //月间隔超过3个月
-						flag = false;
-					} else if (arr2[1] - arr1[1] == 3) { //月相隔3个月，比较日
-						if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
-							flag = false;
-						}
-					}
-				} else { //不同年
-					if (arr2[0] - arr1[0] > 1) {
-						flag = false;
-					} else if (arr2[0] - arr1[0] == 1) {
-						if (arr1[1] < 10) { //开始年的月份小于10时，不需要跨年
-							flag = false;
-						} else if (arr1[1] + 3 - arr2[1] < 12) { //月相隔大于3个月
-							flag = false;
-						} else if (arr1[1] + 3 - arr2[1] == 12) { //月相隔3个月，比较日
-							if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
-								flag = false;
-							}
-						}
-					}
-				}
-				if (!flag) {
-					return false;
-				} else {
-					return true;
-				}
-			}
+    <div class="x-body">
+        <div class="demoTable layui-form x-so" lay-filter="example">
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="开始日" name="startTime" id="startTime">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="截止日" name="endTime" id="endTime">
+            </div>
+            <div class="layui-input-inline">
+                <select name="payMentType" id="payMentType">
+                    <option value="">请选择通道类型</option>
+                    <option value="2">富友</option>
+                    <option value="5">随行付</option>
+                    <option value="4">新大陆</option>
+                    <option value="6">乐刷</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="orderState" id="orderState">
+                    <option value="">结算状态</option>
+                    <option value="1">结算成功</option>
+                    <option value="-1">结算失败</option>
+                </select>
+            </div>
+            
+            <div class="layui-input-inline">
+                <button class="layui-btn" id="search" data-type="reload">
+                    <i class="layui-icon">&#xe615;</i>
+                </button>
+            </div>
+        </div>
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
+        <blockquote class="layui-elem-quote">汇总信息</blockquote>
+        <!-- <div class="layui-row Trad">
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">交易金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="payamtSum"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">手续费</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="addnfeSum"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md3" style="width:17%">
+                <div class="homelist">
+                    <p class="homelistitle">结算金额</p>
+                    <div class="homelistc">
+                        <span class="x-left homelistct" style="line-height:40px;" id="seetAmt"></span>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="baobiao" style="width:100%;height:143px">
+            <div class="baobiao-col-1" style="padding-left: 0;">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
+                        交易金额
+                    </div>
+                    <div style="line-height:50px;font-size:16px" id="payamtSum">
+                        0
+                    </div>
+                </div>
+            </div>
+            <div class="baobiao-col-1 jianhao" style="padding-right:0;position:relative">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
+                        手续费
+                    </div>
+                    <div style="line-height:50px;font-size:16px" id="addnfeSum">
+                        0元
+                    </div>
+                </div>
+            </div>
+            <div class="baobiao-col-1 jianhao" style="padding-right: 0;">
+                <div class="baobiaoK">
+                    <div class="baobiaolist" style="line-height:52px;font-size:16px">
+                        结算金额
+                    </div>
+                    <div style="line-height:50px;font-size:16px" id="seetAmt">
+                        0
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--  <blockquote class="layui-elem-quote">结算信息</blockquote>
+		  <div class="layui-form-item">
+           
+            <div id="tabBox">
+                <table class="layui-table" style="width:50%;text-align:center;">
+                    <colgroup>
+                        <col width="50">
+                        <col width="50">
+                        <col width="150">
+                        <col width="150">
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th style="text-align:center" >通道名称</th>
+                            <th style="text-align:center" >结算人</th>
+                            <th style="text-align:center" >开户行名称</th>
+                            <th style="text-align:center" >银行卡号</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jiesuanInfo">
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div> -->
+        <div class="layui-form-item">
+            <div class="layui-inline place">
+                <span style="color:red;display:block">*注:可快速查询名下商户结算情况</span>
+                <span style="color:red;display:block">*注:如结算失败，会显示失败原因，请根据实际情况进行变更处理</span>
+            </div>
+        </div>
+        <xblock>
+            <button class="layui-btn" id="baobiao">
+                <i class="layui-icon"></i>报表
+            </button>
+        </xblock>
+        <table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
+    </div>
+    <script src="../../common/config-sh.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    function verTime() {
+        var arr1 = $('#startTime').val().split('-');
+        var arr2 = $('#endTime').val().split('-');
+        arr1[1] = parseInt(arr1[1]);
+        arr1[2] = parseInt(arr1[2]);
+        arr2[1] = parseInt(arr2[1]);
+        arr2[2] = parseInt(arr2[2]);
+        console.log(arr1, arr2)
+        var flag = true;
+        if (arr1[0] == arr2[0]) { //同年
+            if (arr2[1] - arr1[1] > 3) { //月间隔超过3个月
+                flag = false;
+            } else if (arr2[1] - arr1[1] == 3) { //月相隔3个月，比较日
+                if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+                    flag = false;
+                }
+            }
+        } else { //不同年
+            if (arr2[0] - arr1[0] > 1) {
+                flag = false;
+            } else if (arr2[0] - arr1[0] == 1) {
+                if (arr1[1] < 10) { //开始年的月份小于10时，不需要跨年
+                    flag = false;
+                } else if (arr1[1] + 3 - arr2[1] < 12) { //月相隔大于3个月
+                    flag = false;
+                } else if (arr1[1] + 3 - arr2[1] == 12) { //月相隔3个月，比较日
+                    if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+                        flag = false;
+                    }
+                }
+            }
+        }
+        if (!flag) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 
-			function fun_date(aa) {
-				var date1 = new Date(),
-					time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
-				var date2 = new Date(date1);
-				date2.setDate(date1.getDate() + aa);
-				var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+    function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
 
-				var a = time2.split('-')[0],
-					b = time2.split('-')[1],
-					c = time2.split('-')[2]
-				if (b < 10) {
-					b = 0 + b
-				}
-				if (c < 10) {
-					c = 0 + c
-				}
-				return a + '-' + b + '-' + c
-			}
-			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-			var startDate = fun_date(-30);
-			var endDate = fun_date(0);
-			var nowTime = new Date().valueOf();
-			var dataO = new Object();
-			dataO.merchantNumber = userNumber
-			layui.use(['table', 'laydate', 'form'], function() {
-				var table = layui.table,
-					$ = layui.$,
-					form = layui.form,
-					laydate = layui.laydate;
+        var a = time2.split('-')[0],
+            b = time2.split('-')[1],
+            c = time2.split('-')[2]
+        if (b < 10) {
+            b = 0 + b
+        }
+        if (c < 10) {
+            c = 0 + c
+        }
+        return a + '-' + b + '-' + c
+    }
+    var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
+    var startDate = fun_date(-30);
+    var endDate = fun_date(0);
+    var nowTime = new Date().valueOf();
+    var dataO = new Object();
+    dataO.merchantNumber = userNumber
+    layui.use(['table', 'laydate', 'form'], function() {
+        var table = layui.table,
+            $ = layui.$,
+            form = layui.form,
+            laydate = layui.laydate;
 
-				// 选择日期插件  
-				laydate.render({
-					elem: '#startTime',
-					type: 'date',
-					max: nowTime,
-					value: startDate
-				});
-				laydate.render({
-					elem: '#endTime',
-					type: 'date',
-					max: nowTime,
-					value: endDate
-				});
+        // 选择日期插件  
+        laydate.render({
+            elem: '#startTime',
+            type: 'date',
+            max: nowTime,
+            value: startDate
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'date',
+            max: nowTime,
+            value: endDate
+        });
 
-				$('#baobiao').click(function() {
-					if (!verTime()) {
-						layer.msg('只能查询三个月以内数据')
-						return
-					}
-					var newData = new Object();
-					newData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
-					newData.merchantNumber = JSON.parse(sessionStorage.getItem('userSh')).Number
-					newData.startTime = $('#startTime').val()
-					newData.endTime = $('#endTime').val()
-					newData.payMentType = $('#payMentType').val()
-					layer.open({
-						type: 2,
-						title: '下载报表',
-						shade: 0.5,
-						area: ['40%', '30%'],
-						maxmin: false,
-						resize: false,
-						content: ['down-excel.html'],
-						success: function(layero, index) {
-							// 获取子页面的iframe
-							var iframe = window['layui-layer-iframe' + index];
-							// 向子页面的全局函数child传w参
-							iframe.subPage(newData, '5')
-						}
-					});
-					return
+        function reloadres() {
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'arrivalBill/getMerAccountSum' + '?merchantNumber=' + userNumber, {
+                    "startTime":  $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
+                    "payMentType": $('#payMentType').val(),
+                    // "institutionNumber": JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
+                },
+                function(data) {
+                    if (data.code != 1000) {
+                        layer.msg(data.msg)
+                        $('#payamtSum').text(0) //
+                        $('#addnfeSum').text(0) //
+                        $('#seetAmt').text(0) //
 
-				})
-				//方法级渲染
-				tableRender()
+                        return
+                    }
+                    $('#payamtSum').text( '￥' + data.data.payamtSum) //
+                    $('#addnfeSum').text( '￥' + data.data.addnfeSum) //
+                    $('#seetAmt').text( '￥' + data.data.seetAmt) //
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+        
+        getBank()
+        function getBank() {
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'arrivalBill/getMerchanBankCard' + '?merchantNumber=' + userNumber, {
+                    
+                },
+                function(data) {
+                    if (data.code != 1000) {
+                       
 
-				function tableRender() {
-					if (!verTime()) {
-						layer.msg('只能查询三个月以内数据')
-						return
-					}
-					var index = layer.load(2, {
-						shade: [0.4, '#393D49']
-					})
-					table.render({
-						elem: '#LAY_table_bill',
-						url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getMerAccountArrival,
-						where: {
-							"startTime": startDate,
-							"endTime": endDate,
-							"payMentType": $('#payMentType').val(),
-							"merchantNumber": userNumber,
-						},
-						method: "post",
-						height: "full-195",
-						page: true,
-						id: 'billlist',
-						response: {
-							"statusCode": "1000", //解析接口状态
-						},
-						parseData: function(res) {
+                        return
+                    }
+                    var bankInfo = data.data
+                    var strInfo = ''
+                    for(var i =0; i < bankInfo.length;i++){
+                        var channelType = bankInfo[i].channelType || '--'
+                        var acntyName = bankInfo[i].acntyName || '--'
+                        var openingBank = bankInfo[i].openingBank || '--'
+                        var bankCardNo = bankInfo[i].bankCardNo || '--'
+                        strInfo += ' <tr><td>'
+                        + channelType +'</td><td >'
+                        + acntyName +'</td><td>'
+                        + openingBank +'</td><td>'
+                        + bankCardNo +'</td></tr>'
+                    }
+                    $('#jiesuanInfo').html(strInfo)
 
-							if (res.data == null) {
-								return
-							}
-							if (res.data == '查询数据为空') {
-								return
-							}
-							for (var i = 0; i < res.data.resultList.length; i++) {
-								if (res.data.resultList[i] == null) {
-									res.data.resultList.splice(i, 1)
-								}
-							}
-							return {
-								"code": res.code,
-								"count": res.data.count,
-								"data": res.data.resultList,
-							}
-						},
-						cols: [
-							[{
-								title: '交易日期',
-								align: 'center',
-								field: 'settleDt',
-								minWidth: 160,
-								templet:function(data){
-									console.log( data.settleDt.split(' ')[0])
-									return data.settleDt.split(' ')[0]
-								}
-							}, {
+                },
+                function(data) {
+                    console.log('222')
+                },'get'
+            )
+        }
+        getBank()
+        $('#baobiao').click(function() {
+            if (!verTime()) {
+                layer.msg('只能查询三个月以内数据')
+                return
+            }
+            var newData = new Object();
+            newData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber
+            newData.merchantNumber = JSON.parse(sessionStorage.getItem('userSh')).Number
+            newData.startTime = $('#startTime').val()
+            newData.endTime = $('#endTime').val()
+            newData.payMentType = $('#payMentType').val()
+            layer.open({
+                type: 2,
+                title: '下载报表',
+                shade: 0.5,
+                area: ['40%', '30%'],
+                maxmin: false,
+                resize: false,
+                content: ['down-excel.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                    iframe.subPage(newData, '5')
+                }
+            });
+            return
 
-								title: '商户名称',
-								align: 'center',
-								field: 'merchantName',
-								minWidth: 200,
-							}, {
-								field: 'payMentType',
-								title: '通道类型',
-								align: 'center',
-								minWidth: 120,
-								// templet: function(data) {
-								// 	switch (parseInt(data.payMentType)) {
-								// 		case 0:
-								// 			return '支付宝'
-								// 			break;
-								// 		case 1:
-								// 			return '微信'
-								// 			break;
-								// 		case 2:
-								// 			return '富友'
-								// 			break;
-								// 		case 3:
-								// 			return '易融码'
-								// 			break;
-								// 		case 4:
-								// 			return '新大陆'
-								// 			break;
-								// 		case 5:
-								// 			return '随行付'
-								// 			break;
-								// 		case 6:
-								// 			return '乐刷'
-								// 			break;
-								// 	}
-								// }
-							}, {
-								field: 'shopPoundage',
-								title: '结算信息',
-								align: 'center',
-								minWidth: 230,
-								templet: function(data) {
-									return data.settleAcntNm + '</br>' + data.settleAcntNo
-								}
-							}, {
-								field: 'merchantType',
-								title: '结算类型',
-								align: 'center',
-								minWidth: 100,
-							}, {
-								field: 'payAmt',
-								title: '交易金额',
-								align: 'center',
-								minWidth: 100,
-								templet: function(data) {
-									return '￥' + data.payAmt
-								}
-							}, {
-								field: 'serviceCharge',
-								title: '手续费',
-								align: 'center',
-								minWidth: 100,
-								templet: function(data) {
-									return '￥' + data.serviceCharge 
-								}
-							}, {
-								field: 'seetAmt',
-								title: '结算金额',
-								align: 'center',
-								minWidth: 100,
-								templet: function(data) {
-									return '￥' + data.seetAmt
-								}
-							}, {
-								field: 'payStDesc',
-								title: '结算状态',
-								align: 'center',
-								minWidth: 120,
-							}, {
-								field: 'remark',
-								title: '结算失败原因',
-								align: 'center',
-								minWidth: 230,
+        })
+        //方法级渲染
+        setTimeout(function(){
+            tableRender()
+            reloadres()
+        },500)
+        window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
 
-							}, {
-								field: 'insertTime',
-								title: '结算日期',
-								align: 'center',
-								minWidth: 160,
-							}]
-						],
-						done: function(res, curr, count) {
-							console.log(res)
-							layer.closeAll()
-						}
-					});
-				}
+        }
+        function tableRender() {
+            if (!verTime()) {
+                layer.msg('只能查询三个月以内数据')
+                return
+            }
+            var index = layer.load(2, {
+                shade: [0.4, '#393D49']
+            })
+            table.render({
+                elem: '#LAY_table_bill',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Merchant.getMerAccountArrival,
+                where: {
+                    "startTime":  $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
+                    "payMentType": $('#payMentType').val(),
+                    "merchantNumber": userNumber,
+                    "orderState":$('#orderState').val()
+                },
+                method: "post",
+                height: "full-195",
+                page: true,
+                id: 'billlist',
+                response: {
+                    "statusCode": "1000", //解析接口状态
+                },
+                parseData: function(res) {
 
-				form.on('select(chooseshop)', function(data) {
-					getclerk(data.value.split('/')[0])
-					form.val("example", {
-						"clerkNumber": ''
-					});
-					var select = $("#clerkNumber")[0];
-					select.length = 0;
-					form.render('select')
-				});
+                    if (res.data == null) {
+                        return
+                    }
+                    if (res.data == '查询数据为空') {
+                        return
+                    }
+                    for (var i = 0; i < res.data.resultList.length; i++) {
+                        if (res.data.resultList[i] == null) {
+                            res.data.resultList.splice(i, 1)
+                        }
+                    }
+                    return {
+                        "code": res.code,
+                        "count": res.data.count,
+                        "data": res.data.resultList,
+                    }
+                },
+                cols: [
+                    [{
+                        title: '交易日期',
+                        align: 'center',
+                        field: 'settleDt',
+                        minWidth: 160,
+                        templet: function(data) {
+                            console.log(data.settleDt.split(' ')[0])
+                            return data.settleDt.split(' ')[0]
+                        }
+                    }, {
 
-				// setTimeout(function() {
-				// 	tableRender()
-				// }, 500)
-				// $('#search').click(function() {
-				// 	tableRender()
-				// })
-				// 根據條件重载表格
-				var $ = layui.$,
-					active = {
-						reload: function() {
-							if (!verTime()) {
-								layer.msg('只能查询三个月以内数据')
-								return
-							}
-							// 获取上面查询框的值
-							var startTime = $('#startTime');
-							var endTime = $('#endTime');
-							var payMentType = $('#payMentType');
-							//执行重载
-							table.reload('billlist', {
-								page: {
-									curr: 1 //重新从第 1 页开始
-								},
-								where: {
-									startTime: startTime.val(),
-									endTime: endTime.val(),
-									payMentType: payMentType.val(),
-								}
-							});
-						}
-					};
+                        title: '商户名称',
+                        align: 'center',
+                        field: 'merchantName',
+                        minWidth: 200,
+                    }, {
+                        field: 'payMentType',
+                        title: '通道类型',
+                        align: 'center',
+                        minWidth: 120,
+                        // templet: function(data) {
+                        // 	switch (parseInt(data.payMentType)) {
+                        // 		case 0:
+                        // 			return '支付宝'
+                        // 			break;
+                        // 		case 1:
+                        // 			return '微信'
+                        // 			break;
+                        // 		case 2:
+                        // 			return '富友'
+                        // 			break;
+                        // 		case 3:
+                        // 			return '易融码'
+                        // 			break;
+                        // 		case 4:
+                        // 			return '新大陆'
+                        // 			break;
+                        // 		case 5:
+                        // 			return '随行付'
+                        // 			break;
+                        // 		case 6:
+                        // 			return '乐刷'
+                        // 			break;
+                        // 	}
+                        // }
+                    }, {
+                        field: 'shopPoundage',
+                        title: '结算信息',
+                        align: 'center',
+                        minWidth: 230,
+                        templet: function(data) {
+                            return data.settleAcntNm + '</br>' + data.settleAcntNo
+                        }
+                    }, {
+                        field: 'merchantType',
+                        title: '结算类型',
+                        align: 'center',
+                        minWidth: 100,
+                    }, {
+                        field: 'payAmt',
+                        title: '交易金额',
+                        align: 'center',
+                        minWidth: 100,
+                        templet: function(data) {
+                            return '￥' + (data.payAmt).toFixed(2)
+                        }
+                    }, {
+                        field: 'serviceCharge',
+                        title: '手续费',
+                        align: 'center',
+                        minWidth: 100,
+                        templet: function(data) {
+                            return '￥' + (data.serviceCharge).toFixed(2)
+                        }
+                    }, {
+                        field: 'seetAmt',
+                        title: '结算金额',
+                        align: 'center',
+                        minWidth: 100,
+                        templet: function(data) {
+                            return '￥' + (data.seetAmt).toFixed(2)
+                        }
+                    }, {
+                        field: 'payStDesc',
+                        title: '结算状态',
+                        align: 'center',
+                        minWidth: 120,
+                        templet:function(data){
+                            if(data.payStDesc == '失败'){
+                                return '<span style="font-weight:bold;color:red">失败</span>'
+                            }else{
+                                return data.payStDesc
+                            }
+                        }
+                    }, {
+                        field: 'remark',
+                        title: '结算失败原因',
+                        align: 'center',
+                        minWidth: 230,
 
-				$('.demoTable .layui-btn').on('click', function() {
-					var type = $(this).data('type');
-					active[type] ? active[type].call(this) : '';
-				});
-			});
-		</script>
-	</body>
+                    }, {
+                        field: 'insertTime',
+                        title: '结算日期',
+                        align: 'center',
+                        minWidth: 160,
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    console.log(res)
+                    layer.closeAll()
+                }
+            });
+        }
+        // getBank()
+        // function getBank() {
+            
+        //     table.render({
+        //         elem: '#LAY_table_bill1',
+        //         url: CmsConfig.ServiceUrl.ApiRootUrl + 'arrivalBill/getMerchanBankCard',
+        //         where: {
+        //             "merchantNumber": userNumber,
+        //         },
+        //         method: "post",
+        //         height: "",
+        //         page: true,
+        //         id: 'billlist1',
+        //         response: {
+        //             "statusCode": "1000", //解析接口状态
+        //         },
+        //         parseData: function(res) {
+
+                    
+        //             return {
+        //                 "code": res.code,
+        //                 "count": res.data.count,
+        //                 "data": res.data.resultList,
+        //             }
+        //         },
+        //         cols: [
+        //             [{
+        //                 title: '交易日期',
+        //                 align: 'center',
+        //                 field: 'settleDt',
+        //                 minWidth: 160,
+        //                 templet: function(data) {
+        //                     console.log(data.settleDt.split(' ')[0])
+        //                     return data.settleDt.split(' ')[0]
+        //                 }
+        //             }, {
+
+        //                 title: '商户名称',
+        //                 align: 'center',
+        //                 field: 'merchantName',
+        //                 minWidth: 200,
+        //             }, {
+        //                 field: 'payMentType',
+        //                 title: '通道类型',
+        //                 align: 'center',
+        //                 minWidth: 120,
+        //                 // templet: function(data) {
+        //                 // 	switch (parseInt(data.payMentType)) {
+        //                 // 		case 0:
+        //                 // 			return '支付宝'
+        //                 // 			break;
+        //                 // 		case 1:
+        //                 // 			return '微信'
+        //                 // 			break;
+        //                 // 		case 2:
+        //                 // 			return '富友'
+        //                 // 			break;
+        //                 // 		case 3:
+        //                 // 			return '易融码'
+        //                 // 			break;
+        //                 // 		case 4:
+        //                 // 			return '新大陆'
+        //                 // 			break;
+        //                 // 		case 5:
+        //                 // 			return '随行付'
+        //                 // 			break;
+        //                 // 		case 6:
+        //                 // 			return '乐刷'
+        //                 // 			break;
+        //                 // 	}
+        //                 // }
+        //             }, {
+        //                 field: 'shopPoundage',
+        //                 title: '结算信息',
+        //                 align: 'center',
+        //                 minWidth: 230,
+        //                 templet: function(data) {
+        //                     return data.settleAcntNm + '</br>' + data.settleAcntNo
+        //                 }
+        //             }, {
+        //                 field: 'merchantType',
+        //                 title: '结算类型',
+        //                 align: 'center',
+        //                 minWidth: 100,
+        //             }, {
+        //                 field: 'payAmt',
+        //                 title: '交易金额',
+        //                 align: 'center',
+        //                 minWidth: 100,
+        //                 templet: function(data) {
+        //                     return '￥' + data.payAmt
+        //                 }
+        //             }, {
+        //                 field: 'serviceCharge',
+        //                 title: '手续费',
+        //                 align: 'center',
+        //                 minWidth: 100,
+        //                 templet: function(data) {
+        //                     return '￥' + data.serviceCharge
+        //                 }
+        //             }, {
+        //                 field: 'seetAmt',
+        //                 title: '结算金额',
+        //                 align: 'center',
+        //                 minWidth: 100,
+        //                 templet: function(data) {
+        //                     return '￥' + data.seetAmt
+        //                 }
+        //             }, {
+        //                 field: 'payStDesc',
+        //                 title: '结算状态',
+        //                 align: 'center',
+        //                 minWidth: 120,
+        //             }, {
+        //                 field: 'remark',
+        //                 title: '结算失败原因',
+        //                 align: 'center',
+        //                 minWidth: 230,
+
+        //             }, {
+        //                 field: 'insertTime',
+        //                 title: '结算日期',
+        //                 align: 'center',
+        //                 minWidth: 160,
+        //             }]
+        //         ],
+        //         done: function(res, curr, count) {
+        //             console.log(res)
+        //             layer.closeAll()
+        //         }
+        //     });
+        // }
+        form.on('select(chooseshop)', function(data) {
+            getclerk(data.value.split('/')[0])
+            form.val("example", {
+                "clerkNumber": ''
+            });
+            var select = $("#clerkNumber")[0];
+            select.length = 0;
+            form.render('select')
+        });
+
+        // setTimeout(function() {
+        // 	tableRender()
+        // }, 500)
+        // $('#search').click(function() {
+        // 	tableRender()
+        // })
+        // 根據條件重载表格
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    if (!verTime()) {
+                        layer.msg('只能查询三个月以内数据')
+                        return
+                    }
+                    reloadres()
+                    // 获取上面查询框的值
+                    var startTime = $('#startTime');
+                    var endTime = $('#endTime');
+                    var payMentType = $('#payMentType');
+                    var orderState = $('#orderState')
+                    //执行重载
+                    table.reload('billlist', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            startTime: startTime.val(),
+                            endTime: endTime.val(),
+                            payMentType: payMentType.val(),
+                            orderState:orderState.val()
+                        }
+                    });
+                    $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+                }
+            };
+
+        $('.demoTable .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+    </script>
+</body>
 
 </html>

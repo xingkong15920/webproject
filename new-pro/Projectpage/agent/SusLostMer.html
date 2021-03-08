@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            height: auto;grid: 
+        }
+        #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="x-nav">
+        <span class="layui-breadcrumb">
+            <a>首页</a>
+            <a><cite>服务商管理</cite></a>
+        </span>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <div class="layui-row layui-form x-so">
+            <div class="layui-input-inline text">
+                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                <input type="text"  id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline text">
+                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                <input type="text"  id="saleName" placeholder="销售名称" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline text">
+                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                <input type="text"  id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline text">
+                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                <input type="text"  id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
+            </div>
+            <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+        </div>
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
+         <div class="layui-input-item lsTips" >
+                        <span style="color:red;display:block;margin-left:30px">*疑似流失商户指上一个自然日交易笔数跌幅超过90%的商户！</span>
+                    </div>
+        <!-- <xblock class="layui-row">
+                <button class="layui-btn" onclick="x_admin_show('添加服务商','dealersRecordAdd.html',900,560)"><i class="layui-icon"></i>添加服务商</button>
+            </xblock> -->
+        <table class="layui-hide" id="LAY_table_Salesman" lay-filter="Salesman"></table>
+    </div>
+    <script type="text/html" id="tool">
+         <a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">商户后台</a>
+        </script>
+        
+    
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    // if (JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber == '1027') {
+    //     $('#dlNum1027').show()
+    //     $('.edit').show()
+
+    // } else {
+    //     $('.rate').show()
+    // }
+    function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+        var a = time2.split('-')[0],
+            b = time2.split('-')[1],
+            c = time2.split('-')[2]
+        if (b < 10) {
+            b = 0 + b
+        }
+        if (c < 10) {
+            c = 0 + c
+        }
+        return a + '-' + b + '-' + c
+    }
+    function changeS(data) {
+        var data = data
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].merchantType == 0) {
+                data[i].merchantType1 = '个人'
+            }
+            if (data[i].merchantType == 1) {
+                data[i].merchantType1 = '个体'
+            }
+            if (data[i].merchantType == 2) {
+                data[i].merchantType1 = '企业'
+            }
+        }
+        return data
+    }
+    layui.use(['table','laydate', 'form'], function() {
+
+        var table = layui.table,
+            laydate = layui.laydate,
+            form = layui.form;
+        $ = layui.jquery;
+        laydate.render({
+            elem: '#startTime', //指定元素
+            value:fun_date(-90)
+        });
+        laydate.render({
+            elem: '#endTime', //指定元素
+            value:fun_date(0)
+        });
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+        var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+         window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
+        //方法级渲染
+        function tableRender() {
+            table.render({
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'lostMerchant/getMeaningLossInfo' + '?agentNumber=' + userNumber,
+                where: {
+                    "merchantName": $('#merchantName').val(),
+                    "saleName": $('#saleName').val(),
+                    "startTime": $('#startTime').val(),
+                    "endTime": $('#endTime').val(),
+                },
+                elem: '#LAY_table_merchant',
+                height: 'full-140',
+                //method: "post",
+                page: true,
+                id: 'merchantlist',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                parseData: function(res) {
+                    //res 即为原始返回的数据
+                    if (res.data == null) {
+                        return
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data.resultjson, //解析数据列表
+                    };
+                },
+                elem: '#LAY_table_Salesman',
+                height: 'full-200',
+                page: true,
+                id: 'salesmanList',
+                cols: [
+                    [{
+                        type: 'numbers',
+                        title: '序号',
+                        align: 'center',
+                    },{
+                        field: 'transactionTime',
+                        title: '疑似流失日期',
+                        align: 'center',
+
+                    },{
+                        field: 'agentName',
+                        title: '商户编号/名称',
+                        align: 'center',
+                        templet:function(data){
+                            return data.merchantNumber + '/' + data.merchantName
+                        }
+                    },{
+                        field: 'transactionCount',
+                        title: '交易笔数',
+                        align: 'center',
+                     },{
+                        field: 'lastWeekTransactionCount',
+                        title: '上周交易笔数',
+                        align: 'center',
+                     },{
+                        field: 'lastWeekTransactionAmount',
+                        title: '上周交易金额',
+                        align: 'center',
+                        templet:function(data){
+                            return '￥' + (data.lastWeekTransactionAmount).toFixed(2)
+                        }
+                     },{
+                        field: 'agentName',
+                        title: '联系人/手机号',
+                        align: 'center',
+                        templet:function(data){
+                            return data.juridicalPersonName + '/' + data.registerCell
+                        }
+                    },{
+                        field: 'agentName',
+                        title: '所属服务商/销售',
+                        align: 'center',
+                        templet:function(data){
+                            return data.agentName + '/' + data.saleName
+                        }
+                    },{
+                        field: 'agentName',
+                        title: '操作',
+                        align: 'center',
+                        toolbar:'#tool'
+                    }
+
+
+                    ]
+                ],
+                done: function() {
+                    // if (JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber == '1027') {
+                    //     $('#dlNum1027').show()
+                    //     $('.edit').show()
+
+                    // } else {
+                    //     $('.rate').show()
+                    // }
+                }
+            })
+
+        }
+        setTimeout(function(){
+
+            tableRender()
+        },300)
+        $('#search').click(function() {
+            tableRender()
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+        })
+         
+         
+         
+        // 根據條件重载表格
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    // 获取上面查询框的值
+                    var phone = $('#phone');
+                    var name = $('#name');
+                    //执行重载
+                    table.reload('salesmanList', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            phone: phone.val(),
+                            name: name.val()
+                        }
+                    });
+                }
+            };
+        form.on('switch(toolbar_switch)', function(data) {
+            // layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+
+            var ajData = new Object()
+            ajData.agentNumber = data.value
+            ajData.state = this.checked ? 0 : 1
+            ajData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+            console.log(ajData)
+            // if()
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Agent.agentEnableDisable,
+                ajData,
+                function(data) {
+                    if (data.code == 1000) {
+
+                        layer.msg('更改成功')
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        });
+        //监听工具条
+        table.on('tool(Salesman)', function(obj) {
+            var data = obj.data;
+            console.log('这是data'+data)
+            if (obj.event == 'rate') {
+                // 修改经销商信息
+                layer.open({
+                    type: 2,
+                    title: '修改费率-' + data.agentName,
+                    area: ['70%', '90%'], //宽高
+                    content: 'agent-rate.html',
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data)
+                    }
+                });
+            }else if(obj.event == 'look'){
+                top.refreshHighlight1(data.agentName,data.agentNumber);
+            } else if (obj.event == 'edit') {
+                // 修改经销商信息
+                layer.open({
+                    type: 2,
+                    title: '编辑-' + data.agentName,
+                    area: ['70%', '90%'], //宽高
+                    content: 'Agent-edit.html',
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data)
+                    }
+                });
+            } else if (obj.event == 'settlement-records') {     //结算记录
+                console.log(data)
+                layer.open({
+                    type: 2,
+                    title: '结算记录',
+                    area: ['70%', '90%'], //宽高
+                    content: 'settlement-records.html?agentLevel='+data.agentLevel+'&agentNumber='+data.agentNumber,
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                    }
+                });
+            }else if (obj.event === 'loginTo') { //直接登录商户后台
+                var shHref = ''
+                var aData = data
+                CmsUtility.postAjaxCall2(
+                    //系统设置
+                    'https://nb.hongsou.com.cn/shanhe-admin/basicSetting/getInsRegInfo', {
+                'institutionNumber': JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+            },
+                    function(data) {
+                        if (data.code == 1000) {
+                    shHref = data.data[0].merchantRoute
+                    if (shHref == '') {
+                        layer.msg('未获取到商户路径')
+                    }
+                    var merHref = shHref + '/index.html?number=' + aData.merchantNumber + '&ins=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                    window.open(merHref)
+                } else {
+                    layer.msg(data.msg)
+
+                }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+
+            } else if (obj.event == 'commissionRecord') {      //佣金记录
+                layer.open({
+                    type: 2,
+                    title: '佣金记录',
+                    area: ['70%', '80%'], //宽高
+                    content: 'commission-record.html?agentLevel='+data.agentLevel+'&agentNumber='+data.agentNumber,
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                    }
+                });
+            } else if (obj.event == 'open') {
+
+                layer.confirm('确定要启用么?', function(index) {
+                    // 发送请求,将本经销商进行启用
+                    var ajData = new Object()
+                    ajData.agentNumber = userNumber
+                    ajData.state = '0'
+                    ajData.deletionFlag = '0'
+                    ajData.dbAgentNumber = data.agentNumber
+                    console.log(ajData)
+                    // if()
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Agent.modifyAgent,
+                        ajData,
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                layer.msg('更改成功')
+
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                });
+            } else if (obj.event == 'disable') {
+
+                layer.confirm('确定要禁用么?', function(index) {
+                    // 发送请求,将经销商进行禁用
+                    var ajData = new Object()
+                    ajData.agentNumber = userNumber
+                    ajData.state = '1'
+                    ajData.deletionFlag = '0'
+                    ajData.dbAgentNumber = data.agentNumber
+                    console.log(ajData)
+                    // if()
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Agent.modifyAgent,
+                        ajData,
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                layer.msg('更改成功')
+                                layui.table.reload('salesmanList')
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                });
+
+            } else if (obj.event == 'delete') {
+                layer.open({
+                    type: 2,
+                    title: '重置密码-' + data.agentName,
+                    shade: 0.5,
+                    area: ['460px', '350px'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Agent-pass.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data)
+                    }
+                });
+                // layer.confirm('确定要删除么?', function(index) {
+                //  // 发送请求,将经销商进行删除
+
+                //  var ajData = new Object()
+                //  ajData.agentNumber = userNumber
+                //  ajData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+                //  ajData.deletionFlag = '1'
+                //  ajData.dbAgentNumber = data.agentNumber
+                //  console.log(ajData)
+                //  // if()
+                //  CmsUtility.postAjaxCall(
+                //      //系统设置
+                //      CmsConfig.addressUrl.Agent.modifyAgent,
+                //      ajData,
+                //      function(data){
+                //          if(data.code == 1000){
+
+                //              layer.msg('更改成功')
+                //              layui.table.reload('salesmanList')
+                //          }else{
+                //              layer.msg(data.msg)
+
+                //          }
+                //      },
+                //      function(data){
+                //          console.log('222')
+                //      }
+                //  )
+                // });
+            }
+        });
+
+        $('.layui-row .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="renderer" content="strict-origin" />
+    <link rel="stylesheet" type="text/css" href="layer_mobile/need/layer.css/layer.js">
+  <title></title>
+</head>
+<script src="js/jquery.min.js"></script>
+<script src="layer_mobile/layer.js"></script>
+<style type="text/css">
+  #m_noreferrer{
+    width: 100px;
+    height: 50px;
+        display:block;
+    border: 1px solid black;
+    margin:  0 auto;
+    margin-top: 20%;
+        background-color:green
+  }
+  .shouquan{
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 30%;
+    display: none
+  }
+</style>
+
+<body>
+   <div class="shouquan" id="succ">授权成功</div>
+   <div class="shouquan" id="fai">授权失败</div>
+</body>
+  <script type="">
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    var url
+    layer.open({
+      content: '是否要进行微信授权'
+      ,btn: ['取消', '确定']
+      ,yes: function(index){
+        layer.msg('授权失败，请重新扫码进行授权');
+        $('#fal').show
+      }
+      ,no:function(index){
+         window.open(url)
+      }
+    });
+      // layer.confirm('是否要进行微信授权', {
+      //   btn: ['取消','确定'] //按钮
+      // }, function(){
+      //   layer.msg('授权失败，请重新扫码进行授权');
+      //   $('#fal').show
+      // }, function(){
+      //   window.open(url)
+      // });
+ $.ajax({
+        //url: "https://api-cs.51shanhe.com/p-server/appServer/getInfo",
+        //url:"http://192.168.1.66/shanhe-member/authorize/geAuthorizetUrl",
+        url:"http://hstest123.natapp1.cc/shanhe-member/authorize/geAuthorizetUrl",
+        type: "GET",
+        async: false,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        data: {
+          "merchantNumber":getQueryString('merchantNumber')
+        },
+        success: function(data) {
+          alert(data.data)
+          url = data.data
+           jump(data.data)
+        }
+    })  
+function jump(url) {
+    var a = document.createElement('a');
+    a.setAttribute('rel', 'noreferrer');
+    a.setAttribute('id', 'm_noreferrer');
+    a.setAttribute('href', 'javascript:;');
+    document.body.appendChild(a);
+}
+    $('#m_noreferrer').click(function(){
+      window.open(url)
+    })
+</script>
+</html>

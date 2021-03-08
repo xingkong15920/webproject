@@ -36,47 +36,32 @@
             <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
     </div>
     <div class="x-body">
-        <div class="layui-row">
-            <div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
-                <div class="layui-input-inline">
-                    <input type="text" name="couponName" id="agentName" placeholder="代理名称" autocomplete="off" class="layui-input">
-                </div>
-                <!-- <div class="layui-input-inline">
-						<input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
-					</div>
-					<div class="layui-input-inline">
-						<input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
-					</div> -->
-                <!-- <div class="layui-input-inline">
-						<input type="text" name="couponName" id="couponName" placeholder="上级代理号或用户名" autocomplete="off" class="layui-input">
-					</div> -->
-                <!-- <div class="layui-input-inline">
-						<select name="cardVoucherName" id="cardVoucherName">
-							<option value="">认证</option>
-							<option value="1">未认证</option>
-							<option value="2">待审核</option>
-							<option value="3">已认证</option>
-						</select>
-					</div> -->
-                <div class="layui-input-inline coupons_screen">
-                    <button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
-                </div>
+        <div class="layui-row layui-form x-so">
+            <div class="layui-input-inline text">
+                <input type="text" name="couponName" id="agentName" placeholder="代理名称" autocomplete="off" class="layui-input">
             </div>
+            <div class="layui-input-inline text">
+                <select name="regionId" id="regionId">
+                    </select>
+            </div>
+            
+             <button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
+        
         <xblock>
             <button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
         </xblock>
         <!-- <xblock>
-				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加代理</button>
-			</xblock> -->
+                <button class="layui-btn" id="addA"><i class="layui-icon"></i>添加代理</button>
+            </xblock> -->
         <table class="layui-hide" id="members" lay-filter="members"></table>
     </div>
     <script type="text/html" id="switchBar">
         <input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
-		</script>
+        </script>
     <script type="text/html" id="tool">
         <a class="layui-btn layui-btn-xs" lay-event="look">查看明细</a>
-		</script>
+        </script>
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
@@ -132,7 +117,9 @@
                         "agentLevel": agentLevel,
                         "startTime": data.inserttime.split(' ')[0] + ' 00:00:00',
                         "endTime": data.inserttime.split(' ')[0] + ' 23:59:59',
-                        "periodType": data2
+                        "periodType": data2,
+                        "regionId": $('#regionId').val(),
+                        "orderType":data.orderType,
                     },
                     elem: '#members',
                     height: 'full-210',
@@ -162,6 +149,10 @@
                             align: 'center',
                             field: 'agentName',
                             title: '代理名称',
+                        },{
+                            align: 'center',
+                            field: 'regionName',
+                            title: '所属区域',
                         }, {
                             align: 'center',
                             field: 'higherLevelMoney',
@@ -218,15 +209,44 @@
                     }
                 });
             }
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'agAreaManger/getAgnetArea', {
+
+                    "agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number
+                },
+                function(data) {
+                    layer.closeAll()
+                    if (data.code == 1000) {
+                        console.log(data)
+                        var areaList = data.data.areaList
+                        var str = '<option value="">请选择所属区域</option>'
+                        for (var i = 0; i < areaList.length; i++) {
+                            str += '<option value="' + areaList[i].regionId + '">' + areaList[i].regionName + '</>'
+                        }
+                        $('#regionId').html(str)
+                        form.render()
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }, 'get'
+            )
             $('#baobiao').click(function() {
-                
+
                 var newData = new Object()
                 newData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
                 newData.agentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
                 newData.startTime = data.inserttime.split(' ')[0] + ' 00:00:00',
-                newData.endTime = data.inserttime.split(' ')[0] + ' 23:59:59',
-                newData.periodType = data2
+                    newData.endTime = data.inserttime.split(' ')[0] + ' 23:59:59',
+                    newData.periodType = data2
                 newData.agentLevel = agentLevel
+
+                      newData.orderType = data.orderType,
+                newData.regionId = $('#regionId').val()
                 layer.open({
                     type: 2,
                     title: '下载报表',

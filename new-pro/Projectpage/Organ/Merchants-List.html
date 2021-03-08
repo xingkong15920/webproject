@@ -36,6 +36,14 @@
     .layui-table-cell {
         height: auto;
     }
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+    .fanli{
+        display: none;
+    }
     </style>
 </head>
 
@@ -89,6 +97,12 @@
                 </div>
             </div>
         </div>
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
         <xblock>
             <button class="layui-btn" onclick="x_admin_show('添加商户','./merchant-new-add.html',600,450)"><i class="layui-icon"></i>添加商户</button>
         </xblock>
@@ -136,6 +150,8 @@
 			<a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
 			<a class="layui-btn layui-btn-xs" id="secretkey" lay-event="secretkey">秘钥</a>
 			<a class="layui-btn layui-btn-xs" id="model" lay-event="model">模块</a>
+            
+            
 			<a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
 		</script>
     <script src="../../common/config-organ.js"></script>
@@ -147,7 +163,16 @@
         var date2 = new Date(date1);
         date2.setDate(date1.getDate() + aa);
         var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
-        return time2
+        var a = time2.split('-')[0],
+                    b = time2.split('-')[1],
+                    c = time2.split('-')[2]
+                if (b < 10) {
+                    b = 0 + b
+                }
+                if (c < 10) {
+                    c = 0 + c
+                }
+                return a + '-' + b + '-' + c
     }
     // $('#startTime').val(fun_date(-6))
     //  $('#endTime').val(fun_date(0))
@@ -246,7 +271,34 @@
         laydate.render({
             elem: "#endTime"
         })
+        window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
 
+        }
         function tableRender() {
             table.render({
                 //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
@@ -321,6 +373,10 @@
                             width: 150,
                             title: '通道',
                             templet: function(data) {
+                                if(!data.products){
+                                    return '--'
+                                }
+
                                 if (data.products.indexOf('|') >= 0) {
                                     var list = data.products.split('|')
                                     if(list[0].split(':')[1] == '无通道'){
@@ -381,6 +437,11 @@
                     if (res.code == 1000) {
                         layer.closeAll()
                     }
+                    if(userNumber == '1004' ){
+                        $('.fanli').attr('style','display:inline-block !important')
+                    }else{
+                        $('.fanli').hide()
+                    }
                     form.render()
 
                 }
@@ -391,7 +452,7 @@
         tableRender()
         $('#search').click(function() {
             tableRender()
-
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
         })
 
         //状态的修改
@@ -473,7 +534,6 @@
             // layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
             //更改商户类型
             console.log(data.elem.getAttribute("shopNumber"))
-            console.log(data)
             var tjData = new Object();
             tjData.merchantNumber = data.elem.getAttribute("shopNumber");
             tjData.institutionNumber = userNumber
@@ -502,7 +562,7 @@
             // layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
             console.log(data.elem.getAttribute("shopNumber"))
             console.log(data.elem.getAttribute("orderNumber"))
-            console.log(data)
+            
             var tjData = new Object();
             tjData.merchantNumber = data.elem.getAttribute("shopNumber");
             tjData.orderNumber = data.elem.getAttribute("orderNumber");
@@ -530,7 +590,6 @@
         //监听工具条
         table.on('tool(members)', function(obj) {
             var data = obj.data;
-            console.log(data)
             if (obj.event === 'loginTo') { //直接登录商户后台
                 var shHref = ''
                 var aData = data
@@ -573,12 +632,28 @@
                         iframe.subPage(data, userNumber)
                     }
                 });
+            }else if (obj.event === 'fanli') { //通道
+                layer.open({
+                    type: 2,
+                    title: '联盟返利-' + data.merchantName,
+                    shade: 0.5,
+                    area: ['90%', '90%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Merchants-fanli-new.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
             } else if (obj.event === 'childaccount') { //子账号
                 layer.open({
                     type: 2,
                     title: '选择子账号-' + data.merchantName,
                     shade: 0.5,
-                    area: ['1000px', '90%'],
+                    area: ['80%', '90%'],
                     maxmin: false,
                     resize: false,
                     content: ['Merchants-List-childaccount.html'],
@@ -696,7 +771,6 @@
                     title: '提示'
                 }, function(index) {
                     // 发送请求
-                    console.log(data)
                     var tjData = new Object();
                     tjData.institutionNumber = userNumber
                     tjData.merchantNumber = data.merchantNumber;

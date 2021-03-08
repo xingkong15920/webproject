@@ -4,26 +4,26 @@ var server;
 var publicUrl
 if(Edition == 'qty'){
 	//server  = 'https://nb.51shanhe.com/shanhe-mechanism/'
-    //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
-   //server = 'http://192.168.1.130:6005/shanhe-admin/'
-    server = 'https://nb.51shanhe.com/shanhe-admin/'
-    publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
+    //server  = 'http://192.168.110.134:5006/shanhe-mechanism/'
+   //server = 'http://192.168.110.130:6005/shanhe-admin/'
+    server = 'https://nb.hongsou.com.cn/shanhe-admin/'
+    publicUrl = 'https://nb.hongsou.com.cn/shanhe-common/'
 }else{
-	server  = 'http://192.168.1.250:6005/shanhe-admin/'
-    publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
+	server  = 'http://192.168.110.71:6005/shanhe-admin/'
+    publicUrl = 'https://nb.hongsou.com.cn/shanhe-common/'
 }
 /* 
 接口前缀解释
 get 获取
 update 更新
 insert  插入
-del  删除 `
+del  删除 
 */
 var CmsConfig = {
 
     ServiceUrl: {
          //ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
-        //ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
+        //ApiRootUrl:'http://192.168.110.116:8080/IkkyuChegjtrack1/'
         ApiRootUrl:server,
         PubUrl:publicUrl
         // imgUrl:imgAdd

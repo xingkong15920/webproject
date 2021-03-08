@@ -19,57 +19,68 @@
       <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style type="text/css">
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+    </style>
     <style>
         .widthauto {
-				width: auto !important;
-			}
-			
-			.tips_red {
-				color: red;
-			}
-			
-			.layui-form-label {
-				padding-left: 0;
-				width: 100px;
-			}
-			
-			.layui-input-block {
-				margin-left: 115px;
-			}
-			
-			.layui-elem-quote {
-				font-size: 18px;
-			}
-			
-			.layui-elem-field {
-				margin: 0;
-			}
-			
-			.layui-elem-field legend {
-				font-size: 16px;
-				margin-bottom: 15px;
-			}
-			
-			.layui-upload-img {
-				width: 92px;
-				height: 92px;
-				margin: 0 10px 10px 0;
-			}
-			
-			.Since_inline {
-				display: inline-block;
-				width: auto !important;
-				line-height: 38px;
-			}
-			
-			.layui-elem-quote .layui-form-switch {
-				margin: 0 15px;
-				margin-top: 0;
-			}
+                width: auto !important;
+            }
+            
+            .tips_red {
+                color: red;
+            }
+            
+            .layui-form-label {
+                padding-left: 0;
+                width: 100px;
+            }
+            
+            .layui-input-block {
+                margin-left: 115px;
+            }
+            
+            .layui-elem-quote {
+                font-size: 18px;
+            }
+            
+            .layui-elem-field {
+                margin: 0;
+            }
+            
+            .layui-elem-field legend {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            
+            .layui-upload-img {
+                width: 92px;
+                height: 92px;
+                margin: 0 10px 10px 0;
+            }
+            
+            .Since_inline {
+                display: inline-block;
+                width: auto !important;
+                line-height: 38px;
+            }
+            
+            .layui-elem-quote .layui-form-switch {
+                margin: 0 15px;
+                margin-top: 0;
+            }
             .sxf{
                 margin-bottom: 40px;
             }
-		</style>
+        </style>
 </head>
 
 <body id="iosiframe">
@@ -85,7 +96,7 @@
                         <input type="radio" name="agentType" value="0" title="全国代理商" lay-filter="cardvalid" checked="">
                         <input type="radio" name="agentType" value="1" title="省级代理商" lay-filter="cardvalid">
                         <input type="radio" name="agentType" value="2" title="市级代理商" lay-filter="cardvalid">
-                        <input type="radio"  id="dlNum1027" style="display:none"  name="agentType" value="3" title="股权服务商" lay-filter="cardvalid">
+                        <input type="radio" id="dlNum1027" style="display:none" name="agentType" value="3" title="股权服务商" lay-filter="cardvalid">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -107,17 +118,17 @@
                     </div>
                 </div>
                 <!-- <div class="layui-form-item">
-						<label class="layui-form-label">密码</label>
-						<div class="layui-input-block">
-							<input type="text" name="cardName" lay-verify="title" autocomplete="off" placeholder="请输入密码" class="layui-input">
-						</div>
-					</div>
-					<div class="layui-form-item">
-						<label class="layui-form-label">确认密码</label>
-						<div class="layui-input-block">
-							<input type="text" name="cardName" lay-verify="title" autocomplete="off" placeholder="请确认密码" class="layui-input">
-						</div>
-					</div> -->
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="cardName" lay-verify="title" autocomplete="off" placeholder="请输入密码" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">确认密码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="cardName" lay-verify="title" autocomplete="off" placeholder="请确认密码" class="layui-input">
+                        </div>
+                    </div> -->
                 <div class="layui-form-item">
                     <label class="layui-form-label">所在地</label>
                     <div class="layui-input-block" style="display: flex;">
@@ -142,134 +153,116 @@
                     </div>
                 </div>
                 <blockquote class="layui-elem-quote">费率设置(费率单位为百分比，示例：0.38%)</blockquote>
-                    <fieldset class="layui-elem-field layui-field-title alipay" style="display:none">
-                        <legend>官方支付宝</legend>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">官方支付宝费率</label>
+                <fieldset class="layui-elem-field layui-field-title alipay" style="display:none">
+                    <legend>官方支付宝</legend>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">官方支付宝费率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="aliRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title wechatpay" style="display:none">
+                    <legend>官方微信</legend>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">官方微信费率</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="wecharRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title fuyou" style="display:none">
+                    <legend>富友通道</legend>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">T1费率(%)</label>
                             <div class="layui-input-inline">
-                                
-                                <input type="text" name="aliRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
+                                <input type="text" name="fuyouRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
                             </div>
                         </div>
-                    </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title wechatpay" style="display:none">
-                        <legend>官方微信</legend>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">官方微信费率</label>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D1费率(%)</label>
                             <div class="layui-input-inline">
-                                
-                                <input type="text" name="wecharRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
+                                <input type="text" name="fuyouRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
                             </div>
                         </div>
-                    </fieldset>
-                    
-                    <fieldset class="layui-elem-field layui-field-title fuyou" style="display:none">
-                        <legend>富友通道</legend>
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">T1费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="fuyouRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D1费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="fuyouRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D0费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="fuyouRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D0费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="fuyouRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
                             </div>
                         </div>
-                    </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title yrm" style="display:none">
-                        <legend>易融码通道</legend>
-                        <div class="layui-form-item">
-                             <div class="layui-inline">
-                                <label class="layui-form-label">T1费率(%)</label>
-                                <div class="layui-input-inline">
-                                   <input type="text" name="yrmRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D1费率(%)</label>
-                                <div class="layui-input-inline">
-                                   <input type="text" name="yrmRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D0费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="yrmRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
+                    </div>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title yrm" style="display:none">
+                    <legend>易融码通道</legend>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">T1费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="yrmRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
                             </div>
                         </div>
-                    </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title xdl" style="display:none">
-                        <legend>新大陆通道</legend>
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">T1费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="xdlRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D1费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="xdlRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D0费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="xdlRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </fieldset>
-                    <fieldset class="layui-elem-field layui-field-title sxf" style="display:none">
-                        <legend>随行付通道</legend>
-                        <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">T1费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="sxfRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D1费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="sxfRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">D0费率(%)</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" name="sxfRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input"
-                             value="">
-                                </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D1费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="yrmRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
                             </div>
                         </div>
-                    </fieldset>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D0费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="yrmRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title xdl" style="display:none">
+                    <legend>新大陆通道</legend>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">T1费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="xdlRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D1费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="xdlRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D0费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="xdlRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="layui-elem-field layui-field-title sxf" style="display:none">
+                    <legend>随行付通道</legend>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">T1费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="sxfRateT1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D1费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="sxfRateD1" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">D0费率(%)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="sxfRateD0" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
                 <!-- <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">T1费率(%)</label>
@@ -311,9 +304,9 @@
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
-        if(JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber == '1027'){
-                $("#dlNum1027").show()
-            }
+    if (JSON.parse(sessionStorage.getItem("agentUser")).institutionNumber == '1027') {
+        $("#dlNum1027").show()
+    }
     var index = parent.layer.getFrameIndex(window.name);
     $('#quxiao').click(function() {
 
@@ -323,18 +316,18 @@
     function subPage(data, data1) {
         var jgData = data
         console.log(jgData)
-        var rateList = ['0.20','0.21','0.22','0.23','0.24','0.25','0.26','0.27','0.28','0.30','0.35','0.38','0.40','0.50','0.60']
-       
+        var rateList = ['0.20', '0.21', '0.22', '0.23', '0.24', '0.25', '0.26', '0.27', '0.28', '0.30', '0.35', '0.38', '0.40', '0.50', '0.60']
+
         console.log(rateList)
         var strate = '<option value="">请选择费率</option>'
-        for(var r = 0 ; r < rateList.length;r++){
-            strate += '<option value="'  +rateList[r]/100  +'">'+ rateList[r]+'%</option>'
+        for (var r = 0; r < rateList.length; r++) {
+            strate += '<option value="' + rateList[r] / 100 + '">' + rateList[r] + '%</option>'
         }
 
         $('.rateBox').html(strate)
         var st = strate
-        $('.xdlD1').html(st+= '<option value="0.00235">0.235%</option>')
-        $('.xdlD0').html(st+= '<option value="0.00255">0.255%</option>')
+        $('.xdlD1').html(st += '<option value="0.00235">0.235%</option>')
+        $('.xdlD0').html(st += '<option value="0.00255">0.255%</option>')
         var p = [],
             c = [],
             aa = []
@@ -351,21 +344,26 @@
                 element = layui.element,
                 layer = layui.layer;
             var tableSelect = layui.tableSelect;
+            laydate.render({
+                elem: '#startTime' //指定元素
+            });
+            laydate.render({
+                elem: '#endTime' //指定元素
+            });
             CmsUtility.postAjaxCall(
-                        //系统设置
-               CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
-                {
-                    "page":1,
-                    "limit":10
+                //系统设置
+                CmsConfig.addressUrl.Agent.getChannel + '?institutionNumber=' + JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber, {
+                    "page": 1,
+                    "limit": 10
                 },
                 function(data) {
                     console.log(data)
-                    if(data.code == '1000') {
-                        
-                        for(var i = 0 ; i < data.data.PaymentChannellist.length;i++){
+                    if (data.code == '1000') {
+
+                        for (var i = 0; i < data.data.PaymentChannellist.length; i++) {
                             switch (data.data.PaymentChannellist[i].paymentChannelType) {
                                 case 0:
-                                console.log('123')
+                                    console.log('123')
                                     $('.alipay').show()
                                     break;
                                 case 1:
@@ -388,7 +386,7 @@
                                     break;
                             }
                         }
-                        
+
 
                     } else {
 
@@ -512,149 +510,148 @@
             var rateList = []
             CmsUtility.postAjaxCall(
                 //系统设置
-                CmsConfig.addressUrl.Agent.getAgentRate, 
-                {
-                    "agentNumber":jgData.agentNumber
+                CmsConfig.addressUrl.Agent.getAgentRate, {
+                    "agentNumber": jgData.agentNumber
                 },
                 function(data) {
                     data.data.sort(compare('paymentChanneltype'))
                     var rateData = data.data
                     console.log(rateData)
-                    for(var i = 0 ; i < data.data.length;i++){
-                        if(data.data[i].paymentChanneltype == 0){
+                    for (var i = 0; i < data.data.length; i++) {
+                        if (data.data[i].paymentChanneltype == 0) {
                             form.val('cardAdd', {
-                       
+
                                 // "T1Rate": T1,
-                                
-                                "aliRate":(data.data[i].rate*100).toFixed(3),
+
+                                "aliRate": (data.data[i].rate * 100).toFixed(3),
                             })
                         }
-                        if(data.data[i].paymentChanneltype == 1){
+                        if (data.data[i].paymentChanneltype == 1) {
                             form.val('cardAdd', {
-                       
+
                                 // "T1Rate": T1,
-                                
-                                "wecharRate":(data.data[i].rate*100).toFixed(3) ,
+
+                                "wecharRate": (data.data[i].rate * 100).toFixed(3),
                             })
                         }
-                        if(data.data[i].paymentChanneltype == 2){
+                        if (data.data[i].paymentChanneltype == 2) {
                             switch (data.data[i].rateType) {
                                 case 'D0':
                                     form.val('cardAdd', {
-                                    
-                                        "fuyouRateD0":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "fuyouRateD0": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 case 'D1':
                                     form.val('cardAdd', {
-                                    
-                                        "fuyouRateD1":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "fuyouRateD1": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 case 'T1':
                                     form.val('cardAdd', {
-                                    
-                                        "fuyouRateT1":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "fuyouRateT1": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 default:
                                     // statements_def
                                     break;
                             }
-                            
-                            
+
+
                         }
-                        if(data.data[i].paymentChanneltype == 3){
-                             switch (data.data[i].rateType) {
-                                case 'D0':
-                                    form.val('cardAdd', {
-                                    
-                                        "yrmRateD0":(data.data[i].rate*100).toFixed(3) ,
-                                    })
-                                    break;
-                                case 'D1':
-                                    form.val('cardAdd', {
-                                    
-                                        "yrmRateD1":(data.data[i].rate*100).toFixed(3) ,
-                                    })
-                                    break;
-                                case 'T1':
-                                    form.val('cardAdd', {
-                                    
-                                        "yrmRateT1":(data.data[i].rate*100).toFixed(3) ,
-                                    })
-                                    break;
-                                default:
-                                    // statements_def
-                                    break;
-                            }
-                            
-                            
-                        }
-                        if(data.data[i].paymentChanneltype == 4){
+                        if (data.data[i].paymentChanneltype == 3) {
                             switch (data.data[i].rateType) {
                                 case 'D0':
                                     form.val('cardAdd', {
-                                    
-                                        "xdlRateD0":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "yrmRateD0": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 case 'D1':
                                     form.val('cardAdd', {
-                                    
-                                        "xdlRateD1":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "yrmRateD1": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 case 'T1':
                                     form.val('cardAdd', {
-                                    
-                                        "xdlRateT1":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "yrmRateT1": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 default:
                                     // statements_def
                                     break;
                             }
-                            
-                            
+
+
                         }
-                        if(data.data[i].paymentChanneltype == 5){
+                        if (data.data[i].paymentChanneltype == 4) {
                             switch (data.data[i].rateType) {
                                 case 'D0':
                                     form.val('cardAdd', {
-                                    
-                                        "sxfRateD0":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "xdlRateD0": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 case 'D1':
                                     form.val('cardAdd', {
-                                    
-                                        "sxfRateD1":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "xdlRateD1": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 case 'T1':
                                     form.val('cardAdd', {
-                                    
-                                        "sxfRateT1":(data.data[i].rate*100).toFixed(3) ,
+
+                                        "xdlRateT1": (data.data[i].rate * 100).toFixed(3),
                                     })
                                     break;
                                 default:
                                     // statements_def
                                     break;
                             }
-                            
-                            
+
+
+                        }
+                        if (data.data[i].paymentChanneltype == 5) {
+                            switch (data.data[i].rateType) {
+                                case 'D0':
+                                    form.val('cardAdd', {
+
+                                        "sxfRateD0": (data.data[i].rate * 100).toFixed(3),
+                                    })
+                                    break;
+                                case 'D1':
+                                    form.val('cardAdd', {
+
+                                        "sxfRateD1": (data.data[i].rate * 100).toFixed(3),
+                                    })
+                                    break;
+                                case 'T1':
+                                    form.val('cardAdd', {
+
+                                        "sxfRateT1": (data.data[i].rate * 100).toFixed(3),
+                                    })
+                                    break;
+                                default:
+                                    // statements_def
+                                    break;
+                            }
+
+
                         }
                     }
                     // form.val('cardAdd', {
-                       
+
                     //     // "T1Rate": T1,
-                        
+
                     //     "aliRate":rateData[0].rate || '',
                     //     "wecharRate":rateData[1].rate || '',
                     //     "fuyouRateD1":rateData[2].rate || '',
                     //     "fuyouRateD0":rateData[3].rate || '',
-                       
+
                     //     "yrmRateD1":rateData[4].rate || '',
                     //     "yrmRateD0":rateData[5].rate || '',
                     //     "xdlRateD1":rateData[6].rate || '',
@@ -662,12 +659,13 @@
                     // })
                     form.render()
                 },
-                function(data){
+                function(data) {
 
                 }
             )
-            function compare(property){
-                return function(a,b){
+
+            function compare(property) {
+                return function(a, b) {
                     var value1 = a[property];
                     var value2 = b[property];
                     return value1 - value2;
@@ -748,25 +746,25 @@
             /*---------- 自定义验证规则 ----------*/
             form.verify({
                 title: function(value) {
-                    if(value == null){
-                     return '不能为空！';
-                }
+                    if (value == null) {
+                        return '不能为空！';
+                    }
                     if (value.length == "") {
                         return '不能为空！';
                     }
                 },
-                baifenbi:function(value){
-                // if(value.length != ''){
-                //     if(value.indexOf('%')<0){
-                //         return '费率格式不正确'
-                //     }
-                // }
-                
-            }
+                baifenbi: function(value) {
+                    // if(value.length != ''){
+                    //     if(value.indexOf('%')<0){
+                    //         return '费率格式不正确'
+                    //     }
+                    // }
+
+                }
             });
             /*---------- 监听提交 ----------*/
             form.on('submit(add)', function(data, index) {
-                var index = layer.load(2, {shade: [0.4, '#393D49']})
+                var index = layer.load(2, { shade: [0.4, '#393D49'] })
                 var addData = data.field
                 addData.institutionNumber = userNumber
                 addData.deletionFlag = '0'
@@ -774,21 +772,21 @@
                 addData.agentNumber = jgData.agentNumber
                 addData.pAgentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
                 addData.pAgentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel
-                addData.aliRate  = (addData.aliRate/10000*100).toFixed(5)
-                addData.wecharRate = (addData.wecharRate/10000*100).toFixed(5)
-                addData.fuyouRateD1 = (addData.fuyouRateD1/10000*100).toFixed(5)
-                addData.fuyouRateD0 = (addData.fuyouRateD0/10000*100).toFixed(5)
-                addData.fuyouRateT1 = (addData.fuyouRateT1/10000*100).toFixed(5)
-                addData.yrmRateD1 = (addData.yrmRateD1/10000*100).toFixed(5)
-                addData.yrmRateD0 = (addData.yrmRateD0/10000*100).toFixed(5)
-                addData.yrmRateT1 = (addData.yrmRateT1/10000*100).toFixed(5)
-                addData.xdlRateD1 = (addData.xdlRateD1/10000*100).toFixed(5)
-                addData.xdlRateD0 = (addData.xdlRateD0/10000*100).toFixed(5)
-                addData.xdlRateT1 = (addData.xdlRateT1/10000*100).toFixed(5)
-                addData.sxfRateD0 = (addData.sxfRateD0/10000*100).toFixed(5)
-                addData.sxfRateD1 = (addData.sxfRateD1/10000*100).toFixed(5)
-                addData.sxfRateT1 = (addData.sxfRateT1/10000*100).toFixed(5)
-                
+                addData.aliRate = (addData.aliRate / 10000 * 100).toFixed(5)
+                addData.wecharRate = (addData.wecharRate / 10000 * 100).toFixed(5)
+                addData.fuyouRateD1 = (addData.fuyouRateD1 / 10000 * 100).toFixed(5)
+                addData.fuyouRateD0 = (addData.fuyouRateD0 / 10000 * 100).toFixed(5)
+                addData.fuyouRateT1 = (addData.fuyouRateT1 / 10000 * 100).toFixed(5)
+                addData.yrmRateD1 = (addData.yrmRateD1 / 10000 * 100).toFixed(5)
+                addData.yrmRateD0 = (addData.yrmRateD0 / 10000 * 100).toFixed(5)
+                addData.yrmRateT1 = (addData.yrmRateT1 / 10000 * 100).toFixed(5)
+                addData.xdlRateD1 = (addData.xdlRateD1 / 10000 * 100).toFixed(5)
+                addData.xdlRateD0 = (addData.xdlRateD0 / 10000 * 100).toFixed(5)
+                addData.xdlRateT1 = (addData.xdlRateT1 / 10000 * 100).toFixed(5)
+                addData.sxfRateD0 = (addData.sxfRateD0 / 10000 * 100).toFixed(5)
+                addData.sxfRateD1 = (addData.sxfRateD1 / 10000 * 100).toFixed(5)
+                addData.sxfRateT1 = (addData.sxfRateT1 / 10000 * 100).toFixed(5)
+
                 console.log(addData)
                 // 发送请求
                 CmsUtility.postAjaxCall(

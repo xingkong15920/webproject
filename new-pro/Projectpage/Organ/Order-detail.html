@@ -91,43 +91,48 @@
          <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                     <legend style="font-weight: 500;">支付信息</legend>
                 </fieldset>
-        <table class="layui-table" class="layui-form" lay-filter="cardAdd">
+        <table cellspacing="0" cellpadding="0" border="0" class="layui-table layui-table-xq" lay-even="">
             <tbody>
                 <tr>
-                    <td>通道订单号</td>
-                    <td id="tongdaodingdanhao"></td>
+                    <td style="width:150px;text-align right;">通道订单号</td>
+                    <td><span id="paymentOrderNumber1">--</span></td>
                 </tr>
                 <tr>
                     <td>交易通道</td>
-                    <td id="jiaoyitongdao"></td>
+                    <td><span id="channelType1">--</span></td>
                 </tr>
                 <tr>
                     <td>子商户号</td>
-                    <td id="subaccountNumber"></td>
+                    <td><span id="subaccountNumber1">--</span></td>
                 </tr>
                 <tr>
                     <td>APPID</td>
-                    <td id="APPID"></td>
+                    <td><span id="appid1">--</span></td>
                 </tr>
-             <!--     <tr>
-                    <td>小程序APPID</td>
-                    <td id="miniAPPID"></td>
-                </tr> -->
-                 <tr>
+                <tr>
                     <td>订单类型</td>
-                    <td id="orderstate"></td>
+                    <td><span id="orderType1">--</span></td>
                 </tr>
-                 <tr>
+                <tr>
+                    <td>状态</td>
+                    <td><span id="orderState1">--</span></td>
+                </tr>
+                <tr>
                     <td>支付完成时间</td>
-                    <td id="payTime"></td>
+                    <td><span id="transactionTime1">--</span></td>
                 </tr>
-                 <tr>
+                <tr>
                     <td>订单金额</td>
-                    <td id="orderMoney"></td>
+                    <td><span id="orderAmount1">--</span></td>
                 </tr>
-                 <tr>
-                    <td>应付订单金额</td>
-                    <td id="yingfujine"></td>
+                <tr>
+                    <td>应结订单金额</td>
+                    <td><span id="settlementAmount1">--</span></td>
+                </tr>
+                
+                <tr>
+                    <td>花呗分期</td>
+                    <td><span id="huabei">--</span></td>
                 </tr>
             </tbody>
         </table>
@@ -181,6 +186,9 @@
             case '3':
             oneZ = '云闪付'
                 break;
+            case '7':
+            oneZ = '银联'
+                break;
             default:
                 oneZ = '--'
                 break;
@@ -209,6 +217,15 @@
                 break;
             case '7':
                 twoZ = '预授权'
+                break;
+                case '8':
+                twoZ = '刷脸支付'
+                break;
+            case '11':
+                twoZ = '刷卡支付'
+                break;
+            case '12':
+                twoZ = '刷卡支付'
                 break;
             default:
                 twoZ = '--'
@@ -308,7 +325,35 @@
             ]
         })
 
+        CmsUtility.postAjaxCall(
+        //系统设置
+        'inOrder/getPaymentInformation?batch=' +jgData.batch ,
+        '',
+        function(data) {
+            console.log(data)
+            layer.closeAll()
+            if (data.code == 1000) {
+                $('#paymentOrderNumber1').html(data.data.paymentOrderNumber)
+                $('#channelType1').html(data.data.channelType)
+                $('#subaccountNumber1').html(data.data.subaccountNumber)
+                $('#appid1').html(data.data.appid)
+                $('#orderType1').html(data.data.orderType)
+                $('#orderState1').html(data.data.orderState)
+                $('#transactionTime1').html(data.data.transactionTime)
+                $('#orderAmount1').html(data.data.orderAmount)
+                $('#settlementAmount1').html(data.data.settlementAmount)
+                $('#huabei').html(data.data.stageType + '期/ ￥' + (data.data.hbServiceCharge))
 
+            } else {
+
+                layer.msg(data.msg)
+            }
+        },
+        function(data) {
+
+        },
+        'get'
+    )
     })
         
         return

@@ -1,16 +1,16 @@
 //prd  线上		cs 测试   渠通宇104
-var Edition = 'qty1';
+var Edition = 'qty';
 var server;
 var publicUrl
 if(Edition == 'qty'){
-	server  = 'https://nb.51shanhe.com/shanhe-service/'
-    //server  = 'http://192.168.1.134:5006/shanhe-mechanism/'
+	server  = 'https://nb.hongsou.com.cn/shanhe-service/'
+    //server  = 'http://192.168.110.134:5006/shanhe-mechanism/'
     //server = 'http://148.70.79.191:10700/shanhe-service/'
-    //server = 'http://192.168.1.134:6006/shanhe-service/'
-    publicUrl = 'https://nb.51shanhe.com/shanhe-common/'
+    //server = 'http://192.168.110.134:6006/shanhe-service/'
+    publicUrl = 'https://nb.hongsou.com.cn/shanhe-common/'
 }else{
-	server  = 'http://192.168.1.250:6006/shanhe-service/'
-    publicUrl = 'http://192.168.1.250:5006/shanhe-common/'
+	server  = 'http://192.168.110.71:6006/shanhe-service/'
+    publicUrl = 'http://192.168.110.250:5006/shanhe-common/'
     //server  = 'http://47.95.247.16:6106/shanhe-service/'
 }
 /* 
@@ -21,10 +21,9 @@ insert  插入
 del  删除
 */
 var CmsConfig = {
-
     ServiceUrl: {
          //ApiRootUrl: 'http://10.31.141.200:8080/RTAEDS/',
-        //ApiRootUrl:'http://192.168.1.116:8080/IkkyuChegjtrack1/'
+        //ApiRootUrl:'http://192.168.110.116:8080/IkkyuChegjtrack1/'
         ApiRootUrl:server,
         PubUrl:publicUrl
         // imgUrl:imgAdd

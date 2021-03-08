@@ -16,7 +16,7 @@ var CmsUtility = (function() {
         var dataType = dataType || "json";
         var isAsync = isAsync || true;
         var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
-        //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
+        //var fullUrl =  'http://192.168.110.111:5003/hs-app-server/table/getScanTableInf'
 
         postData = JSON.parse(JSON.stringify(postData).replace(/\s+/g, ''))
         $.ajax({
@@ -68,13 +68,69 @@ var CmsUtility = (function() {
             }
         });
     }
+    function postAjaxCallJson(subApiUrl, postData, succCallback, errorCallback, type, isAsync, dataType) {
+        var type = type || "post";
+        var dataType = dataType || "json";
+        var isAsync = isAsync || true;
+        var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
+        //var fullUrl =  'http://192.168.110.111:5003/hs-app-server/table/getScanTableInf'
 
+        postData = JSON.parse(JSON.stringify(postData).replace(/\s+/g, ''))
+        $.ajax({
+            type: type,
+            url: fullUrl,
+            data: postData,
+            async: isAsync,
+            dataType: dataType,
+            headers:{
+                'Content-Type': "application/json"
+            },
+            beforeSend: function() {
+
+            },
+            success: function(data) {
+
+                if (!data.requestCode || data.requestCode == 0) {
+                    if (succCallback) {
+                        succCallback(data);
+                    }
+                } else {
+                    if (errorCallback) {
+                        errorCallback(data);
+                    }
+                }
+            },
+            complete: function() {
+
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                // 状态码
+                console.log(XMLHttpRequest.status);
+                // 状态
+                console.log(XMLHttpRequest.readyState);
+                // 错误信息   
+                console.log(textStatus);
+                // if(textStatus == 'timeout'){
+                //     alert('接口访问超时，请稍后再试')
+                // }
+                // if(textStatus == 'error'){
+                //     alert('接口访问错误，请稍后再试')
+                // }
+                // if(textStatus == 'abort'){
+                //     alert('接口访问中止，请稍后再试')
+                // }
+                // if(textStatus == 'parsererror'){
+                //     alert('接口访问解析错误，请稍后再试')
+                // }
+            }
+        });
+    }
     function postAjaxCall1(subApiUrl, postData, succCallback, errorCallback, type, isAsync, dataType) {
         var type = type || "post";
         var dataType = dataType || "json";
         var isAsync = isAsync || true;
         var fullUrl = CmsConfig.ServiceUrl.ApiRootUrl + subApiUrl;
-        //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
+        //var fullUrl =  'http://192.168.110.111:5003/hs-app-server/table/getScanTableInf'
 
 
         $.ajax({
@@ -132,7 +188,7 @@ var CmsUtility = (function() {
         var dataType = dataType || "json";
         var isAsync = isAsync || true;
         var fullUrl = subApiUrl;
-        //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
+        //var fullUrl =  'http://192.168.110.111:5003/hs-app-server/table/getScanTableInf'
 
 
         $.ajax({
@@ -190,7 +246,7 @@ var CmsUtility = (function() {
         var dataType = dataType || "json";
         var isAsync = isAsync || true;
         var fullUrl = CmsConfig.ServiceUrl.PubUrl + subApiUrl;
-        //var fullUrl =  'http://192.168.1.111:5003/hs-app-server/table/getScanTableInf'
+        //var fullUrl =  'http://192.168.110.111:5003/hs-app-server/table/getScanTableInf'
 
         postData = JSON.parse(JSON.stringify(postData).replace(/ /g, ''))
         $.ajax({
@@ -684,9 +740,27 @@ var CmsUtility = (function() {
         }
         return data1
     }
+    function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+        var a = time2.split('-')[0],
+                    b = time2.split('-')[1],
+                    c = time2.split('-')[2]
+                if (b < 10) {
+                    b = 0 + b
+                }
+                if (c < 10) {
+                    c = 0 + c
+                }
+                return a + '-' + b + '-' + c
+    }
     return {
         postAjaxCall: postAjaxCall,
         postAjaxCallPublic: postAjaxCallPublic,
+        postAjaxCallJson:postAjaxCallJson,
         postAjaxCall1: postAjaxCall1,
         postAjaxCall2: postAjaxCall2,
         getArrFromJson: getArrFromJson,
@@ -715,6 +789,7 @@ var CmsUtility = (function() {
         chooseTwo: chooseTwo,
         chooseThr: chooseThr,
         getOfficial1: getOfficial1,
-        isHttps:isHttps
+        isHttps:isHttps,
+        fun_date:fun_date
     }
 })();

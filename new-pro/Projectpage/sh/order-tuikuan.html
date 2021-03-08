@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/merchantPs.js"></script>
+     <script type="text/javascript" src="../../public/js/md5.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form" lay-filter="secretkey">
+                <div class="layui-form-item" style="margin-bottom:0">
+                    
+                    <div class="layui-input-inline" style="width:100%">
+
+                        <div class="layui-form-mid x-red">注：退款密码为超级密码，请咨询您的代理商</div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-bottom:10px">
+                    
+                    <div class="layui-input-inline" style="width:100%">
+
+                        
+                        <div class="layui-form-mid x-red">注：后台只支持全额退款</div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-bottom:10px">
+                    
+                    <div class="layui-input-inline" style="width:100%">
+
+                        
+                        <div class="layui-form-mid x-red">注：只支持15天内订单退款</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: auto;">请输入退款密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" class="yincang2" name="">
+                        <input type="password" name="pass" lay-verify="pass" class="layui-input" autocomplete="off" id="num">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-mid x-red">
+                        <button class="layui-btn" lay-filter="add" lay-submit="add" id="sub">退款</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-sh.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+        function panduan(data){
+            console.log(data)
+            var data=data
+            var a = data.split(" ");
+            var b = a[0].split("-");
+            var c = a[1].split(":");
+        var oldTime = new Date(b[0], b[1]-1, b[2], c[0], c[1], c[2]);
+        var nowTime = new Date()
+          return  (nowTime-oldTime)/(1000*60*60*24)>15? true:false
+        }
+        
+    function subPage(data, data1) {
+        console.log(data)
+        var userNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+        var jgData = data;
+        var money = jgData.transactionAmount - jgData.refundAmount
+        console.log(money)
+        layui.use(['laydate', 'table', 'form', 'laytpl', 'upload'], function() {
+            layui.$.support.cors = true; //允许ajax跨域
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                laytpl = layui.laytpl;
+            setTimeout(function() {
+                $('.yincang1').hide()
+                $('.yincang2').hide()
+            }, 1)
+            var numPass = merInfo.getPws()
+            console.log(numPass)
+            //表单初始赋值
+            form.verify({
+                title: function(value) {
+                    if (value.length == 0) {
+                        return '退款金额不能为空！';
+                    }
+                },
+                pass: function(value) {
+                    if (value.length == 0) {
+                        return '退款密码不能为空！';
+                    }
+                    if (md5(value) != numPass) {
+                        return '退款密码不对，请重新输入'
+                    }
+                }
+            });
+            form.on('submit(add)', function(data) {
+                if(panduan(jgData.orderTime)){
+                    layer.msg('只支持15天订单退款')
+                    return false
+                }
+                var tjData = new Object();
+                tjData.insNumber = userNumber
+                // tjData.merNumber =  jgData.merchantNumber
+                // tjData.orderNumber =  jgData.paymentOrderNumber
+                // tjData.paymentChannel =  jgData.paymentChannel
+                tjData.outTradeNo = jgData.paymentOrderNumber
+                tjData.refundAmount = money
+                // tjData.userNumber =  jgData.merchantNumber
+                // tjData.equipmentType =  3
+                
+                var str = '退款金额：' + parseFloat(money)
+                layer.confirm(str, { icon: 0, title: '退款信息!' }, function(index) {
+                	var index = layer.load(2, {shade: [0.4, '#393D49']})
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://api.51shanhe.com/p-pay/refund/money',
+                        data: JSON.stringify(tjData),
+                        async: true,
+                        headers: {
+                            'Content-Type': "application/json"
+                        },
+                        beforeSend: function() {
+
+                        },
+                        success: function(data) {
+                        	layer.closeAll()
+                            if (data.code == 1000) {
+                                
+                                parent.layer.msg(data.msg)
+                                parent.layui.table.reload('shoplist');
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                    })
+
+
+                })
+
+
+                return false
+            })
+            // CmsUtility.postAjaxCall2(
+            // 	//系统设置
+            // 	'http://192.168.110.85:5008/p-pay/refund/money',
+            // 	JSON.stringify(tjData),
+            // 	function(data){
+            // 		if(data.code == 1000){
+
+            // 			parent.layer.msg('退款成功')
+            // 			x_admin_close() 
+            // 			parent.layui.table.reload('vip_cardList')
+            // 		}else{
+            // 			layer.msg(data.msg)
+
+            // 		}
+            // 	},
+            // 	function(data){
+            // 		console.log('222')
+            // 	},'post'
+            // )
+            // $('#sub').click(function(){
+            // 	return false
+            // 	console.log(jgData)
+            // 	var tjData = new Object();
+            // 	tjData.orderNumber = jgData.orderNumber;
+            // 	tjData.orderType = '1'
+            // 	CmsUtility.postAjaxCall(
+            // 		//系统设置
+            // 		CmsConfig.addressUrl.Mechanism.updateExType,
+            // 		tjData,
+            // 		function(data){
+            // 			if(data.code == 1000){
+
+            // 				parent.layer.msg('提交成功')
+            // 				$('#keyy').val(data.data.keyy)
+            // 			}else{
+            // 				layer.msg(data.msg)
+
+            // 			}
+            // 		},
+            // 		function(data){
+            // 			console.log('222')
+            // 		}
+            // 	)
+            // 	return false
+            // })
+
+            // //监听提交
+            // form.on('submit(add)', function(data) {
+            // 	layer.alert(JSON.stringify(data.field), {
+            // 		title: '最终的提交信息'
+            // 	})
+            // 	return false;
+            // });
+
+        });
+    }
+    </script>
+</body>
+
+</html>

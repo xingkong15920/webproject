@@ -6,7 +6,7 @@ if (Edition == 'qty') {
 	server = 'http://192.168.1.134:5006/shanhe-mechanism/'
 	// server  = 'https://api.51shanhe.com/m-api/shanhe-mechanism/'
 } else {
-	server = 'http://192.168.1.152:6005/shanhe-admin/'
+	server = 'http://192.168.110.250:6005/shanhe-admin/'
 }
 /* 
 接口前缀解释

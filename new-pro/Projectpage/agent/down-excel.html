@@ -65,8 +65,8 @@
 			var code1 = ''
 			var mailList = ['@163.com', '@qq.com', '@yahoo.com', '@hotmail.com', '@163.net', '@gmail.com']
 			var pageNum
-			var serverUrl = 'http://192.168.1.190:5002/'
-
+			var serverUrl = 'http://192.168.110.190:5002/'
+			
 			function fc() {
 				console.log('123')
 				if ($('#agName').val() == '' || $('#agName').val().indexOf('@') > 0) {
@@ -256,6 +256,86 @@
 								//系统设置
 								'agentBill/getAgentBillDetailExcel',
 								jgData,
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+						if (dataNum == 8) { //导出返利
+							CmsUtility.postAjaxCallJson(
+								//系统设置
+								'agentBill/exportRebateBill',
+								JSON.stringify(jgData),
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+						if (dataNum == 9) { //导出返利-详情
+							CmsUtility.postAjaxCallJson(
+								//系统设置
+								'agentBill/exportRebateInfo',
+								JSON.stringify(jgData),
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+						if (dataNum == 10) { //导出返利-代理商
+							CmsUtility.postAjaxCallJson(
+								//系统设置
+								'agentBill/exportAgentRebate',
+								JSON.stringify(jgData),
+								function(data) {
+									if (data.code == 1000) {
+										// console.log(data)
+										// layer.msg('生成成功')
+										// layui.table.reload('deviceInfo')
+										// layer.closeAll()
+									} else {
+										layer.msg(data.msg)
+									}
+								},
+								function(data) {
+									console.log('222')
+								}
+							)
+						}
+						if (dataNum == 11) { //导出返利-销售
+							CmsUtility.postAjaxCallJson(
+								//系统设置
+								'agentBill/exportSaleRebate',
+								JSON.stringify(jgData),
 								function(data) {
 									if (data.code == 1000) {
 										// console.log(data)

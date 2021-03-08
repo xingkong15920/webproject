@@ -48,6 +48,11 @@
         color: red;
         border-top: 2px solid black;
     }
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
     </style>
 </head>
 
@@ -84,7 +89,14 @@
                 </div>
             </div>
         </div>
-        <xblock>
+       
+         <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
+         <xblock>
             <button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
         </xblock>
         <table class="layui-hide" id="members" lay-filter="members"></table>
@@ -252,7 +264,34 @@
                 }
             });
         })
+        window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
 
+        }
         //方法级渲染  
         function tableRender() {
             var sTiem = $('#startTime').val()
@@ -495,6 +534,7 @@
         tableRender()
         $('#search').click(function() {
             tableRender()
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
         })
         //监听状态操作
         form.on('switch(consumptionPreferences)', function(data) {
@@ -558,21 +598,47 @@
                     layer.msg('该行为合计，没有明细')
                     return
                 }
-                layer.open({
-                    type: 2,
-                    title: '查看明细',
-                    shade: 0.5,
-                    area: ['70%', '90%'],
-                    maxmin: false,
-                    resize: false,
-                    content: ['Agent-look-bill.html'],
-                    success: function(layero, index) {
-                        // 获取子页面的iframe
-                        var iframe = window['layui-layer-iframe' + index];
-                        // 向子页面的全局函数child传w参
-                        iframe.subPage(data, userNumber,$('#periodType').val())
+                console.log(data.orderTyp)
+                if(data.billType == '日账单'){
+                    if(data.orderType == '-3' || data.orderType == 1){
+                        layer.open({
+                        type: 2,
+                        title: '查看明细',
+                        shade: 0.5,
+                        area: ['70%', '90%'],
+                        maxmin: false,
+                        resize: false,
+                        content: ['Agent-look-bill.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传w参
+                            iframe.subPage(data, userNumber,$('#periodType').val())
+                        }
+                    });
+                    }else{
+                         layer.msg('暂不可查询明细')
+                        return
                     }
-                });
+                }else{
+                    layer.open({
+                        type: 2,
+                        title: '查看明细',
+                        shade: 0.5,
+                        area: ['70%', '90%'],
+                        maxmin: false,
+                        resize: false,
+                        content: ['Agent-look-bill.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传w参
+                            iframe.subPage(data, userNumber,$('#periodType').val())
+                        }
+                    });
+                }
+                
+               
             } else if (obj.event === 'pass') { //设置密码
                 layer.open({
                     type: 2,

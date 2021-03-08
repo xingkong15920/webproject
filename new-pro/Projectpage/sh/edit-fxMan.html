@@ -15,13 +15,13 @@
     <script type="text/javascript" src="../../public/js/data.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.11&key=2a00b8208f148a6f71784ea14529f388&plugin=AMap.Geocoder"></script>
     <style type="text/css">
-   /*  .layui-upload-list {
+    /*  .layui-upload-list {
         width: 190px;
         height: 150px;
         border: 1px solid #e6e6e6;
     } */
-    .layui-form-item .layui-input-inline{
-        width: 250px ;
+    .layui-form-item .layui-input-inline {
+        width: 250px;
     }
 
     .layui-upload-img {}
@@ -30,7 +30,7 @@
 
 <body>
     <div class="x-body">
-        <form class="layui-form"  lay-filter="advertform">
+        <form class="layui-form" lay-filter="advertform">
             <!-- <input type="hidden" id="picAddress" name="picAddress" autocomplete="off" class="layui-input"> -->
             <div class="layui-form-item">
                 <label for="username" class="layui-form-label">
@@ -79,105 +79,105 @@
     <script src="../../common/utility.js"></script>
     <script>
     var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
-    function subPage(data,data1){
-        console.log(data,data1)
+
+    function subPage(data, data1) {
+        console.log(data, data1)
         var jgData = data
         layui.use(['form', 'layer', 'upload'], function() {
-        var $ = layui.jquery,
-            upload = layui.upload;
-        var form = layui.form,
-            layer = layui.layer;
+            var $ = layui.jquery,
+                upload = layui.upload;
+            var form = layui.form,
+                layer = layui.layer;
 
-        var p = [],
-            c = [],
-            aa = [],
-            cityC = '0'
-        form.val('advertform', {
-           "memberCard":(jgData.memberCard*100).toFixed(2),
-                "memberRecharge":(jgData.memberRecharge*100).toFixed(2),
-                "payVouchers":(jgData.payVouchers*100).toFixed(2),
-                "payNext":(jgData.payNext*100).toFixed(2),
-        })
-        //自定义验证规则
-        form.verify({
-            shopName: function(value) {
-                if (!value.length) {
-                    return '店铺名称不能为空!';
-                }
-            },
-            adminName: function(value) {
-                if (!value.length) {
-                    return '管理员名称不能为空!';
-                }
-            },
-            provice: function(value) {
-                if (!value.length) {
-                    return '请选择省!';
-                }
-            },
-            city: function(value) {
-                if (!value.length) {
-                    return '请选择市!';
-                }
-            },
-            area: function(value) {
-                if (!value.length) {
-                    return '请选择区!';
-                }
-            },
-            address: function(value) {
-                if (!value.length) {
-                    return '请填写详细地址!';
-                }
-            },
-            title:function(value){
-                if(!value.length){
-                    return '不得为空!'
-                }
-            }
-            // adminName: function(value) {
-            //     if (!value.length) {
-            //         return '管理员名称不能为空!';
-            //     }
-            // },
-        });
-
-        //监听提交
-        form.on('submit(add)', function(data) {
-            var addData = data.field
-            // 发送请求
-            addData.merchantNumber = userNumber
-            addData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
-            addData.fixedAccount = '1'
-            addData.gradeNumber = jgData.gradeNumber
-             addData.memberCard = (addData.memberCard/100).toFixed(2)
-                addData.memberRecharge = (addData.memberRecharge/100).toFixed(2)
-                addData.payVouchers = (addData.payVouchers/100).toFixed(2)
-                addData.payNext = (addData.payNext/100).toFixed(2)
-            CmsUtility.postAjaxCall2(
-                //系统设置
-                'http://api.51shanhe.com/p-sepaccount/accountManage/updateDistributionLevel',
-                addData,
-                function(data) {
-                    if (data.code == 1000) {
-                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        parent.layer.close(index); //再执行关闭
-                        parent.layer.msg('服务成功')
-                        parent.layui.table.reload('gradeList');
-
-                    } else {
-                        layer.msg(data.msg)
+            var p = [],
+                c = [],
+                aa = [],
+                cityC = '0'
+            form.val('advertform', {
+                "memberCard": (jgData.memberCard * 100).toFixed(2),
+                "memberRecharge": (jgData.memberRecharge * 100).toFixed(2),
+                "payVouchers": (jgData.payVouchers * 100).toFixed(2),
+                "payNext": (jgData.payNext * 100).toFixed(2),
+            })
+            //自定义验证规则
+            form.verify({
+                shopName: function(value) {
+                    if (!value.length) {
+                        return '店铺名称不能为空!';
                     }
                 },
-                function(data) {
-                    console.log('222')
+                adminName: function(value) {
+                    if (!value.length) {
+                        return '管理员名称不能为空!';
+                    }
+                },
+                provice: function(value) {
+                    if (!value.length) {
+                        return '请选择省!';
+                    }
+                },
+                city: function(value) {
+                    if (!value.length) {
+                        return '请选择市!';
+                    }
+                },
+                area: function(value) {
+                    if (!value.length) {
+                        return '请选择区!';
+                    }
+                },
+                address: function(value) {
+                    if (!value.length) {
+                        return '请填写详细地址!';
+                    }
+                },
+                title: function(value) {
+                    if (!value.length) {
+                        return '不得为空!'
+                    }
                 }
-            )
-            return false;
+                // adminName: function(value) {
+                //     if (!value.length) {
+                //         return '管理员名称不能为空!';
+                //     }
+                // },
+            });
+
+            //监听提交
+            form.on('submit(add)', function(data) {
+                var addData = data.field
+                // 发送请求
+                addData.merchantNumber = userNumber
+                addData.institutionNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+                addData.fixedAccount = '1'
+                addData.gradeNumber = jgData.gradeNumber
+                addData.memberCard = (addData.memberCard / 100).toFixed(2)
+                addData.memberRecharge = (addData.memberRecharge / 100).toFixed(2)
+                addData.payVouchers = (addData.payVouchers / 100).toFixed(2)
+                addData.payNext = (addData.payNext / 100).toFixed(2)
+                CmsUtility.postAjaxCall2(
+                    //系统设置
+                    'http://api.51shanhe.com/p-sepaccount/accountManage/updateDistributionLevel',
+                    addData,
+                    function(data) {
+                        if (data.code == 1000) {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            parent.layer.msg('服务成功')
+                            parent.layui.table.reload('gradeList');
+
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+                return false;
+            });
         });
-    });
     }
-    
     </script>
 </body>
 

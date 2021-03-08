@@ -67,6 +67,11 @@
 	.baobiaod:last-child{
 		border-right: 1px solid #e5e5e5;
 	}
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
     </style>
 </head>
 
@@ -85,8 +90,13 @@
                 <input type="text" name="shopname" id="shopName" placeholder="商户名称" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-input-inline">
-                <select name="payment" id="transactionPayment" lay-search="">
+                <select name="payment" id="transactionPayment" lay-search=""  lay-filter="transactionPayment" >
                     <option value="">所属服务商</option>
+                </select>
+            </div>
+             <div class="layui-input-inline">
+                <select name="saleName" id="saleName" lay-search="">
+                    <option value="">请选择销售</option>
                 </select>
             </div>
             <div class="layui-input-inline">
@@ -98,6 +108,12 @@
             <div class="layui-input-inline">
                 <button class="layui-btn" lay-submit="" lay-filter="sreach" title="搜索" id="btn1"><i class="layui-icon">&#xe615;</i></button>
             </div>
+        </div>
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline place">
@@ -290,7 +306,7 @@
 </body>
 <script src="../../common/config-agent.js"></script>
 <script src="../../common/utility.js"></script>
-<script type="text/javascript" src="http://static.hongxiaosou.com/public/js/echarts.min.js"></script>
+<script type="text/javascript" src="../../public/js/echarts.min.js"></script>
 <script>
 var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
 var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
@@ -452,6 +468,7 @@ layui.use(['form', 'table', 'laytpl'], function() {
                 "endTime": $('#endTime').val(),
                 "merchantName": $('#shopName').val().trim(),
                 "dbAgentNumber": $('#transactionPayment').val().trim(),
+                "saleNumber":$('#saleName').val()
             },
             function(data) {
 
@@ -518,6 +535,38 @@ layui.use(['form', 'table', 'laytpl'], function() {
             }
         )
     }
+    function getSale(){
+        CmsUtility.postAjaxCall(
+            //系统设置
+            'agentBill/getAgentSale', {
+                "agentNumber": userNumber,
+                "dbAgentNumber":$('#transactionPayment').val()
+            },
+            function(data) {
+
+                if (data.code == 1000) {
+                    var saleList = data.data
+                    var str = '<option value="">请选择销售</option>'
+                    for(var i = 0 ; i < saleList.length;i++){
+                        str += '<option value="'+ saleList[i].saleNumber +'">'+ saleList[i].saleName +'</option>'
+                    }
+                   $('#saleName').html(str)
+                   form.render('select')
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }
+        )
+    }
+    getSale()
+    form.on('select(transactionPayment)', function(data) {
+           
+            getSale()
+        })
     setTimeout(function() {
         getHuizong()
     }, 500)
@@ -533,6 +582,7 @@ layui.use(['form', 'table', 'laytpl'], function() {
                 "endTime": $('#endTime').val(),
                 "merchantName": $('#shopName').val().trim(),
                 "dbAgentNumber": $('#transactionPayment').val().trim(),
+                "saleNumber":$('#saleName').val()
             },
             function(data) {
                 layer.closeAll()
@@ -567,7 +617,42 @@ layui.use(['form', 'table', 'laytpl'], function() {
     setTimeout(function() {
         reloadres()
     }, 500)
+    window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+        getHuizong()
+        reloadres()
+        console.log($('.qiehuan'))
+        var qiehuan = document.getElementsByClassName('qiehuan')
+        for (let i = 0; i < qiehuan.length; i++) {
+            qiehuan[i].setAttribute('class', 'qiehuan')
+        }
+        qiehuan[0].setAttribute('class', 'layui-this qiehuan')
 
+        }
     //方法级渲染
     function tableRender() {
         table.render({
@@ -579,6 +664,7 @@ layui.use(['form', 'table', 'laytpl'], function() {
                 "agentLevel": agentLevel,
                 "startTime": $('#startTime').val(),
                 "endTime": $('#endTime').val(),
+                "saleNumber":$('#saleName').val()
             },
             page: true,
             limits: [10, 20],
@@ -689,6 +775,7 @@ layui.use(['form', 'table', 'laytpl'], function() {
         tableRender()
 
     })
+    
     $('#btn1').click(function() {
         console.log('111')
         tableRender()
@@ -700,6 +787,7 @@ layui.use(['form', 'table', 'laytpl'], function() {
             qiehuan[i].setAttribute('class', 'qiehuan')
         }
         qiehuan[0].setAttribute('class', 'layui-this qiehuan')
+        $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
     })
     myChart = echarts.init(document.getElementById('main'));
     option = {

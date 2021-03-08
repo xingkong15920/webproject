@@ -66,6 +66,11 @@
     p {
         font-size: 16px;
     }
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
     </style>
 </head>
 
@@ -83,6 +88,12 @@
                 <input type="text" id="saleName" placeholder="姓名" autocomplete="off" class="layui-input">
             </div>
             <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+        </div>
+        <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
         </div>
         <table class="layui-hide" id="members" lay-filter="members"></table>
     </div>
@@ -182,7 +193,34 @@
                 }
             });
         })
+         window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
 
+        }
         //方法级渲染  
         function tableRender() {
             var sTiem = $('#startTime').val()
@@ -283,6 +321,7 @@
         tableRender()
         $('#search').click(function() {
             tableRender()
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
         })
         //监听状态操作
         form.on('switch(consumptionPreferences)', function(data) {

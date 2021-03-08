@@ -15,12 +15,12 @@
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
     <style>
     /* *{
-				font-size: 14px;
-			} */
+                font-size: 14px;
+            } */
     /* .layui-table-cell {
-				height: auto;
-				line-height: initial;
-			} */
+                height: auto;
+                line-height: initial;
+            } */
     .layui-table-cell {
         height: auto;
     }
@@ -67,11 +67,11 @@
 <body>
     <div class="x-nav">
         <span class="layui-breadcrumb">
-				<a href="">首页</a>
-				<a><cite>订单管理</cite></a>
-			</span>
+                <a href="">首页</a>
+                <a><cite>订单管理</cite></a>
+            </span>
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
-				<i class="layui-icon" style="line-height:30px">ဂ</i></a>
+                <i class="layui-icon" style="line-height:30px">ဂ</i></a>
     </div>
     <div class="x-body">
         <div class="layui-form layui-row">
@@ -97,6 +97,7 @@
                     <option value="Alipay_Pay">支付宝支付</option>
                     <option value="WeChat_Pay">微信支付</option>
                     <option value="UnionPay_Pay">云闪付</option>
+                    <option value="Pos_Pay">银联</option>
                 </select>
             </div>
             <div class="layui-input-inline">
@@ -108,7 +109,7 @@
                             <option value="3">易融码</option>
                             <option value="4">新大陆</option>
                             <option value="5">随行付</option>
-                            <option value="6">乐刷</option>
+                             <option value="6">乐刷</option>
                         </select>
                     </div>
             <div class="layui-input-inline text">
@@ -190,8 +191,8 @@
     </div>
     <script type="text/html" id="tool">
         <a class="layui-btn layui-btn-xs" id="Toview" lay-event="Toview">同步</a>
-			
-		</script>
+            
+        </script>
     <script src="../../common/config-agent.js"></script>
     <script src="../../common/utility.js"></script>
     <script>
@@ -348,6 +349,9 @@
                                     case 5:
                                         return '随行付'
                                         break;
+                                    case 6:
+                                        return '乐刷'
+                                        break;
                                  
                                 }
                             }
@@ -372,7 +376,7 @@
                                         oneZ = '京东钱包'
                                         break;
                                     case '3':
-                                        oneZ = '银联支付'
+                                        oneZ = '云闪付'
                                         break;
                                     default:
                                         oneZ = '--'
@@ -481,7 +485,7 @@
                 }else if(obj.event == 'Toview'){
                     $.ajax({
                             type: "get",
-                            url: 'https://api.51shanhe.com/p-order/sync/order',
+                            url: 'https://api.hongsou.com.cn/p-order/sync/order',
                             async: true,
                             dataType: "json",
                             data: {

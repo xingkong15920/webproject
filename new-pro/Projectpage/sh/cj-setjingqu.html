@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .layui-upload-img {
+        width: 200px;
+        height: 200px;
+        margin: 0 10px 40px 0;
+    }
+
+    .layui-upload-img img {
+        width: 100%;
+        height: 100%;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row" style="margin-bottom:200px">
+            <form class="layui-form" action="" lay-filter="tongdao">
+                
+                <div id="riskctrlDiv" >
+                    <blockquote class="layui-elem-quote">景点信息</blockquote>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block;width:500px;position:relative;">
+                            <label class="layui-form-label">景点名称</label>
+                            <div class="layui-input-block">
+                                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                <input type="text" lay-verType="tips" name="merchantName" lay-verify="title" autocomplete="off" placeholder="商户名称" class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                    
+                   
+                    <div class="box-item">
+                        
+                        <div class="layui-form-item" style="display:inline-block;width:500px;">
+                            <label class="layui-form-label">营业时间</label>
+                            <div class="layui-input-block widthauto">
+                                <input type="text" lay-verType="tips" name="time" lay-verify="title" autocomplete="off" placeholder="营业时间" class="layui-input" value="" id="time">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" id="businessLicense1">
+                        <!-- <label class="layui-form-label">营业执照</label> -->
+                        <label class="layui-form-label">景区照</label>
+                        <div class="layui-input-inline" style="margin-left:15px">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test1" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo1" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">景区照1</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test2" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo2" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">景区照2</div>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <div class="layui-upload-img">
+                                <img src="../../public/images/add.jpg" id="test3" style="max-width: 100%;">
+                                <div class="layui-btn layui-btn-sm block" id="photo3" style="width:100%;text-align:center">上传图片</div>
+                            </div>
+                            <div style="width:100%;text-align:center;width:200px">景区照3</div>
+                        </div>
+                    </div>
+                   
+                    <div class="layui-form-item"  style="display:inline-block;width:800px;position:relative;">
+                    <label class="layui-form-label">景点简介</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" name="" autocomplete="off" placeholder="景点简介" lay-verify="" rows="3"></textarea>
+                    </div>
+                </div>
+                  
+                   
+                   
+                    
+                    
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var rebateSwitch = 1
+    var imgList = {
+        photo1: '../../public/images/add.jpg',
+        photo2: '../../public/images/add.jpg',
+        photo3: '../../public/images/add.jpg',
+        photo4: '../../public/images/add.jpg',
+        photo5: '../../public/images/add.jpg',
+        photo6: '../../public/images/add.jpg'
+    }
+    var merchantInfo;
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+    var rList = []
+
+    function toDecimal2(x) {
+        var f = parseFloat(x);
+        if (isNaN(f)) {
+            return false;
+        }
+        var f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        return s;
+    }
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+
+    
+
+   
+
+        var shopNumber,
+            clerkNumber,
+            oldVal,
+            newVal
+        var clerkNumbers = []
+        var shopNumbers = []
+        layui.use(['laydate', 'table', 'upload', 'form', 'element'], function() {
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer;
+            var tableSelect = layui.tableSelect;
+            laydate.render({
+                elem: '#time',
+                type: 'time',
+                range: true
+            });
+           
+
+            //表单初始赋值
+            //              form.val('tongdao', {
+            //                  "preferentialSetting": 1
+            //              })
+
+            /*---------- 监听开关 ----------*/
+            
+            var tjData = new Object()
+            tjData.institutionNumber = userNumber
+            tjData.merchantNumber = merchantNumber
+
+
+           
+            setTimeout(function() {
+                CmsUtility.postAjaxCallJson(
+                    //系统设置
+                    'sepAccount/getRebateCardSet',
+                    JSON.stringify(tjData),
+                    function(data1) {
+                        if (data1.code == 1000) {
+                            merchantInfo = data1.data
+                            
+                                form.val('tongdao', {
+                                    
+
+                                })
+
+                            }
+                            // setTimeout(function(){
+                            //  // parent.layer.close(index)
+                            //  parent.location.reload()
+                            // },500); 
+
+
+                        } else {
+
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+            }, 300)
+            
+
+
+            var uploadInst = upload.render({
+                elem: '#photo1',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test1').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo1 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#photo2',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test2').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo2 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#photo3',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test3').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo3 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test1',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test1').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo1 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test2',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test2').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo2 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            var uploadInst = upload.render({
+                elem: '#test3',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+                data: {
+                    "institutionNumber": userNumber,
+                },
+                size: 1024,
+                before: function(obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result) {
+                        $('#test3').attr('src', result); //图片链接（base64）
+                    });
+                },
+                done: function(res) {
+                    //如果上传失败
+                    console.log(res)
+                    if (res.code != 1000) {
+                        return layer.msg('上传失败');
+                    } else {
+                        imgList.photo3 = res.data
+                        console.log(imgList)
+                    }
+                    //上传成功
+                },
+                error: function() {
+                    //演示失败状态，并实现重传
+
+
+                }
+            });
+            /*---------- 自定义验证规则 ----------*/
+            form.verify({
+                title: function(value) {
+                    if (value.length == "") {
+                        return '不能为空！';
+                    }
+                },
+                pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                content: function(value) {
+                    layedit.sync(editIndex);
+                }
+            });
+
+            /*---------- 监听提交 ----------*/
+            form.on('submit(add)', function(data, index) {
+                var addData = data.field
+                
+                console.log(infoData)
+                layer.confirm('确定要保存设置?', function(index) {
+                    CmsUtility.postAjaxCallJson(
+                        //系统设置
+                        'sepAccount/updateRebateCardSet',
+                        JSON.stringify(infoData),
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                parent.layer.msg('设置成功')
+                                setTimeout(function() {
+                                    $('#quxiao').click()
+                                }, 16);
+                                parent.layui.table.reload('vip_cardList')
+
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                })
+
+                return false;
+            });
+
+        
+    
+    </script>
+</body>
+
+</html>

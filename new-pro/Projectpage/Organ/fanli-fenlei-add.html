@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/tableSelect.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .widthauto {
+                width: auto !important;
+            }
+            
+            .tips_red {
+                color: red;
+            }
+            
+            .layui-form-label {
+                padding-left: 0;
+                width: 100px;
+            }
+            
+            .layui-input-block {
+                margin-left: 115px;
+            }
+            
+            .layui-elem-quote {
+                font-size: 18px;
+            }
+            
+            .layui-elem-field legend {
+                font-size: 16px;
+            }
+            
+            .layui-upload-img {
+                width: 92px;
+                height: 92px;
+                margin: 0 10px 10px 0;
+            }
+            
+            .Since_inline {
+                display: inline-block;
+                width: auto !important;
+                line-height: 38px;
+            }
+            
+            .layui-elem-quote .layui-form-switch {
+                margin: 0 15px;
+                margin-top: 0;
+            }
+            .layui-upload-img {
+                width: 150px;
+                height: 150px;
+                border: 1px solid #e6e6e6;
+                border-radius: 2px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            #demoText {
+                width: 150px;
+                height: auto;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            #demoText span {
+                margin-top: 10px;
+            }
+            
+            #demoText a {
+                margin-top: 10px;
+            }
+            #tips span{
+                line-height: 36px;
+                color: red;
+            }
+            .layui-form-label{
+                width: 150px;
+            }
+        </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form" action="" lay-filter="cardAdd">
+                <!--隐藏-->
+                <!--基本信息-->
+                <blockquote class="layui-elem-quote">商户分类设置</blockquote>
+               
+                <div class="layui-form-item">
+                    <label class="layui-form-label">分类名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="classifyName" style="width:400px" lay-verify="title" autocomplete="off" placeholder="请输入分类名称" class="layui-input">
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <label class="layui-form-label">分类别名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="classifyAlias" style="width:400px" lay-verify="title" autocomplete="off" placeholder="请输入分类别名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">序号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="serial" style="width:400px" lay-verify="number" autocomplete="off" placeholder="请输入序号" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item image">
+                    <label class="layui-form-label">分类图标(选中)</label>
+                    
+                    <div class="layui-input-block image">
+                        <div class="layui-upload-img" id="test1" style="width:100px;height:100px">
+                            <img src="../../public/images/default.png" id="demo1" name="address" style="width:480px;max-width: 100%;height:100px;" lay-filter="checkedIcon" >
+                        </div>
+                        <!-- <p id="demoText2"></p> -->
+                    </div>
+                </div>
+                <div class="layui-form-item image">
+                    <label class="layui-form-label">分类图标(未选)</label>
+                    
+                    <div class="layui-input-block image">
+                        <div class="layui-upload-img" id="test2" style="width:100px;height:100px">
+                            <img src="../../public/images/default.png" id="demo2" name="address" style="width:480px;max-width: 100%;height:100px;" lay-filter="icon" >
+                        </div>
+                        <!-- <p id="demoText3"></p> -->
+                    </div>
+                </div>
+                
+               
+                
+                
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;text-align: center;">
+                            <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary" id="quxiao">取消</button>
+                        </div>
+                        <!--<i class="layui-icon" lay-tips="推荐追求开发效率和缺乏前端开发经验的使用，后端开发者的最爱。">123123123</i>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    var index = parent.layer.getFrameIndex(window.name);
+    $('#quxiao').click(function() {
+
+        setTimeout(function() { parent.layer.close(index) }, 16);
+    })
+    var serverUrl = window.parent.serverUrl
+    var userNumber = JSON.parse(sessionStorage.getItem('organUser')).Number;
+    var icon = ''
+    var checkedIcon = ''
+    layui.use(['laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+        var tableSelect = layui.tableSelect;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#time1' //指定元素
+        });
+        laydate.render({
+            elem: '#time2' //指定元素
+        });
+        
+
+        
+
+        /*---------- 优惠设置 ----------*/
+
+
+        /*---------- 生日 ----------*/
+
+
+        /*---------- 普通图片上传 ----------*/
+        var uploadInst = upload.render({
+            elem: '#test1',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    checkedIcon = res.data
+                    console.log(checkedIcon)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+                // var demoText = $('#demoText');
+                // demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                // demoText.find('.demo-reload').on('click', function() {
+                //     uploadInst.upload();
+                // });
+            }
+        });
+        var uploadInst = upload.render({
+            elem: '#test2',
+            url: CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Public.addPic,
+            data: {
+                "institutionNumber": userNumber,
+            },
+            before: function(obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result) {
+                    $('#demo2').attr('src', result); //图片链接（base64）
+                });
+            },
+            done: function(res) {
+                //如果上传失败
+                console.log(res)
+                if (res.code != 1000) {
+                    return layer.msg('上传失败');
+                } else {
+                    icon = res.data
+                    console.log(icon)
+                }
+                //上传成功
+            },
+            error: function() {
+                //演示失败状态，并实现重传
+                // var demoText = $('#demoText');
+                // demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                // demoText.find('.demo-reload').on('click', function() {
+                //     uploadInst.upload();
+                // });
+            }
+        });
+        /*---------- 自定义验证规则 ----------*/
+        form.verify({
+            title: function(value) {
+                if (value.length == "") {
+                    return '不能为空！';
+                }
+            },
+
+        });
+
+        /*---------- 监听开关 ----------*/
+        //form.on('switch(level)', function(data) { //等级开关
+        //  layer.tips('等级开关：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+        //});
+
+        /*---------- 监听提交 ----------*/
+        form.on('submit(add)', function(data, index) {
+            var data = data.field
+            data.institutionNumber = userNumber
+            
+            if (icon == '') {
+                layer.msg('请上传未选中图片')
+                return
+            }
+            if (checkedIcon == '') {
+                layer.msg('请上传选中图片')
+                return
+            }
+            data.icon = icon
+            data.checkedIcon = checkedIcon
+            console.log(data)
+            // if()
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'rebateCard/addClassification',
+                JSON.stringify(data),
+                function(data) {
+                    if (data.code == 1000) {
+                        setTimeout(function() {
+                            $('#quxiao').click()
+                        }, 16);
+                        parent.layer.msg('保存成功')
+                        parent.layui.table.reload('vip_cardList')
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            return false;
+        });
+         
+    });
+    </script>
+</body>
+
+</html>

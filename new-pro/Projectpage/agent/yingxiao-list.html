@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .layui-btn+.layui-btn {
+        margin-left: -2px;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">数据报表</a>
+            <a><cite>营销补贴</cite></a>
+        </span>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+    </div>
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
+                <div class="layui-input-inline">
+                    <input type="text" name="merchantName" id="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
+                </div>
+                <!-- <div class="layui-input-inline">
+						<input type="text" name="couponName" id="couponName" placeholder="上级服务商号 或用户名" autocomplete="off" class="layui-input">
+					</div> -->
+                <!-- <div class="layui-input-inline">
+						<select name="cardVoucherName" id="cardVoucherName">
+							<option value="">认证</option>
+							<option value="1">未认证</option>
+							<option value="2">待审核</option>
+							<option value="3">已认证</option>
+						</select>
+					</div> -->
+                <div class="layui-input-inline coupons_screen">
+                    <button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </div>
+        </div>
+        <!-- <xblock>
+				<button class="layui-btn" id="addA"><i class="layui-icon"></i>添加服务商</button>
+			</xblock> -->
+        <blockquote class="layui-elem-quote" style="border-left:none" id="getInfo"></blockquote>
+        <table class="layui-hide" id="members" lay-filter="members"></table>
+    </div>
+    <script type="text/html" id="tool">
+        <a class="layui-btn layui-btn-xs" lay-event="look">查看明细</a>
+        </script>
+    <script type="text/html" id="switchBar">
+        <input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
+		</script>
+    <script type="text/html" id="toolbar">
+        <a class="layui-btn layui-btn-xs" id="rate" lay-event="success">通过</a>
+			<a class="layui-btn layui-btn-xs layui-btn-danger" id="pass" lay-event="fail">拒绝</a>
+			
+		</script>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    // <a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
+    // function changeRes(res){
+    // 	if(res == null){
+    // 		return
+    // 	}
+    // 	var res = res.agentRegisterlist
+    // 	for(var i = 0 ; i < res.length;i++){
+    // 		if(res[i].agentType == 0){
+    // 			res[i].agentType1 = '未处理'
+    // 		}
+    // 		if(res[i].agentType == 1){
+    // 			res[i].agentType1 = '已打款'
+    // 		}
+    // 		if(res[i].agentType == 2){
+    // 			res[i].agentType1 = '已驳回'
+    // 		}
+    // 	}				
+    // 	return res
+    // }
+    var serverUrl = window.parent.serverUrl
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+    layui.use(['laydate', 'table', 'form'], function() {
+        var laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form;
+        laydate.render({
+            elem: "#insertTime"
+        })
+        var aaData = new Object()
+        aaData.agentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
+        CmsUtility.postAjaxCallJson(
+            //系统设置
+            '/agentBill/getSubsidyBanlance', JSON.stringify(aaData),
+            function(data) {
+                if (data.code == 1000) {
+                    $('#getInfo').html('查询时间：<span style="color:red">'+data.data.quertyTime+'</span>'  + ' , 账户余额：' + '<span style="color:red">'+data.data.balance+'</span>' + '元')
+
+                    // tableRender()
+                } else {
+                    $('#getInfo').html('暂未查询到余额，请联系客服')
+                    layer.msg(data.msg)
+                }
+            },
+            function(data) {
+                console.log('222')
+            },'post'
+        )
+        //方法级渲染  
+        function tableRender() {
+            table.render({
+                //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+                //url: './json/vip-card.json',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'agentBill/getChannelSubsidyList',
+                where: {
+                    "agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number,
+                    "merchantName": $('#merchantName').val(),
+                },
+                method: 'POST',
+                contentType:'application/json',
+                elem: '#members',
+                height: 'full-210',
+                id: 'vip_cardList',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                // request: {
+                //     pageName: ' ' //页码的参数名称，默认：page
+                //     ,limitName: ' ' //每页数据量的参数名，默认：limit
+                //   },
+                parseData: function(res) { //res 即为原始返回的数据
+                    if (res.data == null) {
+                        return
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data.subsidyList, //解析数据列表
+                    };
+                },
+                cols: [
+                    [{
+                        align: 'center',
+                        field: 'subsidyBatch',
+                        title: '批次号',
+                    }, {
+                        align: 'center',
+                        field: 'subsidyTime',
+                        title: '补贴日期'
+                    }, {
+                        align: 'center',
+                        field: 'subsidyTime',
+                        title: '补贴对象',
+                        templet:function(data){
+                            if(data.subsidyType == 0){
+                                return '机构' + '('+ data.subTargetName +')'
+                            }else if(data.subsidyType == 1){
+                                return '代理' + '('+ data.subTargetName +')'
+                            }else{
+                                 return '----'
+                            }
+                           
+                        }
+                    }, {
+                        align: 'center',
+                        field: 'merchantSubsidy',
+                        title: '手续费补贴总计',
+                        templet: function(data) {
+                            if (data.merchantSubsidy) {
+                                return '￥' + parseFloat(data.merchantSubsidy).toFixed(2)
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        align: 'center',
+                        field: 'marketingSubsidy',
+                        title: '营销费补贴总计',
+                        templet: function(data) {
+                            if (data.marketingSubsidy) {
+                                return '￥' + parseFloat(data.marketingSubsidy).toFixed(2)
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        align: 'center',
+                        field: 'subsidy',
+                        title: '补贴费用总计',
+                        templet: function(data) {
+                            if (data.subsidy) {
+                                return '￥' + parseFloat(data.subsidy).toFixed(2)
+                            } else {
+                                return '--'
+                            }
+                        }
+                    }, {
+                        align: 'center',
+                        field: 'merchantCount',
+                        title: '补贴商户数',
+                    }, {
+                        align: 'center',
+                        field: 'endTermBalance',
+                        title: '确认状态',
+                        templet: function(data) {
+                            switch (data.subsidyState) {
+                                case 0:
+                                    return '待确认'
+                                    break;
+                                case 1:
+                                    return '待校验'
+                                    break;
+                                case 2:
+                                    return '校验不通过'
+                                    break;
+                                case 3:
+                                    return '待处理'
+                                    break;
+                                case 4:
+                                    return '确认废弃'
+                                    break;
+                                case 5:
+                                    return '处理成功'
+                                    break;
+                                case 6:
+                                    return '处理失败'
+                                    break;
+                                case 7:
+                                    return '校验通过'
+                                    break;
+                                case 8:
+                                    return '未提交'
+                                    break;
+                                case 9:
+                                    return '已提交'
+                                    break;
+                                case 10:
+                                    return '提交失败'
+                                    break;
+                                case 11:
+                                    return '已确认'
+                                    break;
+                                case 12:
+                                    return '确认失败'
+                                    break;
+                                default:
+                                    return '获取状态失败'
+                                    break;
+                            }
+                        }
+                    }, {
+                        field: 'operation',
+                        title: '操作',
+                        toolbar: "#tool",
+                        align: 'center',
+                        width: 100
+                    }]
+                ],
+                page: true,
+                done: function(res, curr, count) {
+
+                    if (res.data == null) {
+                        if (!!res.msg) {
+                            //layer.msg(res.msg)
+                        } else {
+                            layer.msg('无数据')
+                        }
+
+                    } else {
+                        //layer.msg(res.msg)
+                    }
+                }
+            });
+        }
+        tableRender()
+        $('#search').click(function() {
+            tableRender()
+        })
+
+        //监听工具条
+
+        $('#addA').click(function() {
+            layer.open({
+                type: 2,
+                title: '添加服务商',
+                shade: 0.5,
+                area: [$(window).width() * 0.9 + 'px', '90%'],
+                maxmin: false,
+                resize: false,
+                content: ['Agent-add.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+
+                }
+            });
+        })
+        table.on('tool(members)', function(obj) {
+            var data = obj.data;
+            if (obj.event === 'loginTo') { //直接登录商户后台
+                window.open("http://www.baidu.com?useNumber=123456", "useNumber=123456")
+            } else if (obj.event === 'look') { //费率
+                layer.open({
+                    type: 2,
+                    title: '查看补贴明细',
+                    shade: 0.5,
+                    area: ['60%', '80%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['yingxiao-list-look.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传w参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'pass') { //设置密码
+                layer.open({
+                    type: 2,
+                    title: '重置密码',
+                    shade: 0.5,
+                    area: ['460px', '350px'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Agent-List-pass.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'edit') { //编辑商户
+                layer.open({
+                    type: 2,
+                    title: '编辑',
+                    shade: 0.5,
+                    area: ['90%', '90%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Agent-List-edit.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'logout') { //注销
+                var zhuxiaoData = {
+                    card: data.card,
+                    cardType: 5
+                }
+                layer.confirm('真的删除此服务商么', {
+                    icon: 3,
+                    title: '提示'
+                }, function(index) {
+                    // 发送请求
+                    console.log(data)
+                    var addData = new Object()
+                    addData.institutionNumber = userNumber
+                    addData.deletionFlag = '1'
+                    addData.agentNumber = data.agentNumber
+
+                    console.log(addData)
+                    // 发送请求
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Mechanism.updateAgentRegister,
+                        addData,
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                layer.msg('删除成功')
+                                tableRender()
+                            } else {
+                                layer.msg(data.msg)
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                });
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>

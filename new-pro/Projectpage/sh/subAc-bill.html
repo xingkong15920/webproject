@@ -13,6 +13,14 @@
 		<script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="../../public/js/xadmin.js"></script>
+		<style type="text/css">
+				#btnBox .layui-btn {
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+
+		</style>
 	</head>
 
 	<body>
@@ -59,13 +67,19 @@
 			<!-- <xblock>
                 <button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
             </xblock> -->
+            <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			<table class="layui-hide" id="LAY_table_bill" lay-filter="bill"></table>
 		</div>
 		<script src="../../common/config-sh.js"></script>
 		<script src="../../common/utility.js"></script>
 		<script>
 			var serUrl = 'http://api.51shanhe.com/p-sepaccount/'
-			// var serUrl = 'http://192.168.1.250:6020/p-sepaccount/'
+			// var serUrl = 'http://192.168.110.250:6020/p-sepaccount/'
 			var insNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
 			var userNumber = JSON.parse(sessionStorage.getItem('userSh')).Number;
 			var dataO = new Object();
@@ -88,19 +102,47 @@
 
 				//方法级渲染
 				tableRender()
+window.jyClick = function(data, data1) {
 
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startendTime').val(CmsUtility.fun_date(0) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startendTime').val(CmsUtility.fun_date(-1) +
+                        ' - ' + CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startendTime').val(CmsUtility.fun_date(-6) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startendTime').val(CmsUtility.fun_date(-29) +
+                        ' - ' + CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
 				function tableRender() {
-					console.log($('#startTime').val())
 					var index = layer.load(2, {
 						shade: [0.4, '#393D49']
 					})
+					var startendTime = $('#startendTime')
 					table.render({
 						elem: '#LAY_table_bill',
 						url: serUrl + 'accountManage/getFzOrderList?merchantNumber=' +
 							userNumber + '&institutionNumber=' + insNumber,
 						where: {
-							"startTime": fun_date(-6),
-							"endTime": fun_date(0),
+							
+									"startTime": startendTime.val() ? startendTime.val().split(' - ')[0] : '',
+									"endTime": startendTime.val() ? startendTime.val().split(' - ')[1] : '',
 						},
 						method: "post",
 						height: "full-124",
@@ -341,6 +383,7 @@
 									endTime: startendTime.val() ? startendTime.val().split(' - ')[1] : '',
 								}
 							});
+							$('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 						}
 					};
 

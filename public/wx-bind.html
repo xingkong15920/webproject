@@ -1,0 +1,351 @@
+<!--  只有微信会员卡 -->
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+body,
+html {
+    width: 100%;
+    height: 100%
+}
+
+.pay {
+    position: relative;
+}
+
+.loadzz {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.loading_k {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    background: rgba(0, 0, 0, .5);
+    border-radius: 10px
+}
+
+.loading_kz {
+    width: 100px;
+    height: 100px;
+    margin: -50px 0 0 -50px;
+}
+
+.h3 {
+    width: 300px;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    top: 65%;
+    left: calc(50% - 150px);
+    font-size: 18px
+}
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -13px 0 0 -13px;
+    width: 26px;
+    height: 26px;
+    border: 2px solid;
+    border-color: #fff #fff transparent;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: loading 1s linear infinite
+}
+
+.loadingz {
+    top: 35%;
+    margin: -15px 0 0 -15px;
+    width: 30px;
+    height: 30px;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+</style>
+<script type="text/javascript">
+var adiv = '<div id="loadstart" class="loadzz"><div class="loading_k"><div class="loading"></div></div></div>'
+document.write(adiv)
+</script>
+
+<head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1.0,maximum-scale=1.0,width=device-width" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <link rel="stylesheet" href="./css/style-vip.css">
+    <link rel="stylesheet" href="./css/qrPay.css">
+    <title>开通乐返卡</title>
+    <script src="js/jquery.min.js"></script>
+    <script type="text/javascript">
+    var payType;
+    var code;
+    var openId
+
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
+    document.getElementById('loadstart').style.display = "none";
+    if (/MicroMessenger/.test(window.navigator.userAgent)) {
+
+        if (window.location.href.indexOf('code=') == -1) {
+            var redirect_uri = window.location.href
+            console.log("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + 'wx6ffebc6d59098add' + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_base&state=start")
+            window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + 'wx6ffebc6d59098add' + "&redirect_uri=" + encodeURIComponent(redirect_uri) + "&response_type=code&scope=snsapi_base&state=start"
+
+        } else {
+            code = getQueryString('code')
+            var cData = new Object()
+            cData.onePayType = 1
+            cData.code = code
+            cData.insNumber = 1004
+            cData.merchantNumber = ''
+            // alert(JSON.stringify(cData))
+            $.ajax({
+                //url: "https://api.hongsou.com.cn/p-member/server/getMemInfo",
+
+                url: "https://api.hongsou.com.cn/p-server/appServer/getMemberBindInfo",
+                // url: "https://192.168.110.85:6017/p-server//appServer/getMemberBindInfo",
+                type: "POST",
+                async: false,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify(cData),
+                success: function(data) {
+                    console.log(data)
+
+                    openId = data.data.openId
+
+                }
+            })
+
+        }
+        payType = 'WeChat_Pay'
+    } else {
+        window.location.href = 'error.html'
+    }
+    var num = 1 / window.devicePixelRatio;
+    document.write('<meta name="viewport" content="width=device-width,initial-scale=' + num + ',minimum-scale=' + num + ',maximum-scale=' + num + ',user-scalable=no" />')
+    //          alert(document.documentElement.clientWidth);
+    var fz = document.documentElement.clientWidth / 10;
+    document.getElementsByTagName("html")[0].style.fontSize = fz + "px";
+    </script>
+    <script src="./js/alipayjsapi.inc.min.js"></script>
+    <!-- <script src="./js/jweixin-1.4.0.js"></script> -->
+    <script src="./js/fastclick.js"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <script type="text/javascript">
+    window.onload = function() {
+        FastClick.attach(document.body)
+    }
+    </script>
+    <style>
+        body{
+            background-color: #ffffff;
+        }
+        .bg-img{
+            width: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .btn-box{
+            width: 8rem;
+            height: 1.9rem;
+            position: fixed;
+            left: 50%;
+            bottom: 15%;
+            transform: translateX(-50%);
+        }
+        .btn-img{
+            width: 100%;
+            height: 1.9rem;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 222;
+        }
+        #launch-btn{
+            width: 100%;
+            height: 1.9rem;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 500;
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body ontouchstart class="weui-wepay-pay-wrap">
+    <img src="./img/bg.png" style="width:100%" class="bg-img">
+    <div class="btn-box">
+        <img src="./img/btn.png" style="width:100%" class="btn-img">
+        <wx-open-launch-weapp style="" id="launch-btn" username="gh_99e3874a12f3" path="pages/index/index.html">
+            <template>
+                <style>.btn {
+                width:8rem;
+                height: 1.6rem;
+                font-size: 40px;
+                font-family: PingFangSC-Medium;
+                font-weight: 500;
+                color: #999999;
+                background: #fff;
+                line-height: 140px;
+                text-align: right;border:none; }</style>
+                <button class="btn"><span style="color:red;margin-right:3px">*</span>领取返利卡 ></button>
+            </template>
+        </wx-open-launch-weapp>
+    </div>
+    <script type="text/javascript">
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+    // 商户shinvite  代理 dlinvite 销售 saleinvite   个人invite
+    var member = getQueryString('member')
+    var query = getQueryString('query')
+
+
+
+
+
+    $(function() {
+        //         if(rebate
+        // rebateInfo)
+        // alert(rebateType)
+
+        if (payType == 'WeChat_Pay') {
+            // 获取微信config信息
+            var configData = new Object()
+            configData.url = window.location.href
+            configData.institutionNumber = '1004'
+            configData.appId = 'wx6ffebc6d59098add'
+            $.ajax({
+                url: "https://nb.hongsou.com.cn/shanhe-admin/wehatCard/getTicket",
+
+                //url: "https://192.168.110.250:6005/shanhe-admin/wehatCard/getTicket",
+                // url: "https://192.168.110.85:6017/p-server//appServer/getMemberBindInfo",
+                type: "POST",
+                async: false,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify(configData),
+                success: function(data) {
+                    // alert('获取返利信息开始')
+                    // alert(JSON.stringify(data))
+                    //  alert('获取返利信息结束')
+                    console.log(data)
+                    var info = data.data
+                    console.log(info)
+                    wx.config({
+                        debug: false,
+                        appId: info.appId, // 必填，公众号的唯一标识
+                        timestamp: info.timestamp, // 必填，生成签名的时间戳
+                        nonceStr: info.nonce_str, // 必填，生成签名的随机串
+                        signature: info.signature, // 必填，签名
+                        jsApiList: ["onMenuShareTimeline",
+                            "onMenuShareAppMessage",
+                            "checkJsApi",
+                            "scanQRCode"
+                        ], // 必填，需要使用的JS接口列表
+                        openTagList: ['wx-open-launch-weapp']
+                    });
+
+
+                    var btn = document.getElementById('launch-btn');
+                    btn.setAttribute('path', 'pages/vip/vip.html?appid=wx6ffebc6d59098add&openid=' + openId + '&merchantNumber=' + member + '&query=' + query)
+                    // alert('pages/vip/vip.html?appid=wx6ffebc6d59098add&openid=' + openId + '&merchantNumber=' + member + '&query=' + query)
+                    btn.addEventListener('launch', function(e) {
+                        console.log('success');
+                    });
+                    btn.addEventListener('error', function(e) {
+                        console.log('fail', e.detail);
+                    });
+                }
+
+
+
+
+
+
+            })
+        }
+
+
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $(function() {
+        pushHistory();
+
+        window.addEventListener("popstate", function(e) {
+            if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                // 微信
+                WeixinJSBridge.call('closeWindow');
+                //alert('123')
+                //wx.closeWindow();
+            }
+        }, false);
+
+
+
+
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+
+    })
+    </script>
+</body>
+
+</html>

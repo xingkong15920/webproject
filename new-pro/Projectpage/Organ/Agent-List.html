@@ -90,6 +90,9 @@
 		<script type="text/html" id="switchBar1">
 			<input type="checkbox" name="consumptionPreferences1" lay-skin="switch" lay-filter="consumptionPreferences1" lay-text="启用|停用" {{d.advertJurisdiction==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
 		</script>
+		<script type="text/html" id="switchBar2">
+			<input type="checkbox" name="consumptionPreferences2" lay-skin="switch" lay-filter="consumptionPreferences2" lay-text="开|关" {{d.agencyCustom==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
+		</script>
 		<script type="text/html" id="toolbar">
 			<a class="layui-btn layui-btn-xs" id="loginTo" lay-event="loginTo">登录</a>
 			
@@ -134,7 +137,7 @@
 						if(res[i].agentType == 2){
 							res[i].agentType1 = '市级服务商'
 						}
-						if(res[i].agentLevel == 3){
+						if(res[i].agentType == 3){
 							res[i].agentType1 =  '城市合伙人'
 						}
 					}
@@ -312,7 +315,14 @@ if(JSON.parse(sessionStorage.getItem("organUser")).institutionNumber == '1027'){
 							toolbar: '#switchBar',
 							width: 100,
 							title: '状态',
-						}, {
+						}
+						// , {
+						//  	align: 'center',
+						// 	toolbar: '#switchBar2',
+						// 	width: 130,
+						// 	title: '返利卡设置',
+						// }
+						, {
 							align: 'center',
 							field: 'agentBalance',
 							width: 180,

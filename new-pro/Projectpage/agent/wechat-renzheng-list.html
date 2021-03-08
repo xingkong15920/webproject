@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <style type="text/css">
+    .layui-table-cell {
+        height: auto;
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+
+
+    .tipTop {
+        width: 100%;
+        height: 50px;
+        margin-bottom: 10px;
+
+    }
+
+    .top-item {
+        width: 25%;
+        padding: 0 2.5%;
+        float: left;
+    }
+
+    .top-item-num {
+        color: #d6dde8;
+        font-size: 40px;
+    }
+
+    .top-item-text {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .tip-bot {
+        width: 100%;
+        height: 100px;
+
+    }
+
+    .bot-item {
+        width: 25%;
+        padding: 0 2.5%;
+        height: 100px;
+        float: left;
+        border-right: 1px solid #cccccc;
+    }
+
+    .bot-item:last-child {
+        border-right: none;
+    }
+
+    .bot-item-text {
+        color: #54667a;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="x-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a><cite>商户管理</cite></a>
+            <a><cite>码牌管理</cite></a>
+        </span>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <div class="layui-row layui-form x-so">
+            <div class="layui-input-inline">
+                <input type="text" id="merchantName" name="merchantName" placeholder="商户名称" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="merchantNumber" name="merchantNumber" placeholder="商户编号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" id="wecatSub" name="wecatSub" placeholder="微信商户号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <select name="paymentType" id="paymentType">
+                    <option value="">请选择通道</option>
+                    <!-- <option value="0">支付宝</option> -->
+                    <option value="1">微信</option>
+                    <option value="2">富友</option>
+                    <option value="4">新大陆</option>
+                    <option value="5">随行付</option>
+                    <option value="6">乐刷</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="开始时间" name="startTime" id="startTime">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" placeholder="结束时间" name="endTime" id="endTime">
+            </div> <button class="layui-btn" lay-submit="" lay-filter="sreach" id="search" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+        </div>
+        <table class="layui-hide" id="table1" lay-filter="useruv"></table>
+        <xblock class="layui-row">
+            <!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatano"><i class="layui-icon">&#xe601;</i>批量下载二维码</button> -->
+            <!-- <button class="layui-btn layui-btn-xs" data-type="getCheckDatayes"><i class="layui-icon">&#xe601;</i>批量下载二维码（有背景）</button> -->
+            <!-- <button class="layui-btn layui-btn-xs" data-type="getAllCheckDataall"><i class="layui-icon">&#xe601;</i>下载未绑定二维码（全部）</button>
+                <input type="hidden" id="getAllcount" name="getAllcount"> -->
+        </xblock>
+    </div>
+    <div class="cardQrcode" style="display: none;">
+            <!-- <div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div> -->
+            <img id="codeImg" style="width:340px; height:340px;margin: 20px;">
+        </div>
+        <div class="qdQrcode" style="display: none;height: 100%;width: auto;">
+            <!-- <div id="qrcode" style="width:340px; height:340px;margin: 20px;"></div> -->
+            <img id="qdcodeImg" style="width:auto; height:100%;">
+        </div>
+    <script type="text/html" id="tool">
+        <a class="layui-btn layui-btn-xs {{d.disable == 0?'':'hide'}}" lay-event="qdcode" style="margin-left:5px;">渠道二维码</a>
+            <a class="layui-btn layui-btn-xs" lay-event="reloadD" style="margin-left:5px;">更新认证状态</a>
+            
+        </script>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    function fun_date(aa) {
+        var date1 = new Date(),
+            time1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate(); //time1表示当前时间
+        var date2 = new Date(date1);
+        date2.setDate(date1.getDate() + aa);
+        var time2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
+
+        var a = time2.split('-')[0],
+            b = time2.split('-')[1],
+            c = time2.split('-')[2]
+        if (b < 10) {
+            b = 0 + b
+        }
+        if (c < 10) {
+            c = 0 + c
+        }
+        return a + '-' + b + '-' + c
+    }
+    //列表
+    layui.use(['laydate', 'table', 'layer'], function() {
+
+        $ = layui.jquery;
+        var layer = layui.layer;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var beginDate = fun_date(-6);
+
+        var endDate = fun_date(0);
+        laydate.render({
+            elem: '#startTime', //指定元素
+            value: beginDate
+        });
+        laydate.render({
+            elem: '#endTime',
+            value: endDate
+        });
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+        var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+        var institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+        var jData;
+        console.log(userNumber)
+        //方法级渲染
+        window.renzheng = function(data) {
+            console.log(data)
+            var sub = data.split('|')[0]
+            var type = data.split('|')[1]
+            var channel = data.split('|')[2]
+            var merchantNumber = data.split('|')[3]
+            var tjData = new Object()
+            tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+            tjData.merchantNumber = merchantNumber
+            tjData.subaccountNumber = sub
+            tjData.paymentType = type
+            tjData.paymentChannel = channel
+            layer.confirm('确认提交微信认证', {
+                icon: 3,
+                title: '提示'
+            }, function(index) {
+                layer.load(2, {
+                    shade: [0.4, '#393D49']
+                })
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'agMerchant/attestationSubmit',
+                    tjData,
+                    function(data) {
+                        layer.closeAll()
+                        if (data.code == 1000) {
+                            layer.msg(data.msg)
+                            table.reload('deviceInfo')
+
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+            })
+        }
+        window.renzheng1 = function(data) {
+            console.log(data)
+            var sub = data.split('|')[0]
+            var type = data.split('|')[1]
+            var channel = data.split('|')[2]
+            var merchantNumber = data.split('|')[3]
+            var tjData = new Object()
+            tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+            tjData.merchantNumber = merchantNumber
+            tjData.subaccountNumber = sub
+            tjData.paymentType = type
+            tjData.paymentChannel = channel
+            console.log(type)
+            if (type != 4) {
+                layer.confirm('确认提交微信认证', {
+                    icon: 3,
+                    title: '提示'
+                }, function(index) {
+                    
+                    layer.load(2, {
+                        shade: [0.4, '#393D49']
+                    })
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        'agMerchant/attestationModify',
+                        tjData,
+                        function(data) {
+                            layer.closeAll()
+                            if (data.code == 1000) {
+                                layer.msg(data.msg)
+                                table.reload('deviceInfo')
+                                layer.closeAll()
+                            } else {
+                                layer.msg(data.msg)
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                })
+            } else {
+                layer.open({
+                    type: 2,
+                    title: '提交认证',
+                    shade: 0.5,
+                    area: [$(window).width() * 0.9 + 'px', '90%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Merchants-List-rate-new-edit.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传w参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
+            }
+        }
+        window.ewm = function(data) {
+            console.log(data)
+
+            var tjData = new Object()
+            // tjData.merchantNumber = jgData.merchantNumber
+            // tjData.subaccountNumber = data
+            var sub = data.split('|')[0]
+            var type = data.split('|')[1]
+            var channel = data.split('|')[2]
+            var merchantNumber = data.split('|')[3]
+            var tjData = new Object()
+            tjData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+            tjData.merchantNumber = merchantNumber
+            tjData.subaccountNumber = sub
+            tjData.paymentType = type
+            tjData.paymentChannel = channel
+            var index = layer.load(2, { shade: [0.4, '#393D49'] })
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'agMerchant/getSubWecatQrcode',
+                tjData,
+                function(data) {
+                    layer.closeAll()
+                    if (data.code == 1000) {
+                        if(data.data.indexOf('http') >=0){
+                                    $('#codeImg').attr('src', data.data)
+                                    }else{
+                                        $('#codeImg').attr('src', 'data:image/png;base64,' + data.data)
+                                    }
+                        layer.open({
+                            type: 1,
+                            shadeClose: true,
+                            shade: 0.5,
+                            title: false,
+                            area: ['380px', '380px'],
+                            content: $('.cardQrcode'),
+                        });
+                        // setTimeout(function(){
+                        //  // parent.layer.close(index)
+                        //  parent.location.reload()
+                        // },500); 
+
+
+                    } else {
+                        layer.msg(data.msg)
+
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+
+        function tableRender() {
+            console.log(JSON.parse(sessionStorage.getItem('agentUser')))
+            table.render({
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'agWeChatMange/getSubWechat',
+                where: {
+
+                    "merchantName": $('#merchantName').val().trim(),
+                    "merchantNumber": $('#merchantNumber').val().trim(),
+                    "wecatSub": $('#wecatSub').val().trim(),
+                    "paymentType": $('#paymentType').val().trim(),
+                    "startTime": $('#startTime').val().trim(),
+                    "endTime": $('#endTime').val().trim(),
+                    "agentNumber": userNumber,
+
+                },
+                method: 'post',
+                contentType: 'application/json',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+
+                parseData: function(res) {
+                    //res 即为原始返回的数据
+                    if (res.data == null) {
+                        $('.downCode').hide()
+                        return
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data.agWeSubList, //解析数据列表
+                    };
+                },
+                elem: '#table1',
+                page: true,
+                height: 'full-210',
+                //method: "post",
+                id: 'deviceInfo',
+                cols: [
+                    [{
+                        field: 'merchantNumber',
+                        title: '商户编号',
+                        align: 'center'
+                    }, {
+                        field: 'merchantName',
+                        title: '商户名称',
+                        align: 'center'
+                    }, {
+                        field: 'wecatSub',
+                        title: '微信商户号',
+                        align: 'center'
+                    }, {
+                        field: 'paymentChannelName',
+                        title: '通道',
+                        align: 'center'
+                    }, {
+                        field: 'Status',
+                        title: '认证状态',
+                        align: 'center',
+                        templet: function(data) {
+                            var str = ''
+                            var str1 = "'" + data.subaccountNumber + '|' + data.paymentType + '|' + data.paymentChannel + '|'  + data.merchantNumber + "'"
+                            // console.log(str1)
+                            var sub = "'" + data.subaccountNumber + "'"
+                            switch (data.wxApplyStatus) {
+                                case -1:
+                                    return '未入驻微信'
+                                    break;
+                                case 0:
+                                    str += '未认证' + '</br>'
+                                    str += '<span style="color:rgb(62, 132, 233);cursor:pointer"  onclick="renzheng(' + str1 +
+                                        ')">提交认证</span>'
+                                    return str
+                                    break;
+                                case 1:
+                                    return '已认证'
+                                    break;
+                                case 2:
+                                    return '审核中'
+                                    break;
+                                case 3:
+                                    str += '待联系人确认信息' + '</br>'
+                                    str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + str1 +
+                                        ')" >小程序码</span>'
+                                    return str
+                                    break;
+                                case 4:
+                                    str += '待法人授权' + '</br>'
+                                    str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + str1 +
+                                        ')">小程序码</span>'
+                                    return str
+                                    break;
+                                case 5:
+                                    str += '待门店授权' + '</br>'
+                                    str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + str1 +
+                                        ')">小程序码</span>'
+                                    return str
+                                    break;
+                                case 6:
+                                    str += '审核驳回' + '</br>'
+                                    str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="renzheng1(' + str1 +
+                                        ')">修改认证信息</span>'
+                                    return str
+                                    break;
+                                case 7:
+                                    str += '已冻结' + '</br>'
+                                    str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="ewm(' + str1 +
+                                        ')">小程序码</span>'
+                                    return str
+                                    break;
+                                case 8:
+                                    str += '已作废' + '</br>'
+                                    str += '<span style="color:rgb(62, 132, 233);cursor:pointer" onclick="renzheng1(' + str1 +
+                                        ')">提交认证</span>'
+                                    return str
+                                    break;
+                                default:
+                                    return '--'
+                                    break;
+                            }
+                        }
+                    }, {
+                        title: '操作',
+                        align: 'center',
+                        toolbar: "#tool",
+                        minWidth: 300
+                    }]
+                ],
+                done: function(res, curr, count) {
+                    //得到数据总量
+                    console.log(count);
+                    $("#getAllcount").val(res.nobandRows);
+                    jData = res.data
+                    console.log(jData)
+                }
+            })
+        }
+        tableRender()
+        $('#search').click(function() {
+            tableRender()
+        })
+
+        // 根據條件重载表格
+        var $ = layui.$,
+            active = {
+                reload: function() {
+                    // 获取上面查询框的值
+                    var status = $("#status option:selected").val();
+                    var shopname = $("#shopname").val();
+                    //执行重载
+                    table.reload('deviceInfo', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        where: {
+                            status: status,
+                            shopname: shopname.trim()
+                        }
+                    });
+                },
+                generateCode: function() {
+
+                    layer.prompt({
+                        title: '请输入要生成码牌的数量！(1-30)'
+                    }, function(pass, index) {
+                        console.log(pass, index)
+                        if (isNaN(pass) == true) {
+                            layer.msg('请输入1-30的数字')
+                            return
+                        }
+                        if (pass > 30) {
+                            layer.msg('单次生成码牌数量不得大于30')
+                            return
+                        }
+                        var index = layer.load(2, { shade: [0.4, '#393D49'] })
+                        CmsUtility.postAjaxCall(
+                            //系统设置
+                            CmsConfig.addressUrl.Agent.GenerateCode, {
+                                "institutionNumber": JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber,
+                                "Number": pass,
+                                "agentNumber": userNumber
+                            },
+                            function(data) {
+                                layer.closeAll()
+                                if (data.code == 1000) {
+                                    console.log(data)
+                                    layer.closeAll()
+                                    layer.msg('生成成功')
+
+                                    layui.table.reload('deviceInfo')
+                                    l
+                                } else {
+                                    layer.msg(data.msg)
+
+                                }
+                            },
+                            function(data) {
+                                console.log('222')
+                            }
+                        )
+                        // layui.table.reload('YLBlist');
+                    });
+                },
+                AllgetCheckDataall: function() {
+                    var b = table.checkStatus('deviceInfo').data;
+                    console.log(b)
+
+                    layer.open({
+                        type: 2,
+                        title: '下载码牌',
+                        shade: 0.5,
+                        area: [$(window).width() * 0.3 + 'px', '40%'],
+                        maxmin: false,
+                        resize: false,
+                        content: ['downCode.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            iframe.subPage('', institutionNumber)
+
+                        }
+                    });
+
+                },
+                //打包当前页下载二维码！！！！！！
+                getCheckDataall: function() {
+                    var b = table.checkStatus('deviceInfo').data;
+                    console.log(b)
+
+                    if (b.length == 0) {
+                        console.log()
+                        // layer.confirm('确定要下载当前页的二维码?', {
+                        //           btn: ['确定', '取消'] //按钮
+                        //        }, function() {
+                        //          console.log(jData)
+                        //          var a1 = jData.length;
+                        //      var kuai = 350; //600 -> 800 小400+120
+                        //      var kuai2 = 664;
+                        //      var kuai3 = 180; //600->500 左移230
+                        //      var kuai4 = 370; //570->950 下280
+                        //      var url = '';
+                        var code = '';
+                        for (var i = 0; i < jData.length; i++) {
+                            if (code == '') {
+                                code += jData[i].equipmentNumber;
+                            } else {
+                                code += "|" + jData[i].equipmentNumber;
+                            }
+                        }
+                        var id = code;
+                        console.log(id)
+                        //      window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.todownmyziliao +"?qrcodeId=" + id + "&institutionNumber=" + institutionNumber + "&mailBox=" + 1111;
+                        //      layer.closeAll()
+
+                        layer.open({
+                            type: 2,
+                            title: '下载码牌',
+                            shade: 0.5,
+                            area: [$(window).width() * 0.3 + 'px', '40%'],
+                            maxmin: false,
+                            resize: false,
+                            content: ['downCode.html'],
+                            success: function(layero, index) {
+                                // 获取子页面的iframe
+                                var iframe = window['layui-layer-iframe' + index];
+                                iframe.subPage(id, institutionNumber)
+
+                            }
+                        });
+
+                        //        }
+                        // )
+                    } else {
+                        var a1 = b.length;
+                        var kuai = 350; //600 -> 800 小400+120
+                        var kuai2 = 664;
+                        var kuai3 = 180; //600->500 左移230
+                        var kuai4 = 370; //570->950 下280
+                        var url = '';
+                        var code = '';
+                        for (var i = 0; i < b.length; i++) {
+                            if (code == '') {
+                                code += b[i].equipmentNumber;
+                            } else {
+                                code += "|" + b[i].equipmentNumber;
+                            }
+                        }
+                        var id = code;
+                        console.log(id)
+                        layer.open({
+                            type: 2,
+                            title: '下载码牌',
+                            shade: 0.5,
+                            area: [$(window).width() * 0.3 + 'px', '40%'],
+                            maxmin: false,
+                            resize: false,
+                            content: ['downCode.html'],
+                            success: function(layero, index) {
+                                // 获取子页面的iframe
+                                var iframe = window['layui-layer-iframe' + index];
+                                iframe.subPage(id, institutionNumber)
+
+                            }
+                        });
+                    }
+
+                },
+                getCheckDatano: function() {
+                    var b = table.checkStatus('deviceInfo').data;
+                    var a1 = b.length;
+                    var kuai = 350; //600 -> 800 小400+120
+                    var kuai2 = 664;
+                    var kuai3 = 180; //600->500 左移230
+                    var kuai4 = 370; //570->950 下280
+                    var url = '';
+                    var code = '';
+                    for (var i = 0; i < b.length; i++) {
+                        if (url == '' && code == '') {
+                            code += b[i].QRCode;
+                        } else {
+                            code += "|" + b[i].QRCode;
+                        }
+                    }
+                    var id = encodeURI(code);
+                    window.location.href = ".todownmyziliao?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 200 + "&logo2=" + 780 + "&backtype=noback";
+                },
+                getCheckDatayes: function() {
+                    var b = table.checkStatus('deviceInfo').data;
+                    var a1 = b.length;
+                    var kuai = 350; //600 -> 800 小400+120
+                    var kuai2 = 664;
+                    var kuai3 = 180; //600->500 左移230
+                    var kuai4 = 370; //570->950 下280
+                    var url = '';
+                    var code = '';
+                    for (var i = 0; i < b.length; i++) {
+                        if (url == '' && code == '') {
+                            code += b[i].QRCode;
+                        } else {
+                            code += "|" + b[i].QRCode;
+                        }
+                    }
+                    var id = encodeURI(code);
+                    window.location.href = ".todownmyziliao?qrcodeId=" + id + "&shu=" + a1 + "&kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 200 + "&logo2=" + 780 + "&backtype=yesback";
+                },
+                getAllCheckDataall: function() {
+                    layer.confirm('确定要下载所有未绑定的二维码?', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function() {
+
+                        var kuai = 350; //600 -> 800 小400+120
+                        var kuai2 = 664;
+                        var kuai3 = 180; //600->500 左移230
+                        var kuai4 = 370; //570->950 下280
+
+                        window.location.href = CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.todownziliao + "?kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 220 + "&logo2=" + 780 + "&backtype=allback" + "&agNumber=" + JSON.parse(sessionStorage.getItem('agentUser')).Number;
+
+                        layer.closeAll()
+                    })
+                    // var shopName = $("#shopname").val();
+                    // var getAllcount = $("#getAllcount").val();
+                    // var kuai = 350; //600 -> 800 小400+120
+                    // var kuai2 = 664;
+                    // var kuai3 = 180; //600->500 左移230
+                    // var kuai4 = 370; //570->950 下280
+                    // window.location.href = ".todownziliao?kuan=" + kuai + "&kuan2=" + kuai2 + "&kuan3=" + kuai3 + "&kuan4=" + kuai4 + "&logo1=" + 200 + "&logo2=" + 780 + "&backtype=allback" + "&status=0&Limit=" + getAllcount + "&shopName=" + encodeURI(encodeURI(shopName));
+                }
+            };
+
+        table.on('tool(useruv)', function(obj) {
+            var data = obj.data;
+            console.log(data)
+            var url = data.QRAdress;
+            var id = data.QRCode;
+            if (obj.event === 'eQRcode') {
+                window.location.href = CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.setcode + "?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber + '&institutionNumber=' + institutionNumber;
+                // setcode
+                // CmsUtility.postAjaxCall(
+                //      //系统设置
+                //  CmsConfig.addressUrl.Agent.setcode,
+                //  {
+                //      "qrcodeurl":data.codeAddress,
+                //      "qrcodeId":data.equipmentNumber
+                //  },
+                //  function(data){
+                //      if(data.code == 1000){
+
+                //          // layer.msg('更改成功')
+
+                //      }else{
+                //          layer.msg(data.msg)
+
+                //      }
+                //  },
+                //  function(data){
+                //      console.log('222')
+                //  }
+                // )
+            }else if (obj.event === 'qdcode') {
+                            console.log(data)
+                            var sendD = new Object()
+                            sendD.institutionNumber = data.institutionNumber
+                            sendD.paymentChannel = data.paymentChannel
+                            sendD.paymentType = data.paymentType
+                            // return
+                            layer.load(2, {
+                                shade: [0.4, '#393D49']
+                            })
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                'agMerchant/getPaymentChannelQrcode',
+                                sendD,
+                                function(data) {
+                                    layer.closeAll()
+                                    if (data.code == 1000) {
+                                        $('#qdcodeImg').attr('src', data.data)
+                                        setTimeout(function() {
+                                            layer.open({
+                                                type: 1,
+                                                shadeClose: true,
+                                                shade: 0.5,
+                                                title: false,
+                                                area: ['auto', '75%'],
+                                                content: $('.qdQrcode'),
+                                            });
+                                        }, 100);
+                                    } else {
+                                        layer.msg(data.msg)
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                },
+                                'get'
+                            )
+                        } else if (obj.event === 'reloadD') {
+                            console.log(data)
+                            layer.load(2, {
+                                shade: [0.4, '#393D49']
+                            })
+                            var tjData = new Object()
+                            tjData.institutionNumber = data.institutionNumber;
+                            tjData.merchantNumber = data.merchantNumber
+                            tjData.subaccountNumber = data.subaccountNumber
+                            tjData.paymentType = data.paymentType
+                            tjData.paymentChannel = data.paymentChannel
+                            // return
+                            CmsUtility.postAjaxCall(
+                                //系统设置
+                                'agMerchant/attestationSubmit',
+                                tjData,
+                                function(data) {
+                                    layer.closeAll('loading')
+                                    if (data.code == 1000) {
+                                        table.reload('zzhList')
+                                        layer.msg(data.msg)
+                                    } else {
+                                        layer.msg(data.msg)
+                                    }
+                                },
+                                function(data) {
+                                    console.log('222')
+                                }
+                            )
+                        } else if (obj.event === 'QRcode') {
+                var kuai = 350; //600 -> 800 小400+120
+                var kuai2 = 664;
+                var kuai3 = 180; //600->500 左移230
+                var kuai4 = 370; //570->950 下280
+                window.location.href = CmsConfig.ServiceUrl.ApiRootUrl + CmsConfig.addressUrl.Agent.downservletImages + "?qrcodeId=" + data.equipmentNumber + '&institutionNumber=' + institutionNumber;
+                // window.location.href = CmsConfig.ServiceUrl.ApiRootUrl +CmsConfig.addressUrl.Agent.setcode + "?qrcodeurl=" + data.codeAddress + "&qrcodeId=" + data.equipmentNumber;
+            } else if (obj.event == 'UNcode') {
+
+                layer.confirm('是否要解除绑定?', function(index) {
+                    // 发送请求
+                    console.log(data)
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Agent.updateShopCode, {
+                            "equipmentNumber": data.equipmentNumber,
+                            "equipmentType": 0,
+                            "merchantNumber": data.merchantNumber,
+                            "shopNumber": data.shopNumber
+                        },
+                        function(data) {
+                            if (data.code == 1000) {
+                                console.log(data)
+                                setTimeout(function() {
+                                    layer.closeAll()
+                                    layui.table.reload('deviceInfo')
+                                    layer.msg('解绑成功')
+
+                                }, 16);
+
+                            } else {
+                                layer.msg(data.msg)
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+
+                });
+            } else if (obj.event == 'zhuangtaidisable') {
+                var mydata = {
+                    "shangnumber": data.UserNumber,
+                    "Enable": 0
+                }
+                // 禁用分类
+                layer.confirm('真的要启用吗?', function(index) {
+                    // 发送请求
+
+                });
+            }
+            if (obj.event == 'zhuangtaiopen') {
+                var mydata = {
+                    "shangnumber": data.UserNumber,
+                    "Enable": 1
+                }
+                // 禁用分类
+                layer.confirm('真的要禁用吗?', function(index) {
+                    // 发送请求
+                    $.ajax({
+                        type: "post",
+                        url: ".saleStatus",
+                        async: true,
+                        data: mydata,
+                        success: function(data) {
+                            if (data.result == "success") {
+                                layer.msg("操作成功", {
+                                    icon: 1,
+                                    time: 1000
+                                }, function() {
+                                    window.location.reload();
+                                });
+
+                            } else {
+                                layer.alert(data.msg, {
+                                    icon: 6
+                                }, function() {
+                                    return
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+        });
+        $('.x-body .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+    function generateCode() {
+        var num = 100;
+        $.ajax({
+            type: "post",
+            url: ".generateCode",
+            data: {
+                "num": num
+            },
+            async: true,
+            success: function(data) {
+                if (data.result == "success") {
+                    layer.msg("生成成功", {
+                        icon: 1,
+                        time: 1000
+                    }, function() {
+                        window.location.reload();
+                    });
+                } else {
+                    layer.alert(data.msg, {
+                        icon: 6
+                    }, function() {
+                        return
+                    });
+                }
+            }
+        });
+    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .x-so input.layui-input {
+        width: 350px;
+    }
+
+    .layui-table tr td:first-child {
+        width: 150px;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-body">
+        <div class="layui-row" id="duliBox">
+            <div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
+                <div class="layui-input-inline">
+                    <select name="type" id="agentType">
+                            <option value="">请选择通道</option>
+                            <option value="0">富友</option>
+                            <option value="1">新大陆</option>
+                            <option value="2">随行付</option>
+                            <option value="3">乐刷</option>
+                        </select>
+                </div>
+                <div class="layui-input-inline coupons_screen">
+                    <span class="layui-btn" value="查询子账号" id="search"><i class="layui-icon">&#xe615;</i></span>
+                </div>
+                <div class="layui-input-inline coupons_screen">
+                    <a class="layui-btn layui-btn-xs" id="search1" lay-event="piliang">批量报备</a>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row" id="piliangBox" style="display: none">
+            <div class="layui-input-item">
+                <span style="color:red;display:block;margin-left:30px">*批量查询每个订单号必须分行显示</span>
+            </div>
+            <div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
+                <div class="layui-input-inline">
+                    <textarea style="width:400px;height:500px;padding:0;margin:0" name="batch1" id="batch1" placeholder="请输入订单编号，以|分割" autocomplete="off" class="layui-input">
+                    </textarea>
+                </div>
+                <div class="layui-input-inline coupons_screen">
+                    <span class="layui-btn" title="批量" id="search1"><i class="layui-icon">&#xe615;</i></span>
+                </div>
+                <div class="layui-input-inline coupons_screen">
+                    <a class="layui-btn layui-btn-xs" id="dandu" lay-event="dandu">单独校验</a>
+                </div>
+            </div>
+        </div>
+      
+        <div id="orderInfo1" style="display:none;margin-bottom:200px">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend style="font-weight: 500;">校验信息</legend>
+            </fieldset>
+            <div class="layui-input-item" id="orderInfoBox">
+            </div>
+        </div>
+    </div>
+    <script src="../../common/config-organ.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    //支付产品
+    // $("#zhifuchanpin").html(oneZ + '/' + twoZ )
+    // //提交地址
+    // //$("#tijiaodizhi").html('提交地址')
+    // //页面返还地址
+    // //$("#fanhuandizhi").html('页面返还地址')
+    // //服务器通知地址
+    // //$("#tongzhidizhi").html('通知地址')
+    // //状态
+
+    // //支付信息
+    // $("#tongdaodingdanhao").html(jgData.paymentOrderNumber)
+
+
+    // $("#miniAPPID").html(jgData.smallRoutineAPPID)
+    // $("#orderstate").html(jgData.orderState)
+    // $("#payTime").html(jgData.transactionTime)
+    // $("#orderMoney").html(jgData.transactionAmount)
+    // $("#yingfujine").html(jgData.transactionAmount)
+    // //
+    // var index = parent.layer.getFrameIndex(window.name);
+    // $('#quxiao').click(function() {
+
+    //     setTimeout(function() { parent.layer.close(index) }, 16);
+    // })
+    var paymentChannel = ''
+var paymentChannelType = ''
+    var subList = []
+    var strOrder = ''
+    var strList = new Array()
+    layui.use(['laydate', 'table', 'upload', 'form'], function() {
+        var $ = layui.jquery,
+            upload = layui.upload,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer;
+
+        $('#search').click(function() {
+            // if ($('#batch').val().trim() == '') {
+            //     layer.msg('请输入订单编号')
+            //     return
+            // }
+            // console.log('123')
+            // var index = layer.load(2, { shade: [0.4, '#393D49'] })
+            var agentType = $('#agentType').val()
+            if(agentType == ''){
+                layer.msg('请选择通道')
+                return  
+            }
+            if(agentType == 0){
+                paymentChannel = '1552268454451'
+                paymentChannelType = '2'
+            }
+            if(agentType == 1){
+                paymentChannel = '1555031780762'
+                paymentChannelType = '4'
+            }
+            if(agentType == 2){
+                paymentChannel = '1559007779365'
+                paymentChannelType = '5'
+            }
+            if(agentType == 3){
+                paymentChannel = '1555031780000'
+                paymentChannelType = '6'
+            }
+             var tjData = new Object()
+             tjData.institutionNumber = 1004
+             tjData.page = 1 
+             tjData.limit = 1000
+             tjData.paymentChannel = paymentChannel
+            subList = []
+            $.ajax({
+                type: 'get',
+                url: 'http://nb.51shanhe.com/shanhe-admin/channelSub/getChannelSubMer',
+                data: tjData,
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                success: function(data) {
+                    if (data.code == 1000) {
+                        var list = data.data.institutionSubaccountlist
+                        for(var i = 0 ; i < list.length;i++){
+                            var oob = new Object()
+                            oob.merchantNumber = list[i].merchantNumber
+                            oob.subaccountNumber = list[i].subaccountNumber
+                            subList.push(oob)
+                        }
+                        console.log(subList)
+                        layer.msg('获取成功，一共获取' + data.data.count + '条')
+                    } else {
+                        layer.closeAll()
+                        layer.msg(data.msg)
+                    }
+
+                }
+            })
+        })
+      
+
+
+        function foo(str) {
+            var temp = str.split(/[\n,]/g);
+            for (var i = 0; i < temp.length; i++) {
+                if (temp[i] == "") {
+                    temp.splice(i, 1);
+                    //删除数组索引位置应保持不变
+                    i--;
+                }
+            }
+            return temp
+        }
+        $('#search1').click(function() {
+            
+            
+            
+            strOrder = ''
+            getOrderInfo(0)
+
+            $('#orderInfoBox').html('')
+            $('#orderInfo1').show()
+            return false
+            var index = layer.load(2, { shade: [0.4, '#393D49'] })
+
+            var tjData = new Object()
+
+        })
+    })
+
+    function getOrderInfo(data) {
+        setTimeout(function() {
+            var num = data
+            
+            var tjData = new Object();
+                tjData.institutionNumber = '1004';
+                
+                tjData.subaccountNumber = subList[num].subaccountNumber
+                tjData.merchantNumber = subList[num].merchantNumber
+                tjData.paymentChannel = paymentChannel
+                tjData.jsapiPath = 'https://api.hongsou.com.cn/oneCode/'
+                tjData.wxType = 1
+                tjData.subappid = 'wx6ffebc6d59098add'
+                tjData.paymentType = paymentChannelType
+                tjData.appkey = 'ee0c28d7dbac34b60194792cc06cf257'
+                tjData.subscribeappid = 'wx6ffebc6d59098add'
+                var index = layer.load(2, { shade: [0.4, '#393D49'] })
+                CmsUtility.postAjaxCall(
+                    //系统设置
+                    'commonSub/weChatPut',
+                    tjData,
+                    function(data) {
+                        layer.closeAll()
+                        if (data.code == 1000) {
+                            // type111 = 2
+                            
+                            layer.msg(data.msg)
+                            // x_admin_close()
+                            // parent.layer.msg('生成成功')
+                            
+                            strOrder += '<span style="margin-left:30px">状态:' + data.msg + '/子账号:' + subList[num].subaccountNumber + '</span>' + '</br>'
+                                    $('#orderInfoBox').html(strOrder)
+                                    if (num == subList.length - 1) {
+                                        layer.closeAll()
+                                        return
+                                    }
+                                    getOrderInfo(num + 1)
+                                    return
+
+                        } else {
+                            var msgData = data.msg || '未返回信息'
+                        layer.msg(msgData)
+                        strOrder += '<span style="margin-left:30px;color:red">状态:' + msgData + '/子账号:' + subList[num].subaccountNumber + '</span>' + '</br>'
+                        $('#orderInfoBox').html(strOrder)
+                        if (num == strList.length - 1) {
+                            layer.closeAll()
+                            return
+                        }
+                        getOrderInfo(num + 1)
+                            layer.alert(data.msg)
+
+                        }
+                    },
+                    function(data) {
+                        console.log('222')
+                    }
+                )
+            
+           
+        }, 1000)
+    }
+    </script>
+</body>
+
+</html>

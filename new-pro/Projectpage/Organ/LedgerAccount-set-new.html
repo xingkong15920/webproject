@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <link rel="stylesheet" href="../../public/css/style.1.2.1.css">
+    <link rel="stylesheet" href="../../public/css/vipS.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/js/vue.min.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../public/js/data.js"></script>
+    <style type="text/css">
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: block;
+    }
+
+    .layui-table-cell {
+        height: auto;
+    }
+
+    .vipdetail {
+        height: 100%;
+        background: #f4f8fb;
+    }
+
+    .vipdetail .vipdetail_B {
+        height: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .vipdetail_B_D {
+        width: 100%;
+    }
+
+    .layui-table-view {
+        width: 100%;
+    }
+
+    .widthHalf .consumeTit {
+        justify-content: space-between;
+    }
+
+    .subAcFullright {
+        margin-left: auto;
+    }
+
+    .widthHalf {
+        margin: 0;
+    }
+
+    .layui-block {
+        height: 40px;
+        margin-bottom: 10px;
+    }
+
+    .layui-form-label {
+        width: 160px;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 350px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="x-body vipdetail layui-form" style="padding: 0;" lay-filter="cardAdd">
+        <div class="vipdetail_B " id="mDetails">
+            <div class="conBlock widthAll" style="width:100%">
+                <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;">
+                    <legend>分账设置</legend>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        返利卡收款账号
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="collectionNumber" id="collectionNumber" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        返利卡分账账号-乐刷
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="separateNumber" id="separateNumber" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        返利分账账号-官方-微信
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="weChatSeparateNumber" id="weChatSeparateNumber" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        返利分账账号-官方-支付宝
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商户号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="aliSeparateNumber" id="aliSeparateNumber" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        官方支付宝绑定账号
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">账号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="aliAccountNumber" id="aliAccountNumber" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="aliSeparateName" id="aliSeparateName" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        购卡分账比例设置
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <fieldset class="layui-elem-field site-demo-button" style="margin-left:30px">
+                                <legend style="font-size:18px;font-weight:bold">商家端购卡 <span style="color:red">注:商家与代理商分账比例之和不能大于100%</span></legend>
+                                <div class="layui-block">
+                                    <label class="layui-form-label" style="width:130px">商家分账比例</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="lockMerchantBuyCard" id="lockMerchantBuyCard" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">%</div>
+                                </div>
+                                <div class="layui-block">
+                                    <label class="layui-form-label" style="width:130px">代理商分账比例</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text"  name="agentBuyCard" id="agentBuyCard" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">%</div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="layui-elem-field site-demo-button" style="margin-left:30px">
+                                <legend style="font-size:18px;font-weight:bold">推荐人购卡</legend>
+                                <div class="layui-block">
+                                    <label class="layui-form-label" style="width:130px">推荐人分账比例</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="personalBuyCard" id="personalBuyCard" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">%</div>
+                                </div>
+                            </fieldset>
+                            <fieldset class="layui-elem-field site-demo-button" style="margin-left:30px">
+                                <legend style="font-size:18px;font-weight:bold">代理商推荐购卡</legend>
+                                <div class="layui-block">
+                                    <label class="layui-form-label" style="width:130px">代理商分账比例</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="agentRecommendBuyCard" id="agentRecommendBuyCard" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">%</div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <!-- <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        分账基础设置
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">总分账比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="sepAllScale" lay-verify="required|number" autocomplete="off" class="layui-input" id="fenzhang">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">分账手续费</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="separateCharge" id="separateCharge" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div> -->
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        返利卡分账比例设置
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">商家默认返现比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="merchantFefault" lay-verify="required|number" autocomplete="off" class="layui-input" id="merchantFefault">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">代理商返佣比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="agentRebate" id="agentRebate" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">推荐来源返佣比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="personalRebate" id="personalRebate" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <!-- <div class="layui-block">
+                                <label class="layui-form-label">锁客商家返佣比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lockMerchantRebate" id="lockMerchantRebate" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div> -->
+                            <div class="layui-block">
+                                <label class="layui-form-label">平台返佣比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="platformRebate" id="platformRebate" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">系统方返佣比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="systemRebate" id="systemRebate" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        消费返利佣金比例设置
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">推荐人佣金比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="distributionCommission" lay-verify="required|number" autocomplete="off" class="layui-input" id="distributionCommission">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">代理商佣金比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="agentCommission" id="agentCommission" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">平台佣金比例</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="platformCommission" id="platformCommission" lay-verify="required|number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        提现设置
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">最低提现余额(元)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lowestCash" lay-verify="required|number" autocomplete="off" class="layui-input" id="lowestCash">
+                                </div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">单笔提现上限(元)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="singlestrokeCash" id="singlestrokeCash" lay-verify="number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">每日提现上限(元)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="dateCash" id="dateCash" lay-verify="number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">每日提现次数限制(次)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="dateCashCount" id="dateCashCount" lay-verify="number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        微信返利出款账号设置
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">通道</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="" lay-verify="" autocomplete="off" readonly="readonly" value="官方-微信" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">子商户号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="contributeWeChat" id="contributeWeChat" lay-verify="number" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="layui-elem-quote consumeTit" style="margin-left:10px">
+                        <i class="leftline"></i>
+                        支付宝返利出款账号设置
+                    </blockquote>
+                    <div class="vipdetail_B_D">
+                        <div class="layui-form-item">
+                            <div class="layui-block">
+                                <label class="layui-form-label">通道</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="" lay-verify="" autocomplete="off" readonly="readonly" value="官方-支付宝" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-block">
+                                <label class="layui-form-label">子商户号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="contributeAlipay" id="contributeAlipay" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="width:100%">
+                        <div class="layui-input-block" style="margin-left:0;margin-top:15px">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-footer" style="">
+                                <button class="layui-btn" lay-submit="" lay-filter="add">提交分账设置</button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </fieldset>
+        </div>
+        <script type="text/html" id="toolbar">
+            <a class="layui-btn layui-btn-xs" id="edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" id="delete" lay-event="delete">删除</a>
+        </script>
+        <script src="../../common/config-organ.js"></script>
+        <script src="../../common/utility.js"></script>
+        <script>
+        var rList = []
+        var userNumber = JSON.parse(sessionStorage.getItem('organUser')).institutionNumber;
+
+
+        function fc() {
+
+            $('#searchBox').show()
+            event.stopPropagation();
+
+
+        }
+        // getInsSeparate()
+
+        function getInsSeparate() {
+            var tjData = new Object()
+            tjData.institutionNumber = userNumber
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'sepAccount/getSepPerson',
+                JSON.stringify(tjData),
+                function(data) {
+                    if (data.code == 1000) {
+                        rList = data.data.resultList
+                        var str = ''
+                        for (var i = 0; i < rList.length; i++) {
+                            var type;
+                            if (rList[i].separateType == 0) {
+                                type = '商户'
+                            }
+                            if (rList[i].separateType == 1) {
+                                type = '个人'
+                            }
+                            if (rList[i].separateType == 2) {
+                                type = '系统'
+                            }
+                            str += '<div class="layui-btn layui-btn-primary" data-value="' + rList[i].separateName + '/' + type + '/' + rList[i].separateNumber +
+                                '" data-id="' + rList[i].separateNumber + '" style="width:100%;margin-left:0" onclick="clickS(this)" >' + rList[i].separateName + ' / ' + type + ' / ' + rList[i].separateNumber + '</div>'
+                        }
+                        document.getElementById('searchBox').innerHTML = str
+
+                        // layer.msg('保存成功')
+                        // setTimeout(function(){
+                        //  x_admin_close()
+                        // },500);
+
+                    } else {
+                        layer.msg(data.msg)
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        }
+
+        $('#mDetails').click(function() {
+            $('#searchBox').hide()
+        })
+
+
+        layui.use(['table', 'laydate', 'element'], function() {
+            var table = layui.table,
+                $ = layui.$,
+                element = layui.element,
+                laydate = layui.laydate,
+                form = layui.form;
+
+
+            window.clickS = function(e) {
+                $('#insSeparateNumber').val(e.getAttribute('data-value'))
+                $('#insSeparateNumber').attr('separateNumber', e.getAttribute('data-id'))
+                $('#searchBox').hide()
+
+
+            }
+            /*---------- 积分时效 ----------*/
+
+
+
+            var getData = new Object()
+            getData.institutionNumber = userNumber
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'rebateCard/getrebateCard',
+                JSON.stringify(getData),
+                function(data) {
+                    if (data.code == 1000) {
+                        console.log(rList)
+                        var numInfo = ''
+                        // for(var i = 0 ; i < rList.length;i++){
+                        //     var type;
+                        //     if (rList[i].separateType == 0) {
+                        //         type = '商户'
+                        //     }
+                        //     if (rList[i].separateType == 1) {
+                        //         type = '个人'
+                        //     }
+                        //     if (rList[i].separateType == 2) {
+                        //         type = '系统'
+                        //     }
+                        //     if(data.data.separateNumber == rList[i].separateNumber){
+                        //         numInfo  = rList[i].separateName + '/' + type + '/' + rList[i].separateNumber
+                        //     }
+                        // }
+                        //  $('#insSeparateNumber').val(numInfo)
+                        //         $('#insSeparateNumber').attr('separateNumber',data.data.separateNumber)
+
+                        form.val('cardAdd', {
+                            "collectionNumber": data.data.collectionNumber,
+                            "separateNumber": data.data.separateNumber,
+                            "merchantFefault": data.data.merchantFefault * 100,
+                            "agentRebate": data.data.agentRebate * 100,
+                            "personalRebate": data.data.personalRebate * 100,
+                            "lockMerchantRebate": data.data.lockMerchantRebate * 100,
+                            "platformRebate": data.data.platformRebate * 100,
+                            "systemRebate": data.data.systemRebate * 100,
+                            "lowestCash": data.data.lowestCash / 100,
+                            "singlestrokeCash": data.data.singlestrokeCash / 100,
+                            "dateCash": data.data.dateCash / 100,
+                            "dateCashCount": data.data.dateCashCount,
+                            "contributeWeChat": data.data.contributeWeChat,
+                            "contributeAlipay": data.data.contributeAlipay,
+
+                            "weChatSeparateNumber":data.data.weChatSeparateNumber,
+                            "aliSeparateNumber":data.data.aliSeparateNumber,
+                            "agentBuyCard":data.data.agentBuyCard* 100 || '',   
+                            "lockMerchantBuyCard":data.data.lockMerchantBuyCard* 100|| '',   
+                            "personalBuyCard":data.data.personalBuyCard* 100 || '',
+                            "agentRecommendBuyCard":data.data.agentRecommendBuyCard*100 || '',
+                            "aliAccountNumber":data.data.aliAccountNumber || '',
+                            "aliSeparateName":data.data.aliSeparateName || '',
+                            "distributionCommission":data.data.distributionCommission*100,
+                            "agentCommission":data.data.agentCommission*100,
+                            "platformCommission":data.data.platformCommission*100,
+
+                        })
+
+                    } else {
+                        layer.msg('未查询到分账设置')
+
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+            $('#addFz').click(function() {
+                layer.open({
+                    type: 2,
+                    title: '添加分账人',
+                    shade: 0.5,
+                    area: [$(window).width() * 0.5 + 'px', '60%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['add-fxMan.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传w参
+
+                    }
+                });
+            })
+
+            function tableRender() {
+                var tjData = new Object()
+                tjData.institutionNumber = userNumber
+                table.render({
+                    //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+                    //url: './json/vip-card.json',
+                    url: CmsConfig.ServiceUrl.ApiRootUrl + 'sepAccount/getSepPerson',
+                    where: tjData,
+                    method: 'post',
+                    contentType: 'application/json',
+                    elem: '#members',
+                    height: 'full-210',
+                    id: 'members',
+                    response: {
+                        //res 即为原始返回的数据
+                        "statusCode": "1000", //解析接口状态
+
+                    },
+                    // request: {
+                    //     pageName: ' ' //页码的参数名称，默认：page
+                    //     ,limitName: ' ' //每页数据量的参数名，默认：limit
+                    //   },
+                    parseData: function(res) { //res 即为原始返回的数据
+                        if (res.data == null) {
+                            return
+                        }
+                        return {
+                            "code": res.code, //解析接口状态
+                            "msg": res.msg, //解析提示文本
+                            "count": res.data.count, //解析数据长度
+                            "data": res.data.resultList, //解析数据列表
+                        };
+                    },
+                    cols: [
+                        [{
+                            align: 'center',
+                            field: 'separateName',
+                            title: '分账人名称',
+                        }, {
+                            align: 'center',
+                            field: 'separateCell',
+                            title: '分账人手机号',
+                        }, {
+                            align: 'center',
+                            field: 'separateType',
+                            title: '分账人类型',
+                            templet: function(data) {
+                                if (data.separateType == 0) {
+                                    return '商户'
+                                }
+                                if (data.separateType == 1) {
+                                    return '个人'
+                                }
+                                if (data.separateType == 2) {
+                                    return '系统'
+                                }
+                            }
+                        }, {
+                            align: 'center',
+                            field: 'separateNumber',
+                            title: '微信OpenId/商户号',
+                        }, {
+                            align: 'center',
+                            title: '操作',
+                            toolbar: '#toolbar',
+                            minWidth: 200
+                        }]
+                    ],
+                    page: true,
+                    done: function(res, curr, count) {
+
+                        if (res.data == null) {
+                            if (!!res.msg) {
+                                //layer.msg(res.msg)
+                            } else {
+                                layer.msg('无数据')
+                            }
+
+                        } else {
+                            //layer.msg(res.msg)
+                        }
+                    }
+                });
+            }
+            tableRender()
+
+            form.on('submit(add)', function(data, index) {
+                var dataInfo = data.field
+
+                dataInfo.institutionNumber = userNumber
+                // dataInfo.separateNumber = $('#insSeparateNumber').attr('separatenumber')
+                // console.log(dataInfo)
+                // dataInfo.sepAllScale = dataInfo.sepAllScale / 100
+                //     dataInfo.comsumerMaxScale = dataInfo.comsumerMaxScale / 100
+                //     dataInfo.agentMaxScal = dataInfo.agentMaxScal / 100
+                //     dataInfo.merchantMaxScxal = dataInfo.merchantMaxScxal / 100
+                //     dataInfo.insMaxScxal = dataInfo.insMaxScxal / 100
+                //     dataInfo.systemScxal = dataInfo.systemScxal / 100
+                //     dataInfo.collectionPayment = 6
+                dataInfo.merchantFefault = dataInfo.merchantFefault / 100
+                dataInfo.agentRebate = dataInfo.agentRebate / 100
+                dataInfo.personalRebate = dataInfo.personalRebate / 100
+                // dataInfo.lockMerchantRebate = dataInfo.lockMerchantRebate / 100
+                dataInfo.platformRebate = dataInfo.platformRebate / 100
+                dataInfo.systemRebate = dataInfo.systemRebate / 100
+
+                dataInfo.agentBuyCard = dataInfo.agentBuyCard / 100
+                dataInfo.lockMerchantBuyCard = dataInfo.lockMerchantBuyCard / 100
+                dataInfo.personalBuyCard = dataInfo.personalBuyCard / 100
+                dataInfo.agentRecommendBuyCard = dataInfo.agentRecommendBuyCard /100
+                if((dataInfo.agentBuyCard+dataInfo.lockMerchantBuyCard) >1){
+                    layer.msg('购卡分账的商家分账比例与代理商分账比例不能大于100%')
+                    return false
+                }
+                console.log(dataInfo)
+                if(parseFloat(dataInfo.distributionCommission) + parseFloat(dataInfo.agentCommission) + parseFloat(dataInfo.platformCommission) > 100){
+                    layer.msg('消费返利佣金比例设置总和不得大于100%')
+                    return false
+                }
+                dataInfo.distributionCommission = dataInfo.distributionCommission /100
+                 dataInfo.agentCommission = dataInfo.agentCommission /100
+                 dataInfo.platformCommission = dataInfo.platformCommission /100
+
+                console.log(dataInfo)
+                layer.confirm('确认要保存分账设置?', function(index) {
+                    CmsUtility.postAjaxCallJson(
+                        //系统设置
+                        'rebateCard/addrebateCard',
+                        JSON.stringify(dataInfo),
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                layer.msg('更改成功')
+
+
+                            } else {
+                                layer.msg(data.msg)
+
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                })
+                return false;
+
+            })
+
+            table.on('tool(members)', function(obj) {
+                var data = obj.data;
+                console.log(data)
+                if (obj.event === 'edit') { //编辑
+                    layer.open({
+                        type: 2,
+                        title: '编辑',
+                        shade: 0.5,
+                        area: [$(window).width() * 0.5 + 'px', '60%'],
+                        maxmin: true,
+                        resize: false,
+                        content: ['edit-fxMan.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传参
+                            iframe.subPage(data)
+                        }
+                    });
+                } else if (obj.event == 'delete') {
+                    layer.confirm('确定删除此（' + data.separateName + '）分账人吗？', {
+                        icon: 3,
+                        title: '提示'
+                    }, function(index) {
+                        // 发送请求
+                        console.log(data.institutionumber)
+                        var addData = new Object()
+                        addData.institutionNumber = data.institutionNumber
+                        addData.id = data.id
+                        addData.deletionFlag = 1
+                        // 发送请求
+                        CmsUtility.postAjaxCallJson(
+                            //系统设置
+                            'sepAccount/updateSepPerson',
+                            JSON.stringify(addData),
+                            function(data) {
+                                if (data.code == 1000) {
+
+                                    layer.msg('删除成功')
+                                    layui.table.reload('members');
+                                } else {
+                                    layer.msg(data.msg)
+                                }
+                            },
+                            function(data) {
+                                console.log('222')
+                            }
+                        )
+                    });
+                }
+            });
+            var $ = layui.$,
+                active = {
+                    addDisP: function() {
+                        layer.open({
+                            type: 2,
+                            title: '添加分销人',
+                            area: ['700px', '450px'],
+                            fixed: true, //不固定
+                            maxmin: false,
+                            content: 'add-fxMan.html'
+                        });
+                    },
+                    addDisL: function() {
+                        layer.open({
+                            type: 2,
+                            title: '添加分销人等级',
+                            area: ['600px', '80%'],
+                            fixed: true, //不固定
+                            maxmin: false,
+                            content: 'add-fxLevel.html'
+                        });
+                    }
+                };
+            $('.layui-btn').on('click', function() {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        });
+
+        </script>
+</body>
+
+</html>

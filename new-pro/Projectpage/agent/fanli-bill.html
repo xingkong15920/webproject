@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
+    <link rel="stylesheet" href="../../public/css/xadmin.css">
+    <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    .layui-btn+.layui-btn {
+        margin-left: -2px;
+    }
+
+    .hi {
+        display: none;
+    }
+
+    .sh {
+        display: inline-block;
+    }
+
+    .tips {
+        width: 14px;
+        height: 14px;
+        line-height: 14px;
+        text-align: center;
+        color: red;
+        border-radius: 50%;
+        margin-left: 10px;
+        display: inline-block;
+        cursor: pointer;
+        z-index: 999;
+    }
+
+    /* tbody:last-child tr:last-child {
+        color: red;
+        border-top: 2px solid black;
+    } */
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+    </style>
+</head>
+
+<body id="iosiframe">
+    <div class="x-nav">
+        <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">返利账单</a>
+        </span>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+    </div>
+    <div class="x-body">
+        <div class="layui-row">
+            <div class="layui-form layui-col-md4 layui-col-sm4 layui-col-xs4 x-so">
+                <div class="layui-input-inline">
+                    <select name="periodType" id="periodType">
+                        <option value="0">日账单</option>
+                        <option value="1">月账单</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" name="couponName" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" name="couponName" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
+                </div>
+                <!-- <div class="layui-input-inline">
+                        <input type="text" name="couponName" id="couponName" placeholder="上级服务商号或用户名" autocomplete="off" class="layui-input">
+                    </div> -->
+                <div class="layui-input-inline coupons_screen">
+                    <button class="layui-btn" data-type="reload" title="搜索" id="search"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </div>
+        </div>
+       
+         <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
+         <xblock>
+            <button class="layui-btn" id="baobiao"><i class="layui-icon"></i>报表</button>
+        </xblock>
+        <table class="layui-hide" id="members" lay-filter="members"></table>
+    </div>
+    <script type="text/html" id="switchBar">
+        <input type="checkbox" name="consumptionPreferences" lay-skin="switch" lay-filter="consumptionPreferences" lay-text="启用|停用" {{d.state==0 ? 'checked' : ''}} value="{{d.agentNumber}}">
+        </script>
+    <script type="text/html" id="tool">
+        <a class="layui-btn layui-btn-xs lookBill {{d.weekOrMonthState=='0'?'hi':'sh'}}  {{d.weekOrMonthState=='1'?'hi':'sh'}} {{agentLevel=='D'?'hi':'sh'}}" lay-event="look">商户明细</a>
+         <a class="layui-btn layui-btn-xs lookBill {{d.weekOrMonthState=='0'?'hi':'sh'}}  {{d.weekOrMonthState=='1'?'hi':'sh'}} {{agentLevel=='D'?'hi':'sh'}}" lay-event="lookagent">服务商明细</a>
+          <a class="layui-btn layui-btn-xs lookBill {{d.weekOrMonthState=='0'?'hi':'sh'}}  {{d.weekOrMonthState=='1'?'hi':'sh'}} {{agentLevel=='D'?'hi':'sh'}}" lay-event="looksale">销售明细</a>
+        </script>
+    <script src="../../common/config-agent.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+    // <a class="layui-btn layui-btn-danger layui-btn-xs" id="logout" lay-event="logout">删除</a>
+    // function changeRes(res){
+    //  if(res == null){
+    //      return
+    //  }
+    //  var res = res.agentRegisterlist
+    //  for(var i = 0 ; i < res.length;i++){
+    //      if(res[i].agentType == 0){
+    //          res[i].agentType1 = '未处理'
+    //      }
+    //      if(res[i].agentType == 1){
+    //          res[i].agentType1 = '已打款'
+    //      }
+    //      if(res[i].agentType == 2){
+    //          res[i].agentType1 = '已驳回'
+    //      }
+    //  }               
+    //  return res
+    // }
+    function reData(data) {
+
+        var oob = new Object()
+        oob.directlyUnderMoney = 0
+        oob.dbAgProfitMoney = 0
+        oob.profitMoney = 0
+        oob.importExportAmount = 0
+        oob.earlyStageBalance = 0
+        oob.endTermBalance = 0
+        oob.totalOrder = 0
+        oob.totalMoney = 0
+        oob.refundTotalOrder = 0
+        oob.refundTotalMoney = 0
+        oob.money = 0
+
+        oob.orederNumber = '本页合计'
+        oob.billType = '--'
+        oob.importExportIdentification = '合计'
+        oob.inserttime = '--'
+        oob.remarks = '--'
+        oob.heji = true
+        for (var i = 0; i < data.length; i++) {
+            oob.directlyUnderMoney += parseFloat(data[i].directlyUnderMoney)
+            oob.dbAgProfitMoney += parseFloat(data[i].dbAgProfitMoney)
+            oob.profitMoney += parseFloat(data[i].profitMoney)
+            oob.importExportAmount += parseFloat(data[i].importExportAmount)
+            oob.earlyStageBalance += parseFloat(data[i].earlyStageBalance)
+            oob.endTermBalance += parseFloat(data[i].endTermBalance)
+            oob.totalOrder += parseFloat(data[i].totalOrder)
+            oob.totalMoney += parseFloat(data[i].totalMoney)
+            oob.refundTotalOrder += parseFloat(data[i].refundTotalOrder)
+            oob.refundTotalMoney += parseFloat(data[i].refundTotalMoney)
+            oob.money += parseFloat(data[i].money)
+
+        }
+        oob.directlyUnderMoney = (oob.directlyUnderMoney).toFixed(2)
+        oob.dbAgProfitMoney = (oob.dbAgProfitMoney).toFixed(2)
+        oob.profitMoney = (oob.profitMoney).toFixed(2)
+        oob.totalMoney = (oob.totalMoney).toFixed(2)
+        oob.refundTotalMoney = (oob.refundTotalMoney).toFixed(2)
+        oob.money = (oob.money).toFixed(2)        
+        oob.importExportAmount = (oob.importExportAmount).toFixed(2)
+        oob.earlyStageBalance = '--'
+        oob.endTermBalance = '--'
+        data.push(oob)
+        console.log(oob)
+        return data
+    }
+
+    function verTime() {
+        var arr1 = $('#startTime').val().split('-');
+        var arr2 = $('#endTime').val().split('-');
+        arr1[1] = parseInt(arr1[1]);
+        arr1[2] = parseInt(arr1[2]);
+        arr2[1] = parseInt(arr2[1]);
+        arr2[2] = parseInt(arr2[2]);
+        var flag = true;
+        if (arr1[0] == arr2[0]) { //同年
+            if (arr2[1] - arr1[1] > 3) { //月间隔超过3个月
+                flag = false;
+            } else if (arr2[1] - arr1[1] == 3) { //月相隔3个月，比较日
+                if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+                    flag = false;
+                }
+            }
+        } else { //不同年
+            if (arr2[0] - arr1[0] > 1) {
+                flag = false;
+            } else if (arr2[0] - arr1[0] == 1) {
+                if (arr1[1] < 10) { //开始年的月份小于10时，不需要跨年
+                    flag = false;
+                } else if (arr1[1] + 3 - arr2[1] < 12) { //月相隔大于3个月
+                    flag = false;
+                } else if (arr1[1] + 3 - arr2[1] == 12) { //月相隔3个月，比较日
+                    if (arr2[2] > arr1[2]) { //结束日期的日大于开始日期的日
+                        flag = false;
+                    }
+                }
+            }
+        }
+        if (!flag) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    var serverUrl = window.parent.serverUrl
+    //var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+    var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
+    var agentLevel = JSON.parse(sessionStorage.getItem('agentUser')).agentLevel;
+
+    layui.use(['laydate', 'table', 'form'], function() {
+        var laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form;
+        laydate.render({
+            elem: '#startTime', //指定元素
+            value: new Date(new Date() - 1000 * 60 * 60 * 24 * 6)
+        });
+        laydate.render({
+            elem: '#endTime', //指定元素
+            value: new Date()
+        });
+
+
+        $('#baobiao').click(function() {
+            
+            var newData = new Object()
+            newData.institutionNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber
+            newData.agentNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number
+            newData.startDate = $('#startTime').val()
+            newData.endDate = $('#endTime').val()
+            newData.periodType = $('#periodType').val()
+            layer.open({
+                type: 2,
+                title: '下载报表',
+                shade: 0.5,
+                area: ['500px', '270px'],
+                maxmin: false,
+                resize: false,
+                content: ['down-excel.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+                    iframe.subPage(newData, '8')
+                }
+            });
+        })
+        window.jyClick = function(data, data1) {
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
+        //方法级渲染  
+        function tableRender() {
+            var sTiem = $('#startTime').val()
+            var eTime = $('#endTime').val()
+
+            table.render({
+                //url: serverUrl + 'memberCard/getAssociatorCards?userNumber=' + userNumber,
+                //url: './json/vip-card.json',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'agentBill/getRebateBills' ,
+                where: {
+                    "startDate": sTiem,
+                    "endDate": eTime,
+                    "periodType": $('#periodType').val(),
+                    "agentNumber":userNumber
+                },
+                elem: '#members',
+                height: 'full-210',
+                id: 'vip_cardList',
+                response: {
+                    //res 即为原始返回的数据
+                    "statusCode": "1000", //解析接口状态
+
+                },
+                contentType: 'application/json',
+                method:'post',
+                // request: {
+                //     pageName: ' ' //页码的参数名称，默认：page
+                //     ,limitName: ' ' //每页数据量的参数名，默认：limit
+                //   },
+                parseData: function(res) { //res 即为原始返回的数据
+                    if (res.data == null) {
+                        return
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data.list, //解析数据列表
+                    };
+                },
+                cols: [
+                    [{
+                        align: 'center',
+                        field: 'billNo',
+                        title: '账单号',
+                    }, {
+                        align: 'center',
+                        field: 'periodTypeS',
+                        title: '账单类型',
+
+                    }, {
+                        align: 'center',
+                        field: 'merchantsNum',
+                        title: '动销商户数',
+                    }, {
+                        align: 'center',
+                        field: 'buyNum',
+                        title: '买卡人数',
+
+                    }, {
+                        align: 'center',
+                        field: 'buyMoney',
+                        title: '买卡返利总金额',
+                        templet: function(data) {
+                            return '￥' + parseFloat(data.buyMoney).toFixed(2)
+                        },
+
+                    }, {
+                        align: 'center',
+                        field: 'consumeNum',
+                        title: '消费笔数',
+
+                    }, {
+                        align: 'center',
+                        field: 'consumeMoney',
+                        title: '消费返利总金额',
+                        templet: function(data) {
+                            return '￥' + parseFloat(data.consumeMoney).toFixed(2)
+                        },
+
+                    }, {
+                        align: 'center',
+                        field: 'alwaysRebates',
+                        title: '返利金额汇总',
+                        templet: function(data) {
+                            return '￥' + parseFloat(data.alwaysRebates).toFixed(2)
+                        },
+
+                    },{
+                        align: 'center',
+                        field: 'statisticalData',
+                        title: '账单日期',
+                    },{
+                        field: 'operation',
+                        title: '操作',
+                        toolbar: "#tool",
+                        align: 'center',
+                        width:300
+                    }]
+                ],
+                page: true,
+                done: function(res, curr, count) {
+
+                    if (res.data == null) {
+                        if (!!res.msg) {
+                            //layer.msg(res.msg)
+                        } else {
+                            layer.msg('无数据')
+                        }
+
+                    } else {
+                        //layer.msg(res.msg)
+                    }
+                    
+                    // $('.lookBill').eq($('.lookBill').length - 1).hide()
+                }
+            });
+        }
+        console.log()
+        tableRender()
+        $('#search').click(function() {
+            tableRender()
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+        })
+        //监听状态操作
+        form.on('switch(consumptionPreferences)', function(data) {
+            // layer.tips('广告状态：' + (this.checked ? '已开启' : '已关闭'), data.othis)
+            console.log(data)
+            // var tjData = new Object();
+            // tjData.institutionNumber = userNumber;
+            // tjData.number = data.value;
+            // tjData.state = this.checked?'0':'1';
+            // console.log(data)
+            var addData = new Object()
+            addData.institutionNumber = userNumber
+            addData.deletionFlag = this.checked ? '0' : '1';
+            addData.agentNumber = data.value
+
+            console.log(addData)
+            // 发送请求
+            CmsUtility.postAjaxCall(
+                //系统设置
+                CmsConfig.addressUrl.Mechanism.updateAgentRegister,
+                addData,
+                function(data) {
+                    if (data.code == 1000) {
+
+                        layer.msg('更改成功')
+                        // tableRender()
+                    } else {
+                        layer.msg(data.msg)
+                    }
+                },
+                function(data) {
+                    console.log('222')
+                }
+            )
+        });
+        //监听工具条
+
+        $('#addA').click(function() {
+            layer.open({
+                type: 2,
+                title: '添加服务商',
+                shade: 0.5,
+                area: [$(window).width() * 0.9 + 'px', '90%'],
+                maxmin: false,
+                resize: false,
+                content: ['Agent-add.html'],
+                success: function(layero, index) {
+                    // 获取子页面的iframe
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数child传w参
+
+                }
+            });
+        })
+        table.on('tool(members)', function(obj) {
+            var data = obj.data;
+            if (obj.event === 'loginTo') { //直接登录商户后台
+                window.open("http://www.baidu.com?useNumber=123456", "useNumber=123456")
+            } else if (obj.event === 'look') { //费率
+                // if (data.heji == true) {
+                //     layer.msg('该行为合计，没有明细')
+                //     return
+                // }
+                layer.open({
+                        type: 2,
+                        title: '查看商户明细',
+                        shade: 0.5,
+                        area: ['70%', '90%'],
+                        maxmin: false,
+                        resize: false,
+                        content: ['fanli-bill-detail.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传w参
+                            iframe.subPage(data, userNumber,$('#periodType').val())
+                        }
+                    })
+            }else if (obj.event === 'lookagent') { //费率
+                // if (data.heji == true) {
+                //     layer.msg('该行为合计，没有明细')
+                //     return
+                // }
+                layer.open({
+                        type: 2,
+                        title: '查看服务商明细',
+                        shade: 0.5,
+                        area: ['70%', '90%'],
+                        maxmin: false,
+                        resize: false,
+                        content: ['fanli-bill-agent.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传w参
+                            iframe.subPage(data, userNumber,$('#periodType').val())
+                        }
+                    })
+            }else if (obj.event === 'looksale') { //费率
+                // if (data.heji == true) {
+                //     layer.msg('该行为合计，没有明细')
+                //     return
+                // }
+                layer.open({
+                        type: 2,
+                        title: '查看销售明细',
+                        shade: 0.5,
+                        area: ['70%', '90%'],
+                        maxmin: false,
+                        resize: false,
+                        content: ['fanli-bill-sale.html'],
+                        success: function(layero, index) {
+                            // 获取子页面的iframe
+                            var iframe = window['layui-layer-iframe' + index];
+                            // 向子页面的全局函数child传w参
+                            iframe.subPage(data, userNumber,$('#periodType').val())
+                        }
+                    })
+            } else if (obj.event === 'pass') { //设置密码
+                layer.open({
+                    type: 2,
+                    title: '重置密码',
+                    shade: 0.5,
+                    area: ['460px', '350px'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Agent-List-pass.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'edit') { //编辑商户
+                layer.open({
+                    type: 2,
+                    title: '编辑',
+                    shade: 0.5,
+                    area: ['90%', '90%'],
+                    maxmin: false,
+                    resize: false,
+                    content: ['Agent-List-edit.html'],
+                    success: function(layero, index) {
+                        // 获取子页面的iframe
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        iframe.subPage(data, userNumber)
+                    }
+                });
+            } else if (obj.event === 'logout') { //注销
+                var zhuxiaoData = {
+                    card: data.card,
+                    cardType: 5
+                }
+                layer.confirm('真的删除此服务商么', {
+                    icon: 3,
+                    title: '提示'
+                }, function(index) {
+                    // 发送请求
+                    console.log(data)
+                    var addData = new Object()
+                    addData.institutionNumber = userNumber
+                    addData.deletionFlag = '1'
+                    addData.agentNumber = data.agentNumber
+
+                    console.log(addData)
+                    // 发送请求
+                    CmsUtility.postAjaxCall(
+                        //系统设置
+                        CmsConfig.addressUrl.Mechanism.updateAgentRegister,
+                        addData,
+                        function(data) {
+                            if (data.code == 1000) {
+
+                                layer.msg('删除成功')
+                                tableRender()
+                            } else {
+                                layer.msg(data.msg)
+                            }
+                        },
+                        function(data) {
+                            console.log('222')
+                        }
+                    )
+                });
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>

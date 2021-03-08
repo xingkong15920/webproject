@@ -25,8 +25,8 @@
         justify-content: center;
         align-items: center;
         width:100%;
-		height:90px;
-		background:rgba(246,246,246,1);
+        height:90px;
+        background:rgba(246,246,246,1);
     }
 
     .actListli {
@@ -67,44 +67,43 @@
         margin: 0 auto;
         position: relative;
     }
-	#img-item{
-		width: 100%;
-		height: 100%;
-	}
-	#img-tips{
-		width: 220px;
-		height: 232px;
-		position: absolute;
-		top: 35px;
-		right: 30px;
-		cursor: pointer;
-        z-index: 999;
-	}
-	[v-cloak] {
+    #img-item{
+        width: 100%;
+        height: 100%;
+    }
+    #img-tips{
+        width: 220px;
+        height: 232px;
+        position: absolute;
+        top: 35px;
+        right: 110px;
+        cursor: pointer;
+    }
+    [v-cloak] {
       display: none;
     }
     #yunying{
-    	position: fixed;
-    	right: 0;
-    	top: 120px;
-    	width: 340px;
-    	height: 270px;
+        position: fixed;
+        right: 0;
+        top: 120px;
+        width: 340px;
+        height: 270px;
     }
     #yunying-big{
-        width: 140px;
-        height: 100%;
+        width: 150px;
+    height: 74%;
         position: absolute;
-        right: 0;
+        right: 20px;
         top: 0;
     }
     #yunying-small{
         width: 200px;
         height: 200px;
         position: absolute;
-        left: 0;
-        top: 20px;
+        left: -30px;
+        top: 0;
         border: 1px solid black;
-        z-index: 99999;
+        z-index:9999
     }
     #div1{
         width: 120px;
@@ -138,9 +137,9 @@
     </div>
     <div id="yunying" >
         <img src="" style="display:none" id="yunying-small">
-        <img src="../../public/images/yunying.png" id="yunying-big">
-        <div id="div1"></div>
-        <div id="div2"></div>
+        <img src="../../public/images/yunying-new.png" id="yunying-big">
+        <!-- <div id="div1"></div>
+        <div id="div2"></div> -->
     </div>
     
     <script src="../../common/config-agent.js"></script>
@@ -148,7 +147,7 @@
     <script>
     var insNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
     // var merNumber = JSON.parse(sessionStorage.getItem('agentUser')).Number;
- 	var thatNumber = 0
+    var thatNumber = 0
     var actlist = [{
         'activityType': 0,
         'activityName': '收银码牌',
@@ -161,22 +160,22 @@
         'check': false,
     }, {
         'activityType': 2,
-        'activityName': '闪盒收银APP',
+        'activityName': '乐返APP',
         'new': false,
         'check': false,
     }, {
         'activityType': 3,
-        'activityName': '闪盒收银PC',
+        'activityName': '乐返PC',
         'new': false,
         'check': false,
     }, {
         'activityType': 4,
-        'activityName': '闪盒助手',
+        'activityName': '乐返助手',
         'new': false,
         'check': false,
     }, {
         'activityType': 5,
-        'activityName': '闪盒Pay',
+        'activityName': '乐返服务商助手',
         'new': false,
         'check': false,
     }, {
@@ -192,67 +191,67 @@
     }]
 
     var img = [{
-            img: '../../public/images/mapai.png',
-            imgTips: '../../public/images/mapai-1.png'
+            img: '../../public/images/mapai1.png',
+            imgTips: '../../public/images/mapai-11.png'
         },
         {
-            img: '../../public/images/yinxiang.png',
-            imgTips: '../../public/images/yinxiang-1.png'
+            img: '../../public/images/yinxiang1.png',
+            imgTips: '../../public/images/yinxiang-11.png'
         },
         {
-            img: '../../public/images/app.png',
-            imgTips: '../../public/images/app-1.png'
+            img: '../../public/images/app1.png',
+            imgTips: '../../public/images/app-21.png'
         },
         {
-            img: '../../public/images/chajian.png',
-            imgTips: '../../public/images/chajian-1.png'
+            img: '../../public/images/chajian1.png',
+            imgTips: '../../public/images/chajian-11.png'
         },
         {
-            img: '../../public/images/zhushou.png',
-            imgTips: '../../public/images/zhushou-1.png'
+            img: '../../public/images/zhushou1.png',
+            imgTips: '../../public/images/zhushou-11.png'
         },
         {
-            img: '../../public/images/shanhepay.png',
-            imgTips: '../../public/images/shanhepay-1.png'
+            img: '../../public/images/lefanpay1.png?v=123',
+            imgTips: '../../public/images/lefanpay-11.png'
         },
         {
-            img: '../../public/images/qingwa.png',
-            imgTips: '../../public/images/qingwa-1.png'
+            img: '../../public/images/qingwa1.png',
+            imgTips: '../../public/images/qingwa-11.png'
         },
         {
-            img: '../../public/images/qingting.png',
-            imgTips: '../../public/images/qingting-1.png'
+            img: '../../public/images/qingting1.png?v=2',
+            imgTips: '../../public/images/qingting-11.png'
         },
     ]
     function attrSrc(){
-    	console.log(img[thatNumber])
-    	$('#img-item').attr('src',img[thatNumber].img)
-    	$('#img-tips').attr('src',img[thatNumber].imgTips)
+        console.log(img[thatNumber])
+        $('#img-item').attr('src',img[thatNumber].img)
+        $('#img-tips').attr('src',img[thatNumber].imgTips)
     }
     attrSrc()
     $('#img-tips').click(function(){
-    	if(thatNumber == 2){
-    		window.open('http://down.51shanhe.com/shanhe.apk')
-    	}
-    	if(thatNumber == 3){
-    		window.open('http://down.51shanhe.com/shanhe.rar')
-    	}
-    	if(thatNumber == 0 || thatNumber == 1 ||thatNumber == 6 ||thatNumber == 7 ){
-    		window.open('http://wpa.qq.com/msgrd?v=3&uin=1056678874&site=qq&menu=yes')
-    	}
+        if(thatNumber == 2){
+            window.open('http://down.hongsou.com.cn/lefan.apk')
+        }
+        if(thatNumber == 3){
+            window.open('http://down.hongsou.com.cn/lefan.rar')
+        }
+        if(thatNumber == 0 || thatNumber == 1 ||thatNumber == 6 ||thatNumber == 7 ){
+            window.open('http://wpa.qq.com/msgrd?v=3&uin=1056678874&site=qq&menu=yes')
+        }
     })
-    $('#div1').mouseover(function() {
-          $('#yunying-small').attr('src','../../public/images/yunying2.jpeg')  
-            $('#yunying-small').show()
-    })
-    $('#div1').mouseout(function() {
-       $('#yunying-small').hide()
-    })
-    $('#div2').mouseover(function() {
+    // $('#div1').mouseover(function() {
+    //       $('#yunying-small').attr('src','../../public/images/yunying2.jpeg')  
+    //         $('#yunying-small').show()
+    // })
+    // $('#div1').mouseout(function() {
+    //    $('#yunying-small').hide()
+    // })
+    $('#yunying-big').mouseover(function() {
           $('#yunying-small').attr('src','../../public/images/yunying1.jpeg')  
             $('#yunying-small').show()
     })
-    $('#div2').mouseout(function() {
+    $('#yunying-big').mouseout(function() {
        $('#yunying-small').hide()
     })
     layui.use(['table', 'laydate', 'element'], function() {
@@ -277,24 +276,24 @@
                     thatNumber = e
                     attrSrc()
                     // switch (e.activityType) {
-                    // 	case 0:
-                    // 		console.log(000)
-                    // 		break;
-                    // 	case 1:
-                    // 		console.log(111)
-                    // 		break;
-                    // 	case 2:
-                    // 		console.log(222)
-                    // 		break;
-                    // 	case 3:
-                    // 		console.log(333)
-                    // 		break;
-                    // 	case 4:
-                    // 		console.log(444)
-                    // 		break;
-                    // 	case 5:
-                    // 		console.log(555)
-                    // 		break;
+                    //  case 0:
+                    //      console.log(000)
+                    //      break;
+                    //  case 1:
+                    //      console.log(111)
+                    //      break;
+                    //  case 2:
+                    //      console.log(222)
+                    //      break;
+                    //  case 3:
+                    //      console.log(333)
+                    //      break;
+                    //  case 4:
+                    //      console.log(444)
+                    //      break;
+                    //  case 5:
+                    //      console.log(555)
+                    //      break;
                     // }
                 }
             },
@@ -304,15 +303,15 @@
         })
 
         // $('.actListadd .actBody').on('click', function() {
-        // 	console.log(111)
-        // 	layer.open({
-        // 		type: 2,
-        // 		area: ['600px', '650px'],
-        // 		fixed: false, //不固定
-        // 		maxmin: true,
-        // 		resize: false,
-        // 		content: 'vipactivityadd.html'
-        // 	});
+        //  console.log(111)
+        //  layer.open({
+        //      type: 2,
+        //      area: ['600px', '650px'],
+        //      fixed: false, //不固定
+        //      maxmin: true,
+        //      resize: false,
+        //      content: 'vipactivityadd.html'
+        //  });
         // });
     });
     </script>

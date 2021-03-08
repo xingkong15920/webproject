@@ -19,6 +19,10 @@
       <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style>
+        ul,li{
+        padding: 0;
+        margin: 0;
+    }
         .widthauto {
                 width: auto !important;
             }
@@ -72,6 +76,46 @@
             }
             .nowHide{
                 display: none;
+            }
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
+            input[type="number"]{
+                -moz-appearance: textfield;
+            }
+            .saleList{
+                border: 1px solid #e6e6e6;
+                padding: 0 10px;
+                background: #fff;
+                border-radius: 6px;
+                margin-bottom: 10px;
+            }
+            .sale-item{
+                padding: 9px 0;
+                height:60px
+            }
+            .numInput{
+                width: 100px;
+                display: inline-block !important;
+                margin: 0 5px;
+            }
+            .delBtn{
+                width: 60px;
+                display: inline-block;
+                height: 60px;
+                cursor: pointer;
+                margin-left: 10px;
+            }
+            .delBtn i {
+                border-radius: 50%;
+                height: 60px;
+                width: 60px;
+                line-height: 20px;
+                text-align: center;
+                font-size: 24px;
+                background: #FF5722;
+                color: #fff;
             }
         </style>
 </head>
@@ -338,51 +382,204 @@
                 </fieldset>
                 <fieldset class="layui-elem-field layui-field-title ls" style="display:none">
                     <legend>乐刷通道</legend>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">支/微费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsweChatRate" lay-verify="aliorwxRate" autocomplete="off" placeholder="建议费率 0.23-0.60" class="layui-input" value="0.30">
+                    <fieldset style="border-color: #fff;">
+                        <legend  style="font-size:12px">扫码成本</legend>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">支/微费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsweChatRate" lay-verify="aliorwxRate" autocomplete="off" placeholder="建议费率 0.23-0.60" class="layui-input" value="0.30">
+                                </div>
                             </div>
-                        </div>
-                        <!-- <div class="layui-inline">
+                            <!-- <div class="layui-inline">
                             <label class="layui-form-label">支付宝费率(%)</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="lsaliRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
                             </div>
                         </div> -->
+                            <div class="layui-inline">
+                                <label class="layui-form-label">云闪付费率1(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsUnionPayRate" lay-verify="ysf1Rate" autocomplete="off" placeholder="建议费率 0.23-1.00" class="layui-input" value="0.23">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">云闪付费率2(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsUnionPayRatetwo" lay-verify="ysf2Rate" autocomplete="off" placeholder="建议费率 0.52-1.00" class="layui-input" value="0.52">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">京东钱包费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsJDWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">qq钱包费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsQQWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                </div>
+                            </div>
+                            <div class="layui-inline  nowHide">
+                                <label class="layui-form-label">翼支付费率(%)</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="lsWingPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset style="border-color: #fff">
+                        <legend style="font-size:12px">刷卡成本</legend>
+                        <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">云闪付费率1(%)</label>
+                            <label class="layui-form-label">借记卡D1(%)</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="lsUnionPayRate" lay-verify="ysf1Rate" autocomplete="off" placeholder="建议费率 0.23-1.00" class="layui-input" value="0.23">
+                                <input type="text" name="lsDebitCardD1" lay-verify="lsDebitCardD1" autocomplete="off" placeholder="建议费率 0.40-1" class="layui-input" value="0.40">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">云闪付费率2(%)</label>
+                            <label class="layui-form-label">贷记卡D1(%)</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="lsUnionPayRatetwo" lay-verify="ysf2Rate" autocomplete="off" placeholder="建议费率 0.52-1.00" class="layui-input" value="0.52">
+                                <input type="text" name="lsCreditCardD1" lay-verify="lsCreditCardD1" autocomplete="off" placeholder="建议费率 0.51-1.00" class="layui-input" value="0.51">
                             </div>
                         </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">京东钱包费率(%)</label>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">借记卡D0(%)</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="lsJDWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                <input type="text" name="lsDebitCardD0" lay-verify="lsDebitCardD0" autocomplete="off" placeholder="建议费率 0.42-1.00" class="layui-input" value="0.42">
                             </div>
                         </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">qq钱包费率(%)</label>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">贷记卡D0(%)</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="lsQQWallet" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
-                            </div>
-                        </div>
-                        <div class="layui-inline  nowHide">
-                            <label class="layui-form-label">翼支付费率(%)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="lsWingPayRate" lay-verify="baifenbi" autocomplete="off" placeholder="请输入费率" class="layui-input" value="0.30">
+                                <input type="text" name="lsCreditCardD0" lay-verify="lsCreditCardD0" autocomplete="off" placeholder="建议费率 0.53-1.00" class="layui-input" value="0.53">
                             </div>
                         </div>
                     </div>
+                      </fieldset>
+                    
                 </fieldset>
+                <fieldset class="layui-elem-field layui-field-title levelA" style="display:none">
+                    <legend>花呗分期抽成比例</legend>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">花呗分期抽成比例(%)</label>
+                        <div class="layui-input-inline" style="width:200px">
+                            <input type="number" id="proportional" name="proportional" required="" lay-verify="" autocomplete="off" class="layui-input" placeholder="建议1-100之间" onmousewheel="return false;">
+                        </div>
+                    </div>
+                </fieldset>
+                <blockquote class="layui-elem-quote" style="margin-top:10px;">
+                    补贴设置
+                    <input type="checkbox" name="subsidySetting" lay-skin="switch" lay-filter="subsidySetting" lay-text="开|关">
+                </blockquote>
+                <div id="butieBox" style="display:none">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:100px">补贴金额</label>
+                        <div class="layui-input-block" style="width:300px">
+                            <input type="number" name="cappedAmount" lay-verify="butie" autocomplete="off" placeholder="请输入补贴金额,必须为数字" class="layui-input" value="">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:100px">补贴商户类型</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="personal" title="个人" lay-filter="merType">
+                            <input type="checkbox" name="individual" title="个体" lay-filter="merType">
+                            <input type="checkbox" name="enterprise" title="企业" lay-filter="merType">
+                        </div>
+                    </div>
+                    <div class="box-item">
+                        <div class="layui-form-item" style="display:inline-block">
+                            <label class="layui-form-label"><span style="color:red;font-size:25px;vertical-align: middle">*</span>补贴时间</label>
+                            <div class="layui-input-block" style="display:inline-block;width:200px;margin-left:0px;">
+                                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                <input type="text" lay-verType="tips" name="startTime" lay-verify="butie" autocomplete="off" placeholder="请选择开始日期" class="layui-input" id="startTime">
+                            </div>
+                            <div style="width:30px;text-align:center;display:inline-block" class="sfzNoChangqi">-</div>
+                            <div class="layui-input-block sfzNoChangqi" style="display:inline-block;width:200px;margin-left:5px;">
+                                <div class="layui-input-clear"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                <input type="text" lay-verType="tips" name="endTime" lay-verify="butie" autocomplete="off" placeholder="请选择结束日期" class="layui-input" id="endTime">
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset class="layui-elem-field layui-field-title ">
+                        <legend>延续补贴时间</legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">延续补贴时间</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="continuing" value="0" title="不延续" checked="">
+                                <input type="radio" name="continuing" value="1" title="1个月">
+                                <input type="radio" name="continuing" value="2" title="2个月">
+                                <input type="radio" name="continuing" value="3" title="3个月">
+                                <input type="radio" name="continuing" value="4" title="4个月">
+                                <input type="radio" name="continuing" value="5" title="5个月">
+                                <input type="radio" name="continuing" value="6" title="6个月">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title ">
+                        <legend>累计计算数量</legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">累计计算数量</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="cumulative" value="0" title="不累计" checked="">
+                                <input type="radio" name="cumulative" value="1" title="累计">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title ">
+                        <legend>补贴标准</legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:100px">交易类型</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="subsidyStandard0" title="扫码" lay-filter="standType">
+                                <input type="checkbox" name="subsidyStandard8" title="刷脸" lay-filter="standType">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">补贴标准</label>
+                            <div class="layui-input-block">
+                                月日均笔数 ≥ <input type="number" name="transactionNumber" class="layui-input numInput" placeholder="请输入数字" lay-verify="butie"> 、交易金额 ≥ <input type="number" name="transactionAmount" class="layui-input numInput" placeholder="请输入数字" lay-verify="butie"> 元
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field layui-field-title ">
+                        <legend>补贴规则</legend>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">补贴规则</label>
+                            <div class="layui-input-inline" style="">
+                                <button type="button" class="layui-btn" id="addSale" style="margin-right: 15px;">添加</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-input-block">
+                                <ul class="layui-input-inline saleList" id="saleList" style="width: calc(100% - 300px);">
+                                    <li class="sale-item">
+                                        规则1：(有效商户数≥ <input type="number" name="bishu" class="layui-input numInput" placeholder="请输入数字" lay-verify="butie">,奖励金额：<input type="number" name="bishu" class="layui-input numInput" placeholder="请输入数字" lay-verify="butie">元)
+                                        <div class="delBtn delSale" data-id="0"><i class="layui-icon layui-unselect layui-tab-close">ဆ</i></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <blockquote class="layui-elem-quote">
+                    营销补贴设置
+                    <input type="checkbox" name="marketingSubsidies" lay-skin="switch" lay-filter="marketingSubsidies" lay-text="开|关">
+                </blockquote>
+                <div id="yingxiaoBox" style="display:none">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width:100px">最多补贴金额</label>
+                        <div class="layui-input-block" style="width:300px">
+                            <input type="number" name="marketSubsidyMoney" lay-verify="yingxiao" autocomplete="off" placeholder="请输入最多补贴金额,必须为数字" class="layui-input" value="">
+                        </div>
+                    </div>
+                </div>
+                <blockquote class="layui-elem-quote">
+                    返利卡设置
+                    <input type="checkbox" name="agencyCustom" lay-skin="switch" lay-filter="agencyCustom" lay-text="开|关">
+                </blockquote>
                 <div class="layui-form-item layui-layout-admin">
                     <div class="layui-input-block">
                         <div class="layui-footer" style="left: 0;text-align: center;">
@@ -422,11 +619,79 @@
     <script src="../../common/utility.js"></script>
     <script>
     var index = parent.layer.getFrameIndex(window.name);
+    var subsidySetting = 1
+    var subsidyType = {
+        personal: 1,
+        individual: 1,
+        enterprise: 1
+    }
+    var saleList = [{
+        merchantCount: '',
+        subsidyAmount: ''
+    }, ]
+    var btOff = true
+    var subsidyStandard8 = 1
+    var subsidyStandard0 = 1
+    // 营销补贴设置
+    var marketingSubsidies = 1
+    // 返利卡设置
+    var agencyCustom = 1
     $('#quxiao').click(function() {
         setTimeout(function() {
             parent.layer.close(index)
         }, 16);
     })
+    $('#addSale').click(function() {
+        if (saleList.length >= 5) {
+            layer.msg('最多可以有5条规则')
+            return
+        }
+        var ob = new Object()
+        ob.merchantCount = ''
+        ob.subsidyAmount = ''
+        saleList.push(ob)
+        createList()
+    })
+    createList()
+
+    function createList() {
+        var str = ''
+        for (var i = 0; i < saleList.length; i++) {
+            str += '<li class="sale-item"> 规则' + (i + 1) + '：(有效商户数≥ <input type="number" name="bishu"  data-id="' + i + '"  class="layui-input numInput sale-count" lay-verify="butie" placeholder="请输入数字" value="' + saleList[i].merchantCount + '">,奖励金额：<input type="number"  data-id="' + i + '" name="bishu" class="layui-input numInput sale-money" placeholder="请输入数字" lay-verify="butie" value="' + saleList[i].subsidyAmount + '">元)<div class="delBtn delSale" data-id="' + i + '"><i class="layui-icon layui-unselectlayui-tab-close">ဆ</i></div> </li>'
+        }
+        $('#saleList').html(str)
+        cli()
+        inputCount()
+        inputMoney()
+    }
+
+    function cli() {
+        $('.delSale').click(function(e) {
+            if (saleList.length == 1) {
+                layer.msg('最少要保留一条补贴信息')
+                return
+            }
+            var data = this
+            var num = data.getAttribute('data-id')
+            saleList.splice(num, 1)
+            createList()
+        })
+    }
+
+    function inputCount() {
+        $('.sale-count').bind("input propertychange", function(event) {
+            saleList[this.dataset.id].merchantCount = this.value
+        })
+        console.log(saleList)
+    }
+
+    function inputMoney() {
+        $('.sale-money').bind("input propertychange", function(event) {
+            saleList[this.dataset.id].subsidyAmount = this.value
+        })
+
+        console.log(saleList)
+    }
 
     function bl() {
         setTimeout(function() {
@@ -435,17 +700,13 @@
         //$('#searchBox').hide()
     }
 
-    function clickS(e) {
-        $('#agName').val(e.getAttribute('data-name'))
-        $('#agName').attr('agentNumber', e.getAttribute('data-id'))
-        $('#agName').attr('agentType', e.getAttribute('data-level'))
-        $('#searchBox').hide()
-    }
+
 
     function fc() {
         $('#searchBox').show()
         console.log($('#agName').val())
         pageNum = 1
+
         CmsUtility.postAjaxCall(
             //系统设置
             CmsConfig.addressUrl.Mechanism.getInsAglists, {
@@ -499,6 +760,28 @@
             admin = layui.admin,
             element = layui.element,
             layer = layui.layer;
+        laydate.render({
+            elem: '#startTime' //指定元素
+        });
+        laydate.render({
+            elem: '#endTime' //指定元素
+        });
+        window.clickS = function(e) {
+            $('#agName').val(e.getAttribute('data-name'))
+            $('#agName').attr('agentNumber', e.getAttribute('data-id'))
+            $('#agName').attr('agentType', e.getAttribute('data-level'))
+            $('#searchBox').hide()
+            $('.levelA').show()
+            btOff = false
+            subsidySetting = 1
+            marketingSubsidies = 1
+            $('#yingxiaoBox').hide()
+            $('#butieBox').hide()
+            form.val('cardAdd', {
+                "subsidySetting": false,
+                "marketingSubsidies": false
+            })
+        }
         // CmsUtility.choosePro();
         // setTimeout(function(){
         //  form.render()
@@ -680,6 +963,9 @@
             $('#agName').removeAttr('agentNumber')
 
             $('#agName').removeAttr('agentType')
+            btOff = true
+
+            $('.levelA').hide()
             document.getElementById('searchBox').innerHTML = ''
             CmsUtility.postAjaxCall(
                 //系统设置
@@ -694,10 +980,12 @@
                 function(data) {
                     console.log(this.value)
                     if (data.code == 1000) {
-                        // if(data.data == null){
-                        //     layer.msg(data.msg)
-                        //     return
-                        //    }
+                        if (data.data == null) {
+                            layer.msg(data.msg)
+                            var str = ''
+                            document.getElementById('searchBox').innerHTML = str
+                            return
+                        }
                         var str = ''
                         for (var i = 0; i < data.data.agentRegisterlist.length; i++) {
                             str += '<div class="layui-btn layui-btn-primary" data-level="' + data.data.agentRegisterlist[i].agentLevel +
@@ -877,53 +1165,176 @@
                     return '云闪付费率2只能在 0.52~1.00 之间'
                 }
             },
-
+            butie: function(value) {
+                if (subsidySetting == 0) {
+                    if (value.length == "") {
+                        return '必填项不能为空！';
+                    }
+                }
+            },
+            yingxiao: function(value) {
+                if (marketingSubsidies == 0) {
+                    if (value.length == "") {
+                        return '必填项不能为空！';
+                    }
+                }
+            },
+            // lsDebitCardD1
+            //  0.40-0.60
+            // lsCreditCardD1
+            // 0.51-1.00
+            // lsDebitCardD0
+            // 0.42-1.00
+            // lsCreditCardD0
+            // 0.53-1.00
+            lsDebitCardD1: function(value) {
+                if (parseFloat(value) < 0.40 || parseFloat(value) > 1 || value == '') {
+                    return '借记卡D1费率只能在 0.40~1.00 之间'
+                }
+            },
+            lsCreditCardD1: function(value) {
+                if (parseFloat(value) < 0.51 || parseFloat(value) > 1 || value == '') {
+                    return '贷记卡D1费率只能在 0.51~1.00 之间'
+                }
+            },
+            lsDebitCardD0: function(value) {
+                if (parseFloat(value) < 0.42 || parseFloat(value) > 1 || value == '') {
+                    return '借记卡D0费率只能在 0.42~1.00 之间'
+                }
+            },
+            lsCreditCardD0: function(value) {
+                if (parseFloat(value) < 0.53 || parseFloat(value) > 1 || value == '') {
+                    return '贷记卡D0费率只能在 0.53~1.00 之间'
+                }
+            },
         });
+        form.on('switch(subsidySetting)', function(data) {
+            if (btOff == false) {
+                layer.msg('下级代理商不可添加补贴设置')
+                form.val('cardAdd', {
+                    subsidySetting: data.elem.checked == true ? 0 : 1
+                })
+                return
+            }
+
+            if (data.elem.checked == true) {
+                subsidySetting = 0
+                $('#butieBox').show()
+            } else if (data.elem.checked == false) {
+                subsidySetting = 1
+                $('#butieBox').hide()
+            }
+        });
+        form.on('switch(marketingSubsidies)', function(data) {
+            if (btOff == false) {
+                layer.msg('下级代理商不可开启营销补贴')
+                form.val('cardAdd', {
+                    marketingSubsidies: data.elem.checked == true ? 0 : 1
+                })
+                return
+            }
+
+            if (data.elem.checked == true) {
+                marketingSubsidies = 0
+                $('#yingxiaoBox').show()
+            } else if (data.elem.checked == false) {
+                marketingSubsidies = 1
+                $('#yingxiaoBox').hide()
+            }
+        });
+        
+        form.on('switch(agencyCustom)', function(data) {
+            if (btOff == false) {
+                layer.msg('下级代理商不可开启返利卡设置')
+                form.val('cardAdd', {
+                    agencyCustom: data.elem.checked == true ? 0 : 1
+                })
+                return
+            }
+
+            if (data.elem.checked == true) {
+                agencyCustom = 0
+               
+            } else if (data.elem.checked == false) {
+                agencyCustom = 1
+                
+            }
+        });
+        form.on('checkbox(merType)', function(data) {
+            var name = data.elem.name
+            subsidyType[name] = this.checked == true ? 0 : 1
+            console.log(subsidyType)
+        })
+        form.on('checkbox(standType)', function(data) {
+            var name = data.elem.name
+            if (name == 'subsidyStandard8') {
+                subsidyStandard8 = this.checked == true ? 0 : 1
+            }
+            if (name == 'subsidyStandard0') {
+                subsidyStandard0 = this.checked == true ? 0 : 1
+            }
 
 
-
+        })
         /*---------- 监听提交 ----------*/
         form.on('submit(add)', function(data, index) {
             // layer.alert(JSON.stringify(data.field), {
             //  title: '最终的提交信息'
             // })
-            console.log($('#agName').attr('agentNumber'))
 
-            var index = layer.load(2, {
-                shade: [0.4, '#393D49']
-            })
+
             var addData = data.field
             addData.institutionNumber = userNumber
             addData.Deletion_Flag = '0'
             addData.pAgentNumber = $('#agName').attr('agentNumber')
             addData.pAgentLevel = $('#agName').attr('agentType')
 
-            if (pyList.indexOf(0) >= 0) {
-                addData.gfAliRate = (addData.gfAliRate / 10000 * 100).toFixed(4)
-            } else if (pyList.indexOf(0) < 0) {
-                addData.gfAliRate = '0'
+            if ($('#agName').attr('agentNumber') != undefined) {
+                if (addData.proportional == '') {
+                    layer.msg('请输入花呗分期抽成比例')
+                    return false
+                }
+                if (isNaN(addData.proportional) == true) {
+                    layer.msg('请输入花呗分期抽成比例')
+                    return false
+                }
+                if (addData.proportional < 0 || addData.proportional > 100) {
+                    layer.msg('花呗分期抽成比例需在0-100之间')
+                    return false
+                }
+                // else{
+                addData.proportional = (addData.proportional /100).toFixed(4)
+                // }
             }
+            // 
+            if (pyList.indexOf(0) >= 0) {
+                addData.gfAliRate = (addData.gfAliRate /100).toFixed(4)
+            } else if (pyList.indexOf(0) < 0) {
+                // addData.gfAliRate = '0'
+                delete addData.gfAliRate
+            }
+
             if (pyList.indexOf(1) >= 0) {
-                addData.gfWeChatRate = (addData.gfWeChatRate / 10000 * 100).toFixed(4)
+                addData.gfWeChatRate = (addData.gfWeChatRate /100).toFixed(4)
             } else if (pyList.indexOf(1) < 0) {
-                addData.gfWeChatRate = 0
+                delete addData.gfWeChatRate
             }
             if (pyList.indexOf(2) >= 0) {
-                addData.fyweChatRate = (addData.fyweChatRate / 10000 * 100).toFixed(4)
+                addData.fyweChatRate = (addData.fyweChatRate /100).toFixed(4)
                 addData.fyaliRate = addData.fyweChatRate
-                addData.fyUnionPayRate = (addData.fyUnionPayRate / 10000 * 100).toFixed(4)
-                addData.fyJDWallet = (addData.fyJDWallet / 10000 * 100).toFixed(4)
-                addData.fyQQWallet = (addData.fyQQWallet / 10000 * 100).toFixed(4)
-                addData.fyUnionPayRatetwo = (addData.fyUnionPayRatetwo / 10000 * 100).toFixed(4)
-                addData.fyWingPayRate = (addData.fyWingPayRate / 10000 * 100).toFixed(4)
+                addData.fyUnionPayRate = (addData.fyUnionPayRate /100).toFixed(4)
+                addData.fyJDWallet = (addData.fyJDWallet /100).toFixed(4)
+                addData.fyQQWallet = (addData.fyQQWallet /100).toFixed(4)
+                addData.fyUnionPayRatetwo = (addData.fyUnionPayRatetwo /100).toFixed(4)
+                addData.fyWingPayRate = (addData.fyWingPayRate /100).toFixed(4)
             } else if (pyList.indexOf(2) < 0) {
-                addData.fyweChatRate = 0
-                addData.fyaliRate = 0
-                addData.fyUnionPayRate = 0
-                addData.fyJDWallet = 0
-                addData.fyQQWallet = 0
-                addData.fyUnionPayRatetwo = 0
-                addData.fyWingPayRate = 0
+               delete addData.fyweChatRate 
+               delete addData.fyaliRate 
+               delete addData.fyUnionPayRate 
+               delete addData.fyJDWallet 
+               delete addData.fyQQWallet 
+               delete addData.fyUnionPayRatetwo 
+               delete addData.fyWingPayRate 
             }
             if (pyList.indexOf(3) < 0) {
 
@@ -932,85 +1343,123 @@
 
             }
             if (pyList.indexOf(4) >= 0) {
-                addData.xdlweChatRate = (addData.xdlweChatRate / 10000 * 100).toFixed(4)
+                addData.xdlweChatRate = (addData.xdlweChatRate /100).toFixed(4)
 
                 addData.xdlaliRate = addData.xdlweChatRate
 
-                addData.xdlUnionPayRate = (addData.xdlUnionPayRate / 10000 * 100).toFixed(4)
+                addData.xdlUnionPayRate = (addData.xdlUnionPayRate /100).toFixed(4)
 
-                addData.xdlJDWallet = (addData.xdlJDWallet / 10000 * 100).toFixed(4)
+                addData.xdlJDWallet = (addData.xdlJDWallet /100).toFixed(4)
 
-                addData.xdlQQWallet = (addData.xdlQQWallet / 10000 * 100).toFixed(4)
+                addData.xdlQQWallet = (addData.xdlQQWallet /100).toFixed(4)
 
-                addData.XdlUnionPayRatetwo = (addData.XdlUnionPayRatetwo / 10000 * 100).toFixed(4)
-                addData.xdlWingPayRate = (addData.xdlWingPayRate / 10000 * 100).toFixed(4)
+                addData.XdlUnionPayRatetwo = (addData.XdlUnionPayRatetwo /100).toFixed(4)
+                addData.xdlWingPayRate = (addData.xdlWingPayRate /100).toFixed(4)
 
 
             } else if (pyList.indexOf(4) < 0) {
-                addData.xdlweChatRate = 0
-                addData.xdlaliRate = 0
-                addData.xdlUnionPayRate = 0
-                addData.xdlJDWallet = 0
-                addData.xdlQQWallet = 0
-                addData.XdlUnionPayRatetwo = 0
-                addData.xdlWingPayRate = 0
+               delete addData.xdlweChatRate 
+               delete addData.xdlaliRate 
+               delete addData.xdlUnionPayRate 
+               delete addData.xdlJDWallet 
+               delete addData.xdlQQWallet 
+               delete addData.XdlUnionPayRatetwo 
+               delete addData.xdlWingPayRate 
             }
             if (pyList.indexOf(5) >= 0) {
 
-                addData.sxfweChatRate = (addData.sxfweChatRate / 10000 * 100).toFixed(4)
+                addData.sxfweChatRate = (addData.sxfweChatRate /100).toFixed(4)
 
                 addData.sxfaliRate = addData.sxfweChatRate
 
-                addData.sxfUnionPayRate = (addData.sxfUnionPayRate / 10000 * 100).toFixed(4)
+                addData.sxfUnionPayRate = (addData.sxfUnionPayRate /100).toFixed(4)
 
-                addData.sxfJDWallet = (addData.sxfJDWallet / 10000 * 100).toFixed(4)
+                addData.sxfJDWallet = (addData.sxfJDWallet /100).toFixed(4)
 
-                addData.sxfQQWallet = (addData.sxfQQWallet / 10000 * 100).toFixed(4)
+                addData.sxfQQWallet = (addData.sxfQQWallet /100).toFixed(4)
 
-                addData.sxfUnionPayRatetwo = (addData.sxfUnionPayRatetwo / 10000 * 100).toFixed(4)
-                addData.sxfWingPayRate = (addData.sxfWingPayRate / 10000 * 100).toFixed(4)
+                addData.sxfUnionPayRatetwo = (addData.sxfUnionPayRatetwo /100).toFixed(4)
+                addData.sxfWingPayRate = (addData.sxfWingPayRate /100).toFixed(4)
 
 
             } else if (pyList.indexOf(5) < 0) {
-                addData.sxfweChatRate = 0
-                addData.sxfaliRate = 0
-                addData.sxfUnionPayRate = 0
-                addData.sxfJDWallet = 0
-                addData.sxfQQWallet = 0
-                addData.sxfUnionPayRatetwo = 0
-                addData.sxfWingPayRate = 0
+               delete addData.sxfweChatRate 
+               delete addData.sxfaliRate 
+               delete addData.sxfUnionPayRate 
+               delete addData.sxfJDWallet 
+               delete addData.sxfQQWallet 
+               delete addData.sxfUnionPayRatetwo 
+               delete addData.sxfWingPayRate 
             }
             if (pyList.indexOf(6) >= 0) {
-                addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo / 10000 * 100).toFixed(4)
+                addData.lsUnionPayRatetwo = (addData.lsUnionPayRatetwo /100).toFixed(4)
 
 
 
-                addData.lsweChatRate = (addData.lsweChatRate / 10000 * 100).toFixed(4)
+                addData.lsweChatRate = (addData.lsweChatRate /100).toFixed(4)
                 addData.lsaliRate = addData.lsweChatRate
-                addData.lsUnionPayRate = (addData.lsUnionPayRate / 10000 * 100).toFixed(4)
+                addData.lsUnionPayRate = (addData.lsUnionPayRate /100).toFixed(4)
 
-                addData.lsJDWallet = (addData.lsJDWallet / 10000 * 100).toFixed(4)
-                addData.lsQQWallet = (addData.lsQQWallet / 10000 * 100).toFixed(4)
+                addData.lsJDWallet = (addData.lsJDWallet /100).toFixed(4)
+                addData.lsQQWallet = (addData.lsQQWallet /100).toFixed(4)
 
 
 
-                addData.lsWingPayRate = (addData.lsWingPayRate / 10000 * 100).toFixed(4)
+                addData.lsWingPayRate = (addData.lsWingPayRate /100).toFixed(4)
+                addData.lsDebitCardD0 = (addData.lsDebitCardD0 /100).toFixed(4)                
+                addData.lsCreditCardD0 = (addData.lsCreditCardD0 /100).toFixed(4)
+                addData.lsDebitCardD1 = (addData.lsDebitCardD1 /100).toFixed(4)
+                addData.lsCreditCardD1 = (addData.lsCreditCardD1 /100).toFixed(4)
+
             } else if (pyList.indexOf(6) < 0) {
-                addData.lsUnionPayRatetwo = 0
-                addData.lsweChatRate = 0
-                addData.lsaliRate = 0
-                addData.lsUnionPayRate = 0
-                addData.lsJDWallet = 0
-                addData.lsQQWallet = 0
-                addData.lsWingPayRate = 0
+               delete addData.lsUnionPayRatetwo 
+               delete addData.lsweChatRate 
+               delete addData.lsaliRate 
+               delete addData.lsUnionPayRate 
+               delete addData.lsJDWallet 
+               delete addData.lsQQWallet 
+               delete addData.lsWingPayRate 
+               delete addData.lsDebitCardD0
+               delete addData.lsCreditCardD0
+               delete addData.lsDebitCardD1
+               delete addData.lsCreditCardD1
             }
+            if (subsidySetting == 0) {
+                addData.subsidySetting = subsidySetting
+                addData.rulueInfo = JSON.stringify(saleList)
 
+                if (subsidyType.personal == 1 && subsidyType.individual == 1 && subsidyType.enterprise == 1) {
+                    layer.msg('请至少选择一种补贴商户类型')
+                    return
+                }
+                addData.subsidyType = JSON.stringify(subsidyType)
+                if (subsidyStandard8 == 1 && subsidyStandard0 == 1) {
+                    layer.msg('请至少选择一条支付类型')
+                    return
+                }
+                addData.subsidyStandard = ''
+                if (subsidyStandard8 == 0) {
+                    addData.subsidyStandard += 8
+                }
+                if (subsidyStandard0 == 0) {
+                    addData.subsidyStandard += 0
+                }
+                if (addData.subsidyStandard.length == 2) {
+                    addData.subsidyStandard = addData.subsidyStandard[0] + '|' + addData.subsidyStandard[1]
+                }
+
+            }
+            addData.marketingSubsidies = marketingSubsidies
+            addData.agencyCustom = agencyCustom
             console.log(addData)
-            // return
             // 发送请求
             // addData.D0Rate = 'D0' + '-' + addData.D0Rate
             // addData.T1Rate = 'T1' + '-' + addData.T1Rate
             // addData.D1Rate = 'D1' + '-' + addData.D1Rate
+            var index = layer.load(2, {
+                shade: [0.4, '#393D49']
+            })
+
             CmsUtility.postAjaxCall(
                 //系统设置
                 CmsConfig.addressUrl.Mechanism.insertAgentRegister,

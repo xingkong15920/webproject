@@ -30,6 +30,11 @@
 			.layui-input-inline {
 				margin-right: 20px;
 			}
+			#btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
 		</style>
 	</head>
 
@@ -75,6 +80,7 @@
 							<option value="Alipay_Pay">支付宝</option>
 							<option value="WeChat_Pay">微信</option>
 							<option value="Yun_Pay">云闪付</option>
+							<option value="Pos_Pay">银联</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -86,6 +92,7 @@
 							<option value="3">易融码</option>
 							<option value="4">新大陆</option>
 							<option value="5">随行付</option>
+							<option value="6">乐刷</option>
 						</select>
 					</div>
 					<div class="layui-input-inline">
@@ -97,6 +104,12 @@
 					</div>
 				</div>
 			</div>
+			<div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
+        </div>
 			<table class="layui-hide" id="members" lay-filter="members"></table>
 		</div>
 		<script type="text/html" id="toolbar">
@@ -164,6 +177,35 @@
 				// 		console.log('222')
 				// 	}
 				// )
+				 window.jyClick = function(data, data1) {
+            console.log(data)
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(-1)+' ' + '23:59:59')
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29)+ ' ' +  '00:00:00')
+                    $('#endTime').val(CmsUtility.fun_date(0)+' ' + '23:59:59')
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            tableRender()
+
+        }
 				function tableRender() {
 					var index = layer.load(2, {
 						shade: [0.4, '#393D49']
@@ -286,7 +328,9 @@
 								templet: function(data) {
 									if (data.transactionType == 0) {
 										return '支付宝'
-									} else {
+									} else if (data.transactionType == 1) {
+										return '微信'
+									} else if (data.transactionType == 3) {
 										return '微信'
 									}
 								}
@@ -338,6 +382,7 @@
 
 				$('#search').click(function() {
 					tableRender()
+					 $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
 				})
 				laydate.render({
 					elem: "#startTime",
@@ -360,7 +405,7 @@
 							async: true,
 							dataType: "json",
 							data: {
-								"batch": data.batch,
+								"batch": '100463236172180074496',
 								"insNumber": userNumber,
 								"merchantNumber": data.merchantNumber,
 								"orderState": '3'

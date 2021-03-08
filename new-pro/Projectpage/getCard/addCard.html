@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="./js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+
+function getQueryString(name) {
+    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+    var r = decodeURIComponent(window.location.search).substr(1).match(reg);
+    if (r != null) {
+        return unescape(r[2]);
+    }
+    return null;
+}
+var encrypt_code = getQueryString('encrypt_code')
+var openid = getQueryString('openid')
+var card_id = getQueryString('card_id')
+var acitvate_ticket = getQueryString('activate_ticket')
+var href = getQueryString('href')
+var tjData = new Object()
+tjData.encrypt_code = encrypt_code
+tjData.openid = openid
+tjData.card_id = card_id
+tjData.acitvate_ticket = acitvate_ticket
+$.ajax({
+        url:"https://nb.51shanhe.com/shanhe-admin/wehatCard/activeMember",
+        
+         type: "POST",
+         async: false,
+           headers: {
+               "Content-Type": "application/json"
+           },
+           data: JSON.stringify(tjData),
+           success: function(data) {
+               if(data.code == 1000){
+                   alert('领卡成功')
+                   setTimeout(function(){
+                      window.location.href = 'https://api.51shanhe.com/oneCode/fanli/'
+                    },2000)
+               }else{
+                 alert(data.msg)
+               }
+              
+              
+           }
+     })
+    
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>领取返利卡</title>
+</head>
+
+<body>
+</body>
+
+</html>

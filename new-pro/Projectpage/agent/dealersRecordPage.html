@@ -53,6 +53,12 @@
                         <option value="">请选择区</option>
                     </select>
                 </div>
+                <div class="layui-input-inline">
+                <select name="regionId" id="regionId">
+                    <!-- <option value="">状态</option>
+                    <option value="0">未通过</option> -->
+                </select>
+                    </div>
             <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
         </div>
         <xblock id="dlNum1027">
@@ -71,6 +77,11 @@
             <a class="layui-btn layui-btn-xs" lay-event="settlement-records">结算记录</a>
             <a class="layui-btn layui-btn-xs" lay-event="commissionRecord">佣金记录</a>
 		</script>
+        <script type="text/html" id="shopName">
+        <span  lay-event="look" data-id="{{d.agentNumber}}" style="color:rgb(62, 132, 233);cursor:pointer">{{d.agMercvhant}}/{{d.monthMerchant}}</span>
+            </br>
+            
+        </script>
     <script type="text/html" id="toolbar_switch">
         <input type="checkbox" name="switch" value="{{d.agentNumber}}" lay-skin="switch" lay-filter="toolbar_switch" lay-text="启用|禁用" {{ d.state==0 ? 'checked' : '' }}>
 		</script>
@@ -119,6 +130,7 @@
                     "province":$('#province').val(),
                     "city":$('#city').val(),
                     "area":$('#area').val(),
+                    "regionId":$('#regionId').val()
                 },
                 elem: '#LAY_table_merchant',
                 height: 'full-140',
@@ -151,12 +163,12 @@
                         field: 'agentName',
                         title: '服务商名称',
                         align: 'center',
-                        width: 200
+                        width: 150
                     }, {
                         field: 'agentLevel',
                         title: '级别',
                         align: 'center',
-                        width: 120
+                        width: 60
                     }, {
                         field: 'userName',
                         title: '联系人',
@@ -166,12 +178,17 @@
                         field: 'registerCell',
                         title: '联系电话',
                         align: 'center',
-                        width: 150
+                        width: 120
+                    }, {
+                        field: 'regionName',
+                        title: '所属区域',
+                        align: 'center',
+                        width: 100
                     }, {
                         field: 'address',
-                        title: '区域',
+                        title: '省市区',
                         align: 'center',
-                        width: 250
+                        width: 200
                     }, {
                         field: 'OperatorStateC',
                         title: '状态',
@@ -194,6 +211,16 @@
                         templet:function(data){
                             return data.agBalance + '/' + data.settlementCountMoney
                         }
+
+                    }, {
+                        field: 'settlementCountMoney',
+                        title: '商户总数' + '/' + '月新增',
+                        align: 'center',
+                        templet:function(data){
+                            return data.agMercvhant + '/' + data.monthMerchant
+                        },
+                        width:140,
+                        toolbar: "#shopName",
 
                     }, {
                         field: 'insertTime',
@@ -348,6 +375,32 @@
             form.render()
 
         })
+         CmsUtility.postAjaxCall(
+            //系统设置
+            'agAreaManger/getAgnetArea', {
+
+                "agentNumber": JSON.parse(sessionStorage.getItem('agentUser')).Number
+            },
+            function(data) {
+                layer.closeAll()
+                if (data.code == 1000) {
+                    console.log(data)
+                    var areaList = data.data.areaList
+                    var str = '<option value="">请选择所属区域</option>'
+                    for(var i = 0 ; i < areaList.length;i++){
+                        str += '<option value="'+ areaList[i].regionId +'">'+ areaList[i].regionName +'</>'
+                    }
+                    $('#regionId').html(str)
+                    form.render()
+                } else {
+                    layer.msg(data.msg)
+
+                }
+            },
+            function(data) {
+                console.log('222')
+            }, 'get'
+        )
         $('#addA').click(function() {
             layer.open({
                 type: 2,
@@ -429,6 +482,8 @@
                         iframe.subPage(data)
                     }
                 });
+            }else if(obj.event == 'look'){
+                top.refreshHighlight1(data.agentName,data.agentNumber);
             } else if (obj.event == 'edit') {
                 // 修改经销商信息
                 layer.open({

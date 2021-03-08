@@ -43,6 +43,11 @@
     .layui-col-md2{
         width: 12%;
     }
+    #btnBox .layui-btn{
+        width: 100px;
+        border-radius: 10px;
+        margin-right: 10px;
+    }
     </style>
 </head>
 
@@ -68,6 +73,12 @@
             <div class="layui-input-inline coupons_screen">
                 <button class="layui-btn" id="searchZhe" title="搜索"><i class="layui-icon">&#xe615;</i></button>
             </div>
+        </div>
+         <div class="layui-row" id="btnBox" style="margin-bottom:10px">
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(0,0)">今天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(1,1)">昨天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(2,2)">最近7天</button>
+            <button type="button" class="layui-btn layui-btn-primary fl" onclick="jyClick(3,3)">近30天</button>
         </div>
         <!-- <div class="layui-form x-so">
                 <div class="layui-input-inline">
@@ -175,7 +186,7 @@
     </div>
     <script src="../../common/config-organ.js"></script>
     <script src="../../common/utility.js"></script>
-    <script type="text/javascript" src="http://static.hongxiaosou.com/public/js/echarts.min.js"></script>
+    <script type="text/javascript" src="../../public/js/echarts.min.js"></script>
     <script>
     function changeRes(res) {
         var res = res
@@ -242,7 +253,7 @@
                 },
                 function(data) {
                     if (data.code == '1000') {
-                        console.log(data)
+                        
                         $('#orderAev').html(data.data.orderAev)
                         $('#refoundPro').html(data.data.refoundPro)
                         $('#successOrderAmount').html(data.data.successOrderAmount)
@@ -271,6 +282,39 @@
             )
         }
         getOrder()
+        window.jyClick = function(data, data1) {
+            
+               
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
+            $('.fl').eq(data).attr('class', 'layui-btn  fl')
+            switch (data1) {
+                case 0:
+                    $('#startTime').val(CmsUtility.fun_date(0))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 1:
+                    $('#startTime').val(CmsUtility.fun_date(-1))
+                    $('#endTime').val(CmsUtility.fun_date(-1))
+                    break;
+                case 2:
+                    $('#startTime').val(CmsUtility.fun_date(-6))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                case 3:
+                    $('#startTime').val(CmsUtility.fun_date(-29))
+                    $('#endTime').val(CmsUtility.fun_date(0))
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+            searchZhe()
+            getOrder()
+            tableRender1()
+            tableRender2()
+            tableRender3()
+
+        }
         //方法级渲染 
         function tableRender1() {
             table.render({
@@ -495,7 +539,7 @@
             tableRender1()
             tableRender2()
             tableRender3()
-
+            $('.fl').attr('class', 'layui-btn layui-btn-primary fl')
         })
     });
 

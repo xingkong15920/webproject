@@ -2,264 +2,619 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
     <title></title>
-    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=0">
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../../public/css/font.css">
     <link rel="stylesheet" href="../../public/css/xadmin.css">
     <script type="text/javascript" src="../../public/js/jquery-3.2.1.js"></script>
     <script type="text/javascript" src="../../public/lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="../../public/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
     <style type="text/css">
-    table tr td:first-child {
-        width: 120px !important;
-        text-align: right;
+    .layui-table tr td:first-child {
+        width: 150px;
+    }
+    #flexBox{
+        display: flex;
+        /* align-items: flex-start; */
+    }
+    #flexBox div{
+        flex-grow: 1;
+        margin-right: 10px;
     }
     </style>
 </head>
 
-<body>
-    
+<body id="iosiframe">
     <div class="x-body">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend style="font-weight: 500;">订单信息</legend>
+        <div id="flexBox">
+            <div>
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">订单信息</legend>
+                </fieldset>
+                <table class="layui-table" class="layui-form" lay-filter="cardAdd">
+                    <tbody>
+                        <tr>
+                            <td>门店名称</td>
+                            <td id="box1-shopName"></td>
+                        </tr>
+                        <tr>
+                            <td>订单信息</td>
+                            <td id="box1-orderNumber"></td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td id="box1-time"></td>
+                        </tr>
+                        <tr>
+                            <td>订单状态</td>
+                            <td id="box1-orderType"></td>
+                        </tr>
+                        <tr>
+                            <td>用户类型</td>
+                            <td id="box1-userType"></td>
+                        </tr>
+                        <tr>
+                            <td>订单来源</td>
+                            <td id="box1-orderFrom"></td>
+                        </tr>
+                        <tr>
+                            <td>收银店员</td>
+                            <td id="box1-clerkName"></td>
+                        </tr>
+                        <tr>
+                            <td>订单备注</td>
+                            <td id="box1-mark"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">支付信息</legend>
+                </fieldset>
+                <table cellspacing="0" cellpadding="0" border="0" class="layui-table layui-table-xq" lay-even="">
+                    <tbody>
+                        <tr>
+                            <td style="width:150px;text-align right;">通道订单号</td>
+                            <td><span id="box2-paymentOrderNumber">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>交易通道</td>
+                            <td><span id="box2-channelType">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>子商户号</td>
+                            <td><span id="box2-subaccountNumber">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>支付时间</td>
+                            <td><span id="box2-transactionTime">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>支付状态</td>
+                            <td><span id="box2-orderState">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>支付类型</td>
+                            <td><span id="box2-payType">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>订单金额</td>
+                            <td><span id="box2-orderAmount">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>优惠金额</td>
+                            <td><span id="box2-discountAmount">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>退款金额</td>
+                            <td><span id="box2-refundAmount">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>实收金额</td>
+                            <td><span id="box2-shishoujine">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>手续费</td>
+                            <td><span id="box2-shopPoundage">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>结算金额</td>
+                            <td><span id="box2-settlementAmount">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>花呗分期</td>
+                            <td><span id="huabei">--</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="fanliInfo" style="display:none">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">返利信息</legend>
+                </fieldset>
+                <table cellspacing="0" cellpadding="0" border="0" class="layui-table layui-table-xq" lay-even="">
+                    <tbody>
+                        <tr>
+                            <td style="width:150px;text-align right;">会员名称</td>
+                            <td><span id="box3-memberName">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>会员手机号</td>
+                            <td><span id="box3-memberPhone">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>返利单号</td>
+                            <td><span id="box3-rebateOrderNumbder">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>返利金额</td>
+                            <td><span id="box3-rebateOrderSjAmount">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>返利时间</td>
+                            <td><span id="box3-rebateTime">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>返利状态</td>
+                            <td><span id="box3-rebateStatus">--</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+             <div id="vipInfo" style="display:none">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend style="font-weight: 500;">会员信息</legend>
+                </fieldset>
+                <table cellspacing="0" cellpadding="0" border="0" class="layui-table layui-table-xq" lay-even="">
+                    <tbody>
+                        
+                        <tr>
+                            <td style="width:150px;text-align right;">会员姓名</td>
+                            <td><span id="box4-name">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>手机号</td>
+                            <td><span id="box4-cell">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>会员等级</td>
+                            <td><span id="box4-gradeName">--</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="fenzhangBox" style="display:none">
+            
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend style="font-weight: 500;">分账信息</legend>
         </fieldset>
-        <table cellspacing="0" cellpadding="0" border="0" class="layui-table layui-table-xq" lay-even="">
-            <tbody>
-                <tr>
-                    <td style="width 150px;text-align right;">商户编号</td>
-                    <td><span id="merchantNumber"></span></td>
-                </tr>
-                <tr>
-                    <td>商户名称</td>
-                    <td><span id="merchantName"></span></td>
-                </tr>
-                <tr>
-                    <td>门店名称</td>
-                    <td><span id="shopName"></span></td>
-                </tr>
-                <tr>
-                    <td>店员名称</td>
-                    <td><span id="clerkName"></span></td>
-                </tr>
-                <tr>
-                    <td>系统订单号</td>
-                    <td><span id="batch"></span></td>
-                </tr>
-                <tr>
-                    <td>交易金额</td>
-                    <td><span id="transactionAmount"></span></td>
-                </tr>
-                <tr>
-                    <td>手续费</td>
-                    <td><span id="shopPoundage"></span></td>
-                </tr>
-                <tr>
-                    <td>实收金额</td>
-                    <td><span id="settlementAmount"></span></td>
-                </tr>
-                <tr>
-                    <td>提交时间</td>
-                    <td><span id="orderTime"></span></td>
-                </tr>
-                <tr>
-                    <td>成功时间</td>
-                    <td><span id="transactionTime"></span></td>
-                </tr>
-            </tbody>
-        </table>
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend style="font-weight: 500;">支付信息</legend>
-        </fieldset>
-        <table cellspacing="0" cellpadding="0" border="0" class="layui-table layui-table-xq" lay-even="">
-            <tbody>
-                <tr>
-                    <td style="width:150px;text-align right;">通道订单号</td>
-                    <td><span id="paymentOrderNumber1">--</span></td>
-                </tr>
-                <tr>
-                    <td>交易通道</td>
-                    <td><span id="channelType1">--</span></td>
-                </tr>
-                <tr>
-                    <td>子商户号</td>
-                    <td><span id="subaccountNumber1">--</span></td>
-                </tr>
-                <tr>
-                    <td>APPID</td>
-                    <td><span id="appid1">--</span></td>
-                </tr>
-                <tr>
-                    <td>订单类型</td>
-                    <td><span id="orderType1">--</span></td>
-                </tr>
-                <tr>
-                    <td>状态</td>
-                    <td><span id="orderState1">--</span></td>
-                </tr>
-                <tr>
-                    <td>支付完成时间</td>
-                    <td><span id="transactionTime1">--</span></td>
-                </tr>
-                <tr>
-                    <td>订单金额</td>
-                    <td><span id="orderAmount1">--</span></td>
-                </tr>
-                <tr>
-                    <td>应结订单金额</td>
-                    <td><span id="settlementAmount1">--</span></td>
-                </tr>
-            </tbody>
-        </table>
+        <table class="layui-hide" id="table2" lay-filter="fenzhang"></table>
+        </div>
+        
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
             <legend style="font-weight: 500;">退单信息</legend>
         </fieldset>
-        <table class="layui-hide" id="table1" lay-filter="useruv"></table>
+        <table class="layui-hide" id="table1" lay-filter="useruv" style="margin-bottom:50px"></table>
     </div>
-</body>
-<script src="../../common/config-sh.js"></script>
-<script src="../../common/utility.js"></script>
-<script type="text/javascript">
-var jgData
+    <script src="../../common/config-sh.js"></script>
+    <script src="../../common/utility.js"></script>
+    <script>
+        function jiaxing(data){
+            return data[0] + '**'
+        }
+        function teljiaxing(data){
+            return data.substring(0,3) + '****' + data.substring(7,11)
+        }
+    function subPage(data, data1) {
+        console.log(data)
+        var userNumber = JSON.parse(sessionStorage.getItem('userSh')).institutionNumber;
+        var jgData;
+        jgData = data
 
-function subPage(data) {
-    jgData = data
-    // var os;
-    // if(orderState == 0){
-    // 	os = '未处理'
-    // }
-    // if(orderState == 1){
-    // 	os = '成功-未返还'
-    // }
-    // if(orderState == 2){
-    // 	os = '成功-已返还'
-    // }
-    // if(!!data.orderTime){
-    // 	var orderTime = data.orderTime.split('.')[0].split('T')[0] + ' ' + data.orderTime.split('.')[0].split('T')[1]
-    // }else{
-    // 	var orderTime = ''
-    // }
-    // if(!!data.transactionTime){
-    // 	var transactionTime = data.transactionTime.split('.')[0].split('T')[0] + ' ' + data.transactionTime.split('.')[0].split('T')[1]
-    // }else{
-    // 	var transactionTime = ''
-    // }
-    // $('#merchantNumber').html(data.merchantNumber);
-    // $('#clerkNumber').html(data.clerkNumber);
-    // $('#merchantName').html(data.merchantName);
-    // $('#batch').html(data.batch);
-    // $('#transactionAmount').html(data.transactionAmount);
-    // $('#shopPoundage').html(data.shopPoundage);
-    // $('#settlementAmount').html(data.settlementAmount);
-    // $('#orderTime').html(orderTime)
-    // $('#transactionTime').html(transactionTime)
-    // $('#paymentChannelName').html(data.paymentChannelName)
-    // $('#oneTransactionType').html(data.oneTransactionType)
-    // $('#orderState').html(os)
-    console.log(sessionStorage.getItem('userSh'))
-    $('#merchantNumber').html(JSON.parse(sessionStorage.getItem('userSh')).Number)
-    $('#merchantName').html(JSON.parse(sessionStorage.getItem('userSh')).merchantName)
-    $('#shopName').html(jgData.shopName)
-    $('#clerkName').html(jgData.clerkName)
-    $('#paymentOrderNumber').html(jgData.paymentOrderNumber)
-    $('#batch').html(jgData.batch)
-    $('#orderNumber').html(jgData.orderNumber)
-    $('#transactionAmount').html(jgData.transactionAmount)
-    $('#shopPoundage').html(jgData.shopPoundage)
-    $('#settlementAmount').html(jgData.shishoujine)
-    $('#orderTime').html(jgData.orderTime)
-    $('#transactionTime').html(jgData.transactionTime)
-    $('#paymentChannelName').html(jgData.paymentChannelName)
-    $('#oneTransactionType').html(jgData.onePaymentTypeName + '/' + jgData.twoPaymentTypeName)
-    CmsUtility.postAjaxCall(
-        //系统设置
-        'homePage/getPaymentInformation?batch=' +jgData.batch ,
-        '',
-        function(data) {
-            console.log(data)
-            layer.closeAll()
-            if (data.code == 1000) {
-                $('#paymentOrderNumber1').html(data.data.paymentOrderNumber)
-                $('#channelType1').html(data.data.channelType)
-                $('#subaccountNumber1').html(data.data.subaccountNumber)
-                $('#appid1').html(data.data.appid)
-                $('#orderType1').html(data.data.orderType)
-                $('#orderState1').html(data.data.orderState)
-                $('#transactionTime1').html(data.data.transactionTime)
-                $('#orderAmount1').html(data.data.orderAmount)
-                $('#settlementAmount1').html(data.data.settlementAmount)
+        // box1
+        var userType = ''
+        if (jgData.userType == 0) {
+            userType = '散客'
+        }
+        if (jgData.userType == 1) {
+            userType = '返利卡'
+        }
+        if (jgData.userType == 2) {
+            userType = '会员'
+        }
+        $('#box1-shopName').html(jgData.shopName)
+        $('#box1-orderNumber').html(jgData.batch)
+        $('#box1-time').html(jgData.orderTime)
+        $('#box1-orderType').html(jgData.orderState)
+        $('#box1-userType').html(userType)
+        $('#box1-orderFrom').html(jgData.equipment)
+        $('#box1-clerkName').html(jgData.clerkName)
+        $('#box1-mark').html(jgData.orderRemarks)
+        var oneZ, twoZ
+        switch (jgData.onePaymentTypeName) {
+            case '0':
+                oneZ = '支付宝'
+                break;
+            case '1':
+                oneZ = '微信'
+                break;
+            case '2':
+                oneZ = '京东钱包'
+                break;
+            case '3':
+                oneZ = '云闪付'
+                break;
+            case '7':
+                oneZ = '银联'
+                break;
+            default:
+                oneZ = '--'
+                break;
+        }
+        switch (jgData.twoPaymentTypeName) {
+            case '0':
+                twoZ = '条码支付'
+                break;
+            case '1':
+                twoZ = '动态二维码支付'
+                break;
+            case '2':
+                twoZ = '小程序支付'
+                break;
+            case '3':
+                twoZ = 'APP支付'
+                break;
+            case '4':
+                twoZ = 'H5支付'
+                break;
+            case '5':
+                twoZ = '公众号支付'
+                break;
+            case '6':
+                twoZ = '服务窗支付'
+                break;
+            case '7':
+                twoZ = '预授权'
+                break;
+            case '8':
+                twoZ = '刷脸支付'
+                break;
+            case '11':
+                twoZ = '刷卡支付'
+                break;
+            case '12':
+                twoZ = '刷卡支付'
+                break;
+            default:
+                twoZ = '--'
+                break;
+        }
 
-            } else {
+        //支付产品
+        $("#zhifuchanpin").html(oneZ + '/' + twoZ)
+        //提交地址
+        //$("#tijiaodizhi").html('提交地址')
+        //页面返还地址
+        //$("#fanhuandizhi").html('页面返还地址')
+        //服务器通知地址
+        //$("#tongzhidizhi").html('通知地址')
+        //状态
+        console.log(jgData.orderNumber)
+        // setTimeout(function() {
+        //     CmsUtility.postAjaxCall(
+        //         //系统设置
+        //         CmsConfig.addressUrl.Mechanism.getOrderPayInfo, {
+        //             "batch": jgData.orderNumber
+        //         },
+        //         function(data) {
+        //             if (data.code == 1000) {
 
-                layer.msg(data.msg)
-            }
-        },
-        function(data) {
+        //                 $("#subaccountNumber").html(data.data.subaccountNumber)
 
-        },
-        'get'
-    )
-    layui.use(['laydate', 'table', 'upload', 'form'], function() {
-        var $ = layui.jquery,
-            upload = layui.upload,
-            laydate = layui.laydate,
-            table = layui.table,
-            form = layui.form,
-            admin = layui.admin,
-            element = layui.element,
-            layer = layui.layer;
-        table.render({
-            elem: '#table1',
-            url: 'https://nb.51shanhe.com/shanhe-admin/inOrder/getTransactionList?batch=' + jgData.batch,
-            //   url: 'http://192.168.1.167:6005/shanhe-admin/inOrder/getTransactionList?batch=' + jgData.batch,
-            page: false,
-            method: "post",
-            id: 'deviceInfo',
-            response: {
-                "statusCode": "1000", //解析接口状态
-            },
-            parseData: function(res) {
+        //                 $("#APPID").html(data.data.appid)
+        //                 $("#jiaoyitongdao").html(jgData.paymentType)
 
-                
-                if (res.data == null) {
-                    return
+        //             }
+
+        //         },
+        //         function(data) {
+        //             console.log('222')
+        //         }
+        //     )
+        // }, 500)
+
+        //
+        var index = parent.layer.getFrameIndex(window.name);
+        $('#quxiao').click(function() {
+
+            setTimeout(function() { parent.layer.close(index) }, 16);
+        })
+        layui.use(['laydate', 'table', 'upload', 'form'], function() {
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer;
+            table.render({
+                elem: '#table1',
+                url: 'https://nb.51shanhe.com/shanhe-admin/inOrder/getTransactionList' + '?batch=' + jgData.batch,
+                page: false,
+                method: "post",
+                id: 'deviceInfo',
+                response: {
+                    "statusCode": "1000", //解析接口状态
+                },
+                parseData: function(res) {
+
+
+                    if (res.data == null) {
+                        return
+                    }
+                    console.log(res)
+                    return {
+                        "code": res.code,
+                        "data": res.data,
+                    }
+                },
+                cols: [
+                    [{
+                        field: 'refundOrderNumber',
+                        title: '退款订单号',
+                        align: 'center',
+                    }, {
+                        field: 'refundAmount',
+                        title: '退款金额',
+                        align: 'center',
+                    }, {
+                        title: '退款时间',
+                        align: 'center',
+                        field: 'refundTime',
+                    }]
+                ]
+            })
+
+            table.render({
+                elem: '#table2',
+                url: CmsConfig.ServiceUrl.ApiRootUrl + 'homePage/splitOrderInfo',
+                where: {
+                    "institutionNumber": userNumber,
+                    "batch": jgData.batch
+                },
+                contentType: 'application/json',
+                page: false,
+                method: "post",
+                id: 'deviceInfo',
+                response: {
+                    "statusCode": "1000", //解析接口状态
+                },
+                parseData: function(res) {
+
+
+                    if (res.data == null) {
+                        return
+                    }
+                    console.log(res)
+                    return {
+                        "code": res.code,
+                        "data": res.data,
+                    }
+                },
+                cols: [
+                    [{
+                        title: '分账单编号',
+                        align: 'center',
+                        field: 'sepOrderNumber',
+                    }, {
+                        field: 'sepName',
+                        title: '分账人姓名',
+                        align: 'center',
+                        templet:function(data){
+                            return jiaxing(data.sepName)
+                        }
+                    }, {
+                        field: 'sepPhone',
+                        title: '分账人手机号',
+                        align: 'center',
+                        templet:function(data){
+                            return teljiaxing(data.sepPhone)
+                        }
+                    }, {
+                        title: '订单金额',
+                        align: 'center',
+                        field: 'orderAmount',
+                    }, {
+                        title: '分账金额',
+                        align: 'center',
+                        field: 'sepOrderAmount',
+                    }, {
+                        title: '分账状态',
+                        align: 'center',
+                        field: 'sepStatus',
+                        templet: function(data) {
+                            if (data.sepStatus == '1') {
+                                return '成功'
+                            } else if (data.sepStatus == '3') {
+                                return '失败'
+                            } else {
+                                return '--'
+                            }
+
+                        }
+                    }, {
+                        title: '分账时间',
+                        align: 'center',
+                        field: 'sepTime',
+                    }]
+                ],
+                done:function(res){
+                    if(res.code == 1000){
+                        $('#fenzhangBox').show()
+                    }else{
+                        $('#fenzhangBox').hide()
+                    }
                 }
-                console.log(res)
-                return {
-                    "code": res.code,
-                    "data": res.data,
+            })
+            var vipInfo = new Object()
+            vipInfo.memberNumber = jgData.memberNumber
+             // 会员信息
+             CmsUtility.postAjaxCallJson(
+                //系统设置
+                'homePage/getMemberInfo',
+                JSON.stringify(vipInfo),
+                function(data) {
+                    console.log(data)
+                    layer.closeAll()
+                    if (data.code == 1000) {
+                        $('#box4-name').html(data.data.name)
+                        $('#box4-cell').html(data.data.cell)
+                        $('#box4-gradeName').html(data.data.gradeName)
+                        $('#vipInfo').show()
+                    } else {
+
+                        // layer.msg(data.msg)
+                    }
+                },
+                function(data) {
+
                 }
-            },
-            cols: [
-                [{
-                    field: 'refundOrderNumber',
-                    title: '退款订单号',
-                    align: 'center',
-                    width: 200
-                }, {
-                    field: 'refundAmount',
-                    title: '退款金额',
-                    align: 'center',
-                    width: 100
-                }
-                , {
-                    field: 'clerkName',
-                    title: '退款人',
-                    align: 'center',
-                    width: 100
-                }, {
-                    title: '退款时间',
-                    align: 'center',
-                    field: 'refundTime',
-                }]
-            ]
+            )
+
+
+
+
+
+            // 支付信息
+            CmsUtility.postAjaxCall(
+                //系统设置
+                'homePage/getPaymentInformation?batch=' + jgData.batch,
+                '',
+                function(data) {
+                    console.log(data)
+                    layer.closeAll()
+                    if (data.code == 1000) {
+                        $('#box2-paymentOrderNumber').html(data.data.paymentOrderNumber)
+                        $('#box2-channelType').html(data.data.channelType)
+                        $('#box2-subaccountNumber').html(data.data.subaccountNumber)
+                        $('#box2-transactionTime').html(data.data.transactionTime)
+                        $('#box2-orderState').html(data.data.orderState)
+                        $('#box2-payType').html(oneZ + '/' + twoZ)
+                        $('#box2-orderAmount').html(data.data.orderAmount)
+                        $('#box2-discountAmount').html(data.data.discountAmount)
+                        $('#box2-refundAmount').html(data.data.refundAmount)
+                        $('#box2-shishoujine').html(data.data.shishoujine)
+                        $('#box2-shopPoundage').html(data.data.shopPoundage)
+                        $('#box2-settlementAmount').html(data.data.settlementAmount)
+                        // $('#paymentOrderNumber1').html(data.data.paymentOrderNumber)
+                        // $('#channelType1').html(data.data.channelType)
+                        // $('#subaccountNumber1').html(data.data.subaccountNumber)
+                        // $('#appid1').html(data.data.appid)
+                        // $('#orderType1').html(data.data.orderType)
+                        // $('#orderState1').html(data.data.orderState)
+                        // $('#transactionTime1').html(data.data.transactionTime)
+                        // $('#orderAmount1').html(data.data.orderAmount)
+                        // $('#settlementAmount1').html(data.data.settlementAmount)
+                        $('#huabei').html(data.data.stageType + '期/ ￥' + (data.data.hbServiceCharge))
+                        
+                    } else {
+
+                        // layer.msg(data.msg)
+                    }
+                },
+                function(data) {
+
+                },
+                'get'
+            )
+            var sepData = new Object()
+            sepData.institutionNumber = userNumber
+            sepData.batch = jgData.batch
+
+            // 返利信息
+            CmsUtility.postAjaxCallJson(
+                //系统设置
+                'homePage/getRebateOrderInfo',
+                JSON.stringify(sepData),
+                function(data) {
+                    console.log(data)
+                    layer.closeAll()
+                    if (data.code == 1000) {
+                        var type = '--'
+                        if (data.data.rebateStatus) {
+                            switch (data.data.rebateStatus) {
+                                case '1':
+                                    type = '返利成功'
+                                    break;
+                                case '3':
+                                    type = '返利失败'
+                                    break;
+                                default:
+                                    type = '--'
+                                    break;
+                            }
+                        }
+
+
+
+
+
+
+                        $('#box3-memberName').html(jiaxing(data.data.memberName))
+                        $('#box3-memberPhone').html(teljiaxing(data.data.memberPhone))
+                        $('#box3-rebateOrderNumbder').html(data.data.rebateOrderNumber)
+                        $('#box3-rebateOrderSjAmount').html('￥' + data.data.rebateOrderAmount + ',本订单(￥' + data.data.rebateOrderSjAmount + ' )')
+                        $('#box3-rebateTime').html(data.data.rebateTime)
+                        $('#box3-rebateStatus').html(type)
+                        $('#fanliInfo').show()
+                    } else {
+                        $('#fanliInfo').hide()
+                        layer.msg(data.msg)
+                    }
+                },
+                function(data) {
+
+                },
+                'post'
+            )
         })
 
+        return
+        var serverUrl = window.parent.serverUrl
+        var userNumber = JSON.parse(sessionStorage.getItem('agentUser')).institutionNumber;
+        layui.use(['laydate', 'table', 'upload', 'form'], function() {
+            var $ = layui.jquery,
+                upload = layui.upload,
+                laydate = layui.laydate,
+                table = layui.table,
+                form = layui.form,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer;
+            var tableSelect = layui.tableSelect;
 
-    })
-}
-</script>
+
+
+
+
+
+
+
+        });
+    }
+    </script>
+</body>
 
 </html>
